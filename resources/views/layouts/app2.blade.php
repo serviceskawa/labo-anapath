@@ -75,6 +75,10 @@
                                         <a href="{{ route('examens.categories.index') }}">Catégories</a>
                                     </li>
 
+                                    <li>
+                                        <a href="{{ route('patients.index') }}">Patients</a>
+                                    </li>
+
                                     
                            
                                 </ul>

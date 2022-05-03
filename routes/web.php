@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PatientController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
@@ -39,4 +40,11 @@ Route::get('/test/delete/{id}', [TestController::class , 'destroy']);
 Route::get('/gettest/{id}', [TestController::class , 'edit']);
 Route::post('/examens/update', [TestController::class , 'update'])->name('examens.update');
 
+
+//PATIENTS
+Route::get('/patients/index', [PatientController::class , 'index'])->name('patients.index');
+Route::post('/patients/index', [PatientController::class , 'store'])->name('patients.store');
+Route::get('/patients/delete/{id}', [PatientController::class , 'destroy']);
+Route::get('/getpatient/{id}', [PatientController::class , 'edit']);
+Route::post('/patients/update', [PatientController::class , 'update'])->name('patients.update');
 

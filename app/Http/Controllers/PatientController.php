@@ -1,0 +1,137 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Patient;
+use Illuminate\Http\Request;
+
+class PatientController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $patients = Patient::orderBy('id','desc')->get();
+
+        return view('patients.index',compact(['patients']));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        
+        $data=$this->validate($request, [
+            'code' => 'required',
+            'name' => 'required',  
+            'telephone1' => 'required',         
+            'telephone1' => 'nullable', 
+            'adresse' => 'nullable', 
+            'genre' => 'required', 
+        ]);
+
+      
+
+        try {
+            Patient::create($data);
+            return back()->with('success', "Un patient enregistrée ! ");
+
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $data = Patient::find($id);
+        return response()->json($data);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        
+        $data=$this->validate($request, [
+            'id2' => 'required',
+            'code2' => 'required',
+            'name2' => 'required',  
+            'telephone1_2' => 'required',         
+            'telephone2_2' => 'nullable', 
+            'adresse2' => 'nullable', 
+            'genre2' => 'required', 
+        ]);
+
+        
+        try {
+          
+            $patient = Patient::find($data['id2']);
+            $patient->code = $data['code2'];
+            $patient->name = $data['name2'];
+            $patient->genre = $data['genre2'];
+            $patient->telephone1 = $data['telephone1_2'];
+            $patient->telephone2 = $data['telephone2_2'];
+            $patient->adresse = $data['adresse2'];
+
+            $patient->save();
+
+            return back()->with('success', "Un patient mis à jour ! ");
+
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }
+
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $patient = Patient::find($id)->delete();
+        return back()->with('success', " Elément supprimé avec succès  ! ");
+    }
+}
