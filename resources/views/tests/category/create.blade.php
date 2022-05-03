@@ -11,12 +11,12 @@
             
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Code</label>
-                    <input type="text" name="code" class="form-control">
+                    <input type="text" name="code" class="form-control" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Libellé</label>
-                    <input type="text" name="name" class="form-control">
+                    <input type="text" name="name" class="form-control" required>
                 </div>
 
 
