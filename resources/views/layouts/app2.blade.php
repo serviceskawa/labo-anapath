@@ -79,6 +79,10 @@
                                         <a href="{{ route('patients.index') }}">Patients</a>
                                     </li>
 
+                                    <li>
+                                        <a href="{{ route('hopitals.index') }}">Hopitals</a>
+                                    </li>
+
                                     
                            
                                 </ul>
