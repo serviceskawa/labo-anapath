@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\PatientController;
 use Illuminate\Support\Facades\Auth;
@@ -56,4 +57,13 @@ Route::post('/hopitals/index', [HospitalController::class , 'store'])->name('hop
 Route::get('/hopitals/delete/{id}', [HospitalController::class , 'destroy']);
 Route::get('/gethopital/{id}', [HospitalController::class , 'edit']);
 Route::post('/hopitals/update', [HospitalController::class , 'update'])->name('hopitals.update');
+
+
+//DOCTOR
+Route::get('/doctors/index', [DoctorController::class , 'index'])->name('doctors.index');
+Route::post('/doctors/index', [DoctorController::class , 'store'])->name('doctors.store');
+Route::get('/doctors/delete/{id}', [DoctorController::class , 'destroy']);
+Route::get('/getdoctor/{id}', [DoctorController::class , 'edit']);
+Route::post('/doctors/update', [DoctorController::class , 'update'])->name('doctors.update');
+
 

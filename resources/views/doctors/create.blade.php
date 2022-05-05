@@ -1,0 +1,50 @@
+<div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Ajouter un hôpital</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+            </div>
+        <form action="{{ route('doctors.store') }}" method="POST" autocomplete="off">
+            @csrf
+            <div class="modal-body">
+            
+           
+
+                <div class="mb-3">
+                    <label for="simpleinput" class="form-label">Nom & Prénom</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="simpleinput" class="form-label">Telephone</label>
+                    <input type="text" name="telephone" class="form-control" >
+                </div>
+
+                
+                <div class="mb-3">
+                    <label for="simpleinput" class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control">
+                </div>
+
+                
+                <div class="mb-3">
+                    <label for="simpleinput" class="form-label">Rôle</label>
+                    <input type="text" name="role" class="form-control">
+                </div>
+
+                
+                <div class="mb-3">
+                    <label for="simpleinput" class="form-label">Commision</label>
+                    <input type="text" name="commission" class="form-control" required>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
