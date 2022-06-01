@@ -8,14 +8,14 @@
         <form action="{{ route('patients.store') }}" method="POST" autocomplete="off">
             @csrf
             <div class="modal-body">
-            
+
 
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Code</label>
                     <input type="text" name="code" class="form-control" required>
                 </div>
 
-                
+
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Nom & Prénom</label>
                     <input type="text" name="name" class="form-control" required>
@@ -25,14 +25,24 @@
                     <label for="example-select" class="form-label">Genre</label>
                     <select class="form-select" id="example-select" name="genre">
                         <option>...</option>
-           
+
                         <option value="HOMME">HOMME</option>
                         <option value="FEMME">FEMME</option>
-               
+
                     </select>
                 </div>
 
-                
+                <div class="mb-3">
+                    <label for="simpleinput" class="form-label">Age</label>
+                    <input type="number" name="age" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="simpleinput" class="form-label">Profession</label>
+                    <input type="text" name="profession" class="form-control" >
+                </div>
+
+
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Contact 1</label>
                     <input type="text" name="telephone1" class="form-control" required>
@@ -48,7 +58,7 @@
                     <input type="text" name="adresse" class="form-control">
                 </div>
 
-              
+
 
             </div>
             <div class="modal-footer">

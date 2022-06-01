@@ -37,17 +37,19 @@ class PatientController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $data=$this->validate($request, [
             'code' => 'required',
-            'name' => 'required',  
-            'telephone1' => 'required',         
-            'telephone1' => 'nullable', 
-            'adresse' => 'nullable', 
-            'genre' => 'required', 
+            'name' => 'required',
+            'telephone1' => 'required',
+            'telephone1' => 'nullable',
+            'adresse' => 'nullable',
+            'genre' => 'required',
+            'age' => 'required | integer',
+            'profession' => 'nullable'
         ]);
 
-      
+
 
         try {
             Patient::create($data);
@@ -90,20 +92,22 @@ class PatientController extends Controller
      */
     public function update(Request $request)
     {
-        
+
         $data=$this->validate($request, [
             'id2' => 'required',
             'code2' => 'required',
-            'name2' => 'required',  
-            'telephone1_2' => 'required',         
-            'telephone2_2' => 'nullable', 
-            'adresse2' => 'nullable', 
-            'genre2' => 'required', 
+            'name2' => 'required',
+            'telephone1_2' => 'required',
+            'telephone2_2' => 'nullable',
+            'adresse2' => 'nullable',
+            'genre2' => 'required',
+            'age2' => 'required | integer',
+            'profession2' => 'nullable'
         ]);
 
-        
+
         try {
-          
+
             $patient = Patient::find($data['id2']);
             $patient->code = $data['code2'];
             $patient->name = $data['name2'];
@@ -111,6 +115,8 @@ class PatientController extends Controller
             $patient->telephone1 = $data['telephone1_2'];
             $patient->telephone2 = $data['telephone2_2'];
             $patient->adresse = $data['adresse2'];
+            $patient->age = $data['age2'];
+            $patient->profession = $data['profession2'];
 
             $patient->save();
 

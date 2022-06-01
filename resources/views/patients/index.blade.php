@@ -16,9 +16,9 @@
         @include('patients.create')
 
          @include('patients.edit')
-        
+
     </div>
-</div>     
+</div>
 
 
 <div class="">
@@ -36,30 +36,34 @@
                 <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
             </div>
             <h5 class="card-title mb-0">Liste des patients</h5>
-                            
+
             <div id="cardCollpase1" class="collapse pt-3 show">
-                
+
 
                 <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
                             <th>Code</th>
                             <th>Nom & Prénoms</th>
+                            <th>Age</th>
+                            <th>Profession</th>
                             <th>Genre</th>
                             <th>Contacts</th>
                             <th>Adresse</th>
                             <th>Actions</th>
-                          
+
                         </tr>
                     </thead>
-                
-                
+
+
                     <tbody>
 
                         @foreach ($patients as $item)
                         <tr>
                             <td>{{ $item->code }}</td>
                             <td>{{ $item->name }}</td>
+                            <td>{{ $item->age }}</td>
+                            <td>{{ $item->profession }}</td>
                             <td>{{ $item->genre }}</td>
                             <td>{{ $item->telephone1.' / '.$item->telephone2 }}</td>
                             <td>{{ $item->adresse }}</td>
@@ -67,13 +71,13 @@
                                 <button type="button" onclick="edit({{$item->id}})" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
                                 <button type="button" onclick="deleteModal({{$item->id}})" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
                             </td>
-                       
+
                         </tr>
                         @endforeach
-                 
 
 
-                  
+
+
                     </tbody>
                 </table>
 
@@ -81,7 +85,7 @@
         </div>
     </div> <!-- end card-->
 
-    
+
 </div>
 @endsection
 
@@ -113,7 +117,7 @@ Swal.fire({
 
 /* DATATABLE */
 $(document).ready(function() {
-    
+
     $('#datatable1').DataTable({
         "order": [[ 0, "desc" ]],
         "columnDefs": [
@@ -146,19 +150,21 @@ function edit(id){
         type: "GET",
         url: "{{url('getpatient')}}" + '/' + e_id,
         success: function (data) {
-          
+
             $('#id2').val(data.id);
             $('#code2').val(data.code);
             $('#genre2').val(data.genre).change();
             $('#name2').val(data.name);
+            $('#age2').val(data.age);
+            $('#profession2').val(data.profession);
             $('#adresse2').val(data.adresse);
             $('#telephone1_2').val(data.telephone1);
             $('#telephone2_2').val(data.telephone2);
-            
-            // 
+
+            //
 
             console.log(data);
-            $('#editModal').modal('show'); 
+            $('#editModal').modal('show');
         },
         error: function (data) {
             console.log('Error:', data);
