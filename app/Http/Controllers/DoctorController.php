@@ -92,7 +92,7 @@ class DoctorController extends Controller
     public function update(Request $request)
     {
         $data=$this->validate($request, [
-            'id2' => 'required',
+            'id2' => 'required', 
             'name' => 'required',
             'email' => 'nullable',        
             'role' => 'required',  

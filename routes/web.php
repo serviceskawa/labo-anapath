@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContratController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\PatientController;
@@ -66,4 +67,12 @@ Route::get('/doctors/delete/{id}', [DoctorController::class , 'destroy']);
 Route::get('/getdoctor/{id}', [DoctorController::class , 'edit']);
 Route::post('/doctors/update', [DoctorController::class , 'update'])->name('doctors.update');
 
+
+//CONTRATS
+Route::get('/contrats/index', [ContratController::class , 'index'])->name('contrats.index');
+Route::post('/contrats/index', [ContratController::class , 'store'])->name('contrats.store');
+Route::get('/contrats/delete/{id}', [ContratController::class , 'destroy']);
+
+//CONTRAT DETAILS
+Route::get('/contrats/{id}/details', [ContratController::class , 'details_index'])->name('contrat_details.index');
 

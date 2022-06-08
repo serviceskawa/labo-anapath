@@ -89,6 +89,11 @@
                                     </li>
 
                                     
+                                    <li>
+                                        <a href="{{ route('contrats.index') }}">Contrats</a>
+                                    </li>
+
+                                    
                            
                                 </ul>
                             </div>

@@ -17,8 +17,8 @@ class CreateContratsTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('type');
-            $table->string('description');
-            $table->string('status');
+            $table->string('description')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }
