@@ -12,11 +12,11 @@
         </div>
 
         <!----MODAL---->
-{{-- 
-         @include('contrats.create')
 
-         @include('doctors.edit')
-         --}}
+         @include('contrats_details.create')
+
+         {{-- @include('doctors.edit') --}}
+        
     </div>
 </div>     
 
@@ -55,11 +55,10 @@
         
         <div class="card-body">
             <div class="card-widgets">
-                <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
-                <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false" aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
-                <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                <button type="button" class="btn btn-warning float-left" data-bs-toggle="modal" data-bs-target="#modal2">Ajouter</button>
             </div>
             <h5 class="card-title mb-0">Détails du contrat </h5>
+           
                             
             <div id="cardCollpase1" class="collapse pt-3 show">
                 
@@ -134,30 +133,7 @@ Swal.fire({
 }
 
 
-/* DATATABLE */
-$(document).ready(function() {
-    
-    $('#datatable1').DataTable({
-        "order": [[ 0, "asc" ]],
-        "columnDefs": [
-            {
-                "targets": [ 0 ],
-                "searchable": false
-            }],
-        "language": {
-            "lengthMenu": "Afficher _MENU_ enregistrements par page",
-            "zeroRecords": "Aucun enregistrement disponible",
-            "info": "Afficher page _PAGE_ sur _PAGES_",
-            "infoEmpty": "Aucun enregistrement disponible",
-            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-            "sSearch": "Rechercher:",
-            "paginate": {
-            "previous": "Précédent",
-            "next": "Suivant"
-            }
-        },
-    });
-} );
+
 
 
 //EDITION
