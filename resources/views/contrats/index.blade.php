@@ -14,9 +14,9 @@
         <!----MODAL---->
 
          @include('contrats.create')
-{{-- 
-         @include('doctors.edit')
-         --}}
+
+         @include('contrats.edit')
+        
     </div>
 </div>     
 
@@ -144,15 +144,14 @@ function edit(id){
     // Populate Data in Edit Modal Form
     $.ajax({
         type: "GET",
-        url: "{{url('getdoctor')}}" + '/' + e_id,
+        url: "{{url('getcontrat')}}" + '/' + e_id,
         success: function (data) {
           
             $('#id2').val(data.id);
-            $('#name').val(data.name);
-            $('#telephone').val(data.telephone);
-            $('#email').val(data.email);
-            $('#role').val(data.role);
-            $('#commission').val(data.commission);
+            $('#name2').val(data.name);
+            $('#type2').val(data.type).change();
+            $('#description2').val(data.description);
+      
             
         
 

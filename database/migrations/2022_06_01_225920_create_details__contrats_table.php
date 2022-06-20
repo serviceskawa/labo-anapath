@@ -15,9 +15,9 @@ class CreateDetailsContratsTable extends Migration
     {
         Schema::create('details__contrats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('contrat_id')->constrained();
+            $table->foreignId('contrat_id');
             $table->integer('pourcentage')->nullable();
-            $table->foreignId('category_test_id')->constrained();
+            $table->foreignId('category_test_id');
             $table->timestamps();
         });
     }

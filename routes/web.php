@@ -72,7 +72,15 @@ Route::post('/doctors/update', [DoctorController::class , 'update'])->name('doct
 Route::get('/contrats/index', [ContratController::class , 'index'])->name('contrats.index');
 Route::post('/contrats/index', [ContratController::class , 'store'])->name('contrats.store');
 Route::get('/contrats/delete/{id}', [ContratController::class , 'destroy']);
+Route::get('/getcontrat/{id}', [ContratController::class , 'edit']);
+Route::post('/contrats/update', [ContratController::class , 'update'])->name('contrats.update');
+
 
 //CONTRAT DETAILS
 Route::get('/contrats/{id}/details', [ContratController::class , 'details_index'])->name('contrat_details.index');
+Route::post('/contrats/details/store', [ContratController::class , 'details_store'])->name('contrat_details.store');
+Route::get('/contrats_details/delete/{id}', [ContratController::class , 'destroy_details']);
+Route::get('/getcontratdetails/{id}', [ContratController::class , 'contrat_details_edit']);
+Route::post('/contrats_details/update', [ContratController::class , 'contrat_details_update'])->name('contrat_details.update');
+
 

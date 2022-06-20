@@ -15,7 +15,7 @@
 
          @include('contrats_details.create')
 
-         {{-- @include('doctors.edit') --}}
+         @include('contrats_details.edit')
         
     </div>
 </div>     
@@ -66,9 +66,9 @@
                 <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
-                            <th>#</th>
+                       
                             <th>Descriptions</th>
-                            <th>Popurcentage</th>
+                            <th>Pourcentage</th>
                           
 
                             <th>Actions</th>
@@ -82,8 +82,8 @@
                         @foreach ($details as $item)
                         <tr>
                      
-                            <td>{{ $item->category_test_id }}</td>
-                            <td>{{ $item->pourcentage }}</td>
+                            <td>{{ $item->categorytest()->name }}</td>
+                            <td>{{ $item->pourcentage.' %' }}</td>
                            
                             <td>
                                 <button type="button" onclick="edit({{$item->id}})" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
@@ -122,7 +122,7 @@ Swal.fire({
         cancelButtonText: "Non !",
     }).then(function(result) {
         if (result.value) {
-            window.location.href="{{url('doctors/delete')}}"+"/"+id;
+            window.location.href="{{url('contrats_details/delete')}}"+"/"+id;
             Swal.fire(
                 "Suppression !",
                 "En cours de traitement ...",
@@ -143,15 +143,13 @@ function edit(id){
     // Populate Data in Edit Modal Form
     $.ajax({
         type: "GET",
-        url: "{{url('getdoctor')}}" + '/' + e_id,
+        url: "{{url('getcontratdetails')}}" + '/' + e_id,
         success: function (data) {
           
-            $('#id2').val(data.id);
-            $('#name').val(data.name);
-            $('#telephone').val(data.telephone);
-            $('#email').val(data.email);
-            $('#role').val(data.role);
-            $('#commission').val(data.commission);
+            $('#category_test_id2').val(data.category_test_id).change();
+            $('#pourcentage2').val(data.pourcentage);
+            $('#contrat_id2').val(data.contrat_id);
+            $('#contrat_details_id2').val(data.id);
             
         
 
