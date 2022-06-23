@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\TestCategoryController;
+use App\Http\Controllers\TestOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,4 +84,7 @@ Route::get('/contrats_details/delete/{id}', [ContratController::class , 'destroy
 Route::get('/getcontratdetails/{id}', [ContratController::class , 'contrat_details_edit']);
 Route::post('/contrats_details/update', [ContratController::class , 'contrat_details_update'])->name('contrat_details.update');
 
-
+//TEST_ORDER
+Route::get('/test_order/index', [TestOrderController::class , 'index'])->name('test_order.index');
+Route::post('/test_order/store', [TestOrderController::class , 'store'])->name('test_order.store');
+Route::get('/test_order/delete/{id}', [TestOrderController::class , 'destroy']);

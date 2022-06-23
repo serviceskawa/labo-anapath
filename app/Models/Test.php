@@ -11,6 +11,8 @@ class Test extends Model
     protected $guarded = [];
 
     public function category_test(){
-        return $this->belongsTo(CategoryTest::class);
+
+        $data = CategoryTest::where('id',$this->category_test_id)->first();
+        return $data;
     }
 }

@@ -93,6 +93,11 @@
                                         <a href="{{ route('contrats.index') }}">Contrats</a>
                                     </li>
 
+
+                                    <li>
+                                        <a href="{{ route('test_order.index') }}">Demande d'examen</a>
+                                    </li>
+
                                     
                            
                                 </ul>
