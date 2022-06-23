@@ -57,7 +57,7 @@
                         @foreach ($tests as $item)
                         <tr>
                             <td>{{ $item->name }}</td>
-                            <td>{{ $item->category_test->name }}</td>
+                            <td>{{ $item->category_test()->name }}</td>
                             <td>{{ number_format($item->price, 0, '.', '') }}</td>
                             <td>
                                 <button type="button" onclick="edit({{$item->id}})" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>

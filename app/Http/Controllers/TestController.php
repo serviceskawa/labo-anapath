@@ -15,9 +15,11 @@ class TestController extends Controller
      */
     public function index()
     {
-        $tests = Test::with('category_test')->get();
+        $tests = Test::all();
    
         $categories = CategoryTest::all();
+
+        
         return view('tests.index',compact(['tests','categories']));
     }
 
