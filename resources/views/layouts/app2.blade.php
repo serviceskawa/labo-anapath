@@ -58,7 +58,7 @@
 
                         <li class="side-nav-item">
                             <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
-                                <i class="uil-store"></i>
+                                <i class="uil-files-landscapes"></i>
                                 <span> Examens </span>
                                 <span class="menu-arrow"></span>
                             </a>
@@ -75,34 +75,50 @@
                                         <a href="{{ route('examens.categories.index') }}">Catégories</a>
                                     </li>
 
-                                    <li>
-                                        <a href="{{ route('patients.index') }}">Patients</a>
-                                    </li>
-
-                                    <li>
-                                        <a href="{{ route('hopitals.index') }}">Hopitals</a>
-                                    </li>
-
-
-                                    <li>
-                                        <a href="{{ route('doctors.index') }}">Docteurs traitants</a>
-                                    </li>
-
-                                    
-                                    <li>
-                                        <a href="{{ route('contrats.index') }}">Contrats</a>
-                                    </li>
-
-
-                                    <li>
-                                        <a href="{{ route('test_order.index') }}">Demande d'examen</a>
-                                    </li>
-
-                                    
-                           
+                                
                                 </ul>
                             </div>
                         </li>
+
+
+                        
+                        <li class="side-nav-item">
+                            <a href="{{ route('patients.index') }}" class="side-nav-link">
+                                <i class="uil-user-square"></i>
+                                <span> Patients </span>
+                            </a>
+                        </li>
+
+
+                        
+                        <li class="side-nav-item">
+                            <a href="{{ route('hopitals.index') }}" class="side-nav-link">
+                                <i class="uil-building"></i>
+                                <span> Hopitals </span>
+                            </a>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="{{ route('doctors.index') }}" class="side-nav-link">
+                                <i class="uil-users-alt"></i>
+                                <span> Docteurs traitants </span>
+                            </a>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="{{ route('contrats.index') }}" class="side-nav-link">
+                                <i class="uil-folder-heart"></i>
+                                <span>Contrats </span>
+                            </a>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="{{ route('test_order.index') }}" class="side-nav-link">
+                                <i class="uil-syringe"></i>
+                                <span>Demande d'examen </span>
+                            </a>
+                        </li>
+
 
                    
                         <li class="side-nav-item">
