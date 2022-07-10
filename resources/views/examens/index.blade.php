@@ -5,15 +5,15 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box">
-            <div class="page-title-right mr-3">
+            {{-- <div class="page-title-right mr-3">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Nouveau</button>
-            </div>
+            </div> --}}
             <h4 class="page-title">Administrer les demandes d'examen</h4>
         </div>
 
         <!----MODAL---->
 
-        @include('examens.create')
+        {{-- @include('examens.create') --}}
 
          {{-- @include('doctors.edit') --}}
         
@@ -170,23 +170,7 @@ function edit(id){
 }
 
 
-function getTest(){
-    var test_id = $('#test_id').val();
 
-    $.ajax({
-        type: "GET",
-        url: "{{url('gettest')}}" + '/' + test_id,
-        success: function (data) {
-          
-          
-            $('#price').val(data.price);
-            
-        },
-        error: function (data) {
-            console.log('Error:', data);
-        }
-    });
-}
 
 </script>
 

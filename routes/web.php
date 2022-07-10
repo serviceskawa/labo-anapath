@@ -87,4 +87,10 @@ Route::post('/contrats_details/update', [ContratController::class , 'contrat_det
 //TEST_ORDER
 Route::get('/test_order/index', [TestOrderController::class , 'index'])->name('test_order.index');
 Route::post('/test_order/store', [TestOrderController::class , 'store'])->name('test_order.store');
+Route::get('/test_order/create', [TestOrderController::class , 'create'])->name('test_order.create');
 Route::get('/test_order/delete/{id}', [TestOrderController::class , 'destroy']);
+
+
+//details_test_order
+Route::get('/test_order/details/{id}', [TestOrderController::class , 'details_index'])->name('details_test_order.index');
+Route::post('/test_order/details', [TestOrderController::class , 'details_store'])->name('details_test_order.store');

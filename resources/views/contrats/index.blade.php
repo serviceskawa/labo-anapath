@@ -64,6 +64,7 @@
                             <td>{{ $item->status }}</td>
                            
                             <td>
+                                <a type="button" href="{{ route('contrat_details.index',$item->id) }}"  class="btn btn-warning"><i class="mdi mdi-eye"></i> </a>
                                 <button type="button" onclick="edit({{$item->id}})" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
                                 <button type="button" onclick="deleteModal({{$item->id}})" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
                             </td>

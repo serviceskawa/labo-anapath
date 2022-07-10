@@ -31,4 +31,9 @@ class TestOrder extends Model
         $data = Hospital::find($this->hospital_id);
         return $data;
     }
+
+    public function getContrat(){
+        $data = Contrat::find($this->contrat_id);
+        return $data;
+    }
 }

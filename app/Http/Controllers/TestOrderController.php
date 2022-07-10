@@ -6,6 +6,7 @@ use App\Models\Test;
 use App\Models\Doctor;
 use App\Models\Contrat;
 use App\Models\Details_Contrat;
+use App\Models\DetailTestOrder;
 use App\Models\Patient;
 use App\Models\Hospital;
 use App\Models\TestOrder;
@@ -35,68 +36,94 @@ class TestOrderController extends Controller
             'hospital_id' => 'required',      
             'doctor_id' => 'required', 
             'reference_hopital' => 'nullable', 
-            'test_id' => 'required', 
-            'prix' => 'required', 
-            'remise' => 'required'
+
         ]);
+
+    
 
      
 
         try {
-            DB::transaction(function () use ($data) {
-                $contrat = Contrat::find($data['contrat_id']);
 
-                $test = Test::find($data['test_id']);
-
-               
-                $category_test = $test->category_test();
-              
-
-
-                $if_test = Details_Contrat::where('contrat_id',$contrat->id)->where('category_test_id',$category_test->id)->get();
-
-                if($if_test->count()==1){
-                    //Ce type de test  figure dans le contrat séléctionné
-                   
-                    $new_price = $data['prix']- $data['remise'];
-                    $montant_contrat = ($new_price * $if_test[0]->pourcentage)/100;
-                    $montant_patient = ($new_price * (100-$if_test[0]->pourcentage))/100;
-                    $montant_total = $montant_contrat + $montant_patient;
-
-                    $test_order = new TestOrder();
-                    $test_order->reference_hopital  =$data['reference_hopital'];
-                    $test_order->patient_id  =$data['patient_id'];
-                    $test_order->doctor_id = $data['doctor_id'];
-                    $test_order->hospital_id  =$data['hospital_id'];
-                    $test_order->contrat_id  =$data['contrat_id'];
-                    $test_order->test_id = $data['test_id'];
-                    $test_order->price = $data['prix'];
-                    $test_order->remise = $data['remise'];
-                    $test_order->montant_contrat = $montant_contrat;
-                    $test_order->montant_patient  =$montant_patient;
-                    $test_order->montant_total = $montant_total;
-                    $test_order->save();
+            $test_order = new TestOrder();
+            DB::transaction(function () use ($data,$test_order) {
 
               
-
-                } else {
-                    return back()->with('error', "Ce type de test ne figure pas dans le contrat séléctionné ! "); 
-                }
-
+                $test_order->contrat_id = $data['contrat_id'];
+                $test_order->patient_id = $data['patient_id'];
+                $test_order->hospital_id = $data['hospital_id'];
+                $test_order->doctor_id = $data['doctor_id'];
+                $test_order->reference_hopital = $data['reference_hopital'];
+                $test_order->save();  
               
             });
-         
-            return back()->with('success', "Demande d'examen enregistré avec succès "); 
+           
+            return redirect()->route('details_test_order.index',$test_order->id);          
           
             } catch(\Throwable $ex){
+
           return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
       }
     }
 
 
+    public function create(){
+
+        $patients = Patient::all();
+        $doctors = Doctor::all();
+        $hopitals = Hospital::all();
+        $contrats = Contrat::all();
+        
+        return view('examens.create',compact(['patients','doctors','hopitals','contrats']));
+    }
+
 
     public function destroy($id){
         TestOrder::find($id)->delete();
         return back()->with('success', "    Un élement a été supprimé ! ");
+    }
+
+
+    public function details_index($id){
+
+        $test_order = TestOrder::find($id);
+
+        $tests = Test::all();
+        
+        $details = DetailTestOrder::where('test_order_id',$test_order->id)->get();
+
+        return view('examens.details.index',compact(['test_order','details','tests']));
+    }
+
+
+    public function details_store(Request $request){
+
+        $data=$this->validate($request, [
+            'test_order_id' => 'required',
+            'test_id' => 'required',      
+            'price' => 'required |numeric',      
+            'remise' => 'required |numeric',  
+        ]);
+
+       $test = Test::find($data['test_id']);
+
+        try {
+            DB::transaction(function () use ($data,$test) {
+                $details = new DetailTestOrder();
+                $details->test_id = $data['test_id'];
+                $details->lib_test = $test->name;
+                $details->price = $data['price'];
+                $details->remise = $data['remise'];
+                $details->montant_contrat = $data['price'];
+                $details->montant_patient = $data['price'];
+                $details->montant_total = $data['price'];
+                $details->test_order_id = $data['test_order_id'];
+                $details->save();
+            });
+         
+             return back()->with('success', "Opération effectuée avec succès ! ");
+            } catch(\Throwable $ex){
+          return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+      }
     }
 }
