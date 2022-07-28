@@ -120,7 +120,37 @@
                             </a>
                         </li>
 
-                        <!-- <li class="side-nav-item">
+
+
+
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                                <i class="uil-syringe"></i>
+                                <span> Demande d'examen </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce">
+                                <ul class="side-nav-second-level">
+
+                                    <li>
+                                        <a href="{{ route('test_order.index') }}">Liste </a>
+                                    </li>
+
+
+
+                                    <li>
+                                        <a href="{{ route('test_order.create') }}">Création</a>
+                                    </li>
+
+
+                                </ul>
+                            </div>
+                        </li>
+
+
+
+                        <li class="side-nav-item">
                             <a href="apps-social-feed.html" class="side-nav-link">
                                 <i class="uil-rss"></i>
                                 <span> Social Feed </span>

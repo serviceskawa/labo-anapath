@@ -20,12 +20,11 @@ class CreateTestOrdersTable extends Migration
             $table->foreignId('doctor_id');
             $table->foreignId('hospital_id');
             $table->foreignId('contrat_id');
-            $table->foreignId('test_id');
-            $table->float('price');
-            $table->float('remise');
-            $table->float('montant_contrat');
-            $table->float('montant_patient');
-            $table->float('montant_total');
+            $table->float('price')->nullable();
+            $table->float('remise')->nullable();
+            $table->float('montant_contrat')->nullable();
+            $table->float('montant_patient')->nullable();
+            $table->float('montant_total')->nullable();
             $table->timestamps();
         });
     }
