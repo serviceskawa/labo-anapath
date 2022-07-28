@@ -8,7 +8,7 @@
             <div class="page-title-right mr-3">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Nouveau</button>
             </div>
-            <h4 class="page-title">Administrer les catégories d'examen</h4>
+            <h4 class="page-title">Gérer les catégories d'examen</h4>
         </div>
 
         <!----MODAL---->
@@ -16,9 +16,9 @@
         @include('tests.category.create')
 
         @include('tests.category.edit')
-        
+
     </div>
-</div>     
+</div>
 
 
 <div class="">
@@ -36,9 +36,9 @@
                 <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
             </div>
             <h5 class="card-title mb-0">Liste des catégories d'examens</h5>
-                            
+
             <div id="cardCollpase1" class="collapse pt-3 show">
-                
+
 
                 <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
@@ -46,11 +46,11 @@
                             <th>Code</th>
                             <th>Libellé</th>
                             <th>Actions</th>
-                          
+
                         </tr>
                     </thead>
-                
-                
+
+
                     <tbody>
 
                         @foreach ($testcategories as $item)
@@ -61,13 +61,13 @@
                                 <button type="button" onclick="edit({{$item->id}})" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
                                 <button type="button" onclick="deleteModal({{$item->id}})" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
                             </td>
-                       
+
                         </tr>
                         @endforeach
-                 
 
 
-                  
+
+
                     </tbody>
                 </table>
 
@@ -75,7 +75,7 @@
         </div>
     </div> <!-- end card-->
 
-    
+
 </div>
 @endsection
 
@@ -107,7 +107,7 @@ Swal.fire({
 
 /* DATATABLE */
 $(document).ready(function() {
-    
+
     $('#datatable1').DataTable({
         "order": [[ 0, "desc" ]],
         "columnDefs": [
@@ -141,14 +141,14 @@ function edit(id){
         type: "GET",
         url: "{{url('getcategorytest')}}" + '/' + e_id,
         success: function (data) {
-          
+
             $('#id2').val(data.id);
             $('#code2').val(data.code);
             $('#name2').val(data.name);
 
             // $('#lignebudgetaire_id2').val(data.lignebudgetaire_id).change();
 
-            $('#editModal').modal('show'); 
+            $('#editModal').modal('show');
         },
         error: function (data) {
             console.log('Error:', data);

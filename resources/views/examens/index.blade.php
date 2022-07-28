@@ -8,7 +8,7 @@
             <div class="page-title-right mr-3">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Nouveau</button>
             </div>
-            <h4 class="page-title">Administrer les demandes d'examen</h4>
+            <h4 class="page-title">Gérer les demandes d'examen</h4>
         </div>
 
         <!----MODAL---->
@@ -16,9 +16,9 @@
         @include('examens.create')
 
          {{-- @include('doctors.edit') --}}
-        
+
     </div>
-</div>     
+</div>
 
 
 <div class="">
@@ -36,9 +36,9 @@
                 <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
             </div>
             <h5 class="card-title mb-0">Liste des demandes d'examen </h5>
-                            
+
             <div id="cardCollpase1" class="collapse pt-3 show">
-                
+
 
                 <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
@@ -51,11 +51,11 @@
                             <th>Hopital</th>
                             <th>Montant</th>
                             <th>Actions</th>
-                          
+
                         </tr>
                     </thead>
-                
-                
+
+
                     <tbody>
 
                         @foreach ($examens as $item)
@@ -71,13 +71,13 @@
                                 {{-- <button type="button" onclick="edit({{$item->id}})" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button> --}}
                                 <button type="button" onclick="deleteModal({{$item->id}})" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
                             </td>
-                       
+
                         </tr>
                         @endforeach
-                 
 
 
-                  
+
+
                     </tbody>
                 </table>
 
@@ -85,7 +85,7 @@
         </div>
     </div> <!-- end card-->
 
-    
+
 </div>
 @endsection
 
@@ -117,7 +117,7 @@ Swal.fire({
 
 /* DATATABLE */
 $(document).ready(function() {
-    
+
     $('#datatable1').DataTable({
         "order": [[ 0, "asc" ]],
         "columnDefs": [
@@ -150,18 +150,18 @@ function edit(id){
         type: "GET",
         url: "{{url('getdoctor')}}" + '/' + e_id,
         success: function (data) {
-          
+
             $('#id2').val(data.id);
             $('#name').val(data.name);
             $('#telephone').val(data.telephone);
             $('#email').val(data.email);
             $('#role').val(data.role);
             $('#commission').val(data.commission);
-            
-        
+
+
 
             console.log(data);
-            $('#editModal').modal('show'); 
+            $('#editModal').modal('show');
         },
         error: function (data) {
             console.log('Error:', data);
@@ -177,10 +177,10 @@ function getTest(){
         type: "GET",
         url: "{{url('gettest')}}" + '/' + test_id,
         success: function (data) {
-          
-          
+
+
             $('#price').val(data.price);
-            
+
         },
         error: function (data) {
             console.log('Error:', data);

@@ -19,8 +19,8 @@
         <link href="{{ asset('/adminassets/css/app-dark.min.css')}}" rel="stylesheet" type="text/css" id="dark-style">
         <link href="{{ asset('/adminassets/js/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" >
 
-    
-   
+
+
 
     </head>
 
@@ -29,7 +29,7 @@
         <div class="wrapper">
             <!-- ========== Left Sidebar Start ========== -->
             <div class="leftside-menu">
-    
+
                 <!-- LOGO -->
                 <a href="index.html" class="logo text-center logo-light">
                     <span class="logo-lg">
@@ -49,12 +49,12 @@
                         <img src="{{ asset('/adminassets/images/logo_sm_dark.png')}}" alt="" height="16">
                     </span>
                 </a>
-    
+
                 <div class="h-100" id="leftside-menu-container" data-simplebar="">
 
                     <!--- Sidemenu -->
                     <ul class="side-nav">
-                   
+
 
                         <li class="side-nav-item">
                             <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
@@ -62,6 +62,14 @@
                                 <span> Examens </span>
                                 <span class="menu-arrow"></span>
                             </a>
+
+                            <li class="side-nav-item">
+                                <a href="{{ route('test_order.index') }}" class="side-nav-link">
+                                    <i class="uil-syringe"></i>
+                                    <span>Demande d'examen </span>
+                                </a>
+                            </li>
+
                             <div class="collapse" id="sidebarEcommerce">
                                 <ul class="side-nav-second-level">
 
@@ -69,19 +77,19 @@
                                         <a href="{{ route('examens.index') }}">Tous les examens</a>
                                     </li>
 
-                              
+
 
                                     <li>
                                         <a href="{{ route('examens.categories.index') }}">Catégories</a>
                                     </li>
 
-                                
+
                                 </ul>
                             </div>
                         </li>
 
 
-                        
+
                         <li class="side-nav-item">
                             <a href="{{ route('patients.index') }}" class="side-nav-link">
                                 <i class="uil-user-square"></i>
@@ -90,11 +98,11 @@
                         </li>
 
 
-                        
+
                         <li class="side-nav-item">
                             <a href="{{ route('hopitals.index') }}" class="side-nav-link">
                                 <i class="uil-building"></i>
-                                <span> Hopitals </span>
+                                <span> Hopitaux </span>
                             </a>
                         </li>
 
@@ -112,27 +120,18 @@
                             </a>
                         </li>
 
-                        <li class="side-nav-item">
-                            <a href="{{ route('test_order.index') }}" class="side-nav-link">
-                                <i class="uil-syringe"></i>
-                                <span>Demande d'examen </span>
-                            </a>
-                        </li>
-
-
-                   
-                        <li class="side-nav-item">
+                        <!-- <li class="side-nav-item">
                             <a href="apps-social-feed.html" class="side-nav-link">
                                 <i class="uil-rss"></i>
                                 <span> Social Feed </span>
                             </a>
-                        </li>
+                        </li> -->
 
-                        
+
 
                     </ul>
 
-         
+
 
                     <div class="clearfix"></div>
 
@@ -161,7 +160,7 @@
                                     </form>
                                 </div>
                             </li>
-                   
+
                             <li class="dropdown notification-list">
                                 <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                     <i class="dripicons-bell noti-icon"></i>
@@ -252,12 +251,12 @@
                                 </div>
                             </li>
 
-                      
+
 
                             <li class="dropdown notification-list">
 
                                 <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                    <span class="account-user-avatar"> 
+                                    <span class="account-user-avatar">
                                         <img src="{{ asset('/adminassets/images/users/avatar-1.jpg')}}" alt="user-image" class="rounded-circle">
                                     </span>
                                     <span>
@@ -286,7 +285,7 @@
                                         <span>Déconnexion</span>
                                     </a>
 
-                                    
+
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
                                     </form>
@@ -298,13 +297,13 @@
                         <button class="button-menu-mobile open-left">
                             <i class="mdi mdi-menu"></i>
                         </button>
-                      
+
                     </div>
                     <!-- end Topbar -->
 
                     <!-- Start Content-->
                     <div class="container-fluid">
-                        
+
                         <!-- start page title -->
                         {{-- <div class="row">
                             <div class="col-12">
@@ -320,9 +319,9 @@
                             </div>
                         </div>      --}}
                         <!-- end page title -->
-                        
+
                         @yield('content')
-                        
+
                     </div> <!-- container -->
 
                 </div> <!-- content -->
@@ -332,9 +331,9 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-6">
-                                <script>document.write(new Date().getFullYear())</script> © Labocaap 
+                                <script>document.write(new Date().getFullYear())</script> © Labocaap
                             </div>
-                       
+
                         </div>
                     </div>
                 </footer>
@@ -381,7 +380,7 @@
                         <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
                         <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
                     </div>
-       
+
 
                     <!-- Width -->
                     <h5 class="mt-4">Width</h5>
@@ -395,7 +394,7 @@
                         <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
                         <label class="form-check-label" for="boxed-check">Boxed</label>
                     </div>
-        
+
 
                     <!-- Left Sidebar-->
                     <h5 class="mt-4">Left Sidebar</h5>
@@ -432,7 +431,7 @@
 
                     <div class="d-grid mt-4">
                         <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
-            
+
                         <a href="../../product/hyper-responsive-admin-dashboard-template/index.htm" class="btn btn-danger mt-3" target="_blank"><i class="mdi mdi-basket me-1"></i> Purchase Now</a>
                     </div>
                 </div> <!-- end padding-->
@@ -463,7 +462,7 @@
         <script src="{{ asset('/adminassets/js/pages/demo.datatable-init.js')}}"></script>
         <script src="{{ asset('/adminassets/js/sweetalert2/sweetalert2.min.js')}}"></script>
 
-        @stack('extra-js')   
-                
+        @stack('extra-js')
+
     </body>
 </html>

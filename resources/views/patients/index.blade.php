@@ -8,7 +8,7 @@
             <div class="page-title-right mr-3">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Nouveau</button>
             </div>
-            <h4 class="page-title">Administrer les patients</h4>
+            <h4 class="page-title">Gérer les patients</h4>
         </div>
 
         <!----MODAL---->
