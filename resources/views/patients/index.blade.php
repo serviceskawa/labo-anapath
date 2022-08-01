@@ -6,9 +6,9 @@
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Nouveau</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Ajouter un nouveau patient</button>
             </div>
-            <h4 class="page-title">Gérer les patients</h4>
+            <h4 class="page-title">Patients</h4>
         </div>
 
         <!----MODAL---->
@@ -46,8 +46,8 @@
                             <th>Code</th>
                             <th>Nom & Prénoms</th>
                             <th>Age</th>
-                            <th>Profession</th>
-                            <th>Genre</th>
+                            <!-- <th>Profession</th>
+                            <th>Genre</th> -->
                             <th>Contacts</th>
                             <th>Adresse</th>
                             <th>Actions</th>
@@ -63,8 +63,8 @@
                             <td>{{ $item->code }}</td>
                             <td>{{ $item->name }}</td>
                             <td>{{ $item->age }}</td>
-                            <td>{{ $item->profession }}</td>
-                            <td>{{ $item->genre }}</td>
+                            <!-- <td>{{ $item->profession }}</td>
+                            <td>{{ $item->genre }}</td> -->
                             <td>{{ $item->telephone1.' / '.$item->telephone2 }}</td>
                             <td>{{ $item->adresse }}</td>
                             <td>

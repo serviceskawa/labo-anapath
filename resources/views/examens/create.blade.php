@@ -2,7 +2,7 @@
 
 @section('content')
 
- 
+
 
 
 <div class="">
@@ -10,17 +10,17 @@
 
     @include('layouts.alerts')
 
-  
 
-    
 
-        
+
+
+
         <div class="card my-3">
             <div class="card-header">
               Création d'une demande d'examen
             </div>
             <div class="card-body">
-             
+
             <form action="{{ route('test_order.store') }}" method="post" autocomplete="off">
                 @csrf
                 <div class="row mb-3">
@@ -46,7 +46,7 @@
                           </select>
                     </div>
 
-                    
+
                 </div>
 
 
@@ -73,10 +73,17 @@
                           </select>
                     </div>
 
-                    
+
                 </div>
 
-                
+                <div class="row">
+                    <div class="mb-3">
+                        <label for="simpleinput" class="form-label">Emplacement</label>
+                        <input type="text" name="emplacement" class="form-control"  required>
+                    </div>
+                </div>
+
+
 
                 <div class="mb-3">
                     <div class="form-group">
@@ -86,11 +93,13 @@
                 </div>
 
 
+
+
                 <div class="modal-footer">
                     <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" class="btn btn-primary">Enregistrer</button>
                 </div>
-                
+
 
             </form>
             </div>
@@ -99,7 +108,7 @@
 
 
 
-    
+
 </div>
 @endsection
 
@@ -141,16 +150,16 @@ function edit(id){
         type: "GET",
         url: "{{url('getcontratdetails')}}" + '/' + e_id,
         success: function (data) {
-          
+
             $('#category_test_id2').val(data.category_test_id).change();
             $('#pourcentage2').val(data.pourcentage);
             $('#contrat_id2').val(data.contrat_id);
             $('#contrat_details_id2').val(data.id);
-            
-        
+
+
 
             console.log(data);
-            $('#editModal').modal('show'); 
+            $('#editModal').modal('show');
         },
         error: function (data) {
             console.log('Error:', data);

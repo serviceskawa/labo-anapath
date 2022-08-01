@@ -6,27 +6,22 @@
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Nouveau</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Ajouter un nouvel hôpital</button>
             </div>
-            <h4 class="page-title">Gérer les hôpitaux</h4>
+            <h4 class="page-title">Hôpitaux</h4>
         </div>
 
         <!----MODAL---->
 
         @include('hopitals.create')
-
-         @include('hopitals.edit')
+        @include('hopitals.edit')
 
     </div>
 </div>
 
 
 <div class="">
-
-
     @include('layouts.alerts')
-
-
 
     <div class="card mb-md-0 mb-3">
         <div class="card-body">
@@ -43,9 +38,9 @@
                 <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
-                            <th>Libellé</th>
+                            <th>Nom de l'hôpital</th>
                             <th>Téléphone</th>
-                            <th>Email</th>
+                            <!--<th>Email</th>-->
                             <th>Adresse</th>
                             <th>Commission</th>
                             <th>Actions</th>
@@ -60,7 +55,7 @@
                         <tr>
                             <td>{{ $item->name }}</td>
                             <td>{{ $item->telephone }}</td>
-                            <td>{{ $item->email }}</td>
+                            <!-- <td>{{ $item->email }}</td> -->
                             <td>{{ $item->adresse }}</td>
                             <td>{{ $item->commission.' %' }}</td>
                             <td>

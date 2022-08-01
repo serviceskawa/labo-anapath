@@ -2,44 +2,38 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Ajouter un detail</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Ajouter une nouvelle catégorie d'examen <br>pris en compte par le contrat</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
         <form action="{{ route('contrat_details.store') }}" method="POST" autocomplete="off">
             @csrf
             <div class="modal-body">
-            
-           
 
-               
+                <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
 
                 <div class="mb-3">
-                    <label for="example-select" class="form-label">Catégorie de test</label>
+                    <label for="example-select" class="form-label">Catégorie d'examen<span style="color:red;">*</span></label>
                     <select class="form-select" id="example-select" name="category_test_id" required>
-                        <option>...</option>
+                        <option value="">Sélectionner la catégorie</option>
                         @foreach ($test_caterories as $test_caterorie)
                         <option value="{{ $test_caterorie->id }}">{{ $test_caterorie->name }}</option>
                         @endforeach
-             
-                      
+
+
                     </select>
                 </div>
 
                 <div class="mb-3">
-                    <label for="simpleinput" class="form-label">Pourcentage de prise en charge</label>
-                    <input type="text" name="pourcentage" class="form-control" required>
+                    <label for="simpleinput" class="form-label">Pourcentage de prise en charge<span style="color:red;">*</span></label>
+                    <input type="number" name="pourcentage" class="form-control" min="0" max="100" required>
                 </div>
 
-           
-                    <input type="hidden" name="contrat_id" value="{{ $contrat->id }}" class="form-control"  required>
-                
-
-            
+                <input type="hidden" name="contrat_id" value="{{ $contrat->id }}" class="form-control"  required>
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <button type="submit" class="btn btn-primary">Ajouter une nouvelle catégorie d'examen</button>
             </div>
         </form>
         </div><!-- /.modal-content -->

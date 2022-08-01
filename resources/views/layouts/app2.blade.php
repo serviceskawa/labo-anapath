@@ -33,20 +33,20 @@
                 <!-- LOGO -->
                 <a href="index.html" class="logo text-center logo-light">
                     <span class="logo-lg">
-                        <img src="{{ asset('/adminassets/images/logo.png')}}" alt="" height="16">
+                        <img src="{{ asset('/adminassets/images/logo-bg-dark.png')}}" alt="" height="75">
                     </span>
                     <span class="logo-sm">
-                        <img src="{{ asset('/adminassets/images/logo_sm.png')}}" alt="" height="16">
+                        <img src="{{ asset('/adminassets/images/logo-bg-dark.png')}}" alt="" height="50">
                     </span>
                 </a>
 
                 <!-- LOGO -->
                 <a href="index.html" class="logo text-center logo-dark">
                     <span class="logo-lg">
-                        <img src="{{ asset('/adminassets/images/logo-dark.png')}}" alt="" height="16">
+                        <img src="{{ asset('/adminassets/images/logo-bg-dark.png')}}" alt="" height="16">
                     </span>
                     <span class="logo-sm">
-                        <img src="{{ asset('/adminassets/images/logo_sm_dark.png')}}" alt="" height="16">
+                        <img src="{{ asset('/adminassets/images/logo-bg-dark.png')}}" alt="" height="16">
                     </span>
                 </a>
 
@@ -56,6 +56,7 @@
                     <ul class="side-nav">
 
 
+                        <!--- Examen -->
                         <li class="side-nav-item">
                             <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
                                 <i class="uil-files-landscapes"></i>
@@ -63,27 +64,15 @@
                                 <span class="menu-arrow"></span>
                             </a>
 
-                            <li class="side-nav-item">
-                                <a href="{{ route('test_order.index') }}" class="side-nav-link">
-                                    <i class="uil-syringe"></i>
-                                    <span>Demande d'examen </span>
-                                </a>
-                            </li>
-
                             <div class="collapse" id="sidebarEcommerce">
                                 <ul class="side-nav-second-level">
-
                                     <li>
                                         <a href="{{ route('examens.index') }}">Tous les examens</a>
                                     </li>
 
-
-
                                     <li>
                                         <a href="{{ route('examens.categories.index') }}">Catégories</a>
                                     </li>
-
-
                                 </ul>
                             </div>
                         </li>
@@ -109,7 +98,7 @@
                         <li class="side-nav-item">
                             <a href="{{ route('doctors.index') }}" class="side-nav-link">
                                 <i class="uil-users-alt"></i>
-                                <span> Docteurs traitants </span>
+                                <span> Médecins traitants </span>
                             </a>
                         </li>
 
@@ -120,48 +109,31 @@
                             </a>
                         </li>
 
-
-
-
-
                         <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                            <a data-bs-toggle="collapse" href="#sidebarEcommerce1" aria-expanded="false" aria-controls="sidebarEcommerce1" class="side-nav-link">
                                 <i class="uil-syringe"></i>
                                 <span> Demande d'examen </span>
                                 <span class="menu-arrow"></span>
                             </a>
-                            <div class="collapse" id="sidebarEcommerce">
+                            <div class="collapse" id="sidebarEcommerce1">
                                 <ul class="side-nav-second-level">
-
                                     <li>
-                                        <a href="{{ route('test_order.index') }}">Liste </a>
+                                        <a href="{{ route('test_order.index') }}">Toutes les demandes </a>
                                     </li>
-
-
-
                                     <li>
-                                        <a href="{{ route('test_order.create') }}">Création</a>
+                                        <a href="{{ route('test_order.create') }}">Ajouter</a>
                                     </li>
-
-
                                 </ul>
                             </div>
                         </li>
 
-
-
-                        <li class="side-nav-item">
+                        <!-- <li class="side-nav-item">
                             <a href="apps-social-feed.html" class="side-nav-link">
                                 <i class="uil-rss"></i>
                                 <span> Social Feed </span>
                             </a>
                         </li> -->
-
-
-
                     </ul>
-
-
 
                     <div class="clearfix"></div>
 

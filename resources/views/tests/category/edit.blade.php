@@ -2,30 +2,29 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Modification d'une catégorie d'examen</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Modifier la catégorie d'examen</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
         <form action="{{ route('examens.categories.update') }}" method="POST" autocomplete="off">
             @csrf
             <div class="modal-body">
-            
-                <input type="hidden" name="id2" id="id2" class="form-control">
+
+                <input type="hidden" name="id2" id="id2" class="form-control" required>
 
                 <div class="mb-3">
-                    <label for="simpleinput" class="form-label">Code</label>
+                    <label for="simpleinput" class="form-label">Code<span style="color:red;">*</span></label>
                     <input type="text" name="code2"  id="code2" class="form-control">
                 </div>
 
                 <div class="mb-3">
-                    <label for="simpleinput" class="form-label">Libellé</label>
-                    <input type="text" name="name2" id="name2" class="form-control">
+                    <label for="simpleinput" class="form-label">Nom de la catégorie d'examen<span style="color:red;">*</span></label>
+                    <input type="text" name="name2" id="name2" class="form-control" required>
                 </div>
-
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <button type="submit" class="btn btn-primary">Mettre à jour</button>
             </div>
         </form>
         </div><!-- /.modal-content -->

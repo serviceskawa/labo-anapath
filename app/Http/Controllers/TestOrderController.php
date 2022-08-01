@@ -15,51 +15,46 @@ use Illuminate\Support\Facades\DB;
 
 class TestOrderController extends Controller
 {
-    
+
     public function index(){
 
         $examens = TestOrder::all();
         $contrats = Contrat::all();
         $patients = Patient::all();
-        $docteurs  = Doctor::all();
+        $médecins  = Doctor::all();
         $tests = Test::all();
         $hopitals = Hospital::all();
-        return view('examens.index',compact(['examens','contrats','patients','docteurs','tests','hopitals']));
+        return view('examens.index',compact(['examens','contrats','patients','médecins','tests','hopitals']));
     }
 
 
     public function store(request $request){
-    
+
         $data=$this->validate($request, [
+            'patient_id' => 'required',
+            'doctor_id' => 'required',
+            'hospital_id' => 'required',
+            'reference_hopital' => 'nullable',
             'contrat_id' => 'required',
-            'patient_id' => 'required',     
-            'hospital_id' => 'required',      
-            'doctor_id' => 'required', 
-            'reference_hopital' => 'nullable', 
 
         ]);
-
-    
-
-     
 
         try {
 
             $test_order = new TestOrder();
             DB::transaction(function () use ($data,$test_order) {
 
-              
                 $test_order->contrat_id = $data['contrat_id'];
                 $test_order->patient_id = $data['patient_id'];
                 $test_order->hospital_id = $data['hospital_id'];
                 $test_order->doctor_id = $data['doctor_id'];
                 $test_order->reference_hopital = $data['reference_hopital'];
-                $test_order->save();  
-              
+                $test_order->save();
+
             });
-           
-            return redirect()->route('details_test_order.index',$test_order->id);          
-          
+
+            return redirect()->route('details_test_order.index',$test_order->id);
+
             } catch(\Throwable $ex){
 
           return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
@@ -73,7 +68,7 @@ class TestOrderController extends Controller
         $doctors = Doctor::all();
         $hopitals = Hospital::all();
         $contrats = Contrat::all();
-        
+
         return view('examens.create',compact(['patients','doctors','hopitals','contrats']));
     }
 
@@ -89,7 +84,7 @@ class TestOrderController extends Controller
         $test_order = TestOrder::find($id);
 
         $tests = Test::all();
-        
+
         $details = DetailTestOrder::where('test_order_id',$test_order->id)->get();
 
         return view('examens.details.index',compact(['test_order','details','tests']));
@@ -100,9 +95,9 @@ class TestOrderController extends Controller
 
         $data=$this->validate($request, [
             'test_order_id' => 'required',
-            'test_id' => 'required',      
-            'price' => 'required |numeric',      
-            'remise' => 'required |numeric',  
+            'test_id' => 'required',
+            'price' => 'required |numeric',
+            'remise' => 'required |numeric',
         ]);
 
        $test = Test::find($data['test_id']);
@@ -120,7 +115,7 @@ class TestOrderController extends Controller
                 $details->test_order_id = $data['test_order_id'];
                 $details->save();
             });
-         
+
              return back()->with('success', "Opération effectuée avec succès ! ");
             } catch(\Throwable $ex){
           return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());

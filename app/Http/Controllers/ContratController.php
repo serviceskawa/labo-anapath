@@ -22,12 +22,12 @@ class ContratController extends Controller
     }
 
     public function details_index($id){
-      
+
         $contrat = Contrat::find($id);
         $test_caterories = CategoryTest::all();
         $details = Details_Contrat::where('contrat_id',$contrat->id)->get();
         return view('contrats_details.index',compact(['contrat','details','test_caterories']));
- 
+
     }
 
     /**
@@ -48,21 +48,21 @@ class ContratController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $data=$this->validate($request, [
             'name' => 'required',
-            'type' => 'required',   
-            'description' => 'required',        
+            'type' => 'required',
+            'description' => 'required',
         ]);
 
-        
+
 
         try {
              $contrat = new Contrat();
              $contrat->name = $data['name'];
              $contrat->type = $data['type'];
              $contrat->description = $data['description'];
-             $contrat->status = 'CREATION';
+             $contrat->status = 'INACTIF';
              $contrat->save();
 
             return redirect()->route('contrat_details.index',$contrat->id)->with('success', "Contrat enregistré avec succès ! ");
@@ -76,24 +76,24 @@ class ContratController extends Controller
 
         $data=$this->validate($request, [
             'contrat_id' => 'required',
-            'pourcentage' => 'required',   
-            'category_test_id' => 'required',        
+            'pourcentage' => 'required',
+            'category_test_id' => 'required',
         ]);
 
-   
+
         try {
-            
+
             DB::transaction(function () use ($data) {
                 Details_Contrat::create($data);
             });
-         
+
              return back()->with('success', "Element enregistré avec succès ! ");
             } catch(\Throwable $ex){
           return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
       }
 
 
-    
+
     }
 
     /**
@@ -125,7 +125,7 @@ class ContratController extends Controller
         $data = Details_Contrat::find($id);
         return response()->json($data);
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -135,46 +135,47 @@ class ContratController extends Controller
      */
     public function update(Request $request)
     {
-    
 
         $data=$this->validate($request, [
             'name2' => 'required',
-            'type2' => 'required',     
-            'id2' => 'required',      
-            'description2' => 'required', 
+            'type2' => 'required',
+            'status2' => 'required',
+            'id2' => 'required',
+            'description2' => 'required',
         ]);
 
         try {
             DB::transaction(function () use ($data) {
-                
+
                 $contrat = Contrat::find($data['id2']);
                 $contrat->name = $data['name2'];
                 $contrat->type = $data['type2'];
+                $contrat->status = $data['status2'];
                 $contrat->description = $data['description2'];
                 $contrat->save();
             });
-         
+
              return back()->with('success', "Mise à jour effectuée avec succès ! ");
             } catch(\Throwable $ex){
           return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
       }
 
-    
+
 
     }
 
 
     public function contrat_details_update(Request $request){
-       
+
 
         $data=$this->validate($request, [
             'category_test_id2' => 'required',
-            'pourcentage2' => 'required',          
-            'contrat_id2' => 'required', 
-            'contrat_details_id2' => 'required',     
+            'pourcentage2' => 'required',
+            'contrat_id2' => 'required',
+            'contrat_details_id2' => 'required',
         ]);
 
-      
+
 
         try {
             DB::transaction(function () use ($data) {
@@ -183,13 +184,13 @@ class ContratController extends Controller
                 $contrat_detail->pourcentage = $data['pourcentage2'];
                 $contrat_detail->save();
             });
-         
+
              return back()->with('success', "Mise à jour effectué avec succès ! ");
             } catch(\Throwable $ex){
           return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
       }
 
-    
+
     }
 
     /**
@@ -211,5 +212,5 @@ class ContratController extends Controller
         return back()->with('success', "    Un élement a été supprimé ! ");
     }
 
-    
+
 }

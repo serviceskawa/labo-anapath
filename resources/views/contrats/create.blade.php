@@ -2,42 +2,37 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Ajouter un contrat</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Ajouter un nouveau contrat</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
         <form action="{{ route('contrats.store') }}" method="POST" autocomplete="off">
             @csrf
             <div class="modal-body">
-            
-           
 
+                <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
                 <div class="mb-3">
-                    <label for="simpleinput" class="form-label">Libellé</label>
+                    <label for="simpleinput" class="form-label">Nom du contrat<span style="color:red;">*</span></label>
                     <input type="text" name="name" class="form-control" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="example-select" class="form-label">Type</label>
+                    <label for="example-select" class="form-label">Type<span style="color:red;">*</span></label>
                     <select class="form-select" id="example-select" name="type" required>
-                        <option>...</option>
-
-                        <option value="ORDINAIRE">ORDINAIRE</option>
-                        <option value="ASSURANCE">ASSURANCE</option>
-
+                        <option value="">Sélectionner le type de contrat</option>
+                        <option value="ORDINAIRE">Ordinaire</option>
+                        <option value="ASSURANCE">Assurance</option>
                     </select>
                 </div>
 
                 <div class="mb-3">
-                    <label for="simpleinput" class="form-label">Description</label>
-                    <input type="text" name="description" class="form-control"  required>
+                    <label for="simpleinput" class="form-label">Description<span style="color:red;">*</span></label>
+                    <textarea type="text" name="description" class="form-control" placeholder="Brève description du contrat" required></textarea>
                 </div>
-
-            
-
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <button type="submit" class="btn btn-primary">Ajouter un nouveau contrat</button>
             </div>
         </form>
         </div><!-- /.modal-content -->

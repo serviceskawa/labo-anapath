@@ -1,4 +1,6 @@
+
 <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
+
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -8,7 +10,7 @@
         <form action="{{ route('test_order.store') }}" method="POST" autocomplete="off">
             @csrf
             <div class="modal-body">
-            
+
                 <div class="mb-3">
                     <label for="example-select" class="form-label">Contrat</label>
                     <select class="form-select" id="example-select" name="contrat_id" required>
@@ -16,8 +18,8 @@
                         @foreach ($contrats as $contrat)
                         <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
                         @endforeach
-             
-                      
+
+
                     </select>
                 </div>
 
@@ -29,8 +31,8 @@
                         @foreach ($patients as $patient)
                         <option value="{{ $patient->id }}">{{ $patient->name }}</option>
                         @endforeach
-             
-                      
+
+
                     </select>
                 </div>
 
@@ -42,21 +44,21 @@
                         @foreach ($hopitals as $hopital)
                         <option value="{{ $hopital->id }}">{{ $hopital->name }}</option>
                         @endforeach
-             
-                      
+
+
                     </select>
                 </div>
 
 
                 <div class="mb-3">
-                    <label for="example-select" class="form-label">Docteur</label>
+                    <label for="example-select" class="form-label">Médecin</label>
                     <select class="form-select" id="example-select" name="doctor_id" required>
                         <option>...</option>
-                        @foreach ($docteurs as $docteur)
-                        <option value="{{ $docteur->id }}">{{ $docteur->name }}</option>
+                        @foreach ($médecins as $médecin)
+                        <option value="{{ $médecin->id }}">{{ $médecin->name }}</option>
                         @endforeach
-             
-                      
+
+
                     </select>
                 </div>
 
@@ -74,8 +76,8 @@
                         @foreach ($tests as $test)
                         <option value="{{ $test->id }}">{{ $test->name }}</option>
                         @endforeach
-             
-                      
+
+
                     </select>
                 </div>
 
@@ -91,10 +93,10 @@
                     <input type="text" name="remise" value="0" class="form-control" required>
                 </div>
 
-         
 
-                
-             
+
+
+
 
             </div>
             <div class="modal-footer">

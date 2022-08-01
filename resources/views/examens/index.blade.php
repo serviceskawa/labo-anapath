@@ -23,10 +23,15 @@
 
 <div class="">
 
+    <div class="page-title-box">
+        <div class="page-title-right mr-3">
+            <a href="{{ route('test_order.create') }}" ><button type="button" class="btn btn-primary" >Ajouter une nouvelle demande d'examen</button></a>
+        </div>
+        <h4 class="page-title">Demandes d'examen</h4>
+    </div>
 
+    <!----MODAL---->
     @include('layouts.alerts')
-
-
 
     <div class="card mb-md-0 mb-3">
         <div class="card-body">
@@ -47,7 +52,7 @@
                             <th>Date</th>
                             <th>Patient</th>
                             <th>Test</th>
-                            <th>Docteur</th>
+                            <th>Médecin</th>
                             <th>Hopital</th>
                             <th>Montant</th>
                             <th>Actions</th>

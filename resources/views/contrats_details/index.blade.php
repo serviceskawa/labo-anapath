@@ -16,9 +16,9 @@
          @include('contrats_details.create')
 
          @include('contrats_details.edit')
-        
+
     </div>
-</div>     
+</div>
 
 
 <div class="">
@@ -28,74 +28,48 @@
 
     <div class="card mt-3">
         <h5 class="card-header">Contrat : {{ $contrat->name }}</h5>
+
         <div class="card-body">
-
-            <div class="mb-3">
-                <label  class="form-label">Libellé</label>
-                <input type="text" class="form-control" name="exampleFormControlInput1" readonly value="{{ $contrat->name }}" >
-            </div>
-
-            <div class="mb-3">
-                <label  class="form-label">Type</label>
-                <input type="text" class="form-control" name="exampleFormControlInput1" value="{{ $contrat->type }}" readonly>
-            </div>
-
-            <div class="mb-3">
-                <label  class="form-label">Email</label>
-                <input type="text" class="form-control" name="exampleFormControlInput1" value="{{ $contrat->description }}" readonly>
-            </div>
-
-         
-
+            <p><b>Type</b> : {{ $contrat->type }}</p>
+            <p><b>Statut</b> : {{ $contrat->status }}</p>
+            <p><b>Description</b> : {{ $contrat->description }}</p>
         </div>
     </div>
 
     <div class="card mb-md-0 mb-3">
 
-        
+
         <div class="card-body">
             <div class="card-widgets">
-                <button type="button" class="btn btn-warning float-left" data-bs-toggle="modal" data-bs-target="#modal2">Ajouter</button>
+                <button type="button" class="btn btn-warning float-left" data-bs-toggle="modal" data-bs-target="#modal2">Ajouter une nouvelle catégorie d'examen</button>
             </div>
-            <h5 class="card-title mb-0">Détails du contrat </h5>
-           
-                            
+            <h5 class="card-title mb-0">Catégories d'examen prises en compte</h5>
+
+
             <div id="cardCollpase1" class="collapse pt-3 show">
-                
+
 
                 <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
-                       
-                            <th>Descriptions</th>
+                            <th>Catégorie d'examen</th>
                             <th>Pourcentage</th>
-                          
-
                             <th>Actions</th>
-                          
                         </tr>
                     </thead>
-                
-                
-                    <tbody>
 
+
+                    <tbody>
                         @foreach ($details as $item)
                         <tr>
-                     
                             <td>{{ $item->categorytest()->name }}</td>
                             <td>{{ $item->pourcentage.' %' }}</td>
-                           
                             <td>
                                 <button type="button" onclick="edit({{$item->id}})" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
                                 <button type="button" onclick="deleteModal({{$item->id}})" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
                             </td>
-                       
                         </tr>
                         @endforeach
-                 
-
-
-                  
                     </tbody>
                 </table>
 
@@ -103,7 +77,7 @@
         </div>
     </div> <!-- end card-->
 
-    
+
 </div>
 @endsection
 
@@ -145,16 +119,16 @@ function edit(id){
         type: "GET",
         url: "{{url('getcontratdetails')}}" + '/' + e_id,
         success: function (data) {
-          
+
             $('#category_test_id2').val(data.category_test_id).change();
             $('#pourcentage2').val(data.pourcentage);
             $('#contrat_id2').val(data.contrat_id);
             $('#contrat_details_id2').val(data.id);
-            
-        
+
+
 
             console.log(data);
-            $('#editModal').modal('show'); 
+            $('#editModal').modal('show');
         },
         error: function (data) {
             console.log('Error:', data);

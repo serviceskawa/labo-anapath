@@ -6,9 +6,9 @@
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Nouveau</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Ajouter un nouveau contrat</button>
             </div>
-            <h4 class="page-title">Gérer les contrats</h4>
+            <h4 class="page-title">Contrats</h4>
         </div>
 
         <!----MODAL---->
@@ -35,7 +35,7 @@
                 <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false" aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                 <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
             </div>
-            <h5 class="card-title mb-0">Liste des contrats </h5>
+            <h5 class="card-title mb-0">Liste des contrats</h5>
 
             <div id="cardCollpase1" class="collapse pt-3 show">
 
@@ -43,11 +43,10 @@
                 <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
-                            <th>Libellé</th>
+                            <th>Nom du contrat</th>
                             <th>Type</th>
-                            <th>Description</th>
+                            <!-- <th>Description</th> -->
                             <th>Statut</th>
-
                             <th>Actions</th>
 
                         </tr>
@@ -60,7 +59,7 @@
                         <tr>
                             <td>{{ $item->name }}</td>
                             <td>{{ $item->type }}</td>
-                            <td>{{ $item->description }}</td>
+                            <!-- <td>{{ $item->description }}</td> -->
                             <td>{{ $item->status }}</td>
 
                             <td>
@@ -151,6 +150,7 @@ function edit(id){
             $('#id2').val(data.id);
             $('#name2').val(data.name);
             $('#type2').val(data.type).change();
+            $('#status2').val(data.status).change();
             $('#description2').val(data.description);
 
 

@@ -6,9 +6,9 @@
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Nouveau</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Ajouter une nouvelle catégorie</button>
             </div>
-            <h4 class="page-title">Gérer les catégories d'examen</h4>
+            <h4 class="page-title">Catégories d'examen</h4>
         </div>
 
         <!----MODAL---->
@@ -44,7 +44,7 @@
                     <thead>
                         <tr>
                             <th>Code</th>
-                            <th>Libellé</th>
+                            <th>Nom de la catégorie</th>
                             <th>Actions</th>
 
                         </tr>

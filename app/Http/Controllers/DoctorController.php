@@ -38,21 +38,21 @@ class DoctorController extends Controller
      */
     public function store(Request $request)
     {
-        
+
 
         $data=$this->validate($request, [
             'name' => 'required',
-            'email' => 'nullable',        
-            'role' => 'required',  
-            'telephone' => 'required',  
-            'commission' => 'required',  
+            'email' => 'nullable',
+            'role' => 'nullable',
+            'telephone' => 'required',
+            'commission' => 'required',
         ]);
 
-        
+
 
         try {
             Doctor::create($data);
-            return back()->with('success', "Un docteur enregistré ! ");
+            return back()->with('success', "Un médecin enregistré ! ");
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
@@ -92,18 +92,18 @@ class DoctorController extends Controller
     public function update(Request $request)
     {
         $data=$this->validate($request, [
-            'id2' => 'required', 
+            'id2' => 'required',
             'name' => 'required',
-            'email' => 'nullable',        
-            'role' => 'required',  
-            'telephone' => 'required',  
-            'commission' => 'required',  
+            'email' => 'nullable',
+            'role' => 'required',
+            'telephone' => 'required',
+            'commission' => 'required',
         ]);
 
-      
+
 
         try {
-            
+
             $doctor = Doctor::find($data['id2']);
             $doctor->name = $data['name'];
             $doctor->email = $data['email'];
@@ -112,7 +112,7 @@ class DoctorController extends Controller
             $doctor->commission = $data['commission'];
             $doctor->save();
 
-            return back()->with('success', "Un docteur a été mis à jour ! ");
+            return back()->with('success', "Un médecin a été mis à jour ! ");
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());

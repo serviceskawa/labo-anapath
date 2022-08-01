@@ -6,9 +6,9 @@
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Nouveau</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Ajouter un nouvel examen</button>
             </div>
-            <h4 class="page-title">Gérer les examens</h4>
+            <h4 class="page-title">Examens</h4>
         </div>
 
         <!----MODAL---->
@@ -43,7 +43,7 @@
                 <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
-                            <th>Libellé</th>
+                            <th>Nom de l'examen</th>
                             <th>Catégorie</th>
                             <th>Prix</th>
                             <th>Actions</th>
