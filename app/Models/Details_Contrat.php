@@ -15,4 +15,6 @@ class Details_Contrat extends Model
         $data = CategoryTest::where('id',$this->category_test_id)->first();
         return $data;
     }
+
+
 }

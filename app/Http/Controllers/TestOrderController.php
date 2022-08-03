@@ -21,10 +21,10 @@ class TestOrderController extends Controller
         $examens = TestOrder::all();
         $contrats = Contrat::all();
         $patients = Patient::all();
-        $médecins  = Doctor::all();
-        $tests = Test::all();
+        $doctors  = Doctor::all();
+        //$tests = Test::all();
         $hopitals = Hospital::all();
-        return view('examens.index',compact(['examens','contrats','patients','médecins','tests','hopitals']));
+        return view('examens.index',compact(['examens','contrats','patients','doctors','hopitals']));
     }
 
 
@@ -97,7 +97,8 @@ class TestOrderController extends Controller
             'test_order_id' => 'required',
             'test_id' => 'required',
             'price' => 'required |numeric',
-            'remise' => 'required |numeric',
+            'discount' => 'required |numeric',
+            'total' => 'required |numeric',
         ]);
 
        $test = Test::find($data['test_id']);
@@ -106,12 +107,10 @@ class TestOrderController extends Controller
             DB::transaction(function () use ($data,$test) {
                 $details = new DetailTestOrder();
                 $details->test_id = $data['test_id'];
-                $details->lib_test = $test->name;
+                $details->test_name = $test->name;
                 $details->price = $data['price'];
-                $details->remise = $data['remise'];
-                $details->montant_contrat = $data['price'];
-                $details->montant_patient = $data['price'];
-                $details->montant_total = $data['price'];
+                $details->discount = $data['discount'];
+                $details->total = $data['total'];
                 $details->test_order_id = $data['test_order_id'];
                 $details->save();
             });

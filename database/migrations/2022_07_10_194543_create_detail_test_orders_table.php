@@ -15,14 +15,12 @@ class CreateDetailTestOrdersTable extends Migration
     {
         Schema::create('detail_test_orders', function (Blueprint $table) {
             $table->id();
-            $table->string('test_id');
-            $table->string('lib_test');
-            $table->float('price');
-            $table->float('remise')->nullable();
-            $table->float('montant_contrat');
-            $table->float('montant_patient');
-            $table->float('montant_total');
             $table->foreignId('test_order_id');
+            $table->string('test_id');
+            $table->string('test_name');
+            $table->float('price');
+            $table->float('discount')->nullable();
+            $table->float('total');
             $table->timestamps();
         });
     }

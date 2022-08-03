@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ContratController;
+use App\Http\Controllers\DetailsContratController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\PatientController;
@@ -43,7 +44,7 @@ Route::post('/examens/index', [TestController::class , 'store'])->name('examens.
 Route::get('/test/delete/{id}', [TestController::class , 'destroy']);
 Route::get('/gettest/{id}', [TestController::class , 'edit']);
 Route::post('/examens/update', [TestController::class , 'update'])->name('examens.update');
-
+Route::get('/gettestremise/{contrat_id}/{category_test_id}', [DetailsContratController::class , 'getremise']);
 
 //PATIENTS
 Route::get('/patients/index', [PatientController::class , 'index'])->name('patients.index');

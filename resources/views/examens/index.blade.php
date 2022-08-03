@@ -51,7 +51,6 @@
                             <th>#</th>
                             <th>Date</th>
                             <th>Patient</th>
-                            <th>Test</th>
                             <th>Médecin</th>
                             <th>Hopital</th>
                             <th>Montant</th>
@@ -68,7 +67,6 @@
                             <td>{{ $item->id }}</td>
                             <td>{{\Carbon\Carbon::parse($item->created_at)->format('d/m/Y')}}</td>
                             <td>{{ $item->getPatient()->name }}</td>
-                            <td>{{ $item->getThisTest()->name }}</td>
                             <td>{{ $item->getDoctor()->name}}</td>
                             <td>{{ $item->getHospital()->name}}</td>
                             <td>{{ $item->montant_total}}</td>

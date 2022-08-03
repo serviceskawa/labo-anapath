@@ -15,16 +15,13 @@ class CreateTestOrdersTable extends Migration
     {
         Schema::create('test_orders', function (Blueprint $table) {
             $table->id();
-            $table->string('reference_hopital')->nullable();
+
             $table->foreignId('patient_id');
             $table->foreignId('doctor_id');
             $table->foreignId('hospital_id');
+            $table->string('reference_hopital')->nullable();
             $table->foreignId('contrat_id');
-            $table->float('price')->nullable();
-            $table->float('remise')->nullable();
-            $table->float('montant_contrat')->nullable();
-            $table->float('montant_patient')->nullable();
-            $table->float('montant_total')->nullable();
+            $table->string('archive')->nullable();
             $table->timestamps();
         });
     }

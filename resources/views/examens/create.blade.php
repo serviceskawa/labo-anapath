@@ -9,95 +9,78 @@
 
 
     @include('layouts.alerts')
-
-
-
-
-
-
         <div class="card my-3">
             <div class="card-header">
-              Création d'une demande d'examen
+              Ajouter une nouvelle demande d'examen
             </div>
             <div class="card-body">
 
             <form action="{{ route('test_order.store') }}" method="post" autocomplete="off">
                 @csrf
                 <div class="row mb-3">
-
-                    <div class="col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">Contrat</label>
-                        <select class="form-select" aria-label="Default select example" required name="contrat_id">
-                            <option label="Choisir.."></option>
-                            @foreach ($contrats as $contrat)
-                                <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
-                            @endforeach
-                          </select>
+                    <div class="alert alert-warning">
+                        <strong>Attention! </strong><small>Si un élément ne s'affiche pas dans la liste déroulante, ajoutez-le à la section correspondante et rechargez la page avant de procéder.</small>
                     </div>
 
+                    <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
 
                     <div class="col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">Patient</label>
-                        <select class="form-select" aria-label="Default select example" required name="patient_id">
-                            <option label="Choisir.."></option>
+                        <label for="exampleFormControlInput1" class="form-label">Patient<span style="color:red;">*</span></label>
+                        <select class="form-select" aria-label="Default select example" name="patient_id" required>
+                            <option value="" label="Sélectionner le nom du patient"></option>
                             @foreach ($patients as $patient)
                                 <option value="{{ $patient->id }}">{{ $patient->name }}</option>
                             @endforeach
                           </select>
                     </div>
 
+                    <div class="col-md-6">
+                        <label for="exampleFormControlInput1" class="form-label">Médecin traitant<span style="color:red;">*</span></label>
+                        <select class="form-select" aria-label="Default select example" name="doctor_id" required>
+                            <option value="" label="Sélectionner le médecin traitant"></option>
+                            @foreach ($doctors as $doctor)
+                                <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
                 </div>
 
 
                 <div class="row mb-3">
-
                     <div class="col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">Hopital</label>
-                        <select class="form-select" aria-label="Default select example" required name="hospital_id">
-                            <option label="Choisir.."></option>
+                        <label for="exampleFormControlInput1" class="form-label">Hôpital de provenance<span style="color:red;">*</span></label>
+                        <select class="form-select" aria-label="Default select example" name="hospital_id" required>
+                            <option value="" label="Sélectionner le centre hospitalier de provenance"></option>
                             @foreach ($hopitals as $hopital)
                                 <option value="{{ $hopital->id }}">{{ $hopital->name }}</option>
                             @endforeach
                           </select>
                     </div>
 
-
                     <div class="col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">Doctor</label>
-                        <select class="form-select" aria-label="Default select example" required name="doctor_id">
-                            <option label="Choisir.."></option>
-                            @foreach ($doctors as $doctor)
-                                <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1" class="form-label">Référence hôpital</label>
+                            <input type="text" class="form-control" name="reference_hopital" placeholder="Le numéro de référence qui se trouve sur le bon d'examen du patient."></div>
+                          </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="exampleFormControlInput1" class="form-label">Contrat<span style="color:red;">*</span></label>
+                        <select class="form-select" aria-label="Default select example" required name="contrat_id">
+                            <option value="" label="Sélectionner le contrat"></option>
+                            @foreach ($contrats as $contrat)
+                                <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
                             @endforeach
-                          </select>
+                        </select>
                     </div>
 
-
                 </div>
-
-                <div class="row">
-                    <div class="mb-3">
-                        <label for="simpleinput" class="form-label">Emplacement</label>
-                        <input type="text" name="emplacement" class="form-control"  required>
-                    </div>
-                </div>
-
-
-
-                <div class="mb-3">
-                    <div class="form-group">
-                        <label for="exampleFormControlInput1" class="form-label">Reference Hopital </label>
-                        <textarea class="form-control" rows="5" name="reference_hopital"></textarea>
-                      </div>
-                </div>
-
-
 
 
                 <div class="modal-footer">
                     <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    <button type="submit" class="btn btn-primary">Ajouter une nouvelle demande d'examen</button>
                 </div>
 
 

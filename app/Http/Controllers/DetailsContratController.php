@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Details_Contrat;
+use App\Models\CategoryTest;
 use Illuminate\Http\Request;
 
 class DetailsContratController extends Controller
@@ -81,5 +82,16 @@ class DetailsContratController extends Controller
     public function destroy(Details_Contrat $details_Contrat)
     {
         //
+    }
+
+    public function getremise($contrat_id, $category_test_id){
+        //dd("frh");
+        $data = Details_Contrat::where(['contrat_id' => $contrat_id, 'category_test_id' => $category_test_id])->first();
+        if($data == null){
+            return 0;
+        }else{
+            return $data->pourcentage;
+        }
+
     }
 }
