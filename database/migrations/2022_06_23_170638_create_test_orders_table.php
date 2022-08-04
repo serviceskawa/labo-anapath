@@ -22,6 +22,9 @@ class CreateTestOrdersTable extends Migration
             $table->string('reference_hopital')->nullable();
             $table->foreignId('contrat_id');
             $table->string('archive')->nullable();
+            $table->float('subtotal')->nullable();
+            $table->float('discount')->nullable();
+            $table->float('total')->nullable();
             $table->timestamps();
         });
     }

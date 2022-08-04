@@ -212,7 +212,7 @@
                     test_order_id: test_order_id,
                     test_id: test_id,
                     price: price,
-                    remise: remise
+                    discount: remise
 
                 },
                 success: function(response) {
@@ -226,7 +226,7 @@
                 },
             });
 
-        })
+        });
 
         function updateSubTotal() {
             var table = document.getElementById("datatable1");
@@ -234,20 +234,25 @@
                 return total + parseFloat(row.cells[6].innerHTML);
             }, 0);
             document.getElementById("val").innerHTML = "SubTotal = $" + subTotal;
-        }
+        };
 
-        function total_ammount_price() {
-            var sum = 0;
-            $('.amount_total').each(function() {
-                var value = $(this).val();
-                if (value.length != 0) {
-                    sum += parseFloat(value);
+        function getTest() {
+            var test_id = $('#test_id').val();
+
+            $.ajax({
+                type: "GET",
+                url: "{{ url('gettest') }}" + '/' + test_id,
+                success: function(data) {
+
+
+                    $('#price').val(data.price);
+
+                },
+                error: function(data) {
+                    console.log('Error:', data);
                 }
-                console.log(value);
-
             });
-            $('#estimated_ammount').val(sum);
-        }
+        };
     </script>
     <script>
         // SUPPRESSION
@@ -272,95 +277,95 @@
         }
 
         //EDITION
-        function edit(id) {
-            var e_id = id;
+        // function edit(id) {
+        //     var e_id = id;
 
-            // Populate Data in Edit Modal Form
-            $.ajax({
-                    type: "GET",
-                    url: "{{ url('getcontratdetails') }}" + '/' + e_id,
-                    success: function(data) {
+        //     // Populate Data in Edit Modal Form
+        //     $.ajax({
+        //             type: "GET",
+        //             url: "{{ url('getcontratdetails') }}" + '/' + e_id,
+        //             success: function(data) {
 
-                        $('#category_test_id2').val(data.category_test_id).change();
-                        $('#pourcentage2').val(data.pourcentage);
-                        $('#contrat_id2').val(data.contrat_id);
-                        $('#contrat_details_id2').val(data.id);
-
-
-                        // Populate Data in Edit Modal Form
-                        $.ajax({
-                            type: "GET",
-                            url: "{{ url('getcontratdetails') }}" + '/' + e_id,
-                            success: function(data) {
-
-                                $('#category_test_id2').val(data.category_test_id).change();
-                                $('#pourcentage2').val(data.pourcentage);
-                                $('#contrat_id2').val(data.contrat_id);
-                                $('#contrat_details_id2').val(data.id);
+        //                 $('#category_test_id2').val(data.category_test_id).change();
+        //                 $('#pourcentage2').val(data.pourcentage);
+        //                 $('#contrat_id2').val(data.contrat_id);
+        //                 $('#contrat_details_id2').val(data.id);
 
 
+        //                 // Populate Data in Edit Modal Form
+        //                 $.ajax({
+        //                     type: "GET",
+        //                     url: "{{ url('getcontratdetails') }}" + '/' + e_id,
+        //                     success: function(data) {
 
-                                console.log(data);
-                                $('#editModal').modal('show');
-                            },
-                            error: function(data) {
-                                console.log('Error:', data);
-                            }
-                        });
-                    }
-
-
-                    function getTest() {
-                        var test_id = $('#test_id').val();
-
-                        $.ajax({
-                            type: "GET",
-                            url: "{{ url('gettest') }}" + '/' + test_id,
-                            success: function(data) {
-
-                                $('#price').val(data.price);
-
-                            },
-                            error: function(data) {
-                                console.log('Error:', data);
-                            }
-                        });
-                        getRemise();
-                    }
-
-                    function getRemise() {
-                        let element = document.getElementById("test_id");
-                        let category_test_id = element.options[element.selectedIndex].getAttribute(
-                            "data-category_test_id");
-                        alert("Price: " + category_test_id);
-
-                        var contrat_id = $('#contrat_id').val();
-                        //var category_test_id = element.getAttribute('data-content');
-
-                        $.ajax({
-                            type: "GET",
-                            url: "{{ url('gettestremise') }}" + '/' + contrat_id + '/' + category_test_id,
-                            success: function(data) {
-                                var discount = $('#price').val() * data / 100;
-                                $('#discount').val(discount);
-
-                                var total = $('#price').val() - discount;
-                                $('#total').val(total);
-                            },
-                            error: function(data) {
-                                console.log('Error:', data);
-                            }
-                        });
-                    }
+        //                         $('#category_test_id2').val(data.category_test_id).change();
+        //                         $('#pourcentage2').val(data.pourcentage);
+        //                         $('#contrat_id2').val(data.contrat_id);
+        //                         $('#contrat_details_id2').val(data.id);
 
 
-                    $('#price').val(data.price);
 
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                }
-            });
-        }
+        //                         console.log(data);
+        //                         $('#editModal').modal('show');
+        //                     },
+        //                     error: function(data) {
+        //                         console.log('Error:', data);
+        //                     }
+        //                 });
+        //             }
+
+
+        //             function getTest() {
+        //                 var test_id = $('#test_id').val();
+
+        //                 $.ajax({
+        //                     type: "GET",
+        //                     url: "{{ url('gettest') }}" + '/' + test_id,
+        //                     success: function(data) {
+
+        //                         $('#price').val(data.price);
+
+        //                     },
+        //                     error: function(data) {
+        //                         console.log('Error:', data);
+        //                     }
+        //                 });
+        //                 getRemise();
+        //             }
+
+        //             function getRemise() {
+        //                 let element = document.getElementById("test_id");
+        //                 let category_test_id = element.options[element.selectedIndex].getAttribute(
+        //                     "data-category_test_id");
+        //                 alert("Price: " + category_test_id);
+
+        //                 var contrat_id = $('#contrat_id').val();
+        //                 //var category_test_id = element.getAttribute('data-content');
+
+        //                 $.ajax({
+        //                     type: "GET",
+        //                     url: "{{ url('gettestremise') }}" + '/' + contrat_id + '/' + category_test_id,
+        //                     success: function(data) {
+        //                         var discount = $('#price').val() * data / 100;
+        //                         $('#discount').val(discount);
+
+        //                         var total = $('#price').val() - discount;
+        //                         $('#total').val(total);
+        //                     },
+        //                     error: function(data) {
+        //                         console.log('Error:', data);
+        //                     }
+        //                 });
+        //             }
+
+
+        //             $('#price').val(data.price);
+
+        //         },
+        //         error: function(data) {
+        //             console.log('Error:', data);
+        //         }
+        //     });
+        // }
     </script>
 @endpush
