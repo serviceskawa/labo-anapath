@@ -93,7 +93,6 @@ class TestOrderController extends Controller
 
     public function details_store(Request $request){
 
-        return response()->json($request);
 
         $data = $this->validate($request, [
             'test_order_id' => 'required',

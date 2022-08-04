@@ -76,26 +76,35 @@
                                 <select class="form-select" id="test_id" name="test_id" required onchange="getTest()">
                                     <option>...</option>
                                     @foreach ($tests as $test)
-                                        <option value="{{ $test->id }}">{{ $test->name }}</option>
+                                        <option data-category_test_id="{{ $test->category_test_id }}"
+                                            value="{{ $test->id }}">{{ $test->name }}</option>
                                     @endforeach
 
 
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3 col-12">
+                        <div class="col-md-2 col-12">
 
                             <div class="mb-3">
                                 <label for="simpleinput" class="form-label">Prix</label>
-                                <input type="text" name="price" id="price" class="form-control" required>
+                                <input type="text" name="price" id="price" class="form-control" required readonly>
                             </div>
                         </div>
-                        <div class="col-md-3 col-12">
+                        <div class="col-md-2 col-12">
                             <div class="mb-3">
                                 <label for="simpleinput" class="form-label">Remise</label>
-                                <input type="text" name="remise" id="remise" class="form-control">
+                                <input type="text" name="remise" id="remise" class="form-control" required readonly>
                             </div>
                         </div>
+                        <div class="col-md-2 col-12">
+                            <div class="mb-3">
+                                <label for="example-select" class="form-label">Total</label>
+
+                                <input type="text" name="total" id="total" class="form-control" required readonly>
+                            </div>
+                        </div>
+
                         <div class="col-md-2 col-12">
                             <div class="mb-3">
                                 <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
@@ -132,12 +141,12 @@
                             @foreach ($details as $item)
                                 <tr>
                                     <td>{{ $item->id }}</td>
-                                    <td>{{ $item->lib_test }}</td>
+                                    <td>{{ $item->test_name }}</td>
                                     <td>{{ $item->price }}</td>
-                                    <td>{{ $item->remise }}</td>
+                                    <td>{{ $item->discount }}</td>
                                     <td>{{ $item->montant_contrat }}</td>
                                     <td>{{ $item->montant_patient }}</td>
-                                    <td class="amount_total">{{ $item->montant_total }}</td>
+                                    <td class="amount_total">{{ $item->total }}</td>
                                     <td>
                                         <button type="button" onclick="edit({{ $item->id }})"
                                             class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
@@ -202,6 +211,7 @@
             let test_id = $('#test_id').val();
             let price = $('#price').val();
             let remise = $('#remise').val();
+            let total = $('#total').val();
             console.log(test_order_id);
 
             $.ajax({
@@ -212,13 +222,13 @@
                     test_order_id: test_order_id,
                     test_id: test_id,
                     price: price,
-                    discount: remise
+                    discount: remise,
+                    total: total
 
                 },
                 success: function(response) {
                     console.log(response)
                     $('#addDetailForm').trigger("reset")
-                    total_ammount_price();
                     updateSubTotal();
                 },
                 error: function(response) {
@@ -236,6 +246,24 @@
             document.getElementById("val").innerHTML = "SubTotal = $" + subTotal;
         };
 
+        // function getTest() {
+        //     var test_id = $('#test_id').val();
+
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "{{ url('gettest') }}" + '/' + test_id,
+        //         success: function(data) {
+
+
+        //             $('#price').val(data.price);
+
+        //         },
+        //         error: function(data) {
+        //             console.log('Error:', data);
+        //         }
+        //     });
+        // };
+
         function getTest() {
             var test_id = $('#test_id').val();
 
@@ -244,7 +272,6 @@
                 url: "{{ url('gettest') }}" + '/' + test_id,
                 success: function(data) {
 
-
                     $('#price').val(data.price);
 
                 },
@@ -252,7 +279,32 @@
                     console.log('Error:', data);
                 }
             });
-        };
+            getRemise();
+        }
+
+        function getRemise() {
+            let element = document.getElementById("test_id");
+            let category_test_id = element.options[element.selectedIndex].getAttribute("data-category_test_id");
+            alert("Price: " + category_test_id);
+
+            var contrat_id = $('#contrat_id').val();
+            //var category_test_id = element.getAttribute('data-content');
+
+            $.ajax({
+                type: "GET",
+                url: "{{ url('gettestremise') }}" + '/' + contrat_id + '/' + category_test_id,
+                success: function(data) {
+                    var discount = $('#price').val() * data / 100;
+                    $('#remise').val(discount);
+
+                    var total = $('#price').val() - discount;
+                    $('#total').val(total);
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                }
+            });
+        }
     </script>
     <script>
         // SUPPRESSION
