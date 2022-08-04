@@ -93,7 +93,8 @@ class TestOrderController extends Controller
 
     public function details_store(Request $request){
 
-        $data=$this->validate($request, [
+
+        $data = $this->validate($request, [
             'test_order_id' => 'required',
             'test_id' => 'required',
             'price' => 'required |numeric',
@@ -102,6 +103,7 @@ class TestOrderController extends Controller
         ]);
 
        $test = Test::find($data['test_id']);
+
 
         try {
             DB::transaction(function () use ($data,$test) {
@@ -115,9 +117,12 @@ class TestOrderController extends Controller
                 $details->save();
             });
 
-             return back()->with('success', "Opération effectuée avec succès ! ");
+            //  return back()->with('success', "Opération effectuée avec succès ! ");
+            return response()->json(200);
             } catch(\Throwable $ex){
-          return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+                return response()->json(200);
+
+        //   return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
       }
     }
 }
