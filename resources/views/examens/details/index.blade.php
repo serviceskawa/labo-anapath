@@ -123,8 +123,8 @@
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
 
-                    <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
-                        <thead>
+                    <table id="datatable1" class="table detail-list-table table-striped dt-responsive nowrap w-100">
+                        <thead class="table-light">
                             <tr>
                                 <th>#</th>
                                 <th>Examen</th>
@@ -136,38 +136,12 @@
                             </tr>
                         </thead>
 
-                        <tbody>
 
-                            @foreach ($details as $item)
-                                <tr>
-                                    <td>{{ $item->id }}</td>
-                                    <td>{{ $item->test_name }}</td>
-                                    <td>{{ $item->price }}</td>
-                                    <td>{{ $item->discount }}</td>
-                                    <td>{{ $item->montant_contrat }}</td>
-                                    <td>{{ $item->montant_patient }}</td>
-                                    <td class="amount_total">{{ $item->total }}</td>
-                                    <td>
-                                        <button type="button" onclick="edit({{ $item->id }})"
-                                            class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
-                                        <button type="button" onclick="deleteModal({{ $item->id }})"
-                                            class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
-                                    </td>
-
-                                </tr>
-                            @endforeach
-
-
-
-
-                        </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="1" class="text-right">
                                     <strong>Total:</strong>
                                 </td>
-                                <td></td>
-                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -195,15 +169,175 @@
 
 
 @push('extra-js')
+    <script></script>
     <script type="text/javascript">
-        var sum_total_data = 0;
+        $(document).ready(function() {
+            var test_order = {!! json_encode($test_order) !!}
+            console.log(test_order)
 
-        $("tr .amount_total").each(function(index, value) {
-            getEachRow = parseFloat($(this).text());
-            sum_total_data += getEachRow
+            var dtDetailTable = $('.detail-list-table')
+
+            var dt_basic = $('#datatable1').DataTable({
+                ajax: {
+                    url: '/test_order/detailstest/' + test_order.id,
+                    dataSrc: ''
+                },
+                deferRender: true,
+                columns: [
+                    // columns according to JSON
+                    {
+                        data: 'id'
+                    },
+                    {
+                        data: 'test_name'
+                    },
+                    {
+                        data: 'price'
+                    },
+                    {
+                        data: 'discount'
+                    },
+                    {
+                        data: 'total'
+                    },
+                    {
+                        data: null
+                    }
+                ],
+                columnDefs: [{
+                    "targets": -1,
+                    "render": function(data, type, row) {
+                        return (
+                            '<button type="button" id="deleteBtn" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>'
+                        );
+                    }
+
+                }],
+
+                footerCallback: function(row, data, start, end, display) {
+                    var api = this.api();
+
+                    // Remove the formatting to get integer data for summation
+                    var intVal = function(i) {
+                        return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i ===
+                            'number' ? i : 0;
+                    };
+
+                    // Total over all pages
+                    total = api
+                        .column(4)
+                        .data()
+                        .reduce(function(a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    // 
+                    discount = api
+                        .column(3)
+                        .data()
+                        .reduce(function(a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                    subTotal = api
+                        .column(2)
+                        .data()
+                        .reduce(function(a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                    // Total over this page
+                    pageTotal = api
+                        .column(4, {
+                            page: 'current'
+                        })
+                        .data()
+                        .reduce(function(a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                    // Update footer
+                    $(api.column(4).footer()).html(total);
+                    $(api.column(3).footer()).html(discount);
+                    $(api.column(2).footer()).html(subTotal);
+
+                    if ($(api.column(4).footer()).html(total)) {
+                        sendTotal(test_order.id, total, discount, subTotal);
+                    }
+
+                },
+
+            });
+
+            setInterval(function() {
+                dt_basic.ajax.reload();
+            }, 1000);
+
+            // 
+            $('.detail-list-table tbody').on('click', '#deleteBtn', function() {
+                var data = dt_basic.row($(this).parents('tr')).data();
+                var id = $(this).data('id');
+                console.log(data)
+                Swal.fire({
+                    title: "Voulez-vous supprimer l'élément ?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Oui ",
+                    cancelButtonText: "Non !",
+                }).then(function(result) {
+                    if (result.value) {
+                        // window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
+                        $.ajax({
+                            url: "/test_order/detailsdelete",
+                            type: "post",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                id: data.id,
+                            },
+                            success: function(response) {
+
+                                console.log(response);
+                                Swal.fire(
+                                    "Suppression !",
+                                    "En cours de traitement ...",
+                                    "success"
+                                )
+                                dt_basic.ajax.reload()
+                                // window.location.reload();
+                            },
+                            error: function(response) {
+                                console.log(response);
+                                dt_basic.ajax.reload()
+
+                                // Command: toastr["error"]("Error")
+                            },
+                        });
+
+                    }
+                });
+            });
+
+            function sendTotal(test_order_id, total, discount, subTotal) {
+                $.ajax({
+                    url: "{{ route('test_order.updateorder') }}",
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        test_order_id: test_order_id,
+                        discount: discount,
+                        subTotal: subTotal,
+                        total: total
+
+                    },
+                    success: function(response) {
+                        // console.log(response)
+
+                    },
+                    error: function(response) {
+                        // console.log(response)
+                    },
+                });
+            }
         });
-
-        document.getElementById('val').innerHTML = sum_total_data;
 
         $('#addDetailForm').on('submit', function(e) {
             e.preventDefault();
@@ -305,119 +439,5 @@
                 }
             });
         }
-    </script>
-    <script>
-        // SUPPRESSION
-        function deleteModal(id) {
-
-            Swal.fire({
-                title: "Voulez-vous supprimer l'élément ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Oui ",
-                cancelButtonText: "Non !",
-            }).then(function(result) {
-                if (result.value) {
-                    window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
-                    Swal.fire(
-                        "Suppression !",
-                        "En cours de traitement ...",
-                        "success"
-                    )
-                }
-            });
-        }
-
-        //EDITION
-        // function edit(id) {
-        //     var e_id = id;
-
-        //     // Populate Data in Edit Modal Form
-        //     $.ajax({
-        //             type: "GET",
-        //             url: "{{ url('getcontratdetails') }}" + '/' + e_id,
-        //             success: function(data) {
-
-        //                 $('#category_test_id2').val(data.category_test_id).change();
-        //                 $('#pourcentage2').val(data.pourcentage);
-        //                 $('#contrat_id2').val(data.contrat_id);
-        //                 $('#contrat_details_id2').val(data.id);
-
-
-        //                 // Populate Data in Edit Modal Form
-        //                 $.ajax({
-        //                     type: "GET",
-        //                     url: "{{ url('getcontratdetails') }}" + '/' + e_id,
-        //                     success: function(data) {
-
-        //                         $('#category_test_id2').val(data.category_test_id).change();
-        //                         $('#pourcentage2').val(data.pourcentage);
-        //                         $('#contrat_id2').val(data.contrat_id);
-        //                         $('#contrat_details_id2').val(data.id);
-
-
-
-        //                         console.log(data);
-        //                         $('#editModal').modal('show');
-        //                     },
-        //                     error: function(data) {
-        //                         console.log('Error:', data);
-        //                     }
-        //                 });
-        //             }
-
-
-        //             function getTest() {
-        //                 var test_id = $('#test_id').val();
-
-        //                 $.ajax({
-        //                     type: "GET",
-        //                     url: "{{ url('gettest') }}" + '/' + test_id,
-        //                     success: function(data) {
-
-        //                         $('#price').val(data.price);
-
-        //                     },
-        //                     error: function(data) {
-        //                         console.log('Error:', data);
-        //                     }
-        //                 });
-        //                 getRemise();
-        //             }
-
-        //             function getRemise() {
-        //                 let element = document.getElementById("test_id");
-        //                 let category_test_id = element.options[element.selectedIndex].getAttribute(
-        //                     "data-category_test_id");
-        //                 alert("Price: " + category_test_id);
-
-        //                 var contrat_id = $('#contrat_id').val();
-        //                 //var category_test_id = element.getAttribute('data-content');
-
-        //                 $.ajax({
-        //                     type: "GET",
-        //                     url: "{{ url('gettestremise') }}" + '/' + contrat_id + '/' + category_test_id,
-        //                     success: function(data) {
-        //                         var discount = $('#price').val() * data / 100;
-        //                         $('#discount').val(discount);
-
-        //                         var total = $('#price').val() - discount;
-        //                         $('#total').val(total);
-        //                     },
-        //                     error: function(data) {
-        //                         console.log('Error:', data);
-        //                     }
-        //                 });
-        //             }
-
-
-        //             $('#price').val(data.price);
-
-        //         },
-        //         error: function(data) {
-        //             console.log('Error:', data);
-        //         }
-        //     });
-        // }
     </script>
 @endpush

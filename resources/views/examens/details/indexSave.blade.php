@@ -302,3 +302,140 @@
     </script>
 @endpush
 @extends('layouts.app2')
+<tbody>
+
+    @foreach ($details as $item)
+        <tr>
+            <td>{{ $item->id }}</td>
+            <td>{{ $item->test_name }}</td>
+            <td>{{ $item->price }}</td>
+            <td>{{ $item->discount }}</td>
+            <td class="amount_total">{{ $item->total }}</td>
+            <td>
+                <button type="button" onclick="edit({{ $item->id }})" class="btn btn-primary"><i
+                        class="mdi mdi-lead-pencil"></i> </button>
+                <button type="button" onclick="deleteModal({{ $item->id }})" class="btn btn-danger"><i
+                        class="mdi mdi-trash-can-outline"></i> </button>
+            </td>
+
+        </tr>
+    @endforeach
+
+
+
+
+</tbody>
+<script>
+    // SUPPRESSION
+    function deleteModal(id) {
+
+        Swal.fire({
+            title: "Voulez-vous supprimer l'élément ?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Oui ",
+            cancelButtonText: "Non !",
+        }).then(function(result) {
+            if (result.value) {
+                window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
+                Swal.fire(
+                    "Suppression !",
+                    "En cours de traitement ...",
+                    "success"
+                )
+            }
+        });
+    }
+
+    //EDITION
+    // function edit(id) {
+    //     var e_id = id;
+
+    //     // Populate Data in Edit Modal Form
+    //     $.ajax({
+    //             type: "GET",
+    //             url: "{{ url('getcontratdetails') }}" + '/' + e_id,
+    //             success: function(data) {
+
+    //                 $('#category_test_id2').val(data.category_test_id).change();
+    //                 $('#pourcentage2').val(data.pourcentage);
+    //                 $('#contrat_id2').val(data.contrat_id);
+    //                 $('#contrat_details_id2').val(data.id);
+
+
+    //                 // Populate Data in Edit Modal Form
+    //                 $.ajax({
+    //                     type: "GET",
+    //                     url: "{{ url('getcontratdetails') }}" + '/' + e_id,
+    //                     success: function(data) {
+
+    //                         $('#category_test_id2').val(data.category_test_id).change();
+    //                         $('#pourcentage2').val(data.pourcentage);
+    //                         $('#contrat_id2').val(data.contrat_id);
+    //                         $('#contrat_details_id2').val(data.id);
+
+
+
+    //                         console.log(data);
+    //                         $('#editModal').modal('show');
+    //                     },
+    //                     error: function(data) {
+    //                         console.log('Error:', data);
+    //                     }
+    //                 });
+    //             }
+
+
+    //             function getTest() {
+    //                 var test_id = $('#test_id').val();
+
+    //                 $.ajax({
+    //                     type: "GET",
+    //                     url: "{{ url('gettest') }}" + '/' + test_id,
+    //                     success: function(data) {
+
+    //                         $('#price').val(data.price);
+
+    //                     },
+    //                     error: function(data) {
+    //                         console.log('Error:', data);
+    //                     }
+    //                 });
+    //                 getRemise();
+    //             }
+
+    //             function getRemise() {
+    //                 let element = document.getElementById("test_id");
+    //                 let category_test_id = element.options[element.selectedIndex].getAttribute(
+    //                     "data-category_test_id");
+    //                 alert("Price: " + category_test_id);
+
+    //                 var contrat_id = $('#contrat_id').val();
+    //                 //var category_test_id = element.getAttribute('data-content');
+
+    //                 $.ajax({
+    //                     type: "GET",
+    //                     url: "{{ url('gettestremise') }}" + '/' + contrat_id + '/' + category_test_id,
+    //                     success: function(data) {
+    //                         var discount = $('#price').val() * data / 100;
+    //                         $('#discount').val(discount);
+
+    //                         var total = $('#price').val() - discount;
+    //                         $('#total').val(total);
+    //                     },
+    //                     error: function(data) {
+    //                         console.log('Error:', data);
+    //                     }
+    //                 });
+    //             }
+
+
+    //             $('#price').val(data.price);
+
+    //         },
+    //         error: function(data) {
+    //             console.log('Error:', data);
+    //         }
+    //     });
+    // }
+</script>

@@ -125,4 +125,38 @@ class TestOrderController extends Controller
         //   return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
       }
     }
+
+    public function getDetailsTest($id)
+    {
+        $test_order = TestOrder::find($id);
+
+        $tests = Test::all();
+
+        $details = DetailTestOrder::where('test_order_id',$test_order->id)->get();
+
+        return response()->json($details);
+    }
+
+    public function updateTestTotal(Request $request)
+    {
+        $test_order = TestOrder::findorfail($request->test_order_id);
+
+        $test_order->fill([
+            "total" => $request->total,
+            "subtotal" => $request->subTotal,
+            "discount" => $request->discount
+        ])->save();
+
+        return response()->json($test_order);
+    }
+
+    public function details_destroy(Request $request)
+    {
+        $detail = DetailTestOrder::findorfail($request->id);
+        $detail->delete();
+
+        return response()->json(200);
+
+        // return back()->with('success', "    Un élement a été supprimé ! ");
+    }
 }

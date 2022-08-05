@@ -90,8 +90,11 @@ Route::get('/test_order/index', [TestOrderController::class , 'index'])->name('t
 Route::post('/test_order/store', [TestOrderController::class , 'store'])->name('test_order.store');
 Route::get('/test_order/create', [TestOrderController::class , 'create'])->name('test_order.create');
 Route::get('/test_order/delete/{id}', [TestOrderController::class , 'destroy']);
+Route::post('/test_order/updatetest', [TestOrderController::class , 'updateTestTotal'])->name('test_order.updateorder');
 
 
 //details_test_order
 Route::get('/test_order/details/{id}', [TestOrderController::class , 'details_index'])->name('details_test_order.index');
 Route::post('/test_order/details', [TestOrderController::class , 'details_store'])->name('details_test_order.store');
+Route::get('/test_order/detailstest/{id}', [TestOrderController::class , 'getDetailsTest']);
+Route::post('/test_order/detailsdelete', [TestOrderController::class,'details_destroy']);
