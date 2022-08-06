@@ -48,7 +48,7 @@
                                 <th>Nom & Prénoms</th>
                                 <th>Age</th>
                                 <!-- <th>Profession</th>
-                                <th>Genre</th> -->
+                                    <th>Genre</th> -->
                                 <th>Contacts</th>
                                 <th>Adresse</th>
                                 <th>Actions</th>
@@ -65,7 +65,7 @@
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->age }}</td>
                                     <!-- <td>{{ $item->profession }}</td>
-                                <td>{{ $item->genre }}</td> -->
+                                    <td>{{ $item->genre }}</td> -->
                                     <td>{{ $item->telephone1 . ' / ' . $item->telephone2 }}</td>
                                     <td>{{ $item->adresse }}</td>
                                     <td>

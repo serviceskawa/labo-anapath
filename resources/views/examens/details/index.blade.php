@@ -260,9 +260,11 @@
                     $(api.column(3).footer()).html(discount);
                     $(api.column(2).footer()).html(subTotal);
 
-                    if ($(api.column(4).footer()).html(total)) {
-                        sendTotal(test_order.id, total, discount, subTotal);
-                    }
+                    sendTotal(test_order.id, total, discount, subTotal);
+
+                    // if ($(api.column(4).footer()).html(total)) {
+                    //     // console.log('footer');
+                    // }
 
                 },
 
@@ -270,7 +272,7 @@
 
             setInterval(function() {
                 dt_basic.ajax.reload();
-            }, 1000);
+            }, 3000);
 
             // 
             $('.detail-list-table tbody').on('click', '#deleteBtn', function() {
@@ -317,6 +319,8 @@
             });
 
             function sendTotal(test_order_id, total, discount, subTotal) {
+                console.log(test_order_id, total, discount, subTotal);
+
                 $.ajax({
                     url: "{{ route('test_order.updateorder') }}",
                     type: "POST",
@@ -329,11 +333,11 @@
 
                     },
                     success: function(response) {
-                        // console.log(response)
+                        console.log(response)
 
                     },
                     error: function(response) {
-                        // console.log(response)
+                        console.log(response)
                     },
                 });
             }

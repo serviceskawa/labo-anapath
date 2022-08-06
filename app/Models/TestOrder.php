@@ -46,4 +46,14 @@ class TestOrder extends Model
     {
         return $this->belongsTo(Patient::class);
     }
+
+    /**
+     * Get the doctor that owns the TestOrder
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function doctor()
+    {
+        return $this->belongsTo(Doctor::class,);
+    }
 }

@@ -68,8 +68,7 @@ class TestOrderController extends Controller
         $patients = Patient::all();
         $doctors = Doctor::all();
         $hopitals = Hospital::all();
-        $contrats = Contrat::all();
-
+        $contrats = Contrat::ofStatus('ACTIF')->get();
         return view('examens.create',compact(['patients','doctors','hopitals','contrats']));
     }
 
