@@ -16,11 +16,23 @@ class CreateTestOrdersTable extends Migration
         Schema::create('test_orders', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('patient_id');
-            $table->foreignId('doctor_id');
-            $table->foreignId('hospital_id');
+            $table->foreignId('patient_id')->nullable()
+                ->constrained('patients')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreignId('doctor_id')->nullable()
+                ->constrained('doctors')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreignId('hospital_id')->nullable()
+                ->constrained('hospitals')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->string('reference_hopital')->nullable();
-            $table->foreignId('contrat_id');
+            $table->foreignId('contrat_id')->nullable()
+                ->constrained('contrats')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->string('archive')->nullable();
             $table->float('subtotal')->nullable();
             $table->float('discount')->nullable();

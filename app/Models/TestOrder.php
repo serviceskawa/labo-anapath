@@ -36,4 +36,14 @@ class TestOrder extends Model
         $data = Contrat::find($this->contrat_id);
         return $data;
     }
+
+    /**
+     * Get the patient that owns the TestOrder
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class);
+    }
 }

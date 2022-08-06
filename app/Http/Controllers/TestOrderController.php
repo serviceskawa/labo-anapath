@@ -18,12 +18,13 @@ class TestOrderController extends Controller
 
     public function index(){
 
-        $examens = TestOrder::all();
+        $examens = TestOrder::with(['patient'])->get();
         $contrats = Contrat::all();
         $patients = Patient::all();
         $doctors  = Doctor::all();
         //$tests = Test::all();
         $hopitals = Hospital::all();
+        // dd($examens);
         return view('examens.index',compact(['examens','contrats','patients','doctors','hopitals']));
     }
 
