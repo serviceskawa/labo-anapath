@@ -11,8 +11,7 @@
     <link rel="shortcut icon" href="{{ asset('/adminassets/images/favicon.ico') }}">
 
     <link href="{{ asset('/adminassets/css/vendor/dataTables.bootstrap5.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('/adminassets/assets/css/vendor/responsive.bootstrap5.css') }}" rel="stylesheet"
-        type="text/css">
+    <link href="{{ asset('/adminassets/css/vendor/responsive.bootstrap5.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('/adminassets/css/vendor/buttons.bootstrap5.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('/adminassets/css/vendor/select.bootstrap5.css') }}" rel="stylesheet" type="text/css">
 
