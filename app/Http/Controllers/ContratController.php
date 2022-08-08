@@ -17,7 +17,8 @@ class ContratController extends Controller
      */
     public function index()
     {
-        $contrats = Contrat::all();
+        $contrats = Contrat::with(['orders','detail'])->get();
+        // dd($contrats);
         return view('contrats.index',compact(['contrats']));
     }
 
@@ -201,8 +202,13 @@ class ContratController extends Controller
      */
     public function destroy($id)
     {
-        Contrat::find($id)->delete();
-        return back()->with('success', "    Un élement a été supprimé ! ");
+        $contrat = Contrat::find($id)->delete();
+        if ($contrat) {
+            return back()->with('success', "    Un élement a été supprimé ! ");
+        } else {
+            return back()->with('error', "    Ce contrat est utilisé ailleurs ! ");
+        }
+        
     }
 
 
