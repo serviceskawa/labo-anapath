@@ -42,7 +42,7 @@ class TestController extends Controller
     public function store(Request $request)
     {
       
-        $data=$this->validate($request, [
+        $data = $this->validate($request, [
             'price' => 'required |numeric|gt:0',
             'name' => 'required |unique:tests,name',  
             'category_test_id'=>'required'        
@@ -117,8 +117,8 @@ class TestController extends Controller
      */
     public function destroy($id)
     {
-       $test = Test::find($id);
-       $test->delete();
+       $test = Test::find($id)->delete();
+
         return back()->with('success', " Elément supprimé avec succès  ! ");
     }
 }

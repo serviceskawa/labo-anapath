@@ -138,6 +138,11 @@ class PatientController extends Controller
     public function destroy($id)
     {
         $patient = Patient::find($id)->delete();
-        return back()->with('success', " Elément supprimé avec succès  ! ");
+        
+        if ($patient) {
+            return back()->with('success', "    Un élement a été supprimé ! ");
+        } else {
+            return back()->with('error', "    Element utilisé ailleurs ! ");
+        }
     }
 }

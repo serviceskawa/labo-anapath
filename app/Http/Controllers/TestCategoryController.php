@@ -10,7 +10,8 @@ class TestCategoryController extends Controller
 {
     
     public function index(){
-        $testcategories = CategoryTest::all();
+        $testcategories = CategoryTest::with(['tests'])->get();
+        // dd($testcategories);
         return view('tests.category.index',compact(['testcategories']));
     }
 
@@ -54,9 +55,13 @@ class TestCategoryController extends Controller
 
 
     public function destroy($id){
-        $categorytest = CategoryTest::find($id);
-        $categorytest->delete();
-        return back()->with('success', " Elément supprimé avec succès  ! ");
+        $categorytest = CategoryTest::find($id)->delete();
+
+        if ($categorytest) {
+            return back()->with('success', "    Un élement a été supprimé ! ");
+        } else {
+            return back()->with('error', "    Element utilisé ailleurs ! ");
+        }
     }
 
 
