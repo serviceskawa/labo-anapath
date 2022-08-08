@@ -37,6 +37,7 @@ class CreateTestOrdersTable extends Migration
             $table->float('subtotal')->nullable();
             $table->float('discount')->nullable();
             $table->float('total')->nullable();
+            $table->boolean('status')->default(false);
             $table->timestamps();
         });
     }

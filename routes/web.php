@@ -91,7 +91,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/test_order/create', [TestOrderController::class , 'create'])->name('test_order.create');
     Route::get('/test_order/delete/{id}', [TestOrderController::class , 'destroy']);
     Route::post('/test_order/updatetest', [TestOrderController::class , 'updateTestTotal'])->name('test_order.updateorder');
-
+    Route::post('/test_order/updatesatus', [TestOrderController::class , 'updateSatus'])->name('test_order.updatestatus');
 
     //details_test_order
     Route::get('/test_order/details/{id}', [TestOrderController::class , 'details_index'])->name('details_test_order.index');

@@ -159,4 +159,13 @@ class TestOrderController extends Controller
 
         // return back()->with('success', "    Un élement a été supprimé ! ");
     }
+
+    public function updateSatus(Request $request)
+    {
+        $test_order = TestOrder::findorfail($request->test_order_id);
+
+        $test_order->fill(["status" => '1'])->save();
+
+        return redirect()->route('test_order.index')->with('success', "   Examen finalisé! ");
+    }
 }

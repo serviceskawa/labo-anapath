@@ -155,7 +155,12 @@
                             </tr>
                         </tfoot>
                     </table>
-
+                    <div class="row">
+                        <div class="col-9">
+                            <button type="submit" id="finalisationBtn" class="btn btn-info">Cliquez pour
+                                cloturer</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div> <!-- end card-->
@@ -443,5 +448,43 @@
                 }
             });
         }
+
+        $('#finalisationBtn').on('click', function() {
+            let test_order_id = $('#test_order_id').val()
+            console.log(test_order_id)
+            Swal.fire({
+                title: "Avez-vous fini ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Oui ",
+                cancelButtonText: "Non !",
+            }).then(function(result) {
+                if (result.value) {
+                    // window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
+                    $.ajax({
+                        url: "/test_order/updatesatus",
+                        type: "post",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            test_order_id: test_order_id.id,
+                        },
+                        success: function(response) {
+
+                            console.log(response);
+                            Swal.fire(
+                                "Suppression !",
+                                "En cours de traitement ...",
+                                "success"
+                            )
+
+                        },
+                        error: function(response) {
+                            console.log(response);
+                        },
+                    });
+
+                }
+            });
+        });
     </script>
 @endpush
