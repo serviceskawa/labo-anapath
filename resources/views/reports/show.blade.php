@@ -10,8 +10,8 @@
         <div class="col-12">
             <div class="page-title-box">
                 <div class="page-title-right mr-3 mb-1">
-                    <a href="{{ route('contrats.index') }}" type="button" class="btn btn-primary">Retour à la liste des
-                        contrats</a>
+                    <a href="{{ route('report.index') }}" type="button" class="btn btn-primary">Retour à la liste des
+                        reports</a>
                 </div>
                 <h4 class="page-title"></h4>
             </div>
@@ -31,9 +31,8 @@
 
             <div class="card-body">
                 <p><b>code</b> : {{ $report->patient->code }}</p>
-                <p><b>telephone</b> : {{ $report->telephone1 }}</p>
+                <p><b>telephone</b> : {{ $report->patient->telephone1 }}</p>
                 <p><b>Statut</b> : {{ $report->status }}</p>
-                <p><b>Description</b> : </p>
             </div>
         </div>
 
@@ -48,9 +47,10 @@
                     <form action="{{ route('report.store') }}" method="post">
                         @csrf
                         <input type="hidden" name="report_id" value="{{ $report->id }}">
+
                         <textarea name="content" id="snow-editor" class="form-control" cols="30" rows="5" style="height: 300px;"></textarea>
 
-                        <button type="submit">Save</button>
+                        <button type="submit" class="btn btn-warning">Save</button>
                     </form>
 
 
