@@ -15,8 +15,14 @@ class CreateDetailTestOrdersTable extends Migration
     {
         Schema::create('detail_test_orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('test_order_id');
-            $table->string('test_id');
+            $table->foreignId('test_order_id')
+                ->constrained('test_orders')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreignId('test_id') 
+                ->constrained('tests')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->string('test_name');
             $table->float('price');
             $table->float('discount')->nullable();

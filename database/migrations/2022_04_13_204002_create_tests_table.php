@@ -18,7 +18,9 @@ class CreateTestsTable extends Migration
             $table->string('name')->unique();
             $table->float('price',10,2);
             $table->foreignId('category_test_id')
-            ->constrained();
+                ->constrained('category_tests')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

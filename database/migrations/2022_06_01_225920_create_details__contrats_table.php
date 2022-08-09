@@ -15,9 +15,15 @@ class CreateDetailsContratsTable extends Migration
     {
         Schema::create('details__contrats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('contrat_id');
+            $table->foreignId('contrat_id')
+                ->constrained('contrats')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->integer('pourcentage')->nullable();
-            $table->foreignId('category_test_id');
+            $table->foreignId('category_test_id')
+                ->constrained('category_tests')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }
