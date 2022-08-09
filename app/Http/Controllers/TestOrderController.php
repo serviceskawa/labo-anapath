@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Test;
 use App\Models\Doctor;
+use App\Models\Report;
 use App\Models\Contrat;
-use App\Models\Details_Contrat;
-use App\Models\DetailTestOrder;
 use App\Models\Patient;
 use App\Models\Hospital;
 use App\Models\TestOrder;
 use Illuminate\Http\Request;
+use App\Models\Details_Contrat;
+use App\Models\DetailTestOrder;
 use Illuminate\Support\Facades\DB;
 
 class TestOrderController extends Controller
@@ -168,10 +169,24 @@ class TestOrderController extends Controller
     public function updateStatus($id)
     {
         $test_order = TestOrder::findorfail($id);
-        $code = sprintf('%06d', $test_order->id);
-        // dd($code);
-        $test_order->fill(["status" => '1', "code"=> "DE22".$code])->save();
 
-        return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
+        if ($test_order->status) {
+
+            return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
+
+        } else {
+            $code = sprintf('%06d', $test_order->id);
+            // dd($code);
+            $test_order->fill(["status" => '1', "code"=> "DE22".$code])->save();
+
+            $report = Report::create([
+                "code" => "RE22".$code,
+                "patient_id" => $test_order->patient_id,
+                "test_order_id" => $test_order->id,
+            ]);
+
+            return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
+        }
+        
     }
 }

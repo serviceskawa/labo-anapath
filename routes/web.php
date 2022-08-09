@@ -1,15 +1,16 @@
 <?php
 
-use App\Http\Controllers\ContratController;
-use App\Http\Controllers\DetailsContratController;
-use App\Http\Controllers\DoctorController;
-use App\Http\Controllers\HospitalController;
-use App\Http\Controllers\PatientController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
-use App\Http\Controllers\TestCategoryController;
+use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ContratController;
+use App\Http\Controllers\PatientController;
+use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\TestOrderController;
+use App\Http\Controllers\TestCategoryController;
+use App\Http\Controllers\DetailsContratController;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,4 +101,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/test_order/detailsdelete', [TestOrderController::class,'details_destroy']);
     Route::get('/test_order/show/{id}', [TestOrderController::class , 'show'])->name('test_order.show');
 
+    Route::prefix('report')->group(function () {
+        Route::get('list', [ReportController::class , 'index'])->name('report.index');
+        Route::get('show/{id}', [ReportController::class , 'show'])->name('report.show');
+    });
 });

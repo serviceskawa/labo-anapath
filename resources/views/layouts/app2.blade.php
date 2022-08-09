@@ -21,7 +21,7 @@
     <link href="{{ asset('/adminassets/css/app-dark.min.css') }}" rel="stylesheet" type="text/css" id="dark-style">
     <link href="{{ asset('/adminassets/js/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css">
 
-
+    @yield('css')
 
 
 </head>
@@ -34,7 +34,7 @@
         <div class="leftside-menu">
 
             <!-- LOGO -->
-            <a href="index.html" class="logo text-center logo-light">
+            <a href="#" class="logo text-center logo-light">
                 <span class="logo-lg">
                     <img src="{{ asset('/adminassets/images/logo-bg-dark.png') }}" alt="" height="75">
                 </span>
@@ -44,7 +44,7 @@
             </a>
 
             <!-- LOGO -->
-            <a href="index.html" class="logo text-center logo-dark">
+            <a href="#" class="logo text-center logo-dark">
                 <span class="logo-lg">
                     <img src="{{ asset('/adminassets/images/logo-bg-dark.png') }}" alt="" height="16">
                 </span>
@@ -131,6 +131,13 @@
                             </ul>
                         </div>
                     </li>
+                    <li class="side-nav-item">
+                        <a href="{{ route('report.index') }}" class="side-nav-link">
+                            <i class="uil-calender"></i>
+                            <span> Report </span>
+                        </a>
+                    </li>
+
 
                     <!-- <li class="side-nav-item">
                             <a href="apps-social-feed.html" class="side-nav-link">
