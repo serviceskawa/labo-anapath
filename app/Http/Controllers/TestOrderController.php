@@ -72,7 +72,12 @@ class TestOrderController extends Controller
         return view('examens.create',compact(['patients','doctors','hopitals','contrats']));
     }
 
+    public function show($id)
+    {
+        $test_order = TestOrder::findorfail($id);
+        dd($test_order);
 
+    }
     public function destroy($id){
         TestOrder::find($id)->delete();
         return back()->with('success', "    Un élement a été supprimé ! ");
@@ -160,12 +165,13 @@ class TestOrderController extends Controller
         // return back()->with('success', "    Un élement a été supprimé ! ");
     }
 
-    public function updateSatus(Request $request)
+    public function updateStatus($id)
     {
-        $test_order = TestOrder::findorfail($request->test_order_id);
+        $test_order = TestOrder::findorfail($id);
+        $code = sprintf('%06d', $test_order->id);
+        // dd($code);
+        $test_order->fill(["status" => '1', "code"=> "DE22".$code])->save();
 
-        $test_order->fill(["status" => '1'])->save();
-
-        return redirect()->route('test_order.index')->with('success', "   Examen finalisé! ");
+        return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
     }
 }

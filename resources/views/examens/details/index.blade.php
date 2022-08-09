@@ -1,15 +1,13 @@
 @extends('layouts.app2')
 
+@section('title', 'Details examen')
 @section('content')
     <div class="">
-
 
         @include('layouts.alerts')
 
 
         {{-- @include('examens.details.create') --}}
-
-
 
         <div class="card my-3">
             <div class="card-header">
@@ -59,9 +57,12 @@
             </div>
         </div>
 
-
-
         <div class="card mb-md-0 mb-3">
+            <div class="card-header">
+                Détails de la demande d'examen
+            </div>
+            <h5 class="card-title mb-0"></h5>
+
             <div class="card-body">
 
                 <form method="POST" id="addDetailForm" autocomplete="off">
@@ -116,7 +117,6 @@
                 </form>
 
 
-                <h5 class="card-title mb-0">Détails de la demande d'examen</h5>
 
 
 
@@ -157,17 +157,19 @@
                     </table>
                     <div class="row">
                         <div class="col-9">
-                            <button type="submit" id="finalisationBtn" class="btn btn-info">Cliquez pour
-                                cloturer</button>
+                            @if ($test_order->status)
+                                Examen Finalisé
+                            @else
+                                <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}"
+                                    id="finalisationBtn" class="btn btn-info">Cliquez pour
+                                    cloturer</a>
+                            @endif
+
                         </div>
                     </div>
                 </div>
             </div>
         </div> <!-- end card-->
-
-
-
-
 
     </div>
 @endsection
@@ -449,42 +451,42 @@
             });
         }
 
-        $('#finalisationBtn').on('click', function() {
-            let test_order_id = $('#test_order_id').val()
-            console.log(test_order_id)
-            Swal.fire({
-                title: "Avez-vous fini ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Oui ",
-                cancelButtonText: "Non !",
-            }).then(function(result) {
-                if (result.value) {
-                    // window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
-                    $.ajax({
-                        url: "/test_order/updatesatus",
-                        type: "post",
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            test_order_id: test_order_id.id,
-                        },
-                        success: function(response) {
+        // $('#finalisationBtn').on('click', function() {
+        //     let test_order_id = $('#test_order_id').val()
+        //     console.log(test_order_id)
+        //     Swal.fire({
+        //         title: "Avez-vous fini ?",
+        //         icon: "warning",
+        //         showCancelButton: true,
+        //         confirmButtonText: "Oui ",
+        //         cancelButtonText: "Non !",
+        //     }).then(function(result) {
+        //         if (result.value) {
+        //             // window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
+        //             $.ajax({
+        //                 url: "/test_order/updatestatus",
+        //                 type: "post",
+        //                 data: {
+        //                     "_token": "{{ csrf_token() }}",
+        //                     test_order_id: test_order_id.id,
+        //                 },
+        //                 success: function(response) {
 
-                            console.log(response);
-                            Swal.fire(
-                                "Suppression !",
-                                "En cours de traitement ...",
-                                "success"
-                            )
+        //                     console.log(response);
+        //                     Swal.fire(
+        //                         "Suppression !",
+        //                         "En cours de traitement ...",
+        //                         "success"
+        //                     )
 
-                        },
-                        error: function(response) {
-                            console.log(response);
-                        },
-                    });
+        //                 },
+        //                 error: function(response) {
+        //                     console.log(response);
+        //                 },
+        //             });
 
-                }
-            });
-        });
+        //         }
+        //     });
+        // });
     </script>
 @endpush

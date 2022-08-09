@@ -91,11 +91,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/test_order/create', [TestOrderController::class , 'create'])->name('test_order.create');
     Route::get('/test_order/delete/{id}', [TestOrderController::class , 'destroy']);
     Route::post('/test_order/updatetest', [TestOrderController::class , 'updateTestTotal'])->name('test_order.updateorder');
-    Route::post('/test_order/updatesatus', [TestOrderController::class , 'updateSatus'])->name('test_order.updatestatus');
+    Route::get('/test_order/updatestatus/{id}', [TestOrderController::class , 'updateStatus'])->name('test_order.updatestatus');
 
     //details_test_order
     Route::get('/test_order/details/{id}', [TestOrderController::class , 'details_index'])->name('details_test_order.index');
     Route::post('/test_order/details', [TestOrderController::class , 'details_store'])->name('details_test_order.store');
     Route::get('/test_order/detailstest/{id}', [TestOrderController::class , 'getDetailsTest']);
     Route::post('/test_order/detailsdelete', [TestOrderController::class,'details_destroy']);
+    Route::get('/test_order/show/{id}', [TestOrderController::class , 'show'])->name('test_order.show');
+
 });

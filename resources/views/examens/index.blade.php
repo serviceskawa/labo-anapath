@@ -1,5 +1,7 @@
 @extends('layouts.app2')
 
+@section('title', 'Examens')
+
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -72,7 +74,8 @@
                                         <td>{{ $item->getHospital()->name }}</td>
                                         <td>{{ $item->total }}</td>
                                         <td>
-                                            {{-- <button type="button" onclick="edit({{$item->id}})" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button> --}}
+                                            <a type="button" href="{{ route('details_test_order.index', $item->id) }}"
+                                                class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
                                             <button type="button" onclick="deleteModal({{ $item->id }})"
                                                 class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
                                         </td>

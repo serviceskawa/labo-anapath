@@ -15,7 +15,7 @@ class CreateTestOrdersTable extends Migration
     {
         Schema::create('test_orders', function (Blueprint $table) {
             $table->id();
-
+            $table->string('code')->nullable()->unique();
             $table->foreignId('patient_id')->nullable()
                 ->constrained('patients')
                 ->onUpdate('cascade')
