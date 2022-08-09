@@ -104,5 +104,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('report')->group(function () {
         Route::get('list', [ReportController::class , 'index'])->name('report.index');
         Route::get('show/{id}', [ReportController::class , 'show'])->name('report.show');
+        Route::post('/store', [ReportController::class,'store'])->name('report.store');
+
     });
 });

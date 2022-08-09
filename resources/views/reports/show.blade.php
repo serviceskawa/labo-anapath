@@ -1,5 +1,10 @@
 @extends('layouts.app2')
 
+@section('css')
+    <link href="{{ asset('/adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('/adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" />
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -39,9 +44,14 @@
 
                 <h5 class="card-title mb-0">Rediger le compte rendu de l'examen</h5>
 
-
                 <div id="cardCollpase1" class="collapse pt-3 show">
+                    <form action="{{ route('report.store') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="report_id" value="{{ $report->id }}">
+                        <textarea name="content" id="snow-editor" class="form-control" cols="30" rows="5" style="height: 300px;"></textarea>
 
+                        <button type="submit">Save</button>
+                    </form>
 
 
 
@@ -55,6 +65,10 @@
 
 
 @push('extra-js')
+    <!-- quill js -->
+    <script src="{{ asset('/adminassets/js/vendor/quill.min.js') }}"></script>
+    <!-- quill Init js-->
+    <script src="{{ asset('/adminassets/js/pages/demo.quilljs.js') }}"></script>
     <script>
         // SUPPRESSION
         function deleteModal(id) {
