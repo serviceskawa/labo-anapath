@@ -157,7 +157,8 @@
                     </table>
                     <div class="row mt-2 mx-3">
                         @if ($test_order->status)
-                            Examen Finalisé
+                            <a href="{{ route('report.index') }}" class="btn btn-success w-full">Cliquez pour
+                                rediger le rapport</a>
                         @else
                             <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}"
                                 id="finalisationBtn" class="btn btn-info w-full">Cliquez pour
@@ -372,7 +373,7 @@
                 success: function(response) {
                     console.log(response)
                     $('#addDetailForm').trigger("reset")
-                    updateSubTotal();
+                    // updateSubTotal();
                 },
                 error: function(response) {
                     console.log(response)
