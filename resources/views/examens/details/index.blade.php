@@ -265,7 +265,7 @@
                     $(api.column(3).footer()).html(discount);
                     $(api.column(2).footer()).html(subTotal);
 
-                    // sendTotal(test_order.id, total, discount, subTotal);
+                    sendTotal(test_order.id, total, discount, subTotal);
 
                     // if ($(api.column(4).footer()).html(total)) {
                     //     // console.log('footer');
@@ -323,29 +323,29 @@
                 });
             });
 
-            // function sendTotal(test_order_id, total, discount, subTotal) {
-            //     console.log(test_order_id, total, discount, subTotal);
+            function sendTotal(test_order_id, total, discount, subTotal) {
+                console.log(test_order_id, total, discount, subTotal);
 
-            //     $.ajax({
-            //         url: "{{ route('test_order.updateorder') }}",
-            //         type: "POST",
-            //         data: {
-            //             "_token": "{{ csrf_token() }}",
-            //             test_order_id: test_order_id,
-            //             discount: discount,
-            //             subTotal: subTotal,
-            //             total: total
+                $.ajax({
+                    url: "{{ route('test_order.updateorder') }}",
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        test_order_id: test_order_id,
+                        discount: discount,
+                        subTotal: subTotal,
+                        total: total
 
-            //         },
-            //         success: function(response) {
-            //             console.log(response)
+                    },
+                    success: function(response) {
+                        console.log(response)
 
-            //         },
-            //         error: function(response) {
-            //             console.log(response)
-            //         },
-            //     });
-            // }
+                    },
+                    error: function(response) {
+                        console.log(response)
+                    },
+                });
+            }
         });
 
         $('#addDetailForm').on('submit', function(e) {
@@ -381,14 +381,14 @@
 
         });
 
-        function updateSubTotal() {
-            var table = document.getElementById("datatable1");
-            let subTotal2 = Array.from(table.rows).slice(6).reduce((total, row) => {
-                return total + parseFloat(row.cells[6].innerHTML);
-            }, 0);
-            console.log(subTotal2);
-            document.getElementById("val").innerHTML = "SubTotal = $" + subTotal2;
-        };
+        // function updateSubTotal() {
+        //     var table = document.getElementById("datatable1");
+        //     let subTotal2 = Array.from(table.rows).slice(6).reduce((total, row) => {
+        //         return total + parseFloat(row.cells[6].innerHTML);
+        //     }, 0);
+        //     console.log(subTotal2);
+        //     document.getElementById("val").innerHTML = "SubTotal = $" + subTotal2;
+        // };
 
         // function getTest() {
         //     var test_id = $('#test_id').val();
