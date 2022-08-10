@@ -1,8 +1,12 @@
 @extends('layouts.app2')
 
 @section('css')
+    {{-- <link href="{{ asset('/adminassets/css/vendor/quill.bubble.css') }}" rel="stylesheet" type="text/css" />
+
     <link href="{{ asset('/adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('/adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('/adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" /> --}}
+
+    <link href="{{ asset('/adminassets/css/vendor/simplemde.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 
 @section('content')
@@ -47,22 +51,17 @@
                 <div id="cardCollpase1" class="collapse pt-3 show">
                     <form action="{{ route('report.store') }}" method="post">
                         @csrf
-                        <div class="mb-2">
-                            <div class="form-check form-check-inline">
-                                <input type="checkbox" class="form-check-input" id="customCheck3">
-                                <label class="form-check-label" for="customCheck3">Signature 1</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input type="checkbox" class="form-check-input" id="customCheck4">
-                                <label class="form-check-label" for="customCheck4">Signature 2</label>
-                            </div>
+                        <div class="mb-3">
+                            <label for="simpleinput" class="form-label">Titre</label>
+                            <input type="text" id="simpleinput" name="title" class="form-control"
+                                value="{{ $report ? $report->title : '' }}">
                         </div>
 
                         <input type="hidden" name="report_id" value="{{ $report->id }}">
 
-                        <textarea name="content" id="snow-editor" class="form-control" cols="30" rows="5" style="height: 300px;"></textarea>
+                        <textarea name="content" id="simplemde1" class="form-control" cols="30" rows="5" style="height: 300px;">{{ $report->description }}</textarea>
 
-                        <button type="submit" class=" mt-3 btn btn-warning w-100">Save</button>
+                        <button type="submit" class=" mt-3 btn btn-warning w-100">Enregistrer</button>
                     </form>
 
                 </div>
@@ -75,10 +74,14 @@
 
 
 @push('extra-js')
-    <!-- quill js -->
+    {{-- <!-- quill js -->
     <script src="{{ asset('/adminassets/js/vendor/quill.min.js') }}"></script>
     <!-- quill Init js-->
-    <script src="{{ asset('/adminassets/js/pages/demo.quilljs.js') }}"></script>
+    <script src="{{ asset('/adminassets/js/pages/demo.quilljs.js') }}"></script> --}}
+
+    <script src="{{ asset('/adminassets/js/vendor/simplemde.min.js') }}"></script>
+    <!-- SimpleMDE demo -->
+    <script src="{{ asset('/adminassets/js/pages/demo.simplemde.js') }}"></script>
     <script>
         // SUPPRESSION
         function deleteModal(id) {

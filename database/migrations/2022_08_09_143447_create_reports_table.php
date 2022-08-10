@@ -16,6 +16,7 @@ class CreateReportsTable extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->string('code')->nullable()->unique();
+            $table->string('title')->nullable();
             $table->foreignId('patient_id')->nullable()
                 ->constrained('patients')
                 ->onUpdate('cascade')

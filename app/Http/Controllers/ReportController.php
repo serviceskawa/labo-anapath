@@ -38,9 +38,12 @@ class ReportController extends Controller
      */
     public function store(Request $request)
     {
-
+        // dd($request);
         $report = Report::findorfail($request->report_id);
-        $report->fill(["description" => $request->content])->save();
+        $report->fill([
+            "title" => $request->title,
+            "description" => $request->content
+        ])->save();
 
         return redirect()->back()->with('success', "   Examen finalisé ! ");
     }
