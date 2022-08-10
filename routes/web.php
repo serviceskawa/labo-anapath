@@ -111,5 +111,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('settings')->group(function () {
         Route::get('reports', [SettingController::class , 'report_index'])->name('settings.report-index');
+        Route::post('reports-store', [SettingController::class,'report_store'])->name('report.report-store');
+
     });
 });
