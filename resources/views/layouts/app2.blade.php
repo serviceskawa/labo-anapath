@@ -139,6 +139,21 @@
                     </li>
 
 
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarForms" aria-expanded="false"
+                            aria-controls="sidebarForms" class="side-nav-link">
+                            <i class="uil-document-layout-center"></i>
+                            <span> Settings </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarForms">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href="{{ route('settings.report-index') }}">Reports Settings</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
                     <!-- <li class="side-nav-item">
                             <a href="apps-social-feed.html" class="side-nav-link">
                                 <i class="uil-rss"></i>

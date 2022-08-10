@@ -50,10 +50,8 @@
 
                         <textarea name="content" id="snow-editor" class="form-control" cols="30" rows="5" style="height: 300px;"></textarea>
 
-                        <button type="submit" class="btn btn-warning">Save</button>
+                        <button type="submit" class=" mt-3 btn btn-warning w-100">Save</button>
                     </form>
-
-
 
                 </div>
             </div>

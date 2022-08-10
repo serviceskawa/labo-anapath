@@ -7,6 +7,7 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ContratController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\TestOrderController;
 use App\Http\Controllers\TestCategoryController;
@@ -106,5 +107,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('show/{id}', [ReportController::class , 'show'])->name('report.show');
         Route::post('/store', [ReportController::class,'store'])->name('report.store');
 
+    });
+
+    Route::prefix('settings')->group(function () {
+        Route::get('reports', [SettingController::class , 'report_index'])->name('settings.report-index');
     });
 });
