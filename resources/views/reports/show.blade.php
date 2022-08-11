@@ -49,7 +49,7 @@
                 <h5 class="card-title mb-0">Contenu du compte rendu</h5>
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
-                <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
+                    <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
                     <form action="{{ route('report.store') }}" method="post">
                         @csrf
                         <div class="mb-3">
