@@ -59,7 +59,7 @@
 
                         <input type="hidden" name="report_id" value="{{ $report->id }}">
 
-                        <textarea name="content" id="simplemde1" class="form-control" cols="30" rows="5" style="height: 300px;">{{ $report->description }}</textarea>
+                        <textarea name="content" id="simplemde1" class="form-control" cols="30" rows="5" style="height: 300px;">aazaz</textarea>
 
                         <button type="submit" class=" mt-3 btn btn-warning w-100">Enregistrer</button>
                     </form>
