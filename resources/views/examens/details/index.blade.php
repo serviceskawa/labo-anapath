@@ -10,8 +10,12 @@
         {{-- @include('examens.details.create') --}}
 
         <div class="card my-3">
+        @if ($test_order->status == 1)
+            <a href="{{ route('report.index') }}" class="btn btn-success w-full">CONSULTEZ LE COMPTE RENDU</a>
+        @endif
+        
             <div class="card-header">
-                Demande d'examen
+                Demande d'examen : <strong>{{ $test_order->code }}</strong>
             </div>
             <div class="card-body">
 
@@ -59,12 +63,14 @@
 
         <div class="card mb-md-0 mb-3">
             <div class="card-header">
-                Détails de la demande d'examen
+            Liste des examens demandés
             </div>
             <h5 class="card-title mb-0"></h5>
 
             <div class="card-body">
 
+            <!-- Ajouter un examen | si le statut de la demande est 1 alors on peut plus ajouter de nouveau examen dans la demande-->
+            @if ($test_order->status != 1)
                 <form method="POST" id="addDetailForm" autocomplete="off">
                     @csrf
                     <div class="row d-flex align-items-end">
@@ -73,9 +79,9 @@
                                 class="form-control">
 
                             <div class="mb-3">
-                                <label for="example-select" class="form-label">Test</label>
+                                <label for="example-select" class="form-label">Examen</label>
                                 <select class="form-select" id="test_id" name="test_id" required onchange="getTest()">
-                                    <option>...</option>
+                                    <option>Sélectionner l'examen</option>
                                     @foreach ($tests as $test)
                                         <option data-category_test_id="{{ $test->category_test_id }}"
                                             value="{{ $test->id }}">{{ $test->name }}</option>
@@ -115,10 +121,7 @@
                     </div>
 
                 </form>
-
-
-
-
+            @endif
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
@@ -155,14 +158,11 @@
                             </tr>
                         </tfoot>
                     </table>
+                    
                     <div class="row mt-2 mx-3">
-                        @if ($test_order->status)
-                            <a href="{{ route('report.index') }}" class="btn btn-success w-full">Cliquez pour
-                                rediger le rapport</a>
-                        @else
+                        @if ($test_order->status != 1)
                             <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}"
-                                id="finalisationBtn" class="btn btn-info w-full">Cliquez pour
-                                cloturer</a>
+                                id="finalisationBtn" class="btn btn-info w-full">ENREGISTRER</a>
                         @endif
 
                     </div>

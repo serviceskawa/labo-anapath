@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Reports</h4>
+                <h4 class="page-title">Comptes rendu</h4>
 
             </div>
 
@@ -35,7 +35,7 @@
                         aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                     <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                 </div>
-                <h5 class="card-title mb-0">Liste des reports</h5>
+                <h5 class="card-title mb-0">Liste des comptes rendu</h5>
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
@@ -44,6 +44,7 @@
                         <thead>
                             <tr>
                                 <th>Code</th>
+                                <th>Code demande</th>
                                 <th>Patient code</th>
                                 <th>Statut</th>
                                 <th>Actions</th>
@@ -56,6 +57,7 @@
                             @foreach ($reports as $item)
                                 <tr>
                                     <td>{{ $item->code }}</td>
+                                    <td></td>
                                     <td>{{ $item->patient->name }}</td>
                                     <td>{{ $item->status }}</td>
 
@@ -66,10 +68,6 @@
 
                                 </tr>
                             @endforeach
-
-
-
-
                         </tbody>
                     </table>
 
