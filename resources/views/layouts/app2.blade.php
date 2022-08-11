@@ -117,7 +117,7 @@
                         <a data-bs-toggle="collapse" href="#sidebarEcommerce1" aria-expanded="false"
                             aria-controls="sidebarEcommerce1" class="side-nav-link">
                             <i class="uil-syringe"></i>
-                            <span> Demande d'examen </span>
+                            <span> Demandes d'examen</span>
                             <span class="menu-arrow"></span>
                         </a>
                         <div class="collapse" id="sidebarEcommerce1">
@@ -134,7 +134,7 @@
                     <li class="side-nav-item">
                         <a href="{{ route('report.index') }}" class="side-nav-link">
                             <i class="uil-calender"></i>
-                            <span> Report </span>
+                            <span> Comptes rendu</span>
                         </a>
                     </li>
 
@@ -143,13 +143,13 @@
                         <a data-bs-toggle="collapse" href="#sidebarForms" aria-expanded="false"
                             aria-controls="sidebarForms" class="side-nav-link">
                             <i class="uil-document-layout-center"></i>
-                            <span> Settings </span>
+                            <span>Paramètres</span>
                             <span class="menu-arrow"></span>
                         </a>
                         <div class="collapse" id="sidebarForms">
                             <ul class="side-nav-second-level">
                                 <li>
-                                    <a href="{{ route('settings.report-index') }}">Reports Settings</a>
+                                    <a href="{{ route('settings.report-index') }}">Paramètres compte rendu</a>
                                 </li>
                             </ul>
                         </div>
