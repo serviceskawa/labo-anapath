@@ -10,10 +10,11 @@
         {{-- @include('examens.details.create') --}}
 
         <div class="card my-3">
-        @if ($test_order->status == 1)
-            <a href="{{ route('report.index') }}" class="btn btn-success w-full">CONSULTEZ LE COMPTE RENDU</a>
-        @endif
-        
+            @if ($test_order->status == 1)
+                <a href="{{ route('report.show', $test_order->report->id) }}" class="btn btn-success w-full">CONSULTEZ LE
+                    COMPTE RENDU</a>
+            @endif
+
             <div class="card-header">
                 Demande d'examen : <strong>{{ $test_order->code }}</strong>
             </div>
@@ -63,65 +64,68 @@
 
         <div class="card mb-md-0 mb-3">
             <div class="card-header">
-            Liste des examens demandés
+                Liste des examens demandés
             </div>
             <h5 class="card-title mb-0"></h5>
 
             <div class="card-body">
 
-            <!-- Ajouter un examen | si le statut de la demande est 1 alors on peut plus ajouter de nouveau examen dans la demande-->
-            @if ($test_order->status != 1)
-                <form method="POST" id="addDetailForm" autocomplete="off">
-                    @csrf
-                    <div class="row d-flex align-items-end">
-                        <div class="col-md-4 col-12">
-                            <input type="hidden" name="test_order_id" id="test_order_id" value="{{ $test_order->id }}"
-                                class="form-control">
+                <!-- Ajouter un examen | si le statut de la demande est 1 alors on peut plus ajouter de nouveau examen dans la demande-->
+                @if ($test_order->status != 1)
+                    <form method="POST" id="addDetailForm" autocomplete="off">
+                        @csrf
+                        <div class="row d-flex align-items-end">
+                            <div class="col-md-4 col-12">
+                                <input type="hidden" name="test_order_id" id="test_order_id" value="{{ $test_order->id }}"
+                                    class="form-control">
 
-                            <div class="mb-3">
-                                <label for="example-select" class="form-label">Examen</label>
-                                <select class="form-select" id="test_id" name="test_id" required onchange="getTest()">
-                                    <option>Sélectionner l'examen</option>
-                                    @foreach ($tests as $test)
-                                        <option data-category_test_id="{{ $test->category_test_id }}"
-                                            value="{{ $test->id }}">{{ $test->name }}</option>
-                                    @endforeach
+                                <div class="mb-3">
+                                    <label for="example-select" class="form-label">Examen</label>
+                                    <select class="form-select" id="test_id" name="test_id" required onchange="getTest()">
+                                        <option>Sélectionner l'examen</option>
+                                        @foreach ($tests as $test)
+                                            <option data-category_test_id="{{ $test->category_test_id }}"
+                                                value="{{ $test->id }}">{{ $test->name }}</option>
+                                        @endforeach
 
 
-                                </select>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-12">
+
+                                <div class="mb-3">
+                                    <label for="simpleinput" class="form-label">Prix</label>
+                                    <input type="text" name="price" id="price" class="form-control" required
+                                        readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-12">
+                                <div class="mb-3">
+                                    <label for="simpleinput" class="form-label">Remise</label>
+                                    <input type="text" name="remise" id="remise" class="form-control" required
+                                        readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-12">
+                                <div class="mb-3">
+                                    <label for="example-select" class="form-label">Total</label>
+
+                                    <input type="text" name="total" id="total" class="form-control" required
+                                        readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-12">
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
+
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-2 col-12">
 
-                            <div class="mb-3">
-                                <label for="simpleinput" class="form-label">Prix</label>
-                                <input type="text" name="price" id="price" class="form-control" required readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-12">
-                            <div class="mb-3">
-                                <label for="simpleinput" class="form-label">Remise</label>
-                                <input type="text" name="remise" id="remise" class="form-control" required readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-12">
-                            <div class="mb-3">
-                                <label for="example-select" class="form-label">Total</label>
-
-                                <input type="text" name="total" id="total" class="form-control" required readonly>
-                            </div>
-                        </div>
-
-                        <div class="col-md-2 col-12">
-                            <div class="mb-3">
-                                <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
-
-                            </div>
-                        </div>
-                    </div>
-
-                </form>
-            @endif
+                    </form>
+                @endif
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
@@ -158,7 +162,7 @@
                             </tr>
                         </tfoot>
                     </table>
-                    
+
                     <div class="row mt-2 mx-3">
                         @if ($test_order->status != 1)
                             <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}"

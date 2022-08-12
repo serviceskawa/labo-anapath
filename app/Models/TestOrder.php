@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Report;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TestOrder extends Model
 {
@@ -55,5 +56,15 @@ class TestOrder extends Model
     public function doctor()
     {
         return $this->belongsTo(Doctor::class,);
+    }
+
+    /**
+     * Get the report associated with the TestOrder
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function report()
+    {
+        return $this->hasOne(Report::class);
     }
 }

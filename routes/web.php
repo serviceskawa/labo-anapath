@@ -85,6 +85,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/contrats/details/store', [ContratController::class , 'details_store'])->name('contrat_details.store');
     Route::get('/contrats_details/delete/{id}', [ContratController::class , 'destroy_details']);
     Route::get('/getcontratdetails/{id}', [ContratController::class , 'contrat_details_edit']);
+    Route::get('/updatecontratstatus/{id}', [ContratController::class , 'update_detail_status'])->name('contrat_details.update-status');
     Route::post('/contrats_details/update', [ContratController::class , 'contrat_details_update'])->name('contrat_details.update');
 
     //TEST_ORDER

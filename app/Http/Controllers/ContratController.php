@@ -26,7 +26,7 @@ class ContratController extends Controller
 
         $contrat = Contrat::find($id);
         $test_caterories = CategoryTest::all();
-        $details = Details_Contrat::where('contrat_id',$contrat->id)->get();
+        $details = Details_Contrat::where('contrat_id',$contrat->id)->get(); 
         return view('contrats_details.index',compact(['contrat','details','test_caterories']));
 
     }
@@ -137,7 +137,7 @@ class ContratController extends Controller
     public function update(Request $request)
     {
 
-        $data=$this->validate($request, [
+        $data = $this->validate($request, [
             'name2' => 'required',
             'type2' => 'required',
             'status2' => 'required',
@@ -218,5 +218,12 @@ class ContratController extends Controller
         return back()->with('success', "    Un élement a été supprimé ! ");
     }
 
+    public function update_detail_status($id)
+    {
+        $contrat = Contrat::findorfail($id);
+        $contrat->fill(["status" => "ACTIF"])->save();
+
+        return redirect()->route('contrats.index')->with('success', "Statut mis à jour ! ");
+    }
 
 }

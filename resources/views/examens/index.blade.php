@@ -53,6 +53,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Date</th>
+                                    <th>Code</th>
                                     <th>Patient</th>
                                     <th>Médecin</th>
                                     <th>Hopital</th>
@@ -69,6 +70,7 @@
                                     <tr>
                                         <td>{{ $item->id }}</td>
                                         <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
+                                        <td>{{ $item->code }} </td>
                                         <td>{{ $item->patient->name }}</td>
                                         <td>{{ $item->getDoctor()->name }}</td>
                                         <td>{{ $item->getHospital()->name }}</td>
