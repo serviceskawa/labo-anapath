@@ -57,13 +57,13 @@
                             @foreach ($reports as $item)
                                 <tr>
                                     <td>{{ $item->code }}</td>
-                                    <td></td>
+                                    <td>{{ $item->order->code }}</td>
                                     <td>{{ $item->patient->name }}</td>
                                     <td>{{ $item->status }}</td>
 
                                     <td>
                                         <a type="button" href="{{ route('report.show', $item->id) }}"
-                                            class="btn btn-warning"><i class="mdi mdi-eye"></i> </a>
+                                            class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
                                     </td>
 
                                 </tr>
