@@ -44,8 +44,10 @@
                         <thead>
                             <tr>
                                 <th>Code</th>
-                                <th>Code demande</th>
-                                <th>Patient code</th>
+                                <th>Code patient</th>
+                                <th>Nom Patient</th>
+                                <th>Telephone</th>
+                                <th>Date</th>
                                 <th>Statut</th>
                                 <th>Actions</th>
                             </tr>
@@ -57,8 +59,10 @@
                             @foreach ($reports as $item)
                                 <tr>
                                     <td>{{ $item->code }}</td>
-                                    <td>{{ $item->order->code }}</td>
+                                    <td>{{ $item->patient->code }}</td>
                                     <td>{{ $item->patient->name }}</td>
+                                    <td>{{ $item->patient->telephone1 }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
                                     <td>{{ $item->status }}</td>
 
                                     <td>

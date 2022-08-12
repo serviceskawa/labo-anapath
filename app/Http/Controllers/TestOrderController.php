@@ -109,27 +109,28 @@ class TestOrderController extends Controller
         ]);
 
        $test = Test::find($data['test_id']);
+        $test_order = TestOrder::findorfail($data['test_order_id']);
 
+        return response()->json($test_order);
+        // try {
+        //     DB::transaction(function () use ($data,$test) {
+        //         $details = new DetailTestOrder();
+        //         $details->test_id = $data['test_id'];
+        //         $details->test_name = $test->name;
+        //         $details->price = $data['price'];
+        //         $details->discount = $data['discount'];
+        //         $details->total = $data['total'];
+        //         $details->test_order_id = $data['test_order_id'];
+        //         $details->save();
+        //     });
 
-        try {
-            DB::transaction(function () use ($data,$test) {
-                $details = new DetailTestOrder();
-                $details->test_id = $data['test_id'];
-                $details->test_name = $test->name;
-                $details->price = $data['price'];
-                $details->discount = $data['discount'];
-                $details->total = $data['total'];
-                $details->test_order_id = $data['test_order_id'];
-                $details->save();
-            });
+        //         //  return back()->with('success', "Opération effectuée avec succès ! ");
+        //         return response()->json(200);
+        // } catch(\Throwable $ex){
+        //         return response()->json(200);
 
-            //  return back()->with('success', "Opération effectuée avec succès ! ");
-            return response()->json(200);
-            } catch(\Throwable $ex){
-                return response()->json(200);
-
-        //   return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-      }
+        //         //   return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        // }
     }
 
     public function getDetailsTest($id)

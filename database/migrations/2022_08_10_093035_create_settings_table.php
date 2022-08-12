@@ -19,6 +19,9 @@ class CreateSettingsTable extends Migration
             $table->text('signature1')->nullable();
             $table->string('signatory2')->nullable();
             $table->text('signature2')->nullable();
+            $table->string('signatory3')->nullable();
+            $table->text('signature3')->nullable();
+            $table->text('placeholder')->nullable();
             $table->text('logo')->nullable();
             $table->string('api_sms_key')->nullable();
             $table->string('telephone2')->nullable();

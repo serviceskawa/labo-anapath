@@ -32,26 +32,57 @@ class SettingController extends Controller
             $path_img2 = $request->file('img2')->storeAs('settings/reports/', $img2, 'public');
             
         }
+        if ($request->file('img3') ) {
+
+            $img2 = time() . '_settings_report_signature3' . $request->file('img3')->extension();  
+            
+            $path_img3 = $request->file('img3')->storeAs('settings/reports/', $img2, 'public');
+            
+        }
 
         if ($setting) {
 
             $setting->fill([
                 "signatory1" => $request->Signator1,
                 "signatory2" => $request->Signator2,
+                "signatory3" => $request->Signator3,
+                "placeholder" => $request->placeholder,
                 "signature1" => $request->file('img1') ? $path_img1 : $setting->signature1,
-                "signature2" => $request->file('img2') ? $path_img2 : $setting->signature2
+                "signature2" => $request->file('img2') ? $path_img2 : $setting->signature2,
+                "signature3" => $request->file('img3') ? $path_img3 : $setting->signature3
             ])->save();
 
         }else {
             $setting = Setting::create([
                 "signatory1" => $request->Signator1,
                 "signatory2" => $request->Signator2,
+                "signatory3" => $request->Signator3,
+                "placeholder" => $request->placeholder,
                 "signature1" => $request->file('img1') ? $path_img1 : "",
-                "signature2" => $request->file('img2') ? $path_img2 : ""
+                "signature2" => $request->file('img2') ? $path_img2 : "",
+                "signature3" => $request->file('img3') ? $path_img3 : ""
             ]);
         }
         
 
         return back()->with('success', " Elément mis à jour avec succès  ! ");
+    }
+
+    public function report_store_placeholder(Request $request)
+    {
+        $setting = Setting::find(1);
+
+        if ($setting) {
+
+            $setting->fill([
+                "placeholder" => $request->placeholder
+            ])->save();
+
+        }else {
+            $setting = Setting::create([
+                "placeholder" => $request->placeholder
+            ]);
+        }
+        return back()->with('success', "Placeholder mis à jour avec succès  ! ");
     }
 }

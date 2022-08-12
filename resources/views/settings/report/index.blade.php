@@ -1,5 +1,7 @@
 @extends('layouts.app2')
 
+@section('title', 'REPORTS SETTINGS')
+
 @section('css')
     <link href="{{ asset('/adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('/adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" />
@@ -41,6 +43,11 @@
                                 Signatures
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="#input-types-code" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                                Placeholder
+                            </a>
+                        </li>
                     </ul> <!-- end nav-->
 
                     <div class="tab-content">
@@ -49,7 +56,7 @@
                                 <div class="row">
 
                                     @csrf
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
 
 
                                         <div class="mb-3">
@@ -67,7 +74,7 @@
 
                                     </div> <!-- end col -->
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
 
                                         <div class="mb-3">
                                             <label for="simpleinput" class="form-label">Signator 2</label>
@@ -84,6 +91,27 @@
 
                                     </div> <!-- end col -->
 
+                                    <div class="col-lg-4">
+
+                                        <div class="mb-3">
+                                            <label for="simpleinput" class="form-label">Signator 3</label>
+                                            <input type="text" id="simpleinput" name="Signator3"
+                                                value="{{ $setting ? $setting->signatory3 : '' }}" class="form-control">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="example-fileinput" class="form-label">Signature 3</label>
+                                            <input type="file" id="example-fileinput" name="img3"
+                                                class="form-control">
+                                        </div>
+
+
+                                    </div> <!-- end col -->
+
+                                    <div class="row">
+                                        <textarea class="form-control" name="placeholder" placeholder="Description" style="height: 100px;">{{ $setting ? $setting->placeholder : '' }}</textarea>
+
+                                    </div>
                                 </div>
                                 <div class="card-footer">
                                     <div class="d-grid">
@@ -93,7 +121,13 @@
                             </form>
                             <!-- end row-->
                         </div> <!-- end preview-->
+                        <div class="tab-pane" id="input-types-code">
+                            <pre class="mb-0">
+                                <span class="html escape">
 
+                                </span>
+                            </pre> <!-- end highlight-->
+                        </div>
                     </div> <!-- end tab-content-->
                 </div>
 
