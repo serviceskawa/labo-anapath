@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Report;
+use App\Models\DetailTestOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -67,5 +68,15 @@ class TestOrder extends Model
     public function report()
     {
         return $this->hasOne(Report::class);
+    }
+
+    /**
+     * Get all of the details for the TestOrder
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function details()
+    {
+        return $this->hasMany(DetailTestOrder::class, 'test_order_id');
     }
 }

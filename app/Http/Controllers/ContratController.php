@@ -75,12 +75,18 @@ class ContratController extends Controller
 
     public function details_store(Request $request){
 
-        $data=$this->validate($request, [
+        $data = $this->validate($request, [
             'contrat_id' => 'required',
             'pourcentage' => 'required',
             'category_test_id' => 'required',
         ]);
 
+        $contrat = Contrat::findorfail($data['contrat_id']);
+        $category_exit = $contrat->detail()->whereCategoryTestId($data['category_test_id'])->exists();
+
+        if ($category_exit) {
+            return back()->with('error', "Cette categorie existe ! ");
+        }
 
         try {
 
@@ -88,12 +94,11 @@ class ContratController extends Controller
                 Details_Contrat::create($data);
             });
 
-             return back()->with('success', "Element enregistré avec succès ! ");
-            } catch(\Throwable $ex){
+            return back()->with('success', "Element enregistré avec succès ! ");
+
+        } catch(\Throwable $ex){
           return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-      }
-
-
+        }
 
     }
 
