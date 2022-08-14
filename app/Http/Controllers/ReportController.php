@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\herpers;
+
 use App\Models\Report;
 use App\Models\Contrat;
 use Illuminate\Http\Request;
@@ -95,5 +97,26 @@ class ReportController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function send_sms($id)
+    {
+        $report = Report::findorfail($id);
+
+        $tel = $report->patient->telephone1;
+        $number = "+22996631611";
+        $message = "test one";
+        
+        try {
+
+            sendSingleMessage($number, $message);
+
+            return redirect()->back()->with('success', "SMS envoyé avec succes ");
+
+            } catch(\Throwable $ex){
+
+          return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+      }
+
     }
 }

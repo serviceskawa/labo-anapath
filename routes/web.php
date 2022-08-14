@@ -107,6 +107,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('list', [ReportController::class , 'index'])->name('report.index');
         Route::get('show/{id}', [ReportController::class , 'show'])->name('report.show');
         Route::post('/store', [ReportController::class,'store'])->name('report.store');
+        Route::get('send_sms/{id}', [ReportController::class , 'send_sms'])->name('report.send-sms');
 
     });
 
