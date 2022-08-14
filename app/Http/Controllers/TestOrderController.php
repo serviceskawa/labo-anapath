@@ -7,6 +7,7 @@ use App\Models\Doctor;
 use App\Models\Report;
 use App\Models\Contrat;
 use App\Models\Patient;
+use App\Models\Setting;
 use App\Models\Hospital;
 use App\Models\TestOrder;
 use Illuminate\Http\Request;
@@ -176,6 +177,7 @@ class TestOrderController extends Controller
     public function updateStatus($id)
     {
         $test_order = TestOrder::findorfail($id);
+        $settings = Setting::find(1);
 
         if ($test_order->status) {
 
@@ -189,6 +191,7 @@ class TestOrderController extends Controller
             $report = Report::create([
                 "code" => "RE22".$code,
                 "patient_id" => $test_order->patient_id,
+                "description" => $settings->placeholder,
                 "test_order_id" => $test_order->id,
             ]);
 

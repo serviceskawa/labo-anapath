@@ -112,6 +112,12 @@
                             <span>Contrats </span>
                         </a>
                     </li>
+                    <li class="side-nav-item">
+                        <a href="{{ route('contrats.index') }}" class="side-nav-link">
+                            <i class="uil-folder-heart"></i>
+                            <span>Contrats </span>
+                        </a>
+                    </li>
 
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarEcommerce1" aria-expanded="false"
