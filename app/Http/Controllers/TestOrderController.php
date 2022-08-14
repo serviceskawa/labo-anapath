@@ -80,7 +80,8 @@ class TestOrderController extends Controller
 
     }
     public function destroy($id){
-        TestOrder::find($id)->delete();
+        $test_order = TestOrder::find($id)->delete();
+
         return back()->with('success', "    Un élement a été supprimé ! ");
     }
 

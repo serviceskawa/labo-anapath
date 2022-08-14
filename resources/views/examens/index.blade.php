@@ -106,7 +106,7 @@
             function deleteModal(id) {
 
                 Swal.fire({
-                    title: "Voulez-vous supprimer l'élément ?",
+                    title: "La supression d'un examen entraine la suppression du Rapport. Voulez-vous continuez?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonText: "Oui ",
