@@ -1,5 +1,7 @@
 @extends('layouts.app2')
 
+@section('title', 'Details')
+
 @section('css')
     {{-- <link href="{{ asset('/adminassets/css/vendor/quill.bubble.css') }}" rel="stylesheet" type="text/css" />
 
@@ -52,10 +54,34 @@
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
                     <form action="{{ route('report.store') }}" method="post">
                         @csrf
-                        <div class="mb-3">
-                            <label for="simpleinput" class="form-label">Titre<span style="color:red;">*</span></label>
-                            <input type="text" id="simpleinput" name="title" class="form-control"
-                                value="{{ $report ? $report->title : '' }}">
+                        <div class="row">
+                            <div class="mb-3">
+                                <div class="form-check form-check-inline">
+                                    <input type="checkbox" class="form-check-input"
+                                        {{ $report->signatory1 == '1' ? 'checked' : '' }} name="signatory1"
+                                        id="customCheck3">
+                                    <label class="form-check-label" for="customCheck3">{{ $setting->signatory1 }}</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="checkbox" class="form-check-input"
+                                        {{ $report->signatory2 == '1' ? 'checked' : '' }} name="signatory2"
+                                        id="customCheck3">
+                                    <label class="form-check-label" for="customCheck3">{{ $setting->signatory2 }}</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="checkbox" class="form-check-input"
+                                        {{ $report->signatory3 == '1' ? 'checked' : '' }} name="signatory3"
+                                        id="customCheck3">
+                                    <label class="form-check-label" for="customCheck3">{{ $setting->signatory3 }}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Titre<span style="color:red;">*</span></label>
+                                <input type="text" id="simpleinput" name="title" class="form-control"
+                                    value="{{ $report ? $report->title : '' }}">
+                            </div>
                         </div>
 
                         <input type="hidden" name="report_id" value="{{ $report->id }}">

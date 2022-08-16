@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\herpers;
-
 use App\Models\Report;
+
 use App\Models\Contrat;
+use App\Models\Setting;
+use App\Helpers\herpers;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -44,7 +45,10 @@ class ReportController extends Controller
         $report = Report::findorfail($request->report_id);
         $report->fill([
             "title" => $request->title,
-            "description" => $request->content
+            "description" => $request->content,
+            "signatory1" => $request->signatory1 ? '1' : '0',
+            "signatory2" => $request->signatory2 ? '1' : '0',
+            "signatory3" => $request->signatory3 ? '1' : '0'
         ])->save();
 
         return redirect()->back()->with('success', "   Examen finalisé ! ");
@@ -59,9 +63,10 @@ class ReportController extends Controller
     public function show($id)
     {
         $report = Report::findorfail($id);
+        $setting = Setting::find(1);
         // dd($report);
 
-        return view('reports.show', compact('report'));
+        return view('reports.show', compact('report', 'setting'));
 
     }
 
