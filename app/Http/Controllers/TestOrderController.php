@@ -116,7 +116,7 @@ class TestOrderController extends Controller
         $test_order_exit = $test_order->details()->whereTestId($data['test_id'])->exists();
 
         if ($test_order_exit) {
-            return response()->json(200);
+            return response()->json(['success'=>"Examin deja ajouté"]);
         }else {
             try {
                 DB::transaction(function () use ($data,$test) {
@@ -189,7 +189,7 @@ class TestOrderController extends Controller
             $test_order->fill(["status" => '1', "code"=> "DE22".$code])->save();
 
             $report = Report::create([
-                "code" => "RE22".$code,
+                "code" => "CO22".$code,
                 "patient_id" => $test_order->patient_id,
                 "description" => $settings->placeholder,
                 "test_order_id" => $test_order->id,

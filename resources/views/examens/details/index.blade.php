@@ -168,9 +168,14 @@
                             <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}"
                                 id="finalisationBtn" class="btn btn-info w-full">ENREGISTRER</a>
                         @endif
-
+                        @if ($test_order->status == 1)
+                            <a href="{{ route('report.show', $test_order->report->id) }}"
+                                class="btn btn-success w-full">CONSULTEZ LE
+                                COMPTE RENDU</a>
+                        @endif
                     </div>
                 </div>
+
             </div>
         </div> <!-- end card-->
 
@@ -376,6 +381,13 @@
                 },
                 success: function(response) {
                     console.log(response)
+                    if (response) {
+                        //$('.success').text(response.success);
+                        $("#success").show().html(response.success);
+                        setTimeout(function() {
+                            $("#success").hide().html('');
+                        }, 5000);
+                    }
                     $('#addDetailForm').trigger("reset")
                     // updateSubTotal();
                 },

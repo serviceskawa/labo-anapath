@@ -54,8 +54,25 @@
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
                     <form action="{{ route('report.store') }}" method="post">
                         @csrf
+
                         <div class="row">
                             <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Titre<span style="color:red;">*</span></label>
+                                <input type="text" id="simpleinput" name="title" class="form-control"
+                                    value="{{ $report ? $report->title : '' }}">
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="report_id" value="{{ $report->id }}">
+
+                        <textarea name="content" id="simplemde1" class="form-control" cols="30" rows="5" style="height: 300px;">{{ $report->description }}</textarea>
+
+                        <label for="simpleinput" class="form-label mb-3">Ajouter les signataires<span
+                                style="color:red;">*</span></label>
+
+                        <div class="row">
+                            <div class="mb-3">
+
                                 <div class="form-check form-check-inline">
                                     <input type="checkbox" class="form-check-input"
                                         {{ $report->signatory1 == '1' ? 'checked' : '' }} name="signatory1"
@@ -76,18 +93,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="mb-3">
-                                <label for="simpleinput" class="form-label">Titre<span style="color:red;">*</span></label>
-                                <input type="text" id="simpleinput" name="title" class="form-control"
-                                    value="{{ $report ? $report->title : '' }}">
-                            </div>
-                        </div>
-
-                        <input type="hidden" name="report_id" value="{{ $report->id }}">
-
-                        <textarea name="content" id="simplemde1" class="form-control" cols="30" rows="5" style="height: 300px;">{{ $report->description }}</textarea>
-
                         <button type="submit" class=" mt-3 btn btn-warning w-100">Enregistrer</button>
                     </form>
 
