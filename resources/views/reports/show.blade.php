@@ -94,6 +94,7 @@
                             </div>
                         </div>
                         <button type="submit" class=" mt-3 btn btn-warning w-100">Enregistrer</button>
+                        <a href="{{ route('report.pdf', $report->id) }}" class=" mt-3 btn btn-success w-100">pdf</a>
                     </form>
 
                 </div>

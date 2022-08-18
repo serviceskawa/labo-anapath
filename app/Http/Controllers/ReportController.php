@@ -8,6 +8,7 @@ use App\Models\Contrat;
 use App\Models\Setting;
 use App\Helpers\herpers;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class ReportController extends Controller
 {
@@ -21,16 +22,6 @@ class ReportController extends Controller
         $reports = Report::all();
         // dd($reports);
         return view('reports.index', compact('reports'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -70,40 +61,6 @@ class ReportController extends Controller
 
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
     public function send_sms($id)
     {
         $report = Report::findorfail($id);
@@ -114,7 +71,7 @@ class ReportController extends Controller
         
         try {
 
-            sendSingleMessage($number, $message);
+            sendSingleMessage($tel, $message);
 
             return redirect()->back()->with('success', "SMS envoyé avec succes ");
 
@@ -123,5 +80,22 @@ class ReportController extends Controller
           return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
       }
 
+    }
+
+    public function pdf($id)
+    {
+        $report = Report::findorfail($id);
+        $setting = Setting::find(1);
+        $data = [
+            'title' => $report->title,
+            'content' => $report->description,
+            'signatory1' => $report->signatory1 == '1' ? $setting->signatory1 : '',
+            'signature1' => $report->signatory1 == '1' ? $setting->signature1 : '',
+            'date' => date('m/d/Y')
+        ];
+          
+        $pdf = PDF::loadView('pdf.report', $data);
+    
+        return $pdf->download('report.pdf');
     }
 }

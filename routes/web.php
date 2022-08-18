@@ -108,6 +108,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('show/{id}', [ReportController::class , 'show'])->name('report.show');
         Route::post('/store', [ReportController::class,'store'])->name('report.store');
         Route::get('send_sms/{id}', [ReportController::class , 'send_sms'])->name('report.send-sms');
+        Route::get('pdf/{id}', [ReportController::class , 'pdf'])->name('report.pdf');
 
     });
 
