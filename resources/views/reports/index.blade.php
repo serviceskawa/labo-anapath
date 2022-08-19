@@ -63,13 +63,15 @@
                                     <td>{{ $item->patient->name }}</td>
                                     <td>{{ $item->patient->telephone1 }}</td>
                                     <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
-                                    <td>{{ $item->status }}</td>
+                                    <td>{{ $item->status == '1' ? 'Valider' : 'Attente' }}</td>
 
                                     <td>
                                         <a type="button" href="{{ route('report.show', $item->id) }}"
                                             class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
                                         <a type="button" href="{{ route('report.send-sms', $item->id) }}"
                                             class="btn btn-danger"><i class="mdi mdi-android-messages"></i> </a>
+                                        <a type="button" href="{{ route('report.pdf', $item->id) }}"
+                                            class="btn btn-secondary"><i class="mdi mdi-printer"></i> </a>
                                     </td>
 
                                 </tr>

@@ -39,7 +39,8 @@ class ReportController extends Controller
             "description" => $request->content,
             "signatory1" => $request->signatory1 ? '1' : '0',
             "signatory2" => $request->signatory2 ? '1' : '0',
-            "signatory3" => $request->signatory3 ? '1' : '0'
+            "signatory3" => $request->signatory3 ? '1' : '0',
+            "status" => $request->status == "1" ? '1' : '0'
         ])->save();
 
         return redirect()->back()->with('success', "   Examen finalisé ! ");

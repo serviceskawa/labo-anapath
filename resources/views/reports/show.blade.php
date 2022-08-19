@@ -59,7 +59,7 @@
                             <div class="mb-3">
                                 <label for="simpleinput" class="form-label">Titre<span style="color:red;">*</span></label>
                                 <input type="text" id="simpleinput" name="title" class="form-control"
-                                    value="{{ $report ? $report->title : '' }}">
+                                    value="{{ $report ? $report->title : '' }}" required>
                             </div>
                         </div>
 
@@ -91,6 +91,16 @@
                                         id="customCheck3">
                                     <label class="form-check-label" for="customCheck3">{{ $setting->signatory3 }}</label>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label mb-3">Etat du compte rendu<span
+                                        style="color:red;">*</span></label>
+                                <select class="form-select" name="status">
+                                    <option value="0">Attente</option>
+                                    <option value="1">Valider</option>
+                                </select>
                             </div>
                         </div>
                         <button type="submit" class=" mt-3 btn btn-warning w-100">Enregistrer</button>

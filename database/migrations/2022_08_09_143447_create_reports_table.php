@@ -26,7 +26,7 @@ class CreateReportsTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->text('description')->nullable();
-            $table->enum('status', ['EN ATTENTE', 'DISPONIBLE', 'SIGNER'])->default('EN ATTENTE');
+            $table->boolean('status')->default(false);
             $table->timestamp('signature_date', $precision = 0)->nullable();
             $table->timestamp('delivery_date', $precision = 0)->nullable();
             $table->foreignId('user_id')->nullable()
