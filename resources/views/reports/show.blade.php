@@ -158,10 +158,6 @@
             });
         }
 
-
-
-
-
         //EDITION
         function edit(id) {
             var e_id = id;
