@@ -92,6 +92,7 @@ class ReportController extends Controller
             'content' => $report->description,
             'signatory1' => $report->signatory1 == '1' ? $setting->signatory1 : '',
             'signature1' => $report->signatory1 == '1' ? $setting->signature1 : '',
+            'patient' => $report->patient->name,
             'date' => date('m/d/Y')
         ];
           

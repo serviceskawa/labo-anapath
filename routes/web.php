@@ -117,4 +117,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('reports-store', [SettingController::class,'report_store'])->name('report.report-store');
 
     });
+
+    Route::get('/mm', function () {
+        return view('myPDF');
+    });
 });

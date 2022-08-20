@@ -43,8 +43,20 @@
             </div>
         </div>
 
-        <div class="card mb-md-0 mb-3">
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right mr-3 mb-1">
+                        <a href="{{ route('report.pdf', $report->id) }}" type="button" class="btn btn-secondary">Imprimer
+                            un compte rendu</a>
+                    </div>
+                    <h4 class="page-title"></h4>
+                </div>
 
+
+            </div>
+        </div>
+        <div class="card mb-md-0 mb-3">
 
             <div class="card-body">
 
@@ -104,7 +116,6 @@
                             </div>
                         </div>
                         <button type="submit" class=" mt-3 btn btn-warning w-100">Enregistrer</button>
-                        <a href="{{ route('report.pdf', $report->id) }}" class=" mt-3 btn btn-success w-100">pdf</a>
                     </form>
 
                 </div>
