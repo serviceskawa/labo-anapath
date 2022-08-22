@@ -20,21 +20,21 @@ class SettingController extends Controller
 
         if ($request->file('img1') ) {
 
-            $img1 = time() . '_settings_report_signature1' . $request->file('img1')->extension();  
+            $img1 = time() . '_settings_report_signature1.' . $request->file('img1')->extension();  
             
             $path_img1 = $request->file('img1')->storeAs('settings/reports', $img1, 'public');
 
         }
         if ($request->file('img2') ) {
 
-            $img2 = time() . '_settings_report_signature2' . $request->file('img2')->extension();  
+            $img2 = time() . '_settings_report_signature2.' . $request->file('img2')->extension();  
             
             $path_img2 = $request->file('img2')->storeAs('settings/reports', $img2, 'public');
             
         }
         if ($request->file('img3') ) {
 
-            $img2 = time() . '_settings_report_signature3' . $request->file('img3')->extension();  
+            $img2 = time() . '_settings_report_signature3.' . $request->file('img3')->extension();  
             
             $path_img3 = $request->file('img3')->storeAs('settings/reports', $img2, 'public');
             

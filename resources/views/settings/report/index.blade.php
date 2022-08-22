@@ -5,6 +5,9 @@
 @section('css')
     <link href="{{ asset('/adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('/adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.css"
+        integrity="sha512-In/+MILhf6UMDJU4ZhDL0R0fEpsp4D3Le23m6+ujDWXwl3whwpucJG1PEmI3B07nyJx+875ccs+yX2CqQJUxUw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 @endsection
 
 @section('content')
@@ -58,7 +61,6 @@
                                     @csrf
                                     <div class="col-lg-4">
 
-
                                         <div class="mb-3">
                                             <label for="simpleinput" class="form-label">Signator 1</label>
                                             <input type="text" id="simpleinput" name="Signator1" class="form-control"
@@ -67,8 +69,9 @@
 
                                         <div class="mb-3">
                                             <label for="example-fileinput" class="form-label">Signature 1</label>
-                                            <input type="file" id="example-fileinput" name="img1"
-                                                class="form-control">
+                                            <input type="file" class="dropify" name="img1"
+                                                data-default-file="{{ Storage::url($setting->signature1) }}"
+                                                data-max-file-size="3M" />
                                         </div>
 
 
@@ -84,8 +87,9 @@
 
                                         <div class="mb-3">
                                             <label for="example-fileinput" class="form-label">Signature 2</label>
-                                            <input type="file" id="example-fileinput" name="img2"
-                                                class="form-control">
+                                            <input type="file" class="dropify" name="img2"
+                                                data-default-file="{{ Storage::url($setting->signature2) }}"
+                                                data-max-file-size="3M" />
                                         </div>
 
 
@@ -101,8 +105,9 @@
 
                                         <div class="mb-3">
                                             <label for="example-fileinput" class="form-label">Signature 3</label>
-                                            <input type="file" id="example-fileinput" name="img3"
-                                                class="form-control">
+                                            <input type="file" class="dropify" name="img3"
+                                                data-default-file="{{ Storage::url($setting->signature3) }}"
+                                                data-max-file-size="3M" />
                                         </div>
 
 
@@ -142,4 +147,10 @@
     <script src="{{ asset('/adminassets/js/vendor/quill.min.js') }}"></script>
     <!-- quill Init js-->
     <script src="{{ asset('/adminassets/js/pages/demo.quilljs.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
+        integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $('.dropify').dropify();
+    </script>
 @endpush
