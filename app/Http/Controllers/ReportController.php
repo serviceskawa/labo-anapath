@@ -32,7 +32,13 @@ class ReportController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
+        $data = $this->validate($request, [
+            'title' => 'required',
+            'report_id' => 'required|exists:reports,id',
+            'status' => 'required|boolean',
+            // 'signatory1' => 'nullable|required_if:signatory1,on',
+        ]);
+
         $report = Report::findorfail($request->report_id);
         $report->fill([
             "title" => $request->title,

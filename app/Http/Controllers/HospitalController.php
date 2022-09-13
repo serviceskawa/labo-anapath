@@ -41,7 +41,7 @@ class HospitalController extends Controller
             'adresse' => 'nullable',    
             'email' => 'nullable',        
             'telephone' => 'required',  
-            'commission' => 'required |numeric',  
+            'commission' => 'required |numeric|min:0|max:100',  
         ]);
 
         

@@ -40,12 +40,12 @@ class DoctorController extends Controller
     {
 
 
-        $data=$this->validate($request, [
+        $data = $this->validate($request, [
             'name' => 'required',
             'email' => 'nullable',
             'role' => 'nullable',
             'telephone' => 'required',
-            'commission' => 'required',
+            'commission' => 'required|numeric|min:0|max:100',
         ]);
 
 

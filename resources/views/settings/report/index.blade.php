@@ -34,7 +34,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">Reports settings</h4>
+                    <h4 class="header-title">Paramètres du compte rendu</h4>
                     <p class="text-muted font-14">
 
                     </p>
@@ -70,7 +70,7 @@
                                         <div class="mb-3">
                                             <label for="example-fileinput" class="form-label">Signature 1</label>
                                             <input type="file" class="dropify" name="img1"
-                                                data-default-file="{{ Storage::url($setting->signature1) }}"
+                                                data-default-file="{{ $setting ? Storage::url($setting->signature1) : '' }}"
                                                 data-max-file-size="3M" />
                                         </div>
 
@@ -88,7 +88,7 @@
                                         <div class="mb-3">
                                             <label for="example-fileinput" class="form-label">Signature 2</label>
                                             <input type="file" class="dropify" name="img2"
-                                                data-default-file="{{ Storage::url($setting->signature2) }}"
+                                                data-default-file="{{ $setting ? Storage::url($setting->signature2) : '' }}"
                                                 data-max-file-size="3M" />
                                         </div>
 
@@ -106,7 +106,7 @@
                                         <div class="mb-3">
                                             <label for="example-fileinput" class="form-label">Signature 3</label>
                                             <input type="file" class="dropify" name="img3"
-                                                data-default-file="{{ Storage::url($setting->signature3) }}"
+                                                data-default-file="{{ $setting ? Storage::url($setting->signature3) : '' }}"
                                                 data-max-file-size="3M" />
                                         </div>
 

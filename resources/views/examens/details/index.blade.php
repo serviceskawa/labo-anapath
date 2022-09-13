@@ -11,7 +11,8 @@
 
         <div class="card my-3">
             @if ($test_order->status == 1)
-                <a href="{{ route('report.show', $test_order->report->id) }}" class="btn btn-success w-full">CONSULTEZ LE
+                <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
+                    class="btn btn-success w-full">CONSULTEZ LE
                     COMPTE RENDU</a>
             @endif
 
@@ -169,7 +170,7 @@
                                 id="finalisationBtn" class="btn btn-info w-full">ENREGISTRER</a>
                         @endif
                         @if ($test_order->status == 1)
-                            <a href="{{ route('report.show', $test_order->report->id) }}"
+                            <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
                                 class="btn btn-success w-full">CONSULTEZ LE
                                 COMPTE RENDU</a>
                         @endif

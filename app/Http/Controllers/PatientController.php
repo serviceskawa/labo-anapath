@@ -38,7 +38,7 @@ class PatientController extends Controller
     public function store(Request $request)
     {
 
-        $data=$this->validate($request, [
+        $data = $this->validate($request, [
             'code' => 'required',
             'name' => 'required',
             'telephone1' => 'required',
@@ -46,9 +46,9 @@ class PatientController extends Controller
             'adresse' => 'nullable',
             'genre' => 'required',
             'age' => 'required | integer',
-            'profession' => 'nullable'
+            'profession' => 'nullable',
+            'birthday' => 'nullable||date'
         ]);
-
 
 
         try {
