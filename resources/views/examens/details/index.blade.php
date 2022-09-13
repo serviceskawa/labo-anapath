@@ -167,7 +167,7 @@
                     <div class="row mt-2 mx-3">
                         @if ($test_order->status != 1)
                             <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}"
-                                id="finalisationBtn" class="btn btn-info w-full">ENREGISTRER</a>
+                                id="finalisationBtn" class="btn btn-info w-full disabled">ENREGISTRER</a>
                         @endif
                         @if ($test_order->status == 1)
                             <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
@@ -189,7 +189,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var test_order = {!! json_encode($test_order) !!}
-            console.log(test_order)
+            // console.log(test_order)
 
             var dtDetailTable = $('.detail-list-table')
 
@@ -223,9 +223,12 @@
                 columnDefs: [{
                     "targets": -1,
                     "render": function(data, type, row) {
-                        return (
-                            '<button type="button" id="deleteBtn" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>'
-                        );
+                        if (row["status"] != 1) {
+                            return (
+                                '<button type="button" id="deleteBtn" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>'
+                            );
+                        }
+                        return "";
                     }
 
                 }],
@@ -282,12 +285,20 @@
                     //     // console.log('footer');
                     // }
 
+                    var numRows = api.rows().count();
+                    if (numRows > 0) {
+                        var element = document.getElementById('finalisationBtn');
+
+                        element.classList.remove("disabled");
+                    }
                 },
 
             });
 
             setInterval(function() {
                 dt_basic.ajax.reload();
+
+
             }, 3000);
 
             // 
@@ -356,7 +367,10 @@
                         console.log(response)
                     },
                 });
-            }
+            };
+
+
+
         });
 
         $('#addDetailForm').on('submit', function(e) {

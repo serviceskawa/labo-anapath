@@ -78,8 +78,12 @@
                                         <td>
                                             <a type="button" href="{{ route('details_test_order.index', $item->id) }}"
                                                 class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
-                                            <button type="button" onclick="deleteModal({{ $item->id }})"
-                                                class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
+                                            @if ($item->status != 1)
+                                                <button type="button" onclick="deleteModal({{ $item->id }})"
+                                                    class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i>
+                                                </button>
+                                            @endif
+
                                         </td>
 
                                     </tr>
