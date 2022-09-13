@@ -24,10 +24,10 @@
                         <div class="col-md-6">
                             <label for="exampleFormControlInput1" class="form-label">Patient<span
                                     style="color:red;">*</span></label>
-                            <select class="form-select" aria-label="Default select example" name="patient_id" required>
-                                <option value="" label="Sélectionner le nom du patient"></option>
+                            <select class="form-select select2" data-toggle="select2" name="patient_id" required>
+                                <option>Sélectionner le nom du patient</option>
                                 @foreach ($patients as $patient)
-                                    <option value="{{ $patient->id }}">{{ $patient->name }}</option>
+                                    <option value="{{ $patient->id }}">{{ $patient->code }} - {{ $patient->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -35,8 +35,8 @@
                         <div class="col-md-6">
                             <label for="exampleFormControlInput1" class="form-label">Médecin traitant<span
                                     style="color:red;">*</span></label>
-                            <select class="form-select" aria-label="Default select example" name="doctor_id" required>
-                                <option value="" label="Sélectionner le médecin traitant"></option>
+                            <select class="form-select select2" data-toggle="select2" name="doctor_id" required>
+                                <option>Sélectionner le médecin traitant</option>
                                 @foreach ($doctors as $doctor)
                                     <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
                                 @endforeach
@@ -50,8 +50,8 @@
                         <div class="col-md-6">
                             <label for="exampleFormControlInput1" class="form-label">Hôpital de provenance<span
                                     style="color:red;">*</span></label>
-                            <select class="form-select" aria-label="Default select example" name="hospital_id" required>
-                                <option value="" label="Sélectionner le centre hospitalier de provenance"></option>
+                            <select class="form-select select2" data-toggle="select2" name="hospital_id" required>
+                                <option>Sélectionner le centre hospitalier de provenance</option>
                                 @foreach ($hopitals as $hopital)
                                     <option value="{{ $hopital->id }}">{{ $hopital->name }}</option>
                                 @endforeach
@@ -70,8 +70,8 @@
                     <div class="col-md-12">
                         <label for="exampleFormControlInput1" class="form-label">Contrat<span
                                 style="color:red;">*</span></label>
-                        <select class="form-select" aria-label="Default select example" required name="contrat_id">
-                            <option value="" label="Sélectionner le contrat"></option>
+                        <select class="form-select select2" data-toggle="select2" required name="contrat_id">
+                            <option>Sélectionner le contrat</option>
                             @forelse ($contrats as $contrat)
                                 <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
                             @empty
