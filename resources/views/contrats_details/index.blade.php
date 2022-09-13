@@ -79,8 +79,13 @@
                         </tbody>
                     </table>
 
-                    <a type="button" href="{{ route('contrat_details.update-status', $contrat->id) }}"
-                        class=" mt-3 btn btn-success w-100">Sauvegarder</a>
+                    <span class="d-inline" data-bs-toggle="popover"
+                        data-bs-content="Veuillez ajouter un detail avant de sauvegarder">
+
+                        <a type="button" href="{{ route('contrat_details.update-status', $contrat->id) }}"
+                            class=" mt-3 btn btn-success w-100 @if (count($details) == 0) disabled @endif ">Sauvegarder</a>
+                    </span>
+
 
                 </div>
             </div>

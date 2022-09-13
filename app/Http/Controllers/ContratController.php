@@ -76,7 +76,7 @@ class ContratController extends Controller
     public function details_store(Request $request){
 
         $data = $this->validate($request, [
-            'contrat_id' => 'required',
+            'contrat_id' => 'required|exists:contrats,id',
             'pourcentage' => 'required',
             'category_test_id' => 'required',
         ]);
