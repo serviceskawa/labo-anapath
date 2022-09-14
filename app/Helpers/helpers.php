@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Role;
+
 define("SERVER", "http://sms.wallyskak.com");
 define("API_KEY", "cd571010a5549230264e74b9c89349fdcf5ed81c");
 
@@ -379,5 +381,18 @@ function sendRequest($url, $postData)
         }
     } else {
         throw new Exception("HTTP Error Code : {$httpCode}");
+    }
+}
+
+if (!function_exists('getPermission')) {
+    function getPermission($role_id, $operation, $resource_id){
+        $role = Role::findorfail($role_id); 
+        $resources = $role->ressources();
+
+        // $data = PermissionRole::whereRoleId($role_id)->whereResourceId($resource_id)->orWhere('operation', $operation)->get();
+        // $data = $role->ressources()->where('operation', $operation)->first();
+        $data = $role->ressources()->where('resource_id', $resource_id)->where('operation', $operation)->exists();
+
+        return $data;
     }
 }

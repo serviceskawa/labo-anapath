@@ -154,12 +154,30 @@
                             </ul>
                         </div>
                     </li>
-                    <!-- <li class="side-nav-item">
-                            <a href="apps-social-feed.html" class="side-nav-link">
-                                <i class="uil-rss"></i>
-                                <span> Social Feed </span>
-                            </a>
-                        </li> -->
+
+
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false"
+                            aria-controls="sidebarProjects" class="side-nav-link">
+                            <i class="uil-user-check"></i>
+                            <span> Users Roles Permissions </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarProjects">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href="{{ route('user.permission-index') }}">Permissions</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('user.role-index') }}">Roles</a>
+                                </li>
+                                <li>
+                                    <a href="#">Users <span
+                                            class="badge rounded-pill badge-light-lighten font-10 float-end">New</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
                 </ul>
 
                 <div class="clearfix"></div>

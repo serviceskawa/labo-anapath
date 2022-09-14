@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ReportController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\TestOrderController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\TestCategoryController;
 use App\Http\Controllers\DetailsContratController;
 
@@ -120,5 +122,15 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/mm', function () {
         return view('myPDF');
+    });
+
+    Route::prefix('users')->group(function () {
+        Route::get('roles', [RoleController::class , 'index'])->name('user.role-index');
+        Route::post('roles-store', [RoleController::class,'store'])->name('user.role-store');
+
+        // PERMISSIONS
+        Route::get('permissions', [PermissionController::class , 'create'])->name('user.permission-index');
+        Route::post('permissions-store', [PermissionController::class,'store'])->name('user.permission-store');   
+
     });
 });
