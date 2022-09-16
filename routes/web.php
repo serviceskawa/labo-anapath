@@ -126,7 +126,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('users')->group(function () {
         Route::get('roles', [RoleController::class , 'index'])->name('user.role-index');
+        Route::get('role-create', [RoleController::class , 'create'])->name('user.role-create');
+        Route::get('role-show/{slug}', [RoleController::class , 'show'])->name('user.role-show');
         Route::post('roles-store', [RoleController::class,'store'])->name('user.role-store');
+        Route::post('roles-update', [RoleController::class,'update'])->name('user.role-update');
 
         // PERMISSIONS
         Route::get('permissions', [PermissionController::class , 'create'])->name('user.permission-index');

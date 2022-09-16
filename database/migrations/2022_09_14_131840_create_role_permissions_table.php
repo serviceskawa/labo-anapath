@@ -15,7 +15,7 @@ class CreateRolePermissionsTable extends Migration
     {
         Schema::create('role_permissions', function (Blueprint $table) {
             $table->id();
-            $table->enum('operation', ['edit', 'read', 'delete'])->nullable()->default('read');
+            $table->enum('operation', ['view','create','edit', 'delete'])->nullable()->default('view');
             $table->foreignId('role_id')
                 ->constrained('roles')
                 ->onUpdate('cascade')
