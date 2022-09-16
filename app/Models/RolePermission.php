@@ -11,4 +11,11 @@ class RolePermission extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+    protected $table = 'role_permissions';
+
+    public function permission()
+    {
+        return $this->belongsTo('App\Models\Permission');
+    }
 }

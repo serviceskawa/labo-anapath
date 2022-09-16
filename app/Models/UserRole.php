@@ -11,4 +11,7 @@ class UserRole extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+    protected $table = 'user_roles';
+
 }

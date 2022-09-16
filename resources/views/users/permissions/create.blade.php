@@ -42,7 +42,7 @@
                         aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                     <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                 </div>
-                <h5 class="card-title mb-0">Liste des comptes rendu</h5>
+                <h5 class="card-title mb-0">Liste des Permissions</h5>
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
 

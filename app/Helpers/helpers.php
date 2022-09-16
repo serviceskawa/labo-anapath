@@ -385,13 +385,13 @@ function sendRequest($url, $postData)
 }
 
 if (!function_exists('getPermission')) {
-    function getPermission($role_id, $operation, $resource_id){
+    function getPermission($role_id, $operation, $permission_id){
         $role = Role::findorfail($role_id); 
-        $resources = $role->ressources();
+        $permissions = $role->permissions();
 
-        // $data = PermissionRole::whereRoleId($role_id)->whereResourceId($resource_id)->orWhere('operation', $operation)->get();
-        // $data = $role->ressources()->where('operation', $operation)->first();
-        $data = $role->ressources()->where('resource_id', $resource_id)->where('operation', $operation)->exists();
+        // $data = PermissionRole::whereRoleId($role_id)->wherepermissionId($permission_id)->orWhere('operation', $operation)->get();
+        // $data = $role->permissions()->where('operation', $operation)->first();
+        $data = $role->permissions()->where('permission_id', $permission_id)->where('operation', $operation)->exists();
 
         return $data;
     }
