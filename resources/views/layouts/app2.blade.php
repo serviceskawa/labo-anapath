@@ -172,8 +172,7 @@
                                     <a href="{{ route('user.role-index') }}">Roles</a>
                                 </li>
                                 <li>
-                                    <a href="#">Users <span
-                                            class="badge rounded-pill badge-light-lighten font-10 float-end">New</span></a>
+                                    <a href="{{ route('user.index') }} ">Users </a>
                                 </li>
                             </ul>
                         </div>

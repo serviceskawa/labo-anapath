@@ -40,56 +40,63 @@ class RoleController extends Controller
         $edit = $request->edit;
         $delete = $request->delete;
         // dd($request);
-        $role = Role::updateOrCreate(
-            ['name' => $request->titre, 'slug' => Str::slug($request->titre)],
-            ['created_by' => Auth::user()->id, 'description' => $request->description]
-        );
 
-            if ($request->create) {
-                $operation = "create";
-                foreach ($create as $key => $value) {
-                    
-                    if (!getPermission($role->id, $operation, $value)) {
-                        $this->store_roles_permission($role, $value, $operation);
+        try {
+            $role = Role::updateOrCreate(
+                ['name' => $request->titre, 'slug' => Str::slug($request->titre)],
+                ['created_by' => Auth::user()->id, 'description' => $request->description]
+            );
+    
+                if ($request->create) {
+                    $operation = "create";
+                    foreach ($create as $key => $value) {
+                        
+                        if (!getPermission($role->id, $operation, $value)) {
+                            $this->store_roles_permission($role, $value, $operation);
+        
+                        }
     
                     }
-
                 }
-            }
-            
-            if ($request->view) {
-                $operation = "view";
-                foreach ($view as $key => $value) {
-                    
-                    if (!getPermission($role->id, $operation, $value)) {
-                        $this->store_roles_permission($role, $value, $operation);
+                
+                if ($request->view) {
+                    $operation = "view";
+                    foreach ($view as $key => $value) {
+                        
+                        if (!getPermission($role->id, $operation, $value)) {
+                            $this->store_roles_permission($role, $value, $operation);
+        
+                        }
     
                     }
-
                 }
-            }
-
-            if ($request->edit) {
-                $operation = "edit";
-                foreach ($edit as $key => $value) {
-                if (!getPermission($role->id, $operation, $value)) {
-                    $this->store_roles_permission($role, $value, $operation);
-
-                }
-            }
-            }
-            
-            if ($request->delete) {
-                $operation = "delete";
-                foreach ($delete as $key => $value) {
+    
+                if ($request->edit) {
+                    $operation = "edit";
+                    foreach ($edit as $key => $value) {
                     if (!getPermission($role->id, $operation, $value)) {
                         $this->store_roles_permission($role, $value, $operation);
     
                     }
                 }
+                }
+                
+                if ($request->delete) {
+                    $operation = "delete";
+                    foreach ($delete as $key => $value) {
+                        if (!getPermission($role->id, $operation, $value)) {
+                            $this->store_roles_permission($role, $value, $operation);
+        
+                        }
+                    }
+        
+                }
     
-            }
-            dd('ok');
+            return redirect()->route('user.role-index')->with('success', " Role crée ! ");
+        } catch (\Throwable $th) {
+            return redirect()->route('user.role-index')->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }
+
     }
 
     public function show($slug)

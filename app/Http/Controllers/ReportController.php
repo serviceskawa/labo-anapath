@@ -91,19 +91,20 @@ class ReportController extends Controller
 
     public function pdf($id)
     {
-        $report = Report::findorfail($id);
-        $setting = Setting::find(1);
-        $data = [
-            'title' => $report->title,
-            'content' => $report->description,
-            'signatory1' => $report->signatory1 == '1' ? $setting->signatory1 : '',
-            'signature1' => $report->signatory1 == '1' ? $setting->signature1 : '',
-            'patient' => $report->patient->name,
-            'date' => date('m/d/Y')
-        ];
+        // $report = Report::findorfail($id);
+        // $setting = Setting::find(1);
+        // $data = [
+        //     'title' => $report->title,
+        //     'content' => $report->description,
+        //     'signatory1' => $report->signatory1 == '1' ? $setting->signatory1 : '',
+        //     'signature1' => $report->signatory1 == '1' ? $setting->signature1 : '',
+        //     'patient' => $report->patient->name,
+        //     'date' => date('m/d/Y')
+        // ];
           
-        $pdf = PDF::loadView('pdf.report', $data);
-    
-        return $pdf->download('report.pdf');
+        // // $pdf = PDF::loadView('pdf.report', $data);
+        $pdf = PDF::loadView('pdf.layouts');
+        return view('pdf.layouts');
+        return $pdf->download('layouts.pdf');
     }
 }

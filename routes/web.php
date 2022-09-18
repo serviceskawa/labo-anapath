@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ContratController;
@@ -134,6 +135,12 @@ Route::middleware(['auth'])->group(function () {
         // PERMISSIONS
         Route::get('permissions', [PermissionController::class , 'create'])->name('user.permission-index');
         Route::post('permissions-store', [PermissionController::class,'store'])->name('user.permission-store');   
+
+        // Users
+        Route::get('', [UserController::class , 'index'])->name('user.index');
+        Route::get('user-create', [UserController::class , 'create'])->name('user.create');
+        Route::post('user-store', [UserController::class,'store'])->name('user.store');
+        Route::get('role-edit/{id}', [UserController::class , 'edit'])->name('user.edit');
 
     });
 });
