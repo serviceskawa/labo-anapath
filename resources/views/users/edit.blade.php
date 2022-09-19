@@ -11,13 +11,20 @@
             </div>
             <div class="card-body">
 
-                <form action="{{ route('user.store') }}" method="post" autocomplete="off">
+                <form action="{{ route('user.update') }}" method="post" autocomplete="off">
                     @csrf
                     <div class="row mb-3">
                         <div class="col-md-12 mb-3">
                             <div class="form-group">
                                 <label for="exampleFormControlInput1" class="form-label">Nom</label>
-                                <input type="text" class="form-control" name="name" value="{{ $user->name }}">
+                                <input type="text" class="form-control" name="firstname" value="{{ $user->firstname }}">
+                                <input type="hidden" class="form-control" name="id" value="{{ $user->id }}">
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1" class="form-label">Lastname</label>
+                                <input type="text" class="form-control" name="lastname" value="{{ $user->lastname }}">
                             </div>
                         </div>
                         <div class="col-md-12 mb-3">
@@ -32,9 +39,8 @@
                                 multiple>
                                 <option>Sélectionner les roles</option>
                                 @forelse ($roles as $role)
-                                    @foreach ($user->roles as $my)
-                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                    @endforeach
+                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+
                                 @empty
                                     Ajouter un role
                                 @endforelse
@@ -47,7 +53,7 @@
 
             <div class="modal-footer">
                 <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-primary">Creer</button>
+                <button type="submit" class="btn btn-warning">Update</button>
             </div>
 
 

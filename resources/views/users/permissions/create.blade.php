@@ -67,8 +67,6 @@
                                     <td>{{ $item->created_at }} </td>
                                     <td> <a type="button" href="{{ route('report.show', $item->id) }}"
                                             class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
-                                        <a type="button" href="{{ route('report.send-sms', $item->id) }}"
-                                            class="btn btn-danger"><i class="mdi mdi-lead-pencil"></i> </a>
                                     </td>
 
                                 </tr>

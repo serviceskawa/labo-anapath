@@ -141,6 +141,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('user-create', [UserController::class , 'create'])->name('user.create');
         Route::post('user-store', [UserController::class,'store'])->name('user.store');
         Route::get('role-edit/{id}', [UserController::class , 'edit'])->name('user.edit');
+        Route::post('user-update', [UserController::class,'update'])->name('user.update');
 
     });
 });

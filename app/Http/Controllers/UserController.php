@@ -43,7 +43,8 @@ class UserController extends Controller
     {
         // dd($request);
         $data = $this->validate($request, [
-            'name' => 'required',
+            'firstname' => 'required',
+            'lastname' => 'required',
             'email' => 'required|unique:users,email',
         ]);
 
@@ -51,7 +52,8 @@ class UserController extends Controller
 
         try {
             $user = User::firstOrCreate(["email" =>$request->email],[
-                "name" => $request->name,
+                "firstname" => $request->firstname,
+                "lastname" => $request->lastname,
                 "password" => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             ]);
 
@@ -87,9 +89,31 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $data = $this->validate($request, [
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'email' => 'required',
+        ]);
+
+
+        try {
+            $user = User::updateorcreate(["id" =>$request->id],[
+                "email" =>$request->email,
+                "firstname" => $request->firstname,
+                "lastname" => $request->lastname,
+            ]);
+
+            // dd($user);
+            $user->roles()->attach($request->roles);
+    
+            return redirect()->route('user.index')->with('success', " Utilisateur crée ! ");
+        } catch (\Throwable $th) {
+            return redirect()->route('user.index')->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+
+        }
+
     }
 
     /**

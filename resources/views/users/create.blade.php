@@ -17,7 +17,13 @@
                         <div class="col-md-12 mb-3">
                             <div class="form-group">
                                 <label for="exampleFormControlInput1" class="form-label">Nom</label>
-                                <input type="text" class="form-control" name="name" required>
+                                <input type="text" class="form-control" name="firstname" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1" class="form-label">Prenom</label>
+                                <input type="text" class="form-control" name="lastname" required>
                             </div>
                         </div>
                         <div class="col-md-12 mb-3">
