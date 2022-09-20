@@ -120,12 +120,14 @@ class ReportController extends Controller
             'content' => $report->description,
             'signatory1' => $report->signatory1 == '1' ? $setting->signatory1 : '',
             'signature1' => $report->signatory1 == '1' ? $setting->signature1 : '',
+            'signatory2' => $report->signatory2 == '1' ? $setting->signatory2 : '',
+            'signature2' => $report->signatory2 == '1' ? $setting->signature2 : '',
             'patient' => $report->patient->name,
             'date' => date('m/d/Y')
         ];
         $html2pdf = new Html2Pdf();
         // border: 3px solid #73AD21;
-        $html2pdf->setDefaultFont('Helvetica');//ici tu mets le font familly que tu veux utiliser dans ton pdf (tu peux changer comme tu veux dans chaque compartiment de ton code)
+        $html2pdf->setDefaultFont('Helvetica');
 
         // $html2pdf->addFont($family, $style = '', $file = '');
         $html2pdf->__construct(
@@ -158,7 +160,7 @@ class ReportController extends Controller
             <br><br>
             <div>
                 <fieldset style="border: 3px solid rgb(0,0,0,0)">
-                    <legend style="font-size: 1.5em;padding: 5px;border:none; background-color:rgb(255,255,255);">
+                    <legend style="font-size: 1.5em; padding-bottom: 10px; padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); ">
                         <b>Informations prélèvement</b>
                     </legend>
                     <p style="margin-left:10px; margin-right:10px; display:block; width: 100%;">
@@ -210,7 +212,7 @@ class ReportController extends Controller
             <br><br>
             <div >
                 <fieldset style="border: 3px solid rgb(0,0,0,0)">
-                    <legend style="font-size: 1.5em;padding: 5px;border:none; background-color:rgb(255,255,255);">
+                    <legend style="font-size: 1.5em;padding-bottom: 10px; padding-left: 5px; padding-right: 5px;border:none; background-color:rgb(255,255,255);">
                         <b>Récapitulatifs </b>
                     </legend>
                     <p style="margin-left:10px; margin-right:10px; display: inline-block; width: 75%;font-family:Courier; font-size:14px; ">
@@ -223,15 +225,15 @@ class ReportController extends Controller
                 </fieldset>
             </div>
             <div style="">
-                <p style="text-align:right; margin-right:250px; font-size:20px; font-family:courier;">Signature 
+                <p style="text-align:right; margin-right:250px; font-size:20px; font-family:courier;"><img width="50" height="60" src="'.storage_path('app/public/'.$data['signature1']).'" alt=""> 
                 <br>
-                <b> <i style="font-size:10px; color: blue">Dr. Jane DOE
+                <b> <i style="font-size:10px; color: blue">'.$data['signatory1'].'
                 <br>
                 Spécialité</i></b>
                 </p>
-                <p style="text-align:right;margin-top:-70px; font-size:20px; font-family:courier;">Signature
+                <p style="text-align:right;margin-top:-70px; font-size:20px; font-family:courier;"><img width="50" height="60" src="'.storage_path('app/public/'.$data['signature2']).'" alt="">
                     <br>
-                    <b> <i style="font-size:10px; color: blue">Dr. Jane DOE
+                    <b> <i style="font-size:10px; color: blue">
                     <br>
                     Spécialité</i></b>
                 </p>
@@ -245,6 +247,7 @@ class ReportController extends Controller
             </div>
   
         ');
-        $html2pdf->output();
+        $newname= 'CO-'.$report->order->code.'.pdf';
+        $html2pdf->output($newname);
     }
 }

@@ -109,7 +109,7 @@
 
         <footer>
             <div>
-                <h1>{{ $signatory1 }}</h1>
+                <h1>{{ $signatory1 }}</h1> <img src="" alt="" sizes="" srcset="">
                 <p><img src="{{ storage_path('app/public/' . $signature1) }}" alt="" srcset=""></p>
             </div>
         </footer>

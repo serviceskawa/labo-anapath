@@ -18,9 +18,12 @@
 
 
                     <div class="mb-3">
-                        <label for="simpleinput" class="form-label">Nom & Prénom<span
-                                style="color:red;">*</span></label>
-                        <input type="text" name="name" class="form-control" required>
+                        <label for="simpleinput" class="form-label">Nom <span style="color:red;">*</span></label>
+                        <input type="text" name="firstname" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="simpleinput" class="form-label">Prénom<span style="color:red;">*</span></label>
+                        <input type="text" name="lastname" class="form-control" required>
                     </div>
 
                     <div class="mb-3">

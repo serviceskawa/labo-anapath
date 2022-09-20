@@ -40,7 +40,8 @@ class PatientController extends Controller
 
         $data = $this->validate($request, [
             'code' => 'required',
-            'name' => 'required',
+            'firstname' => 'required',
+            'lastname' => 'required',
             'telephone1' => 'required',
             'telephone1' => 'nullable',
             'adresse' => 'nullable',
@@ -96,7 +97,8 @@ class PatientController extends Controller
         $data=$this->validate($request, [
             'id2' => 'required',
             'code2' => 'required',
-            'name2' => 'required',
+            'firstname2' => 'required',
+            'lastname2' => 'required',
             'telephone1_2' => 'required',
             'telephone2_2' => 'nullable',
             'adresse2' => 'nullable',
@@ -110,7 +112,8 @@ class PatientController extends Controller
 
             $patient = Patient::find($data['id2']);
             $patient->code = $data['code2'];
-            $patient->name = $data['name2'];
+            $patient->firstname = $data['firstname2'];
+            $patient->lastname = $data['lastname2'];
             $patient->genre = $data['genre2'];
             $patient->telephone1 = $data['telephone1_2'];
             $patient->telephone2 = $data['telephone2_2'];
