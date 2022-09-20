@@ -29,11 +29,17 @@
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
-
+                    @php
+                        $user = Auth::user();
+                        $user->hasRole('superadmin');
+                        $user->can('superadmin');
+                        $permi = explode('.', 'create.contrats');
+                        dd($user->can('create.contrats'));
+                    @endphp
                     <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                         <thead>
                             <tr>
-                                <th>Nopm</th>
+                                <th>Nom</th>
                                 <th>Email</th>
                                 <th>Roles</th>
                                 <th>Actions</th>
@@ -45,7 +51,7 @@
 
                             @foreach ($users as $item)
                                 <tr>
-                                    <td>{{ $item->name }} </td>
+                                    <td>{{ $item->firstname }} {{ $item->lastname }}</td>
                                     <td>{{ $item->email }} </td>
                                     <td>
                                         @forelse ($item->roles as $role)

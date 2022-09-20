@@ -316,7 +316,7 @@
                                         class="rounded-circle">
                                 </span>
                                 <span>
-                                    <span class="account-user-name"> {{ Auth::user()->name }}</span>
+                                    <span class="account-user-name"> {{ Auth::user()->firstname }}</span>
                                     {{-- <span class="account-position">Founder</span> --}}
                                 </span>
                             </a>

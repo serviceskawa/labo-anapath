@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Report;
+use App\Models\Hospital;
 use App\Models\DetailTestOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -78,5 +79,15 @@ class TestOrder extends Model
     public function details()
     {
         return $this->hasMany(DetailTestOrder::class, 'test_order_id');
+    }
+
+    /**
+     * Get the Hospital that owns the TestOrder
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function hospital()
+    {
+        return $this->belongsTo(Hospital::class);
     }
 }

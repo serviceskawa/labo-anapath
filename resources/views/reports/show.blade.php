@@ -8,7 +8,7 @@
     <link href="{{ asset('/adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('/adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" /> --}}
 
-    <link href="{{ asset('/adminassets/css/vendor/simplemde.min.css') }}" rel="stylesheet" type="text/css" />
+    {{-- <link href="{{ asset('/adminassets/css/vendor/simplemde.min.css') }}" rel="stylesheet" type="text/css" /> --}}
 @endsection
 
 @section('content')
@@ -77,7 +77,7 @@
 
                         <input type="hidden" name="report_id" value="{{ $report->id }}">
 
-                        <textarea name="content" id="simplemde1" class="form-control" cols="30" rows="5" style="height: 300px;">{{ $report->description }}</textarea>
+                        <textarea name="content" id="editor" class="form-control" cols="30" rows="5" style="height: 300px;">{{ $report->description }}</textarea>
 
                         <label for="simpleinput" class="form-label mb-3">Ajouter les signataires<span
                                 style="color:red;">*</span></label>
@@ -133,9 +133,21 @@
     <!-- quill Init js-->
     <script src="{{ asset('/adminassets/js/pages/demo.quilljs.js') }}"></script> --}}
 
-    <script src="{{ asset('/adminassets/js/vendor/simplemde.min.js') }}"></script>
+    {{-- <script src="{{ asset('/adminassets/js/vendor/simplemde.min.js') }}"></script>
     <!-- SimpleMDE demo -->
-    <script src="{{ asset('/adminassets/js/pages/demo.simplemde.js') }}"></script>
+    <script src="{{ asset('/adminassets/js/pages/demo.simplemde.js') }}"></script> --}}
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .then(editor => {
+                console.log(editor);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
     <script>
         // SUPPRESSION
         function deleteModal(id) {
