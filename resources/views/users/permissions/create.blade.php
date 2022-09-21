@@ -2,7 +2,6 @@
 
 @section('content')
     <div class="">
-
         @include('layouts.alerts')
 
         <div class="card my-3">
@@ -18,6 +17,30 @@
                             <div class="form-group">
                                 <label for="exampleFormControlInput1" class="form-label">Titre</label>
                                 <input type="text" class="form-control" name="titre">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1" class="form-label">Ressources</label>
+                                <select name="ressource" class="form-control" id="">
+                                    @forelse ($ressources as $ressource)
+                                        <option value="{{ $ressource->id }}"> {{ $ressource->titre }} </option>
+                                    @empty
+                                    @endforelse
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1" class="form-label">Operations</label>
+                                <select name="operation" class="form-control" id="">
+                                    @forelse ($operations as $operation)
+                                        <option value="{{ $operation->id }}"> {{ $operation->operation }} </option>
+
+                                    @empty
+                                    @endforelse
+                                </select>
                             </div>
                         </div>
 

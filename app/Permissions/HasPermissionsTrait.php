@@ -31,9 +31,8 @@ trait HasPermissionsTrait {
     return $this->givePermissionsTo($permissions);
   }
 
-  public function hasPermissionTo($permission, $operation) {
+  public function hasPermissionTo($permission) {
 
-    dd($operation);
     return $this->hasPermissionThroughRole($permission) || $this->hasPermission($permission);
   }
 

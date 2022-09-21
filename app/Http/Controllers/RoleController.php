@@ -24,6 +24,7 @@ class RoleController extends Controller
 
     public function create()
     {
+        // dd(Auth::user()->can('create.contr'));
         $permissions = Permission::all();
         return view('users.roles.create', compact('permissions'));
     }

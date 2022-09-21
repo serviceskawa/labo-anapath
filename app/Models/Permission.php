@@ -12,13 +12,20 @@ class Permission extends Model
 
     protected $guarded = [];
 
-    public function permissions()
-    {
-        return $this->belongsToMany('App\Models\Role', 'role_permissions', 'permission_id', 'role_id')->withPivot(["id","operation"]);
-    }
-    public function roles()
-    {
-        return $this->belongsToMany('App\Models\Role', 'role_permissions', 'role_id', 'permission_id')->withPivot(["id","operation"]);
-    }
 
+    // public function roles()
+    // {
+    //     return $this->belongsToMany('App\Models\Role', 'role_permissions', 'role_id', 'permission_id')->withPivot(["id","operation"]);
+    // }
+
+    public function roles() {
+
+        return $this->belongsToMany(Role::class,'role_permissions');
+            
+     }
+    public function users() {
+
+        return $this->belongsToMany(User::class,'users_permissions');
+            
+     }
 }
