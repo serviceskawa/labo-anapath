@@ -29,13 +29,9 @@
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
-                    @php
-                        $user = Auth::user();
-                        $user->hasRole('superadmin');
-                        $user->can('superadmin');
-                        $permi = explode('.', 'create.contrats');
-                        dd($user->can('create.contrats'));
-                    @endphp
+                    @if (auth()->check() &&
+                        auth()->user()->hasRole('test-contrats'))
+                    @endif
                     <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                         <thead>
                             <tr>

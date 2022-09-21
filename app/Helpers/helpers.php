@@ -389,9 +389,7 @@ if (!function_exists('getPermission')) {
         $role = Role::findorfail($role_id); 
         $permissions = $role->permissions();
 
-        // $data = PermissionRole::whereRoleId($role_id)->wherepermissionId($permission_id)->orWhere('operation', $operation)->get();
-        // $data = $role->permissions()->where('operation', $operation)->first();
-        $data = $role->permissions()->where('permission_id', $permission_id)->where('operation', $operation)->exists();
+        $data = $role->permissions()->where('permission_id', $permission_id)->exists();
 
         return $data;
     }

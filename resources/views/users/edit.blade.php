@@ -39,7 +39,8 @@
                                 multiple>
                                 <option>Sélectionner les roles</option>
                                 @forelse ($roles as $role)
-                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                    <option value="{{ $role->id }}" {{ $user->hasRole($role->slug) ? 'selected' : '' }}>
+                                        {{ $role->name }}</option>
 
                                 @empty
                                     Ajouter un role

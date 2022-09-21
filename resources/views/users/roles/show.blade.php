@@ -41,46 +41,25 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                        @forelse ($permissions as $permission)
+                                        @forelse ($ressources as $ressource)
                                             <tr>
-                                                <td class="text-nowrap fw-bolder">{{ $permission->titre }} </td>
+                                                <td class="text-nowrap fw-bolder">{{ $ressource->titre }} </td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        <div class="form-check me-3 me-lg-5">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                id="userManagementRead{{ $permission->id }}" name="view[]"
-                                                                value="{{ $permission->id }}"
-                                                                {{ getPermission($role->id, 'view', $permission->id) ? 'checked' : '' }} />
-                                                            <label class="form-check-label" for="userManagementRead"> View
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check me-3 me-lg-5">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                id="userManagementWrite{{ $permission->id }}"
-                                                                name="create[]" value="{{ $permission->id }}"
-                                                                {{ getPermission($role->id, 'create', $permission->id) ? 'checked' : '' }} />
-                                                            <label class="form-check-label" for="userManagementWrite">
-                                                                Create
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check me-3 me-lg-5">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                id="userManagementCreate{{ $permission->id }}"
-                                                                name="edit[]" value="{{ $permission->id }}"
-                                                                {{ getPermission($role->id, 'edit', $permission->id) ? 'checked' : '' }} />
-                                                            <label class="form-check-label" for="userManagementCreate">
-                                                                Edit
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                id="userManagementDelete{{ $permission->id }}"
-                                                                name="delete[]" value="{{ $permission->id }}"
-                                                                {{ getPermission($role->id, 'delete', $permission->id) ? 'checked' : '' }} />
-                                                            <label class="form-check-label" for="userManagementCreate">
-                                                                Delete
-                                                            </label>
-                                                        </div>
+                                                        @forelse ($ressource->permissions as $permission)
+                                                            <div class="form-check me-3 me-lg-5">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    name="{{ $permission->operation->operation }}[]"
+                                                                    value="{{ $ressource->id }}"
+                                                                    {{ getPermission($role->id, $permission->operation->operation, $permission->id) ? 'checked' : '' }} />
+                                                                <label class="form-check-label" for="userManagementRead">
+                                                                    View
+                                                                </label>
+                                                            </div>
+                                                        @empty
+                                                        @endforelse
+
+
                                                     </div>
                                                 </td>
                                             </tr>

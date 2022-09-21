@@ -28,4 +28,14 @@ class Permission extends Model
         return $this->belongsToMany(User::class,'users_permissions');
             
      }
+
+      /**
+     * Get the operation that owns the Operation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function operation()
+    {
+        return $this->belongsTo(Operation::class);
+    }
 }

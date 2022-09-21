@@ -6,9 +6,7 @@
         @include('layouts.alerts')
         <div class="card my-3">
             <div class="card-header">
-                Creer un nouveau role @role('test-hopitpozjec')
-                    Hello developer
-                @endrole
+                Creer un nouveau role
             </div>
             <div class="card-body">
 

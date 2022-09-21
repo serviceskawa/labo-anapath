@@ -30,7 +30,7 @@ class PermissionController extends Controller
         try {
             Permission::create([
                 "titre" => $request->titre, 
-                "slug" => $op->operation.'.'.$ress->slug,
+                "slug" => Str::slug($op->operation.' '.$ress->slug),
                 "operation_id" => $op->id,
                 "ressource_id" => $ress->id,
             ]);

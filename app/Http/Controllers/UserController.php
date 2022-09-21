@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -18,6 +19,9 @@ class UserController extends Controller
         $users = User::all();
         $roles = Role::all();
 
+        $user = Auth::user();
+        // dd($user->hasRole('test-contrats'), $user->can('delete.hopitaux'));
+        
         return view('users.index', compact('users','roles'));
     }
 
@@ -56,8 +60,17 @@ class UserController extends Controller
                 "lastname" => $request->lastname,
                 "password" => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             ]);
-
             $user->roles()->attach($request->roles);
+            
+            $permsTab = [];
+            foreach ($request->roles as $key => $role_id) {
+                $role = Role::findorfail($role_id);
+                foreach ($role->permissions as $key => $perms) {
+                    $permsTab[] = $perms->id;
+                }
+
+            }
+            $user->permissions()->attach($permsTab);
     
             return redirect()->route('user.index')->with('success', " Utilisateur crée ! ");
         } catch (\Throwable $th) {
@@ -97,6 +110,7 @@ class UserController extends Controller
             'email' => 'required',
         ]);
 
+        // dd($request->roles);
 
         try {
             $user = User::updateorcreate(["id" =>$request->id],[
@@ -104,13 +118,27 @@ class UserController extends Controller
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
             ]);
+            $user->roles()->sync([]);
 
-            // dd($user);
             $user->roles()->attach($request->roles);
+
+            $permsTab = [];
+            foreach ($request->roles as $key => $role_id) {
+                $role = Role::findorfail($role_id);
+
+                foreach ($role->permissions as $key => $perms) {
+                    $permsTab[] = $perms->id;
+                }
+
+            }
+            $user->permissions()->sync([]);
+            $user->permissions()->attach($permsTab);
+
+
     
             return redirect()->route('user.index')->with('success', " Utilisateur crée ! ");
         } catch (\Throwable $th) {
-            return redirect()->route('user.index')->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+            return redirect()->route('user.index')->with('error', "Échec de l'enregistrement ! " .$th->getMessage());
 
         }
 
