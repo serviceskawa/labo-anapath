@@ -191,7 +191,7 @@ class TestOrderController extends Controller
             $report = Report::create([
                 "code" => "CO22".$code,
                 "patient_id" => $test_order->patient_id,
-                "description" => $settings->placeholder ? $settings->placeholder : '',
+                "description" => $settings ? $settings->placeholder : '',
                 "test_order_id" => $test_order->id,
             ]);
 

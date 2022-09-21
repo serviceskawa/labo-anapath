@@ -47,7 +47,8 @@
             <div class="col-12">
                 <div class="page-title-box">
                     <div class="page-title-right mr-3 mb-1">
-                        <a href="{{ route('report.pdf', $report->id) }}" type="button" class="btn btn-secondary">Imprimer
+                        <a href="{{ route('report.pdf', $report->id) }}" target="_blank" rel="noopener noreferrer"
+                            type="button" class="btn btn-secondary">Imprimer
                             un compte rendu</a>
                     </div>
                     <h4 class="page-title"></h4>
@@ -77,7 +78,7 @@
 
                         <input type="hidden" name="report_id" value="{{ $report->id }}">
 
-                        <textarea name="content" id="editor" class="form-control" cols="30" rows="5" style="height: 300px;">{{ $report->description }}</textarea>
+                        <textarea name="content" id="editor" class="form-control" cols="30" rows="5" style="height: 300px;">{{ $report->placeholder }}</textarea>
 
                         <label for="simpleinput" class="form-label mb-3">Ajouter les signataires<span
                                 style="color:red;">*</span></label>

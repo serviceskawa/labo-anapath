@@ -461,7 +461,7 @@
         function getRemise() {
             let element = document.getElementById("test_id");
             let category_test_id = element.options[element.selectedIndex].getAttribute("data-category_test_id");
-            alert("Price: " + category_test_id);
+            // alert("Price: " + category_test_id);
 
             var contrat_id = $('#contrat_id').val();
             //var category_test_id = element.getAttribute('data-content');

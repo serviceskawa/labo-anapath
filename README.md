@@ -11,3 +11,5 @@
 # php artisan db:seed pour tout les seeders ou php artisan db:seed --class=DbSeeder pour un seeder specific
 
 # /login mdp: P@ssw0rd et email: admin@admin.com
+
+# faire les configurations dans settings

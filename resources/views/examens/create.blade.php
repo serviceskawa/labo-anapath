@@ -27,7 +27,9 @@
                             <select class="form-select select2" data-toggle="select2" name="patient_id" required>
                                 <option>Sélectionner le nom du patient</option>
                                 @foreach ($patients as $patient)
-                                    <option value="{{ $patient->id }}">{{ $patient->code }} - {{ $patient->name }}</option>
+                                    <option value="{{ $patient->id }}">{{ $patient->code }} - {{ $patient->firstname }}
+                                        {{ $patient->lastname }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
