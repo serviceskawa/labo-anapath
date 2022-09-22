@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Role;
+use App\Models\Setting;
 
 define("SERVER", "http://sms.wallyskak.com");
 define("API_KEY", "cd571010a5549230264e74b9c89349fdcf5ed81c");
@@ -392,5 +393,22 @@ if (!function_exists('getPermission')) {
         $data = $role->permissions()->where('permission_id', $permission_id)->exists();
 
         return $data;
+    }
+}
+
+if (!function_exists('getSignatory1')) {
+    function getSignatory1(){
+        $setting = Setting::findorfail(1);
+        return $setting->signatory1;
+    }
+}if (!function_exists('getSignatory2')) {
+    function getSignatory2(){
+        $setting =  Setting::findorfail(1);
+        return $setting->signatory2;
+    }
+}if (!function_exists('getSignatory3')) {
+    function getSignatory3(){
+        $setting =  Setting::findorfail(1);
+        return $setting->signatory3;
     }
 }

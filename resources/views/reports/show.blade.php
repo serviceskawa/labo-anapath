@@ -38,8 +38,10 @@
             <div class="card-body">
                 <p><b>Code patient</b> : {{ $report->patient->code }}</p>
                 <p><b>Téléphone</b> : {{ $report->patient->telephone1 }}</p>
-                <p><b>Statut</b> : {{ $report->status }}</p>
-                <p><b>Signature</b> : {{ $report->signature_date }}</p>
+                <p><b>Statut</b> : {{ $report->status == 0 ? 'Inactif' : 'Actif' }}</p>
+                <p><b>Signature 1</b> : {{ $report->signatory1 == 0 ? 'Inactif' : getSignatory1(1) }}</p>
+                <p><b>Signature 2</b> : {{ $report->signatory2 == 0 ? 'Inactif' : getSignatory2(1) }}</p>
+                <p><b>Signature 3</b> : {{ $report->signatory3 == 0 ? 'Inactif' : getSignatory3(1) }}</p>
             </div>
         </div>
 
@@ -78,13 +80,12 @@
 
                         <input type="hidden" name="report_id" value="{{ $report->id }}">
 
-                        <textarea name="content" id="editor" class="form-control" cols="30" rows="5" style="height: 300px;">{{ $report->placeholder }}</textarea>
+                        <textarea name="content" id="editor" class="form-control mb-3" cols="30" rows="10" style="height: 300px;">{{ $report->placeholder }}</textarea>
 
-                        <label for="simpleinput" class="form-label mb-3">Ajouter les signataires<span
-                                style="color:red;">*</span></label>
-
-                        <div class="row">
-                            <div class="mb-3">
+                        <div class="row my-3">
+                            <label for="simpleinput" class="form-label ">Ajouter les signataires<span
+                                    style="color:red;">*</span></label>
+                            <div class="">
 
                                 <div class="form-check form-check-inline">
                                     <input type="checkbox" class="form-check-input"
@@ -111,8 +112,8 @@
                                 <label for="simpleinput" class="form-label mb-3">Etat du compte rendu<span
                                         style="color:red;">*</span></label>
                                 <select class="form-select" name="status">
-                                    <option value="0">Attente</option>
-                                    <option value="1">Valider</option>
+                                    <option value="0" {{ $report->status == 0 ? 'selected' : '' }}>Attente</option>
+                                    <option value="1" {{ $report->status == 1 ? 'selected' : '' }}>Valider</option>
                                 </select>
                             </div>
                         </div>
