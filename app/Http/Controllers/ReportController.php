@@ -106,6 +106,8 @@ class ReportController extends Controller
             'signature1' => $report->signatory1 == '1' ? $setting->signature1 : '',
             'signatory2' => $report->signatory2 == '1' ? $setting->signatory2 : '',
             'signature2' => $report->signatory2 == '1' ? $setting->signature2 : '',
+            'signatory3' => $report->signatory3 == '1' ? $setting->signatory3 : '',
+            'signature3' => $report->signatory3 == '1' ? $setting->signature3 : '',
             'patient_firstname' => $report->patient->firstname,
             'patient_lastname' => $report->patient->lastname,
             'patient_age' => $report->patient->age,

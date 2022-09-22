@@ -100,15 +100,31 @@
     <table style="width: 100%;">
         <tr>
             <td style="text-align: left;    width: 25%"></td>
-            <td style="text-align: left;    width: 25%"></td>
-            <td style="text-align: right;    width: 25%"><img width="50" height="60"
-                    src="{{ storage_path('app/public/' . $signature1) }}" alt=""><br> <i
-                    style="font-size:15px; color: blue"><br>{{ $signatory1 }}
-                    <br></i></td>
-            <td style="text-align: right;    width: 25%"><img width="50" height="60"
-                    src="{{ storage_path('app/public/' . $signature2) }}" alt=""><br> <i
-                    style="font-size:15px; color: blue margin-top: 100px"><br>{{ $signatory2 }}
-                </i></td>
+
+            <td style="text-align: right;    width: 25%">
+                @if ($signatory1 != null)
+                    <img width="50" height="60" src="{{ storage_path('app/public/' . $signature1) }}"
+                        alt=""><br> <i style="font-size:15px; color: blue"><br>{{ $signatory1 }}
+                        <br></i>
+                @endif
+            </td>
+            <td style="text-align: right;    width: 25%">
+                @if ($signatory2 != null)
+                    <img width="50" height="60" src="{{ storage_path('app/public/' . $signature2) }}"
+                        alt=""><br> <i
+                        style="font-size:15px; color: blue margin-top: 100px"><br>{{ $signatory2 }}
+                    </i>
+                @endif
+
+            </td>
+            <td style="text-align: right;    width: 25%">
+                @if ($signatory3 != null)
+                    <img width="50" height="60" src="{{ storage_path('app/public/' . $signature2) }}"
+                        alt=""><br> <i
+                        style="font-size:15px; color: blue margin-top: 100px"><br>{{ $signatory2 }}
+                    </i>
+                @endif
+            </td>
         </tr>
     </table>
 
