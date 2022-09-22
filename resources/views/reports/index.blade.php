@@ -60,7 +60,7 @@
                                 <tr>
                                     <td>{{ $item->code }}</td>
                                     <td>{{ $item->patient->code }}</td>
-                                    <td>{{ $item->patient->name }}</td>
+                                    <td>{{ $item->patient->firstname }} {{ $item->patient->lastname }}</td>
                                     <td>{{ $item->patient->telephone1 }}</td>
                                     <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
                                     <td>{{ $item->status == '1' ? 'Valider' : 'Attente' }}</td>

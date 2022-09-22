@@ -48,7 +48,7 @@
                                 <th>Nom & Prénoms</th>
                                 <th>Age</th>
                                 <!-- <th>Profession</th>
-                                    <th>Genre</th> -->
+                                                    <th>Genre</th> -->
                                 <th>Contacts</th>
                                 <th>Adresse</th>
                                 <th>Actions</th>
@@ -62,10 +62,10 @@
                             @foreach ($patients as $item)
                                 <tr>
                                     <td>{{ $item->code }}</td>
-                                    <td>{{ $item->name }}</td>
+                                    <td>{{ $item->firstname }} {{ $item->lastname }}</td>
                                     <td>{{ $item->age }}</td>
                                     <!-- <td>{{ $item->profession }}</td>
-                                    <td>{{ $item->genre }}</td> -->
+                                                    <td>{{ $item->genre }}</td> -->
                                     <td>{{ $item->telephone1 . ' / ' . $item->telephone2 }}</td>
                                     <td>{{ $item->adresse }}</td>
                                     <td>
@@ -157,7 +157,8 @@
                     $('#id2').val(data.id);
                     $('#code2').val(data.code);
                     $('#genre2').val(data.genre).change();
-                    $('#name2').val(data.name);
+                    $('#name2').val(data.firstname);
+                    $('#lastname').val(data.lastname);
                     $('#age2').val(data.age);
                     $('#profession2').val(data.profession);
                     $('#adresse2').val(data.adresse);

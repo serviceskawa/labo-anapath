@@ -47,6 +47,7 @@ class SettingController extends Controller
                 "signatory2" => $request->Signator2,
                 "signatory3" => $request->Signator3,
                 "placeholder" => $request->placeholder,
+                "placeholder2" => $request->placeholder2,
                 "signature1" => $request->file('img1') ? $path_img1 : $setting->signature1,
                 "signature2" => $request->file('img2') ? $path_img2 : $setting->signature2,
                 "signature3" => $request->file('img3') ? $path_img3 : $setting->signature3
@@ -58,6 +59,7 @@ class SettingController extends Controller
                 "signatory2" => $request->Signator2,
                 "signatory3" => $request->Signator3,
                 "placeholder" => $request->placeholder,
+                "placeholder2" => $request->placeholder2,
                 "signature1" => $request->file('img1') ? $path_img1 : "",
                 "signature2" => $request->file('img2') ? $path_img2 : "",
                 "signature3" => $request->file('img3') ? $path_img3 : ""

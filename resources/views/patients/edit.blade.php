@@ -22,7 +22,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="simpleinput" class="form-label">Prénom<span style="color:red;">*</span></label>
-                        <input type="text" name="lastname2" id="name2" class="form-control" required>
+                        <input type="text" name="lastname2" id="lastname" class="form-control" required>
                     </div>
 
                     <div class="mb-3">

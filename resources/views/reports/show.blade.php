@@ -9,6 +9,13 @@
     <link href="{{ asset('/adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" /> --}}
 
     {{-- <link href="{{ asset('/adminassets/css/vendor/simplemde.min.css') }}" rel="stylesheet" type="text/css" /> --}}
+
+    <style>
+        .ck-editor__editable[role="textbox"] {
+            /* editing area */
+            min-height: 200px;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -80,7 +87,7 @@
 
                         <input type="hidden" name="report_id" value="{{ $report->id }}">
 
-                        <textarea name="content" id="editor" class="form-control mb-3" cols="30" rows="10" style="height: 300px;">{{ $report->placeholder }}</textarea>
+                        <textarea name="content" id="editor" class="form-control mb-3" cols="30" rows="50" style="height: 500px;">{{ $report->description }}</textarea>
 
                         <div class="row my-3">
                             <label for="simpleinput" class="form-label ">Ajouter les signataires<span

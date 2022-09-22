@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.css"
         integrity="sha512-In/+MILhf6UMDJU4ZhDL0R0fEpsp4D3Le23m6+ujDWXwl3whwpucJG1PEmI3B07nyJx+875ccs+yX2CqQJUxUw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        .ck-editor__editable[role="textbox"] {
+            /* editing area */
+            min-height: 200px;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -46,11 +53,11 @@
                                 Signatures
                             </a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a href="#input-types-code" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
                                 Placeholder
                             </a>
-                        </li>
+                        </li> --}}
                     </ul> <!-- end nav-->
 
                     <div class="tab-content">
@@ -113,9 +120,19 @@
 
                                     </div> <!-- end col -->
 
-                                    <div class="row">
-                                        <textarea class="form-control" name="placeholder" placeholder="Description" style="height: 100px;">{{ $setting ? $setting->placeholder : '' }}</textarea>
+                                    <div class="row mb-3">
+                                        <label for="" class="form-label">Placeholder 1</label>
+                                        <div class="col-lg-12">
+                                            <textarea class="form-control" name="placeholder" placeholder="Description" id="editor" style="height: 100px;">{{ $setting ? $setting->placeholder : '' }}</textarea>
+                                        </div>
+                                    </div>
 
+                                    <div class="row">
+                                        <label for="" class="form-label">Placeholder 2</label>
+                                        <div class="col">
+                                            <textarea class="form-control" id="editor2" name="placeholder2" placeholder="Description" style="height: 100px;">{{ $setting ? $setting->placeholder2 : '' }}</textarea>
+
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card-footer">
@@ -143,14 +160,26 @@
 
 
 @push('extra-js')
-    <!-- quill js -->
-    <script src="{{ asset('/adminassets/js/vendor/quill.min.js') }}"></script>
-    <!-- quill Init js-->
-    <script src="{{ asset('/adminassets/js/pages/demo.quilljs.js') }}"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
         integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $('.dropify').dropify();
+    </script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor2'))
+            .catch(error => {
+                console.error(error);
+            });
     </script>
 @endpush

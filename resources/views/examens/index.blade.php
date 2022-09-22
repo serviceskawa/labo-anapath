@@ -71,7 +71,7 @@
                                         <td>{{ $item->id }}</td>
                                         <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
                                         <td>{{ $item->code }} </td>
-                                        <td>{{ $item->patient->name }}</td>
+                                        <td>{{ $item->patient->firstname }} {{ $item->patient->lastname }}</td>
                                         <td>{{ $item->getDoctor()->name }}</td>
                                         <td>{{ $item->getHospital()->name }}</td>
                                         <td>{{ $item->total }}</td>
