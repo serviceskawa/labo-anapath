@@ -8,7 +8,7 @@
 
     <meta content="Coderthemes" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('/adminassets/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('/adminassets/images/Logo_new.png') }}">
 
     <!-- App css -->
     <link href="{{ asset('/adminassets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
@@ -26,10 +26,10 @@
                     <div class="card">
 
                         <!-- Logo -->
-                        <div class="card-header pt-2 pb-2 text-center bg-primary">
+                        <div class="card-header pt-2 pb-2 text-center ">
                             <a href="#">
-                                <span><img src="{{ asset('/adminassets/images/logo.png') }}" alt=""
-                                        height="100"></span>
+                                <span><img src="{{ asset('/adminassets/images/Labo_Logo_1.png') }}"
+                                        alt=""></span>
                             </a>
                         </div>
 

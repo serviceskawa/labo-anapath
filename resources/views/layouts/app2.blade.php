@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('/adminassets/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('/adminassets/images/Logo_new.png') }}">
 
     <link href="{{ asset('/adminassets/css/vendor/dataTables.bootstrap5.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('/adminassets/css/vendor/responsive.bootstrap5.css') }}" rel="stylesheet" type="text/css">
@@ -36,10 +36,10 @@
             <!-- LOGO -->
             <a href="#" class="logo text-center logo-light">
                 <span class="logo-lg">
-                    <img src="{{ asset('/adminassets/images/logo-bg-dark.png') }}" alt="" height="75">
+                    <img src="{{ asset('/adminassets/images/Labo_Logo_1.png') }}" alt="">
                 </span>
                 <span class="logo-sm">
-                    <img src="{{ asset('/adminassets/images/logo-bg-dark.png') }}" alt="" height="50">
+                    <img src="{{ asset('/adminassets/images/Labo_Logo_1.png') }}" alt="">
                 </span>
             </a>
 
@@ -413,7 +413,7 @@
 
 
     <!-- Right Sidebar -->
-    <div class="end-bar">
+    {{-- <div class="end-bar">
 
         <div class="rightbar-title">
             <a href="javascript:void(0);" class="end-bar-toggle float-end">
@@ -509,7 +509,7 @@
             </div> <!-- end padding-->
 
         </div>
-    </div>
+    </div> --}}
 
     <div class="rightbar-overlay"></div>
     <!-- /End-bar -->
