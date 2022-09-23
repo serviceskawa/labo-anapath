@@ -36,10 +36,10 @@
             <!-- LOGO -->
             <a href="#" class="logo text-center logo-light">
                 <span class="logo-lg">
-                    <img src="{{ asset('/adminassets/images/Labo_Logo_1.png') }}" alt="">
+                    <img src="{{ asset('/adminassets/images/CAAP_Logo_2_1_0.png') }}" alt="">
                 </span>
                 <span class="logo-sm">
-                    <img src="{{ asset('/adminassets/images/Labo_Logo_1.png') }}" alt="">
+                    <img src="{{ asset('/adminassets/images/CAAP_Logo_2_1_0.png') }}" alt="">
                 </span>
             </a>
 
