@@ -119,6 +119,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('reports', [SettingController::class , 'report_index'])->name('settings.report-index');
         Route::post('reports-store', [SettingController::class,'report_store'])->name('report.report-store');
 
+        // App settings
+        Route::get('app', [SettingController::class , 'app'])->name('settings.app-index');
+        Route::post('app-store', [SettingController::class,'app_store'])->name('settings.app-store');
+
+
     });
 
     Route::get('/mm', function () {

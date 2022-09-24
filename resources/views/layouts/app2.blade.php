@@ -6,9 +6,11 @@
     <title>@yield('title') | {{ config('app.name', 'Labocaap') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    @php
+        $setting = \App\Models\Setting::orderBy('id', 'desc')->first();
+    @endphp
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('/adminassets/images/Logo_new.png') }}">
+    <link rel="shortcut icon" href="{{ $setting ? Storage::url($setting->favicon) : '' }}">
 
     <link href="{{ asset('/adminassets/css/vendor/dataTables.bootstrap5.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('/adminassets/css/vendor/responsive.bootstrap5.css') }}" rel="stylesheet" type="text/css">
@@ -148,6 +150,9 @@
                         </a>
                         <div class="collapse" id="sidebarForms">
                             <ul class="side-nav-second-level">
+                                <li>
+                                    <a href="{{ route('settings.app-index') }}">Paramètres Systeme</a>
+                                </li>
                                 <li>
                                     <a href="{{ route('settings.report-index') }}">Paramètres compte rendu</a>
                                 </li>

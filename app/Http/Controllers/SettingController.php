@@ -87,4 +87,60 @@ class SettingController extends Controller
         }
         return back()->with('success', "Placeholder mis à jour avec succès  ! ");
     }
+
+    public function app()
+    {
+        $setting = Setting::find(1);
+        // dd($setting);
+        return view('settings.app.index' , compact('setting'));
+    }
+
+    public function app_store(Request $request)
+    {
+        // dd($request);
+        $setting = Setting::find(1);
+
+        if ($request->file('logo') ) {
+
+            $logo = time() . '_settings_app_logo.' . $request->file('logo')->extension();  
+            
+            $path_logo = $request->file('logo')->storeAs('settings/app', $logo, 'public');
+
+        }
+        if ($request->file('favicon') ) {
+
+            $favicon = time() . '_settings_app_favicon.' . $request->file('favicon')->extension();  
+            
+            $path_favicon = $request->file('favicon')->storeAs('settings/app', $favicon, 'public');
+            
+        }
+        if ($request->file('img3') ) {
+
+            $img3 = time() . '_settings_app_blanc.' . $request->file('img3')->extension();  
+            
+            $path_img3 = $request->file('img3')->storeAs('settings/app', $img3, 'public');
+            
+        }
+
+        if ($setting) {
+
+            $setting->fill([
+                "titre" => $request->titre,
+                "logo" => $request->file('logo') ? $path_logo : $setting->logo,
+                "favicon" => $request->file('favicon') ? $path_favicon : $setting->favicon,
+                "logo_blanc" => $request->file('img3') ? $path_img3 : $setting->logo_blanc
+            ])->save();
+
+        }else {
+            $setting = Setting::create([
+                "titre" => $request->titre,
+                "logo" => $request->file('logo') ? $path_logo : "",
+                "favicon" => $request->file('favicon') ? $favicon : "",
+                "logo_blanc" => $request->file('img3') ? $path_img3 : ""
+            ]);
+        }
+        
+
+        return back()->with('success', " Elément mis à jour avec succès  ! ");
+    }
 }

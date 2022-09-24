@@ -6,9 +6,12 @@
     <title>{{ config('app.name') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    @php
+        $setting = \App\Models\Setting::orderBy('id', 'desc')->first();
+    @endphp
     <meta content="Coderthemes" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('/adminassets/images/Logo_new.png') }}">
+    <link rel="shortcut icon" href="{{ $setting ? Storage::url($setting->favicon) : '' }}">
 
     <!-- App css -->
     <link href="{{ asset('/adminassets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
@@ -28,8 +31,8 @@
                         <!-- Logo -->
                         <div class="card-header pt-2 pb-2 text-center ">
                             <a href="#">
-                                <span><img src="{{ asset('/adminassets/images/Labo_Logo_1.png') }}"
-                                        alt=""></span>
+                                <span>
+                                    <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt=""></span>
                             </a>
                         </div>
 

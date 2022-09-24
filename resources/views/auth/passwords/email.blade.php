@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="utf-8" />
-    <title>Recover Password | Hyper - Responsive Bootstrap 5 Admin Dashboard</title>
+    <title>{{ config('app.name') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+    @php
+        $setting = \App\Models\Setting::orderBy('id', 'desc')->first();
+    @endphp
     <meta content="Coderthemes" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('/adminassets/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ $setting ? Storage::url($setting->favicon) : '' }}">
 
     <!-- App css -->
     <link href="{{ asset('/adminassets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
@@ -26,27 +28,29 @@
                 <div class="col-xxl-4 col-lg-5">
                     <div class="card">
                         <!-- Logo -->
-                        <div class="card-header pt-4 pb-4 text-center bg-primary">
-                            <a href="index.html">
-                                <span><img src="{{ asset('/adminassets/images/logo.png') }}" alt=""
-                                        height="18"></span>
+                        <div class="card-header pt-4 pb-4 text-center ">
+                            <a href="#">
+                                <span>
+                                    <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt=""></span>
+
                             </a>
                         </div>
 
                         <div class="card-body p-4">
 
                             <div class="text-center w-75 m-auto">
-                                <h4 class="text-dark-50 text-center mt-0 fw-bold">{{ __('Reset Password') }}</h4>
-                                <p class="text-muted mb-4">Enter your email address and we'll send you an email with
-                                    instructions to reset your password.</p>
+                                <h4 class="text-dark-50 text-center mt-0 fw-bold">Réinitialiser le mot de passe</h4>
+                                <p class="text-muted mb-4">Entrez votre adresse e-mail et nous vous enverrons un e-mail
+                                    avec
+                                    instructions pour réinitialiser votre mot de passe.</p>
                             </div>
 
                             <form method="POST" action="{{ route('password.email') }}">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="emailaddress" class="form-label">{{ __('Email Address') }}</label>
+                                    <label for="emailaddress" class="form-label">Adresse Email</label>
                                     <input class="form-control @error('email') is-invalid @enderror" type="email"
-                                        name="email" id="email" required="" placeholder="Enter your email"
+                                        name="email" id="email" required="" placeholder="Entrez votre email"
                                         value="{{ old('email') }}" required autocomplete="email" autofocus>
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
@@ -56,8 +60,7 @@
                                 </div>
 
                                 <div class="mb-0 text-center">
-                                    <button class="btn btn-primary"
-                                        type="submit">{{ __('Send Password Reset Link') }}</button>
+                                    <button class="btn btn-primary" type="submit">Envoyer le lien </button>
                                 </div>
                             </form>
                         </div> <!-- end card-body-->
@@ -66,8 +69,8 @@
 
                     <div class="row mt-3">
                         <div class="col-12 text-center">
-                            <p class="text-muted">Back to <a href="pages-login.html" class="text-muted ms-1"><b>Log
-                                        In</b></a></p>
+                            <p class="text-muted">Retour à <a href="{{ route('login') }}"
+                                    class="text-muted ms-1"><b>Connexion</b></a></p>
                         </div> <!-- end col -->
                     </div>
                     <!-- end row -->

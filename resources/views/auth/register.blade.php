@@ -5,10 +5,12 @@
     <meta charset="utf-8" />
     <title>{{ config('app.name', 'Laravel') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    @php
+        $setting = \App\Models\Setting::orderBy('id', 'desc')->first();
+    @endphp
     <meta content="Coderthemes" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('/adminassets/images/Logo_new.png') }}">
+    <link rel="shortcut icon" href="{{ $setting ? Storage::url($setting->favicon) : '' }}">
 
     <!-- App css -->
     <link href="{{ asset('/adminassets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
@@ -28,8 +30,9 @@
                         <!-- Logo -->
                         <div class="card-header pt-4 pb-4 text-center ">
                             <a href="#">
-                                <span><img src="{{ asset('/adminassets/images/logo.png') }}" alt=""
-                                        height="18"></span>
+                                <span>
+                                    <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt=""></span>
+
                             </a>
                         </div>
 
