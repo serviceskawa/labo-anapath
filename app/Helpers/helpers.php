@@ -412,3 +412,9 @@ if (!function_exists('getSignatory1')) {
         return $setting->signatory3;
     }
 }
+if (!function_exists('getOnlineUser')) {
+    function getOnlineUser(){
+        $user = Auth::user();
+        return $user;
+    }
+}

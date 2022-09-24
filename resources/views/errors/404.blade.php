@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <title>{{ config('app.name') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     @php
         $setting = \App\Models\Setting::orderBy('id', 'desc')->first();
     @endphp
@@ -21,59 +22,34 @@
 
 <body class="loading authentication-bg"
     data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
-
     <div class="account-pages pt-2 pt-sm-5 pb-4 pb-sm-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-4 col-lg-5">
                     <div class="card">
+
                         <!-- Logo -->
-                        <div class="card-header pt-4 pb-4 text-center ">
+                        <div class="card-header pt-2 pb-2 text-center ">
                             <a href="#">
                                 <span>
                                     <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt=""></span>
-
                             </a>
                         </div>
-
                         <div class="card-body p-4">
+                            <div class="text-center">
+                                <h1 class="text-error">4<i class="mdi mdi-emoticon-sad"></i>4</h1>
+                                <h4 class="text-uppercase text-danger mt-3">Page Not Found</h4>
+                                <p class="text-muted mt-3">
+                                    Il semble que vous ayez pris un mauvais virage. Ne vous inquiétez pas... ça arrive
+                                    aux meilleurs d'entre nous. Voici une petite astuce qui pourrait vous aider à vous
+                                    remettre sur la bonne voie.</p>
 
-                            <div class="text-center w-75 m-auto">
-                                <h4 class="text-dark-50 text-center mt-0 fw-bold">Mot de passe oublié</h4>
-                                <p class="text-muted mb-4">Fournissez votre adresse électronique pour obtenir votre mot
-                                    de passe.</p>
+                                <a class="btn btn-info mt-3" href="{{ route('login') }} ><i class="mdi mdi-reply"></i>
+                                    Aller à Acceuil</a>
                             </div>
-
-                            <form method="POST" action="{{ route('password.email') }}">
-                                @csrf
-                                <div class="mb-3">
-                                    <label for="emailaddress" class="form-label">Adresse Email</label>
-                                    <input class="form-control @error('email') is-invalid @enderror" type="email"
-                                        name="email" id="email" required="" placeholder="Entrez votre email"
-                                        value="{{ old('email') }}" required autocomplete="email" autofocus>
-                                    @error('email')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-
-                                <div class="mb-0 text-center">
-                                    <button class="btn btn-primary" type="submit">Réinitialiser le mot de passe
-                                    </button>
-                                </div>
-                            </form>
                         </div> <!-- end card-body-->
                     </div>
                     <!-- end card -->
-
-                    <div class="row mt-3">
-                        <div class="col-12 text-center">
-                            <p class="text-muted">Revenir en arrière? <a href="{{ route('login') }}"
-                                    class="text-muted ms-1"><b>Connexion</b></a></p>
-                        </div> <!-- end col -->
-                    </div>
-                    <!-- end row -->
 
                 </div> <!-- end col -->
             </div>
@@ -84,7 +60,8 @@
     <!-- end page -->
 
     <footer class="footer footer-alt">
-        2018 - 2021 © Hyper - Coderthemes.com
+        <a href="mailto:serviceskawa@gmail.com?subject=Le sujet&body=Le corps du message">Cliquez ici pour contacter le
+            Support Technique</a>
     </footer>
 
     <!-- bundle -->

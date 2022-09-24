@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth'); 
+    }
+    
     protected function store_roles_permission($role, $value, $operation)
     {   
         $ope->id = Operation::whereOperation($operation)->first();
@@ -21,225 +26,191 @@ class RoleController extends Controller
 
     public function index()
     {
+        if (getOnlineUser()->can('view-roles')) {
+            $roles = Role::all();
+            return view('users.roles.index', compact('roles'));
+        }
         $roles = Role::all();
-        return view('users.roles.index', compact('roles'));
+            return view('users.roles.index', compact('roles'));
+        return back()->with('error', "Vous n'êtes pas autorisé");
+
     }
 
     public function create()
     {
-        // dd(Auth::user()->can('create.contr'));
+        if (getOnlineUser()->can('create-roles')) {
+            $permissions = Permission::all();
+            $ressources = Ressource::all();
+            return view('users.roles.create', compact('permissions', 'ressources'));
+        }
         $permissions = Permission::all();
-        $ressources = Ressource::all();
-        return view('users.roles.create', compact('permissions', 'ressources'));
+            $ressources = Ressource::all();
+            return view('users.roles.create', compact('permissions', 'ressources'));
+        return back()->with('error', "Vous n'êtes pas autorisé");
+        
     }
 
     public function store(Request $request)
     {
-        // dd($request);
-        $view = [];
-        $create = [];
-        $edit = [];
-        $delete = [];
-        $view = $request->view;
-        $create = $request->create;
-        $edit = $request->edit;
-        $delete = $request->delete;
-        // dd($request);
-
-        $role = Role::updateOrCreate(
-            ['name' => $request->titre, 'slug' => Str::slug($request->titre)],
-            ['created_by' => Auth::user()->id, 'description' => $request->description]
-        );
-
-            if ($request->create) {
-                $operation = "create";
-                foreach ($create as $key => $value) {
-
-                    $ressource = Ressource::findorfail($value); 
-                    $operation = Operation::whereOperation("create")->first();
-                    $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
-                    $role->permissions()->attach($permission);
-
-                }
-            }
-            
-            if ($request->view) {
-                $operation = "view";
-                foreach ($view as $key => $value) {
-                    
-                    $ressource = Ressource::findorfail($value); 
-                    $operation = Operation::whereOperation("view")->first();
-                    $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
-                    $role->permissions()->attach($permission);
-
-                }
-            }
-
-            if ($request->edit) {
-                $operation = "edit";
-                foreach ($edit as $key => $value) {
-                    $ressource = Ressource::findorfail($value); 
-                    $operation = Operation::whereOperation("edit")->first();
-                    $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
-                    $role->permissions()->attach($permission);
-            }
-            }
-            
-            if ($request->delete) {
-                $operation = "delete";
-                foreach ($delete as $key => $value) {
-                    $ressource = Ressource::findorfail($value); 
-                    $operation = Operation::whereOperation("delete")->first();
-                    $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
-                    $role->permissions()->attach($permission);
-                }
+        if (getOnlineUser()->can('create-roles')) {
+            $view = [];
+            $create = [];
+            $edit = [];
+            $delete = [];
+            $view = $request->view;
+            $create = $request->create;
+            $edit = $request->edit;
+            $delete = $request->delete;
+            // dd($request);
     
-            }
-
-        return redirect()->route('user.role-index')->with('success', " Role crée ! ");
-
-
-        // try {
-        //     $role = Role::updateOrCreate(
-        //         ['name' => $request->titre, 'slug' => Str::slug($request->titre)],
-        //         ['created_by' => Auth::user()->id, 'description' => $request->description]
-        //     );
+            $role = Role::updateOrCreate(
+                ['name' => $request->titre, 'slug' => Str::slug($request->titre)],
+                ['created_by' => Auth::user()->id, 'description' => $request->description]
+            );
     
-        //         if ($request->create) {
-        //             $operation = "create";
-        //             foreach ($create as $key => $value) {
-        //                 // value est l'id de la ressource
-        //                 // if (!getPermission($role->id, $operation, $value)) {
-        //                 //     $this->store_roles_permission($role, $value, $operation);
-        
-        //                 // }
-        //                 dd($value);
+                if ($request->create) {
+                    $operation = "create";
+                    foreach ($create as $key => $value) {
     
-        //             }
-        //         }
+                        $ressource = Ressource::findorfail($value); 
+                        $operation = Operation::whereOperation("create")->first();
+                        $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
+                        $role->permissions()->attach($permission);
+    
+                    }
+                }
                 
-        //         if ($request->view) {
-        //             $operation = "view";
-        //             foreach ($view as $key => $value) {
+                if ($request->view) {
+                    $operation = "view";
+                    foreach ($view as $key => $value) {
                         
-        //                 if (!getPermission($role->id, $operation, $value)) {
-        //                     $this->store_roles_permission($role, $value, $operation);
-        
-        //                 }
+                        $ressource = Ressource::findorfail($value); 
+                        $operation = Operation::whereOperation("view")->first();
+                        $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
+                        $role->permissions()->attach($permission);
     
-        //             }
-        //         }
+                    }
+                }
     
-        //         if ($request->edit) {
-        //             $operation = "edit";
-        //             foreach ($edit as $key => $value) {
-        //             if (!getPermission($role->id, $operation, $value)) {
-        //                 $this->store_roles_permission($role, $value, $operation);
-    
-        //             }
-        //         }
-        //         }
+                if ($request->edit) {
+                    $operation = "edit";
+                    foreach ($edit as $key => $value) {
+                        $ressource = Ressource::findorfail($value); 
+                        $operation = Operation::whereOperation("edit")->first();
+                        $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
+                        $role->permissions()->attach($permission);
+                }
+                }
                 
-        //         if ($request->delete) {
-        //             $operation = "delete";
-        //             foreach ($delete as $key => $value) {
-        //                 if (!getPermission($role->id, $operation, $value)) {
-        //                     $this->store_roles_permission($role, $value, $operation);
+                if ($request->delete) {
+                    $operation = "delete";
+                    foreach ($delete as $key => $value) {
+                        $ressource = Ressource::findorfail($value); 
+                        $operation = Operation::whereOperation("delete")->first();
+                        $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
+                        $role->permissions()->attach($permission);
+                    }
         
-        //                 }
-        //             }
-        
-        //         }
+                }
     
-        //     return redirect()->route('user.role-index')->with('success', " Role crée ! ");
-        // } catch (\Throwable $th) {
-        //     dd($th);
-        //     return redirect()->route('user.role-index')->with('error', "Échec de l'enregistrement ! " .$th->getMessage());
-        // }
+            return redirect()->route('user.role-index')->with('success', " Role crée ! ");
+    
+        }
+        return back()->with('error', "Vous n'êtes pas autorisé");
 
+       
     }
 
     public function show($slug)
     {
+        if (getOnlineUser()->can('create-roles')) {
+            $role = Role::whereSlug($slug)->first();
+            $permissions = Permission::all();
+            $ressources = Ressource::all();
+            return view('users.roles.show', compact('role', 'permissions', 'ressources'));
+        }
         $role = Role::whereSlug($slug)->first();
         $permissions = Permission::all();
         $ressources = Ressource::all();
         return view('users.roles.show', compact('role', 'permissions', 'ressources'));
+        return back()->with('error', "Vous n'êtes pas autorisé");
+        
     }
 
     public function update(Request $request)
     {
-        // dd($request);
+        if (getOnlineUser()->can('edit-roles')) {
+            $view = [];
+            $create = [];
+            $edit = [];
+            $delete = [];
+            $view = $request->view;
+            $create = $request->create;
+            $edit = $request->edit;
+            $delete = $request->delete;
 
-        $view = [];
-        $create = [];
-        $edit = [];
-        $delete = [];
-        $view = $request->view;
-        $create = $request->create;
-        $edit = $request->edit;
-        $delete = $request->delete;
+            try {
+    
+                $role = Role::updateOrCreate(
+                    ["id" => $request->id],
+                    ['name' => $request->titre, 'slug' => Str::slug($request->titre), 'created_by' => Auth::user()->id, 'description' => $request->description]
+                );
+        
+                $arrPermissionView = [];
+                $arrPermissionDelete = [];
+                $arrPermissionEdit = [];
+                $arrPermissionCreate = [];
+                $role->permissions()->sync([]);
+        
+                if ($request->create) {
+                    $operation = "create";
+        
+                    foreach ($create as $key => $value) {
+                        $ressource = Ressource::findorfail($value); 
+                        $operation = Operation::whereOperation("create")->first();
+                        $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
+                        $role->permissions()->attach($permission);
+                    }
+                }        
+                
+                if ($request->view) {
+                    $operation = "view";
+        
+                    foreach ($view as $key => $value) {
+                        $ressource = Ressource::findorfail($value); 
+                        $operation = Operation::whereOperation("view")->first();
+                        $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
+                        $role->permissions()->attach($permission);
+                    }
+                }
+                if ($request->edit) {
+                    $operation = "edit";
+        
+                    foreach ($edit as $key => $value) {
+                        $ressource = Ressource::findorfail($value); 
+                        $operation = Operation::whereOperation("edit")->first();
+                        $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
+                        $role->permissions()->attach($permission);
+                    }
+                }        
+                if ($request->delete) {
+                    $operation = "delete";
+        
+                    foreach ($delete as $key => $value) {
+                        $ressource = Ressource::findorfail($value); 
+                        $operation = Operation::whereOperation("delete")->first();
+                        $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
+                        $role->permissions()->attach($permission);
+                    }
+                }
+        
+                return redirect()->route('user.role-index')->with('success', "Role mis à jours ! ");
+            } catch (\Throwable $th) {
+                return redirect()->route('user.role-index')->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
 
-        try {
- 
-            $role = Role::updateOrCreate(
-                ["id" => $request->id],
-                ['name' => $request->titre, 'slug' => Str::slug($request->titre), 'created_by' => Auth::user()->id, 'description' => $request->description]
-            );
-    
-            $arrPermissionView = [];
-            $arrPermissionDelete = [];
-            $arrPermissionEdit = [];
-            $arrPermissionCreate = [];
-            $role->permissions()->sync([]);
-    
-            if ($request->create) {
-                $operation = "create";
-    
-                foreach ($create as $key => $value) {
-                    $ressource = Ressource::findorfail($value); 
-                    $operation = Operation::whereOperation("create")->first();
-                    $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
-                    $role->permissions()->attach($permission);
-                }
-            }        
-            
-            if ($request->view) {
-                $operation = "view";
-    
-                foreach ($view as $key => $value) {
-                    $ressource = Ressource::findorfail($value); 
-                    $operation = Operation::whereOperation("view")->first();
-                    $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
-                    $role->permissions()->attach($permission);
-                }
             }
-            if ($request->edit) {
-                $operation = "edit";
-    
-                foreach ($edit as $key => $value) {
-                    $ressource = Ressource::findorfail($value); 
-                    $operation = Operation::whereOperation("edit")->first();
-                    $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
-                    $role->permissions()->attach($permission);
-                }
-            }        
-            if ($request->delete) {
-                $operation = "delete";
-    
-                foreach ($delete as $key => $value) {
-                    $ressource = Ressource::findorfail($value); 
-                    $operation = Operation::whereOperation("delete")->first();
-                    $permission = Permission::whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
-                    $role->permissions()->attach($permission);
-                }
-            }
-    
-            return redirect()->route('user.role-index')->with('success', "Role mis à jours ! ");
-        } catch (\Throwable $th) {
-            return redirect()->route('user.role-index')->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-
         }
-       
+        return back()->with('error', "Vous n'êtes pas autorisé");
+
     }
 }

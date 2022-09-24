@@ -57,7 +57,7 @@
 
                                 <div class="text-center w-75 m-auto">
                                     <h4 class="text-dark-50 text-center pb-0 fw-bold">Inscription</h4>
-                                    <p class="text-muted mb-4">Veillez remplir le formulaiore pour créer un compte
+                                    <p class="text-muted mb-4">Veillez remplir le formulaire pour créer un compte
                                         utilisateur
                                     </p>
                                 </div>

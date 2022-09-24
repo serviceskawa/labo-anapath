@@ -40,10 +40,8 @@
 
                             <div class="text-center w-75 m-auto">
                                 <h4 class="text-dark-50 text-center mt-0 fw-bold">Réinitialiser le mot de passe/h4>
-                                    <p class="text-muted mb-4">Entrez votre adresse e-mail et nous vous enverrons un
-                                        e-mail
-                                        avec
-                                        instructions pour réinitialiser votre mot de passe.</p>
+                                    <p class="text-muted mb-4">Fournissez votre adresse électronique pour obtenir votre
+                                        mot de passe.</p>
                             </div>
 
                             <form method="POST" action="{{ route('password.update') }}">

@@ -58,9 +58,7 @@
 
                                 <div class="text-center w-75 m-auto">
                                     <h4 class="text-dark-50 text-center pb-0 fw-bold">Se connecter</h4>
-                                    <p class="text-muted mb-4">Veuillez saisir votre adresse e-mail et votre mot de
-                                        passe pour
-                                        vous connecter</p>
+                                    <p class="text-muted mb-4">Renseignez vos identifiants de connexion.</p>
                                 </div>
 
                                 <div class="mb-3">

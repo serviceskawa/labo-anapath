@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class DoctorController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth'); 
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -14,9 +19,13 @@ class DoctorController extends Controller
      */
     public function index()
     {
-        $doctors = Doctor::orderBy('name','asc')->get();
+        if (getOnlineUser()->can('view-medecins-traitants')) {
+            $doctors = Doctor::orderBy('name','asc')->get();
 
-        return view('doctors.index',compact(['doctors']));
+            return view('doctors.index',compact(['doctors']));
+        }
+
+        return back()->with('error', "Vous n'êtes pas autorisé");
 
     }
 
@@ -38,25 +47,26 @@ class DoctorController extends Controller
      */
     public function store(Request $request)
     {
-
-
-        $data = $this->validate($request, [
-            'name' => 'required',
-            'email' => 'nullable',
-            'role' => 'nullable',
-            'telephone' => 'required',
-            'commission' => 'required|numeric|min:0|max:100',
-        ]);
-
-
-
-        try {
-            Doctor::create($data);
-            return back()->with('success', "Un médecin enregistré ! ");
-
-        } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        if (getOnlineUser()->can('store-medecins-traitants')) {
+            $data = $this->validate($request, [
+                'name' => 'required',
+                'email' => 'nullable',
+                'role' => 'nullable',
+                'telephone' => 'required',
+                'commission' => 'required|numeric|min:0|max:100',
+            ]);
+    
+    
+    
+            try {
+                Doctor::create($data);
+                return back()->with('success', "Un médecin enregistré ! ");
+    
+            } catch(\Throwable $ex){
+                return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+            }
         }
+        return back()->with('error', "Vous n'êtes pas autorisé");        
     }
 
     /**
@@ -91,33 +101,35 @@ class DoctorController extends Controller
      */
     public function update(Request $request)
     {
-        $data=$this->validate($request, [
-            'id2' => 'required',
-            'name' => 'required',
-            'email' => 'nullable',
-            'role' => 'required',
-            'telephone' => 'required',
-            'commission' => 'required',
-        ]);
-
-
-
-        try {
-
-            $doctor = Doctor::find($data['id2']);
-            $doctor->name = $data['name'];
-            $doctor->email = $data['email'];
-            $doctor->role = $data['role'];
-            $doctor->telephone = $data['telephone'];
-            $doctor->commission = $data['commission'];
-            $doctor->save();
-
-            return back()->with('success', "Un médecin a été mis à jour ! ");
-
-        } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        if (getOnlineUser()->can('edit-medecins-traitants')) {
+            $data=$this->validate($request, [
+                'id2' => 'required',
+                'name' => 'required',
+                'email' => 'nullable',
+                'role' => 'required',
+                'telephone' => 'required',
+                'commission' => 'required',
+            ]);
+    
+    
+    
+            try {
+    
+                $doctor = Doctor::find($data['id2']);
+                $doctor->name = $data['name'];
+                $doctor->email = $data['email'];
+                $doctor->role = $data['role'];
+                $doctor->telephone = $data['telephone'];
+                $doctor->commission = $data['commission'];
+                $doctor->save();
+    
+                return back()->with('success', "Un médecin a été mis à jour ! ");
+    
+            } catch(\Throwable $ex){
+                return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+            }
         }
-
+        return back()->with('error', "Vous n'êtes pas autorisé");
 
     }
 
@@ -129,7 +141,10 @@ class DoctorController extends Controller
      */
     public function destroy($id)
     {
-        Doctor::find($id)->delete();
-        return back()->with('success', "    Un élement a été supprimé ! ");
+        if (getOnlineUser()->can('delete-medecins-traitants')) {
+            Doctor::find($id)->delete();
+            return back()->with('success', "    Un élement a été supprimé ! ");
+        }
+        return back()->with('error', "Vous n'êtes pas autorisé");
     }
 }
