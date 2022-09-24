@@ -119,7 +119,6 @@ class UserController extends Controller
                 "lastname" => $request->lastname,
             ]);
             $user->roles()->sync([]);
-
             $user->roles()->attach($request->roles);
 
             $permsTab = [];
@@ -132,11 +131,10 @@ class UserController extends Controller
 
             }
             $user->permissions()->sync([]);
+
             $user->permissions()->attach($permsTab);
 
-
-    
-            return redirect()->route('user.index')->with('success', " Utilisateur crée ! ");
+            return redirect()->route('user.index')->with('success', " Utilisateur mis à jour ! ");
         } catch (\Throwable $th) {
             return redirect()->route('user.index')->with('error', "Échec de l'enregistrement ! " .$th->getMessage());
 

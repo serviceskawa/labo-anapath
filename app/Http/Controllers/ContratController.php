@@ -49,7 +49,7 @@ class ContratController extends Controller
      */
     public function store(Request $request)
     {
-
+        // dd($request->user()->can('create-contrats'));
         if ($request->user()->can('create-contrats')) {
             $data=$this->validate($request, [
                 'name' => 'required',
