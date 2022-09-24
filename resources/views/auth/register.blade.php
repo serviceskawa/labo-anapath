@@ -52,75 +52,105 @@
                                             @endforeach
                                         </ul>
                                     </div>
-                        </div>
-                        @endif
 
-                        <div class="text-center w-75 m-auto">
-                            <h4 class="text-dark-50 text-center pb-0 fw-bold">Inscription</h4>
-                            <p class="text-muted mb-4">Veillez remplir le formulaiore pour créer un compte utilisateur
-                            </p>
-                        </div>
+                                @endif
 
-                        <form action="#">
-
-                            <div class="mb-3">
-                                <label for="emailaddress" class="form-label">Nom</label>
-                                <input class="form-control" type="text" name="firstname" id="emailaddress"
-                                    required="" placeholder="Entrer votre nom">
-                            </div>
-                            <div class="mb-3">
-                                <label for="emailaddress" class="form-label">Prénom</label>
-                                <input class="form-control" type="text" name="lastname" required=""
-                                    placeholder="Entrer votre prénom">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="emailaddress" class="form-label">Email</label>
-                                <input class="form-control" type="email" name="email" id="emailaddress"
-                                    required="" placeholder="Entrer votre adresse email">
-                            </div>
-
-                            <div class="mb-3">
-
-                                <label for="password" class="form-label">Mot de passe</label>
-                                <div class="input-group input-group-merge">
-                                    <input type="password" id="password" name="password" class="form-control"
-                                        placeholder="Entrer votre mot de passe">
-                                    <div class="input-group-text" data-password="false">
-                                        <span class="password-eye"></span>
-                                    </div>
+                                <div class="text-center w-75 m-auto">
+                                    <h4 class="text-dark-50 text-center pb-0 fw-bold">Inscription</h4>
+                                    <p class="text-muted mb-4">Veillez remplir le formulaiore pour créer un compte
+                                        utilisateur
+                                    </p>
                                 </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="emailaddress" class="form-label">Confirmation du mot de passe</label>
-                                <input class="form-control" type="password" name="password_confirmation"
-                                    id="emailaddress" required="" placeholder="Entrer à nouveau le mot de passe">
-                            </div>
 
 
-                            <div class="mb-3 mb-0 text-center">
-                                <button class="btn btn-primary" type="submit"> Connexion </button>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="emailaddress" class="form-label">Nom</label>
+                                    <input class="form-control @error('firstname') is-invalid @enderror" type="text"
+                                        name="firstname" id="emailaddress" required=""
+                                        placeholder="Entrer votre nom">
+                                    @error('firstname')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label for="emailaddress" class="form-label">Prénom</label>
+                                    <input class="form-control @error('lastname') is-invalid @enderror" type="text"
+                                        name="lastname" required="" placeholder="Entrer votre prénom">
+                                    @error('lastname')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
 
-                        </form>
-                    </div> <!-- end card-body -->
-                </div>
-                <!-- end card -->
+                                <div class="mb-3">
+                                    <label for="emailaddress" class="form-label">Email</label>
+                                    <input class="form-control @error('email') is-invalid @enderror" type="email"
+                                        name="email" id="emailaddress" required=""
+                                        placeholder="Entrer votre adresse email">
+                                    @error('email')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
 
-                <div class="row mt-3">
-                    <div class="col-12 text-center">
-                        <p class="text-muted">Vous souhaitez retourner à la page de connexion ? <a
-                                href="{{ route('login') }}" class="text-muted ms-1"><b>Connexion</b></a></p>
-                    </div> <!-- end col -->
-                </div>
-                <!-- end row -->
+                                <div class="mb-3">
 
-            </div> <!-- end col -->
+                                    <label for="password" class="form-label">Mot de passe</label>
+                                    <div class="input-group input-group-merge">
+                                        <input type="password" id="password" name="password"
+                                            class="form-control @error('password') is-invalid @enderror"
+                                            placeholder="Entrer votre mot de passe">
+                                        <div class="input-group-text" data-password="false">
+                                            <span class="password-eye"></span>
+                                        </div>
+                                    </div>
+                                    @error('password')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="emailaddress" class="form-label">Confirmation du mot de
+                                        passe</label>
+                                    <input class="form-control @error('password_confirmation') is-invalid @enderror"
+                                        type="password" name="password_confirmation" id="emailaddress" required=""
+                                        placeholder="Entrer à nouveau le mot de passe">
+                                    @error('password_confirmation')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
+
+                                <div class="mb-3 mb-0 text-center">
+                                    <button class="btn btn-primary" type="submit"> Connexion </button>
+                                </div>
+
+                            </form>
+                        </div> <!-- end card-body -->
+                    </div>
+                    <!-- end card -->
+
+                    <div class="row mt-3">
+                        <div class="col-12 text-center">
+                            <p class="text-muted">Vous souhaitez retourner à la page de connexion ? <a
+                                    href="{{ route('login') }}" class="text-muted ms-1"><b>Connexion</b></a></p>
+                        </div> <!-- end col -->
+                    </div>
+                    <!-- end row -->
+
+                </div> <!-- end col -->
+            </div>
+            <!-- end row -->
         </div>
-        <!-- end row -->
-    </div>
-    <!-- end container -->
+        <!-- end container -->
     </div>
     <!-- end page -->
 
