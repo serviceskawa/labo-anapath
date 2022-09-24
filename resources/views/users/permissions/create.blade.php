@@ -88,8 +88,8 @@
                                     <td>{{ $item->titre }} </td>
                                     <td>{{ $item->slug }} </td>
                                     <td>{{ $item->created_at }} </td>
-                                    <td> <a type="button" href="{{ route('report.show', $item->id) }}"
-                                            class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
+                                    <td> <a type="button" href="#" class="btn btn-primary"><i
+                                                class="mdi mdi-eye"></i> </a>
                                     </td>
 
                                 </tr>

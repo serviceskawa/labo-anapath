@@ -50,26 +50,31 @@ class ContratController extends Controller
     public function store(Request $request)
     {
 
-        $data=$this->validate($request, [
-            'name' => 'required',
-            'type' => 'required',
-            'description' => 'required',
-        ]);
+        if ($request->user()->can('create-contrats')) {
+            $data=$this->validate($request, [
+                'name' => 'required',
+                'type' => 'required',
+                'description' => 'required',
+            ]);
+    
+    
+    
+            try {
+                    $contrat = new Contrat();
+                    $contrat->name = $data['name'];
+                    $contrat->type = $data['type'];
+                    $contrat->description = $data['description'];
+                    $contrat->status = 'INACTIF';
+                    $contrat->save();
+    
+                    return redirect()->route('contrat_details.index',$contrat->id)->with('success', "Contrat enregistré avec succès ! ");
+                } catch(\Throwable $ex){
+                    return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+             }
+        }
+        return back()->with('error', "Vous n'êtes pas autorisé");
 
-
-
-        try {
-             $contrat = new Contrat();
-             $contrat->name = $data['name'];
-             $contrat->type = $data['type'];
-             $contrat->description = $data['description'];
-             $contrat->status = 'INACTIF';
-             $contrat->save();
-
-            return redirect()->route('contrat_details.index',$contrat->id)->with('success', "Contrat enregistré avec succès ! ");
-               } catch(\Throwable $ex){
-             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-         }
+        
     }
 
 

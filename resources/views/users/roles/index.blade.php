@@ -47,7 +47,7 @@
                                 <tr>
                                     <td>{{ $item->name }} </td>
                                     <td>{{ $item->slug }} </td>
-                                    <td>{{ $item->user->name }} </td>
+                                    <td>{{ $item->user->firstname }} {{ $item->user->lastname }} </td>
                                     <td> <a type="button" href="{{ route('user.role-show', $item->slug) }}"
                                             class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
                                     </td>
