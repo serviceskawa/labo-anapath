@@ -29,7 +29,7 @@ class PermissionController extends Controller
 
     public function store(Request $request)
     {
-        if (getOnlineUser()->can('store-permissions')) {
+        if (getOnlineUser()->can('create-permissions')) {
             $this->validate($request, [
                 'titre' => 'required',
             ]);
