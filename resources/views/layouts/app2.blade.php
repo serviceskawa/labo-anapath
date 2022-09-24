@@ -38,11 +38,9 @@
             <!-- LOGO -->
             <a href="#" class="logo text-center logo-light">
                 <span class="logo-lg">
-                    <img src="{{ asset('/adminassets/images/CAAP_Logo_2_1_0.png') }}" alt="">
-                </span>
+                    <img src="{{ $setting ? Storage::url($setting->logo_blanc) : '' }}" alt=""> </span>
                 <span class="logo-sm">
-                    <img src="{{ asset('/adminassets/images/CAAP_Logo_2_1_0.png') }}" alt="">
-                </span>
+                    <img src="{{ $setting ? Storage::url($setting->logo_blanc) : '' }}" alt=""> </span>
             </a>
 
             <!-- LOGO -->

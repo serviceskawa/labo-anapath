@@ -53,7 +53,7 @@
                                                                     value="{{ $ressource->id }}"
                                                                     {{ getPermission($role->id, $permission->operation->operation, $permission->id) ? 'checked' : '' }} />
                                                                 <label class="form-check-label" for="userManagementRead">
-                                                                    View
+                                                                    {{ $permission->operation->operation }}
                                                                 </label>
                                                             </div>
                                                         @empty
