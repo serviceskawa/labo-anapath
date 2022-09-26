@@ -16,6 +16,7 @@ use App\Http\Controllers\TestOrderController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\TestCategoryController;
 use App\Http\Controllers\DetailsContratController;
+use App\Http\Controllers\SettingReportTemplateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -156,4 +157,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('profile-update', [ProfileController::class,'update'])->name('profile.update');
     Route::post('profile-update-name', [ProfileController::class,'updateName'])->name('profile.update-name');
 
+    // Templates
+    Route::prefix('templates')->group(function () {
+        Route::get('reports', [SettingReportTemplateController::class , 'index'])->name('template.report-index');
+        Route::get('report-create', [SettingReportTemplateController::class , 'create'])->name('template.report-create');
+        Route::get('report-edit/{id}', [SettingReportTemplateController::class , 'edit'])->name('template.report-edit');
+        Route::post('report-store', [SettingReportTemplateController::class,'store'])->name('template.report-store');
+
+    });
 });

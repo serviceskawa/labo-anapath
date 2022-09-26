@@ -30,8 +30,7 @@ class RoleController extends Controller
             $roles = Role::all();
             return view('users.roles.index', compact('roles'));
         }
-        $roles = Role::all();
-            return view('users.roles.index', compact('roles'));
+
         return back()->with('error', "Vous n'êtes pas autorisé");
 
     }
@@ -43,9 +42,7 @@ class RoleController extends Controller
             $ressources = Ressource::all();
             return view('users.roles.create', compact('permissions', 'ressources'));
         }
-        $permissions = Permission::all();
-            $ressources = Ressource::all();
-            return view('users.roles.create', compact('permissions', 'ressources'));
+
         return back()->with('error', "Vous n'êtes pas autorisé");
         
     }
@@ -129,10 +126,7 @@ class RoleController extends Controller
             $ressources = Ressource::all();
             return view('users.roles.show', compact('role', 'permissions', 'ressources'));
         }
-        $role = Role::whereSlug($slug)->first();
-        $permissions = Permission::all();
-        $ressources = Ressource::all();
-        return view('users.roles.show', compact('role', 'permissions', 'ressources'));
+
         return back()->with('error', "Vous n'êtes pas autorisé");
         
     }
