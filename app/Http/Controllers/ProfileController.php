@@ -14,6 +14,28 @@ class ProfileController extends Controller
         return view('profile.index');
     }
 
+    public function updateName(Request $request)
+    {
+        $this->validate($request, [ 
+            'firstname' => 'required',
+            'lastname' => 'required',
+        ]);
+
+        $user = Auth::user(); 
+
+        if ($user) {
+            $user = User::find(Auth::user()->id);
+            $user->firstname = $request->firstname;
+            $user->lastname = $request->lastname;
+            $user->save();
+
+            return back()->with('success', " Informations mis à jour ");
+        }
+
+        return back()->with('error', " Veuillez reessayer ");
+
+    }
+
     public function update(Request $request)
     {
         $this->validate($request, [ 
@@ -24,21 +46,14 @@ class ProfileController extends Controller
         $hashedPassword = Auth::user()->password;
 
         if (Hash::check($request->oldpassword , $hashedPassword)) {
-            dd($request->oldpassword , $hashedPassword);
+            // dd($request->oldpassword , $hashedPassword);
 
-            if (Hash::check($request->newpassword , $hashedPassword)) {
- 
-                $users = User::find(Auth::user()->id);
-                $users->password = bcrypt($request->newpassword);
-                $users->save();
+            $users = User::find(Auth::user()->id);
+            $users->password = bcrypt($request->newpassword);
+            $users->save();
 
-                return back()->with('success', " Le nouveau mot de passe enregistré! ");
+            return back()->with('success', " Le nouveau mot de passe enregistré! ");
 
-            }
-            else{
-                return back()->with('error', " Le nouveau mot de passe ne peut pas être l'ancien mot de passe! ");
-
-            } 
         }
         else{
             return back()->with('error', " Le mot de passe ne correspond pas ");

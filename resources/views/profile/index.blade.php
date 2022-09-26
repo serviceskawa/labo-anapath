@@ -18,18 +18,18 @@
             <div class="col-xl-4 col-lg-5">
                 <div class="card text-center">
                     <div class="card-body">
-                        <img src="{{ asset('assets/images/users/avatar-1.jpg') }} "
+                        <img src="{{ asset('adminassets/images/users/avatar-1.jpg') }} "
                             class="rounded-circle avatar-lg img-thumbnail" alt="profile-image">
 
                         <h4 class="mb-0 mt-2">{{ Auth::user()->firstname }} </h4>
-                        <p class="text-muted font-14">Founder</p>
+                        {{-- <p class="text-muted font-14">Founder</p> --}}
 
                         <div class="text-start mt-3">
                             <p class="text-muted mb-2 font-13"><strong>Nom & Prenoms :</strong> <span
                                     class="ms-2">{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</span></p>
 
-                            <p class="text-muted mb-2 font-13"><strong>Telephone :</strong><span class="ms-2">aaa</span>
-                            </p>
+                            {{-- <p class="text-muted mb-2 font-13"><strong>Telephone :</strong><span class="ms-2">aaa</span>
+                            </p> --}}
 
                             <p class="text-muted mb-2 font-13"><strong>Email :</strong> <span
                                     class="ms-2 ">{{ Auth::user()->email }}</span></p>
@@ -46,7 +46,8 @@
             <div class="col-xl-8 col-lg-7">
                 <div class="card">
                     <div class="card-body">
-                        <form>
+                        <form method="POST" action="{{ route('profile.update-name') }}">
+                            @csrf
                             <h5 class="mb-4 text-uppercase"><i class="mdi mdi-account-circle me-1"></i>Info Personnelle
                             </h5>
 
@@ -64,21 +65,21 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="firstname" class="form-label">Nom</label>
-                                        <input type="text" class="form-control" id="firstname"
+                                        <input type="text" class="form-control" name="firstname"
                                             value="{{ Auth::user()->firstname }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="lastname" class="form-label">Prenom</label>
-                                        <input type="text" class="form-control" id="lastname"
+                                        <input type="text" class="form-control" name="lastname"
                                             value="{{ Auth::user()->lastname }}">
                                     </div>
                                 </div> <!-- end col -->
                             </div> <!-- end row -->
                             <div class="text-end">
                                 <button type="submit" class="btn btn-success mt-2"><i class="mdi mdi-content-save"></i>
-                                    Save</button>
+                                    Mettre à jour</button>
                             </div>
                         </form>
                     </div> <!-- end card body -->
@@ -92,8 +93,7 @@
                     <div class="card-body">
                         <form method="POST" action="{{ route('profile.update') }} ">
                             @csrf
-                            <h5 class="mb-4 text-uppercase"><i class="mdi mdi-account-circle me-1"></i> Mot de passe
-                                Info</h5>
+                            <h5 class="mb-4 text-uppercase"><i class="mdi mdi-account-circle me-1"></i> Mot de passe</h5>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
@@ -102,7 +102,7 @@
                                         <div class="input-group input-group-merge">
                                             <input type="password" id="password" name="oldpassword"
                                                 class="form-control @error('oldpassword') is-invalid @enderror"
-                                                placeholder="Mot de passe">
+                                                placeholder="Mot de passe" required>
                                             <div class="input-group-text" data-password="false">
                                                 <span class="password-eye"></span>
                                             </div>
@@ -121,7 +121,7 @@
                                         <div class="input-group input-group-merge">
                                             <input type="password" id="password" name="newpassword"
                                                 class="form-control @error('newpassword') is-invalid @enderror"
-                                                placeholder="Mot de passe">
+                                                placeholder="Mot de passe" required>
                                             <div class="input-group-text" data-password="false">
                                                 <span class="password-eye"></span>
                                             </div>
@@ -145,7 +145,7 @@
                                         <div class="input-group input-group-merge">
                                             <input type="password" id="password" name="password_confirmation"
                                                 class="form-control @error('password_confirmation') is-invalid @enderror"
-                                                placeholder="Mot de passe">
+                                                placeholder="Mot de passe" required>
                                             <div class="input-group-text" data-password="false">
                                                 <span class="password-eye"></span>
                                             </div>
@@ -162,7 +162,7 @@
 
                             <div class="text-end">
                                 <button type="submit" class="btn btn-success mt-2"><i class="mdi mdi-content-save"></i>
-                                    Save</button>
+                                    Mettre à jour</button>
                             </div>
                         </form>
                     </div> <!-- end card body -->
