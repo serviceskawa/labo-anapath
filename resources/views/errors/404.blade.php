@@ -38,13 +38,13 @@
                         <div class="card-body p-4">
                             <div class="text-center">
                                 <h1 class="text-error">4<i class="mdi mdi-emoticon-sad"></i>4</h1>
-                                <h4 class="text-uppercase text-danger mt-3">Page Not Found</h4>
+                                <h4 class="text-uppercase text-danger mt-3">Page non trouvée</h4>
                                 <p class="text-muted mt-3">
                                     Il semble que vous ayez pris un mauvais virage. Ne vous inquiétez pas... ça arrive
                                     aux meilleurs d'entre nous. Voici une petite astuce qui pourrait vous aider à vous
                                     remettre sur la bonne voie.</p>
 
-                                <a class="btn btn-info mt-3" href="{{ route('login') }} ><i class="mdi mdi-reply"></i>
+                                <a class="btn btn-info mt-3" href="{{ route('login') }}"><i class="mdi mdi-reply"></i>
                                     Aller à Acceuil</a>
                             </div>
                         </div> <!-- end card-body-->

@@ -9,6 +9,7 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ContratController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\TestOrderController;
@@ -149,4 +150,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('user-update', [UserController::class,'update'])->name('user.update');
 
     });
+
+    // Profile
+    Route::get('profile', [ProfileController::class , 'index'])->name('profile.index');
+    Route::post('profile-update', [ProfileController::class,'update'])->name('profile.update');
+
 });
