@@ -12,9 +12,10 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 
 // require _DIR_.'/vendor/autoload.php';
+use App\Models\SettingReportTemplate;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
-use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
+use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
 class ReportController extends Controller
 {
@@ -83,8 +84,9 @@ class ReportController extends Controller
 
             $report = Report::findorfail($id);
             $setting = Setting::find(1);
+            $templates = SettingReportTemplate::all();
 
-            return view('reports.show', compact('report', 'setting'));
+            return view('reports.show', compact('report', 'setting', 'templates'));
         }
         return back()->with('error', "Vous n'êtes pas autorisé");
 
@@ -163,5 +165,13 @@ class ReportController extends Controller
         }
         return back()->with('error', "Vous n'êtes pas autorisé");
 
+    }
+
+    public function getTemplate(Request $request)
+    {
+
+       $template = SettingReportTemplate::findorfail($request->id);
+
+       return response()->json($template, 200);
     }
 }

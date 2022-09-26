@@ -3,12 +3,6 @@
 @section('title', 'Details')
 
 @section('css')
-    {{-- <link href="{{ asset('/adminassets/css/vendor/quill.bubble.css') }}" rel="stylesheet" type="text/css" />
-
-    <link href="{{ asset('/adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('/adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" /> --}}
-
-    {{-- <link href="{{ asset('/adminassets/css/vendor/simplemde.min.css') }}" rel="stylesheet" type="text/css" /> --}}
 
     <style>
         .ck-editor__editable[role="textbox"] {
@@ -84,6 +78,18 @@
                                     value="{{ $report ? $report->title : '' }}" required>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Modèle de rapport</label>
+                                <select class="form-select" id="template" name="">
+                                    <option value="">Choisir un model</option>
+                                    @forelse ($templates as $template)
+                                        <option value="{{ $template->id }}">{{ $template->title }} </option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                            </div>
+                        </div>
 
                         <input type="hidden" name="report_id" value="{{ $report->id }}">
 
@@ -137,72 +143,80 @@
 
 
 @push('extra-js')
-    {{-- <!-- quill js -->
-    <script src="{{ asset('/adminassets/js/vendor/quill.min.js') }}"></script>
-    <!-- quill Init js-->
-    <script src="{{ asset('/adminassets/js/pages/demo.quilljs.js') }}"></script> --}}
-
-    {{-- <script src="{{ asset('/adminassets/js/vendor/simplemde.min.js') }}"></script>
-    <!-- SimpleMDE demo -->
-    <script src="{{ asset('/adminassets/js/pages/demo.simplemde.js') }}"></script> --}}
-
     <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
     <script>
         ClassicEditor
             .create(document.querySelector('#editor'))
             .then(editor => {
-                console.log(editor);
+                // console.log(editor);
             })
             .catch(error => {
                 console.error(error);
             });
     </script>
-    <script>
-        // SUPPRESSION
-        function deleteModal(id) {
 
-            Swal.fire({
-                title: "Voulez-vous supprimer l'élément ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Oui ",
-                cancelButtonText: "Non !",
-            }).then(function(result) {
-                if (result.value) {
-                    window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
-                    Swal.fire(
-                        "Suppression !",
-                        "En cours de traitement ...",
-                        "success"
-                    )
-                }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#template').on('change', function(e) {
+                var template_id = $('#template').val();
+                const report = {!! json_encode($report) !!};
+
+                $.ajax({
+                    url: "{{ route('template.report-getTemplate') }}",
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        id: template_id,
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        // $('#page_id').val()
+                        if (data) {
+                            $('#editor').val(data.content);
+
+                            ClassicEditor
+                                .create(document.querySelector('#editor'))
+                                .then(editor => {})
+                                .catch(error => {
+                                    console.error(error);
+                                });
+
+                            document.querySelector('.ck-editor__editable').ckeditorInstance
+                                .destroy()
+
+                        } else {
+                            $('#editor').val("Texte");
+
+                            ClassicEditor
+                                .create(document.querySelector('#editor'))
+                                .then(editor => {})
+                                .catch(error => {
+                                    console.error(error);
+                                });
+
+                            document.querySelector('.ck-editor__editable').ckeditorInstance
+                                .destroy()
+
+                        }
+
+                    },
+                    error: function(error) {
+                        $('#editor').val(report.description);
+
+                        ClassicEditor
+                            .create(document.querySelector('#editor'))
+                            .then(editor => {})
+                            .catch(error => {
+                                console.error(error);
+                            });
+
+                        document.querySelector('.ck-editor__editable').ckeditorInstance
+                            .destroy()
+
+                    }
+                })
             });
-        }
-
-        //EDITION
-        function edit(id) {
-            var e_id = id;
-
-            // Populate Data in Edit Modal Form
-            $.ajax({
-                type: "GET",
-                url: "{{ url('getcontratdetails') }}" + '/' + e_id,
-                success: function(data) {
-
-                    $('#category_test_id2').val(data.category_test_id).change();
-                    $('#pourcentage2').val(data.pourcentage);
-                    $('#contrat_id2').val(data.contrat_id);
-                    $('#contrat_details_id2').val(data.id);
-
-
-
-                    console.log(data);
-                    $('#editModal').modal('show');
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                }
-            });
-        }
+        });
     </script>
 @endpush
