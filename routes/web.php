@@ -115,6 +115,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('send_sms/{id}', [ReportController::class , 'send_sms'])->name('report.send-sms');
         Route::get('pdf/{id}', [ReportController::class , 'pdf'])->name('report.pdf');
 
+        Route::post('report-gettemplate', [ReportController::class , 'getTemplate'])->name('template.report-getTemplate');
+
     });
 
     Route::prefix('settings')->group(function () {
