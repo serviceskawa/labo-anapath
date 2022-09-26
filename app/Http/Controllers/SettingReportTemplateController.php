@@ -20,7 +20,8 @@ class SettingReportTemplateController extends Controller
 
     public function create()
     {
-        return view('templates.reports.create');
+        $template = "";
+        return view('templates.reports.create', compact('template'));
     }
 
     public function store(Request $request)
