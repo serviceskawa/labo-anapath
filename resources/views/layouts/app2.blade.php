@@ -192,7 +192,7 @@
                             <ul class="side-nav-second-level">
 
                                 <li>
-                                    <a href="{{ route('template.report-index') }} ">Reports</a>
+                                    <a href="{{ route('template.report-index') }} ">Rapports</a>
                                 </li>
 
                             </ul>

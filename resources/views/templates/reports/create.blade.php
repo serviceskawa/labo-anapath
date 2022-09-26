@@ -55,7 +55,7 @@
                             <div class="col-md-12 mb-3">
                                 <div class="form-group">
                                     <label for="exampleFormControlInput1" class="form-label">Content</label>
-                                    <textarea name="content" id="editor" cols="30" rows="10">{{ $template ? $template->description : '' }}</textarea>
+                                    <textarea name="content" id="editor" cols="30" rows="10">{{ $template ? $template->content : '' }}</textarea>
                                 </div>
                             </div>
                         </div>
