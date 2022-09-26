@@ -52,4 +52,15 @@ class SettingReportTemplateController extends Controller
         $template = SettingReportTemplate::findorfail($id);
         return view('templates.reports.create', compact('template'));
     }
+
+    public function delete($id)
+    {
+        $template = SettingReportTemplate::find($id)->delete();
+        
+        if ($template) {
+            return back()->with('success', "    Un élement a été supprimé ! ");
+        } else {
+            return back()->with('error', "    Element utilisé ailleurs ! ");
+        }
+    }
 }

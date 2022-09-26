@@ -163,6 +163,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('report-create', [SettingReportTemplateController::class , 'create'])->name('template.report-create');
         Route::get('report-edit/{id}', [SettingReportTemplateController::class , 'edit'])->name('template.report-edit');
         Route::post('report-store', [SettingReportTemplateController::class,'store'])->name('template.report-store');
+        Route::get('report-delete/{id}', [SettingReportTemplateController::class , 'delete'])->name('template.report-delete');
 
     });
 });

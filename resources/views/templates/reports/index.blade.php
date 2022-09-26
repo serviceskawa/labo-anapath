@@ -53,10 +53,10 @@
                                     <td>{{ $item->title }}</td>
                                     <td>{{ $item->description }}</td>
                                     <td>
-                                        <a type="button" href="{{ route('template.report-edit', $item->id) }} "
+                                        <a type="button" href="{{ route('template.report-edit', $item->id) }}"
                                             class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </a>
-                                        <button type="button" onclick="deleteModal({{ $item->id }})"
-                                            class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
+                                        <a type="button" href="{{ route('template.report-delete', $item->id) }}"
+                                            class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </a>
                                     </td>
                                 </tr>
                             @endforeach
