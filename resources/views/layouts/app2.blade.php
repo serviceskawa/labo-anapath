@@ -36,21 +36,11 @@
         <div class="leftside-menu">
 
             <!-- LOGO -->
-            <a href="#" class="logo text-center logo-light">
+            <a href="{{ route('home') }}" class="logo text-center logo-light">
                 <span class="logo-lg">
-                    <img src="{{ $setting ? Storage::url($setting->logo_blanc) : '' }}" alt=""> </span>
+                    <img src="{{ $setting ? Storage::url($setting->logo_blanc) : '' }}" alt="" width="200px"> </span>
                 <span class="logo-sm">
-                    <img src="{{ $setting ? Storage::url($setting->logo_blanc) : '' }}" alt=""> </span>
-            </a>
-
-            <!-- LOGO -->
-            <a href="#" class="logo text-center logo-dark">
-                <span class="logo-lg">
-                    <img src="{{ asset('/adminassets/images/logo-bg-dark.png') }}" alt="" height="16">
-                </span>
-                <span class="logo-sm">
-                    <img src="{{ asset('/adminassets/images/logo-bg-dark.png') }}" alt="" height="16">
-                </span>
+                    <img src="{{ $setting ? Storage::url($setting->favicon) : '' }}" alt="" width="50px"> </span>
             </a>
 
             <div class="h-100" id="leftside-menu-container" data-simplebar="">
@@ -58,6 +48,13 @@
                 <!--- Sidemenu -->
                 <ul class="side-nav">
 
+                    <!--- Tableau de bord -->
+                    <li class="side-nav-item">
+                        <a href="{{ route('home') }}" class="side-nav-link">
+                            <i class=" uil-home-alt"></i>
+                            <span> Tableau de bord </span>
+                        </a>
+                    </li>
 
                     <!--- Examen -->
                     <li class="side-nav-item">

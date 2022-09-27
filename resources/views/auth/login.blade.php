@@ -32,7 +32,7 @@
                         <div class="card-header pt-2 pb-2 text-center ">
                             <a href="#">
                                 <span>
-                                    <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt=""></span>
+                                    <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt="" width="250px"></span>
                             </a>
                         </div>
 

@@ -31,7 +31,7 @@
                         <div class="card-header pt-4 pb-4 text-center ">
                             <a href="#">
                                 <span>
-                                    <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt=""></span>
+                                    <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt="" width="250px"></span>
 
                             </a>
                         </div>
@@ -39,9 +39,8 @@
                         <div class="card-body p-4">
 
                             <div class="text-center w-75 m-auto">
-                                <h4 class="text-dark-50 text-center mt-0 fw-bold">Réinitialiser le mot de passe/h4>
-                                    <p class="text-muted mb-4">Fournissez votre adresse électronique pour obtenir votre
-                                        mot de passe.</p>
+                                <h4 class="text-dark-50 text-center mt-0 fw-bold">Réinitialiser le mot de passe</h4>
+                                    <p class="text-muted mb-4">Saisissez votre nouveau mot de passe ci-dessous.</p>
                             </div>
 
                             <form method="POST" action="{{ route('password.update') }}">
@@ -49,11 +48,11 @@
                                 <input type="hidden" name="token" value="{{ $token }}">
 
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Adresse Email</label>
+                                    <label for="email" class="form-label">Adresse e-mail</label>
 
                                     <input class="form-control @error('email') is-invalid @enderror" type="email"
                                         name="email" id="email" value="{{ $email ?? old('email') }}" required
-                                        autocomplete="email" autofocus>
+                                        autocomplete="email" type="hidden" readonly>
 
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
@@ -63,7 +62,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="password" class="form-label">Mot de passe</label>
+                                    <label for="password" class="form-label">Nouveau mot de passe</label>
 
                                     <input class="form-control @error('password') is-invalid @enderror" type="password"
                                         name="password" id="password" required autocomplete="new-password" autofocus>
@@ -76,15 +75,17 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="password-confirm" class="form-label">Confirmer</label>
+                                    <label for="password-confirm" class="form-label">Confirmer le mot de passe</label>
 
                                     <input class="form-control" type="password" name="password_confirmation"
                                         id="password-confirm" required autocomplete="new-password" autofocus>
 
                                 </div>
 
+                                <span><p>Conseil : Le mot de passe devrait contenir au moins douze caractères. Pour le rendre plus sûr, utilisez des lettres en majuscules et minuscules, des nombres, et des symboles tels que ! " ? $ % ^ & ).</p></span>
+
                                 <div class="mb-0 text-center">
-                                    <button class="btn btn-primary" type="submit">Rénitialiser</button>
+                                    <button class="btn btn-primary" type="submit">Enregistrer le mot de passe</button>
                                 </div>
                             </form>
                         </div> <!-- end card-body-->

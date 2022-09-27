@@ -31,7 +31,7 @@
                         <div class="card-header pt-4 pb-4 text-center ">
                             <a href="#">
                                 <span>
-                                    <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt=""></span>
+                                    <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt="" width="250px"></span>
 
                             </a>
                         </div>
@@ -40,14 +40,19 @@
 
                             <div class="text-center w-75 m-auto">
                                 <h4 class="text-dark-50 text-center mt-0 fw-bold">Mot de passe oublié</h4>
-                                <p class="text-muted mb-4">Fournissez votre adresse électronique pour obtenir votre mot
-                                    de passe.</p>
+                                <p class="text-muted mb-4">Merci de renseigner votre adresse e-mail. Vous recevrez un e-mail contenant les instructions vous permettant de réinitialiser votre mot de passe.</p>
                             </div>
+
+                            @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                            @endif
 
                             <form method="POST" action="{{ route('password.email') }}">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="emailaddress" class="form-label">Adresse Email</label>
+                                    <label for="emailaddress" class="form-label">Adresse e-mail</label>
                                     <input class="form-control @error('email') is-invalid @enderror" type="email"
                                         name="email" id="email" required="" placeholder="Entrez votre email"
                                         value="{{ old('email') }}" required autocomplete="email" autofocus>
