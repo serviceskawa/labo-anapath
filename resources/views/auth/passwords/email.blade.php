@@ -84,7 +84,8 @@
     <!-- end page -->
 
     <footer class="footer footer-alt">
-        2018 - 2021 © Hyper - Coderthemes.com
+        <a href="mailto:serviceskawa@gmail.com?subject=Le sujet&body=Le corps du message">Cliquez ici pour contacter le
+            Support Technique</a>
     </footer>
 
     <!-- bundle -->
