@@ -89,34 +89,30 @@ class ContratController extends Controller
 
     public function details_store(Request $request){
 
-        if ($request->user()->can('create-contrats')) {
-            $data = $this->validate($request, [
-                'contrat_id' => 'required|exists:contrats,id',
-                'pourcentage' => 'required',
-                'category_test_id' => 'required',
-            ]);
-    
-            $contrat = Contrat::findorfail($data['contrat_id']);
-            $category_exit = $contrat->detail()->whereCategoryTestId($data['category_test_id'])->exists();
-    
-            if ($category_exit) {
-                return back()->with('error', "Cette categorie existe ! ");
-            }
-    
-            try {
-    
-                DB::transaction(function () use ($data) {
-                    Details_Contrat::create($data);
-                });
-    
-                return back()->with('success', "Element enregistré avec succès ! ");
-    
-            } catch(\Throwable $ex){
-              return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-            }
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
+        $data = $this->validate($request, [
+            'contrat_id' => 'required|exists:contrats,id',
+            'pourcentage' => 'required',
+            'category_test_id' => 'required',
+        ]);
 
+        $contrat = Contrat::findorfail($data['contrat_id']);
+        $category_exit = $contrat->detail()->whereCategoryTestId($data['category_test_id'])->exists();
+
+        if ($category_exit) {
+            return back()->with('error', "Cette categorie existe ! ");
+        }
+
+        try {
+
+            DB::transaction(function () use ($data) {
+                Details_Contrat::create($data);
+            });
+
+            return back()->with('success', "Element enregistré avec succès ! ");
+
+        } catch(\Throwable $ex){
+          return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }
     }
 
     /**
@@ -158,62 +154,55 @@ class ContratController extends Controller
      */
     public function update(Request $request)
     {
-        if ($request->user()->can('edit-contrats')) {
-            $data = $this->validate($request, [
-                'name2' => 'required',
-                'type2' => 'required',
-                'status2' => 'required',
-                'id2' => 'required',
-                'description2' => 'required',
-            ]);
-    
-            try {
-                DB::transaction(function () use ($data) {
-    
-                    $contrat = Contrat::find($data['id2']);
-                    $contrat->name = $data['name2'];
-                    $contrat->type = $data['type2'];
-                    $contrat->status = $data['status2'];
-                    $contrat->description = $data['description2'];
-                    $contrat->save();
-                });
-    
-                 return back()->with('success', "Mise à jour effectuée avec succès ! ");
-                } catch(\Throwable $ex){
-              return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-          }
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
+        $data = $this->validate($request, [
+            'name2' => 'required',
+            'type2' => 'required',
+            'status2' => 'required',
+            'id2' => 'required',
+            'description2' => 'required',
+        ]);
 
+        try {
+            DB::transaction(function () use ($data) {
+
+                $contrat = Contrat::find($data['id2']);
+                $contrat->name = $data['name2'];
+                $contrat->type = $data['type2'];
+                $contrat->status = $data['status2'];
+                $contrat->description = $data['description2'];
+                $contrat->save();
+            });
+
+             return back()->with('success', "Mise à jour effectuée avec succès ! ");
+            } catch(\Throwable $ex){
+          return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+      }
     }
 
 
     public function contrat_details_update(Request $request){
 
+        $data=$this->validate($request, [
+            'category_test_id2' => 'required',
+            'pourcentage2' => 'required',
+            'contrat_id2' => 'required',
+            'contrat_details_id2' => 'required',
+        ]);
 
-        if (getOnlineUser()->can('edit-contrats')) {
-            $data=$this->validate($request, [
-                'category_test_id2' => 'required',
-                'pourcentage2' => 'required',
-                'contrat_id2' => 'required',
-                'contrat_details_id2' => 'required',
-            ]);
-    
-    
-    
-            try {
-                DB::transaction(function () use ($data) {
-                    $contrat_detail = Details_Contrat::find($data['contrat_details_id2']);
-                    $contrat_detail->category_test_id = $data['category_test_id2'];
-                    $contrat_detail->pourcentage = $data['pourcentage2'];
-                    $contrat_detail->save();
-                });
-    
-                 return back()->with('success', "Mise à jour effectué avec succès ! ");
-                } catch(\Throwable $ex){
-              return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-          }
-        }
+
+
+        try {
+            DB::transaction(function () use ($data) {
+                $contrat_detail = Details_Contrat::find($data['contrat_details_id2']);
+                $contrat_detail->category_test_id = $data['category_test_id2'];
+                $contrat_detail->pourcentage = $data['pourcentage2'];
+                $contrat_detail->save();
+            });
+
+             return back()->with('success', "Mise à jour effectué avec succès ! ");
+            } catch(\Throwable $ex){
+          return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+      }
 
     }
 
@@ -225,41 +214,27 @@ class ContratController extends Controller
      */
     public function destroy($id)
     {
-
-        if (getOnlineUser()->can('delete-contrats')) {
-            $contrat = Contrat::find($id)->delete();
-            if ($contrat) {
-                return back()->with('success', "    Un élement a été supprimé ! ");
-            } else {
-                return back()->with('error', "    Ce contrat est utilisé ailleurs ! ");
-            }
+        $contrat = Contrat::find($id)->delete();
+        if ($contrat) {
+            return back()->with('success', "    Un élement a été supprimé ! ");
+        } else {
+            return back()->with('error', "    Ce contrat est utilisé ailleurs ! ");
         }
-        
-        return back()->with('error', "Vous n'êtes pas autorisé");
-  
     }
 
 
     public function destroy_details($id)
     {
-        if (getOnlineUser()->can('delete-contrats')) {
-            Details_Contrat::find($id)->delete();
-            return back()->with('success', "    Un élement a été supprimé ! ");
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
-
+        Details_Contrat::find($id)->delete();
+        return back()->with('success', "    Un élement a été supprimé ! ");
     }
 
     public function update_detail_status($id)
     {
-        if (getOnlineUser()->can('edit-contrats')) {
-            $contrat = Contrat::findorfail($id);
-            $contrat->fill(["status" => "ACTIF"])->save();
-    
-            return redirect()->route('contrats.index')->with('success', "Statut mis à jour ! ");
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
+        $contrat = Contrat::findorfail($id);
+        $contrat->fill(["status" => "ACTIF"])->save();
 
+        return redirect()->route('contrats.index')->with('success', "Statut mis à jour ! ");
     }
 
 }

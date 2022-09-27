@@ -14,13 +14,9 @@ class PatientController extends Controller
      */
     public function index()
     {
-        if (getOnlineUser()->can('view-patients')) {
-            $patients = Patient::orderBy('id','desc')->get();
+        $patients = Patient::orderBy('id','desc')->get();
 
-            return view('patients.index',compact(['patients']));
-        }
-
-        return back()->with('error', "Vous n'êtes pas autorisé");
+        return view('patients.index',compact(['patients']));
 
     }
 
@@ -43,31 +39,27 @@ class PatientController extends Controller
     public function store(Request $request)
     {
 
-        if (getOnlineUser()->can('create-patients')) {
-            $data = $this->validate($request, [
-                'code' => 'required',
-                'firstname' => 'required',
-                'lastname' => 'required',
-                'telephone1' => 'required',
-                'telephone1' => 'nullable',
-                'adresse' => 'nullable',
-                'genre' => 'required',
-                'age' => 'required | integer',
-                'profession' => 'nullable',
-                'birthday' => 'nullable||date'
-            ]);
-    
-    
-            try {
-                Patient::create($data);
-                return back()->with('success', "Un patient enregistrée ! ");
-    
-            } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-            }
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
+        $data = $this->validate($request, [
+            'code' => 'required',
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'telephone1' => 'required',
+            'telephone1' => 'nullable',
+            'adresse' => 'nullable',
+            'genre' => 'required',
+            'age' => 'required | integer',
+            'profession' => 'nullable',
+            'birthday' => 'nullable||date'
+        ]);
 
+
+        try {
+            Patient::create($data);
+            return back()->with('success', "Un patient enregistrée ! ");
+
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }
     }
 
     /**
@@ -102,44 +94,40 @@ class PatientController extends Controller
      */
     public function update(Request $request)
     {
-        if (getOnlineUser()->can('edit-patients')) {
-            $data=$this->validate($request, [
-                'id2' => 'required',
-                'code2' => 'required',
-                'firstname2' => 'required',
-                'lastname2' => 'required',
-                'telephone1_2' => 'required',
-                'telephone2_2' => 'nullable',
-                'adresse2' => 'nullable',
-                'genre2' => 'required',
-                'age2' => 'required | integer',
-                'profession2' => 'nullable'
-            ]);
-    
-    
-            try {
-    
-                $patient = Patient::find($data['id2']);
-                $patient->code = $data['code2'];
-                $patient->firstname = $data['firstname2'];
-                $patient->lastname = $data['lastname2'];
-                $patient->genre = $data['genre2'];
-                $patient->telephone1 = $data['telephone1_2'];
-                $patient->telephone2 = $data['telephone2_2'];
-                $patient->adresse = $data['adresse2'];
-                $patient->age = $data['age2'];
-                $patient->profession = $data['profession2'];
-    
-                $patient->save();
-    
-                return back()->with('success', "Un patient mis à jour ! ");
-    
-            } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-            }
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
+        $data=$this->validate($request, [
+            'id2' => 'required',
+            'code2' => 'required',
+            'firstname2' => 'required',
+            'lastname2' => 'required',
+            'telephone1_2' => 'required',
+            'telephone2_2' => 'nullable',
+            'adresse2' => 'nullable',
+            'genre2' => 'required',
+            'age2' => 'required | integer',
+            'profession2' => 'nullable'
+        ]);
 
+
+        try {
+
+            $patient = Patient::find($data['id2']);
+            $patient->code = $data['code2'];
+            $patient->firstname = $data['firstname2'];
+            $patient->lastname = $data['lastname2'];
+            $patient->genre = $data['genre2'];
+            $patient->telephone1 = $data['telephone1_2'];
+            $patient->telephone2 = $data['telephone2_2'];
+            $patient->adresse = $data['adresse2'];
+            $patient->age = $data['age2'];
+            $patient->profession = $data['profession2'];
+
+            $patient->save();
+
+            return back()->with('success', "Un patient mis à jour ! ");
+
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }
     }
 
     /**
@@ -150,16 +138,12 @@ class PatientController extends Controller
      */
     public function destroy($id)
     {
-        if (getOnlineUser()->can('delete-patients')) {
-            $patient = Patient::find($id)->delete();
+        $patient = Patient::find($id)->delete();
         
-            if ($patient) {
-                return back()->with('success', "    Un élement a été supprimé ! ");
-            } else {
-                return back()->with('error', "    Element utilisé ailleurs ! ");
-            }
+        if ($patient) {
+            return back()->with('success', "    Un élement a été supprimé ! ");
+        } else {
+            return back()->with('error', "    Element utilisé ailleurs ! ");
         }
-        return back()->with('error', "Vous n'êtes pas autorisé");
-
     }
 }

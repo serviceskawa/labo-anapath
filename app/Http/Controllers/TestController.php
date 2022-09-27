@@ -45,7 +45,6 @@ class TestController extends Controller
      */
     public function store(Request $request)
     {
-      if (getOnlineUser()->can('create-examens')) {
         $data = $this->validate($request, [
             'price' => 'required |numeric|gt:0',
             'name' => 'required |unique:tests,name',  
@@ -59,9 +58,6 @@ class TestController extends Controller
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
         }
-      }
-      return back()->with('error', "Vous n'êtes pas autorisé");
-
     }
 
     /**
@@ -96,28 +92,24 @@ class TestController extends Controller
      */
     public function update(Request $request)
     {
-        if (getOnlineUser()->can('edit-examens')) {
-            $data=$this->validate($request, [
-                'id2' => 'required ', 
-                'price2' => 'required |numeric|gt:0',
-                'name2' => 'required ',  
-                'category_test_id2'=>'required'        
-            ]);
-    
-            try {
-                $test = Test::find($data['id2']);
-                $test->name = $data['name2'];
-                $test->price = $data['price2'];
-                $test->category_test_id = $data['category_test_id2'];
-                $test->save();
-                return back()->with('success', " Mise à jour effectuée avec succès  ! ");
-    
-            } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-            }
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
+        $data=$this->validate($request, [
+            'id2' => 'required ', 
+            'price2' => 'required |numeric|gt:0',
+            'name2' => 'required ',  
+            'category_test_id2'=>'required'        
+        ]);
 
+        try {
+            $test = Test::find($data['id2']);
+            $test->name = $data['name2'];
+            $test->price = $data['price2'];
+            $test->category_test_id = $data['category_test_id2'];
+            $test->save();
+            return back()->with('success', " Mise à jour effectuée avec succès  ! ");
+
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }
     }
 
     /**
@@ -128,12 +120,8 @@ class TestController extends Controller
      */
     public function destroy($id)
     {
-        if (getOnlineUser()->can('delete-examens')) {
-            $test = Test::find($id)->delete();
+        $test = Test::find($id)->delete();
 
-            return back()->with('success', " Elément supprimé avec succès  ! ");
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
-
+        return back()->with('success', " Elément supprimé avec succès  ! ");
     }
 }

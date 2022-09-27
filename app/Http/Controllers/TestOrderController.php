@@ -25,12 +25,6 @@ class TestOrderController extends Controller
     
     public function index(){
 
-        if (getOnlineUser()->can('view-demande-examen')) {
-            
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
-
-
         $examens = TestOrder::with(['patient'])->get();
         $contrats = Contrat::all();
         $patients = Patient::all();
@@ -43,11 +37,6 @@ class TestOrderController extends Controller
 
 
     public function store(request $request){
-
-        if (getOnlineUser()->can('view-demande-examen')) {
-            
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
 
         $data=$this->validate($request, [
             'patient_id' => 'required',
@@ -83,11 +72,6 @@ class TestOrderController extends Controller
 
     public function create(){
 
-        if (getOnlineUser()->can('view-demande-examen')) {
-            
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
-
         $patients = Patient::all();
         $doctors = Doctor::all();
         $hopitals = Hospital::all();
@@ -102,10 +86,7 @@ class TestOrderController extends Controller
 
     }
     public function destroy($id){
-        if (getOnlineUser()->can('view-demande-examen')) {
-            
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
+
 
         $test_order = TestOrder::find($id)->delete();
 
@@ -115,64 +96,53 @@ class TestOrderController extends Controller
 
     public function details_index($id){
 
-        if (getOnlineUser()->can('view-demande-examen')) {
-            $test_order = TestOrder::find($id);
+        $test_order = TestOrder::find($id);
 
-            $tests = Test::all();
-    
-            $details = DetailTestOrder::where('test_order_id',$test_order->id)->get();
-    
-            return view('examens.details.index',compact(['test_order','details','tests']));
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
+        $tests = Test::all();
 
+        $details = DetailTestOrder::where('test_order_id',$test_order->id)->get();
 
+        return view('examens.details.index',compact(['test_order','details','tests']));
     }
 
 
     public function details_store(Request $request){
 
-        if (getOnlineUser()->can('store-demande-examen')) {
-            $data = $this->validate($request, [
-                'test_order_id' => 'required',
-                'test_id' => 'required',
-                'price' => 'required |numeric',
-                'discount' => 'required |numeric',
-                'total' => 'required |numeric',
-            ]);
-    
-            $test = Test::find($data['test_id']);
-            $test_order = TestOrder::findorfail($data['test_order_id']);
-    
-            $test_order_exit = $test_order->details()->whereTestId($data['test_id'])->exists();
-    
-            if ($test_order_exit) {
-                return response()->json(['success'=>"Examin deja ajouté"]);
-            }else {
-                try {
-                    DB::transaction(function () use ($data,$test) {
-                        $details = new DetailTestOrder();
-                        $details->test_id = $data['test_id'];
-                        $details->test_name = $test->name;
-                        $details->price = $data['price'];
-                        $details->discount = $data['discount'];
-                        $details->total = $data['total'];
-                        $details->test_order_id = $data['test_order_id'];
-                        $details->save();
-                    });
-    
-                        //  return back()->with('success', "Opération effectuée avec succès ! ");
-                        return response()->json(200);
-                } catch (\Throwable $th) {
+        $data = $this->validate($request, [
+            'test_order_id' => 'required',
+            'test_id' => 'required',
+            'price' => 'required |numeric',
+            'discount' => 'required |numeric',
+            'total' => 'required |numeric',
+        ]);
+
+        $test = Test::find($data['test_id']);
+        $test_order = TestOrder::findorfail($data['test_order_id']);
+
+        $test_order_exit = $test_order->details()->whereTestId($data['test_id'])->exists();
+
+        if ($test_order_exit) {
+            return response()->json(['success'=>"Examin deja ajouté"]);
+        }else {
+            try {
+                DB::transaction(function () use ($data,$test) {
+                    $details = new DetailTestOrder();
+                    $details->test_id = $data['test_id'];
+                    $details->test_name = $test->name;
+                    $details->price = $data['price'];
+                    $details->discount = $data['discount'];
+                    $details->total = $data['total'];
+                    $details->test_order_id = $data['test_order_id'];
+                    $details->save();
+                });
+
+                    //  return back()->with('success', "Opération effectuée avec succès ! ");
                     return response()->json(200);
-                }
-    
+            } catch (\Throwable $th) {
+                return response()->json(200);
             }
+
         }
-        return back()->with('error', "Vous n'êtes pas autorisé");
-
-        
-
     }
 
     public function getDetailsTest($id)
@@ -211,30 +181,26 @@ class TestOrderController extends Controller
 
     public function updateStatus($id)
     {
-        if (getOnlineUser()->can('edit-demande-examen')) {
-            $test_order = TestOrder::findorfail($id);
-            $settings = Setting::find(1);
-    
-            if ($test_order->status) {
-    
-                return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
-    
-            } else {
-                $code = sprintf('%06d', $test_order->id);
-                // dd($code);
-                $test_order->fill(["status" => '1', "code"=> "DE22".$code])->save();
-    
-                $report = Report::create([
-                    "code" => "CO22".$code,
-                    "patient_id" => $test_order->patient_id,
-                    "description" => $settings ? $settings->placeholder : '',
-                    "test_order_id" => $test_order->id,
-                ]);
-    
-                return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
-            }
-            
+        $test_order = TestOrder::findorfail($id);
+        $settings = Setting::find(1);
+
+        if ($test_order->status) {
+
+            return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
+
+        } else {
+            $code = sprintf('%06d', $test_order->id);
+            // dd($code);
+            $test_order->fill(["status" => '1', "code"=> "DE22".$code])->save();
+
+            $report = Report::create([
+                "code" => "CO22".$code,
+                "patient_id" => $test_order->patient_id,
+                "description" => $settings ? $settings->placeholder : '',
+                "test_order_id" => $test_order->id,
+            ]);
+
+            return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
         }
-        return back()->with('error', "Vous n'êtes pas autorisé");
     }
 }
