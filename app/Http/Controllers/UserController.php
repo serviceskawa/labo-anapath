@@ -63,7 +63,7 @@ class UserController extends Controller
             $user = User::firstOrCreate(["email" =>$request->email],[
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
-                "password" => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+                "password" => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             ]);
             $user->roles()->attach($request->roles);
             

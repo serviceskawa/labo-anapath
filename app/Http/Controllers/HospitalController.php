@@ -40,26 +40,23 @@ class HospitalController extends Controller
      */
     public function store(Request $request)
     {
-        if (getOnlineUser()->can('create-hopitaux')) {
-            $data=$this->validate($request, [
-                'name' => 'required',
-                'adresse' => 'nullable',    
-                'email' => 'nullable',        
-                'telephone' => 'required',  
-                'commission' => 'required |numeric|min:0|max:100',  
-            ]);
+        $data=$this->validate($request, [
+            'name' => 'required',
+            'adresse' => 'nullable',    
+            'email' => 'nullable',        
+            'telephone' => 'required',  
+            'commission' => 'required |numeric|min:0|max:100',  
+        ]);
 
-            
+        
 
-            try {
-                Hospital::create($data);
-                return back()->with('success', "Un hôpital a été enregistré ! ");
+        try {
+            Hospital::create($data);
+            return back()->with('success', "Un hôpital a été enregistré ! ");
 
-            } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-            }
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
         }
-        return back()->with('error', "Vous n'êtes pas autorisé");
     }
 
     /**
@@ -94,35 +91,30 @@ class HospitalController extends Controller
      */
     public function update(Request $request)
     {
-        if (getOnlineUser()->can('edit-hopitaux')) {
-            $data=$this->validate($request, [
-                'name2' => 'required',
-                'id2' => 'required',
-                'adresse2' => 'nullable',    
-                'email2' => 'nullable',        
-                'telephone2' => 'required',  
-                'commission2' => 'required |numeric',  
-            ]);
+        $data=$this->validate($request, [
+            'name2' => 'required',
+            'id2' => 'required',
+            'adresse2' => 'nullable',    
+            'email2' => 'nullable',        
+            'telephone2' => 'required',  
+            'commission2' => 'required |numeric',  
+        ]);
 
+        
+        try {
+            $hopital = Hospital::find($data['id2']);
+            $hopital->name = $data['name2'];
+            $hopital->adresse = $data['adresse2'];
+            $hopital->email = $data['email2'];
+            $hopital->telephone = $data['telephone2'];
+            $hopital->commission = $data['commission2'];
+            $hopital->save();
             
-            try {
-                $hopital = Hospital::find($data['id2']);
-                $hopital->name = $data['name2'];
-                $hopital->adresse = $data['adresse2'];
-                $hopital->email = $data['email2'];
-                $hopital->telephone = $data['telephone2'];
-                $hopital->commission = $data['commission2'];
-                $hopital->save();
-                
-                return back()->with('success', "Un hôpital a été mis à jour ! ");
+            return back()->with('success', "Un hôpital a été mis à jour ! ");
 
-            } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-            }
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
         }
-        return back()->with('error', "Vous n'êtes pas autorisé");
-
-
     }
 
     /**
@@ -133,11 +125,8 @@ class HospitalController extends Controller
      */
     public function destroy($id)
     {
-        if (getOnlineUser()->can('delete-hopitaux')) {
-            Hospital::find($id)->delete();
-            return back()->with('success', "    Un élement a été supprimé ! ");
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
+        Hospital::find($id)->delete();
+        return back()->with('success', "    Un élement a été supprimé ! ");
 
     }
 }
