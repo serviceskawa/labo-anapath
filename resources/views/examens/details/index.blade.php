@@ -25,7 +25,7 @@
                 <div class="row">
                     <div class="mb-3 col-md-6">
                         <label for="simpleinput" class="form-label">Patient</label>
-                        <input type="text" name="name" value="{{ $test_order->getPatient()->name }}"
+                        <input type="text" name="name" value="{{ $test_order->getPatient()->lastname }} {{ $test_order->getPatient()->firstname }} - {{ $test_order->getPatient()->code }}"
                             class="form-control" readonly>
                     </div>
 
@@ -51,6 +51,11 @@
                         <input type="text" name="name" value="{{ $test_order->getHospital()->name }}"
                             class="form-control" readonly>
                     </div>
+                </div>
+
+                <div class="col-mb-12">
+                    <label class="form-label">Date prélèvement</label>
+                    <input type="text" class="form-control date" name="prelevement_date" id="prelevement_date" value="{{$test_order->prelevement_date}}" readonly>
                 </div>
 
                 <div class="mb-3">

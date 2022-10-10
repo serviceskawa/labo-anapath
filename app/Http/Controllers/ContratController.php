@@ -17,24 +17,23 @@ class ContratController extends Controller
      */
     public function index()
     {   
-        if (getOnlineUser()->can('view-contrats')) 
-        {
+        //if (getOnlineUser()->can('view-contrats')) 
+        //{
             $contrats = Contrat::with(['orders','detail'])->get();
-            // dd($contrats);
             return view('contrats.index',compact(['contrats']));
-        }
+        //}
         return back()->with('error', "Vous n'êtes pas autorisé");
 
     }
 
     public function details_index($id){
 
-        if (getOnlineUser()->can('view-contrats')) {
+        //if (getOnlineUser()->can('view-contrats')) {
             $contrat = Contrat::find($id);
             $test_caterories = CategoryTest::all();
             $details = Details_Contrat::where('contrat_id',$contrat->id)->get(); 
             return view('contrats_details.index',compact(['contrat','details','test_caterories']));
-        }
+        //}
        
         return back()->with('error', "Vous n'êtes pas autorisé");
 
@@ -59,7 +58,6 @@ class ContratController extends Controller
     public function store(Request $request)
     {
         // dd($request->user()->can('create-contrats'));
-        if ($request->user()->can('create-contrats')) {
             $data=$this->validate($request, [
                 'name' => 'required',
                 'type' => 'required',
@@ -80,8 +78,6 @@ class ContratController extends Controller
                 } catch(\Throwable $ex){
                     return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
              }
-        }
-        return back()->with('error', "Vous n'êtes pas autorisé");
 
         
     }

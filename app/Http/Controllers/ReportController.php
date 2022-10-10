@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Spipu\Html2Pdf\Html2Pdf;
 
 
+
 // require _DIR_.'/vendor/autoload.php';
 use App\Models\SettingReportTemplate;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
@@ -45,7 +46,7 @@ class ReportController extends Controller
     public function store(Request $request)
     {
         $data = $this->validate($request, [
-            'title' => 'required',
+            'content' => 'required',
             'report_id' => 'required|exists:reports,id',
             'status' => 'required|boolean',
             // 'signatory1' => 'nullable|required_if:signatory1,on',
@@ -53,7 +54,6 @@ class ReportController extends Controller
 
         $report = Report::findorfail($request->report_id);
         $report->fill([
-            "title" => $request->title,
             "description" => $request->content,
             "signatory1" => $request->signatory1 ? '1' : '0',
             "signatory2" => $request->signatory2 ? '1' : '0',
@@ -104,8 +104,15 @@ class ReportController extends Controller
     public function pdf($id){
         $report = Report::findorfail($id);
         $setting = Setting::find(1);
+
+        setlocale(LC_TIME, 'fr_FR');
+        date_default_timezone_set('Africa/Porto-Novo');
+        //date_format($report->updated_at,"d/m/Y")
+
         $data = [
-            'title' => $report->title,
+            'code' => $report->code,
+            'current_date' => utf8_encode(strftime('%d/%m/%Y')),
+            'prelevement_date' => $report->order->prelevement_date,
             'content' => $report->description,
             'signatory1' => $report->signatory1 == '1' ? $setting->signatory1 : '',
             'signature1' => $report->signatory1 == '1' ? $setting->signature1 : '',
@@ -119,9 +126,10 @@ class ReportController extends Controller
             'patient_genre' => $report->patient->genre,
             'hospital_name' => $report->order->hospital->name,
             'doctor_name' => $report->order->doctor->name,
+            'created_at' => date_format($report->created_at,"d/m/Y"),
             'date' => date('m/d/Y')
         ];
-
+ 
         try {
             $content = view('pdf/canva', $data)->render();
         

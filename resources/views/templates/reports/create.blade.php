@@ -16,10 +16,10 @@
         <div class="col-12">
             <div class="page-title-box">
                 <div class="page-title-right mr-3">
-                    <a type="button" class="btn btn-primary" href="{{ route('template.report-index') }} ">Tout les templates
+                    <a type="button" class="btn btn-primary" href="{{ route('template.report-index') }} ">Tous les templates
                     </a>
                 </div>
-                <h4 class="page-title">Creer une nouveau template</h4>
+                <h4 class="page-title">Creer un nouveau template de compte rendu</h4>
             </div>
 
 
@@ -39,7 +39,7 @@
                         <div class="row mb-3">
                             <div class="col-md-12 mb-3">
                                 <div class="form-group">
-                                    <label for="exampleFormControlInput1" class="form-label">Titre</label>
+                                    <label for="exampleFormControlInput1" class="form-label">Nom</label>
                                     <input type="hidden" name="id" value="{{ $template ? $template->id : '' }}">
                                     <input type="text" class="form-control" name="titre"
                                         value="{{ $template ? $template->title : '' }}" required>
@@ -47,14 +47,7 @@
                             </div>
                             <div class="col-md-12 mb-3">
                                 <div class="form-group">
-                                    <label for="exampleFormControlInput1" class="form-label">Description</label>
-                                    <input type="text" class="form-control" name="description"
-                                        value="{{ $template ? $template->description : '' }}" required>
-                                </div>
-                            </div>
-                            <div class="col-md-12 mb-3">
-                                <div class="form-group">
-                                    <label for="exampleFormControlInput1" class="form-label">Content</label>
+                                    <label for="exampleFormControlInput1" class="form-label">Contenu</label>
                                     <textarea name="content" id="editor" cols="30" rows="10">{{ $template ? $template->content : '' }}</textarea>
                                 </div>
                             </div>

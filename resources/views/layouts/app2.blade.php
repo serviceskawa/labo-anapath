@@ -131,15 +131,22 @@
 
                     <li class="side-nav-item">
                         <a href="{{ route('report.index') }}" class="side-nav-link">
-                            <i class="uil-calender"></i>
+                            <i class="uil-file-medical"></i>
                             <span> Comptes rendu</span>
+                        </a>
+                    </li>
+
+                    <li class="side-nav-item">
+                        <a href="{{ route('template.report-index') }}" class="side-nav-link">
+                            <i class=" uil-document-layout-right"></i>
+                            <span> Templates compte rendu</span>
                         </a>
                     </li>
 
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarForms" aria-expanded="false"
                             aria-controls="sidebarForms" class="side-nav-link">
-                            <i class="uil-document-layout-center"></i>
+                            <i class="dripicons-gear noti-icon"></i>
                             <span>Paramètres</span>
                             <span class="menu-arrow"></span>
                         </a>
@@ -178,23 +185,6 @@
                         </div>
                     </li>
 
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarCharts" aria-expanded="false"
-                            aria-controls="sidebarCharts" class="side-nav-link">
-                            <i class="uil-chart"></i>
-                            <span> Templates </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="sidebarCharts">
-                            <ul class="side-nav-second-level">
-
-                                <li>
-                                    <a href="{{ route('template.report-index') }} ">Rapports</a>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </li>
                 </ul>
 
                 <div class="clearfix"></div>
@@ -227,103 +217,6 @@
                             </div>
                         </li>
 
-                        <li class="dropdown notification-list">
-                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#"
-                                role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="dripicons-bell noti-icon"></i>
-                                <span class="noti-icon-badge"></span>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
-
-                                <!-- item-->
-                                <div class="dropdown-item noti-title">
-                                    <h5 class="m-0">
-                                        <span class="float-end">
-                                            <a href="javascript: void(0);" class="text-dark">
-                                                <small>Tout effacer</small>
-                                            </a>
-                                        </span>Notifications
-                                    </h5>
-                                </div>
-
-
-                                <div style="max-height: 230px;" data-simplebar="">
-                                    <!-- item-->
-                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                        <div class="notify-icon bg-primary">
-                                            <i class="mdi mdi-comment-account-outline"></i>
-                                        </div>
-                                        <p class="notify-details">Caleb Flakelar commented on Admin
-                                            <small class="text-muted">1 min ago</small>
-                                        </p>
-                                    </a>
-
-                                    <!-- item-->
-                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                        <div class="notify-icon bg-info">
-                                            <i class="mdi mdi-account-plus"></i>
-                                        </div>
-                                        <p class="notify-details">New user registered.
-                                            <small class="text-muted">5 hours ago</small>
-                                        </p>
-                                    </a>
-
-                                    <!-- item-->
-                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                        <div class="notify-icon">
-                                            <img src="{{ asset('/adminassets/images/users/avatar-2.jpg') }}"
-                                                class="img-fluid rounded-circle" alt="">
-                                        </div>
-                                        <p class="notify-details">Cristina Pride</p>
-                                        <p class="text-muted mb-0 user-msg">
-                                            <small>Hi, How are you? What about our next meeting</small>
-                                        </p>
-                                    </a>
-
-                                    <!-- item-->
-                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                        <div class="notify-icon bg-primary">
-                                            <i class="mdi mdi-comment-account-outline"></i>
-                                        </div>
-                                        <p class="notify-details">Caleb Flakelar commented on Admin
-                                            <small class="text-muted">4 days ago</small>
-                                        </p>
-                                    </a>
-
-                                    <!-- item-->
-                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                        <div class="notify-icon">
-                                            <img src="{{ asset('/adminassets/images/users/avatar-4.jpg') }}"
-                                                class="img-fluid rounded-circle" alt="">
-                                        </div>
-                                        <p class="notify-details">Karen Robinson</p>
-                                        <p class="text-muted mb-0 user-msg">
-                                            <small>Wow ! this admin looks good and awesome design</small>
-                                        </p>
-                                    </a>
-
-                                    <!-- item-->
-                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                        <div class="notify-icon bg-info">
-                                            <i class="mdi mdi-heart"></i>
-                                        </div>
-                                        <p class="notify-details">Carlos Crouch liked
-                                            <b>Admin</b>
-                                            <small class="text-muted">13 days ago</small>
-                                        </p>
-                                    </a>
-                                </div>
-
-                                <!-- All-->
-                                <a href="javascript:void(0);"
-                                    class="dropdown-item text-center text-primary notify-item notify-all">
-                                    Voir Tout
-                                </a>
-
-                            </div>
-                        </li>
-
-
 
                         <li class="dropdown notification-list">
 
@@ -335,7 +228,7 @@
                                 </span>
                                 <span>
                                     <span class="account-user-name"> {{ Auth::user()->firstname }}</span>
-                                    {{-- <span class="account-position">Founder</span> --}}
+                                    <span class="account-position">Admin</span>
                                 </span>
                             </a>
 
@@ -350,7 +243,7 @@
                                 <!-- item-->
                                 <a href="{{ route('profile.index') }}" class="dropdown-item notify-item">
                                     <i class="mdi mdi-account-circle me-1"></i>
-                                    <span>My Account</span>
+                                    <span>Mon compte</span>
                                 </a>
 
 
@@ -359,7 +252,7 @@
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                                     class="dropdown-item notify-item">
                                     <i class="mdi mdi-logout me-1"></i>
-                                    <span>Déconnexion</span>
+                                    <span>Se déconnecter</span>
                                 </a>
 
 
@@ -381,22 +274,6 @@
 
                 <!-- Start Content-->
                 <div class="container-fluid">
-
-                    <!-- start page title -->
-                    {{-- <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box">
-                                    <div class="page-title-right">
-                                        <ol class="breadcrumb m-0">
-                                            <li class="breadcrumb-item">Hyper</li>
-                                            <li class="breadcrumb-item active">Starter</li>
-                                        </ol>
-                                    </div>
-                                    <h4 class="page-title">Starter</h4>
-                                </div>
-                            </div>
-                        </div> --}}
-                    <!-- end page title -->
 
                     @yield('content')
 
@@ -427,107 +304,6 @@
 
 
     </div>
-    <!-- END wrapper -->
-
-
-    <!-- Right Sidebar -->
-    {{-- <div class="end-bar">
-
-        <div class="rightbar-title">
-            <a href="javascript:void(0);" class="end-bar-toggle float-end">
-                <i class="dripicons-cross noti-icon"></i>
-            </a>
-            <h5 class="m-0">Settings</h5>
-        </div>
-
-        <div class="rightbar-content h-100" data-simplebar="">
-
-            <div class="p-3">
-                <div class="alert alert-warning" role="alert">
-                    <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
-                </div>
-
-                <!-- Settings -->
-                <h5 class="mt-3">Color Scheme</h5>
-                <hr class="mt-1">
-
-                <div class="form-check form-switch mb-1">
-                    <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light"
-                        id="light-mode-check" checked="">
-                    <label class="form-check-label" for="light-mode-check">Light Mode</label>
-                </div>
-
-                <div class="form-check form-switch mb-1">
-                    <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark"
-                        id="dark-mode-check">
-                    <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
-                </div>
-
-
-                <!-- Width -->
-                <h5 class="mt-4">Width</h5>
-                <hr class="mt-1">
-                <div class="form-check form-switch mb-1">
-                    <input class="form-check-input" type="checkbox" name="width" value="fluid" id="fluid-check"
-                        checked="">
-                    <label class="form-check-label" for="fluid-check">Fluid</label>
-                </div>
-
-                <div class="form-check form-switch mb-1">
-                    <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
-                    <label class="form-check-label" for="boxed-check">Boxed</label>
-                </div>
-
-
-                <!-- Left Sidebar-->
-                <h5 class="mt-4">Left Sidebar</h5>
-                <hr class="mt-1">
-                <div class="form-check form-switch mb-1">
-                    <input class="form-check-input" type="checkbox" name="theme" value="default"
-                        id="default-check">
-                    <label class="form-check-label" for="default-check">Default</label>
-                </div>
-
-                <div class="form-check form-switch mb-1">
-                    <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check"
-                        checked="">
-                    <label class="form-check-label" for="light-check">Light</label>
-                </div>
-
-                <div class="form-check form-switch mb-3">
-                    <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
-                    <label class="form-check-label" for="dark-check">Dark</label>
-                </div>
-
-                <div class="form-check form-switch mb-1">
-                    <input class="form-check-input" type="checkbox" name="compact" value="fixed" id="fixed-check"
-                        checked="">
-                    <label class="form-check-label" for="fixed-check">Fixed</label>
-                </div>
-
-                <div class="form-check form-switch mb-1">
-                    <input class="form-check-input" type="checkbox" name="compact" value="condensed"
-                        id="condensed-check">
-                    <label class="form-check-label" for="condensed-check">Condensed</label>
-                </div>
-
-                <div class="form-check form-switch mb-1">
-                    <input class="form-check-input" type="checkbox" name="compact" value="scrollable"
-                        id="scrollable-check">
-                    <label class="form-check-label" for="scrollable-check">Scrollable</label>
-                </div>
-
-                <div class="d-grid mt-4">
-                    <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
-
-                    <a href="../../product/hyper-responsive-admin-dashboard-template/index.htm"
-                        class="btn btn-danger mt-3" target="_blank"><i class="mdi mdi-basket me-1"></i> Purchase
-                        Now</a>
-                </div>
-            </div> <!-- end padding-->
-
-        </div>
-    </div> --}}
 
     <div class="rightbar-overlay"></div>
     <!-- /End-bar -->

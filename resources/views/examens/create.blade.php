@@ -69,6 +69,11 @@
                         </div>
                     </div>
 
+                    <div class="col-mb-12">
+                        <label class="form-label">Date prélèvement<span style="color:red;">*</span></label>
+                        <input type="text" class="form-control date" name="prelevement_date" id="prelevement_date" data-toggle="date-picker" data-single-date-picker="true" required>
+                    </div>
+
                     <div class="col-md-12">
                         <label for="exampleFormControlInput1" class="form-label">Contrat<span
                                 style="color:red;">*</span></label>

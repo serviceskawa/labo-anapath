@@ -8,7 +8,7 @@
                     <a type="button" class="btn btn-primary" href="{{ route('template.report-create') }} ">Ajouter un
                         nouveau template</a>
                 </div>
-                <h4 class="page-title">Templates Comptes Rendus</h4>
+                <h4 class="page-title">Templates compte rendu</h4>
             </div>
 
             <!----MODAL---->
@@ -40,8 +40,7 @@
                     <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                         <thead>
                             <tr>
-                                <th>Title</th>
-                                <th>Description</th>
+                                <th>Nom</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -51,7 +50,6 @@
                             @foreach ($templates as $item)
                                 <tr>
                                     <td>{{ $item->title }}</td>
-                                    <td>{{ $item->description }}</td>
                                     <td>
                                         <a type="button" href="{{ route('template.report-edit', $item->id) }}"
                                             class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </a>

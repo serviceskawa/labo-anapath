@@ -15,14 +15,14 @@ class TestController extends Controller
      */
     public function index()
     {
-        if (getOnlineUser()->can('view-examens')) {
+        //if (getOnlineUser()->can('view-examens')) {
             $tests = Test::all();
    
             $categories = CategoryTest::all();
     
             
             return view('tests.index',compact(['tests','categories']));
-        }
+        //}
         return back()->with('error', "Vous n'êtes pas autorisé");
 
     }

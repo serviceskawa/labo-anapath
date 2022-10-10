@@ -69,7 +69,7 @@
                                     <div class="col-lg-4">
 
                                         <div class="mb-3">
-                                            <label for="simpleinput" class="form-label">Signator 1</label>
+                                            <label for="simpleinput" class="form-label">Signataire 1</label>
                                             <input type="text" id="simpleinput" name="Signator1" class="form-control"
                                                 value="{{ $setting ? $setting->signatory1 : '' }}">
                                         </div>
@@ -87,7 +87,7 @@
                                     <div class="col-lg-4">
 
                                         <div class="mb-3">
-                                            <label for="simpleinput" class="form-label">Signator 2</label>
+                                            <label for="simpleinput" class="form-label">Signataire 2</label>
                                             <input type="text" id="simpleinput" name="Signator2"
                                                 value="{{ $setting ? $setting->signatory2 : '' }}" class="form-control">
                                         </div>
@@ -105,7 +105,7 @@
                                     <div class="col-lg-4">
 
                                         <div class="mb-3">
-                                            <label for="simpleinput" class="form-label">Signator 3</label>
+                                            <label for="simpleinput" class="form-label">Signataire 3</label>
                                             <input type="text" id="simpleinput" name="Signator3"
                                                 value="{{ $setting ? $setting->signatory3 : '' }}" class="form-control">
                                         </div>
@@ -116,28 +116,11 @@
                                                 data-default-file="{{ $setting ? Storage::url($setting->signature3) : '' }}"
                                                 data-max-file-size="3M" />
                                         </div>
-
-
                                     </div> <!-- end col -->
-
-                                    <div class="row mb-3">
-                                        <label for="" class="form-label">Placeholder 1</label>
-                                        <div class="col-lg-12">
-                                            <textarea class="form-control" name="placeholder" placeholder="Description" id="editor" style="height: 100px;">{{ $setting ? $setting->placeholder : '' }}</textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <label for="" class="form-label">Placeholder 2</label>
-                                        <div class="col">
-                                            <textarea class="form-control" id="editor2" name="placeholder2" placeholder="Description" style="height: 100px;">{{ $setting ? $setting->placeholder2 : '' }}</textarea>
-
-                                        </div>
-                                    </div>
                                 </div>
                                 <div class="card-footer">
                                     <div class="d-grid">
-                                        <button type="submit" class="btn btn-xs btn-success">Update</button>
+                                        <button type="submit" class="btn btn-xs btn-success">Mettre a jour</button>
                                     </div>
                                 </div> <!-- end card-body -->
                             </form>

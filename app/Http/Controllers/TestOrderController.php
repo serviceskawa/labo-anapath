@@ -42,23 +42,22 @@ class TestOrderController extends Controller
             'patient_id' => 'required',
             'doctor_id' => 'required',
             'hospital_id' => 'required',
+            'prelevement_date' => 'required',
             'reference_hopital' => 'nullable',
             'contrat_id' => 'required',
-
         ]);
 
         try {
 
             $test_order = new TestOrder();
             DB::transaction(function () use ($data,$test_order) {
-
                 $test_order->contrat_id = $data['contrat_id'];
                 $test_order->patient_id = $data['patient_id'];
                 $test_order->hospital_id = $data['hospital_id'];
+                $test_order->prelevement_date = $data['prelevement_date'];
                 $test_order->doctor_id = $data['doctor_id'];
                 $test_order->reference_hopital = $data['reference_hopital'];
                 $test_order->save();
-
             });
 
             return redirect()->route('details_test_order.index',$test_order->id);
@@ -86,10 +85,7 @@ class TestOrderController extends Controller
 
     }
     public function destroy($id){
-
-
         $test_order = TestOrder::find($id)->delete();
-
         return back()->with('success', "    Un élement a été supprimé ! ");
     }
 
@@ -148,11 +144,8 @@ class TestOrderController extends Controller
     public function getDetailsTest($id)
     {
         $test_order = TestOrder::find($id);
-
         $tests = Test::all();
-
         $details = DetailTestOrder::where('test_order_id',$test_order->id)->get();
-
         return response()->json($details);
     }
 
@@ -173,7 +166,6 @@ class TestOrderController extends Controller
     {
         $detail = DetailTestOrder::findorfail($request->id);
         $detail->delete();
-
         return response()->json(200);
 
         // return back()->with('success', "    Un élement a été supprimé ! ");

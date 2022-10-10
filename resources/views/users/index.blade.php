@@ -29,8 +29,7 @@
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
-                    @if (auth()->check() &&
-                        auth()->user()->hasRole('test-contrats'))
+                    @if (auth()->check())
                     @endif
                     <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                         <thead>

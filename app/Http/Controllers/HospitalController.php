@@ -14,10 +14,10 @@ class HospitalController extends Controller
      */
     public function index()
     {
-        if (getOnlineUser()->can('view-hopitaux')) {
+        //if (getOnlineUser()->can('view-hopitaux')) {
             $hopitals = Hospital::orderBy('name','asc')->get();
             return view('hopitals.index',compact(['hopitals']));
-        }
+       // }
         return back()->with('error', "Vous n'êtes pas autorisé");
 
     }

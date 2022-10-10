@@ -29,15 +29,13 @@ class SettingReportTemplateController extends Controller
         // dd($request);
 
         $data = $this->validate($request, [
-            'titre' => 'required',
-            'description' => 'required',  
+            'titre' => 'required', 
             'content'=>'required'        
         ]);
 
         try {
             SettingReportTemplate::updateorcreate(["id" => $request->id], [
                 "title" => $request->titre,
-                "description" => $request->description,
                 "content" => $request->content,
             ]);
 
