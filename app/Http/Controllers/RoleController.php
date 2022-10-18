@@ -26,6 +26,9 @@ class RoleController extends Controller
 
     public function index()
     {
+        // if (!getOnlineUser()->can('view-roles')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $roles = Role::all();
         return view('users.roles.index', compact('roles'));
 
