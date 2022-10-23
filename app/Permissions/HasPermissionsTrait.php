@@ -33,11 +33,12 @@ trait HasPermissionsTrait {
 
   public function hasPermissionTo($permission) {
 
-    return $this->hasPermissionThroughRole($permission) || $this->hasPermission($permission);
+    return $this->hasPermissionThroughRole($permission) ;
+    // return $this->hasPermissionThroughRole($permission) || $this->hasPermission($permission);
   }
 
   public function hasPermissionThroughRole($permission) {
-
+    // $permission = Permission::whereSlug($permission)->first();
     foreach ($permission->roles as $role){
       if($this->roles->contains($role)) {
         return true;
