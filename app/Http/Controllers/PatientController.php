@@ -14,6 +14,9 @@ class PatientController extends Controller
      */
     public function index()
     {
+        if (!getOnlineUser()->can('view-patients')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $patients = Patient::orderBy('id','desc')->get();
 
         return view('patients.index',compact(['patients']));
@@ -38,7 +41,9 @@ class PatientController extends Controller
      */
     public function store(Request $request)
     {
-
+        if (!getOnlineUser()->can('create-patients')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = $this->validate($request, [
             'code' => 'required',
             'firstname' => 'required',
@@ -81,6 +86,9 @@ class PatientController extends Controller
      */
     public function edit($id)
     {
+        if (!getOnlineUser()->can('edit-patients')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = Patient::find($id);
         return response()->json($data);
     }
@@ -94,6 +102,9 @@ class PatientController extends Controller
      */
     public function update(Request $request)
     {
+        if (!getOnlineUser()->can('edit-patients')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data=$this->validate($request, [
             'id2' => 'required',
             'code2' => 'required',
@@ -138,6 +149,9 @@ class PatientController extends Controller
      */
     public function destroy($id)
     {
+        if (!getOnlineUser()->can('delete-patients')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $patient = Patient::find($id)->delete();
         
         if ($patient) {

@@ -19,6 +19,9 @@ class DoctorController extends Controller
      */
     public function index()
     {
+        if (!getOnlineUser()->can('view-medecins-traitants')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $doctors = Doctor::orderBy('name','asc')->get();
 
         return view('doctors.index',compact(['doctors']));
@@ -43,6 +46,10 @@ class DoctorController extends Controller
      */
     public function store(Request $request)
     {
+        if (!getOnlineUser()->can('create-medecins-traitants')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
         $data = $this->validate($request, [
             'name' => 'required',
             'email' => 'nullable',
@@ -79,6 +86,9 @@ class DoctorController extends Controller
      */
     public function edit($id)
     {
+        if (!getOnlineUser()->can('edit-medecins-traitants')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = Doctor::find($id);
         return response()->json($data);
     }
@@ -92,6 +102,9 @@ class DoctorController extends Controller
      */
     public function update(Request $request)
     {
+        if (!getOnlineUser()->can('edit-medecins-traitants')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data=$this->validate($request, [
             'id2' => 'required',
             'name' => 'required',
@@ -128,6 +141,9 @@ class DoctorController extends Controller
      */
     public function destroy($id)
     {
+        if (!getOnlineUser()->can('delete-medecins-traitants')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         Doctor::find($id)->delete();
         return back()->with('success', "    Un élement a été supprimé ! ");
     }

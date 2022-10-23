@@ -32,6 +32,9 @@ class ReportController extends Controller
      */
     public function index()
     {
+        if (!getOnlineUser()->can('view-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $reports = Report::all();
 
         return view('reports.index', compact('reports'));
@@ -45,6 +48,9 @@ class ReportController extends Controller
      */
     public function store(Request $request)
     {
+        if (!getOnlineUser()->can('create-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = $this->validate($request, [
             'content' => 'required',
             'report_id' => 'required|exists:reports,id',
@@ -72,6 +78,9 @@ class ReportController extends Controller
      */
     public function show($id)
     {
+        if (!getOnlineUser()->can('view-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $report = Report::findorfail($id);
         $setting = Setting::find(1);
         $templates = SettingReportTemplate::all();
@@ -82,6 +91,9 @@ class ReportController extends Controller
 
     public function send_sms($id)
     {
+        if (!getOnlineUser()->can('edit-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $report = Report::findorfail($id);
 
         $tel = $report->patient->telephone1;
@@ -102,6 +114,9 @@ class ReportController extends Controller
     }
 
     public function pdf($id){
+        if (!getOnlineUser()->can('edit-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $report = Report::findorfail($id);
         $setting = Setting::find(1);
 

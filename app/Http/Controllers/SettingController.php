@@ -14,6 +14,9 @@ class SettingController extends Controller
     
     public function report_index()
     {
+        if (!getOnlineUser()->can('view-parametres-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $setting = Setting::find(1);
         // dd($setting);
         return view('settings.report.index' , compact('setting'));
@@ -21,6 +24,12 @@ class SettingController extends Controller
 
     public function report_store(Request $request)
     {
+        if (!getOnlineUser()->can('create-parametres-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        if (!getOnlineUser()->can('edit-parametres-compte-rendu') ) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $setting = Setting::find(1);
 
         if ($request->file('img1') ) {
@@ -77,6 +86,12 @@ class SettingController extends Controller
 
     public function report_store_placeholder(Request $request)
     {
+        if (!getOnlineUser()->can('create-parametres-compte-rendu') ) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        if (!getOnlineUser()->can('edit-parametres-compte-rendu') ) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $setting = Setting::find(1);
 
         if ($setting) {
@@ -95,6 +110,9 @@ class SettingController extends Controller
 
     public function app()
     {
+        if (!getOnlineUser()->can('view-parametres-systeme')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $setting = Setting::find(1);
         // dd($setting);
         return view('settings.app.index' , compact('setting'));
@@ -102,6 +120,9 @@ class SettingController extends Controller
 
     public function app_store(Request $request)
     {
+        if (!getOnlineUser()->can('create-parametres-systeme')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         // dd($request);
         $setting = Setting::find(1);
 

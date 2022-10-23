@@ -15,15 +15,14 @@ class TestController extends Controller
      */
     public function index()
     {
-        //if (getOnlineUser()->can('view-examens')) {
-            $tests = Test::all();
+        if (!getOnlineUser()->can('view-examens')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $tests = Test::all();
    
-            $categories = CategoryTest::all();
-    
-            
-            return view('tests.index',compact(['tests','categories']));
-        //}
-        return back()->with('error', "Vous n'êtes pas autorisé");
+        $categories = CategoryTest::all();
+
+        return view('tests.index',compact(['tests','categories']));
 
     }
 
@@ -45,6 +44,9 @@ class TestController extends Controller
      */
     public function store(Request $request)
     {
+        if (!getOnlineUser()->can('create-examens')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = $this->validate($request, [
             'price' => 'required |numeric|gt:0',
             'name' => 'required |unique:tests,name',  
@@ -79,6 +81,9 @@ class TestController extends Controller
      */
     public function edit($id)
     {
+        if (!getOnlineUser()->can('edit-examens')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = Test::find($id);
         return response()->json($data);
     }
@@ -92,6 +97,9 @@ class TestController extends Controller
      */
     public function update(Request $request)
     {
+        if (!getOnlineUser()->can('edit-examens')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data=$this->validate($request, [
             'id2' => 'required ', 
             'price2' => 'required |numeric|gt:0',
@@ -120,6 +128,9 @@ class TestController extends Controller
      */
     public function destroy($id)
     {
+        if (!getOnlineUser()->can('delete-examens')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $test = Test::find($id)->delete();
 
         return back()->with('success', " Elément supprimé avec succès  ! ");

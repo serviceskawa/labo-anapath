@@ -14,11 +14,11 @@ class HospitalController extends Controller
      */
     public function index()
     {
-        //if (getOnlineUser()->can('view-hopitaux')) {
-            $hopitals = Hospital::orderBy('name','asc')->get();
-            return view('hopitals.index',compact(['hopitals']));
-       // }
-        return back()->with('error', "Vous n'êtes pas autorisé");
+        if (!getOnlineUser()->can('view-hopitaux')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $hopitals = Hospital::orderBy('name','asc')->get();
+        return view('hopitals.index',compact(['hopitals']));
 
     }
 
@@ -40,6 +40,9 @@ class HospitalController extends Controller
      */
     public function store(Request $request)
     {
+        if (!getOnlineUser()->can('create-hopitaux')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data=$this->validate($request, [
             'name' => 'required',
             'adresse' => 'nullable',    
@@ -78,6 +81,9 @@ class HospitalController extends Controller
      */
     public function edit($id)
     {
+        if (!getOnlineUser()->can('edit-hopitaux')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = Hospital::find($id);
         return response()->json($data);
     }
@@ -91,6 +97,9 @@ class HospitalController extends Controller
      */
     public function update(Request $request)
     {
+        if (!getOnlineUser()->can('edit-hopitaux')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data=$this->validate($request, [
             'name2' => 'required',
             'id2' => 'required',
@@ -125,6 +134,9 @@ class HospitalController extends Controller
      */
     public function destroy($id)
     {
+        if (!getOnlineUser()->can('delete-hopitaux')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         Hospital::find($id)->delete();
         return back()->with('success', "    Un élement a été supprimé ! ");
 

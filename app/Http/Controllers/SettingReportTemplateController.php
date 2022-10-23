@@ -14,18 +14,27 @@ class SettingReportTemplateController extends Controller
 
     public function index()
     {
+        if (!getOnlineUser()->can('view-template-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $templates = SettingReportTemplate::all();
         return view('templates.reports.index', compact('templates'));
     }
 
     public function create()
     {
+        if (!getOnlineUser()->can('create-template-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $template = "";
         return view('templates.reports.create', compact('template'));
     }
 
     public function store(Request $request)
     {
+        if (!getOnlineUser()->can('create-template-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         // dd($request);
 
         $data = $this->validate($request, [
@@ -48,12 +57,18 @@ class SettingReportTemplateController extends Controller
 
     public function edit($id)
     {
+        if (!getOnlineUser()->can('edit-template-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $template = SettingReportTemplate::findorfail($id);
         return view('templates.reports.create', compact('template'));
     }
 
     public function delete($id)
     {
+        if (!getOnlineUser()->can('delete-template-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $template = SettingReportTemplate::find($id)->delete();
         
         if ($template) {

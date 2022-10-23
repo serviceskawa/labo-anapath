@@ -17,25 +17,25 @@ class ContratController extends Controller
      */
     public function index()
     {   
-        //if (getOnlineUser()->can('view-contrats')) 
-        //{
-            $contrats = Contrat::with(['orders','detail'])->get();
-            return view('contrats.index',compact(['contrats']));
-        //}
-        return back()->with('error', "Vous n'êtes pas autorisé");
+        if (!getOnlineUser()->can('view-contrats')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
+        $contrats = Contrat::with(['orders','detail'])->get();
+        return view('contrats.index',compact(['contrats']));
 
     }
 
     public function details_index($id){
 
-        //if (getOnlineUser()->can('view-contrats')) {
-            $contrat = Contrat::find($id);
-            $test_caterories = CategoryTest::all();
-            $details = Details_Contrat::where('contrat_id',$contrat->id)->get(); 
-            return view('contrats_details.index',compact(['contrat','details','test_caterories']));
-        //}
-       
-        return back()->with('error', "Vous n'êtes pas autorisé");
+        if (!getOnlineUser()->can('view-contrats')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+
+        }
+        $contrat = Contrat::find($id);
+        $test_caterories = CategoryTest::all();
+        $details = Details_Contrat::where('contrat_id',$contrat->id)->get(); 
+        return view('contrats_details.index',compact(['contrat','details','test_caterories']));
 
     }
 
@@ -57,7 +57,10 @@ class ContratController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->user()->can('create-contrats'));
+        if (!getOnlineUser()->can('create-contrats')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        
             $data=$this->validate($request, [
                 'name' => 'required',
                 'type' => 'required',
@@ -85,6 +88,9 @@ class ContratController extends Controller
 
     public function details_store(Request $request){
 
+        if (!getOnlineUser()->can('create-contrats')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = $this->validate($request, [
             'contrat_id' => 'required|exists:contrats,id',
             'pourcentage' => 'required',
@@ -130,6 +136,9 @@ class ContratController extends Controller
      */
     public function edit($id)
     {
+        if (!getOnlineUser()->can('edit-contrats')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = Contrat::find($id);
         return response()->json($data);
     }
@@ -137,6 +146,9 @@ class ContratController extends Controller
 
     public function contrat_details_edit($id)
     {
+        if (!getOnlineUser()->can('edit-contrats')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = Details_Contrat::find($id);
         return response()->json($data);
     }
@@ -150,6 +162,9 @@ class ContratController extends Controller
      */
     public function update(Request $request)
     {
+        if (!getOnlineUser()->can('edit-contrats')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = $this->validate($request, [
             'name2' => 'required',
             'type2' => 'required',
@@ -178,6 +193,9 @@ class ContratController extends Controller
 
     public function contrat_details_update(Request $request){
 
+        if (!getOnlineUser()->can('edit-contrats')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data=$this->validate($request, [
             'category_test_id2' => 'required',
             'pourcentage2' => 'required',
@@ -210,6 +228,9 @@ class ContratController extends Controller
      */
     public function destroy($id)
     {
+        if (!getOnlineUser()->can('delete-contrats')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $contrat = Contrat::find($id)->delete();
         if ($contrat) {
             return back()->with('success', "    Un élement a été supprimé ! ");
@@ -221,12 +242,18 @@ class ContratController extends Controller
 
     public function destroy_details($id)
     {
+        if (!getOnlineUser()->can('delete-contrats')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         Details_Contrat::find($id)->delete();
         return back()->with('success', "    Un élement a été supprimé ! ");
     }
 
     public function update_detail_status($id)
     {
+        if (!getOnlineUser()->can('edit-contrats')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $contrat = Contrat::findorfail($id);
         $contrat->fill(["status" => "ACTIF"])->save();
 

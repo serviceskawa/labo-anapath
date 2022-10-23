@@ -17,6 +17,9 @@ class PermissionController extends Controller
     
     public function create()
     {
+        if (!getOnlineUser()->can('view-permissions')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $permissions = Permission::all();
             $ressources = Ressource::all();
             $operations = Operation::all();
@@ -26,6 +29,9 @@ class PermissionController extends Controller
 
     public function store(Request $request)
     {
+        if (!getOnlineUser()->can('create-permissions')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $this->validate($request, [
             'titre' => 'required',
         ]);

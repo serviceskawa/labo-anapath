@@ -26,9 +26,9 @@ class RoleController extends Controller
 
     public function index()
     {
-        // if (!getOnlineUser()->can('view-roles')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('view-roles')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $roles = Role::all();
         return view('users.roles.index', compact('roles'));
 
@@ -36,6 +36,9 @@ class RoleController extends Controller
 
     public function create()
     {
+        if (!getOnlineUser()->can('create-roles')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $permissions = Permission::all();
         $ressources = Ressource::all();
         return view('users.roles.create', compact('permissions', 'ressources'));
@@ -44,6 +47,9 @@ class RoleController extends Controller
 
     public function store(Request $request)
     {
+        if (!getOnlineUser()->can('create-roles')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $view = [];
         $create = [];
         $edit = [];
@@ -119,6 +125,9 @@ class RoleController extends Controller
 
     public function update(Request $request)
     {
+        if (!getOnlineUser()->can('edit-roles')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $view = [];
         $create = [];
         $edit = [];

@@ -21,6 +21,9 @@ class UserController extends Controller
      */
     public function index()
     {
+        if (!getOnlineUser()->can('view-users')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $users = User::all();
         $roles = Role::all();
 
@@ -37,6 +40,9 @@ class UserController extends Controller
      */
     public function create()
     {
+        if (!getOnlineUser()->can('create-users')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $users = User::all();
         $roles = Role::all();
         return view('users.create', compact('users','roles'));
@@ -50,6 +56,9 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        if (!getOnlineUser()->can('create-users')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         // dd($request);
         $data = $this->validate($request, [
             'firstname' => 'required',
@@ -94,6 +103,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        if (!getOnlineUser()->can('edit-users')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $user = User::findorfail($id);
         $roles = Role::all();
 
@@ -109,6 +121,9 @@ class UserController extends Controller
      */
     public function update(Request $request)
     {
+        if (!getOnlineUser()->can('edit-users')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = $this->validate($request, [
             'firstname' => 'required',
             'lastname' => 'required',
