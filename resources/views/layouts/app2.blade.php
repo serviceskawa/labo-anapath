@@ -208,7 +208,7 @@
                         <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false"
                             aria-controls="sidebarProjects" class="side-nav-link">
                             <i class="uil-user-check"></i>
-                            <span> Users Roles Permissions </span>
+                            <span> Utilisateurs </span>
                             <span class="menu-arrow"></span>
                         </a>
                         <div class="collapse" id="sidebarProjects">
@@ -220,12 +220,12 @@
                                 @endif
                                 @if (getOnlineUser()->can('view-roles'))
                                 <li>
-                                    <a href="{{ route('user.role-index') }}">Roles</a>
+                                    <a href="{{ route('user.role-index') }}">Rôles</a>
                                 </li>
                                 @endif
                                 @if (getOnlineUser()->can('view-users'))
                                 <li>
-                                    <a href="{{ route('user.index') }} ">Users </a>
+                                    <a href="{{ route('user.index') }} ">Tout les utilisateurs </a>
                                 </li>
                                 @endif
 
