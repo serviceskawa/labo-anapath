@@ -51,7 +51,7 @@ date_default_timezone_set('Europe/Paris');
                 <tr>
                     <th>Age :</th>
                     <td>{{ $patient_age }} </td>
-                    <th>Service demandeur </th>
+                    <th>Service demandeur :</th>
                     <td>{{ $hospital_name }} </td>
                 </tr>
                 <tr>
@@ -70,12 +70,21 @@ date_default_timezone_set('Europe/Paris');
 <div>
     <fieldset style="border: solid rgb(0,0,0,0)">
 
-        <legend style="font-size: 1.5em; padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255);">
+        <legend
+            style="font-size: 1.5em; padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255);">
             <b>Récapitulatifs</b>
         </legend>
 
-        <p style="text-left; width: -moz-fit-content; width: fit-content; margin-left:10px; margin-right:10px; font-familly:Montserrat;">
-            {!! $content !!}
+        <p
+            style="text-left; width: -moz-fit-content; width: fit-content; margin-left:10px; margin-right:10px; font-familly:Montserrat;">
+
+        <table style="max-width: 100%;width: 500px ">
+            <tbody>
+                <tr>
+                    {!! $content !!}
+                </tr>
+            </tbody>
+        </table>
         </p>
 
         <br>
@@ -89,21 +98,21 @@ date_default_timezone_set('Europe/Paris');
 
             <td style="text-align: right;    width: 25%">
                 @if ($signatory1 != null)
-                    <img width="50" height="60" src="{{ storage_path('app/public/' . $signature1) }}"
-                        alt=""><br><br>{{ $signatory1 }}
+                <img width="50" height="60" src="{{ storage_path('app/public/' . $signature1) }}" alt=""><br><br>{{
+                $signatory1 }}
                 @endif
             </td>
             <td style="text-align: right;    width: 25%">
                 @if ($signatory2 != null)
-                    <img width="50" height="60" src="{{ storage_path('app/public/' . $signature2) }}"
-                        alt=""><br><br>{{ $signatory2 }}
+                <img width="50" height="60" src="{{ storage_path('app/public/' . $signature2) }}" alt=""><br><br>{{
+                $signatory2 }}
                 @endif
 
             </td>
             <td style="text-align: right;    width: 25%">
                 @if ($signatory3 != null)
-                    <img width="50" height="60" src="{{ storage_path('app/public/' . $signature3) }}"
-                        alt=""><br><br>{{ $signatory3 }}
+                <img width="50" height="60" src="{{ storage_path('app/public/' . $signature3) }}" alt=""><br><br>{{
+                $signatory3 }}
                 @endif
             </td>
         </tr>
@@ -116,8 +125,9 @@ date_default_timezone_set('Europe/Paris');
     <table style="width: 100%;">
         <tr>
             <td style="text-align: left; width: 100%; font-size:12px;"> Centre ADECHINA Anatomie Pathologique • <br>
-             Adresse : Carre 1915 "G" Fifadji, 072 BP 059 Cotonou, Benin • Téléphone : (+229)96110311 • RCCM RB/COT/18 B22364<br>
-             Contact@caap.bj • Ouvert du Lundi au Vendredi de 08:00 - 12:00 / 14:00 - 18:00 • www.caap.bj
+                Adresse : Carre 1915 "G" Fifadji, 072 BP 059 Cotonou, Benin • Téléphone : (+229)96110311 • RCCM
+                RB/COT/18 B22364<br>
+                Contact@caap.bj • Ouvert du Lundi au Vendredi de 08:00 - 12:00 / 14:00 - 18:00 • www.caap.bj
             </td>
         </tr>
     </table>

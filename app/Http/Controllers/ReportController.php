@@ -114,6 +114,7 @@ class ReportController extends Controller
     }
 
     public function pdf($id){
+
         if (!getOnlineUser()->can('edit-compte-rendu')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
@@ -127,7 +128,7 @@ class ReportController extends Controller
         $data = [
             'code' => $report->code,
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
-            'prelevement_date' => $report->order->prelevement_date,
+            'prelevement_date' => date('d/m/Y', strtotime($report->order->prelevement_date)),
             'content' => $report->description,
             'signatory1' => $report->signatory1 == '1' ? $setting->signatory1 : '',
             'signature1' => $report->signatory1 == '1' ? $setting->signature1 : '',
@@ -142,7 +143,7 @@ class ReportController extends Controller
             'hospital_name' => $report->order->hospital->name,
             'doctor_name' => $report->order->doctor->name,
             'created_at' => date_format($report->created_at,"d/m/Y"),
-            'date' => date('m/d/Y')
+            'date' => date('d/m/Y')
         ];
  
         try {
