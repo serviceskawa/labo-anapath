@@ -170,7 +170,8 @@
                     @endif
 
 
-                    @if (getOnlineUser()->can('view-parametres-systeme'))
+                    @if (getOnlineUser()->can('view-parametres-systeme') ||
+                    getOnlineUser()->can('view-template-compte-rendu'))
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarForms" aria-expanded="false"
                             aria-controls="sidebarForms" class="side-nav-link">
@@ -184,14 +185,9 @@
                                 <li>
                                     <a href="{{ route('settings.app-index') }}">Paramètres Systeme</a>
                                 </li>
-                                <li>
-                                    <a href="{{ route('settings.report-index') }}">Paramètres compte rendu</a>
-                                </li>
+
                                 @endif
                                 @if (getOnlineUser()->can('view-template-compte-rendu'))
-                                <li>
-                                    <a href="{{ route('settings.app-index') }}">Paramètres Systeme</a>
-                                </li>
                                 <li>
                                     <a href="{{ route('settings.report-index') }}">Paramètres compte rendu</a>
                                 </li>

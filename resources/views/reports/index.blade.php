@@ -58,7 +58,7 @@
 
                             @foreach ($reports as $item)
                                 <tr>
-                                    <td>{{ $item->code }}</td>
+                                    <td>{{ $item->order->code }}</td>
                                     <td>{{ $item->patient->code }}</td>
                                     <td>{{ $item->patient->firstname }} {{ $item->patient->lastname }}</td>
                                     <td>{{ $item->patient->telephone1 }}</td>
