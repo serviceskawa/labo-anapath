@@ -44,25 +44,28 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('create-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data=$this->validate($request, [
+
+        $data = $this->validate($request, [
             'patient_id' => 'required',
             'doctor_id' => 'required',
             'hospital_id' => 'required',
             'prelevement_date' => 'required',
             'reference_hopital' => 'nullable',
             'contrat_id' => 'required',
+            'is_urgent' => 'nullable',
         ]);
 
         try {
 
             $test_order = new TestOrder();
-            DB::transaction(function () use ($data,$test_order) {
+            DB::transaction(function () use ($data,$test_order, $request) {
                 $test_order->contrat_id = $data['contrat_id'];
                 $test_order->patient_id = $data['patient_id'];
                 $test_order->hospital_id = $data['hospital_id'];
                 $test_order->prelevement_date = $data['prelevement_date'];
                 $test_order->doctor_id = $data['doctor_id'];
                 $test_order->reference_hopital = $data['reference_hopital'];
+                $test_order->is_urgent = $request->is_urgent ? 1 : 0;
                 $test_order->save();
             });
 
