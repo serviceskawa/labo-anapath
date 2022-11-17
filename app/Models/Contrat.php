@@ -19,7 +19,7 @@ class Contrat extends Model
 
         static::deleting(function($contrat) {
             // verifie s'il a des relations
-            if ($contrat->detail()->count() > 0 || $contrat->detail()->count() > 0) {
+            if ($contrat->detail()->count() > 0 || $contrat->orders()->count() > 0) {
                 return false;
             }
         });
