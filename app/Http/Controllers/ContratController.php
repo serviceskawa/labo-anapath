@@ -231,6 +231,7 @@ class ContratController extends Controller
         if (!getOnlineUser()->can('delete-contrats')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+        // dd($id);
         $contrat = Contrat::find($id)->delete();
         if ($contrat) {
             return back()->with('success', "    Un élement a été supprimé ! ");
