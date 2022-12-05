@@ -133,7 +133,7 @@
 
                 $('#datatable1').DataTable({
                     "order": [
-                        [0, "asc"]
+                        [0, "desc"]
                     ],
                     "columnDefs": [{
                         "targets": [0],
