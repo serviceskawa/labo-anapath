@@ -74,8 +74,8 @@
                 <div class="row mb-3">
                     <div class="col-md-10">
                         <label class="form-label">Date prélèvement<span style="color:red;">*</span></label>
-                        <input type="text" class="form-control date" name="prelevement_date" id="prelevement_date"
-                            data-toggle="date-picker" data-single-date-picker="true" required>
+                        <input type="text" class="form-control datepicker" name="prelevement_date" id="prelevement_date"
+                            data-date-format="dd/mm/yyyy" required>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">Cas urgent</label> <br>
@@ -119,6 +119,10 @@
 
 @push('extra-js')
 <script>
+    $('.datepicker').datepicker({
+        format: 'dd/mm/yyyy',
+        startDate: '-3d'
+    });
     // SUPPRESSION
         function deleteModal(id) {
 

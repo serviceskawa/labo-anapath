@@ -115,26 +115,80 @@
         /* DATATABLE */
         $(document).ready(function() {
 
+            // $('#datatable1').DataTable({
+            //     "order": [
+            //         [0, "asc"]
+            //     ],
+            //     "columnDefs": [{
+            //         "targets": [0],
+            //         "searchable": true
+            //     }],
+            //     "language": {
+            //         "lengthMenu": "Afficher _MENU_ enregistrements par page",
+            //         "zeroRecords": "Aucun enregistrement disponible",
+            //         "info": "Afficher page _PAGE_ sur _PAGES_",
+            //         "infoEmpty": "Aucun enregistrement disponible",
+            //         "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+            //         "sSearch": "Rechercher:",
+            //         "paginate": {
+            //             "previous": "Précédent",
+            //             "next": "Suivant"
+            //         }
+            //     },
+            //     "initComplete": function () {
+            //         this.api()
+            //             .columns()
+            //             .every(function () {
+            //                 var column = this;
+            //                 var select = $('<select><option value=""></option></select>')
+            //                     .appendTo($(column.footer()).empty())
+            //                     .on('change', function () {
+            //                         var val = $.fn.dataTable.util.escapeRegex($(this).val());
+        
+            //                         column.search(val ? '^' + val + '$' : '', true, false).draw();
+            //                     });
+        
+            //                 column
+            //                     .data()
+            //                     .unique()
+            //                     .sort()
+            //                     .each(function (d, j) {
+            //                         select.append('<option value="' + d + '">' + d + '</option>');
+            //                     });
+            //             });
+            //     },
+            // });
+
+        });
+
+        $(document).ready(function() {
             $('#datatable1').DataTable({
-                "order": [
-                    [0, "asc"]
-                ],
-                "columnDefs": [{
-                    "targets": [0],
-                    "searchable": true
-                }],
-                "language": {
-                    "lengthMenu": "Afficher _MENU_ enregistrements par page",
-                    "zeroRecords": "Aucun enregistrement disponible",
-                    "info": "Afficher page _PAGE_ sur _PAGES_",
-                    "infoEmpty": "Aucun enregistrement disponible",
-                    "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-                    "sSearch": "Rechercher:",
-                    "paginate": {
-                        "previous": "Précédent",
-                        "next": "Suivant"
-                    }
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json",
                 },
+                initComplete: function() {
+                this.api().columns([0, 1, 2, 3, 4, 5]).every(function() {
+                    var column = this;
+                    var title = this.header();
+                    title = $(title).html().replace(/[\W]/g, ' ');
+                    console.log(title);
+                    var select = $('<select class="form-control form-control-sm text-bold" ><option value="">'+title+'</option></select>')
+                    .appendTo($(column.header()).empty())
+                    .on('change', function() {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                        $(this).val()
+                        );
+
+                        column
+                        .search(val ? '^' + val + '$' : '', true, false)
+                        .draw();
+                    });
+
+                    column.data().unique().sort().each(function(d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+                }
             });
         });
 
