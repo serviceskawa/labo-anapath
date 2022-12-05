@@ -23,3 +23,9 @@
 if (!getOnlineUser()->can('view-roles')) {
 return back()->with('error', "Vous n'êtes pas autorisé");
 }
+
+### Correction de 05/12/22 après deploiement
+
+## hospitals
+
+Sauf le champs name est obligatoire
