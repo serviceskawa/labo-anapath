@@ -54,8 +54,8 @@ class DoctorController extends Controller
             'name' => 'required',
             'email' => 'nullable',
             'role' => 'nullable',
-            'telephone' => 'required',
-            'commission' => 'required|numeric|min:0|max:100',
+            'telephone' => 'nullable',
+            'commission' => 'nullable|numeric|min:0|max:100',
         ]);
 
         try {

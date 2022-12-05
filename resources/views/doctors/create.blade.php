@@ -18,9 +18,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="simpleinput" class="form-label">Telephone<span style="color:red;">*</span></label>
+                        <label for="simpleinput" class="form-label">Telephone</label>
                         <input type="tel" name="telephone" class="form-control"
-                            pattern="[0-9]{2}[0-9]{2}[0-9]{2}[0-9]{2}" required>
+                            pattern="[0-9]{2}[0-9]{2}[0-9]{2}[0-9]{2}">
                         <small>Format: 97000000</small>
                     </div>
 
@@ -38,10 +38,9 @@
 
 
                     <div class="mb-3">
-                        <label for="simpleinput" class="form-label">Commision (en pourcentage)<span
-                                style="color:red;">*</span></label>
+                        <label for="simpleinput" class="form-label">Commision (en pourcentage)</label>
                         <input type="number" name="commission" value="0" min="0" max="100"
-                            class="form-control" required>
+                            class="form-control">
                     </div>
 
                 </div>
