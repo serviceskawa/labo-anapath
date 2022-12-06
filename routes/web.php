@@ -100,6 +100,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/test_order/delete/{id}', [TestOrderController::class , 'destroy']);
     Route::post('/test_order/updatetest', [TestOrderController::class , 'updateTestTotal'])->name('test_order.updateorder');
     Route::get('/test_order/updatestatus/{id}', [TestOrderController::class , 'updateStatus'])->name('test_order.updatestatus');
+    Route::get('/get_test_order', [TestOrderController::class , 'getTestOrders'])->name('test_order.get_test_order');
 
     //details_test_order
     Route::get('/test_order/details/{id}', [TestOrderController::class , 'details_index'])->name('details_test_order.index');

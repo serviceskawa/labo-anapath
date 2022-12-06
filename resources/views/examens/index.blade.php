@@ -48,16 +48,15 @@
 
             <div id="cardCollpase1" class="collapse pt-3 show">
 
-                <form action="" method="post">
+                <form method="post" id="filter_form">
+                    @csrf
                     <div class="row mb-3">
 
                         <div class="col-lg-3">
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Date</label>
-                                <select name="date" class="form-control" id="">
-                                    <option value="today">Aujourd'hui</option>
-                                </select>
+                                <input type="text" id="reportrange" class="form-control">
                             </div>
 
 
@@ -67,8 +66,14 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Contrat</label>
-                                <select name="contrat_id" class="form-control" id="">
-                                    <option value="all_contrat">Tous les contrats</option>
+                                <select name="contrat_id" id="contrat_id" class="form-control">
+                                    <option value="">Tous les contrats</option>
+                                    @forelse ($contrats as $contrat)
+                                    <option value="{{$contrat->id}}">{{$contrat->name}}</option>
+
+                                    @empty
+
+                                    @endforelse
                                 </select>
                             </div>
 
@@ -79,8 +84,10 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Status</label>
-                                <select name="status" class="form-control" id="">
-                                    <option value="all_status">Tous les status</option>
+                                <select name="status" id="exams_status" class="form-control">
+                                    <option value="">Tous</option>
+                                    <option value="1">Valider</option>
+                                    <option value="0">En attente</option>
                                 </select>
                             </div>
 
@@ -91,8 +98,9 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Urgent</label>
-                                <select name="cas_status" class="form-control" id="">
-                                    <option value="all_status">Tous les status</option>
+                                <select name="cas_status" id="cas_status" class="form-control">
+                                    <option value="">Tous</option>
+                                    <option value="1">Urgent</option>
                                 </select>
                             </div>
 
@@ -116,7 +124,6 @@
 
                         </tr>
                     </thead>
-
 
                     <tbody>
 
@@ -147,6 +154,7 @@
 
 
                     </tbody>
+
                 </table>
 
             </div>
@@ -161,93 +169,178 @@
 @push('extra-js')
 <script>
     // SUPPRESSION
-            function deleteModal(id) {
+    function deleteModal(id) {
 
-                Swal.fire({
-                    title: "La supression d'un examen entraine la suppression du Rapport. Voulez-vous continuez?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Oui ",
-                    cancelButtonText: "Non !",
-                }).then(function(result) {
-                    if (result.value) {
-                        window.location.href = "{{ url('test_order/delete') }}" + "/" + id;
-                        Swal.fire(
-                            "Suppression !",
-                            "En cours de traitement ...",
-                            "success"
-                        )
-                    }
-                });
+        Swal.fire({
+            title: "La supression d'un examen entraine la suppression du Rapport. Voulez-vous continuez?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Oui ",
+            cancelButtonText: "Non !",
+        }).then(function(result) {
+            if (result.value) {
+                window.location.href = "{{ url('test_order/delete') }}" + "/" + id;
+                Swal.fire(
+                    "Suppression !",
+                    "En cours de traitement ...",
+                    "success"
+                )
             }
+        });
+    }
+
+    /* DATATABLE */
+    $(document).ready(function() {
+
+        var table =$('#datatable1').DataTable({
+            "order": [
+                [0, "desc"]
+            ],
+            "columnDefs": [{
+                "targets": [0],
+                "searchable": false
+            }],
+            "language": {
+                "lengthMenu": "Afficher _MENU_ enregistrements par page",
+                "zeroRecords": "Aucun enregistrement disponible",
+                "info": "Afficher page _PAGE_ sur _PAGES_",
+                "infoEmpty": "Aucun enregistrement disponible",
+                "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+                "sSearch": "Rechercher:",
+                "paginate": {
+                    "previous": "Précédent",
+                    "next": "Suivant"
+                }
+            },
+        });
+  
+        // var table = $("#datatable1").DataTable({
+        // processing: true,
+        // ajax: "{{ route('test_order.get_test_order') }}",
+        // columns: [
+        //     { data: 'id', name: '#' },
+        //     { data: 'prelevement_date', name: 'Date' },
+        //     { data: 'code', name: 'Code' },
+        //     { data: 'code', name: 'Patient' },
+        //     { data: 'code', name: 'Examens demandés' },
+        //     { data: 'code', name: 'Montant' },
+        //     { data: 'code', name: 'Compte rendu' },
+        //     { data: null},
+        // ],
+        // columnDefs: [{
+        //         "targets": -1,
+        //         "render": function(data, type, row) {
+        //             if (row["status"] != 1) {
+        //                 return (
+        //                     '<button type="button" id="deleteBtn" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>'
+        //                 );
+        //             }
+        //             return "";
+        //         }
+
+        //     }],
+        // language: {
+        //     url: "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json",
+        // },
+
+        // });
+    });
 
 
-            /* DATATABLE */
-            $(document).ready(function() {
+    //EDITION
+    function edit(id) {
+        var e_id = id;
 
-                $('#datatable1').DataTable({
-                    "order": [
-                        [0, "desc"]
-                    ],
-                    "columnDefs": [{
-                        "targets": [0],
-                        "searchable": false
-                    }],
-                    "language": {
-                        "lengthMenu": "Afficher _MENU_ enregistrements par page",
-                        "zeroRecords": "Aucun enregistrement disponible",
-                        "info": "Afficher page _PAGE_ sur _PAGES_",
-                        "infoEmpty": "Aucun enregistrement disponible",
-                        "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-                        "sSearch": "Rechercher:",
-                        "paginate": {
-                            "previous": "Précédent",
-                            "next": "Suivant"
-                        }
-                    },
-                });
-            });
+        // Populate Data in Edit Modal Form
+        $.ajax({
+            type: "GET",
+            url: "{{ url('getdoctor') }}" + '/' + e_id,
+            success: function(data) {
 
-
-            //EDITION
-            function edit(id) {
-                var e_id = id;
-
-                // Populate Data in Edit Modal Form
-                $.ajax({
-                    type: "GET",
-                    url: "{{ url('getdoctor') }}" + '/' + e_id,
-                    success: function(data) {
-
-                        $('#id2').val(data.id);
-                        $('#name').val(data.name);
-                        $('#telephone').val(data.telephone);
-                        $('#email').val(data.email);
-                        $('#role').val(data.role);
-                        $('#commission').val(data.commission);
+                $('#id2').val(data.id);
+                $('#name').val(data.name);
+                $('#telephone').val(data.telephone);
+                $('#email').val(data.email);
+                $('#role').val(data.role);
+                $('#commission').val(data.commission);
 
 
 
-                        console.log(data);
-                        $('#editModal').modal('show');
-                    },
-                    error: function(data) {
-                        console.log('Error:', data);
-                    }
-                });
-                $.ajax({
-                    type: "GET",
-                    url: "{{ url('gettest') }}" + '/' + test_id,
-                    success: function(data) {
-
-
-                        $('#price').val(data.price);
-
-                    },
-                    error: function(data) {
-                        console.log('Error:', data);
-                    }
-                });
+                console.log(data);
+                $('#editModal').modal('show');
+            },
+            error: function(data) {
+                console.log('Error:', data);
             }
+        });
+        $.ajax({
+            type: "GET",
+            url: "{{ url('gettest') }}" + '/' + test_id,
+            success: function(data) {
+
+
+        $('#price').val(data.price);
+
+            },
+            error: function(data) {
+                console.log('Error:', data);
+            }
+        });
+    }
+    
+    $(function() {
+
+        var start = moment().subtract(29, 'days');
+        var end = moment();
+
+        function cb(start, end) {
+            $('#reportrange').val(start.format('D MMMM, YYYY') + ' - ' + end.format('D MMMM, YYYY'));
+        }
+
+        $('#reportrange').daterangepicker({
+            startDate: start,
+            endDate: end,
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+            ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, "days"), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        }, cb);
+
+        cb(start, end);
+
+    });
+
+    $('#filter_form').change(function(){
+        var date = $('#reportrange').val();
+        var contratId = $('#contrat_id').val();
+        var status = $('#exams_status').val();
+        var cas = $('#cas_status').val();
+        alert(cas)
+
+        $.ajax({
+            type: "GET",
+            data:{date:date,contrat_id:contratId,exams_status:status,cas_status:cas},
+            url: "{{ route('test_order.get_test_order') }}",
+            success: function(data) {
+
+                console.log(data);
+                var data = data;
+                @php
+                $examens = "a"
+                @endphp
+                
+            },
+            error: function(data) {
+                console.log('Error:', data);
+            }
+        });
+    });
 </script>
 @endpush

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
+use Carbon\Carbon;
 use App\Models\Test;
 use App\Models\Doctor;
 use App\Models\Report;
@@ -34,8 +36,52 @@ class TestOrderController extends Controller
         $doctors  = Doctor::all();
         //$tests = Test::all();
         $hopitals = Hospital::all();
-        // dd($examens);
+        // dd($contrats);
         return view('examens.index',compact(['examens','contrats','patients','doctors','hopitals']));
+    }
+    
+    public function getTestOrders(Request $request){
+        if (!getOnlineUser()->can('view-demandes-examens')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        
+        if (empty($request->date)) {
+            $examens = TestOrder::with(['patient'])->orderBy('id','desc')->get();
+
+        }else {
+            $date = explode("-", $request->date);
+            $date[0] = str_replace('/', '-', $date[0]);
+            $date[1] = str_replace('/', '-', $date[1]);
+            $startDate = date("Y-m-d", strtotime($date[0]));
+            $endDate = date("Y-m-d", strtotime($date[1]));
+
+            $examens = TestOrder::whereBetween('created_at', [$startDate, $endDate])->with(['patient']);
+
+            if (!empty($request->contrat_id)) {
+                $examens = $examens->where('contrat_id', $request->contrat_id);
+            }
+
+            if ( is_null($request->exams_status)) {
+                $examens = $examens;
+
+            }else{
+                $examens = $examens->where('status', $request->exams_status);
+
+            }
+            
+            if ( is_null($request->cas_status)) {
+                $examens = $examens;
+
+            }else{
+                $examens = $examens->where('is_urgent', $request->cas_status);
+
+            }
+
+            $examens = $examens->orderBy('id','desc')->get();
+
+        }
+        
+        return response()->json($examens);
     }
 
 
