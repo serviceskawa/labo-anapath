@@ -52,7 +52,7 @@
                     @csrf
                     <div class="row mb-3">
 
-                        <div class="col-lg-3">
+                        {{-- <div class="col-lg-3">
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Date</label>
@@ -60,7 +60,7 @@
                             </div>
 
 
-                        </div> <!-- end col -->
+                        </div> <!-- end col --> --}}
 
                         <div class="col-lg-3">
 
@@ -69,7 +69,7 @@
                                 <select name="contrat_id" id="contrat_id" class="form-control">
                                     <option value="">Tous les contrats</option>
                                     @forelse ($contrats as $contrat)
-                                    <option value="{{$contrat->id}}">{{$contrat->name}}</option>
+                                    <option value="{{$contrat->name}}">{{$contrat->name}}</option>
 
                                     @empty
 
@@ -86,8 +86,8 @@
                                 <label for="example-fileinput" class="form-label">Status</label>
                                 <select name="status" id="exams_status" class="form-control">
                                     <option value="">Tous</option>
-                                    <option value="1">Valider</option>
-                                    <option value="0">En attente</option>
+                                    <option value="Valider">Valider</option>
+                                    <option value="En attente">En attente</option>
                                 </select>
                             </div>
 
@@ -100,7 +100,7 @@
                                 <label for="example-fileinput" class="form-label">Urgent</label>
                                 <select name="cas_status" id="cas_status" class="form-control">
                                     <option value="">Tous</option>
-                                    <option value="1">Urgent</option>
+                                    <option value="Urgent">Urgent</option>
                                 </select>
                             </div>
 
@@ -117,6 +117,7 @@
                             <th>Date</th>
                             <th>Code</th>
                             <th>Patient</th>
+                            <th>Contrat</th>
                             <th>Examens demandés</th>
                             <th>Montant</th>
                             <th>Compte rendu</th>
@@ -130,12 +131,17 @@
                         @foreach ($examens as $item)
                         <tr>
                             <td>{{ $item->id }}</td>
-                            {{-- <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td> --}}
+                            <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
                             <td>{{ $item->code }} </td>
                             <td>{{ $item->patient->firstname }} {{ $item->patient->lastname }}</td>
+                            <td>{{ $item->contrat->name }}</td>
                             <td>{{ $item->getDoctor()->name }}</td>
-                            <td>{{ $item->getHospital()->name }}</td>
                             <td>{{ $item->total }}</td>
+                            <td>
+                                <span class="badge bg-primary rounded-pill">{{ $item->status == 1 ? "Valider" : "En
+                                    attente"}}</span>
+
+                            </td>
                             <td>
                                 <a type="button" href="{{ route('details_test_order.index', $item->id) }}"
                                     class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
@@ -192,7 +198,7 @@
     /* DATATABLE */
     $(document).ready(function() {
 
-        var table =$('#datatable1').DataTable({
+        var table = $('#datatable1').DataTable({
             "order": [
                 [0, "desc"]
             ],
@@ -214,6 +220,26 @@
             },
         });
   
+        $("#contrat_id").on("change", function() {
+            table
+            .columns(4)
+            .search(this.value)
+            .draw();
+        });
+        
+        $("#exams_status").on("change", function() {
+            table
+            .columns(7)
+            .search(this.value)
+            .draw();
+        });
+        
+        $("#exams_status").on("change", function() {
+            table
+            .columns(7)
+            .search(this.value)
+            .draw();
+        });
         // var table = $("#datatable1").DataTable({
         // processing: true,
         // ajax: "{{ route('test_order.get_test_order') }}",
@@ -288,59 +314,66 @@
         });
     }
     
-    $(function() {
+    // $(function() {
 
-        var start = moment().subtract(29, 'days');
-        var end = moment();
 
-        function cb(start, end) {
-            $('#reportrange').val(start.format('D MMMM, YYYY') + ' - ' + end.format('D MMMM, YYYY'));
-        }
 
-        $('#reportrange').daterangepicker({
-            startDate: start,
-            endDate: end,
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, "days"), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            }
-        }, cb);
+    //     var start = moment().subtract(29, 'days');
+    //     var end = moment();
 
-        cb(start, end);
+    //     function cb(start, end) {
+    //         $('#reportrange').val(start.format('D MMMM, YYYY') + ' - ' + end.format('D MMMM, YYYY'));
+    //     }
 
-    });
+    //     $('#reportrange').daterangepicker({
+    //         startDate: start,
+    //         endDate: end,
+    //         locale: {
+    //             format: 'DD/MM/YYYY'
+    //         },
+    //         ranges: {
+    //         'Today': [moment(), moment()],
+    //         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+    //         'Last 7 Days': [moment().subtract(6, "days"), moment()],
+    //         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+    //         'This Month': [moment().startOf('month'), moment().endOf('month')],
+    //         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    //         }
+    //     }, cb);
 
-    $('#filter_form').change(function(){
-        var date = $('#reportrange').val();
-        var contratId = $('#contrat_id').val();
-        var status = $('#exams_status').val();
-        var cas = $('#cas_status').val();
-        alert(cas)
+    //     cb(start, end);
+    //     $("#dropdown1").on("change", function() {
+    //         table
+    //         .columns(0)
+    //         .search(this.value)
+    //         .draw();
+    //     });
+    // });
 
-        $.ajax({
-            type: "GET",
-            data:{date:date,contrat_id:contratId,exams_status:status,cas_status:cas},
-            url: "{{ route('test_order.get_test_order') }}",
-            success: function(data) {
+    // $('#filter_form').change(function(){
+    //     var date = $('#reportrange').val();
+    //     var contratId = $('#contrat_id').val();
+    //     var status = $('#exams_status').val();
+    //     var cas = $('#cas_status').val();
+    //     alert(cas)
 
-                console.log(data);
-                var data = data;
-                @php
-                $examens = "a"
-                @endphp
+    //     $.ajax({
+    //         type: "GET",
+    //         data:{date:date,contrat_id:contratId,exams_status:status,cas_status:cas},
+    //         url: "{{ route('test_order.get_test_order') }}",
+    //         success: function(data) {
+
+    //             console.log(data);
+    //             var data = data;
+    //             @php
+    //             $examens = "a"
+    //             @endphp
                 
-            },
-            error: function(data) {
-                console.log('Error:', data);
-            }
-        });
-    });
+    //         },
+    //         error: function(data) {
+    //             console.log('Error:', data);
+    //         }
+    //     });
+    // });
 </script>
 @endpush

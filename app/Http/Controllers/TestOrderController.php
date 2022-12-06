@@ -30,7 +30,7 @@ class TestOrderController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         
-        $examens = TestOrder::with(['patient'])->orderBy('id','desc')->get();
+        $examens = TestOrder::with(['patient','contrat'])->orderBy('id','desc')->get();
         $contrats = Contrat::all();
         $patients = Patient::all();
         $doctors  = Doctor::all();

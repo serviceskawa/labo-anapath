@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Report;
+use App\Models\Contrat;
 use App\Models\Hospital;
 use App\Models\DetailTestOrder;
 use Illuminate\Database\Eloquent\Model;
@@ -89,5 +90,15 @@ class TestOrder extends Model
     public function hospital()
     {
         return $this->belongsTo(Hospital::class);
+    }
+
+    /**
+     * Get the contrat that owns the TestOrder
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function contrat()
+    {
+        return $this->belongsTo(Contrat::class);
     }
 }
