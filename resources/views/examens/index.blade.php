@@ -109,7 +109,7 @@
                     </div>
                 </form>
 
-                <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                <table id="datatable1" class="table dt-responsive nowrap w-100">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -139,7 +139,6 @@
                             <td>
                                 <span class="badge bg-primary rounded-pill">{{ $item->status == 1 ? "Valider" : "En
                                     attente"}}</span>
-
                             </td>
                             <td>
                                 <a type="button" href="{{ route('details_test_order.index', $item->id) }}"
@@ -198,6 +197,13 @@
     $(document).ready(function() {
 
         var table = $('#datatable1').DataTable({
+            "createdRow": function( row, data, dataIndex ) {
+            
+                var urgent = $(row).data('mytag');
+                    if ( urgent == 1 ) {        
+                    $(row).addClass('table-danger');  
+                }
+            },
             "order": [
                 [0, "desc"]
             ],
