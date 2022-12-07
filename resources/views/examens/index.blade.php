@@ -137,8 +137,10 @@
                             <td>{{ $item->getDoctor()->name }}</td>
                             <td>{{ $item->total }}</td>
                             <td>
-                                <span class="badge bg-primary rounded-pill">{{ $item->status == 1 ? "Valider" : "En
-                                    attente"}}</span>
+                                <span class="badge bg-primary rounded-pill">
+                                    {{ $item->getReport($item->id) == 1 ? "Valider" : "En attente"}}
+
+                                </span>
                             </td>
                             <td>
                                 <a type="button" href="{{ route('details_test_order.index', $item->id) }}"
@@ -197,20 +199,20 @@
     $(document).ready(function() {
 
         var table = $('#datatable1').DataTable({
-            "createdRow": function( row, data, dataIndex ) {
+            // "createdRow": function( row, data, dataIndex ) {
             
-                var urgent = $(row).data('mytag');
-                    if ( urgent == 1 ) {        
-                    $(row).addClass('table-danger');  
-                }
-            },
+            //     var urgent = $(row).data('mytag');
+            //         if ( urgent == 1 ) {        
+            //         $(row).addClass('table-danger');  
+            //     }
+            // },
             "order": [
                 [0, "desc"]
             ],
-            "columnDefs": [{
-                "targets": [0],
-                "searchable": false
-            }],
+            // "columnDefs": [{
+            //     "targets": [0],
+            //     "searchable": false
+            // }],
             "language": {
                 "lengthMenu": "Afficher _MENU_ enregistrements par page",
                 "zeroRecords": "Aucun enregistrement disponible",

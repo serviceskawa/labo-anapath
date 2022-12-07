@@ -36,7 +36,7 @@ class TestOrderController extends Controller
         $doctors  = Doctor::all();
         //$tests = Test::all();
         $hopitals = Hospital::all();
-        // dd($contrats);
+        // dd($examens);
         return view('examens.index',compact(['examens','contrats','patients','doctors','hopitals']));
     }
     

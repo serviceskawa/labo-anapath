@@ -41,6 +41,15 @@ class TestOrder extends Model
         $data = Contrat::find($this->contrat_id);
         return $data;
     }
+    
+    public function getReport($id){
+        $data = Report::where('test_order_id',$id)->first();
+        if (is_null($data)) {
+            return 2; // pour différencier les valeurs des status. 0 pour en attente, 1 valider et 2 pour examin qui n'a pas été enregistré
+        }else {
+            return $data->status;
+        }
+    }
 
     /**
      * Get the patient that owns the TestOrder
