@@ -70,7 +70,6 @@
                                     <option value="">Tous les contrats</option>
                                     @forelse ($contrats as $contrat)
                                     <option value="{{$contrat->name}}">{{$contrat->name}}</option>
-
                                     @empty
 
                                     @endforelse
@@ -100,7 +99,7 @@
                                 <label for="example-fileinput" class="form-label">Urgent</label>
                                 <select name="cas_status" id="cas_status" class="form-control">
                                     <option value="">Tous</option>
-                                    <option value="Urgent">Urgent</option>
+                                    <option value="1">Urgent</option>
                                 </select>
                             </div>
 
@@ -129,7 +128,7 @@
                     <tbody>
 
                         @foreach ($examens as $item)
-                        <tr>
+                        <tr data-mytag="{{ $item->is_urgent }}">
                             <td>{{ $item->id }}</td>
                             <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
                             <td>{{ $item->code }} </td>
@@ -234,12 +233,22 @@
             .draw();
         });
         
-        $("#exams_status").on("change", function() {
-            table
-            .columns(7)
-            .search(this.value)
-            .draw();
+        $("#cas_status").on("change", function() {
+            table.draw();
         });
+        $.fn.dataTable.ext.search.push(
+            function( settings, searchData, index, rowData, counter ) {
+            var row = table.row(index).node();
+            var filterValue = $(row).data('mytag');
+            var e = document.getElementById("cas_status");
+            var filter = e.options[e.selectedIndex].value;
+            if(filterValue == filter)
+                return true;
+            
+            return false;
+        
+            }
+        );
         // var table = $("#datatable1").DataTable({
         // processing: true,
         // ajax: "{{ route('test_order.get_test_order') }}",
