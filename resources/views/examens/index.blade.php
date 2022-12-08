@@ -134,7 +134,14 @@
                             <td>{{ $item->code }} </td>
                             <td>{{ $item->patient->firstname }} {{ $item->patient->lastname }}</td>
                             <td>{{ $item->contrat->name }}</td>
-                            <td>{{ $item->getDoctor()->name }}</td>
+                            <td>
+                                @forelse ( $item->details as $detail)
+                                {{ $detail->test_name }}
+                                @empty
+                                Aucune donnée
+                                @endforelse
+
+                            </td>
                             <td>{{ $item->total }}</td>
                             <td>
                                 <span class="badge bg-primary rounded-pill">
