@@ -87,7 +87,7 @@
 
                                 <div class="mb-3">
                                     <label for="example-select" class="form-label">Examen</label>
-                                    <select class="form-select" id="test_id" name="test_id" required onchange="getTest()">
+                                    <select class="form-select select2" data-toggle="select2" id="test_id" name="test_id" required onchange="getTest()">
                                         <option>Sélectionner l'examen</option>
                                         @foreach ($tests as $test)
                                             <option data-category_test_id="{{ $test->category_test_id }}"
