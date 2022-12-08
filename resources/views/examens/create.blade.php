@@ -72,18 +72,20 @@
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col-md-10">
+                    <div class="col-md-6">
                         <label class="form-label">Date prélèvement<span style="color:red;">*</span></label>
                         <input type="text" class="form-control datepicker" name="prelevement_date" id="prelevement_date"
                             data-date-format="dd/mm/yyyy" required>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Cas urgent</label> <br>
-                        <input type="checkbox" class="form-check-input" name="is_urgent" id="">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Pièce jointe</label>
+                            <input type="file" id="example-fileinput" class="form-control">
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-12 mb-3">
                     <label for="exampleFormControlInput1" class="form-label">Contrat<span
                             style="color:red;">*</span></label>
                     <select class="form-select select2" data-toggle="select2" required name="contrat_id">
@@ -94,6 +96,10 @@
                         Ajouter un contrat
                         @endforelse
                     </select>
+                </div>
+                <div class="col-md-6">
+                    <input type="checkbox" class="form-check-input" name="is_urgent" id="">
+                    <label class="form-label">Cas urgent</label>
                 </div>
 
         </div>
