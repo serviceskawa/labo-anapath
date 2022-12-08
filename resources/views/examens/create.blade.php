@@ -13,7 +13,8 @@
         </div>
         <div class="card-body">
 
-            <form action="{{ route('test_order.store') }}" method="post" autocomplete="off">
+            <form action="{{ route('test_order.store') }}" method="post" autocomplete="off"
+                enctype="multipart/form-data">
                 @csrf
                 <div class="row mb-3">
                     <div class="alert alert-warning">
@@ -80,7 +81,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="example-fileinput" class="form-label">Pièce jointe</label>
-                            <input type="file" id="example-fileinput" class="form-control">
+                            <input type="file" name="examen_file" id="example-fileinput" class="form-control">
                         </div>
                     </div>
                 </div>

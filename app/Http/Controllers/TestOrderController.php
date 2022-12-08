@@ -101,10 +101,18 @@ class TestOrderController extends Controller
             'is_urgent' => 'nullable',
         ]);
 
+        if ($request->file('examen_file') ) {
+
+            $examen_file = time() . '_test_order_.' . $request->file('examen_file')->extension();  
+            
+            $path_examen_file = $request->file('examen_file')->storeAs('tests/orders', $examen_file, 'public');
+
+        }
+
         try {
 
             $test_order = new TestOrder();
-            DB::transaction(function () use ($data,$test_order, $request) {
+            DB::transaction(function () use ($data,$test_order, $request, $path_examen_file) {
                 $test_order->contrat_id = $data['contrat_id'];
                 $test_order->patient_id = $data['patient_id'];
                 $test_order->hospital_id = $data['hospital_id'];
@@ -112,6 +120,7 @@ class TestOrderController extends Controller
                 $test_order->doctor_id = $data['doctor_id'];
                 $test_order->reference_hopital = $data['reference_hopital'];
                 $test_order->is_urgent = $request->is_urgent ? 1 : 0;
+                $test_order->examen_file = $request->file('examen_file') ? $path_examen_file : "";
                 $test_order->save();
             });
 
