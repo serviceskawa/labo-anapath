@@ -145,6 +145,8 @@
                             <td>
                                 <a type="button" href="{{ route('details_test_order.index', $item->id) }}"
                                     class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
+                                <a type="button" href="{{ route('report.show', $item->report->id) }}"
+                                    class="btn btn-warning"><i class="uil-file-medical"></i> </a>
                                 @if ($item->status != 1)
                                 <button type="button" onclick="deleteModal({{ $item->id }})" class="btn btn-danger"><i
                                         class="mdi mdi-trash-can-outline"></i>
@@ -199,13 +201,13 @@
     $(document).ready(function() {
 
         var table = $('#datatable1').DataTable({
-            // "createdRow": function( row, data, dataIndex ) {
+            "createdRow": function( row, data, dataIndex ) {
             
-            //     var urgent = $(row).data('mytag');
-            //         if ( urgent == 1 ) {        
-            //         $(row).addClass('table-danger');  
-            //     }
-            // },
+                var urgent = $(row).data('mytag');
+                    if ( urgent == 1 ) {        
+                    $(row).addClass('table-danger');  
+                }
+            },
             "order": [
                 [0, "desc"]
             ],
