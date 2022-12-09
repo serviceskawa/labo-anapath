@@ -153,7 +153,7 @@
                                 <a type="button" href="{{ route('details_test_order.index', $item->id) }}"
                                     class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
                                 <a type="button"
-                                    href=" {{empty($item->getReportId($item->id)) ? route('report.show', $item->report->id) : "" }}"
+                                    href=" {{!empty($item->getReportId($item->id)) ? route('report.show', $item->report->id) : "" }}"
                                     class="btn btn-warning"><i class="uil-file-medical"></i> </a>
                                 @if ($item->status != 1)
                                 <button type="button" onclick="deleteModal({{ $item->id }})" class="btn btn-danger"><i
