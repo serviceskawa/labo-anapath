@@ -50,6 +50,14 @@ class TestOrder extends Model
             return $data->status;
         }
     }
+    public function getReportId($id){
+        $data = Report::where('test_order_id',$id)->first();
+        if (is_null($data)) {
+            return null; // pour différencier les valeurs des status. 0 pour en attente, 1 valider et 2 pour examin qui n'a pas été enregistré
+        }else {
+            return $data->id;
+        }
+    }
 
     /**
      * Get the patient that owns the TestOrder
