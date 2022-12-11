@@ -128,7 +128,7 @@
                     <tbody>
 
                         @foreach ($examens as $item)
-                        <tr data-mytag="{{ $item->is_urgent }}">
+                        <tr data-mytag="{{ $item->is_urgent ? $item->is_urgent : "" }}">
                             <td>{{ $item->id }}</td>
                             <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
                             <td>{{ $item->code }} </td>
@@ -219,10 +219,19 @@
             "order": [
                 [0, "desc"]
             ],
-            // "columnDefs": [{
-            //     "targets": [0],
-            //     "searchable": false
-            // }],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "searchable": false
+                },{
+                    "targets": [-1],
+                    "searchable": true,
+                    "visible": false,
+                    // "render": function(data, type, row) {
+                    //     console.log(row['is_urgent'])
+                    // }
+                }
+            ],
             "language": {
                 "lengthMenu": "Afficher _MENU_ enregistrements par page",
                 "zeroRecords": "Aucun enregistrement disponible",
@@ -237,6 +246,7 @@
             },
         });
   
+        // Recherche dans la colonne  contrat
         $("#contrat_id").on("change", function() {
             table
             .columns(4)
@@ -244,6 +254,7 @@
             .draw();
         });
         
+        // Recherche dans la colonne  compte rendu
         $("#exams_status").on("change", function() {
             table
             .columns(7)
@@ -251,20 +262,26 @@
             .draw();
         });
         
+        // Recherche selon les cas
         $("#cas_status").on("change", function() {
             table.draw();
         });
         $.fn.dataTable.ext.search.push(
-            function( settings, searchData, index, rowData, counter ) {
-            var row = table.row(index).node();
-            var filterValue = $(row).data('mytag');
-            var e = document.getElementById("cas_status");
-            var filter = e.options[e.selectedIndex].value;
-            if(filterValue == filter)
-                return true;
-            
-            return false;
-        
+            function( settings, searchData, index, rowData, counter ) 
+            {
+                var row = table.row(index).node();
+                var filterValue = $(row).data('mytag');
+                var e = document.getElementById("cas_status");
+                var filter = e.options[e.selectedIndex].value;
+
+                if (filterValue == filter) {
+                    return true;
+                } else if (filter == "") {
+                    return true;
+                } else {
+                    return false;
+                }
+
             }
         );
         // var table = $("#datatable1").DataTable({
