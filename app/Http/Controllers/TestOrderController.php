@@ -101,6 +101,7 @@ class TestOrderController extends Controller
             'is_urgent' => 'nullable',
         ]);
 
+        $path_examen_file = "";
         if ($request->file('examen_file') ) {
 
             $examen_file = time() . '_test_order_.' . $request->file('examen_file')->extension();  
