@@ -147,4 +147,20 @@ class DoctorController extends Controller
         Doctor::find($id)->delete();
         return back()->with('success', "    Un élement a été supprimé ! ");
     }
+
+    public function storeDoctor(Request $request)
+    {
+        $data = $this->validate($request, [
+            'name' => 'required',
+        ]);
+
+        try {
+            $doctor = Doctor::create($data);
+
+            return response()->json($doctor, 200);
+
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }        
+    }
 }

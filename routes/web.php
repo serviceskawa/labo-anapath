@@ -72,10 +72,12 @@ Route::middleware(['auth'])->group(function () {
     //DOCTOR
     Route::get('/doctors/index', [DoctorController::class , 'index'])->name('doctors.index');
     Route::post('/doctors/index', [DoctorController::class , 'store'])->name('doctors.store');
+    Route::post('/doctors/storeDoctor', [DoctorController::class , 'storeDoctor'])->name('doctors.storeDoctor');//Enregistrement docteur depuis select2
     Route::get('/doctors/delete/{id}', [DoctorController::class , 'destroy']);
     Route::get('/getdoctor/{id}', [DoctorController::class , 'edit']);
     Route::post('/doctors/update', [DoctorController::class , 'update'])->name('doctors.update');
 
+    
 
     //CONTRATS
     Route::get('/contrats/index', [ContratController::class , 'index'])->name('contrats.index');
