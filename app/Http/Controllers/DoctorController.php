@@ -154,10 +154,18 @@ class DoctorController extends Controller
             'name' => 'required',
         ]);
 
+        $exist = Doctor::where('id',$request->name)->first();
         try {
-            $doctor = Doctor::create($data);
+            if ($exist === null ) {
+                $doctor = Doctor::create($data);
+                $status = "created";
 
-            return response()->json($doctor, 200);
+            }else {
+                $doctor = [];
+                $status = "exist";
+            }
+
+            return response()->json(["doctor" =>$doctor, "status"=>$status], 200);
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());

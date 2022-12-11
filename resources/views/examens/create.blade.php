@@ -187,7 +187,7 @@
         }).on('select2:close', function(){
             var element = $(this);
             var new_category = $.trim(element.val());
-
+// alert(new_category)
             if(new_category != '')
             {
                 $.ajax({
@@ -200,7 +200,7 @@
                   success:function(data)
                   {
 
-                    if(data)
+                    if(data.status === "created")
                     {
                         toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
 
