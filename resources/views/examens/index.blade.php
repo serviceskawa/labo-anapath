@@ -136,7 +136,7 @@
                             <td>{{ $item->contrat->name }}</td>
                             <td>
                                 @forelse ( $item->details as $detail)
-                                {{ $detail->test_name }}
+                                {{ $detail->test_name }} <br>
                                 @empty
                                 Aucune donnée
                                 @endforelse
@@ -223,13 +223,6 @@
                 {
                     "targets": [0],
                     "searchable": false
-                },{
-                    "targets": [-1],
-                    "searchable": true,
-                    "visible": false,
-                    // "render": function(data, type, row) {
-                    //     console.log(row['is_urgent'])
-                    // }
                 }
             ],
             "language": {
