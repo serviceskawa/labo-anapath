@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
+use Carbon\Carbon;
 use App\Models\Test;
 use App\Models\Doctor;
 use App\Models\Report;
@@ -28,7 +30,7 @@ class TestOrderController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         
-        $examens = TestOrder::with(['patient'])->get();
+        $examens = TestOrder::with(['patient','contrat'])->orderBy('id','desc')->get();
         $contrats = Contrat::all();
         $patients = Patient::all();
         $doctors  = Doctor::all();
@@ -36,6 +38,50 @@ class TestOrderController extends Controller
         $hopitals = Hospital::all();
         // dd($examens);
         return view('examens.index',compact(['examens','contrats','patients','doctors','hopitals']));
+    }
+    
+    public function getTestOrders(Request $request){
+        if (!getOnlineUser()->can('view-demandes-examens')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        
+        if (empty($request->date)) {
+            $examens = TestOrder::with(['patient'])->orderBy('id','desc')->get();
+
+        }else {
+            $date = explode("-", $request->date);
+            $date[0] = str_replace('/', '-', $date[0]);
+            $date[1] = str_replace('/', '-', $date[1]);
+            $startDate = date("Y-m-d", strtotime($date[0]));
+            $endDate = date("Y-m-d", strtotime($date[1]));
+
+            $examens = TestOrder::whereBetween('created_at', [$startDate, $endDate])->with(['patient']);
+
+            if (!empty($request->contrat_id)) {
+                $examens = $examens->where('contrat_id', $request->contrat_id);
+            }
+
+            if ( is_null($request->exams_status)) {
+                $examens = $examens;
+
+            }else{
+                $examens = $examens->where('status', $request->exams_status);
+
+            }
+            
+            if ( is_null($request->cas_status)) {
+                $examens = $examens;
+
+            }else{
+                $examens = $examens->where('is_urgent', $request->cas_status);
+
+            }
+
+            $examens = $examens->orderBy('id','desc')->get();
+
+        }
+        
+        return response()->json($examens);
     }
 
 
@@ -47,18 +93,39 @@ class TestOrderController extends Controller
 
         $data = $this->validate($request, [
             'patient_id' => 'required',
-            'doctor_id' => 'required',
-            'hospital_id' => 'required',
+            'doctor_id' => 'required|exists:doctors,name',
+            'hospital_id' => 'required|exists:hospitals,name',
             'prelevement_date' => 'required',
             'reference_hopital' => 'nullable',
             'contrat_id' => 'required',
             'is_urgent' => 'nullable',
         ]);
 
+        $path_examen_file = "";
+        if ($request->file('examen_file') ) {
+
+            $examen_file = time() . '_test_order_.' . $request->file('examen_file')->extension();  
+            
+            $path_examen_file = $request->file('examen_file')->storeAs('tests/orders', $examen_file, 'public');
+
+        }
+
+        if (is_string($data['doctor_id'])) {
+            $doctor = Doctor::where('name',$data['doctor_id'])->first();
+
+            $data['doctor_id'] = $doctor->id;
+        }
+        if (is_string($data['hospital_id'])) {
+            $hopital = Hospital::where('name',$data['hospital_id'])->first();
+
+            $data['hospital_id'] = $hopital->id;
+        }
+        
+        // dd($request);
         try {
 
             $test_order = new TestOrder();
-            DB::transaction(function () use ($data,$test_order, $request) {
+            DB::transaction(function () use ($data,$test_order, $request, $path_examen_file) {
                 $test_order->contrat_id = $data['contrat_id'];
                 $test_order->patient_id = $data['patient_id'];
                 $test_order->hospital_id = $data['hospital_id'];
@@ -66,6 +133,7 @@ class TestOrderController extends Controller
                 $test_order->doctor_id = $data['doctor_id'];
                 $test_order->reference_hopital = $data['reference_hopital'];
                 $test_order->is_urgent = $request->is_urgent ? 1 : 0;
+                $test_order->examen_file = $request->file('examen_file') ? $path_examen_file : "";
                 $test_order->save();
             });
 
@@ -216,12 +284,12 @@ class TestOrderController extends Controller
             return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
 
         } else {
-            $code = sprintf('%06d', $test_order->id);
+            $code = sprintf('%04d', $test_order->id);
             // dd($code);
-            $test_order->fill(["status" => '1', "code"=> "DE22".$code])->save();
+            $test_order->fill(["status" => '1', "code"=> "DE22-".$code])->save();
 
             $report = Report::create([
-                "code" => "CO22".$code,
+                "code" => "CO22-".$code,
                 "patient_id" => $test_order->patient_id,
                 "description" => $settings ? $settings->placeholder : '',
                 "test_order_id" => $test_order->id,

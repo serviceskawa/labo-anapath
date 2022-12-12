@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Contrat;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CategoryTest extends Model
 {
@@ -15,9 +16,9 @@ class CategoryTest extends Model
     {
         parent::boot();
 
-        static::deleting(function($contrat) {
+        static::deleting(function($categorie_test) {
             // verifie s'il a des relations
-            if ($contrat->tests()->count() > 0) {
+            if ($categorie_test->tests()->count() > 0) {
                 return false;
             }
         });
@@ -25,5 +26,15 @@ class CategoryTest extends Model
 
     public function tests(){
         return $this->hasMany(Test::class);
+    }
+
+    /**
+     * Get all of the contrats for the CategoryTest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function contrats()
+    {
+        return $this->hasMany(Contrat::class);
     }
 }

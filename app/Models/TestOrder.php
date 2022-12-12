@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Report;
+use App\Models\Contrat;
 use App\Models\Hospital;
 use App\Models\DetailTestOrder;
 use Illuminate\Database\Eloquent\Model;
@@ -39,6 +40,23 @@ class TestOrder extends Model
     public function getContrat(){
         $data = Contrat::find($this->contrat_id);
         return $data;
+    }
+    
+    public function getReport($id){
+        $data = Report::where('test_order_id',$id)->first();
+        if (is_null($data)) {
+            return 2; // pour différencier les valeurs des status. 0 pour en attente, 1 valider et 2 pour examin qui n'a pas été enregistré
+        }else {
+            return $data->status;
+        }
+    }
+    public function getReportId($id){
+        $data = Report::where('test_order_id',$id)->first();
+        if (is_null($data)) {
+            return null; // pour différencier les valeurs des status. 0 pour en attente, 1 valider et 2 pour examin qui n'a pas été enregistré
+        }else {
+            return $data->id;
+        }
     }
 
     /**
@@ -89,5 +107,15 @@ class TestOrder extends Model
     public function hospital()
     {
         return $this->belongsTo(Hospital::class);
+    }
+
+    /**
+     * Get the contrat that owns the TestOrder
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function contrat()
+    {
+        return $this->belongsTo(Contrat::class);
     }
 }

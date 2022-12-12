@@ -47,8 +47,8 @@ class HospitalController extends Controller
             'name' => 'required',
             'adresse' => 'nullable',    
             'email' => 'nullable',        
-            'telephone' => 'required',  
-            'commission' => 'required |numeric|min:0|max:100',  
+            'telephone' => 'nullable',  
+            'commission' => 'nullable|numeric|min:0|max:100',  
         ]);
 
         
@@ -56,6 +56,34 @@ class HospitalController extends Controller
         try {
             Hospital::create($data);
             return back()->with('success', "Un hôpital a été enregistré ! ");
+
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }
+    }
+
+    public function storeHospital(Request $request)
+    {
+        if (!getOnlineUser()->can('create-hopitaux')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $data = $this->validate($request, [
+            'name' => 'required',
+        ]);
+        
+        $exist = Hospital::where('id',$request->name)->first();
+
+        try {
+            if ($exist === null ) {
+                $hospital = Hospital::create($data);
+                $status = "created";
+
+            }else {
+                $hospital = [];
+                $status = "exist";
+            }
+
+            return response()->json(["hospital" =>$hospital, "status"=>$status], 200);
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());

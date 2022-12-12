@@ -56,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
     //PATIENTS
     Route::get('/patients/index', [PatientController::class , 'index'])->name('patients.index');
     Route::post('/patients/index', [PatientController::class , 'store'])->name('patients.store');
+    Route::post('/patients/storePatient', [PatientController::class , 'storePatient'])->name('patients.storePatient');
     Route::get('/patients/delete/{id}', [PatientController::class , 'destroy']);
     Route::get('/getpatient/{id}', [PatientController::class , 'edit']);
     Route::post('/patients/update', [PatientController::class , 'update'])->name('patients.update');
@@ -64,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
     //HOSPITAL
     Route::get('/hopitals/index', [HospitalController::class , 'index'])->name('hopitals.index');
     Route::post('/hopitals/index', [HospitalController::class , 'store'])->name('hopitals.store');
+    Route::post('/hopitals/storeHospital', [HospitalController::class , 'storeHospital'])->name('hopitals.storeHospital');
     Route::get('/hopitals/delete/{id}', [HospitalController::class , 'destroy']);
     Route::get('/gethopital/{id}', [HospitalController::class , 'edit']);
     Route::post('/hopitals/update', [HospitalController::class , 'update'])->name('hopitals.update');
@@ -72,10 +74,12 @@ Route::middleware(['auth'])->group(function () {
     //DOCTOR
     Route::get('/doctors/index', [DoctorController::class , 'index'])->name('doctors.index');
     Route::post('/doctors/index', [DoctorController::class , 'store'])->name('doctors.store');
+    Route::post('/doctors/storeDoctor', [DoctorController::class , 'storeDoctor'])->name('doctors.storeDoctor');//Enregistrement docteur depuis select2
     Route::get('/doctors/delete/{id}', [DoctorController::class , 'destroy']);
     Route::get('/getdoctor/{id}', [DoctorController::class , 'edit']);
     Route::post('/doctors/update', [DoctorController::class , 'update'])->name('doctors.update');
 
+    
 
     //CONTRATS
     Route::get('/contrats/index', [ContratController::class , 'index'])->name('contrats.index');
@@ -100,6 +104,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/test_order/delete/{id}', [TestOrderController::class , 'destroy']);
     Route::post('/test_order/updatetest', [TestOrderController::class , 'updateTestTotal'])->name('test_order.updateorder');
     Route::get('/test_order/updatestatus/{id}', [TestOrderController::class , 'updateStatus'])->name('test_order.updatestatus');
+    Route::get('/get_test_order', [TestOrderController::class , 'getTestOrders'])->name('test_order.get_test_order');
 
     //details_test_order
     Route::get('/test_order/details/{id}', [TestOrderController::class , 'details_index'])->name('details_test_order.index');

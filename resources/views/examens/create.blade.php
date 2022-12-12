@@ -13,7 +13,8 @@
         </div>
         <div class="card-body">
 
-            <form action="{{ route('test_order.store') }}" method="post" autocomplete="off">
+            <form action="{{ route('test_order.store') }}" method="post" autocomplete="off"
+                enctype="multipart/form-data">
                 @csrf
                 <div class="row mb-3">
                     <div class="alert alert-warning">
@@ -39,10 +40,11 @@
                     <div class="col-md-6">
                         <label for="exampleFormControlInput1" class="form-label">Médecin traitant<span
                                 style="color:red;">*</span></label>
-                        <select class="form-select select2" data-toggle="select2" name="doctor_id" required>
+                        <select class="form-select select2" data-toggle="select2" name="doctor_id" id="doctor_id"
+                            required>
                             <option>Sélectionner le médecin traitant</option>
                             @foreach ($doctors as $doctor)
-                            <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
+                            <option value="{{ $doctor->name }}">{{ $doctor->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -54,10 +56,11 @@
                     <div class="col-md-6">
                         <label for="exampleFormControlInput1" class="form-label">Hôpital de provenance<span
                                 style="color:red;">*</span></label>
-                        <select class="form-select select2" data-toggle="select2" name="hospital_id" required>
+                        <select class="form-select select2" data-toggle="select2" name="hospital_id" id="hospital_id"
+                            required>
                             <option>Sélectionner le centre hospitalier de provenance</option>
                             @foreach ($hopitals as $hopital)
-                            <option value="{{ $hopital->id }}">{{ $hopital->name }}</option>
+                            <option value="{{ $hopital->name }}">{{ $hopital->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -72,18 +75,20 @@
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col-md-10">
+                    <div class="col-md-6">
                         <label class="form-label">Date prélèvement<span style="color:red;">*</span></label>
-                        <input type="text" class="form-control datepicker" name="prelevement_date" id="prelevement_date"
+                        <input type="date" class="form-control" name="prelevement_date" id="prelevement_date"
                             data-date-format="dd/mm/yyyy" required>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Cas urgent</label> <br>
-                        <input type="checkbox" class="form-check-input" name="is_urgent" id="">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Pièce jointe</label>
+                            <input type="file" name="examen_file" id="example-fileinput" class="form-control">
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-12 mb-3">
                     <label for="exampleFormControlInput1" class="form-label">Contrat<span
                             style="color:red;">*</span></label>
                     <select class="form-select select2" data-toggle="select2" required name="contrat_id">
@@ -94,6 +99,10 @@
                         Ajouter un contrat
                         @endforelse
                     </select>
+                </div>
+                <div class="col-md-6">
+                    <input type="checkbox" class="form-check-input" name="is_urgent" id="">
+                    <label class="form-label">Cas urgent</label>
                 </div>
 
         </div>
@@ -124,54 +133,120 @@
         startDate: '-3d'
     });
     // SUPPRESSION
-        function deleteModal(id) {
+    function deleteModal(id) {
 
-            Swal.fire({
-                title: "Voulez-vous supprimer l'élément ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Oui ",
-                cancelButtonText: "Non !",
-            }).then(function(result) {
-                if (result.value) {
-                    window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
-                    Swal.fire(
-                        "Suppression !",
-                        "En cours de traitement ...",
-                        "success"
-                    )
-                }
-            });
-        }
+        Swal.fire({
+            title: "Voulez-vous supprimer l'élément ?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Oui ",
+            cancelButtonText: "Non !",
+        }).then(function(result) {
+            if (result.value) {
+                window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
+                Swal.fire(
+                    "Suppression !",
+                    "En cours de traitement ...",
+                    "success"
+                )
+            }
+        });
+    }
 
+    //EDITION
+    function edit(id) {
+        var e_id = id;
 
+        // Populate Data in Edit Modal Form
+        $.ajax({
+            type: "GET",
+            url: "{{ url('getcontratdetails') }}" + '/' + e_id,
+            success: function(data) {
 
-
-
-        //EDITION
-        function edit(id) {
-            var e_id = id;
-
-            // Populate Data in Edit Modal Form
-            $.ajax({
-                type: "GET",
-                url: "{{ url('getcontratdetails') }}" + '/' + e_id,
-                success: function(data) {
-
-                    $('#category_test_id2').val(data.category_test_id).change();
-                    $('#pourcentage2').val(data.pourcentage);
-                    $('#contrat_id2').val(data.contrat_id);
-                    $('#contrat_details_id2').val(data.id);
+                $('#category_test_id2').val(data.category_test_id).change();
+                $('#pourcentage2').val(data.pourcentage);
+                $('#contrat_id2').val(data.contrat_id);
+                $('#contrat_details_id2').val(data.id);
 
 
 
-                    console.log(data);
-                    $('#editModal').modal('show');
+                console.log(data);
+                $('#editModal').modal('show');
+            },
+            error: function(data) {
+                console.log('Error:', data);
+            }
+        });
+    }
+
+    $(document).ready(function(){
+
+        $('#doctor_id').select2({
+            placeholder:'Select Category',
+            theme:'bootstrap4',
+            tags:true,
+        }).on('select2:close', function(){
+            var element = $(this);
+            var new_category = $.trim(element.val());
+
+            if(new_category != '')
+            {
+                $.ajax({
+                  url:"{{route('doctors.storeDoctor')}}",
+                  method:"POST",
+                  data:{
+                    "_token": "{{ csrf_token() }}",
+                    name:new_category
                 },
-                error: function(data) {
-                    console.log('Error:', data);
-                }
-            });
-        }
+                  success:function(data)
+                  {
+
+                    if(data.status === "created")
+                    {
+                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+
+                        element.append('<option value="'+data.id+'">'+data.name+'</option>').val(new_category);
+                    }
+                  }
+                })
+            }
+
+        });
+      
+        // Create hopital
+        $('#hospital_id').select2({
+            placeholder:'Choisissez un hopital',
+            theme:'bootstrap4',
+            tags:true,
+        }).on('select2:close', function(){
+            var element = $(this);
+            var new_category = $.trim(element.val());
+
+            if(new_category != '')
+            {
+                $.ajax({
+                  url:"{{route('hopitals.storeHospital')}}",
+                  method:"POST",
+                  data:{
+                    "_token": "{{ csrf_token() }}",
+                    name:new_category
+                },
+                  success:function(data)
+                  {
+
+                    if(data.status === "created")
+                    {
+                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+
+                        element.append('<option value="'+data.id+'">'+data.name+'</option>').val(new_category);
+                    }
+                  }
+                })
+            }
+
+        });
+
+    });
+
 </script>
 @endpush

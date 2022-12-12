@@ -67,6 +67,36 @@ class PatientController extends Controller
         }
     }
 
+    public function storePatient(Request $request)
+    {
+        if (!getOnlineUser()->can('create-patients')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $data = $this->validate($request, [
+            'code' => 'required',
+            'firstname' => 'required',
+            'lastname' => 'required',
+        ]);
+        $exist = Doctor::where('id',$request->name)->first();
+
+
+        try {
+            if ($exist === null ) {
+                $patient = Patient::create($data);
+                $status = "created";
+
+            }else {
+                $patient = [];
+                $status = "exist";
+            }
+
+            return response()->json(["patient" =>$patient, "status"=>$status], 200);
+
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }
+    }
+
     /**
      * Display the specified resource.
      *

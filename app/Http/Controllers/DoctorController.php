@@ -54,8 +54,8 @@ class DoctorController extends Controller
             'name' => 'required',
             'email' => 'nullable',
             'role' => 'nullable',
-            'telephone' => 'required',
-            'commission' => 'required|numeric|min:0|max:100',
+            'telephone' => 'nullable',
+            'commission' => 'nullable|numeric|min:0|max:100',
         ]);
 
         try {
@@ -146,5 +146,29 @@ class DoctorController extends Controller
         }
         Doctor::find($id)->delete();
         return back()->with('success', "    Un élement a été supprimé ! ");
+    }
+
+    public function storeDoctor(Request $request)
+    {
+        $data = $this->validate($request, [
+            'name' => 'required',
+        ]);
+
+        $exist = Doctor::where('id',$request->name)->first();
+        try {
+            if ($exist === null ) {
+                $doctor = Doctor::create($data);
+                $status = "created";
+
+            }else {
+                $doctor = [];
+                $status = "exist";
+            }
+
+            return response()->json(["doctor" =>$doctor, "status"=>$status], 200);
+
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }        
     }
 }
