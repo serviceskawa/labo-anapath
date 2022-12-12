@@ -77,7 +77,7 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Date prélèvement<span style="color:red;">*</span></label>
-                        <input type="text" class="form-control datepicker" name="prelevement_date" id="prelevement_date"
+                        <input type="date" class="form-control" name="prelevement_date" id="prelevement_date"
                             data-date-format="dd/mm/yyyy" required>
                     </div>
                     <div class="col-md-6">
