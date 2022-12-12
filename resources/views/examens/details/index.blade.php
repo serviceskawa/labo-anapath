@@ -2,197 +2,197 @@
 
 @section('title', 'Details examen')
 @section('content')
-    <div class="">
+<div class="">
 
-        @include('layouts.alerts')
+    @include('layouts.alerts')
 
 
-        {{-- @include('examens.details.create') --}}
+    {{-- @include('examens.details.create') --}}
 
-        <div class="card my-3">
-            @if ($test_order->status == 1)
-                <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
-                    class="btn btn-success w-full">CONSULTEZ LE
-                    COMPTE RENDU</a>
-            @endif
+    <div class="card my-3">
+        @if ($test_order->status == 1)
+        <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
+            class="btn btn-success w-full">CONSULTEZ LE
+            COMPTE RENDU</a>
+        @endif
 
-            <div class="card-header">
-                Demande d'examen : <strong>{{ $test_order->code }}</strong>
+        <div class="card-header">
+            Demande d'examen : <strong>{{ $test_order->code }}</strong>
+        </div>
+        <div class="card-body">
+
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="simpleinput" class="form-label">Patient</label>
+                    <input type="text" name="name"
+                        value="{{ $test_order->getPatient()->lastname }} {{ $test_order->getPatient()->firstname }} - {{ $test_order->getPatient()->code }}"
+                        class="form-control" readonly>
+                </div>
+
+                <div class="mb-3 col-md-6">
+                    <label for="simpleinput" class="form-label">Médecin traitant</label>
+                    <input type="text" name="name" value="{{ $test_order->getDoctor()->name }}" class="form-control"
+                        readonly>
+                </div>
+
+                <input id="contrat_id" type="hidden" value="{{ $test_order->getContrat()->id }}">
             </div>
-            <div class="card-body">
 
 
-                <div class="row">
-                    <div class="mb-3 col-md-6">
-                        <label for="simpleinput" class="form-label">Patient</label>
-                        <input type="text" name="name" value="{{ $test_order->getPatient()->lastname }} {{ $test_order->getPatient()->firstname }} - {{ $test_order->getPatient()->code }}"
-                            class="form-control" readonly>
-                    </div>
-
-                    <div class="mb-3 col-md-6">
-                        <label for="simpleinput" class="form-label">Médecin traitant</label>
-                        <input type="text" name="name" value="{{ $test_order->getDoctor()->name }}"
-                            class="form-control" readonly>
-                    </div>
-
-                    <input id="contrat_id" type="hidden" value="{{ $test_order->getContrat()->id }}">
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="exampleFormControlInput1" class="form-label">Référence hôpital</label>
+                    <input class="form-control" name="reference_hopital" value="{{ $test_order->reference_hopital }}"
+                        readonly>
                 </div>
 
-
-                <div class="row">
-                    <div class="mb-3 col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">Référence hôpital</label>
-                        <input class="form-control" name="reference_hopital" value="{{ $test_order->reference_hopital }}"
-                            readonly>
-                    </div>
-
-                    <div class="mb-3 col-md-6">
-                        <label for="simpleinput" class="form-label">Hôpital de provenance</label>
-                        <input type="text" name="name" value="{{ $test_order->getHospital()->name }}"
-                            class="form-control" readonly>
-                    </div>
+                <div class="mb-3 col-md-6">
+                    <label for="simpleinput" class="form-label">Hôpital de provenance</label>
+                    <input type="text" name="name" value="{{ $test_order->getHospital()->name }}" class="form-control"
+                        readonly>
                 </div>
+            </div>
 
-                <div class="col-mb-12">
-                    <label class="form-label">Date prélèvement</label>
-                    <input type="text" class="form-control date" name="prelevement_date" id="prelevement_date" value="{{$test_order->prelevement_date}}" readonly>
-                </div>
+            <div class="col-mb-12">
+                <label class="form-label">Date prélèvement</label>
+                <input type="text" class="form-control date" name="prelevement_date" id="prelevement_date"
+                    value="{{$test_order->prelevement_date}}" readonly>
+            </div>
 
-                <div class="mb-3">
-                    <div class="form-group">
-                        <label for="simpleinput" class="form-label">Contrat</label>
-                        <input type="text" name="name" class="form-control"
-                            value="{{ $test_order->getContrat()->name }}" readonly>
-                    </div>
+            <div class="mb-3">
+                <div class="form-group">
+                    <label for="simpleinput" class="form-label">Contrat</label>
+                    <input type="text" name="name" class="form-control" value="{{ $test_order->getContrat()->name }}"
+                        readonly>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="card mb-md-0 mb-3">
-            <div class="card-header">
-                Liste des examens demandés
-            </div>
-            <h5 class="card-title mb-0"></h5>
+    <div class="card mb-md-0 mb-3">
+        <div class="card-header">
+            Liste des examens demandés
+        </div>
+        <h5 class="card-title mb-0"></h5>
 
-            <div class="card-body">
+        <div class="card-body">
 
-                <!-- Ajouter un examen | si le statut de la demande est 1 alors on peut plus ajouter de nouveau examen dans la demande-->
-                @if ($test_order->status != 1)
-                    <form method="POST" id="addDetailForm" autocomplete="off">
-                        @csrf
-                        <div class="row d-flex align-items-end">
-                            <div class="col-md-4 col-12">
-                                <input type="hidden" name="test_order_id" id="test_order_id" value="{{ $test_order->id }}"
-                                    class="form-control">
+            <!-- Ajouter un examen | si le statut de la demande est 1 alors on peut plus ajouter de nouveau examen dans la demande-->
+            @if ($test_order->status != 1)
+            <form method="POST" id="addDetailForm" autocomplete="off">
+                @csrf
+                <div class="row d-flex align-items-end">
+                    <div class="col-md-4 col-12">
+                        <input type="hidden" name="test_order_id" id="test_order_id" value="{{ $test_order->id }}"
+                            class="form-control">
 
-                                <div class="mb-3">
-                                    <label for="example-select" class="form-label">Examen</label>
-                                    <select class="form-select select2" data-toggle="select2" id="test_id" name="test_id" required onchange="getTest()">
-                                        <option>Sélectionner l'examen</option>
-                                        @foreach ($tests as $test)
-                                            <option data-category_test_id="{{ $test->category_test_id }}"
-                                                value="{{ $test->id }}">{{ $test->name }}</option>
-                                        @endforeach
+                        <div class="mb-3">
+                            <label for="example-select" class="form-label">Examen</label>
+                            <select class="form-select select2" data-toggle="select2" id="test_id" name="test_id"
+                                required onchange="getTest()">
+                                <option>Sélectionner l'examen</option>
+                                @foreach ($tests as $test)
+                                <option data-category_test_id="{{ $test->category_test_id }}" value="{{ $test->id }}">{{
+                                    $test->name }}</option>
+                                @endforeach
 
 
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-12">
-
-                                <div class="mb-3">
-                                    <label for="simpleinput" class="form-label">Prix</label>
-                                    <input type="text" name="price" id="price" class="form-control" required
-                                        readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-12">
-                                <div class="mb-3">
-                                    <label for="simpleinput" class="form-label">Remise</label>
-                                    <input type="text" name="remise" id="remise" class="form-control" required
-                                        readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-12">
-                                <div class="mb-3">
-                                    <label for="example-select" class="form-label">Total</label>
-
-                                    <input type="text" name="total" id="total" class="form-control" required
-                                        readonly>
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 col-12">
-                                <div class="mb-3">
-                                    <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
-
-                                </div>
-                            </div>
+                            </select>
                         </div>
+                    </div>
+                    <div class="col-md-2 col-12">
 
-                    </form>
-                @endif
+                        <div class="mb-3">
+                            <label for="simpleinput" class="form-label">Prix</label>
+                            <input type="text" name="price" id="price" class="form-control" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-12">
+                        <div class="mb-3">
+                            <label for="simpleinput" class="form-label">Remise</label>
+                            <input type="text" name="remise" id="remise" class="form-control" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-12">
+                        <div class="mb-3">
+                            <label for="example-select" class="form-label">Total</label>
 
-                <div id="cardCollpase1" class="collapse pt-3 show">
+                            <input type="text" name="total" id="total" class="form-control" required readonly>
+                        </div>
+                    </div>
 
+                    <div class="col-md-2 col-12">
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
 
-                    <table id="datatable1" class="table detail-list-table table-striped dt-responsive nowrap w-100">
-                        <thead class="table-light">
-                            <tr>
-                                <th>#</th>
-                                <th>Examen</th>
-                                <th>Prix</th>
-                                <th>Remise</th>
-                                <th>Montant</th>
-                                <th>Actions</th>
-
-                            </tr>
-                        </thead>
-
-
-                        <tfoot>
-                            <tr>
-                                <td colspan="1" class="text-right">
-                                    <strong>Total:</strong>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-
-                                <td id="val">
-                                    <input type="number" id="estimated_ammount" class="estimated_ammount"
-                                        value="0" readonly>
-                                </td>
-                                <td></td>
-
-                            </tr>
-                        </tfoot>
-                    </table>
-
-                    <div class="row mt-2 mx-3">
-                        @if ($test_order->status != 1)
-                            <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}"
-                                id="finalisationBtn" class="btn btn-info w-full disabled">ENREGISTRER</a>
-                        @endif
-                        @if ($test_order->status == 1)
-                            <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
-                                class="btn btn-success w-full">CONSULTEZ LE
-                                COMPTE RENDU</a>
-                        @endif
+                        </div>
                     </div>
                 </div>
 
-            </div>
-        </div> <!-- end card-->
+            </form>
+            @endif
 
-    </div>
+            <div id="cardCollpase1" class="collapse pt-3 show">
+
+
+                <table id="datatable1" class="table detail-list-table table-striped dt-responsive nowrap w-100">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Examen</th>
+                            <th>Prix</th>
+                            <th>Remise</th>
+                            <th>Montant</th>
+                            <th>Actions</th>
+
+                        </tr>
+                    </thead>
+
+
+                    <tfoot>
+                        <tr>
+                            <td colspan="1" class="text-right">
+                                <strong>Total:</strong>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td id="val">
+                                <input type="number" id="estimated_ammount" class="estimated_ammount" value="0"
+                                    readonly>
+                            </td>
+                            <td></td>
+
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <div class="row mt-2 mx-3">
+                    @if ($test_order->status != 1)
+                    <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}" id="finalisationBtn"
+                        class="btn btn-info w-full disabled">ENREGISTRER</a>
+                    @endif
+                    @if ($test_order->status == 1)
+                    <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
+                        class="btn btn-success w-full">CONSULTEZ LE
+                        COMPTE RENDU</a>
+                    @endif
+                </div>
+            </div>
+
+        </div>
+    </div> <!-- end card-->
+
+</div>
 @endsection
 
 
 @push('extra-js')
-    <script></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
+<script></script>
+<script type="text/javascript">
+    $(document).ready(function() {
             var test_order = {!! json_encode($test_order) !!}
             // console.log(test_order)
 
@@ -203,7 +203,7 @@
                     url: '/test_order/detailstest/' + test_order.id,
                     dataSrc: ''
                 },
-                deferRender: true,
+                // deferRender: true,
                 columns: [
                     // columns according to JSON
                     {
@@ -302,8 +302,6 @@
 
             setInterval(function() {
                 dt_basic.ajax.reload();
-
-
             }, 3000);
 
             // 
@@ -400,15 +398,13 @@
 
                 },
                 success: function(response) {
-                    console.log(response)
-                    if (response) {
-                        //$('.success').text(response.success);
-                        $("#success").show().html(response.success);
-                        setTimeout(function() {
-                            $("#success").hide().html('');
-                        }, 5000);
-                    }
                     $('#addDetailForm').trigger("reset")
+
+                    if (response) {
+                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                    }
+                    $('#datatable1').DataTable().ajax.reload();
+                    // $('#addDetailForm').trigger("reset")
                     // updateSubTotal();
                 },
                 error: function(response) {
@@ -524,5 +520,5 @@
         //         }
         //     });
         // });
-    </script>
+</script>
 @endpush
