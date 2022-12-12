@@ -62,6 +62,34 @@ class HospitalController extends Controller
         }
     }
 
+    public function storeHospital(Request $request)
+    {
+        if (!getOnlineUser()->can('create-hopitaux')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $data = $this->validate($request, [
+            'name' => 'required',
+        ]);
+        
+        $exist = Hospital::where('id',$request->name)->first();
+
+        try {
+            if ($exist === null ) {
+                $hospital = Hospital::create($data);
+                $status = "created";
+
+            }else {
+                $hospital = [];
+                $status = "exist";
+            }
+
+            return response()->json(["hospital" =>$hospital, "status"=>$status], 200);
+
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }
+    }
+
     /**
      * Display the specified resource.
      *

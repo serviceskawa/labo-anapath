@@ -56,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
     //PATIENTS
     Route::get('/patients/index', [PatientController::class , 'index'])->name('patients.index');
     Route::post('/patients/index', [PatientController::class , 'store'])->name('patients.store');
+    Route::post('/patients/storePatient', [PatientController::class , 'storePatient'])->name('patients.storePatient');
     Route::get('/patients/delete/{id}', [PatientController::class , 'destroy']);
     Route::get('/getpatient/{id}', [PatientController::class , 'edit']);
     Route::post('/patients/update', [PatientController::class , 'update'])->name('patients.update');
@@ -64,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
     //HOSPITAL
     Route::get('/hopitals/index', [HospitalController::class , 'index'])->name('hopitals.index');
     Route::post('/hopitals/index', [HospitalController::class , 'store'])->name('hopitals.store');
+    Route::post('/hopitals/storeHospital', [HospitalController::class , 'storeHospital'])->name('hopitals.storeHospital');
     Route::get('/hopitals/delete/{id}', [HospitalController::class , 'destroy']);
     Route::get('/gethopital/{id}', [HospitalController::class , 'edit']);
     Route::post('/hopitals/update', [HospitalController::class , 'update'])->name('hopitals.update');

@@ -56,7 +56,8 @@
                     <div class="col-md-6">
                         <label for="exampleFormControlInput1" class="form-label">Hôpital de provenance<span
                                 style="color:red;">*</span></label>
-                        <select class="form-select select2" data-toggle="select2" name="hospital_id" required>
+                        <select class="form-select select2" data-toggle="select2" name="hospital_id" id="hospital_id"
+                            required>
                             <option>Sélectionner le centre hospitalier de provenance</option>
                             @foreach ($hopitals as $hopital)
                             <option value="{{ $hopital->id }}">{{ $hopital->name }}</option>
@@ -187,11 +188,44 @@
         }).on('select2:close', function(){
             var element = $(this);
             var new_category = $.trim(element.val());
-// alert(new_category)
+
             if(new_category != '')
             {
                 $.ajax({
                   url:"{{route('doctors.storeDoctor')}}",
+                  method:"POST",
+                  data:{
+                    "_token": "{{ csrf_token() }}",
+                    name:new_category
+                },
+                  success:function(data)
+                  {
+
+                    if(data.status === "created")
+                    {
+                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+
+                        element.append('<option value="'+data.id+'">'+data.name+'</option>').val(new_category);
+                    }
+                  }
+                })
+            }
+
+        });
+      
+        // Create hopital
+        $('#hospital_id').select2({
+            placeholder:'Choisissez un hopital',
+            theme:'bootstrap4',
+            tags:true,
+        }).on('select2:close', function(){
+            var element = $(this);
+            var new_category = $.trim(element.val());
+
+            if(new_category != '')
+            {
+                $.ajax({
+                  url:"{{route('hopitals.storeHospital')}}",
                   method:"POST",
                   data:{
                     "_token": "{{ csrf_token() }}",

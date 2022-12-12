@@ -115,6 +115,12 @@ class TestOrderController extends Controller
 
             $data['doctor_id'] = $doctor->id;
         }
+        if (is_string($data['hospital_id'])) {
+            $hopital = Hospital::where('name',$data['hospital_id'])->first();
+
+            $data['hospital_id'] = $hopital->id;
+        }
+        
         // dd($request);
         try {
 
