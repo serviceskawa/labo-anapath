@@ -110,6 +110,12 @@ class TestOrderController extends Controller
 
         }
 
+        if (is_string($data['doctor_id'])) {
+            $doctor = Doctor::where('name',$data['doctor_id'])->first();
+
+            $data['doctor_id'] = $doctor->id;
+        }
+        // dd($request);
         try {
 
             $test_order = new TestOrder();
