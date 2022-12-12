@@ -269,16 +269,6 @@
                             return intVal(a) + intVal(b);
                         }, 0);
 
-                    // Total over this page
-                    pageTotal = api
-                        .column(4, {
-                            page: 'current'
-                        })
-                        .data()
-                        .reduce(function(a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0);
-
                     // Update footer
                     $(api.column(4).footer()).html(total);
                     $(api.column(3).footer()).html(discount);
@@ -300,9 +290,9 @@
 
             });
 
-            setInterval(function() {
-                dt_basic.ajax.reload();
-            }, 3000);
+            // setInterval(function() {
+            //     dt_basic.ajax.reload();
+            // }, 3000);
 
             // 
             $('.detail-list-table tbody').on('click', '#deleteBtn', function() {
