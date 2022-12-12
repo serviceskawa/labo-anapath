@@ -44,7 +44,7 @@
                             required>
                             <option>Sélectionner le médecin traitant</option>
                             @foreach ($doctors as $doctor)
-                            <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
+                            <option value="{{ $doctor->name }}">{{ $doctor->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -60,7 +60,7 @@
                             required>
                             <option>Sélectionner le centre hospitalier de provenance</option>
                             @foreach ($hopitals as $hopital)
-                            <option value="{{ $hopital->id }}">{{ $hopital->name }}</option>
+                            <option value="{{ $hopital->name }}">{{ $hopital->name }}</option>
                             @endforeach
                         </select>
                     </div>

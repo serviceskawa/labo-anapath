@@ -117,7 +117,7 @@
                             <th>Code</th>
                             <th>Patient</th>
                             <th>Contrat</th>
-                            <th>Lien</th>
+                            <th>Pièce jointe</th>
                             <th>Examens demandés</th>
                             <th>Montant</th>
                             <th>Compte rendu</th>
@@ -136,14 +136,13 @@
                             <td>{{ $item->patient->firstname }} {{ $item->patient->lastname }}</td>
                             <td>{{ $item->contrat->name }}</td>
                             <td>
-                                @if (!empty($item->getReportId($item->id)))
-                                <a href="{{ !empty($item->getReportId($item->id)) ? route('report.pdf', $item->report->id) : "
-                                    #" }}" target="_blank" rel="noopener noreferrer" type="button"
-                                    class="btn btn-secondary">
+                                @if (!empty($item->examen_file))
+                                <a href="{{Storage::url($item->examen_file)}}" target="_blank" rel="noopener noreferrer"
+                                    type="button" class="btn btn-secondary">
                                     <i class="mdi mdi-cloud-download"></i>
                                 </a>
                                 @else
-                                Non finalisé
+                                Aucun fichier
                                 @endif
 
                             </td>

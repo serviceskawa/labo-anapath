@@ -93,8 +93,8 @@ class TestOrderController extends Controller
 
         $data = $this->validate($request, [
             'patient_id' => 'required',
-            'doctor_id' => 'required',
-            'hospital_id' => 'required',
+            'doctor_id' => 'required|exists:doctors,name',
+            'hospital_id' => 'required|exists:hospitals,name',
             'prelevement_date' => 'required',
             'reference_hopital' => 'nullable',
             'contrat_id' => 'required',
