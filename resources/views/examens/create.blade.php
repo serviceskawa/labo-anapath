@@ -13,7 +13,7 @@
         <div class="card-header">
             <div class="col-12">
                 <div class="page-title-box">
-                    <div class="page-title-right">
+                    <div class="page-title-right mt-0">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#standard-modal">Ajouter un nouveau patient</button>
                     </div>
