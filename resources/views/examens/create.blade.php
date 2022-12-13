@@ -5,11 +5,24 @@
 @section('content')
 <div class="">
 
-
     @include('layouts.alerts')
+
+    {{-- @include('patients.create') --}}
+
     <div class="card my-3">
         <div class="card-header">
-            Ajouter une nouvelle demande d'examen
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#standard-modal">Ajouter un nouveau patient</button>
+                    </div>
+                    Ajouter une nouvelle demande d'examen
+                </div>
+
+
+            </div>
+
         </div>
         <div class="card-body">
 
@@ -17,17 +30,18 @@
                 enctype="multipart/form-data">
                 @csrf
                 <div class="row mb-3">
-                    <div class="alert alert-warning">
+                    {{-- <div class="alert alert-warning">
                         <strong>Attention! </strong><small>Si un élément ne s'affiche pas dans la liste déroulante,
                             ajoutez-le à la section correspondante et rechargez la page avant de procéder.</small>
-                    </div>
+                    </div> --}}
 
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
 
                     <div class="col-md-6">
                         <label for="exampleFormControlInput1" class="form-label">Patient<span
                                 style="color:red;">*</span></label>
-                        <select class="form-select select2" data-toggle="select2" name="patient_id" required>
+                        <select class="form-select select2" data-toggle="select2" name="patient_id" id="patient_id"
+                            required>
                             <option>Sélectionner le nom du patient</option>
                             @foreach ($patients as $patient)
                             <option value="{{ $patient->id }}">{{ $patient->code }} - {{ $patient->firstname }}
@@ -120,6 +134,85 @@
 
 
 
+{{-- Modal --}}
+<div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Ajouter un nouveau patient</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+            </div>
+            <form method="POST" id="createPatientForm" autocomplete="off">
+                @csrf
+                <div class="modal-body">
+
+                    <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
+                    <div class="mb-3">
+                        <label for="simpleinput" class="form-label">Code</label>
+                        <input type="text" name="code" id="code"
+                            value="<?php echo substr(md5(rand(0, 1000000)), 0, 10); ?>" class="form-control" readonly>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="simpleinput" class="form-label">Nom <span style="color:red;">*</span></label>
+                        <input type="text" name="firstname" id="firstname" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="simpleinput" class="form-label">Prénom<span style="color:red;">*</span></label>
+                        <input type="text" name="lastname" id="lastname" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="example-select" class="form-label">Genre<span style="color:red;">*</span></label>
+                        <select class="form-select" id="genre" name="genre" required>
+                            <option value="">Sélectionner le genre</option>
+                            <option value="M">Masculin</option>
+                            <option value="F">Féminin</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="example-date" class="form-label">Date de naissance</label>
+                        <input class="form-control" id="example-date" type="date" name="birthday">
+                    </div>
+                    <div class="mb-3">
+                        <label for="simpleinput" class="form-label">Age<span style="color:red;">*</span></label>
+                        <input type="number" name="age" id="age" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="simpleinput" class="form-label">Profession</label>
+                        <input type="text" name="profession" class="form-control">
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="simpleinput" class="form-label">Contact 1<span style="color:red;">*</span></label>
+                        <input type="tel" name="telephone1" id="telephone1" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="simpleinput" class="form-label">Contact 2</label>
+                        <input type="tel" name="telephone2" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="simpleinput" class="form-label">Adresse<span style="color:red;">*</span></label>
+                        <textarea type="text" name="adresse" class="form-control" required></textarea>
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter un nouveau patient</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 </div>
@@ -246,6 +339,42 @@
 
         });
 
+        $('#createPatientForm').on('submit', function(e) {
+            e.preventDefault();
+            let code = $('#code').val();
+            let lastname = $('#lastname').val();
+            let firstname = $('#firstname').val();
+            let age = $('#age').val();
+            let telephone1 = $('#telephone1').val();
+            let genre = $('#genre').val();
+            // alert(firstname);
+            $.ajax({
+                url: "{{ route('patients.storePatient') }}",
+                type: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    code: code,
+                    lastname: lastname,
+                    firstname: firstname,
+                    age:age,
+                    telephone1:telephone1,
+                    genre:genre
+                },
+                success: function(data) {
+                    
+                    $('#createPatientForm').trigger("reset")
+                    $('#standard-modal').modal('hide');
+                    toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                    $('#patient_id').append('<option value="'+data.id+'">'+data.code+' - '+data.firstname+' '+data.lastname+'</option>').trigger('change').val(data.id);
+                    
+                },
+                error: function(data) {
+                    console.log(data)
+                },
+                // processData: false,
+            });
+
+        });
     });
 
 </script>

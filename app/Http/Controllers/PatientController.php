@@ -76,21 +76,15 @@ class PatientController extends Controller
             'code' => 'required',
             'firstname' => 'required',
             'lastname' => 'required',
+            'telephone1' => 'required',
+            'age' => 'required',
+            'genre' => 'required',
         ]);
-        $exist = Doctor::where('id',$request->name)->first();
-
 
         try {
-            if ($exist === null ) {
-                $patient = Patient::create($data);
-                $status = "created";
+            $patient = Patient::create($data);
 
-            }else {
-                $patient = [];
-                $status = "exist";
-            }
-
-            return response()->json(["patient" =>$patient, "status"=>$status], 200);
+            return response()->json($patient, 200);
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
@@ -189,5 +183,11 @@ class PatientController extends Controller
         } else {
             return back()->with('error', "    Element utilisé ailleurs ! ");
         }
+    }
+
+    public function getPatients()
+    {
+        $patients = Patient::orderBy('id','desc')->get();
+        return response()->json($patients);
     }
 }
