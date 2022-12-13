@@ -362,8 +362,6 @@
                 });
             };
 
-
-
         });
 
         $('#addDetailForm').on('submit', function(e) {
@@ -373,7 +371,6 @@
             let price = $('#price').val();
             let remise = $('#remise').val();
             let total = $('#total').val();
-            console.log(test_order_id);
 
             $.ajax({
                 url: "{{ route('details_test_order.store') }}",
@@ -404,111 +401,40 @@
 
         });
 
-        // function updateSubTotal() {
-        //     var table = document.getElementById("datatable1");
-        //     let subTotal2 = Array.from(table.rows).slice(6).reduce((total, row) => {
-        //         return total + parseFloat(row.cells[6].innerHTML);
-        //     }, 0);
-        //     console.log(subTotal2);
-        //     document.getElementById("val").innerHTML = "SubTotal = $" + subTotal2;
-        // };
-
-        // function getTest() {
-        //     var test_id = $('#test_id').val();
-
-        //     $.ajax({
-        //         type: "GET",
-        //         url: "{{ url('gettest') }}" + '/' + test_id,
-        //         success: function(data) {
-
-
-        //             $('#price').val(data.price);
-
-        //         },
-        //         error: function(data) {
-        //             console.log('Error:', data);
-        //         }
-        //     });
-        // };
-
         function getTest() {
             var test_id = $('#test_id').val();
 
-            $.ajax({
-                type: "GET",
-                url: "{{ url('gettest') }}" + '/' + test_id,
-                success: function(data) {
-
-                    $('#price').val(data.price);
-
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                }
-            });
-            getRemise();
-        }
-
-        function getRemise() {
+            // Importation des paramètres de getRemise
+            var contrat_id = $('#contrat_id').val();
             let element = document.getElementById("test_id");
             let category_test_id = element.options[element.selectedIndex].getAttribute("data-category_test_id");
-            // alert("Price: " + category_test_id);
-
-            var contrat_id = $('#contrat_id').val();
-            //var category_test_id = element.getAttribute('data-content');
 
             $.ajax({
-                type: "GET",
-                url: "{{ url('gettestremise') }}" + '/' + contrat_id + '/' + category_test_id,
+                type: "POST",
+                url: "{{ route('examens.getTestAndRemise') }}",
+                data:{
+                    "_token": "{{ csrf_token() }}",
+                    testId:test_id, 
+                    contratId:contrat_id, 
+                    categoryTestId:category_test_id
+                },
                 success: function(data) {
-                    var discount = $('#price').val() * data / 100;
+
+                    $('#price').val(data.data.price);
+
+                    var discount = $('#price').val() * data.detail / 100;
                     $('#remise').val(discount);
 
                     var total = $('#price').val() - discount;
                     $('#total').val(total);
+
                 },
                 error: function(data) {
                     console.log('Error:', data);
                 }
             });
+
         }
 
-        // $('#finalisationBtn').on('click', function() {
-        //     let test_order_id = $('#test_order_id').val()
-        //     console.log(test_order_id)
-        //     Swal.fire({
-        //         title: "Avez-vous fini ?",
-        //         icon: "warning",
-        //         showCancelButton: true,
-        //         confirmButtonText: "Oui ",
-        //         cancelButtonText: "Non !",
-        //     }).then(function(result) {
-        //         if (result.value) {
-        //             // window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
-        //             $.ajax({
-        //                 url: "/test_order/updatestatus",
-        //                 type: "post",
-        //                 data: {
-        //                     "_token": "{{ csrf_token() }}",
-        //                     test_order_id: test_order_id.id,
-        //                 },
-        //                 success: function(response) {
-
-        //                     console.log(response);
-        //                     Swal.fire(
-        //                         "Suppression !",
-        //                         "En cours de traitement ...",
-        //                         "success"
-        //                     )
-
-        //                 },
-        //                 error: function(response) {
-        //                     console.log(response);
-        //                 },
-        //             });
-
-        //         }
-        //     });
-        // });
 </script>
 @endpush

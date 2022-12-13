@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/examens/index', [TestController::class , 'store'])->name('examens.store');
     Route::get('/test/delete/{id}', [TestController::class , 'destroy']);
     Route::get('/gettest/{id}', [TestController::class , 'edit']);
+    Route::post('/getTestAndRemise', [TestController::class , 'getTestAndRemise'])->name('examens.getTestAndRemise');
     Route::post('/examens/update', [TestController::class , 'update'])->name('examens.update');
     Route::get('/gettestremise/{contrat_id}/{category_test_id}', [DetailsContratController::class , 'getremise']);
 

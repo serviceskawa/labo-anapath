@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CategoryTest;
 use App\Models\Test;
+use App\Models\Contrat;
+use App\Models\CategoryTest;
+use App\Models\Details_Contrat;
 use Illuminate\Http\Request;
 
 class TestController extends Controller
@@ -134,5 +136,19 @@ class TestController extends Controller
         $test = Test::find($id)->delete();
 
         return back()->with('success', " Elément supprimé avec succès  ! ");
+    }
+
+    public function getTestAndRemise(Request $request)
+    {
+
+        $data = Test::find($request->testId);
+
+        $detail = Details_Contrat::where(['contrat_id' => $request->contratId, 'category_test_id' => $request->categoryTestId])->first();
+        if($detail == null){
+            $detail = 0;
+        }else{
+            $detail = $detail->pourcentage;
+        }
+        return response()->json(["data"=>$data,"detail"=>$detail]);
     }
 }

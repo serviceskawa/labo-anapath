@@ -30,32 +30,123 @@ return back()->with('error', "Vous n'êtes pas autorisé");
 
 Sauf le champs name est obligatoire
 
-                    <tbody>
+### Sauvegarde d'ajout de detail de demande d'examen
 
-                        @foreach ($examens as $item)
-                        <tr>
-                            <td>{{ $item->id }}</td>
-                            {{-- <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td> --}}
-                            <td>{{ $item->code }} </td>
-                            <td>{{ $item->patient->firstname }} {{ $item->patient->lastname }}</td>
-                            <td>{{ $item->getDoctor()->name }}</td>
-                            <td>{{ $item->getHospital()->name }}</td>
-                            <td>{{ $item->total }}</td>
-                            <td>
-                                <a type="button" href="{{ route('details_test_order.index', $item->id) }}"
-                                    class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
-                                @if ($item->status != 1)
-                                <button type="button" onclick="deleteModal({{ $item->id }})" class="btn btn-danger"><i
-                                        class="mdi mdi-trash-can-outline"></i>
-                                </button>
-                                @endif
+$('#addDetailForm').on('submit', function(e) {
+e.preventDefault();
+let test_order_id = $('#test_order_id').val();
+let test_id = $('#test_id').val();
+let price = $('#price').val();
+let remise = $('#remise').val();
+let total = $('#total').val();
 
-                            </td>
+            $.ajax({
+                url: "{{ route('details_test_order.store') }}",
+                type: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    test_order_id: test_order_id,
+                    test_id: test_id,
+                    price: price,
+                    discount: remise,
+                    total: total
 
-                        </tr>
-                        @endforeach
+                },
+                success: function(response) {
+                    $('#addDetailForm').trigger("reset")
+
+                    if (response) {
+                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                    }
+                    $('#datatable1').DataTable().ajax.reload();
+                    // $('#addDetailForm').trigger("reset")
+                    // updateSubTotal();
+                },
+                error: function(response) {
+                    console.log(response)
+                },
+            });
+
+        });
 
 
+        function getTest() {
+            var test_id = $('#test_id').val();
 
+            $.ajax({
+                type: "GET",
+                url: "{{ url('gettest') }}" + '/' + test_id,
+                success: function(data) {
 
-                    </tbody>
+                    $('#price').val(data.price);
+                    getRemise();
+
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                }
+            });
+            // getRemise();
+        }
+
+        function getRemise() {
+            let element = document.getElementById("test_id");
+            let category_test_id = element.options[element.selectedIndex].getAttribute("data-category_test_id");
+            // alert("Price: " + category_test_id);
+
+            var contrat_id = $('#contrat_id').val();
+            //var category_test_id = element.getAttribute('data-content');
+
+            $.ajax({
+                type: "GET",
+                url: "{{ url('gettestremise') }}" + '/' + contrat_id + '/' + category_test_id,
+                success: function(data) {
+                    var discount = $('#price').val() * data / 100;
+                    $('#remise').val(discount);
+
+                    var total = $('#price').val() - discount;
+                    $('#total').val(total);
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                }
+            });
+        }
+
+        // $('#finalisationBtn').on('click', function() {
+        //     let test_order_id = $('#test_order_id').val()
+        //     console.log(test_order_id)
+        //     Swal.fire({
+        //         title: "Avez-vous fini ?",
+        //         icon: "warning",
+        //         showCancelButton: true,
+        //         confirmButtonText: "Oui ",
+        //         cancelButtonText: "Non !",
+        //     }).then(function(result) {
+        //         if (result.value) {
+        //             // window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
+        //             $.ajax({
+        //                 url: "/test_order/updatestatus",
+        //                 type: "post",
+        //                 data: {
+        //                     "_token": "{{ csrf_token() }}",
+        //                     test_order_id: test_order_id.id,
+        //                 },
+        //                 success: function(response) {
+
+        //                     console.log(response);
+        //                     Swal.fire(
+        //                         "Suppression !",
+        //                         "En cours de traitement ...",
+        //                         "success"
+        //                     )
+
+        //                 },
+        //                 error: function(response) {
+        //                     console.log(response);
+        //                 },
+        //             });
+
+        //         }
+        //     });
+        // });
