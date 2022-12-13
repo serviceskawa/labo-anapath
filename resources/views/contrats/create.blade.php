@@ -21,6 +21,7 @@
                         <option value="">Sélectionner le type de contrat</option>
                         <option value="ORDINAIRE">Ordinaire</option>
                         <option value="ASSURANCE">Assurance</option>
+                        <option value="CAMPAGNE">Campagne</option>
                     </select>
                 </div>
 

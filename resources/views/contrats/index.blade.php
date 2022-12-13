@@ -48,7 +48,7 @@
                             <tr>
                                 <th>Nom du contrat</th>
                                 <th>Type</th>
-                                <!-- <th>Description</th> -->
+                                <th>Examens</th>
                                 <th>Statut</th>
                                 <th>Actions</th>
 
@@ -62,7 +62,7 @@
                                 <tr>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->type }}</td>
-                                    <!-- <td>{{ $item->description }}</td> -->
+                                    <td>{{ $item->orders->count() }}</td>
                                     <td>{{ $item->status }}</td>
 
                                     <td>
