@@ -239,6 +239,23 @@ class ContratController extends Controller
         }
     }
 
+    public function close($id)
+    {
+        if (!getOnlineUser()->can('delete-contrats')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        // dd($id);
+        $contrat = Contrat::findorfail($id);
+
+        if ($contrat) {
+            $contrat->is_close = 1;
+            $contrat->save();
+            return back()->with('success', "    Un élement a été clôturé ! ");
+        } else {
+            return back()->with('error', "    Ce contrat est utilisé ailleurs ! ");
+        }
+    }
+
     public function destroy_details($id)
     {
         if (!getOnlineUser()->can('delete-contrats')) {
