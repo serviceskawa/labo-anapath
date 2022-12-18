@@ -258,7 +258,7 @@
         // Recherche dans la colonne  compte rendu
         $("#exams_status").on("change", function() {
             table
-            .columns(7)
+            .columns(8)
             .search(this.value)
             .draw();
         });
