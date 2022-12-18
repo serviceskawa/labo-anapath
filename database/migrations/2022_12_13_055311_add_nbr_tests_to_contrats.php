@@ -15,7 +15,7 @@ class AddNbrTestsToContrats extends Migration
     {
         Schema::table('contrats', function (Blueprint $table) {
             $table->integer('nbr_tests')->nullable()->default(-1);
-            $table->binary('is_close')->nullable()->default(false);
+            $table->boolean('is_close')->nullable()->default(false);
         });
     }
 
