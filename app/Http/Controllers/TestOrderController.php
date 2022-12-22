@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use DateTime;
-use Carbon\Carbon;
-use App\Models\Test;
-use App\Models\Doctor;
-use App\Models\Report;
 use App\Models\Contrat;
-use App\Models\Patient;
-use App\Models\Setting;
+use App\Models\DetailTestOrder;
+use App\Models\Doctor;
 use App\Models\Hospital;
+use App\Models\Patient;
+use App\Models\Report;
+use App\Models\Setting;
+use App\Models\Test;
 use App\Models\TestOrder;
 use Illuminate\Http\Request;
-use App\Models\Details_Contrat;
-use App\Models\DetailTestOrder;
 use Illuminate\Support\Facades\DB;
 
 class TestOrderController extends Controller
@@ -22,33 +19,35 @@ class TestOrderController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth'); 
+        $this->middleware('auth');
     }
-    
-    public function index(){
+
+    public function index()
+    {
         if (!getOnlineUser()->can('view-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        
-        $examens = TestOrder::with(['patient','contrat'])->orderBy('id','desc')->get();
+
+        $examens = TestOrder::with(['patient', 'contrat'])->orderBy('id', 'desc')->get();
         $contrats = Contrat::all();
         $patients = Patient::all();
-        $doctors  = Doctor::all();
+        $doctors = Doctor::all();
         //$tests = Test::all();
         $hopitals = Hospital::all();
         // dd($examens);
-        return view('examens.index',compact(['examens','contrats','patients','doctors','hopitals']));
+        return view('examens.index', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals']));
     }
-    
-    public function getTestOrders(Request $request){
+
+    public function getTestOrders(Request $request)
+    {
         if (!getOnlineUser()->can('view-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        
-        if (empty($request->date)) {
-            $examens = TestOrder::with(['patient'])->orderBy('id','desc')->get();
 
-        }else {
+        if (empty($request->date)) {
+            $examens = TestOrder::with(['patient'])->orderBy('id', 'desc')->get();
+
+        } else {
             $date = explode("-", $request->date);
             $date[0] = str_replace('/', '-', $date[0]);
             $date[1] = str_replace('/', '-', $date[1]);
@@ -61,31 +60,31 @@ class TestOrderController extends Controller
                 $examens = $examens->where('contrat_id', $request->contrat_id);
             }
 
-            if ( is_null($request->exams_status)) {
+            if (is_null($request->exams_status)) {
                 $examens = $examens;
 
-            }else{
+            } else {
                 $examens = $examens->where('status', $request->exams_status);
 
             }
-            
-            if ( is_null($request->cas_status)) {
+
+            if (is_null($request->cas_status)) {
                 $examens = $examens;
 
-            }else{
+            } else {
                 $examens = $examens->where('is_urgent', $request->cas_status);
 
             }
 
-            $examens = $examens->orderBy('id','desc')->get();
+            $examens = $examens->orderBy('id', 'desc')->get();
 
         }
-        
+
         return response()->json($examens);
     }
 
-
-    public function store(request $request){
+    public function store(request $request)
+    {
 
         if (!getOnlineUser()->can('create-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
@@ -102,30 +101,30 @@ class TestOrderController extends Controller
         ]);
 
         $path_examen_file = "";
-        if ($request->file('examen_file') ) {
+        if ($request->file('examen_file')) {
 
-            $examen_file = time() . '_test_order_.' . $request->file('examen_file')->extension();  
-            
+            $examen_file = time() . '_test_order_.' . $request->file('examen_file')->extension();
+
             $path_examen_file = $request->file('examen_file')->storeAs('tests/orders', $examen_file, 'public');
 
         }
 
         if (is_string($data['doctor_id'])) {
-            $doctor = Doctor::where('name',$data['doctor_id'])->first();
+            $doctor = Doctor::where('name', $data['doctor_id'])->first();
 
             $data['doctor_id'] = $doctor->id;
         }
         if (is_string($data['hospital_id'])) {
-            $hopital = Hospital::where('name',$data['hospital_id'])->first();
+            $hopital = Hospital::where('name', $data['hospital_id'])->first();
 
             $data['hospital_id'] = $hopital->id;
         }
-        
+
         // dd($request);
         try {
 
             $test_order = new TestOrder();
-            DB::transaction(function () use ($data,$test_order, $request, $path_examen_file) {
+            DB::transaction(function () use ($data, $test_order, $request, $path_examen_file) {
                 $test_order->contrat_id = $data['contrat_id'];
                 $test_order->patient_id = $data['patient_id'];
                 $test_order->hospital_id = $data['hospital_id'];
@@ -137,16 +136,16 @@ class TestOrderController extends Controller
                 $test_order->save();
             });
 
-            return redirect()->route('details_test_order.index',$test_order->id);
+            return redirect()->route('details_test_order.index', $test_order->id);
 
-            } catch(\Throwable $ex){
+        } catch (\Throwable$ex) {
 
-          return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-      }
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
+        }
     }
 
-
-    public function create(){
+    public function create()
+    {
 
         if (!getOnlineUser()->can('create-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
@@ -155,7 +154,7 @@ class TestOrderController extends Controller
         $doctors = Doctor::all();
         $hopitals = Hospital::all();
         $contrats = Contrat::ofStatus('ACTIF')->get();
-        return view('examens.create',compact(['patients','doctors','hopitals','contrats']));
+        return view('examens.create', compact(['patients', 'doctors', 'hopitals', 'contrats']));
     }
 
     public function show($id)
@@ -167,7 +166,8 @@ class TestOrderController extends Controller
         dd($test_order);
 
     }
-    public function destroy($id){
+    public function destroy($id)
+    {
         if (!getOnlineUser()->can('delete-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
@@ -175,8 +175,8 @@ class TestOrderController extends Controller
         return back()->with('success', "    Un élement a été supprimé ! ");
     }
 
-
-    public function details_index($id){
+    public function details_index($id)
+    {
 
         if (!getOnlineUser()->can('view-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
@@ -185,13 +185,13 @@ class TestOrderController extends Controller
 
         $tests = Test::all();
 
-        $details = DetailTestOrder::where('test_order_id',$test_order->id)->get();
+        $details = DetailTestOrder::where('test_order_id', $test_order->id)->get();
 
-        return view('examens.details.index',compact(['test_order','details','tests']));
+        return view('examens.details.index', compact(['test_order', 'details', 'tests']));
     }
 
-
-    public function details_store(Request $request){
+    public function details_store(Request $request)
+    {
         if (!getOnlineUser()->can('create-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
@@ -209,10 +209,10 @@ class TestOrderController extends Controller
         $test_order_exit = $test_order->details()->whereTestId($data['test_id'])->exists();
 
         if ($test_order_exit) {
-            return response()->json(['success'=>"Examin deja ajouté"]);
-        }else {
+            return response()->json(['success' => "Examin deja ajouté"]);
+        } else {
             try {
-                DB::transaction(function () use ($data,$test) {
+                DB::transaction(function () use ($data, $test) {
                     $details = new DetailTestOrder();
                     $details->test_id = $data['test_id'];
                     $details->test_name = $test->name;
@@ -223,9 +223,9 @@ class TestOrderController extends Controller
                     $details->save();
                 });
 
-                    //  return back()->with('success', "Opération effectuée avec succès ! ");
-                    return response()->json(200);
-            } catch (\Throwable $th) {
+                //  return back()->with('success', "Opération effectuée avec succès ! ");
+                return response()->json(200);
+            } catch (\Throwable$th) {
                 return response()->json(200);
             }
 
@@ -239,7 +239,7 @@ class TestOrderController extends Controller
         }
         $test_order = TestOrder::find($id);
         $tests = Test::all();
-        $details = DetailTestOrder::where('test_order_id',$test_order->id)->get();
+        $details = DetailTestOrder::where('test_order_id', $test_order->id)->get();
         return response()->json($details);
     }
 
@@ -253,7 +253,7 @@ class TestOrderController extends Controller
         $test_order->fill([
             "total" => $request->total,
             "subtotal" => $request->subTotal,
-            "discount" => $request->discount
+            "discount" => $request->discount,
         ])->save();
 
         return response()->json($test_order);
@@ -286,10 +286,10 @@ class TestOrderController extends Controller
         } else {
             $code = sprintf('%04d', $test_order->id);
             // dd($code);
-            $test_order->fill(["status" => '1', "code"=> "DE22-".$code])->save();
+            $test_order->fill(["status" => '1', "code" => "DE22-" . $code])->save();
 
             $report = Report::create([
-                "code" => "CO22-".$code,
+                "code" => "CO22-" . $code,
                 "patient_id" => $test_order->patient_id,
                 "description" => $settings ? $settings->placeholder : '',
                 "test_order_id" => $test_order->id,

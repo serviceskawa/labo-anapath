@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // DbSeeder::class,
-            Permission::class,
+            // Permission::class,
+            TypeOrder::class,
         ]);
     }
 }
