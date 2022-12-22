@@ -102,16 +102,43 @@
                     </div>
                 </div>
 
+                <div class="row ">
+                    <div class="col-md-6">
+                        <label for="exampleFormControlInput1" class="form-label">Type d'examen<span
+                                style="color:red;">*</span></label>
+                        <select class="form-select select2" data-toggle="select2" required name="contrat_id">
+                            <option>Sélectionner le contrat</option>
+                            @forelse ($types_orders as $type)
+                            <option value="{{ $type->id }}">{{ $type->title }}</option>
+                            @empty
+                            Ajouter un Type d'examen
+                            @endforelse
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Contrat<span
+                                style="color:red;">*</span></label>
+                        <select class="form-select select2" data-toggle="select2" required name="contrat_id">
+                            <option>Sélectionner le contrat</option>
+                            @forelse ($contrats as $contrat)
+                            <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
+                            @empty
+                            Ajouter un contrat
+                            @endforelse
+                        </select>
+                    </div>
+                </div>
                 <div class="col-md-12 mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Contrat<span
+                    <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
                             style="color:red;">*</span></label>
-                    <select class="form-select select2" data-toggle="select2" required name="contrat_id">
-                        <option>Sélectionner le contrat</option>
-                        @forelse ($contrats as $contrat)
-                        <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
-                        @empty
-                        Ajouter un contrat
-                        @endforelse
+                    <select class="form-select select2" data-toggle="select2" name="examen_reference"
+                        id="examen_reference">
+                        <option>Sélectionner dans la liste</option>
+                        @foreach ($patients as $patient)
+                        <option value="{{ $patient->id }}">{{ $patient->code }} - {{ $patient->firstname }}
+                            {{ $patient->lastname }}
+                        </option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-6">

@@ -11,6 +11,7 @@ use App\Models\Report;
 use App\Models\Setting;
 use App\Models\Test;
 use App\Models\TestOrder;
+use App\Models\TypeOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -154,7 +155,8 @@ class TestOrderController extends Controller
         $doctors = Doctor::all();
         $hopitals = Hospital::all();
         $contrats = Contrat::ofStatus('ACTIF')->get();
-        return view('examens.create', compact(['patients', 'doctors', 'hopitals', 'contrats']));
+        $types_orders = TypeOrder::all();
+        return view('examens.create', compact(['patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
     }
 
     public function show($id)
