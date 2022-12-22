@@ -134,13 +134,10 @@
                     <div class="examenReferenceSelect" style="display: none !important">
                         <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
                                 style="color:red;">*</span></label>
-                        <select class="form-select select2" data-toggle="select2" name="examen_reference_select">
-                            <option value="" selected>Sélectionner dans la liste</option>
-                            @foreach ($patients as $patient)
-                            <option value="{{ $patient->id }}">{{ $patient->code }} - {{ $patient->firstname }}
-                                {{ $patient->lastname }}
-                            </option>
-                            @endforeach
+                        <select class="form-select select2" data-toggle="select2" name="examen_reference_select"
+                            id="examen_reference_select">
+                            <option value="">Sélectionner dans la liste</option>
+
                         </select>
                     </div>
                     <div class="examenReferenceInput" style="display: none !important">
@@ -418,6 +415,8 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
         $('#type_examen').on('change', function(e) {
             var typeExamenOption = $('#type_examen option:selected').text();
 
@@ -428,6 +427,26 @@
             } else if (typeExamenOption == "Immuno Interne") {
                 $(".examenReferenceSelect").show();
                 $(".examenReferenceInput").hide();
+                $( "#examen_reference_select" ).select2({
+                    ajax: { 
+                    url: "{{route('test_order.get_all_test_order')}}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            _token: CSRF_TOKEN,
+                            search: params.term // search term
+                        };
+                    },
+                    processResults: function (response) {
+                        return {
+                        results: response
+                        };
+                    },
+                    cache: true
+                    }
+            
+                });
             }else {
                 $(".examenReferenceInput").hide();
                 $(".examenReferenceSelect").hide();

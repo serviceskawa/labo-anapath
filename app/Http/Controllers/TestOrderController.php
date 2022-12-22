@@ -39,6 +39,7 @@ class TestOrderController extends Controller
         return view('examens.index', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals']));
     }
 
+    // Fonction de recherche
     public function getTestOrders(Request $request)
     {
         if (!getOnlineUser()->can('view-demandes-examens')) {
@@ -84,9 +85,30 @@ class TestOrderController extends Controller
         return response()->json($examens);
     }
 
+    // Fonction de selection des demandes d'examen pour select2 ajax
+    public function getAllTestOrders(Request $request)
+    {
+        $search = $request->search;
+
+        if ($search == '') {
+            $test_orders = TestOrder::orderby('id', 'desc')->limit(15)->get();
+        } else {
+            $test_orders = TestOrder::orderby('id', 'desc')->where('code', 'like', '%' . $search . '%')->limit(5)->get();
+        }
+
+        $response = array();
+        foreach ($test_orders as $test_order) {
+            $response[] = array(
+                "id" => $test_order->id,
+                "text" => $test_order->code,
+            );
+        }
+        return response()->json($response);
+    }
+
     public function store(request $request)
     {
-        dd(generateCodeExamen());
+
         if (!getOnlineUser()->can('create-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
@@ -99,6 +121,8 @@ class TestOrderController extends Controller
             'reference_hopital' => 'nullable',
             'contrat_id' => 'required',
             'is_urgent' => 'nullable',
+            'examen_reference_select' => 'nullable',
+            'examen_reference_input' => 'nullable',
         ]);
 
         $path_examen_file = "";
@@ -121,7 +145,20 @@ class TestOrderController extends Controller
             $data['hospital_id'] = $hopital->id;
         }
 
-        // dd($request);
+        $data['test_affiliate'] = "";
+        if (empty($request->examen_reference_select) && !empty($request->examen_reference_input)) {
+
+            $data['test_affiliate'] = $request->examen_reference_input;
+        } elseif (!empty($request->examen_reference_select) && empty($request->examen_reference_input)) {
+            // Recherche l'existance du code selectionner
+            $reference = TestOrder::findorfail((int) $request->examen_reference_select);
+
+            if (!empty($reference)) {
+
+                $data['test_affiliate'] = $reference->code;
+            }
+        }
+        // dd($data, 'b');
         try {
 
             $test_order = new TestOrder();
@@ -134,6 +171,7 @@ class TestOrderController extends Controller
                 $test_order->reference_hopital = $data['reference_hopital'];
                 $test_order->is_urgent = $request->is_urgent ? 1 : 0;
                 $test_order->examen_file = $request->file('examen_file') ? $path_examen_file : "";
+                $test_order->test_affiliate = $data['test_affiliate'] ? $data['test_affiliate'] : "";
                 $test_order->save();
             });
 
