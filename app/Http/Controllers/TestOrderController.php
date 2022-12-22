@@ -86,7 +86,7 @@ class TestOrderController extends Controller
 
     public function store(request $request)
     {
-
+        dd(generateCodeExamen());
         if (!getOnlineUser()->can('create-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
@@ -147,6 +147,7 @@ class TestOrderController extends Controller
 
     public function create()
     {
+        // dd(generateCodeExamen());
 
         if (!getOnlineUser()->can('create-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");

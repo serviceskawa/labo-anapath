@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\DataCode;
 use App\Models\Role;
 use App\Models\Setting;
 
@@ -33,7 +34,7 @@ function sendSingleMessage($number, $message, $device = 0, $schedule = null, $is
         'devices' => $device,
         'type' => $isMMS ? "mms" : "sms",
         'attachments' => $attachments,
-        'prioritize' => $prioritize ? 1 : 0
+        'prioritize' => $prioritize ? 1 : 0,
     );
     return sendRequest($url, $postData)["messages"][0];
 }
@@ -76,7 +77,7 @@ function sendMessages($messages, $option = USE_SPECIFIED, $devices = [], $schedu
         'key' => API_KEY,
         'devices' => json_encode($devices),
         'option' => $option,
-        'useRandomDevice' => $useRandomDevice
+        'useRandomDevice' => $useRandomDevice,
     ];
     return sendRequest($url, $postData)["messages"];
 }
@@ -106,7 +107,7 @@ function sendMessageToContactsList($listID, $message, $option = USE_SPECIFIED, $
         'devices' => json_encode($devices),
         'option' => $option,
         'type' => $isMMS ? "mms" : "sms",
-        'attachments' => $attachments
+        'attachments' => $attachments,
     ];
     return sendRequest($url, $postData)["messages"];
 }
@@ -122,7 +123,7 @@ function getMessageByID($id)
     $url = SERVER . "/services/read-messages.php";
     $postData = [
         'key' => API_KEY,
-        'id' => $id
+        'id' => $id,
     ];
     return sendRequest($url, $postData)["messages"][0];
 }
@@ -138,7 +139,7 @@ function getMessagesByGroupID($groupID)
     $url = SERVER . "/services/read-messages.php";
     $postData = [
         'key' => API_KEY,
-        'groupId' => $groupID
+        'groupId' => $groupID,
     ];
     return sendRequest($url, $postData)["messages"];
 }
@@ -162,7 +163,7 @@ function getMessagesByStatus($status, $deviceID = null, $simSlot = null, $startT
         'deviceID' => $deviceID,
         'simSlot' => $simSlot,
         'startTimestamp' => $startTimestamp,
-        'endTimestamp' => $endTimestamp
+        'endTimestamp' => $endTimestamp,
     ];
     return sendRequest($url, $postData)["messages"];
 }
@@ -178,7 +179,7 @@ function resendMessageByID($id)
     $url = SERVER . "/services/resend.php";
     $postData = [
         'key' => API_KEY,
-        'id' => $id
+        'id' => $id,
     ];
     return sendRequest($url, $postData)["messages"][0];
 }
@@ -196,7 +197,7 @@ function resendMessagesByGroupID($groupID, $status = null)
     $postData = [
         'key' => API_KEY,
         'groupId' => $groupID,
-        'status' => $status
+        'status' => $status,
     ];
     return sendRequest($url, $postData)["messages"];
 }
@@ -220,7 +221,7 @@ function resendMessagesByStatus($status, $deviceID = null, $simSlot = null, $sta
         'deviceID' => $deviceID,
         'simSlot' => $simSlot,
         'startTimestamp' => $startTimestamp,
-        'endTimestamp' => $endTimestamp
+        'endTimestamp' => $endTimestamp,
     ];
     return sendRequest($url, $postData)["messages"];
 }
@@ -242,7 +243,7 @@ function addContact($listID, $number, $name = null, $resubscribe = false)
         'listID' => $listID,
         'number' => $number,
         'name' => $name,
-        'resubscribe' => $resubscribe
+        'resubscribe' => $resubscribe,
     ];
     return sendRequest($url, $postData)["contact"];
 }
@@ -261,7 +262,7 @@ function unsubscribeContact($listID, $number)
         'key' => API_KEY,
         'listID' => $listID,
         'number' => $number,
-        'unsubscribe' => true
+        'unsubscribe' => true,
     ];
     return sendRequest($url, $postData)["contact"];
 }
@@ -274,7 +275,7 @@ function getBalance()
 {
     $url = SERVER . "/services/send.php";
     $postData = [
-        'key' => API_KEY
+        'key' => API_KEY,
     ];
     $credits = sendRequest($url, $postData)["credits"];
     return is_null($credits) ? "Unlimited" : $credits;
@@ -295,7 +296,7 @@ function sendUssdRequest($request, $device, $simSlot = null)
         'key' => API_KEY,
         'request' => $request,
         'device' => $device,
-        'sim' => $simSlot
+        'sim' => $simSlot,
     ];
     return sendRequest($url, $postData)["request"];
 }
@@ -311,7 +312,7 @@ function getUssdRequestByID($id)
     $url = SERVER . "/services/read-ussd-requests.php";
     $postData = [
         'key' => API_KEY,
-        'id' => $id
+        'id' => $id,
     ];
     return sendRequest($url, $postData)["requests"][0];
 }
@@ -335,7 +336,7 @@ function getUssdRequests($request, $deviceID = null, $simSlot = null, $startTime
         'deviceID' => $deviceID,
         'simSlot' => $simSlot,
         'startTimestamp' => $startTimestamp,
-        'endTimestamp' => $endTimestamp
+        'endTimestamp' => $endTimestamp,
     ];
     return sendRequest($url, $postData)["requests"];
 }
@@ -344,10 +345,11 @@ function getUssdRequests($request, $deviceID = null, $simSlot = null, $startTime
  * @return array     The array containing all enabled devices
  * @throws Exception If there is an error while getting devices.
  */
-function getDevices() {
+function getDevices()
+{
     $url = SERVER . "/services/get-devices.php";
     $postData = [
-        'key' => API_KEY
+        'key' => API_KEY,
     ];
     return sendRequest($url, $postData)["devices"];
 }
@@ -386,8 +388,9 @@ function sendRequest($url, $postData)
 }
 
 if (!function_exists('getPermission')) {
-    function getPermission($role_id, $operation, $permission_id){
-        $role = Role::findorfail($role_id); 
+    function getPermission($role_id, $operation, $permission_id)
+    {
+        $role = Role::findorfail($role_id);
         $permissions = $role->permissions();
 
         $data = $role->permissions()->where('permission_id', $permission_id)->exists();
@@ -397,24 +400,108 @@ if (!function_exists('getPermission')) {
 }
 
 if (!function_exists('getSignatory1')) {
-    function getSignatory1(){
+    function getSignatory1()
+    {
         $setting = Setting::findorfail(1);
         return $setting->signatory1;
     }
 }if (!function_exists('getSignatory2')) {
-    function getSignatory2(){
-        $setting =  Setting::findorfail(1);
+    function getSignatory2()
+    {
+        $setting = Setting::findorfail(1);
         return $setting->signatory2;
     }
 }if (!function_exists('getSignatory3')) {
-    function getSignatory3(){
-        $setting =  Setting::findorfail(1);
+    function getSignatory3()
+    {
+        $setting = Setting::findorfail(1);
         return $setting->signatory3;
     }
 }
 if (!function_exists('getOnlineUser')) {
-    function getOnlineUser(){
+    function getOnlineUser()
+    {
         $user = Auth::user();
         return $user;
+    }
+}
+
+// generate code examen
+if (!function_exists('generateCodeExamen')) {
+    function generateCodeExamen()
+    {
+        $day = date('d');
+        $month = date('m');
+        $year = date('y');
+        $codeUser = new DataCode;
+        $codefinal = '';
+        /* Initialisation des variables pour la date actuelle*/
+
+        $lettre_month = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+        /*Tableau des lettres représentant les 12 mois de l'année*/
+
+        $codelast = DataCode::latest('id')->first();
+        $code = $codelast->code;
+        //dd($codelast->code);
+
+        $code_base_10 = base_convert($code, 16, 10);
+
+        // La variable $code comporte les 4 derniers caractères du code final 23A-0001
+        // Il est recupérer depuis une base de données mais à chaque 1er du mois il est réinitialiser à 1
+
+        //POur les mois comportant 31 jours
+        if ($month == 1 || $month == 3 || $month == 5 || $month == 7 || $month == 8 || $month == 10 || $month == 12) {
+            if ($day == 1) {
+                $code_base_10 = 1;
+            } else if ($day >= 2 || $day <= 31) {
+                $code_base_10++;
+            }
+            //Pour les mois comportant 30 jours
+        } else if ($month == 3 || $month == 4 || $month == 6 || $month == 9 || $month == 11) {
+            if ($day == 0) {
+                $code_base_10 = 1;
+            } else if ($day >= 1 || $day <= 30) {
+                $code_base_10++;
+            }
+        } else {
+            //Pour le mois comportant 28 jours
+            if ($day == 0) {
+                $code_base_10 = 1;
+            } else if ($day >= 1 || $day <= 28) {
+                $code_base_10++;
+            }
+        }
+        $code = base_convert($code_base_10, 10, 16);
+        dd(Str::length($code), $code_base_10);
+        if (Str::length($code) == 1) {
+            $codefinal = Str::upper($year . $lettre_month[$month - 1] . '-000' . $code);
+            $codeUser->code = $code;
+            $codeUser->finalCode = $codefinal;
+            $codeUser->save();
+            dd($codefinal . ' is save');
+            //dd($year . $lettre_month[$month - 1] . '-000' . $code);
+        } else if (Str::length($code) == 2) {
+            $codefinal = Str::upper($year . $lettre_month[$month - 1] . '-00' . $code);
+            $codeUser->code = $code;
+            $codeUser->finalCode = $codefinal;
+            $codeUser->save();
+            dd($codefinal . ' is save');
+            // dd($year . $lettre_month[$month - 1] . '-00' . $code);
+        } else if (Str::length($code) == 3) {
+            $codefinal = Str::upper($year . $lettre_month[$month - 1] . '-0' . $code);
+            $codeUser->code = $code;
+            $codeUser->finalCode = $codefinal;
+            $codeUser->save();
+            dd($codefinal . ' is save');
+            // dd($year . $lettre_month[$month - 1] . '-0' . $code);
+        } else if (Str::length($code) == 4) {
+            $codefinal = Str::upper($year . $lettre_month[$month - 1] . '-' . $code);
+            $codeUser->code = $code;
+            $codeUser->finalCode = $codefinal;
+            $codeUser->save();
+            dd($codefinal . ' is save');
+            // dd($year . $lettre_month[$month - 1] . '-' . $code);
+        }
+        dd('a');
     }
 }

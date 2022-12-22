@@ -106,8 +106,9 @@
                     <div class="col-md-6">
                         <label for="exampleFormControlInput1" class="form-label">Type d'examen<span
                                 style="color:red;">*</span></label>
-                        <select class="form-select select2" data-toggle="select2" required name="contrat_id">
-                            <option>Sélectionner le contrat</option>
+                        <select class="form-select select2" data-toggle="select2" required id="type_examen"
+                            name="type_examen">
+                            <option>Sélectionner le type d'examen</option>
                             @forelse ($types_orders as $type)
                             <option value="{{ $type->id }}">{{ $type->title }}</option>
                             @empty
@@ -129,17 +130,26 @@
                     </div>
                 </div>
                 <div class="col-md-12 mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
-                            style="color:red;">*</span></label>
-                    <select class="form-select select2" data-toggle="select2" name="examen_reference"
-                        id="examen_reference">
-                        <option>Sélectionner dans la liste</option>
-                        @foreach ($patients as $patient)
-                        <option value="{{ $patient->id }}">{{ $patient->code }} - {{ $patient->firstname }}
-                            {{ $patient->lastname }}
-                        </option>
-                        @endforeach
-                    </select>
+
+                    <div class="examenReferenceSelect" style="display: none !important">
+                        <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
+                                style="color:red;">*</span></label>
+                        <select class="form-select select2" data-toggle="select2" name="examen_reference_select">
+                            <option value="" selected>Sélectionner dans la liste</option>
+                            @foreach ($patients as $patient)
+                            <option value="{{ $patient->id }}">{{ $patient->code }} - {{ $patient->firstname }}
+                                {{ $patient->lastname }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="examenReferenceInput" style="display: none !important">
+                        <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
+                                style="color:red;">*</span></label>
+                        <input type="text" name="examen_reference_input" class="form-control"
+                            placeholder="Saisir l'examen de reference">
+                    </div>
+
                 </div>
                 <div class="col-md-6">
                     <input type="checkbox" class="form-check-input" name="is_urgent" id="">
@@ -404,5 +414,81 @@
         });
     });
 
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#type_examen').on('change', function(e) {
+            var typeExamenOption = $('#type_examen option:selected').text();
+
+            if (typeExamenOption == "Immuno Externe") {
+                $(".examenReferenceSelect").hide();
+                $(".examenReferenceInput").show();
+
+            } else if (typeExamenOption == "Immuno Interne") {
+                $(".examenReferenceSelect").show();
+                $(".examenReferenceInput").hide();
+            }else {
+                $(".examenReferenceInput").hide();
+                $(".examenReferenceSelect").hide();
+            }
+            // alert(typeExamenId);
+
+            // $.ajax({
+            //     url: "{{ route('template.report-getTemplate') }}",
+            //     type: "POST",
+            //     data: {
+            //         "_token": "{{ csrf_token() }}",
+            //         id: template_id,
+            //     },
+            //     success: function(data) {
+            //         console.log(data);
+            //         // $('#page_id').val()
+            //         if (data) {
+            //             $('#editor').val(data.content);
+
+            //             ClassicEditor
+            //                 .create(document.querySelector('#editor'))
+            //                 .then(editor => {})
+            //                 .catch(error => {
+            //                     console.error(error);
+            //                 });
+
+            //             document.querySelector('.ck-editor__editable').ckeditorInstance
+            //                 .destroy()
+
+            //         } else {
+            //             $('#editor').val("Texte");
+
+            //             ClassicEditor
+            //                 .create(document.querySelector('#editor'))
+            //                 .then(editor => {})
+            //                 .catch(error => {
+            //                     console.error(error);
+            //                 });
+
+            //             document.querySelector('.ck-editor__editable').ckeditorInstance
+            //                 .destroy()
+
+            //         }
+
+            //     },
+            //     error: function(error) {
+            //         $('#editor').val(report.description);
+
+            //         ClassicEditor
+            //             .create(document.querySelector('#editor'))
+            //             .then(editor => {})
+            //             .catch(error => {
+            //                 console.error(error);
+            //             });
+
+            //         document.querySelector('.ck-editor__editable').ckeditorInstance
+            //             .destroy()
+
+            //     }
+            // })
+        });
+    });
 </script>
 @endpush
