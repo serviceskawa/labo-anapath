@@ -472,36 +472,41 @@ if (!function_exists('generateCodeExamen')) {
             }
         }
         $code = base_convert($code_base_10, 10, 16);
-        dd(Str::length($code), $code_base_10);
+        // dd(Str::length($code), $code_base_10);
         if (Str::length($code) == 1) {
             $codefinal = Str::upper($year . $lettre_month[$month - 1] . '-000' . $code);
             $codeUser->code = $code;
             $codeUser->finalCode = $codefinal;
             $codeUser->save();
-            dd($codefinal . ' is save');
+            return $codefinal;
+            // dd($codefinal . ' is save');
             //dd($year . $lettre_month[$month - 1] . '-000' . $code);
         } else if (Str::length($code) == 2) {
             $codefinal = Str::upper($year . $lettre_month[$month - 1] . '-00' . $code);
             $codeUser->code = $code;
             $codeUser->finalCode = $codefinal;
             $codeUser->save();
-            dd($codefinal . ' is save');
+            return $codefinal;
+            // dd($codefinal . ' is save');
             // dd($year . $lettre_month[$month - 1] . '-00' . $code);
         } else if (Str::length($code) == 3) {
             $codefinal = Str::upper($year . $lettre_month[$month - 1] . '-0' . $code);
             $codeUser->code = $code;
             $codeUser->finalCode = $codefinal;
             $codeUser->save();
-            dd($codefinal . ' is save');
+            return $codefinal;
+            // dd($codefinal . ' is save');
             // dd($year . $lettre_month[$month - 1] . '-0' . $code);
         } else if (Str::length($code) == 4) {
             $codefinal = Str::upper($year . $lettre_month[$month - 1] . '-' . $code);
             $codeUser->code = $code;
             $codeUser->finalCode = $codefinal;
             $codeUser->save();
-            dd($codefinal . ' is save');
+            return $codefinal;
+
+            // dd($codefinal . ' is save');
             // dd($year . $lettre_month[$month - 1] . '-' . $code);
         }
-        dd('a');
+        // dd('a');
     }
 }
