@@ -2,59 +2,66 @@
 
 namespace App\Models;
 
-use App\Models\Report;
 use App\Models\Contrat;
-use App\Models\Hospital;
 use App\Models\DetailTestOrder;
+use App\Models\Hospital;
+use App\Models\Report;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TestOrder extends Model
 {
 
-    use HasFactory , SoftDeletes;
-    
+    use HasFactory, SoftDeletes;
+
     protected $guarded = [];
 
-    public function getPatient(){
+    public function getPatient()
+    {
         $data = Patient::find($this->patient_id);
         return $data;
     }
 
-    public function getThisTest(){
+    public function getThisTest()
+    {
         $data = Test::find($this->test_id);
         return $data;
     }
 
-    public function getDoctor(){
+    public function getDoctor()
+    {
         $data = Doctor::find($this->doctor_id);
         return $data;
     }
 
-    public function getHospital(){
+    public function getHospital()
+    {
         $data = Hospital::find($this->hospital_id);
         return $data;
     }
 
-    public function getContrat(){
+    public function getContrat()
+    {
         $data = Contrat::find($this->contrat_id);
         return $data;
     }
-    
-    public function getReport($id){
-        $data = Report::where('test_order_id',$id)->first();
+
+    public function getReport($id)
+    {
+        $data = Report::where('test_order_id', $id)->first();
         if (is_null($data)) {
             return 2; // pour différencier les valeurs des status. 0 pour en attente, 1 valider et 2 pour examin qui n'a pas été enregistré
-        }else {
+        } else {
             return $data->status;
         }
     }
-    public function getReportId($id){
-        $data = Report::where('test_order_id',$id)->first();
+    public function getReportId($id)
+    {
+        $data = Report::where('test_order_id', $id)->first();
         if (is_null($data)) {
             return null; // pour différencier les valeurs des status. 0 pour en attente, 1 valider et 2 pour examin qui n'a pas été enregistré
-        }else {
+        } else {
             return $data->id;
         }
     }
@@ -76,7 +83,7 @@ class TestOrder extends Model
      */
     public function doctor()
     {
-        return $this->belongsTo(Doctor::class,);
+        return $this->belongsTo(Doctor::class, );
     }
 
     /**

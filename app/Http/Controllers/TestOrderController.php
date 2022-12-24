@@ -115,7 +115,7 @@ class TestOrderController extends Controller
 
         $data = $this->validate($request, [
             'patient_id' => 'required',
-            'doctor_id' => 'required|exists:doctors,name',
+            'doctor_id' => 'required|exists:doctors,name', // verification de l'existance du nom envoyé de puis le select
             'hospital_id' => 'required|exists:hospitals,name',
             'prelevement_date' => 'required',
             'reference_hopital' => 'nullable',
@@ -125,7 +125,19 @@ class TestOrderController extends Controller
             'examen_reference_input' => 'nullable',
         ]);
 
+        $contrat = Contrat::FindOrFail($data['contrat_id']);
+
+        if ($contrat) {
+            if ($contrat->nbr_tests == -1) {
+                return true;
+            } elseif ($contrat->orders->count() <= $contrat->nbr_tests) {
+                return back()->with('error', "Échec de l'enregistrement. Le nombre d'examen de ce contrat est atteint ");
+            }
+        }
+
+        dd('a', $contrat->nbr_tests, $contrat->orders->count(), $data);
         $path_examen_file = "";
+
         if ($request->file('examen_file')) {
 
             $examen_file = time() . '_test_order_.' . $request->file('examen_file')->extension();
@@ -158,7 +170,7 @@ class TestOrderController extends Controller
                 $data['test_affiliate'] = $reference->code;
             }
         }
-        // dd($data, 'b');
+
         try {
 
             $test_order = new TestOrder();
@@ -185,7 +197,6 @@ class TestOrderController extends Controller
 
     public function create()
     {
-        // dd(generateCodeExamen());
 
         if (!getOnlineUser()->can('create-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
