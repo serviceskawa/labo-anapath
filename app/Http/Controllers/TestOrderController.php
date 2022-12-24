@@ -135,7 +135,7 @@ class TestOrderController extends Controller
             }
         }
 
-        dd('a', $contrat->nbr_tests, $contrat->orders->count(), $data);
+        // dd('a', $contrat->nbr_tests, $contrat->orders->count(), $data);
         $path_examen_file = "";
 
         if ($request->file('examen_file')) {
