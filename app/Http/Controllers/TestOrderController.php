@@ -128,9 +128,7 @@ class TestOrderController extends Controller
         $contrat = Contrat::FindOrFail($data['contrat_id']);
 
         if ($contrat) {
-            if ($contrat->nbr_tests == -1) {
-                return true;
-            } elseif ($contrat->orders->count() <= $contrat->nbr_tests) {
+            if ($contrat->nbr_tests <= $contrat->orders->count()) {
                 return back()->with('error', "Échec de l'enregistrement. Le nombre d'examen de ce contrat est atteint ");
             }
         }
