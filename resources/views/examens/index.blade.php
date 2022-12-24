@@ -96,6 +96,22 @@
                         <div class="col-lg-3">
 
                             <div class="mb-3">
+                                <label for="example-fileinput" class="form-label">Type d'examen</label>
+                                <select name="type_examen" id="type_examen" class="form-control">
+                                    <option value="">Tous</option>
+                                    @forelse ($types_orders as $type)
+                                    <option value="{{ $type->title }}">{{ $type->title }}</option>
+                                    @empty
+                                    Ajouter un Type d'examen
+                                    @endforelse
+                                </select>
+                            </div>
+
+
+                        </div> <!-- end col -->
+                        <div class="col-lg-3">
+
+                            <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Urgent</label>
                                 <select name="cas_status" id="cas_status" class="form-control">
                                     <option value="">Tous</option>
@@ -121,6 +137,7 @@
                             <th>Examens demandés</th>
                             <th>Montant</th>
                             <th>Compte rendu</th>
+                            <th>Type examen</th>
                             <th>Actions</th>
 
                         </tr>
@@ -162,8 +179,14 @@
                                 </span>
                             </td>
                             <td>
+                                <span class="badge bg-secondary rounded-pill">
+                                    {{ $item->type->title}}
+
+                                </span>
+                            </td>
+                            <td>
                                 <a type="button" href="{{ route('details_test_order.index', $item->id) }}"
-                                    class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye" ></i> </a>
+                                    class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i> </a>
                                 <a type="button"
                                     href=" {{!empty($item->getReportId($item->id)) ? route('report.show', $item->report->id) : "" }}"
                                     class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>
@@ -259,6 +282,14 @@
         $("#exams_status").on("change", function() {
             table
             .columns(8)
+            .search(this.value)
+            .draw();
+        });
+        
+        // Recherche dans la colonne  type d'examen
+        $("#type_examen").on("change", function() {
+            table
+            .columns(9)
             .search(this.value)
             .draw();
         });

@@ -14,7 +14,7 @@ class AddTypeIdToTableTestOrders extends Migration
     public function up()
     {
         Schema::table('test_orders', function (Blueprint $table) {
-            $table->foreignId('type_order_id')->nullable()
+            $table->foreignId('type_order_id')->default(1)
                 ->constrained('type_orders')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

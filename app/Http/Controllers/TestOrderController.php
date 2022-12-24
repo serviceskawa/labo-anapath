@@ -29,14 +29,15 @@ class TestOrderController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $examens = TestOrder::with(['patient', 'contrat'])->orderBy('id', 'desc')->get();
+        $examens = TestOrder::with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
         $contrats = Contrat::all();
         $patients = Patient::all();
         $doctors = Doctor::all();
         //$tests = Test::all();
         $hopitals = Hospital::all();
+        $types_orders = TypeOrder::all();
         // dd($examens);
-        return view('examens.index', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals']));
+        return view('examens.index', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
     }
 
     // Fonction de recherche
@@ -106,6 +107,20 @@ class TestOrderController extends Controller
         return response()->json($response);
     }
 
+    public function create()
+    {
+
+        if (!getOnlineUser()->can('create-demandes-examens')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $patients = Patient::all();
+        $doctors = Doctor::all();
+        $hopitals = Hospital::all();
+        $contrats = Contrat::ofStatus('ACTIF')->get();
+        $types_orders = TypeOrder::all();
+        return view('examens.create', compact(['patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
+    }
+
     public function store(request $request)
     {
 
@@ -115,7 +130,7 @@ class TestOrderController extends Controller
 
         $data = $this->validate($request, [
             'patient_id' => 'required',
-            'doctor_id' => 'required|exists:doctors,name', // verification de l'existance du nom envoyé de puis le select
+            'doctor_id' => 'required|exists:doctors,name', // verification de l'existance du nom envoyé depuis le select
             'hospital_id' => 'required|exists:hospitals,name',
             'prelevement_date' => 'required',
             'reference_hopital' => 'nullable',
@@ -123,6 +138,7 @@ class TestOrderController extends Controller
             'is_urgent' => 'nullable',
             'examen_reference_select' => 'nullable',
             'examen_reference_input' => 'nullable',
+            'type_examen' => 'required|exists:type_orders,id',
         ]);
 
         $contrat = Contrat::FindOrFail($data['contrat_id']);
@@ -133,7 +149,6 @@ class TestOrderController extends Controller
             }
         }
 
-        // dd('a', $contrat->nbr_tests, $contrat->orders->count(), $data);
         $path_examen_file = "";
 
         if ($request->file('examen_file')) {
@@ -182,6 +197,7 @@ class TestOrderController extends Controller
                 $test_order->is_urgent = $request->is_urgent ? 1 : 0;
                 $test_order->examen_file = $request->file('examen_file') ? $path_examen_file : "";
                 $test_order->test_affiliate = $data['test_affiliate'] ? $data['test_affiliate'] : "";
+                $test_order->type_order_id = $data['type_examen'];
                 $test_order->save();
             });
 
@@ -191,20 +207,6 @@ class TestOrderController extends Controller
 
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
-    }
-
-    public function create()
-    {
-
-        if (!getOnlineUser()->can('create-demandes-examens')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
-        $patients = Patient::all();
-        $doctors = Doctor::all();
-        $hopitals = Hospital::all();
-        $contrats = Contrat::ofStatus('ACTIF')->get();
-        $types_orders = TypeOrder::all();
-        return view('examens.create', compact(['patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
     }
 
     public function show($id)

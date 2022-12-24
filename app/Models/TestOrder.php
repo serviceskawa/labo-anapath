@@ -6,6 +6,7 @@ use App\Models\Contrat;
 use App\Models\DetailTestOrder;
 use App\Models\Hospital;
 use App\Models\Report;
+use App\Models\TypeOrder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -124,5 +125,15 @@ class TestOrder extends Model
     public function contrat()
     {
         return $this->belongsTo(Contrat::class);
+    }
+
+    /**
+     * Get the type that owns the TestOrder
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function type()
+    {
+        return $this->belongsTo(TypeOrder::class, 'type_order_id');
     }
 }
