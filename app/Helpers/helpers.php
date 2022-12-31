@@ -3,6 +3,8 @@
 use App\Models\DataCode;
 use App\Models\Role;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 define("SERVER", "http://sms.wallyskak.com");
 define("API_KEY", "cd571010a5549230264e74b9c89349fdcf5ed81c");
@@ -441,7 +443,11 @@ if (!function_exists('generateCodeExamen')) {
         /*Tableau des lettres représentant les 12 mois de l'année*/
 
         $codelast = DataCode::latest('id')->first();
-        $code = $codelast->code;
+        if (is_null($codelast)) {
+            $code = 1;
+        } else {
+            $code = $codelast->code;
+        }
         //dd($codelast->code);
 
         $code_base_10 = base_convert($code, 16, 10);
