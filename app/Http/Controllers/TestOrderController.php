@@ -346,7 +346,7 @@ class TestOrderController extends Controller
             $test_order->fill(["status" => '1', "code" => generateCodeExamen()])->save();
 
             $report = Report::create([
-                "code" => "CO22-" . generateCodeExamen(),
+                "code" => "CO22-" . $test_order->code,
                 "patient_id" => $test_order->patient_id,
                 "description" => $settings ? $settings->placeholder : '',
                 "test_order_id" => $test_order->id,
