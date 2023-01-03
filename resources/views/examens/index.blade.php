@@ -180,7 +180,7 @@
                             </td>
                             <td>
                                 <span class="badge bg-secondary rounded-pill">
-                                    {{ $item->type->title}}
+                                    {{ 3}}
 
                                 </span>
                             </td>
