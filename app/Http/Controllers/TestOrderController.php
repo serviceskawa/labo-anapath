@@ -339,14 +339,14 @@ class TestOrderController extends Controller
             return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
 
         } else {
-            // Ancien algorithme
-            // $code = sprintf('%04d', $test_order->id);  "DE22-" . $code
-            // dd($code);
+            
+            // Génère un code unique
+            $code_unique = generateCodeExamen();
 
-            $test_order->fill(["status" => '1', "code" => generateCodeExamen()])->save();
+            $test_order->fill(["status" => '1', "code" => $code_unique])->save();
 
             $report = Report::create([
-                "code" => "CO22-" . $test_order->code,
+                "code" => "CO" . $test_order->code,
                 "patient_id" => $test_order->patient_id,
                 "description" => $settings ? $settings->placeholder : '',
                 "test_order_id" => $test_order->id,

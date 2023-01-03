@@ -4,6 +4,7 @@ use App\Models\DataCode;
 use App\Models\Role;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
+use App\Models\TestOrder;
 use Illuminate\Support\Str;
 
 define("SERVER", "http://sms.wallyskak.com");
@@ -432,87 +433,29 @@ if (!function_exists('getOnlineUser')) {
 if (!function_exists('generateCodeExamen')) {
     function generateCodeExamen()
     {
-        $day = date('d');
-        $month = date('m');
-        $year = date('y');
-        $codeUser = new DataCode;
-        $codefinal = '';
-        /* Initialisation des variables pour la date actuelle*/
+        //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
+        $lastTestOrder = TestOrder::whereYear('created_at', '=', now()->year)
+        ->whereNotNull('code')
+        ->orderByRaw('RIGHT(code, 4) DESC')
+        ->first();
 
-        $lettre_month = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
-        /*Tableau des lettres représentant les 12 mois de l'année*/
-
-        $codelast = DataCode::latest('id')->first();
-        if (is_null($codelast)) {
-            $code = 1;
-        } else {
-            $code = $codelast->code;
+        // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
+        if (!$lastTestOrder || $lastTestOrder->created_at->year != now()->year) {
+        $code = "0001";
         }
-        //dd($codelast->code);
+        // Sinon, incrémente le dernier code de 1
+        else {
+        // Récupère les quatre derniers caractères du code
+        $lastCode = substr($lastTestOrder->code, -4);
 
-        $code_base_10 = base_convert($code, 16, 10);
-
-        // La variable $code comporte les 4 derniers caractères du code final 23A-0001
-        // Il est recupérer depuis une base de données mais à chaque 1er du mois il est réinitialiser à 1
-
-        //POur les mois comportant 31 jours
-        if ($month == 1 || $month == 3 || $month == 5 || $month == 7 || $month == 8 || $month == 10 || $month == 12) {
-            if ($day == 1) {
-                $code_base_10 = 1;
-            } else if ($day >= 2 || $day <= 31) {
-                $code_base_10++;
-            }
-            //Pour les mois comportant 30 jours
-        } else if ($month == 3 || $month == 4 || $month == 6 || $month == 9 || $month == 11) {
-            if ($day == 0) {
-                $code_base_10 = 1;
-            } else if ($day >= 1 || $day <= 30) {
-                $code_base_10++;
-            }
-        } else {
-            //Pour le mois comportant 28 jours
-            if ($day == 0) {
-                $code_base_10 = 1;
-            } else if ($day >= 1 || $day <= 28) {
-                $code_base_10++;
-            }
+        // Convertit la chaîne en entier et l'incrémente de 1
+        $code = intval($lastCode) + 1;
+        $code = str_pad($code, 4, '0', STR_PAD_LEFT);
         }
-        $code = base_convert($code_base_10, 10, 16);
-        // dd(Str::length($code), $code_base_10);
-        if (Str::length($code) == 1) {
-            $codefinal = Str::upper($year . $lettre_month[$month - 1] . '-000' . $code);
-            $codeUser->code = $code;
-            $codeUser->finalCode = $codefinal;
-            $codeUser->save();
-            return $codefinal;
-            // dd($codefinal . ' is save');
-            //dd($year . $lettre_month[$month - 1] . '-000' . $code);
-        } else if (Str::length($code) == 2) {
-            $codefinal = Str::upper($year . $lettre_month[$month - 1] . '-00' . $code);
-            $codeUser->code = $code;
-            $codeUser->finalCode = $codefinal;
-            $codeUser->save();
-            return $codefinal;
-            // dd($codefinal . ' is save');
-            // dd($year . $lettre_month[$month - 1] . '-00' . $code);
-        } else if (Str::length($code) == 3) {
-            $codefinal = Str::upper($year . $lettre_month[$month - 1] . '-0' . $code);
-            $codeUser->code = $code;
-            $codeUser->finalCode = $codefinal;
-            $codeUser->save();
-            return $codefinal;
-            // dd($codefinal . ' is save');
-            // dd($year . $lettre_month[$month - 1] . '-0' . $code);
-        } else if (Str::length($code) == 4) {
-            $codefinal = Str::upper($year . $lettre_month[$month - 1] . '-' . $code);
-            $codeUser->code = $code;
-            $codeUser->finalCode = $codefinal;
-            $codeUser->save();
-            return $codefinal;
 
-            // dd($codefinal . ' is save');
-            // dd($year . $lettre_month[$month - 1] . '-' . $code);
-        }
-        // dd('a');
+        // Ajoute les deux derniers chiffres de l'année au début du code
+        return now()->year % 100 . "-$code";
     }
 }
+
+
