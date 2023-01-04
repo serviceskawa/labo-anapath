@@ -4,6 +4,7 @@ use App\Http\Controllers\ContratController;
 use App\Http\Controllers\DetailsContratController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
@@ -168,6 +169,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('report-edit/{id}', [SettingReportTemplateController::class, 'edit'])->name('template.report-edit');
         Route::post('report-store', [SettingReportTemplateController::class, 'store'])->name('template.report-store');
         Route::get('report-delete/{id}', [SettingReportTemplateController::class, 'delete'])->name('template.report-delete');
+
+    });
+
+    // Factures
+    Route::prefix('invoices')->group(function () {
+        Route::get('', [InvoiceController::class, 'index'])->name('invoice.index');
+        Route::get('create', [InvoiceController::class, 'create'])->name('invoice.create');
 
     });
 });

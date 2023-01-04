@@ -162,6 +162,24 @@
                     </li>
                     @endif
 
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false"
+                            aria-controls="sidebarProjects" class="side-nav-link">
+                            <i class="uil-user-check"></i>
+                            <span> Factures </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarProjects">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href="{{ route('invoice.index') }}">Toutes les Factures</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('invoice.create') }}">Ajouter</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
 
                     @if (getOnlineUser()->can('view-template-compte-rendu'))
                     <li class="side-nav-item">
