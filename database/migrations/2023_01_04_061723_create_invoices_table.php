@@ -15,14 +15,22 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->nullable()->unique();
             $table->foreignId('test_order_id')->nullable()
                 ->constrained('test_orders')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+            $table->foreignId('patient_id')
+                ->constrained('patients')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->date('date')->nullable();
+            $table->string('client_name', 100)->nullable();
+            $table->text('client_address')->nullable();
+            $table->float('subtotal')->nullable();
+            $table->float('discount')->nullable();
+            $table->float('total')->nullable();
             $table->text('url')->nullable();
-            $table->float('amount')->nullable();
-            $table->boolean('status')->default(false);
+            $table->boolean('paid')->default(false);
             $table->timestamps();
         });
     }
