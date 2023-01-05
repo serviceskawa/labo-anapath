@@ -175,7 +175,7 @@
                                     <a href="{{ route('invoice.index') }}">Toutes les Factures</a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('invoice.create') }}">Ajouter</a>
+                                    <a href="{{ route('invoice.create') }}">Créer</a>
                                 </li>
                             </ul>
                         </div>

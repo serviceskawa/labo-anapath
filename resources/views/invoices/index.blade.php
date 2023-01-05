@@ -46,8 +46,27 @@
 
                     <tbody>
 
-                        @foreach ($invoices as $item)
+                        @foreach ($invoices as $key =>$item)
+                        <tr>
+                            <td>{{ $key+1 }}</td>
+                            <td>{{ $item->date }}</td>
+                            <td>{{ getTestOrderData($item->test_order_id)->code }}</td>
+                            <td>{{
+                                getTestOrderData($item->test_order_id)->patient->firstname.'
+                                '.getTestOrderData($item->test_order_id)->patient->lastname
+                                }}
+                            </td>
+                            <td>{{ $item->subtotal }}</td>
+                            <td>{{ $item->total }}</td>
+                            <td>{{ $item->paid }}</td>
+                            <td>
+                                <button type="button" onclick="edit({{$item->id}})" class="btn btn-primary"><i
+                                        class="mdi mdi-lead-pencil"></i> </button>
+                                <button type="button" onclick="deleteModal({{$item->id}})" class="btn btn-danger"><i
+                                        class="mdi mdi-trash-can-outline"></i> </button>
+                            </td>
 
+                        </tr>
                         @endforeach
                     </tbody>
 
@@ -64,86 +83,6 @@
 
 @push('extra-js')
 <script>
-    /* DATATABLE */
-    $(document).ready(function() {
 
-        var table = $('#datatable1').DataTable({
-            "createdRow": function( row, data, dataIndex ) {
-            
-                var urgent = $(row).data('mytag');
-                    if ( urgent == 1 ) {        
-                    $(row).addClass('table-danger');  
-                }
-            },
-            "order": [
-                [0, "desc"]
-            ],
-            "columnDefs": [
-                {
-                    "targets": [0],
-                    "searchable": false
-                }
-            ],
-            "language": {
-                "lengthMenu": "Afficher _MENU_ enregistrements par page",
-                "zeroRecords": "Aucun enregistrement disponible",
-                "info": "Afficher page _PAGE_ sur _PAGES_",
-                "infoEmpty": "Aucun enregistrement disponible",
-                "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-                "sSearch": "Rechercher:",
-                "paginate": {
-                    "previous": "Précédent",
-                    "next": "Suivant"
-                }
-            },
-        });
-  
-        // Recherche dans la colonne  contrat
-        $("#contrat_id").on("change", function() {
-            table
-            .columns(4)
-            .search(this.value)
-            .draw();
-        });
-        
-        // Recherche dans la colonne  compte rendu
-        $("#exams_status").on("change", function() {
-            table
-            .columns(8)
-            .search(this.value)
-            .draw();
-        });
-        
-        // Recherche dans la colonne  type d'examen
-        $("#type_examen").on("change", function() {
-            table
-            .columns(9)
-            .search(this.value)
-            .draw();
-        });
-        
-        // Recherche selon les cas
-        $("#cas_status").on("change", function() {
-            table.draw();
-        });
-        $.fn.dataTable.ext.search.push(
-            function( settings, searchData, index, rowData, counter ) 
-            {
-                var row = table.row(index).node();
-                var filterValue = $(row).data('mytag');
-                var e = document.getElementById("cas_status");
-                var filter = e.options[e.selectedIndex].value;
-
-                if (filterValue == filter) {
-                    return true;
-                } else if (filter == "") {
-                    return true;
-                } else {
-                    return false;
-                }
-
-            }
-        );
-    })
 </script>
 @endpush

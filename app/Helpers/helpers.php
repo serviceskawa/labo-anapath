@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\DataCode;
+use App\Models\Patient;
 use App\Models\Role;
 use App\Models\Setting;
-use Illuminate\Support\Facades\Auth;
 use App\Models\TestOrder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 define("SERVER", "http://sms.wallyskak.com");
@@ -435,22 +435,22 @@ if (!function_exists('generateCodeExamen')) {
     {
         //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
         $lastTestOrder = TestOrder::whereYear('created_at', '=', now()->year)
-        ->whereNotNull('code')
-        ->orderByRaw('RIGHT(code, 4) DESC')
-        ->first();
+            ->whereNotNull('code')
+            ->orderByRaw('RIGHT(code, 4) DESC')
+            ->first();
 
         // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
         if (!$lastTestOrder || $lastTestOrder->created_at->year != now()->year) {
-        $code = "0001";
+            $code = "0001";
         }
         // Sinon, incrémente le dernier code de 1
         else {
-        // Récupère les quatre derniers caractères du code
-        $lastCode = substr($lastTestOrder->code, -4);
+            // Récupère les quatre derniers caractères du code
+            $lastCode = substr($lastTestOrder->code, -4);
 
-        // Convertit la chaîne en entier et l'incrémente de 1
-        $code = intval($lastCode) + 1;
-        $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+            // Convertit la chaîne en entier et l'incrémente de 1
+            $code = intval($lastCode) + 1;
+            $code = str_pad($code, 4, '0', STR_PAD_LEFT);
         }
 
         // Ajoute les deux derniers chiffres de l'année au début du code
@@ -458,4 +458,28 @@ if (!function_exists('generateCodeExamen')) {
     }
 }
 
+// recupère les informations d'une demande d'examen
+if (!function_exists('getTestOrderData')) {
+    function getTestOrderData(int $testOrderId = null)
+    {
+        $result = "";
+        if (!empty($testOrderId)) {
+            $testOrder = TestOrder::find($testOrderId);
+            $result = $testOrder;
+        }
+        return $result;
+    }
+}
 
+// recupère les informations d'un patient
+if (!function_exists('getPatientData')) {
+    function getPatientData(int $patientId = null)
+    {
+        $result = "";
+        if (!empty($patientId)) {
+            $patient = Patient::find($patientId);
+            $result = $patient;
+        }
+        return $result;
+    }
+}

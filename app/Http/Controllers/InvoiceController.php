@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\InvoiceDetail;
 use App\Models\TestOrder;
 use Illuminate\Http\Request;
 
@@ -38,7 +39,53 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $data = $this->validate($request, [
+            'test_orders_id' => 'required|exists:test_orders,id',
+            'invoice_date' => 'required',
+        ]);
+
+        // Recupération de la ligne corespondante à la demande d'examen
+        $testOrder = TestOrder::FindOrFail($data['test_orders_id']);
+
+        $tests = $testOrder->details()->get();
+
+        // Verification de l'existance
+        if (empty($testOrder)) {
+            return back()->with('error', "Cette demande d'examen n'hexiste pas. Veuillez réessayer! ");
+        }
+
+        try {
+            // Creation de la facture
+            $invoice = Invoice::create([
+                "test_order_id" => $data['test_orders_id'],
+                "date" => $data['invoice_date'],
+                "patient_id" => $testOrder->patient_id,
+                "subtotal" => $testOrder->subtotal,
+                "discount" => $testOrder->discount,
+                "total" => $testOrder->total,
+            ]);
+
+            if (!empty($invoice)) {
+                // Creation des details de la facture
+                foreach ($tests as $value) {
+                    InvoiceDetail::create([
+                        "invoice_id" => $invoice->id,
+                        "test_id" => $value->id,
+                        "test_name" => $value->test_name,
+                        "price" => $value->price,
+                        "discount" => $value->discount,
+                        "total" => $value->total,
+                    ]);
+                }
+            }
+
+            return redirect()->route('invoice.index')->with('success', " Opération effectuée avec succès  ! ");
+
+        } catch (\Throwable$ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
+        }
+
     }
 
     /**
