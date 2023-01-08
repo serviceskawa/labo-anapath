@@ -177,6 +177,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('', [InvoiceController::class, 'index'])->name('invoice.index');
         Route::get('create', [InvoiceController::class, 'create'])->name('invoice.create');
         Route::post('store', [InvoiceController::class, 'store'])->name('invoice.store');
+        Route::get('show/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
+        Route::get('print/{id}', [InvoiceController::class, 'print'])->name('invoice.print');
 
     });
 });

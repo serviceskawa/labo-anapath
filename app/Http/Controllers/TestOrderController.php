@@ -6,6 +6,8 @@ use App\Models\Contrat;
 use App\Models\DetailTestOrder;
 use App\Models\Doctor;
 use App\Models\Hospital;
+use App\Models\Invoice;
+use App\Models\InvoiceDetail;
 use App\Models\Patient;
 use App\Models\Report;
 use App\Models\Setting;
@@ -339,7 +341,7 @@ class TestOrderController extends Controller
             return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
 
         } else {
-            
+
             // Génère un code unique
             $code_unique = generateCodeExamen();
 
@@ -352,7 +354,36 @@ class TestOrderController extends Controller
                 "test_order_id" => $test_order->id,
             ]);
 
-            return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
+            // Creation de la facture
+            $invoice = Invoice::create([
+                "test_order_id" => $test_order->id,
+                "date" => date('Y-m-d'),
+                "patient_id" => $test_order->patient_id,
+                "client_name" => $test_order->patient->firstname . ' ' . $test_order->patient->firstname,
+                "client_address" => $test_order->patient->adresse,
+                "subtotal" => $test_order->subtotal,
+                "discount" => $test_order->discount,
+                "total" => $test_order->total,
+            ]);
+            // Recupération des details de la demande d'examen
+            $tests = $test_order->details()->get();
+
+            if (!empty($invoice)) {
+                // Creation des details de la facture
+                foreach ($tests as $value) {
+                    InvoiceDetail::create([
+                        "invoice_id" => $invoice->id,
+                        "test_id" => $value->test_id,
+                        "test_name" => $value->test_name,
+                        "price" => $value->price,
+                        "discount" => $value->discount,
+                        "total" => $value->total,
+                    ]);
+                }
+            }
+
+            return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
+
         }
     }
 }

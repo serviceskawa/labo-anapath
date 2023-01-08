@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
+use App\Models\Setting;
 use App\Models\TestOrder;
 use Illuminate\Http\Request;
 
@@ -71,7 +72,7 @@ class InvoiceController extends Controller
                 foreach ($tests as $value) {
                     InvoiceDetail::create([
                         "invoice_id" => $invoice->id,
-                        "test_id" => $value->id,
+                        "test_id" => $value->test_id,
                         "test_name" => $value->test_name,
                         "price" => $value->price,
                         "discount" => $value->discount,
@@ -94,42 +95,25 @@ class InvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+        $invoice = Invoice::findorfail($id);
+        $setting = Setting::find(1);
+        if (empty($invoice)) {
+            return back()->with('error', "Cette facture n'existe pas. Verifiez et réessayez svp ! ");
+        }
+
+        return view('invoices.show', compact('invoice', 'setting'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+    function print($id) {
+        $invoice = Invoice::findorfail($id);
+        $setting = Setting::find(1);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        if (empty($invoice)) {
+            return back()->with('error', "Cette facture n'existe pas. Verifiez et réessayez svp ! ");
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return view('invoices.print', compact('invoice', 'setting'));
     }
 }
