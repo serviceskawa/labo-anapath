@@ -94,7 +94,7 @@
                         <div class="clearfix pt-3">
                             <h6 class="text-muted">Notes:</h6>
                             <small>
-                                Toutes mes transactions
+                                Une facture emise n'est ni reprise ni modifiée
                             </small>
                         </div>
                     </div> <!-- end col -->
