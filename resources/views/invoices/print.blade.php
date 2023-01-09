@@ -130,10 +130,15 @@
                             </div> <!-- end col -->
                             <div class="col-sm-6">
                                 <div class="float-end mt-3 mt-sm-0">
-                                    <p><b>Sub-total: </b> <span class="float-end">{{$invoice->subtotal}}</span></p>
-                                    <p><b>Remise: </b> <span class="float-end">{{$invoice->discount}}</span>
+                                    <p><b>Sous-total: </b>
+                                        <span class="float-end">{{ number_format(abs($invoice->subtotal), 0, ',', '
+                                            ')}}</span>
                                     </p>
-                                    <h3><b>Total: </b>{{$invoice->total}}</h3>
+                                    <p><b>Remise: </b>
+                                        <span class="float-end">{{ number_format(abs($invoice->discount), 0, ',', '
+                                            ')}}</span>
+                                    </p>
+                                    <h3><b>Total: </b>{{ number_format(abs($invoice->total), 0, ',', ' ')}}</h3>
                                 </div>
                                 <div class="clearfix"></div>
                             </div> <!-- end col -->
