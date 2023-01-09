@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\Contrat;
-use App\Models\DetailTestOrder;
-use App\Models\Hospital;
 use App\Models\Report;
+use App\Models\Contrat;
+use App\Models\Invoice;
+use App\Models\Hospital;
 use App\Models\TypeOrder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\DetailTestOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TestOrder extends Model
 {
@@ -136,4 +137,16 @@ class TestOrder extends Model
     {
         return $this->belongsTo(TypeOrder::class, 'type_order_id');
     }
+
+    
+    /**
+     * Get the invoice associated with the TestOrder
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
+    }
+
 }

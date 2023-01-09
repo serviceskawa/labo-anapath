@@ -1,13 +1,13 @@
 @extends('layouts.app2')
 
-@section('title', 'Details examen')
+@section('title', 'Details Facture')
 @section('content')
 <!-- start page title -->
 <div class="row">
     <div class="col-12">
         <div class="page-title-box">
 
-            <h4 class="page-title">Invoice</h4>
+            <h4 class="page-title">Facture</h4>
         </div>
     </div>
 </div>
@@ -43,8 +43,11 @@
                     <div class="col-sm-4 offset-sm-2">
                         <div class="mt-3 float-sm-end">
                             <p class="font-13"><strong>Date: </strong> {{$invoice->created_at}}</p>
-                            <p class="font-13"><strong>Status: </strong> <span class="badge bg-{{$invoice->paid ? "
-                                    success" : "danger" }} float-end">{{$invoice->paid ? "Payé" : "En attente"}}</span>
+                            <p class="font-13"><strong>Status: </strong>
+                                <span class="bg-{{$invoice->paid != 1 ? 'danger' : 'success' }} badge
+                                    float-end">{{$invoice->paid == 1 ? "Payé" : "En
+                                    attente"}}
+                                </span>
                             </p>
                             <p class="font-13"><strong>ID: </strong> <span class="float-end">{{$invoice->id}}</span></p>
                         </div>
@@ -110,7 +113,10 @@
                     <div class="text-end">
                         <a href="{{route('invoice.print',$invoice->id)}} " class="btn btn-primary"><i
                                 class="mdi mdi-printer"></i>
-                            Print</a>
+                            Imprimer</a>
+                        <a href="{{route('invoice.updateStatus',$invoice->id)}} " class="btn btn-success"><i
+                                class="mdi mdi-cash"></i>
+                            Payé</a>
                     </div>
                 </div>
                 <!-- end buttons -->

@@ -116,4 +116,76 @@ class InvoiceController extends Controller
 
         return view('invoices.print', compact('invoice', 'setting'));
     }
+
+    public function storeFromOrder($id)
+    {
+        $testOrder = TestOrder::FindOrFail($id);
+
+        // Verification de l'existance
+        if (empty($testOrder)) {
+            return back()->with('error', "Cette demande d'examen n'hexiste pas. Veuillez réessayer! ");
+        }
+
+        $invoiceExist = $testOrder->invoice()->first();
+
+        if (!empty($invoiceExist)) {
+            return back()->with('error', "Il existe deja une facture pour cette demande. Veuillez réessayer! ");
+        }
+
+        $tests = $testOrder->details()->get();
+
+        try {
+            // Creation de la facture
+            $invoice = Invoice::create([
+                "test_order_id" => $id,
+                "date" => date('Y-m-d'),
+                "patient_id" => $testOrder->patient_id,
+                "client_name" => $testOrder->patient->firstname . ' ' . $testOrder->patient->firstname,
+                "subtotal" => $testOrder->subtotal,
+                "discount" => $testOrder->discount,
+                "total" => $testOrder->total,
+            ]);
+
+            if (!empty($invoice)) {
+                // Creation des details de la facture
+                foreach ($tests as $value) {
+                    InvoiceDetail::create([
+                        "invoice_id" => $invoice->id,
+                        "test_id" => $value->test_id,
+                        "test_name" => $value->test_name,
+                        "price" => $value->price,
+                        "discount" => $value->discount,
+                        "total" => $value->total,
+                    ]);
+                }
+            }
+
+            return redirect()->route('invoice.show', [$invoice->id])->with('success', " Facture crée avec succès  ! ");
+
+        } catch (\Throwable$ex) {
+            return back()->with('error', "Échec de l'enregistrement. Veuillez réessayer svp ! " . $ex->getMessage());
+        }
+
+    }
+
+    // Met à jour le statut paid pour le payement
+    public function updateStatus($id)
+    {
+        // if (!getOnlineUser()->can('edit-demandes-examens')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+        $invoice = Invoice::findorfail($id);
+
+        if ($invoice->paid == 1) {
+
+            return redirect()->back()->with('success', "Cette facture a déjà été payé ! ");
+
+        } else {
+
+            $invoice->fill(["paid" => '1'])->save();
+
+            return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
+
+        }
+    }
 }

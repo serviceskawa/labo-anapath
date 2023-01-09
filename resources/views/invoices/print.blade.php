@@ -140,46 +140,21 @@
                         </div>
                         <!-- end row-->
 
-                        <div class="d-print-none mt-4">
-                            <div class="text-end">
-                                <a href="{{route('invoice.print', $invoice->id)}}" class="btn btn-primary"><i
-                                        class="mdi mdi-printer"></i>
-                                    Print</a>
-                            </div>
-                        </div>
-                        <!-- end buttons -->
-
                     </div> <!-- end card-body-->
                 </div> <!-- end card -->
             </div> <!-- end col-->
         </div>
     </div>
 
-    <div class="rightbar-overlay"></div>
-    <!-- /End-bar -->
-
-
     <!-- bundle -->
     <script src="{{ asset('/adminassets/js/vendor.min.js') }}"></script>
     <script src="{{ asset('/adminassets/js/app.min.js') }}"></script>
 
-    <script src="{{ asset('/adminassets/js/vendor/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('/adminassets/js/vendor/dataTables.bootstrap5.js') }}"></script>
-    <script src="{{ asset('/adminassets/js/vendor/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('/adminassets/js/vendor/responsive.bootstrap5.min.js') }}"></script>
-    <script src="{{ asset('/adminassets/js/vendor/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('/adminassets/js/vendor/buttons.bootstrap5.min.js') }}"></script>
-    <script src="{{ asset('/adminassets/js/vendor/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('/adminassets/js/vendor/buttons.flash.min.js') }}"></script>
-    <script src="{{ asset('/adminassets/js/vendor/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('/adminassets/js/vendor/dataTables.keyTable.min.js') }}"></script>
-    <script src="{{ asset('/adminassets/js/vendor/dataTables.select.min.js') }}"></script>
-
-    <script src="{{ asset('/adminassets/js/pages/demo.datatable-init.js') }}"></script>
-    <script src="{{ asset('/adminassets/js/sweetalert2/sweetalert2.min.js') }}"></script>
-
     <script>
-        window.addEventListener("load", window.print());
+        window.addEventListener("load", (event) => {
+            console.log('aa')
+            window.print()
+        });
 
     </script>
 

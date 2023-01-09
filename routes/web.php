@@ -178,7 +178,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('create', [InvoiceController::class, 'create'])->name('invoice.create');
         Route::post('store', [InvoiceController::class, 'store'])->name('invoice.store');
         Route::get('show/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
+        Route::get('store-from-order/{id}', [InvoiceController::class, 'storeFromOrder'])->name('invoice.storeFromOrder');
         Route::get('print/{id}', [InvoiceController::class, 'print'])->name('invoice.print');
+        Route::get('updateStatus/{id}', [InvoiceController::class, 'updateStatus'])->name('invoice.updateStatus');
 
     });
 });
