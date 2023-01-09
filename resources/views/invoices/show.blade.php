@@ -111,12 +111,15 @@
 
                 <div class="d-print-none mt-4">
                     <div class="text-end">
-                        <a href="{{route('invoice.print',$invoice->id)}} " class="btn btn-primary"><i
-                                class="mdi mdi-printer"></i>
-                            Imprimer</a>
+                        <a href="{{route('invoice.print',$invoice->id)}}" class="btn btn-primary"><i
+                                class="mdi mdi-printer"></i> Imprimer
+                        </a>
+                        @if ($invoice->paid != 1)
                         <a href="{{route('invoice.updateStatus',$invoice->id)}} " class="btn btn-success"><i
                                 class="mdi mdi-cash"></i>
                             Payé</a>
+                        @endif
+
                     </div>
                 </div>
                 <!-- end buttons -->
