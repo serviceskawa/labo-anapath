@@ -41,7 +41,7 @@
                         <div id="cardCollpase1" class="collapse pt-3 show">
                             <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
                             
-                            <form action="{{ route('report.store') }}" method="post">
+                            <form action="{{ route('report.store') }}" method="post" >
                                 @csrf
                                 <div class="row">
                                     <div class="mb-3">
@@ -61,7 +61,7 @@
                                 <div class="row">
                                     <div class="mb-3">
                                         <label for="simpleinput" class="form-label ">Récapitulatifs<span style="color:red;">*</span></label>
-                                        <textarea name="content" id="editor" class="form-control mb-3" cols="30" rows="50" style="height: 500px;" required>{{ $report->description }}</textarea>
+                                        <textarea name="content" id="editor" class="form-control mb-3" cols="30" rows="50" style="height: 500px;">{{ $report->description }}</textarea>
                                     </div> 
                                 </div>
 
@@ -100,7 +100,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <button type="submit" class=" mt-3 btn btn-warning w-100">Mettre à jour</button>
+                                <button type="submit" class="mt-3 btn btn-warning w-100">Mettre à jour</button>
                             </form>
 
                         </div>
@@ -174,7 +174,6 @@
             });
     </script>
 
-    </script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('#template').on('change', function(e) {
