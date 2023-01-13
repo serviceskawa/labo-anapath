@@ -78,8 +78,9 @@
                                             class="badge bg-{{$invoice->paid ? " success" : "danger" }}
                                             float-end">{{$invoice->paid ? "Payé" : "En attente"}}</span>
                                     </p>
-                                    <p class="font-13"><strong>ID: </strong> <span
-                                            class="float-end">{{$invoice->id}}</span></p>
+                                    <p class="font-13"><strong>Code: </strong> <span
+                                            class="float-end">{{$invoice->code}}</span>
+
                                 </div>
                             </div><!-- end col -->
                         </div>
@@ -134,7 +135,7 @@
                                         <span class="float-end">{{ number_format(abs($invoice->subtotal), 0, ',', '
                                             ')}}</span>
                                     </p>
-                                    
+
                                     <h3><b>Total: </b>{{ number_format(abs($invoice->total), 0, ',', ' ')}}</h3>
                                 </div>
                                 <div class="clearfix"></div>

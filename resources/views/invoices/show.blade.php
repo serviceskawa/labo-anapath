@@ -7,7 +7,7 @@
     <div class="col-12">
         <div class="page-title-box">
 
-            <h4 class="page-title">Facture</h4>
+            <h4 class="page-title">Facture de {{$invoice->order->code}}</h4>
         </div>
     </div>
 </div>
@@ -49,7 +49,8 @@
                                     attente"}}
                                 </span>
                             </p>
-                            <p class="font-13"><strong>ID: </strong> <span class="float-end">{{$invoice->id}}</span></p>
+                            <p class="font-13"><strong>Code: </strong> <span class="float-end">{{$invoice->code}}</span>
+                            </p>
                         </div>
                     </div><!-- end col -->
                 </div>

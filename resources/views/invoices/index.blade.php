@@ -58,12 +58,13 @@
                             </td>
                             <td>{{ $item->subtotal }}</td>
                             <td>{{ $item->total }}</td>
-                            <td>{{ $item->paid }}</td>
+                            <td><span class="bg-{{$item->paid != 1 ? 'danger' : 'success' }} badge
+                                float-end">{{$item->paid == 1 ? "Payé" : "En
+                                    attente"}}
+                                </span></td>
                             <td>
-                                <button type="button" onclick="edit({{$item->id}})" class="btn btn-primary"><i
-                                        class="mdi mdi-lead-pencil"></i> </button>
-                                <button type="button" onclick="deleteModal({{$item->id}})" class="btn btn-danger"><i
-                                        class="mdi mdi-trash-can-outline"></i> </button>
+                                <a type="button" href="{{route('invoice.show',$item->id)}}" class="btn btn-warning"><i
+                                        class="mdi mdi-eye"></i> </a>
                             </td>
 
                         </tr>
