@@ -134,10 +134,7 @@
                                         <span class="float-end">{{ number_format(abs($invoice->subtotal), 0, ',', '
                                             ')}}</span>
                                     </p>
-                                    <p><b>Remise: </b>
-                                        <span class="float-end">{{ number_format(abs($invoice->discount), 0, ',', '
-                                            ')}}</span>
-                                    </p>
+                                    
                                     <h3><b>Total: </b>{{ number_format(abs($invoice->total), 0, ',', ' ')}}</h3>
                                 </div>
                                 <div class="clearfix"></div>
