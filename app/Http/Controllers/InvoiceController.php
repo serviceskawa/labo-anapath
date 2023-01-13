@@ -53,15 +53,22 @@ class InvoiceController extends Controller
 
         // Verification de l'existance
         if (empty($testOrder)) {
-            return back()->with('error', "Cette demande d'examen n'hexiste pas. Veuillez réessayer! ");
+            return back()->with('error', "Cette demande d'examen n'existe pas. Veuillez réessayer! ");
         }
 
+
+        $invoiceExist = $testOrder->invoice()->first();
+
+        if (!empty($invoiceExist)) {
+            return back()->with('error', "Il existe deja une facture pour cette demande. Veuillez réessayer! ");
+        }
         try {
             // Creation de la facture
             $invoice = Invoice::create([
                 "test_order_id" => $data['test_orders_id'],
                 "date" => $data['invoice_date'],
                 "patient_id" => $testOrder->patient_id,
+                "code" => "FA" . $testOrder->code,
                 "subtotal" => $testOrder->subtotal,
                 "discount" => $testOrder->discount,
                 "total" => $testOrder->total,
@@ -82,11 +89,9 @@ class InvoiceController extends Controller
             }
 
             return redirect()->route('invoice.index')->with('success', " Opération effectuée avec succès  ! ");
-
-        } catch (\Throwable$ex) {
+        } catch (\Throwable $ex) {
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
-
     }
 
     /**
@@ -106,7 +111,8 @@ class InvoiceController extends Controller
         return view('invoices.show', compact('invoice', 'setting'));
     }
 
-    function print($id) {
+    function print($id)
+    {
         $invoice = Invoice::findorfail($id);
         $setting = Setting::find(1);
 
@@ -144,6 +150,7 @@ class InvoiceController extends Controller
                 "subtotal" => $testOrder->subtotal,
                 "discount" => $testOrder->discount,
                 "total" => $testOrder->total,
+                "code" => "FA" . $testOrder->code,
             ]);
 
             if (!empty($invoice)) {
@@ -161,11 +168,9 @@ class InvoiceController extends Controller
             }
 
             return redirect()->route('invoice.show', [$invoice->id])->with('success', " Facture crée avec succès  ! ");
-
-        } catch (\Throwable$ex) {
+        } catch (\Throwable $ex) {
             return back()->with('error', "Échec de l'enregistrement. Veuillez réessayer svp ! " . $ex->getMessage());
         }
-
     }
 
     // Met à jour le statut paid pour le payement
@@ -179,13 +184,11 @@ class InvoiceController extends Controller
         if ($invoice->paid == 1) {
 
             return redirect()->back()->with('success', "Cette facture a déjà été payé ! ");
-
         } else {
 
             $invoice->fill(["paid" => '1'])->save();
 
             return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
-
         }
     }
 }
