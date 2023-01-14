@@ -51,7 +51,6 @@ class TestOrderController extends Controller
 
         if (empty($request->date)) {
             $examens = TestOrder::with(['patient'])->orderBy('id', 'desc')->get();
-
         } else {
             $date = explode("-", $request->date);
             $date[0] = str_replace('/', '-', $date[0]);
@@ -67,22 +66,17 @@ class TestOrderController extends Controller
 
             if (is_null($request->exams_status)) {
                 $examens = $examens;
-
             } else {
                 $examens = $examens->where('status', $request->exams_status);
-
             }
 
             if (is_null($request->cas_status)) {
                 $examens = $examens;
-
             } else {
                 $examens = $examens->where('is_urgent', $request->cas_status);
-
             }
 
             $examens = $examens->orderBy('id', 'desc')->get();
-
         }
 
         return response()->json($examens);
@@ -161,7 +155,6 @@ class TestOrderController extends Controller
             $examen_file = time() . '_test_order_.' . $request->file('examen_file')->extension();
 
             $path_examen_file = $request->file('examen_file')->storeAs('tests/orders', $examen_file, 'public');
-
         }
 
         if (is_string($data['doctor_id'])) {
@@ -207,8 +200,7 @@ class TestOrderController extends Controller
             });
 
             return redirect()->route('details_test_order.index', $test_order->id);
-
-        } catch (\Throwable$ex) {
+        } catch (\Throwable $ex) {
 
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
@@ -221,8 +213,28 @@ class TestOrderController extends Controller
         }
         $test_order = TestOrder::findorfail($id);
         dd($test_order);
-
     }
+
+    public function edit($id)
+    {
+
+        if (!getOnlineUser()->can('edit-demandes-examens')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $test_order = TestOrder::findOrFail($id);
+
+        if (empty($test_order)) {
+            return back()->with('error', "Cet examen n'existe. Veuillez réessayer! ");
+        }
+
+        $patients = Patient::all();
+        $doctors = Doctor::all();
+        $hopitals = Hospital::all();
+        $contrats = Contrat::ofStatus('ACTIF')->get();
+        $types_orders = TypeOrder::all();
+        return view('examens.edit', compact(['test_order', 'patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
+    }
+
     public function destroy($id)
     {
         if (!getOnlineUser()->can('delete-demandes-examens')) {
@@ -282,10 +294,9 @@ class TestOrderController extends Controller
 
                 //  return back()->with('success', "Opération effectuée avec succès ! ");
                 return response()->json(200);
-            } catch (\Throwable$th) {
+            } catch (\Throwable $th) {
                 return response()->json(200);
             }
-
         }
     }
 
@@ -339,7 +350,6 @@ class TestOrderController extends Controller
         if ($test_order->status) {
 
             return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
-
         } else {
 
             // Génère un code unique
@@ -383,7 +393,6 @@ class TestOrderController extends Controller
             }
 
             return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
-
         }
     }
 }

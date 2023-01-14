@@ -104,6 +104,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/test_order/updatestatus/{id}', [TestOrderController::class, 'updateStatus'])->name('test_order.updatestatus');
     Route::get('/get_test_order', [TestOrderController::class, 'getTestOrders'])->name('test_order.get_test_order');
     Route::get('/get_all_test_order', [TestOrderController::class, 'getAllTestOrders'])->name('test_order.get_all_test_order');
+    Route::get('/test_order/edit/{id}', [TestOrderController::class, 'edit'])->name('test_order.edit');
 
     //details_test_order
     Route::get('/test_order/details/{id}', [TestOrderController::class, 'details_index'])->name('details_test_order.index');

@@ -187,6 +187,10 @@
                             <td>
                                 <a type="button" href="{{ route('details_test_order.index', $item->id) }}"
                                     class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i> </a>
+                                <a type="button" href="{{ route('test_order.edit', $item->id) }}"
+                                    class="btn btn-primary" title="Mettre à jour l'examen"><i
+                                        class="mdi mdi-lead-pencil"></i>
+                                </a>
                                 <a type="button"
                                     href="{{!empty($item->getReportId($item->id)) ? route('report.show', $item->report->id) : "" }}"
                                     class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>
