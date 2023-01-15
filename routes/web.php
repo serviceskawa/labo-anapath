@@ -96,7 +96,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/contrats_details/update', [ContratController::class, 'contrat_details_update'])->name('contrat_details.update');
 
     //TEST_ORDER
-    Route::get('/test_order/index', [TestOrderController::class, 'index'])->name('test_order.index');
+    Route::get('/test_order/index', [TestOrderController::class, 'index2'])->name('test_order.index');
     Route::post('/test_order/store', [TestOrderController::class, 'store'])->name('test_order.store');
     Route::get('/test_order/create', [TestOrderController::class, 'create'])->name('test_order.create');
     Route::get('/test_order/delete/{id}', [TestOrderController::class, 'destroy']);
@@ -106,6 +106,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get_all_test_order', [TestOrderController::class, 'getAllTestOrders'])->name('test_order.get_all_test_order');
     Route::get('/test_order/edit/{id}', [TestOrderController::class, 'edit'])->name('test_order.edit');
     Route::post('/test_order/update/{id}', [TestOrderController::class, 'update'])->name('test_order.update');
+    Route::get('/testOrders', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('test_order.getTestOrdersforDatatable');
 
     //details_test_order
     Route::get('/test_order/details/{id}', [TestOrderController::class, 'details_index'])->name('details_test_order.index');

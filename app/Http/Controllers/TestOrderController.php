@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contrat;
-use App\Models\DetailTestOrder;
-use App\Models\Doctor;
-use App\Models\Hospital;
-use App\Models\Invoice;
-use App\Models\InvoiceDetail;
-use App\Models\Patient;
-use App\Models\Report;
-use App\Models\Setting;
+use DataTables;
 use App\Models\Test;
+use App\Models\Doctor;
+use App\Models\Report;
+use App\Models\Contrat;
+use App\Models\Invoice;
+use App\Models\Patient;
+use App\Models\Setting;
+use App\Models\Hospital;
 use App\Models\TestOrder;
 use App\Models\TypeOrder;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\InvoiceDetail;
+use App\Models\DetailTestOrder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class TestOrderController extends Controller
 {
@@ -40,6 +43,22 @@ class TestOrderController extends Controller
         $types_orders = TypeOrder::all();
         // dd($examens);
         return view('examens.index', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
+    }
+    public function index2()
+    {
+        if (!getOnlineUser()->can('view-demandes-examens')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
+        $examens = TestOrder::with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
+        $contrats = Contrat::all();
+        $patients = Patient::all();
+        $doctors = Doctor::all();
+        //$tests = Test::all();
+        $hopitals = Hospital::all();
+        $types_orders = TypeOrder::all();
+        // dd($examens);
+        return view('examens.index2', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
     }
 
     // Fonction de recherche
@@ -484,5 +503,88 @@ class TestOrderController extends Controller
 
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
+    }
+
+    public function getTestOrdersforDatatable()
+    {
+
+        $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])->orderBy('created_at', 'desc')->get();
+
+        return Datatables::of($data)->addIndexColumn()
+            ->editColumn('created_at', function ($data) {
+                //change over here
+                return $data->created_at;
+            })
+            ->setRowData([
+                'data-mytag' => function ($data) {
+                    if ($data->is_urgent == 1) {
+                        $result = $data->is_urgent;
+                    } else {
+                        $result = "";
+                    }
+
+                    return 'mytag=' . $result;
+                },
+            ])
+            ->setRowClass(function ($data) {
+                return $data->is_urgent == 1 ? 'table-danger urgent' : '';
+            })
+            ->addColumn('examen_file', function ($data) {
+                //change over 
+                if (!empty($data->examen_file)) {
+                    $btn = '<a href="' . Storage::url($data->examen_file) . '" class="btn btn-primary btn-sm" target="_blank"  rel="noopener noreferrer" type="button"><i class="mdi mdi-cloud-download"></i></a>';
+                } else {
+                    $btn = 'Aucun fichier';
+                }
+                return $btn;
+            })
+            ->addColumn('action', function ($data) {
+                $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+                $btnEdit = ' <a type="button" href="' . route('test_order.edit', $data->id) . '" class="btn btn-primary" title="Mettre à jour examen"><i class="mdi mdi-lead-pencil"></i></a>';
+                if ($data->status != 1) {
+                    $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+                    $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
+                } else {
+                    $btnReport = ' <a type="button" href="' . route('report.show', $data->report->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+                    $btnDelete = "";
+                }
+
+                if (!empty($data->invoice->id)) {
+                    $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->invoice->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
+                } else {
+                    $btnInvoice = ' <a type="button" href="' . route('invoice.storeFromOrder', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
+                }
+
+                return $btnVoir . $btnEdit . $btnReport . $btnInvoice . $btnDelete;
+            })
+            ->addColumn('patient', function ($data) {
+                return $data->patient->firstname . ' ' . $data->patient->lastname;
+            })
+            ->addColumn('contrat', function ($data) {
+                return $data->contrat->name;
+            })
+            ->addColumn('details', function (TestOrder $testOrder) {
+                return $testOrder->details->map(function ($detail) {
+                    return Str::limit($detail->test_name, 30, '...');
+                })->implode('<br>');
+            })
+            ->addColumn('rendu', function ($data) {
+                if (!empty($data->report)) {
+                    // $btn = $data->getReport($data->id);
+                    $btn = 'Valider';
+                } else {
+                    $btn = 'En attente';
+                }
+                $span = '<span class="badge bg-primary rounded-pill">' . $btn . '</span>';
+                return $span;
+            })
+            ->addColumn('type', function ($data) {
+                return $data->type->title;
+            })
+            ->addColumn('urgence', function ($data) {
+                return $data->is_urgent;
+            })
+            ->rawColumns(['action', 'patient', 'contrat', 'details', 'rendu', 'type', 'examen_file'])
+            ->make(true);
     }
 }

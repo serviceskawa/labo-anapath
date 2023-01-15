@@ -62,7 +62,7 @@ class TestOrder extends Model
     {
         $data = Report::where('test_order_id', $id)->first();
         if (is_null($data)) {
-            return null; // pour différencier les valeurs des status. 0 pour en attente, 1 valider et 2 pour examin qui n'a pas été enregistré
+            return null; 
         } else {
             return $data->id;
         }
