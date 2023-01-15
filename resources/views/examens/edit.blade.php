@@ -17,7 +17,7 @@
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#standard-modal">Ajouter un nouveau patient</button>
                     </div>
-                    Ajouter une nouvelle demande d'examen
+                    Mettre à jour une demande d'examen
                 </div>
 
 
@@ -26,7 +26,7 @@
         </div>
         <div class="card-body">
 
-            <form action="{{ route('test_order.store') }}" method="post" autocomplete="off"
+            <form action="{{ route('test_order.update', $test_order->id) }}" method="post" autocomplete="off"
                 enctype="multipart/form-data">
                 @csrf
                 <div class="row mb-3">
@@ -138,19 +138,19 @@
                         <select class="form-select select2" data-toggle="select2" name="examen_reference_select"
                             id="examen_reference_select">
                             <option value="">Sélectionner dans la liste</option>
-
                         </select>
                     </div>
                     <div class="examenReferenceInput" style="display: none !important">
                         <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
                                 style="color:red;">*</span></label>
                         <input type="text" name="examen_reference_input" class="form-control"
-                            placeholder="Saisir l'examen de reference">
+                            placeholder="Saisir l'examen de reference" value="{{ $test_order->test_affiliate }}">
                     </div>
 
                 </div>
                 <div class="col-md-6">
-                    <input type="checkbox" class="form-check-input" name="is_urgent" id="">
+                    <input type="checkbox" class="form-check-input" name="is_urgent" id="" {{ $test_order->is_urgent !=
+                    0 ? 'checked' : '' }}>
                     <label class="form-label">Cas urgent</label>
                 </div>
 
@@ -158,8 +158,7 @@
 
 
         <div class="modal-footer">
-            <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-            <button type="submit" class="btn btn-primary">Ajouter une nouvelle demande d'examen</button>
+            <button type="submit" class="btn w-100 btn-warning">Mettre à jour</button>
         </div>
 
 
@@ -453,6 +452,57 @@
                 $(".examenReferenceSelect").hide();
             }
         });
+        
+        // Pour le chargement des données 
+        var typeExamenOption = $('#type_examen option:selected').text();
+
+        if (typeExamenOption == "Immuno Externe") {
+            $(".examenReferenceSelect").hide();
+            $(".examenReferenceInput").show();
+
+        } else if (typeExamenOption == "Immuno Interne") {
+            $(".examenReferenceSelect").show();
+            $(".examenReferenceInput").hide();
+            $( "#examen_reference_select" ).select2({
+                ajax: { 
+                url: "{{route('test_order.get_all_test_order')}}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        _token: CSRF_TOKEN,
+                        search: params.term // search term
+                    };
+                },
+                processResults: function (response) {
+                    return {
+                    results: response
+                    };
+                },
+                cache: true
+                }
+
+            });
+
+            // Charger le contenu d'immuno interne
+            var examen_reference_select = $('#examen_reference_select');
+            var data = {!! json_encode($test_order) !!}
+            console.log(data)
+           // create the option and append to Select2
+           var option = new Option(data.test_affiliate, data.test_affiliate, true, true);
+            examen_reference_select.append(option).trigger('change');
+
+            // manually trigger the `select2:select` event
+            examen_reference_select.trigger({
+                type: 'select2:select',
+                params: {
+                    data: data
+                }
+            });
+        }else {
+            $(".examenReferenceInput").hide();
+            $(".examenReferenceSelect").hide();
+        }
     });
 </script>
 @endpush

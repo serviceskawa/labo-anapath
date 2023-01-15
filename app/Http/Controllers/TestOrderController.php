@@ -395,4 +395,94 @@ class TestOrderController extends Controller
             return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
         }
     }
+
+    public function update(request $request, $id)
+    {
+
+        if (!getOnlineUser()->can('edit-demandes-examens')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
+        $testOrder = TestOrder::FindOrFail($id);
+
+        if (empty($testOrder)) {
+            return back()->with('error', "Erreur, cette demande d'examen n'existe pas ");
+        }
+
+        $data = $this->validate($request, [
+            'patient_id' => 'required',
+            'doctor_id' => 'required|exists:doctors,name', // verification de l'existance du nom envoyé depuis le select
+            'hospital_id' => 'required|exists:hospitals,name',
+            'prelevement_date' => 'required',
+            'reference_hopital' => 'nullable',
+            'contrat_id' => 'required',
+            'is_urgent' => 'nullable',
+            'examen_reference_select' => 'nullable',
+            'examen_reference_input' => 'nullable',
+            'type_examen' => 'required|exists:type_orders,id',
+        ]);
+
+        $contrat = Contrat::FindOrFail($data['contrat_id']);
+
+        // Verifie si le nombre de test du contrat est différent de -1 et si le nombre de contrat enregistré est inferieur ou egale au nombre de test de contrat
+        // Ici nous ne mettons pas à jour le contrat.
+        // if ($contrat->nbr_tests != -1 && $contrat->orders->count() <= $contrat->nbr_tests) {
+        //     return back()->with('error', "Échec de l'enregistrement. Le nombre d'examen de ce contrat est atteint ");
+        // }
+
+        $path_examen_file = "";
+
+        if ($request->file('examen_file')) {
+
+            $examen_file = time() . '_test_order_.' . $request->file('examen_file')->extension();
+
+            $path_examen_file = $request->file('examen_file')->storeAs('tests/orders', $examen_file, 'public');
+        }
+
+        if (is_string($data['doctor_id'])) {
+            $doctor = Doctor::where('name', $data['doctor_id'])->first();
+
+            $data['doctor_id'] = $doctor->id;
+        }
+        if (is_string($data['hospital_id'])) {
+            $hopital = Hospital::where('name', $data['hospital_id'])->first();
+
+            $data['hospital_id'] = $hopital->id;
+        }
+
+        $data['test_affiliate'] = "";
+        if (empty($request->examen_reference_select) && !empty($request->examen_reference_input)) {
+
+            $data['test_affiliate'] = $request->examen_reference_input;
+        } elseif (!empty($request->examen_reference_select) && empty($request->examen_reference_input)) {
+            // Recherche l'existance du code selectionner
+            $reference = TestOrder::findorfail((int) $request->examen_reference_select);
+
+            if (!empty($reference)) {
+
+                $data['test_affiliate'] = $reference->code;
+            }
+        }
+
+        try {
+
+            $test_order = TestOrder::find($id);
+            // $test_order->contrat_id = $data['contrat_id'];
+            $test_order->patient_id = $data['patient_id'];
+            $test_order->hospital_id = $data['hospital_id'];
+            $test_order->prelevement_date = $data['prelevement_date'];
+            $test_order->doctor_id = $data['doctor_id'];
+            $test_order->reference_hopital = $data['reference_hopital'];
+            $test_order->is_urgent = $request->is_urgent ? 1 : 0;
+            $test_order->examen_file = $request->file('examen_file') ? $path_examen_file : "";
+            $test_order->test_affiliate = $data['test_affiliate'] ? $data['test_affiliate'] : "";
+            $test_order->type_order_id = $data['type_examen'];
+            $test_order->save();
+
+            return redirect()->route('details_test_order.index', $test_order->id)->with('success', "Demande d'examen a été mis à jour ! ");
+        } catch (\Throwable $ex) {
+
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
+        }
+    }
 }

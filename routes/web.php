@@ -105,6 +105,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get_test_order', [TestOrderController::class, 'getTestOrders'])->name('test_order.get_test_order');
     Route::get('/get_all_test_order', [TestOrderController::class, 'getAllTestOrders'])->name('test_order.get_all_test_order');
     Route::get('/test_order/edit/{id}', [TestOrderController::class, 'edit'])->name('test_order.edit');
+    Route::post('/test_order/update/{id}', [TestOrderController::class, 'update'])->name('test_order.update');
 
     //details_test_order
     Route::get('/test_order/details/{id}', [TestOrderController::class, 'details_index'])->name('details_test_order.index');
@@ -121,7 +122,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pdf/{id}', [ReportController::class, 'pdf'])->name('report.pdf');
 
         Route::post('report-gettemplate', [ReportController::class, 'getTemplate'])->name('template.report-getTemplate');
-
     });
 
     Route::prefix('settings')->group(function () {
@@ -131,7 +131,6 @@ Route::middleware(['auth'])->group(function () {
         // App settings
         Route::get('app', [SettingController::class, 'app'])->name('settings.app-index');
         Route::post('app-store', [SettingController::class, 'app_store'])->name('settings.app-store');
-
     });
 
     Route::get('/mm', function () {
@@ -155,7 +154,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('user-store', [UserController::class, 'store'])->name('user.store');
         Route::get('role-edit/{id}', [UserController::class, 'edit'])->name('user.edit');
         Route::post('user-update', [UserController::class, 'update'])->name('user.update');
-
     });
 
     // Profile
@@ -170,7 +168,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('report-edit/{id}', [SettingReportTemplateController::class, 'edit'])->name('template.report-edit');
         Route::post('report-store', [SettingReportTemplateController::class, 'store'])->name('template.report-store');
         Route::get('report-delete/{id}', [SettingReportTemplateController::class, 'delete'])->name('template.report-delete');
-
     });
 
     // Factures
@@ -182,6 +179,5 @@ Route::middleware(['auth'])->group(function () {
         Route::get('store-from-order/{id}', [InvoiceController::class, 'storeFromOrder'])->name('invoice.storeFromOrder');
         Route::get('print/{id}', [InvoiceController::class, 'print'])->name('invoice.print');
         Route::get('updateStatus/{id}', [InvoiceController::class, 'updateStatus'])->name('invoice.updateStatus');
-
     });
 });
