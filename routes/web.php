@@ -1,23 +1,24 @@
 <?php
 
-use App\Http\Controllers\ContratController;
-use App\Http\Controllers\DetailsContratController;
-use App\Http\Controllers\DoctorController;
-use App\Http\Controllers\HospitalController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\PatientController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\SettingController;
-use App\Http\Controllers\SettingReportTemplateController;
-use App\Http\Controllers\TestCategoryController;
-use App\Http\Controllers\TestController;
-use App\Http\Controllers\TestOrderController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ContratController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PatientController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\TestOrderController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\OncoSchedulController;
+use App\Http\Controllers\TestCategoryController;
+use App\Http\Controllers\DetailsContratController;
+use App\Http\Controllers\SettingReportTemplateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -180,5 +181,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('store-from-order/{id}', [InvoiceController::class, 'storeFromOrder'])->name('invoice.storeFromOrder');
         Route::get('print/{id}', [InvoiceController::class, 'print'])->name('invoice.print');
         Route::get('updateStatus/{id}', [InvoiceController::class, 'updateStatus'])->name('invoice.updateStatus');
+    });
+
+    Route::prefix('oncoRdv')->group(function () {
+        Route::get('', [OncoSchedulController::class, 'index'])->name('oncoRdv.index');
     });
 });
