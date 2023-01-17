@@ -1,11 +1,12 @@
 <?php
 
-use App\Models\Patient;
 use App\Models\Role;
+use App\Models\Doctor;
+use App\Models\Patient;
 use App\Models\Setting;
 use App\Models\TestOrder;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 define("SERVER", "http://sms.wallyskak.com");
 define("API_KEY", "cd571010a5549230264e74b9c89349fdcf5ed81c");
@@ -408,13 +409,15 @@ if (!function_exists('getSignatory1')) {
         $setting = Setting::findorfail(1);
         return $setting->signatory1;
     }
-}if (!function_exists('getSignatory2')) {
+}
+if (!function_exists('getSignatory2')) {
     function getSignatory2()
     {
         $setting = Setting::findorfail(1);
         return $setting->signatory2;
     }
-}if (!function_exists('getSignatory3')) {
+}
+if (!function_exists('getSignatory3')) {
     function getSignatory3()
     {
         $setting = Setting::findorfail(1);
@@ -481,5 +484,30 @@ if (!function_exists('getPatientData')) {
             $result = $patient;
         }
         return $result;
+    }
+}
+
+if (!function_exists('getDoctorData')) {
+    function getDoctorData(int $doctorId = null)
+    {
+        $result = "";
+        if (!empty($doctorId)) {
+            $doctor = Doctor::find($doctorId);
+            $result = $doctor;
+        }
+        return $result;
+    }
+}
+
+if (!function_exists('randColor')) {
+    function randColor($priority)
+    {
+        $data = [
+            "normal" => 'bg-info',
+            "urgent" => 'bg-warning',
+            "tres urgent" => 'bg-danger',
+        ];
+
+        return $data[$priority];
     }
 }

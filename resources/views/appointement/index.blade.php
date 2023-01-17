@@ -2,11 +2,38 @@
 
 @section('title', 'Onco | Rendez-vous')
 @section('css')
+
+<link href="{{asset('adminassets/css/fullcalendar/main.css')}}" rel="stylesheet" type="text/css">
+<script src="{{ asset('adminassets/js/fullcalendar/main.js') }}"></script>
 {{--
-<link href="{{asset('adminassets/css/vendor/fullcalendar.min.css')}}" rel="stylesheet" type="text/css">
-<script src="{{ asset('/adminassets/js/vendor/fullcalendar.min.js') }}"></script> --}}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.css">
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.js"></script> --}}
+
+<script>
+    var calendarEl = document.getElementById('calendar');
+        document.addEventListener('DOMContentLoaded', function() {
+            var SITEURL = "{{ url('/') }}";
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                locale: 'fr',
+                initialView: 'dayGridMonth',
+                slotDuration: "00:15:00",
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,listWeek'
+                },
+                eventClick:function(info){
+                    console.log(info.event.id)
+                    var id = info.event.id;
+                    window.location.href = " {{ url('/') }}/appointements/show/"+id;
+
+                },
+                events:"{{route('appointement.getAppointements')}}",
+            });
+            calendar.render();
+        });
+</script>
 <style>
     #calendar {
         /* max-width: 1100px; */
@@ -159,22 +186,7 @@
 
 @push('extra-js')
 {{-- <script src="{{ asset('/adminassets/js/pages/demo.calendar.js') }}"></script> --}}
-<script type="text/javascript">
-    var calendarEl = document.getElementById('calendar');
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                locale: 'fr',
-                initialView: 'dayGridMonth',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,listWeek'
-                },
-            });
-            calendar.render();
-        });
-</script>
+
 <script>
     $('#patient_id').select2({
         dropdownParent: $('#event-modal')

@@ -23,19 +23,28 @@ class AppointementController extends Controller
 
     public function getAppointements()
     {
-        $data = Appointment::all();
+        $data = Appointment::with(['doctor'])->get();
+
+        foreach ($data as $key => $value) {
+            $events[$key] = [
+                "title" => "test",
+                "id" => $value['id'],
+                "start" => $value['date'],
+                "doctorId" => $value['doctor_id'],
+                "doctorName" => $value['doctor']->name,
+                "className" => randColor($value['priority']),
+            ];
+        }
+        return response()->json($events);
+    }
+
+    public function getAppointementsById(Request $request)
+    {
+        $data = Appointment::with(['doctor', 'patient'])->whereId($request->id)->first();
 
         return response()->json($data);
     }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -54,10 +63,10 @@ class AppointementController extends Controller
         ]);
 
         Appointment::create([
-            "doctor_id" => 3,
-            "patient_id" => 20,
-            "priority" => "normal",
-            "message" => "lkfnldknf",
+            "doctor_id" => $data['doctorId'],
+            "patient_id" => $data['patientId'],
+            "priority" => $data['priority'],
+            "message" => $data['message'],
             "status" => "pending",
             "date" => "2023-01-17 14:12:22",
         ]);
@@ -72,7 +81,11 @@ class AppointementController extends Controller
      */
     public function show($id)
     {
-        //
+        $patients = Patient::all();
+        $doctors = Doctor::all();
+        $appointement = Appointment::findorfail($id);
+
+        return view('appointement.show', compact('appointement', 'patients', 'doctors'));
     }
 
     /**
