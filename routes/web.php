@@ -15,7 +15,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\TestOrderController;
 use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\OncoSchedulController;
+use App\Http\Controllers\AppointementController;
 use App\Http\Controllers\TestCategoryController;
 use App\Http\Controllers\DetailsContratController;
 use App\Http\Controllers\SettingReportTemplateController;
@@ -183,7 +183,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('updateStatus/{id}', [InvoiceController::class, 'updateStatus'])->name('invoice.updateStatus');
     });
 
-    Route::prefix('oncoRdv')->group(function () {
-        Route::get('', [OncoSchedulController::class, 'index'])->name('oncoRdv.index');
+    Route::prefix('appointements')->group(function () {
+        Route::get('', [AppointementController::class, 'index'])->name('appointement.index');
+        Route::post('store', [AppointementController::class, 'store'])->name('appointement.store');
+        Route::get('getAppointements', [AppointementController::class, 'getAppointements'])->name('appointement.getAppointements');
     });
 });

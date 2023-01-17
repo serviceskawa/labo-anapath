@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Doctor;
+use App\Models\Patient;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 
-class OncoSchedulController extends Controller
+class AppointementController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,9 +16,17 @@ class OncoSchedulController extends Controller
      */
     public function index()
     {
-        return view('onco_rdv.index');
+        $patients = Patient::all();
+        $doctors = Doctor::all();
+        return view('appointement.index', compact('patients', 'doctors'));
     }
 
+    public function getAppointements()
+    {
+        $data = Appointment::all();
+
+        return response()->json($data);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -34,7 +45,23 @@ class OncoSchedulController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $this->validate($request, [
+            'doctorId' => 'required',
+            'patientId' => 'required',
+            'time' => 'required',
+            'message' => 'nullable',
+            'priority' => 'required',
+        ]);
+
+        Appointment::create([
+            "doctor_id" => 3,
+            "patient_id" => 20,
+            "priority" => "normal",
+            "message" => "lkfnldknf",
+            "status" => "pending",
+            "date" => "2023-01-17 14:12:22",
+        ]);
+        return response()->json($data);
     }
 
     /**
