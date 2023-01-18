@@ -511,3 +511,11 @@ if (!function_exists('randColor')) {
         return $data[$priority];
     }
 }
+
+if (!function_exists('convertDate')) {
+    function convertDateTime($date)
+    {
+        $date_input = date('Y-m-d H:i:s', strtotime($date));
+        return $date_input;
+    }
+}

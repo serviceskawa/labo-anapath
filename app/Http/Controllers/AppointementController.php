@@ -68,7 +68,7 @@ class AppointementController extends Controller
             "priority" => $data['priority'],
             "message" => $data['message'],
             "status" => "pending",
-            "date" => "2023-01-17 14:12:22",
+            "date" =>  convertDateTime($data['time']),
         ]);
         return response()->json($data);
     }
@@ -110,30 +110,31 @@ class AppointementController extends Controller
     {
 
         $data = $this->validate($request, [
-            'doctorId' => 'required',
-            'patientId' => 'required',
-            'time' => 'required',
+            'patient_id' => 'required',
+            'doctor_id' => 'required',
+            'date' => 'required',
             'message' => 'nullable',
             'priority' => 'required',
         ]);
         $appointement = Appointment::findorfail($id);
 
-        if (!empty($appointement)) {
+        if (empty($appointement)) {
             return back()->with('error', "Une Erreur est survenue. Ce rendez-vous n'hesite pas");
         }
 
         try {
             $appointement = Appointment::find($id);
-            $appointement->doctor_id = $data['doctorId'];
-            $appointement->patient_id = $data['patientId'];
+            $appointement->doctor_id = $data['doctor_id'];
+            $appointement->patient_id = $data['patient_id'];
             $appointement->message = $data['message'];
             $appointement->priority = $data['priority'];
-            $appointement->date = $data['time'];
+            $appointement->date =  convertDateTime($data['date']);
             $appointement->save();
 
             return redirect()->route('appointement.index')->with('success', "Rendez-vous mis à jour avec succès ! ");
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
+            dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
