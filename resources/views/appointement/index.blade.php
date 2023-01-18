@@ -32,6 +32,40 @@
                 events:"{{route('appointement.getAppointements')}}",
             });
             calendar.render();
+
+            $('#form-event').on('submit', function(e) {
+            e.preventDefault();
+            let doctorId = $('#doctor_id').val();
+            let patientId = $('#patient_id').val();
+            let priority = $('#priority').val();
+            let message = $('#message').val();
+            let time = $('#time').val();
+            // console.log(time);
+            $.ajax({
+                url: "{{ route('appointement.store') }}",
+                type: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    doctorId: doctorId,
+                    patientId: patientId,
+                    priority: priority,
+                    message:message,
+                    time:time
+                },
+                success: function(data) {
+                    calendar.refetchEvents();
+                    $('#form-event').trigger("reset");
+                    $('#event-modal').modal('hide');
+                    toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                    console.log(data)   ;         
+                },
+                error: function(data) {
+                    console.log(data);
+                },
+                
+            });
+
+        });
         });
 </script>
 <style>
@@ -49,15 +83,14 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                {{-- <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Hyper</a></li>
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Apps</a></li>
-                        <li class="breadcrumb-item active">Calendar</li>
-                    </ol>
-                </div> --}}
+                <div class="page-title-right mr-3">
+                    <button class="btn btn-lg font-16 btn-danger" data-bs-toggle="modal"
+                        data-bs-target="#event-modal"><i class="mdi mdi-plus-circle-outline"></i> Ajouter un
+                        nouvel rendez-vous</button>
+                </div>
                 <h4 class="page-title">Rendez-vous</h4>
             </div>
+
         </div>
     </div>
     <!-- end page title -->
@@ -68,7 +101,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-lg-3">
+                        {{-- <div class="col-lg-3">
                             <div class="d-grid">
                                 <button class="btn btn-lg font-16 btn-danger" data-bs-toggle="modal"
                                     data-bs-target="#event-modal"><i class="mdi mdi-plus-circle-outline"></i> Ajouter un
@@ -76,9 +109,9 @@
                             </div>
 
 
-                        </div> <!-- end col-->
+                        </div> <!-- end col--> --}}
 
-                        <div class="col-lg-9">
+                        <div class="col-lg-12">
                             <div class="mt-4 mt-lg-0">
                                 <div id="calendar"></div>
                             </div>
@@ -146,9 +179,9 @@
                                     <div class="mb-3">
                                         <label class="control-label form-label">Priorité</label>
                                         <select class="form-select" name="priority" id="priority" required="">
-                                            <option value="normal" selected="">normal</option>
-                                            <option value="urgent">urgent</option>
-                                            <option value="tres urgent">tres urgent</option>
+                                            <option value="normal" selected="">Normal</option>
+                                            <option value="urgent">Urgent</option>
+                                            <option value="tres urgent">Très urgent</option>
                                         </select>
                                     </div>
                                 </div>
@@ -161,12 +194,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
-                                        <button type="button" class="btn btn-danger"
-                                            id="btn-delete-event">Delete</button>
+                                        {{-- <button type="button" class="btn btn-danger"
+                                            id="btn-delete-event">Delete</button> --}}
                                     </div>
                                     <div class="col-6 text-end">
-                                        <button type="button" class="btn btn-light me-1"
-                                            data-bs-dismiss="modal">Close</button>
+                                        {{-- <button type="button" class="btn btn-light me-1"
+                                            data-bs-dismiss="modal">Close</button> --}}
                                         <button type="submit" class="btn btn-success" id="btn-save-event">Save</button>
                                     </div>
                                 </div>
@@ -196,39 +229,39 @@
     });
     $(document).ready(function(){
 
-        $('#form-event').on('submit', function(e) {
-            e.preventDefault();
-            let doctorId = $('#doctor_id').val();
-            let patientId = $('#patient_id').val();
-            let priority = $('#priority').val();
-            let message = $('#message').val();
-            let time = $('#time').val();
-            // console.log(time);
-            $.ajax({
-                url: "{{ route('appointement.store') }}",
-                type: "POST",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    doctorId: doctorId,
-                    patientId: patientId,
-                    priority: priority,
-                    message:message,
-                    time:time
-                },
-                success: function(data) {
-                    
-                    $('#form-event').trigger("reset");
-                    $('#event-modal').modal('hide');
-                    toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-                    console.log(data)   ;         
-                },
-                error: function(data) {
-                    console.log(data);
-                },
+        // $('#form-event').on('submit', function(e) {
+        //     e.preventDefault();
+        //     let doctorId = $('#doctor_id').val();
+        //     let patientId = $('#patient_id').val();
+        //     let priority = $('#priority').val();
+        //     let message = $('#message').val();
+        //     let time = $('#time').val();
+        //     // console.log(time);
+        //     $.ajax({
+        //         url: "{{ route('appointement.store') }}",
+        //         type: "POST",
+        //         data: {
+        //             "_token": "{{ csrf_token() }}",
+        //             doctorId: doctorId,
+        //             patientId: patientId,
+        //             priority: priority,
+        //             message:message,
+        //             time:time
+        //         },
+        //         success: function(data) {
+        //             calendar.refetchEvents();
+        //             $('#form-event').trigger("reset");
+        //             $('#event-modal').modal('hide');
+        //             toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+        //             console.log(data)   ;         
+        //         },
+        //         error: function(data) {
+        //             console.log(data);
+        //         },
                 
-            });
+        //     });
 
-        });
+        // });
     });
 
 </script>

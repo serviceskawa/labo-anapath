@@ -23,11 +23,11 @@ class AppointementController extends Controller
 
     public function getAppointements()
     {
-        $data = Appointment::with(['doctor'])->get();
+        $data = Appointment::with(['doctor', 'patient'])->get();
 
         foreach ($data as $key => $value) {
             $events[$key] = [
-                "title" => "test",
+                "title" => "RDV " . $value['doctor']->name,
                 "id" => $value['id'],
                 "start" => $value['date'],
                 "doctorId" => $value['doctor_id'],
