@@ -186,7 +186,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('appointements')->group(function () {
         Route::get('', [AppointementController::class, 'index'])->name('appointement.index');
         Route::post('store', [AppointementController::class, 'store'])->name('appointement.store');
-        Route::post('update', [AppointementController::class, 'update'])->name('appointement.update');
+        Route::post('update/{id}', [AppointementController::class, 'update'])->name('appointement.update');
         Route::get('getAppointements', [AppointementController::class, 'getAppointements'])->name('appointement.getAppointements');
         Route::get('show/{id}', [AppointementController::class, 'show'])->name('appointement.show');
     });

@@ -64,14 +64,29 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label class="form-label">Date prélèvement<span style="color:red;">*</span></label>
+                        <label class="form-label">>Heure de rendez-vous<span style="color:red;">*</span></label>
                         <input type="datetime-local" class="form-control" name="date" data-date-format="dd/mm/yyyy"
                             value="{{$appointement->date}}" required>
                     </div>
+
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="example-fileinput" class="form-label">Pièce jointe</label>
-                            <input type="file" name="examen_file" id="example-fileinput" class="form-control">
+                            <label class="control-label form-label">Priorité</label>
+                            <select class="form-select" name="priority" id="priority" required="">
+                                <option value="normal" {{$appointement->priority == "normal" ? 'selected' : ''}}>Normal
+                                </option>
+                                <option value="urgent" {{$appointement->priority == "urgen" ? 'selected' : ''}}>Urgent
+                                </option>
+                                <option value="tres urgent" {{$appointement->priority == "tres urgent" ? 'selected' :
+                                    ''}}>Très urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label class="control-label form-label">Message</label>
+                            <textarea name="" class="form-control" id="" cols="30"
+                                rows="10"> {{$appointement->message}} </textarea>
                         </div>
                     </div>
                 </div>

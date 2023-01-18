@@ -108,7 +108,34 @@ class AppointementController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $data = $this->validate($request, [
+            'doctorId' => 'required',
+            'patientId' => 'required',
+            'time' => 'required',
+            'message' => 'nullable',
+            'priority' => 'required',
+        ]);
+        $appointement = Appointment::findorfail($id);
+
+        if (!empty($appointement)) {
+            return back()->with('error', "Une Erreur est survenue. Ce rendez-vous n'hesite pas");
+        }
+
+        try {
+            $appointement = Appointment::find($id);
+            $appointement->doctor_id = $data['doctorId'];
+            $appointement->patient_id = $data['patientId'];
+            $appointement->message = $data['message'];
+            $appointement->priority = $data['priority'];
+            $appointement->date = $data['time'];
+            $appointement->save();
+
+            return redirect()->route('appointement.index')->with('success', "Rendez-vous mis à jour avec succès ! ");
+        } catch (\Throwable $ex) {
+            $error = $ex->getMessage();
+            return back()->with('error', "Échec de l'enregistrement ! ");
+        }
     }
 
     /**
@@ -119,6 +146,10 @@ class AppointementController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // if (!getOnlineUser()->can('delete-hopitaux')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+        Appointment::find($id)->delete();
+        return redirect()->route('appointement.index')->with('success', "Rendez-vous supprimé ! ");
     }
 }
