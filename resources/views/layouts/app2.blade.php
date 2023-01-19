@@ -192,6 +192,9 @@
                                 <li>
                                     <a href="{{ route('appointement.index') }}">Ajouter un rendez-vous</a>
                                 </li>
+                                <li>
+                                    <a href="{{ route('type_consultation.index') }}">Ajouter un type de consultation</a>
+                                </li>
 
                             </ul>
                         </div>

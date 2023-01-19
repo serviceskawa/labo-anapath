@@ -18,6 +18,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AppointementController;
 use App\Http\Controllers\TestCategoryController;
 use App\Http\Controllers\DetailsContratController;
+use App\Http\Controllers\TypeConsultationController;
 use App\Http\Controllers\SettingReportTemplateController;
 
 /*
@@ -189,5 +190,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('update/{id}', [AppointementController::class, 'update'])->name('appointement.update');
         Route::get('getAppointements', [AppointementController::class, 'getAppointements'])->name('appointement.getAppointements');
         Route::get('show/{id}', [AppointementController::class, 'show'])->name('appointement.show');
+    });
+
+
+    Route::prefix('type_consultations')->group(function () {
+        Route::get('', [TypeConsultationController::class, 'index'])->name('type_consultation.index');
+        Route::post('store', [TypeConsultationController::class, 'store'])->name('type_consultation.store');
+        Route::get('show/{id}', [TypeConsultationController::class, 'show'])->name('type_consultation.show');
+        Route::get('delete/{id}', [TypeConsultationController::class, 'destroy'])->name('type_consultation.delete');
     });
 });
