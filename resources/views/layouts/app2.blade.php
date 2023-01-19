@@ -199,6 +199,25 @@
                             </ul>
                         </div>
                     </li>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarConsultation" aria-expanded="false"
+                            aria-controls="sidebarAppoint" class="side-nav-link">
+                            <i class="uil-calender"></i>
+                            <span> Consultations </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarConsultation">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href="{{ route('consultation.index') }}">Consultations</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('consultation.create') }}">Ajouter une consultation</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </li>
 
                     @if (getOnlineUser()->can('view-template-compte-rendu'))
                     <li class="side-nav-item">

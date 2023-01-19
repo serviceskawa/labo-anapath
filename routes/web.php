@@ -16,6 +16,7 @@ use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\TestOrderController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AppointementController;
+use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\TestCategoryController;
 use App\Http\Controllers\DetailsContratController;
 use App\Http\Controllers\TypeConsultationController;
@@ -198,5 +199,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('store', [TypeConsultationController::class, 'store'])->name('type_consultation.store');
         Route::get('show/{id}', [TypeConsultationController::class, 'show'])->name('type_consultation.show');
         Route::get('delete/{id}', [TypeConsultationController::class, 'destroy'])->name('type_consultation.delete');
+    });
+
+    Route::prefix('consultations')->group(function () {
+        Route::get('', [ConsultationController::class, 'index'])->name('consultation.index');
+        Route::get('create', [ConsultationController::class, 'create'])->name('consultation.create');
+        Route::post('store', [ConsultationController::class, 'store'])->name('consultation.store');
+        Route::post('update/{id}', [ConsultationController::class, 'update'])->name('consultation.update');
+        Route::get('show/{id}', [ConsultationController::class, 'show'])->name('consultation.show');
+        Route::get('delete/{id}', [ConsultationController::class, 'destroy'])->name('consultation.delete');
+        Route::get('getConsultations', [ConsultationController::class, 'getConsultations'])->name('consultation.getConsultations');
     });
 });

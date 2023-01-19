@@ -519,3 +519,16 @@ if (!function_exists('convertDate')) {
         return $date_input;
     }
 }
+
+if (!function_exists('randColorStatus')) {
+    function randColorStatus($priority)
+    {
+        $data = [
+            "pending" => 'bg-warning',
+            "approved" => 'bg-success',
+            "cancel" => 'bg-danger',
+        ];
+
+        return $data[$priority];
+    }
+}

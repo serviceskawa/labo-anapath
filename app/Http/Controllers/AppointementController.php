@@ -85,6 +85,10 @@ class AppointementController extends Controller
         $doctors = Doctor::all();
         $appointement = Appointment::findorfail($id);
 
+        if (empty($appointement)) {
+            return back()->with('error', "Une Erreur est survenue. Ce rendez-vous n'hesite pas");
+        }
+
         return view('appointement.show', compact('appointement', 'patients', 'doctors'));
     }
 
@@ -119,7 +123,7 @@ class AppointementController extends Controller
         $appointement = Appointment::findorfail($id);
 
         if (empty($appointement)) {
-            return back()->with('error', "Une Erreur est survenue. Ce rendez-vous n'hesite pas");
+            return back()->with('error', "Une Erreur est survenue. Ce rendez-vous n'existe pas");
         }
 
         try {
