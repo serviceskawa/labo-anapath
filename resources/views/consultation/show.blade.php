@@ -169,16 +169,22 @@
 
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="control-label form-label">Image</label>
-                        <input type="file" class="dropify" name="favicon"
-                            data-default-file="{{ $consultation ? Storage::url($consultation->favicon) : '' }}"
+                    @forelse ($consultation->type->type_files as $type_file)
+                    <div class="col-md-6 mb-3">
+                        <label class="control-label form-label">{{$type_file->title}}</label>
+                        <input type="file" class="dropify" name="type_file[{{$type_file->id}}]"
+                            data-default-file="{{ !empty(getConsultationTypeFiles($consultation->id, $type_file->id)->path) ? Storage::url(getConsultationTypeFiles($consultation->id, $type_file->id)->path) : '' }}"
                             data-max-file-size="3M" />
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Comment<span style="color:red;">*</span></label>
-                        <textarea name="comment" class="form-control" id="" cols="30" rows="5"></textarea>
+                        <textarea name="comment[{{$type_file->id}}]" class="form-control" id="" cols="30"
+                            rows="8"></textarea>
                     </div>
+                    @empty
+
+                    @endforelse
+
 
                 </div>
         </div>

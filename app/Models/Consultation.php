@@ -6,6 +6,7 @@ use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\TypeConsultation;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ConsultationTypeConsultationFiles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Consultation extends Model
@@ -32,5 +33,15 @@ class Consultation extends Model
     public function type()
     {
         return $this->belongsTo(TypeConsultation::class, 'type_consultation_id');
+    }
+
+    /**
+     * Get all of the type_files for the Consultation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function type_files()
+    {
+        return $this->hasMany(ConsultationTypeConsultationFiles::class, 'consultation_id');
     }
 }

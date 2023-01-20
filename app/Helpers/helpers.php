@@ -5,8 +5,9 @@ use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\Setting;
 use App\Models\TestOrder;
-use App\Models\TypeConsultation;
 use Illuminate\Support\Str;
+use App\Models\Consultation;
+use App\Models\TypeConsultation;
 use Illuminate\Support\Facades\Auth;
 
 define("SERVER", "http://sms.wallyskak.com");
@@ -542,6 +543,17 @@ if (!function_exists('checkTypeConsultationFile')) {
         $type_files = $typeConsultation->type_files();
 
         $data = $typeConsultation->type_files()->where('type_file_id', $typeConsultationFileId)->exists();
+
+        return $data;
+    }
+}
+
+if (!function_exists('getConsultationTypeFiles')) {
+    function getConsultationTypeFiles($ConsultationId, $typeConsultationFileId)
+    {
+        $Consultation = Consultation::findorfail($ConsultationId);
+
+        $data = $Consultation->type_files()->where('type_file_id', $typeConsultationFileId)->first();
 
         return $data;
     }

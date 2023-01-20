@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use DataTables;
-use App\Models\Consultation;
 use App\Models\Doctor;
 use App\Models\Patient;
-use App\Models\TypeConsultation;
+use App\Models\Consultation;
 use Illuminate\Http\Request;
+use App\Models\TypeConsultation;
+use App\Models\ConsultationTypeConsultationFiles;
 
 class ConsultationController extends Controller
 {
@@ -24,7 +25,7 @@ class ConsultationController extends Controller
         return Datatables::of($data)->addIndexColumn()
             ->editColumn('created_at', function ($data) {
                 //change over here
-                return $data->created_at;
+                return $data->date;
             })
             ->addColumn('action', function ($data) {
                 $btnVoir = '<a type="button" href="' . route('consultation.show', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
@@ -69,6 +70,7 @@ class ConsultationController extends Controller
 
     public function show($id)
     {
+        // dd(getConsultationTypeFiles(2, 2)->path);
         $patients = Patient::all();
         $doctors = Doctor::all();
         $types = TypeConsultation::all();
@@ -90,52 +92,53 @@ class ConsultationController extends Controller
             'type_id' => 'required|exists:type_consultations,id',
             'status' => 'required',
             'date' => 'required',
-            'motif' => 'required',
+            'motif' => 'nullable',
             'fees' => 'required',
             'anamnese' => 'nullable',
             'examen_physique' => 'nullable',
             'diagnostic' => 'nullable',
             'antecedent' => 'nullable',
-            'payement_mode' => 'nullable',
+            'payement_mode' => 'required',
             'next_appointment' => 'nullable',
             'id' => 'nullable',
         ]);
 
         // dd($request);
+        $latest = Consultation::orderBy('id', 'DESC')->first();
+        $code = sprintf('%04d', $latest->id);
 
         try {
             Consultation::Create(
                 [
+                    "code" => "CON" . $code,
                     "patient_id" => $data['patient_id'],
                     "doctor_id" => $data['doctor_id'],
                     "type_consultation_id" => $data['type_id'],
                     "status" => $data['status'],
                     "date" => convertDateTime($data['date']),
-                    "motif" => $data['motif'],
                     "fees" => $data['fees'],
-                    "anamnese" => $data['anamnese'],
-                    "examen_physique" => $data['examen_physique'],
-                    "diagnostic" => $data['diagnostic'],
-                    "antecedent" => $data['antecedent'],
+                    "payement_mode" => $data['payement_mode'],
                     "next_appointment" => convertDateTime($data['next_appointment']),
                 ]
             );
             return redirect()->route('consultation.index',)->with('success', "Consultation ajouté avec succès");;
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
+            dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
+
     public function update(Request $request, $id)
     {
-
+        // dd($request);
         $data = $this->validate($request, [
             'patient_id' => 'required|exists:patients,id',
             'doctor_id' => 'required|exists:doctors,id',
             'type_id' => 'required|exists:type_consultations,id',
             'status' => 'required',
             'date' => 'required',
-            'motif' => 'required',
+            'motif' => 'nullable',
             'fees' => 'required',
             'anamnese' => 'nullable',
             'examen_physique' => 'nullable',
@@ -151,7 +154,29 @@ class ConsultationController extends Controller
             return back()->with('error', "Une Erreur est survenue. Cette consultation n'existe pas");
         }
         // dd($request);
+        $tab = [];
+        $tabFile = [];
 
+        if ($request->hasfile('type_file')) {
+            foreach ($request->file('type_file') as $key => $value) {
+
+                $img = time() . 'consultation.' . $value->extension();
+
+                $path_img = $value->storeAs('consultations/' . $consultation->patient->code . '/' . $consultation->type->name, $img, 'public');
+                $tabFile[$key] = $path_img;
+            }
+        }
+
+        // dd('a');
+        foreach ($consultation->type->type_files as $type_file) {
+            $tab[$type_file->id] = [
+                "consultation_id" => $consultation->id,
+                "type_id" => $consultation->type_consultation_id,
+                "type_file_id" => $type_file->id,
+                "path" => empty($tabFile[$type_file->id]) ? "" : $tabFile[$type_file->id],
+                "comment" => empty($request->comment[$type_file->id]) ? "" : $request->comment[$type_file->id],
+            ];
+        }
         try {
             $consultation->update(
                 [
@@ -169,9 +194,26 @@ class ConsultationController extends Controller
                     "next_appointment" => convertDateTime($data['next_appointment']),
                 ]
             );
+
+            foreach ($tab as $key => $value) {
+                $exist = ConsultationTypeConsultationFiles::whereConsultationId($consultation->id)
+                    ->where('type_id', $consultation->type_consultation_id)
+                    ->where('type_file_id', $key)->first();
+                ConsultationTypeConsultationFiles::updateOrCreate(["id" => $exist->id], [
+                    "consultation_id" => $value['consultation_id'],
+                    "type_id" => $value['type_id'],
+                    "type_file_id" => $value['type_file_id'],
+                    "path" => empty($value['path']) ? $exist->path : $value['path'],
+                    "comment" => empty($value['comment']) ? $exist->comment : $value['comment'],
+                ]);
+                // dd($exist);
+            }
+
+            // ConsultationTypeConsultationFiles::insert($tab);
             return redirect()->route('consultation.index',)->with('success', "Consultation mis à jour avec succès");;
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
+            dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }

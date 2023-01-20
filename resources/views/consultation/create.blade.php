@@ -90,40 +90,6 @@
                 </div>
 
                 <div class="row mb-3">
-
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label class="control-label form-label">Motif</label>
-                            <textarea name="motif" class="form-control" id="" cols="30" rows="5">  </textarea>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label class="control-label form-label">Anamnèse</label>
-                            <textarea name="anamnese" class="form-control" id="" cols="30" rows="5">  </textarea>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label class="control-label form-label">Antécédent</label>
-                            <textarea name="antecedent" class="form-control" id="" cols="30" rows="5">  </textarea>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label class="control-label form-label">Examen physique</label>
-                            <textarea name="examen_physique" class="form-control" id="" cols="30" rows="5">  </textarea>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label class="control-label form-label">Diagnostic</label>
-                            <textarea name="diagnostic" class="form-control" id="" cols="30" rows="5">  </textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="control-label form-label">Methode de paiement</label>
                         <select class="form-select" name="payement_mode">
@@ -182,6 +148,19 @@
         });
     }
 
+//     $("#type_id").on("change", function() {
+//         alert('a')
+//         $.ajax({
+//             type: "GET",
+//             url: "{{ url('type_consultations/show') }}" + '/' + e_id,
+//             success: function(data) {
+// console.log(data)
+//             },
+//             error: function(data) {
+//                 // console.log('Error:', data);
+//             }
+//         });
+//     });
 
 </script>
 

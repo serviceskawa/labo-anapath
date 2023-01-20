@@ -94,6 +94,7 @@
         </div>
     </div>
     <!-- end page title -->
+    @include('layouts.alerts')
 
     <div class="row">
         <div class="col-12">
