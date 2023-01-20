@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Ajouter un nouveau patient</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Ajouter un type de consultation</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <form action="{{ route('type_consultation.store') }}" method="POST" autocomplete="off">
@@ -12,10 +12,29 @@
 
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
 
-                    <div class="mb-3">
-                        <label for="simpleinput" class="form-label">Ttire <span style="color:red;">*</span></label>
-                        <input type="text" name="name" id="name" class="form-control" required>
-                        <input type="hidden" name="id" id="id" class="form-control">
+                    <div class="row">
+                        <div class="mb-3">
+                            <label for="simpleinput" class="form-label">Ttire <span style="color:red;">*</span></label>
+                            <input type="text" name="name" id="name" class="form-control" required>
+                            <input type="hidden" name="id" id="id" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <label for="simpleinput" class="form-label ">Cocher les signataires du compte rendu<span
+                                style="color:red;">*</span></label>
+                        <div class="">
+                            @forelse ($files as $item)
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" class="form-check-input" name="type_files[{{ $item->id }}]"
+                                    id="customCheck3">
+                                <label class="form-check-label" for="customCheck3">{{ $item->title }}</label>
+                            </div>
+                            @empty
+
+                            @endforelse
+
+
+                        </div>
                     </div>
 
                 </div>

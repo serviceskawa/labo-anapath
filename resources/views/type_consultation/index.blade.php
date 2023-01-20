@@ -57,8 +57,9 @@
                             <td>{{ $key+1 }}</td>
                             <td>{{ $item->name }}</td>
                             <td>
-                                <button type="button" onclick="edit({{ $item->id }})" class="btn btn-primary"><i
-                                        class="mdi mdi-lead-pencil"></i> </button>
+                                <a type="button" href="{{route('type_consultation.show',$item->id)}}"
+                                    class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i>
+                                </a>
                                 <button type="button" onclick="deleteModal({{ $item->id }})" class="btn btn-danger"><i
                                         class="mdi mdi-trash-can-outline"></i> </button>
                             </td>

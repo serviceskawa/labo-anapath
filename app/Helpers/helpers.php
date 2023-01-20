@@ -5,6 +5,7 @@ use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\Setting;
 use App\Models\TestOrder;
+use App\Models\TypeConsultation;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
@@ -530,5 +531,18 @@ if (!function_exists('randColorStatus')) {
         ];
 
         return $data[$priority];
+    }
+}
+
+
+if (!function_exists('checkTypeConsultationFile')) {
+    function checkTypeConsultationFile($typeConsultationFileId, $typeConsultationId)
+    {
+        $typeConsultation = TypeConsultation::findorfail($typeConsultationId);
+        $type_files = $typeConsultation->type_files();
+
+        $data = $typeConsultation->type_files()->where('type_file_id', $typeConsultationFileId)->exists();
+
+        return $data;
     }
 }

@@ -192,10 +192,7 @@
                                 <li>
                                     <a href="{{ route('appointement.index') }}">Ajouter un rendez-vous</a>
                                 </li>
-                                <li>
-                                    <a href="{{ route('type_consultation.index') }}">Ajouter un type de consultation</a>
-                                </li>
-
+                
                             </ul>
                         </div>
                     </li>
@@ -208,6 +205,9 @@
                         </a>
                         <div class="collapse" id="sidebarConsultation">
                             <ul class="side-nav-second-level">
+                                <li>
+                                    <a href="{{ route('type_consultation.index') }}">Ajouter un type de consultation</a>
+                                </li>
                                 <li>
                                     <a href="{{ route('consultation.index') }}">Consultations</a>
                                 </li>
