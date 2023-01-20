@@ -9,7 +9,7 @@ date_default_timezone_set('Europe/Paris');
             src="{{ public_path('adminassets/images/Logo_long_CAAP@4x.png') }}" width="200px;" alt=""></span>
     <div
         style="display: inline-block; padding: 5px; position: absolute; top:20px; right: 0px; padding: 10px; text-align:right;">
-        <b><span style="font-size:17px; text-align:right;"> CENTRE ADECHINA ANATOMIE PATHOLOGIE</span></b>
+        <b><span style="font-size:17px; text-align:right;"> CENTRE ADECHINA ANATOMIE PATHOLOGIQUE</span></b>
         <br><span style="font-size:10px; text-align:right;">Laboratoire d’Anatomie Pathologique</span>
     </div>
 </div>
