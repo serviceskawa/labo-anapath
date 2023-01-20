@@ -179,7 +179,7 @@
                     <div class="col-md-6">
                         <label class="form-label">Comment<span style="color:red;">*</span></label>
                         <textarea name="comment[{{$type_file->id}}]" class="form-control" id="" cols="30"
-                            rows="8"></textarea>
+                            rows="8">{{ !empty(getConsultationTypeFiles($consultation->id, $type_file->id)->comment) ? getConsultationTypeFiles($consultation->id, $type_file->id)->comment : '' }}</textarea>
                     </div>
                     @empty
 

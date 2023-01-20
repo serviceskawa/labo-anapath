@@ -199,12 +199,13 @@ class ConsultationController extends Controller
                 $exist = ConsultationTypeConsultationFiles::whereConsultationId($consultation->id)
                     ->where('type_id', $consultation->type_consultation_id)
                     ->where('type_file_id', $key)->first();
-                ConsultationTypeConsultationFiles::updateOrCreate(["id" => $exist->id], [
+                ConsultationTypeConsultationFiles::updateOrInsert([
                     "consultation_id" => $value['consultation_id'],
                     "type_id" => $value['type_id'],
                     "type_file_id" => $value['type_file_id'],
-                    "path" => empty($value['path']) ? $exist->path : $value['path'],
-                    "comment" => empty($value['comment']) ? $exist->comment : $value['comment'],
+                ], [
+                    "path" => empty($value['path']) ? (empty($exist) ? "" : $exist->path) : $value['path'],
+                    "comment" => empty($value['comment']) ? (empty($exist) ? "" : $exist->comment) : $value['comment'],
                 ]);
                 // dd($exist);
             }
@@ -213,7 +214,7 @@ class ConsultationController extends Controller
             return redirect()->route('consultation.index',)->with('success', "Consultation mis à jour avec succès");;
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
-            // dd($error);
+            dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
