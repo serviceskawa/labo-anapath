@@ -41,7 +41,7 @@ class TypeConsultationController extends Controller
             $filesIds = array_keys($request->type_files);
             $type->type_files()->sync($filesIds);
 
-            return back()->with('success', "Type de consultation ajouté avec succès");
+            return redirect()->route('type_consultation.index')->with('success', "Type de consultation ajouté avec succès");
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
             // dd($error);

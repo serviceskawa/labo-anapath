@@ -58,7 +58,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" id="btnSubmit" class="btn btn-primary">Ajouter </button>
+                    <button type="submit" id="btnSubmit" class="btn btn-primary">Mettre à jour </button>
                 </div>
             </form>
         </div>
