@@ -113,7 +113,22 @@
 
                         <div class="col-lg-12">
                             <div class="mt-4 mt-lg-0">
-                                <div id="calendar"></div>
+                                <table id="datatable1" class="table dt-responsive nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Date</th>
+                                            <th>Code</th>
+                                            <th>Patient</th>
+                                            <th>Docteur</th>
+                                            <th>Type consultation</th>
+                                            <th>Actions</th>
+
+                                        </tr>
+                                    </thead>
+
+
+                                </table>
                             </div>
                         </div> <!-- end col -->
 
@@ -141,5 +156,49 @@
         dropdownParent: $('#event-modal')
     });
     
+        /* DATATABLE */
+        $(document).ready(function() {
+
+            var table = $('#datatable1').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('consultation.getConsultations') }}",
+                columns: [
+                    {
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },{
+                        data: 'code',
+                        name: 'code'
+                    },{
+                        data: 'patient',
+                        name: 'patient'
+                    },
+                    {
+                        data: 'doctor',
+                        name: 'doctor'
+                    },
+                    {
+                        data: 'type',
+                        name: 'type'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ],
+                order: [
+                    [0, 'desc']
+                ],
+                
+            });
+
+        });
 </script>
 @endpush

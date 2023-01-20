@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DataTables;
 use App\Models\Consultation;
 use App\Models\Doctor;
 use App\Models\Patient;
@@ -18,19 +19,44 @@ class ConsultationController extends Controller
 
     public function getConsultations()
     {
-        $data = Consultation::with(['doctor', 'patient', 'type'])->get();
+        $data = Consultation::with(['doctor', 'patient', 'type'])->orderBy('created_at', 'desc')->get();
 
-        foreach ($data as $key => $value) {
-            $events[$key] = [
-                "title" => "RDV " . $value['doctor']->name,
-                "id" => $value['id'],
-                "start" => $value['date'],
-                "doctorId" => $value['doctor_id'],
-                "doctorName" => $value['doctor']->name,
-                "className" => randColorStatus($value['status']),
-            ];
-        }
-        return response()->json($events);
+        return Datatables::of($data)->addIndexColumn()
+            ->editColumn('created_at', function ($data) {
+                //change over here
+                return $data->created_at;
+            })
+            ->addColumn('action', function ($data) {
+                $btnVoir = '<a type="button" href="' . route('consultation.show', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+                $btnEdit = ' <a type="button" href="' . route('consultation.show', $data->id) . '" class="btn btn-primary" title="Mettre à jour examen"><i class="mdi mdi-lead-pencil"></i></a>';
+                if ($data->status != 1) {
+                    $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+                    $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
+                } else {
+                    $btnReport = ' <a type="button" href="' . route('report.show', $data->report->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+                    $btnDelete = "";
+                }
+
+                if (!empty($data->invoice->id)) {
+                    $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->invoice->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
+                } else {
+                    $btnInvoice = ' <a type="button" href="' . route('invoice.storeFromOrder', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
+                }
+
+                return $btnVoir;
+                // return $btnVoir . $btnEdit . $btnReport . $btnInvoice . $btnDelete;
+            })
+            ->addColumn('patient', function ($data) {
+                return $data->patient->firstname . ' ' . $data->patient->lastname;
+            })
+            ->addColumn('doctor', function ($data) {
+                return $data->doctor->name;
+            })
+            ->addColumn('type', function ($data) {
+                return $data->type->name;
+            })
+            ->rawColumns(['action', 'patient', 'doctor', 'type'])
+            ->make(true);
     }
 
     public function create()
@@ -40,6 +66,7 @@ class ConsultationController extends Controller
         $types = TypeConsultation::all();
         return view('consultation.create', compact('patients', 'doctors', 'types'));
     }
+
     public function show($id)
     {
         $patients = Patient::all();

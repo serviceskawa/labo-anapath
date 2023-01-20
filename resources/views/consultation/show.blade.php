@@ -2,6 +2,21 @@
 
 @section('title', 'Mettre à jour une consultation')
 
+@section('css')
+<link href="{{ asset('/adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('/adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.css"
+    integrity="sha512-In/+MILhf6UMDJU4ZhDL0R0fEpsp4D3Le23m6+ujDWXwl3whwpucJG1PEmI3B07nyJx+875ccs+yX2CqQJUxUw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+    .ck-editor__editable[role="textbox"] {
+        /* editing area */
+        min-height: 200px;
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="">
 
@@ -153,6 +168,19 @@
                     </div>
 
                 </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="control-label form-label">Image</label>
+                        <input type="file" class="dropify" name="favicon"
+                            data-default-file="{{ $consultation ? Storage::url($consultation->favicon) : '' }}"
+                            data-max-file-size="3M" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Comment<span style="color:red;">*</span></label>
+                        <textarea name="comment" class="form-control" id="" cols="30" rows="5"></textarea>
+                    </div>
+
+                </div>
         </div>
 
 
@@ -172,6 +200,28 @@
 
 
 @push('extra-js')
+<script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
+    integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $('.dropify').dropify();
+</script>
+<script>
+    ClassicEditor
+            .create(document.querySelector('#editor'))
+            .catch(error => {
+                console.error(error);
+            });
+</script>
+<script>
+    ClassicEditor
+            .create(document.querySelector('#editor2'))
+            .catch(error => {
+                console.error(error);
+            });
+</script>
 <script>
     $('.datepicker').datepicker({
         format: 'dd/mm/yyyy',
