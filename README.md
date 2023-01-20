@@ -40,3 +40,8 @@ php artisan db:seed --class=TypeOrder
 
 php artisan migrate --path=/database/migrations/2022_12_22_053519_add_type_id_to_table_test_orders.php
 php artisan migrate --path=/database/migrations/2022_12_22_201639_create_data_codes_table.php
+
+# Onco deployement
+
+php artisan migrate
+php artisan db:seed --class=TypeConsultationFileSeeder
