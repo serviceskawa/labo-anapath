@@ -105,7 +105,7 @@ class ConsultationController extends Controller
 
         // dd($request);
         $latest = Consultation::orderBy('id', 'DESC')->first();
-        $code = sprintf('%04d', $latest->id);
+        $code = sprintf('%04d', empty($latest->id) ? "1" : $latest->id);
 
         try {
             Consultation::Create(
@@ -124,7 +124,7 @@ class ConsultationController extends Controller
             return redirect()->route('consultation.index',)->with('success', "Consultation ajouté avec succès");;
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
-            dd($error);
+            // dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
@@ -213,7 +213,7 @@ class ConsultationController extends Controller
             return redirect()->route('consultation.index',)->with('success', "Consultation mis à jour avec succès");;
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
-            dd($error);
+            // dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
