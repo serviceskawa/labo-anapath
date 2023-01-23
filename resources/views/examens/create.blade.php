@@ -425,28 +425,28 @@
                 $(".examenReferenceInput").show();
 
             } else if (typeExamenOption == "Immuno Interne") {
-                $(".examenReferenceSelect").show();
-                $(".examenReferenceInput").hide();
-                $( "#examen_reference_select" ).select2({
-                    ajax: { 
-                    url: "{{route('test_order.get_all_test_order')}}",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            _token: CSRF_TOKEN,
-                            search: params.term // search term
-                        };
-                    },
-                    processResults: function (response) {
-                        return {
-                        results: response
-                        };
-                    },
-                    cache: true
-                    }
+                $(".examenReferenceSelect").hide();
+                $(".examenReferenceInput").show();
+                // $( "#examen_reference_select" ).select2({
+                //     ajax: { 
+                //     url: "{{route('test_order.get_all_test_order')}}",
+                //     dataType: 'json',
+                //     delay: 250,
+                //     data: function (params) {
+                //         return {
+                //             _token: CSRF_TOKEN,
+                //             search: params.term // search term
+                //         };
+                //     },
+                //     processResults: function (response) {
+                //         return {
+                //         results: response
+                //         };
+                //     },
+                //     cache: true
+                //     }
             
-                });
+                // });
             }else {
                 $(".examenReferenceInput").hide();
                 $(".examenReferenceSelect").hide();
