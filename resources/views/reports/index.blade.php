@@ -72,6 +72,11 @@
                                     class="btn btn-danger"><i class="mdi mdi-android-messages"></i> </a>
                                 <a type="button" href="{{ route('report.pdf', $item->id) }}"
                                     class="btn btn-secondary"><i class="mdi mdi-printer"></i> </a>
+                                @if ($item->status == 1)
+                                <a type="button" href="#" class="btn btn-success"><i
+                                        class="uil uil-envelope-upload"></i> </a>
+                                @endif
+
                             </td>
 
                         </tr>
