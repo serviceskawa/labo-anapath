@@ -177,4 +177,22 @@ class ReportController extends Controller
 
         return response()->json($template, 200);
     }
+
+    // Met à jour le statut livré
+    public function updateDeliverStatus($reportId)
+    {
+        if (!getOnlineUser()->can('edit-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $report = Report::findorfail($reportId);
+
+        if (empty($report)) {
+            return redirect()->back()->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
+        }
+        $report->fill([
+            "is_deliver" => 1,
+        ])->save();
+
+        return redirect()->back()->with('success', "Ce compte rendu a été livré ! ");
+    }
 }
