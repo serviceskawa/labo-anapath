@@ -126,6 +126,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pdf/{id}', [ReportController::class, 'pdf'])->name('report.pdf');
 
         Route::post('report-gettemplate', [ReportController::class, 'getTemplate'])->name('template.report-getTemplate');
+
+        // Mis à jour du statut livré
+        Route::get('updateDeliver/{id}', [ReportController::class, 'updateDeliverStatus'])->name('report.updateDeliver');
     });
 
     Route::prefix('settings')->group(function () {
