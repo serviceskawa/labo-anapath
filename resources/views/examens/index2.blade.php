@@ -132,12 +132,14 @@
                             <th>Date</th>
                             <th>Code</th>
                             <th>Patient</th>
+                            <th>Examens</th>
                             <th>Contrat</th>
-                            <th>Pièce jointe</th>
-                            <th>Examens demandés</th>
+                            {{-- <th>Pièce jointe</th> --}}
+                            {{-- <th>Examens demandés</th> --}}
                             <th>Montant</th>
                             <th>Compte rendu</th>
-                            <th>Type examen</th>
+                            {{-- <th>Type examen</th> --}}
+                            <th>Affecter à</th>
                             <th>Urgent</th>
                             <th>Actions</th>
 
@@ -202,15 +204,13 @@
                     name: 'patient'
                 },
                 {
+                    data: 'details',
+                    name: 'examens'
+                },
+                {
                     data: 'contrat',
                     name: 'contrat'
-                }, {
-                    data: 'examen_file',
-                    name: 'examen_file'
-                }, {
-                    data: 'details',
-                    name: 'details.test_name'
-                },
+                }, 
                 {
                     data: 'total',
                     name: 'total'
@@ -220,8 +220,8 @@
                     name: 'rendu'
                 },
                 {
-                    data: 'type',
-                    name: 'type'
+                    data: 'dropdown',
+                    name: 'dropdown'
                 },
                 {
                     data: 'urgence',
