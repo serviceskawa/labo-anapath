@@ -181,21 +181,12 @@
                         </div>
                     </li>
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarAppoint" aria-expanded="false"
-                            aria-controls="sidebarAppoint" class="side-nav-link">
+                        <a href="{{ route('appointement.index') }}" class="side-nav-link">
                             <i class="uil-calender"></i>
-                            <span> Rendez-vous </span>
-                            <span class="menu-arrow"></span>
+                            <span> Agenda</span>
                         </a>
-                        <div class="collapse" id="sidebarAppoint">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href="{{ route('appointement.index') }}">Ajouter un rendez-vous</a>
-                                </li>
-                
-                            </ul>
-                        </div>
                     </li>
+
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarConsultation" aria-expanded="false"
                             aria-controls="sidebarAppoint" class="side-nav-link">

@@ -45,5 +45,11 @@ php artisan migrate --path=/database/migrations/2022_12_22_201639_create_data_co
 
 php artisan migrate
 php artisan db:seed --class=TypeConsultationFileSeeder
-23/01/2023
+
+# 23/01/2023
+
 Creer Cytologie dans TypeOrder
+
+# 27/01/2023
+
+Rendre le type_consultation_id nullable

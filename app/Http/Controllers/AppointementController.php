@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\Appointment;
+use App\Models\Consultation;
 use Illuminate\Http\Request;
 
 class AppointementController extends Controller
@@ -156,5 +157,40 @@ class AppointementController extends Controller
         // }
         Appointment::find($id)->delete();
         return redirect()->route('appointement.index')->with('success', "Rendez-vous supprimé ! ");
+    }
+
+    public function createConsultation($appointementId)
+    {
+
+        $appointement = Appointment::findorfail($appointementId);
+
+        if (empty($appointement)) {
+            return back()->with('error', "Une Erreur est survenue. Ce rendez-vous n'existe pas");
+        }
+
+        // dd($request);
+        $latest = Consultation::orderBy('id', 'DESC')->first();
+        $code = sprintf('%04d', empty($latest->id) ? "1" : $latest->id);
+
+        try {
+            $consultation = Consultation::updateOrInsert(
+                ["appointment_id" => $appointement->id,],
+                [
+                    "code" => "CON" . $code,
+                    "patient_id" => $appointement->patient_id,
+                    "doctor_id" => $appointement->doctor_id,
+                    "date" => convertDateTime($appointement->date),
+
+                ]
+            );
+
+            $consultation = $appointement->consultation;
+
+            return redirect()->route('consultation.show', $consultation->id)->with('success', "Consultation ajouté avec succès");
+        } catch (\Throwable $ex) {
+            $error = $ex->getMessage();
+            dd($error);
+            return back()->with('error', "Échec de l'enregistrement ! ");
+        }
     }
 }

@@ -8,6 +8,10 @@
     @include('layouts.alerts')
 
     <div class="card my-3">
+
+        <a href="{{route('appointement.createConsultation', $appointement->id)}} " class="btn btn-success w-full">CREER
+            UNE CONSULTATION</a>
+
         <div class="card-header">
             <div class="col-12">
                 <div class="page-title-box">
@@ -22,6 +26,7 @@
             </div>
 
         </div>
+
         <div class="card-body">
 
             <form action="{{ route('appointement.update', $appointement->id) }}" method="post" autocomplete="off"

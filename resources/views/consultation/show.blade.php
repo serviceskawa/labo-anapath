@@ -169,6 +169,7 @@
 
                 </div>
                 <div class="row mb-3">
+                    @if (!empty($consultation->type))
                     @forelse ($consultation->type->type_files as $type_file)
                     <div class="col-md-6 mb-3">
                         <label class="control-label form-label">{{$type_file->title}}</label>
@@ -184,8 +185,7 @@
                     @empty
 
                     @endforelse
-
-
+                    @endif
                 </div>
         </div>
 

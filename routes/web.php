@@ -194,6 +194,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('update/{id}', [AppointementController::class, 'update'])->name('appointement.update');
         Route::get('getAppointements', [AppointementController::class, 'getAppointements'])->name('appointement.getAppointements');
         Route::get('show/{id}', [AppointementController::class, 'show'])->name('appointement.show');
+
+        // Create consultation
+        Route::get('createConsultation/{id}', [AppointementController::class, 'createConsultation'])->name('appointement.createConsultation');
     });
 
 

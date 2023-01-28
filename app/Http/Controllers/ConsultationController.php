@@ -54,7 +54,11 @@ class ConsultationController extends Controller
                 return $data->doctor->name;
             })
             ->addColumn('type', function ($data) {
-                return $data->type->name;
+                if (empty($data->type)) {
+                    return "";
+                } else {
+                    return $data->type->name;
+                }
             })
             ->rawColumns(['action', 'patient', 'doctor', 'type'])
             ->make(true);
@@ -168,14 +172,16 @@ class ConsultationController extends Controller
         }
 
         // dd('a');
-        foreach ($consultation->type->type_files as $type_file) {
-            $tab[$type_file->id] = [
-                "consultation_id" => $consultation->id,
-                "type_id" => $consultation->type_consultation_id,
-                "type_file_id" => $type_file->id,
-                "path" => empty($tabFile[$type_file->id]) ? "" : $tabFile[$type_file->id],
-                "comment" => empty($request->comment[$type_file->id]) ? "" : $request->comment[$type_file->id],
-            ];
+        if (!empty($consultation->type)) {
+            foreach ($consultation->type->type_files as $type_file) {
+                $tab[$type_file->id] = [
+                    "consultation_id" => $consultation->id,
+                    "type_id" => $consultation->type_consultation_id,
+                    "type_file_id" => $type_file->id,
+                    "path" => empty($tabFile[$type_file->id]) ? "" : $tabFile[$type_file->id],
+                    "comment" => empty($request->comment[$type_file->id]) ? "" : $request->comment[$type_file->id],
+                ];
+            }
         }
         try {
             $consultation->update(
@@ -195,19 +201,21 @@ class ConsultationController extends Controller
                 ]
             );
 
-            foreach ($tab as $key => $value) {
-                $exist = ConsultationTypeConsultationFiles::whereConsultationId($consultation->id)
-                    ->where('type_id', $consultation->type_consultation_id)
-                    ->where('type_file_id', $key)->first();
-                ConsultationTypeConsultationFiles::updateOrInsert([
-                    "consultation_id" => $value['consultation_id'],
-                    "type_id" => $value['type_id'],
-                    "type_file_id" => $value['type_file_id'],
-                ], [
-                    "path" => empty($value['path']) ? (empty($exist) ? "" : $exist->path) : $value['path'],
-                    "comment" => empty($value['comment']) ? (empty($exist) ? "" : $exist->comment) : $value['comment'],
-                ]);
-                // dd($exist);
+            if (!empty($consultation->type)) {
+                foreach ($tab as $key => $value) {
+                    $exist = ConsultationTypeConsultationFiles::whereConsultationId($consultation->id)
+                        ->where('type_id', $consultation->type_consultation_id)
+                        ->where('type_file_id', $key)->first();
+                    ConsultationTypeConsultationFiles::updateOrInsert([
+                        "consultation_id" => $value['consultation_id'],
+                        "type_id" => $value['type_id'],
+                        "type_file_id" => $value['type_file_id'],
+                    ], [
+                        "path" => empty($value['path']) ? (empty($exist) ? "" : $exist->path) : $value['path'],
+                        "comment" => empty($value['comment']) ? (empty($exist) ? "" : $exist->comment) : $value['comment'],
+                    ]);
+                    // dd($exist);
+                }
             }
 
             // ConsultationTypeConsultationFiles::insert($tab);

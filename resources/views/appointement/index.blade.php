@@ -84,7 +84,7 @@
         <div class="col-12">
             <div class="page-title-box">
                 <div class="page-title-right mr-3">
-                    <button class="btn btn-lg font-16 btn-danger" data-bs-toggle="modal"
+                    <button class="btn btn-lg font-16 btn-primary" data-bs-toggle="modal"
                         data-bs-target="#event-modal"><i class="mdi mdi-plus-circle-outline"></i> Ajouter un
                         nouvel rendez-vous</button>
                 </div>

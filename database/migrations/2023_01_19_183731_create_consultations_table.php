@@ -24,7 +24,7 @@ class CreateConsultationsTable extends Migration
                 ->constrained('patients')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->foreignId('type_consultation_id')
+            $table->foreignId('type_consultation_id')->nullable()
                 ->constrained('type_consultations')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
