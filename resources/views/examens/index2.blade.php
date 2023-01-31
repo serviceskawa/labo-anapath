@@ -68,7 +68,7 @@
                                         <select name="contrat_id" id="contrat_id" class="form-control">
                                             <option value="">Tous les contrats</option>
                                             @forelse ($contrats as $contrat)
-                                                <option value="{{ $contrat->name }}">{{ $contrat->name }}</option>
+                                                <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
                                             @empty
                                             @endforelse
                                         </select>
@@ -82,8 +82,8 @@
                                         <label for="example-fileinput" class="form-label">Status</label>
                                         <select name="status" id="exams_status" class="form-control">
                                             <option value="">Tous</option>
-                                            <option value="Valider">Valider</option>
-                                            <option value="En attente">En attente</option>
+                                            <option value="1">Valider</option>
+                                            <option value="0">En attente</option>
                                         </select>
                                     </div>
 
@@ -96,7 +96,7 @@
                                         <select name="type_examen" id="type_examen" class="form-control">
                                             <option value="">Tous</option>
                                             @forelse ($types_orders as $type)
-                                                <option value="{{ $type->title }}">{{ $type->title }}</option>
+                                                <option value="{{ $type->id }}">{{ $type->title }}</option>
                                             @empty
                                                 Ajouter un Type d'examen
                                             @endforelse
@@ -111,6 +111,21 @@
                                         <select name="cas_status" id="cas_status" class="form-control">
                                             <option value="">Tous</option>
                                             <option value="1">Urgent</option>
+                                        </select>
+                                    </div>
+
+                                </div> <!-- end col -->
+                                <div class="col-lg-3">
+
+                                    <div class="mb-3">
+                                        <label for="example-fileinput" class="form-label">Docteur</label>
+                                        <select name="" id="doctor_signataire" class="form-control">
+                                            <option value="">Tous</option>
+                                            @foreach (getUsersByRole('docteur') as $item)
+                                                <option value="{{ $item->id }}">
+                                                    {{ $item->lastname }} {{ $item->firstname }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
 
@@ -178,7 +193,16 @@
                 var table = $('#datatable1').DataTable({
                     processing: true,
                     serverSide: true,
-                    ajax: "{{ route('test_order.getTestOrdersforDatatable') }}",
+                    ajax: {
+                        url: "{{ route('test_order.getTestOrdersforDatatable') }}",
+                        data: function(d) {
+                            d.attribuate_doctor_id = $('#doctor_signataire').val()
+                            d.cas_status = $('#cas_status').val()
+                            d.contrat_id = $('#contrat_id').val()
+                            d.exams_status = $('#exams_status').val()
+                            d.type_examen = $('#type_examen').val()
+                        }
+                    },
                     columns: [{
                             data: 'id',
                             name: 'id'
@@ -233,35 +257,40 @@
 
                 // Recherche dans la colonne  contrat
                 $("#contrat_id").on("change", function() {
-                    table
-                        .columns(4)
-                        .search(this.value)
-                        .draw();
+                    table.draw();
+                    // table
+                    //     .columns(4)
+                    //     .search(this.value)
+                    //     .draw();
                 });
 
                 // Recherche dans la colonne  compte rendu
                 $("#exams_status").on("change", function() {
-                    table
-                        .columns(8)
-                        .search(this.value)
-                        .draw();
+                    table.draw();
+                    // table
+                    //     .columns(8)
+                    //     .search(this.value)
+                    //     .draw();
                 });
 
                 // Recherche dans la colonne  type d'examen
                 $("#type_examen").on("change", function() {
-                    table
-                        .columns(9)
-                        .search(this.value)
-                        .draw();
+                    table.draw();
+                    // table
+                    //     .columns(9)
+                    //     .search(this.value)
+                    //     .draw();
                 });
 
                 // Recherche selon les cas
                 $("#cas_status").on("change", function() {
-                    table
-                        .columns(10)
-                        .search(this.value)
-                        .draw();
+                    table.draw();
+                    // table
+                    //     .columns(10)
+                    //     .search(this.value)
+                    //     .draw();
                 });
+
                 $.fn.dataTable.ext.search.push(
                     function(settings, searchData, index, rowData, counter) {
                         var row = table.row(index).node();
@@ -279,7 +308,11 @@
 
                     }
                 );
-
+                // Recherche selon les docteurs signataires
+                $("#doctor_signataire").on("change", function() {
+                    // alert(this.value)
+                    table.draw();
+                });
             });
 
 

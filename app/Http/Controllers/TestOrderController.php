@@ -508,10 +508,10 @@ class TestOrderController extends Controller
         }
     }
 
-    public function getTestOrdersforDatatable()
+    public function getTestOrdersforDatatable(Request $request)
     {
 
-        $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])->orderBy('created_at', 'desc')->take(2);
+        $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])->orderBy('created_at', 'desc');
 
         return Datatables::of($data)->addIndexColumn()
             ->editColumn('created_at', function ($data) {
@@ -602,6 +602,24 @@ class TestOrderController extends Controller
             ->addColumn('dropdown', function ($data) {
                 $order = $data;
                 return view('examens.datatables.attribuate', compact('order'));
+            })
+            ->filter(function ($query) use ($request) {
+
+                if (!empty($request->get('attribuate_doctor_id'))) {
+                    $query->where('attribuate_doctor_id', $request->get('attribuate_doctor_id'));
+                }
+                if (!empty($request->get('cas_status'))) {
+                    $query->where('is_urgent', $request->get('cas_status'));
+                }
+                if (!empty($request->get('contrat_id'))) {
+                    $query->where('contrat_id', $request->get('contrat_id'));
+                }
+                if (!empty($request->get('type_examen'))) {
+                    $query->where('type_order_id', $request->get('type_examen'));
+                }
+                if (!empty($request->get('exams_status'))) {
+                    $query->where('status', $request->get('exams_status'));
+                }
             })
             ->rawColumns(['action', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
             ->make(true);
