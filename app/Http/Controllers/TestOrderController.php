@@ -442,6 +442,7 @@ class TestOrderController extends Controller
             'examen_reference_select' => 'nullable',
             'examen_reference_input' => 'nullable',
             'type_examen' => 'required|exists:type_orders,id',
+            'attribuate_doctor_id' => 'required|exists:doctors,id',
         ]);
 
         $contrat = Contrat::FindOrFail($data['contrat_id']);
@@ -499,6 +500,7 @@ class TestOrderController extends Controller
             $test_order->examen_file = $request->file('examen_file') ? $path_examen_file : "";
             $test_order->test_affiliate = $data['test_affiliate'] ? $data['test_affiliate'] : "";
             $test_order->type_order_id = $data['type_examen'];
+            $test_order->attribuate_doctor_id = $data['attribuate_doctor_id'];
             $test_order->save();
 
             return redirect()->route('details_test_order.index', $test_order->id)->with('success', "Demande d'examen a été mis à jour ! ");
