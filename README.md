@@ -53,3 +53,13 @@ Creer Cytologie dans TypeOrder
 # 27/01/2023
 
 Rendre le type_consultation_id nullable
+
+# 30/01/2023
+
+ck_options dans compte rendu
+
+https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-start.html
+
+# 31/01/23
+
+Ajout du champs attribuate_doctor_id à test_order pour l'attribution du docteur signataire

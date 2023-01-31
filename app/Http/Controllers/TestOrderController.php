@@ -44,8 +44,11 @@ class TestOrderController extends Controller
         // dd($examens);
         return view('examens.index', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
     }
+
+    // Utilise yanjra pour le tableau
     public function index2()
     {
+
         if (!getOnlineUser()->can('view-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
@@ -586,13 +589,28 @@ class TestOrderController extends Controller
             ->addColumn('urgence', function ($data) {
                 return $data->is_urgent;
             })
+            // ->addColumn('dropdown', function ($data) {
+            //     $users = getUsersByRole("docteur");
+            //     $dropdown = "<select name='doctor_id' class='form-control'>
+            //         <option value=''>Tous les contrats</option>";
+            //     $endDrop = "</select>";
+            //     $a = $users->map(function ($user) {
+            //         return "<option value='$user->id'>$user->email</option>";
+            //     });
+            //     return $dropdown . $a . $endDrop;
+            // })
             ->addColumn('dropdown', function ($data) {
-                $dropdown = "<select name='contrat_id' class='form-control'>
-                <option value=''>Tous les contrats</option>
-            </select>";
-                return $dropdown;
+                $order = $data;
+                return view('examens.datatables.attribuate', compact('order'));
             })
             ->rawColumns(['action', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
             ->make(true);
+    }
+
+    public function attribuateDoctor($doctorId, $orderId)
+    {
+        $testOrder = TestOrder::findorfail($orderId);
+        $testOrder->fill(["attribuate_doctor_id" => $doctorId])->save();
+        return response()->json($doctorId, 200);
     }
 }

@@ -62,7 +62,7 @@ class TestOrder extends Model
     {
         $data = Report::where('test_order_id', $id)->first();
         if (is_null($data)) {
-            return null; 
+            return null;
         } else {
             return $data->id;
         }
@@ -85,7 +85,7 @@ class TestOrder extends Model
      */
     public function doctor()
     {
-        return $this->belongsTo(Doctor::class, );
+        return $this->belongsTo(Doctor::class,);
     }
 
     /**
@@ -138,7 +138,7 @@ class TestOrder extends Model
         return $this->belongsTo(TypeOrder::class, 'type_order_id');
     }
 
-    
+
     /**
      * Get the invoice associated with the TestOrder
      *
@@ -149,4 +149,8 @@ class TestOrder extends Model
         return $this->hasOne(Invoice::class);
     }
 
+    public function attribuateToDoctor()
+    {
+        return $this->belongsTo(Doctor::class, 'attribuate_doctor_id');
+    }
 }

@@ -111,6 +111,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/test_order/update/{id}', [TestOrderController::class, 'update'])->name('test_order.update');
     Route::get('/testOrders', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('test_order.getTestOrdersforDatatable');
 
+    // Attribuer docteur signataire
+    Route::get('/attribuateDoctor/{doctorId}/{orderId}', [TestOrderController::class, 'attribuateDoctor'])->name('test_order.attribuateDoctor');
+
     //details_test_order
     Route::get('/test_order/details/{id}', [TestOrderController::class, 'details_index'])->name('details_test_order.index');
     Route::post('/test_order/details', [TestOrderController::class, 'details_store'])->name('details_test_order.store');

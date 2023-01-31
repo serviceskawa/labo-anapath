@@ -558,3 +558,17 @@ if (!function_exists('getConsultationTypeFiles')) {
         return $data;
     }
 }
+
+if (!function_exists('getUsersByRole')) {
+    function getUsersByRole($roleSlug)
+    {
+        $users = [];
+        $role = Role::whereSlug($roleSlug)->first();
+
+        if (!empty($role)) {
+            $users = $role->users;
+        }
+
+        return $users;
+    }
+}
