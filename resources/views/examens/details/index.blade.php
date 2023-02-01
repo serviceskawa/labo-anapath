@@ -1,198 +1,250 @@
 @extends('layouts.app2')
 
 @section('title', 'Details examen')
-@section('content')
-<div class="">
 
-    @include('layouts.alerts')
-
-
-    {{-- @include('examens.details.create') --}}
-
-    <div class="card my-3">
-        @if ($test_order->status == 1)
-        <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
-            class="btn btn-success w-full">CONSULTEZ LE
-            COMPTE RENDU</a>
-        @endif
-
-        <div class="card-header">
-            Demande d'examen : <strong>{{ $test_order->code }}</strong>
-        </div>
-        <div class="card-body">
-
-
-            <div class="row">
-                <div class="mb-3 col-md-6">
-                    <label for="simpleinput" class="form-label">Patient</label>
-                    <input type="text" name="name"
-                        value="{{ $test_order->getPatient()->lastname }} {{ $test_order->getPatient()->firstname }} - {{ $test_order->getPatient()->code }}"
-                        class="form-control" readonly>
-                </div>
-
-                <div class="mb-3 col-md-6">
-                    <label for="simpleinput" class="form-label">Médecin traitant</label>
-                    <input type="text" name="name" value="{{ $test_order->getDoctor()->name }}" class="form-control"
-                        readonly>
-                </div>
-
-                <input id="contrat_id" type="hidden" value="{{ $test_order->getContrat()->id }}">
-            </div>
-
-
-            <div class="row">
-                <div class="mb-3 col-md-6">
-                    <label for="exampleFormControlInput1" class="form-label">Référence hôpital</label>
-                    <input class="form-control" name="reference_hopital" value="{{ $test_order->reference_hopital }}"
-                        readonly>
-                </div>
-
-                <div class="mb-3 col-md-6">
-                    <label for="simpleinput" class="form-label">Hôpital de provenance</label>
-                    <input type="text" name="name" value="{{ $test_order->getHospital()->name }}" class="form-control"
-                        readonly>
-                </div>
-            </div>
-
-            <div class="col-mb-12">
-                <label class="form-label">Date prélèvement</label>
-                <input type="text" class="form-control date" name="prelevement_date" id="prelevement_date"
-                    value="{{$test_order->prelevement_date}}" readonly>
-            </div>
-
-            <div class="mb-3">
-                <div class="form-group">
-                    <label for="simpleinput" class="form-label">Contrat</label>
-                    <input type="text" name="name" class="form-control" value="{{ $test_order->getContrat()->name }}"
-                        readonly>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card mb-md-0 mb-3">
-        <div class="card-header">
-            Liste des examens demandés
-        </div>
-        <h5 class="card-title mb-0"></h5>
-
-        <div class="card-body">
-
-            <!-- Ajouter un examen | si le statut de la demande est 1 alors on peut plus ajouter de nouveau examen dans la demande-->
-            @if ($test_order->status != 1)
-            <form method="POST" id="addDetailForm" autocomplete="off">
-                @csrf
-                <div class="row d-flex align-items-end">
-                    <div class="col-md-4 col-12">
-                        <input type="hidden" name="test_order_id" id="test_order_id" value="{{ $test_order->id }}"
-                            class="form-control">
-
-                        <div class="mb-3">
-                            <label for="example-select" class="form-label">Examen</label>
-                            <select class="form-select select2" data-toggle="select2" id="test_id" name="test_id"
-                                required onchange="getTest()">
-                                <option>Sélectionner l'examen</option>
-                                @foreach ($tests as $test)
-                                <option data-category_test_id="{{ $test->category_test_id }}" value="{{ $test->id }}">{{
-                                    $test->name }}</option>
-                                @endforeach
-
-
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-2 col-12">
-
-                        <div class="mb-3">
-                            <label for="simpleinput" class="form-label">Prix</label>
-                            <input type="text" name="price" id="price" class="form-control" required readonly>
-                        </div>
-                    </div>
-                    <div class="col-md-2 col-12">
-                        <div class="mb-3">
-                            <label for="simpleinput" class="form-label">Remise</label>
-                            <input type="text" name="remise" id="remise" class="form-control" required readonly>
-                        </div>
-                    </div>
-                    <div class="col-md-2 col-12">
-                        <div class="mb-3">
-                            <label for="example-select" class="form-label">Total</label>
-
-                            <input type="text" name="total" id="total" class="form-control" required readonly>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 col-12">
-                        <div class="mb-3">
-                            <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
-
-                        </div>
-                    </div>
-                </div>
-
-            </form>
-            @endif
-
-            <div id="cardCollpase1" class="collapse pt-3 show">
-
-
-                <table id="datatable1" class="table detail-list-table table-striped dt-responsive nowrap w-100">
-                    <thead class="table-light">
-                        <tr>
-                            <th>#</th>
-                            <th>Examen</th>
-                            <th>Prix</th>
-                            <th>Remise</th>
-                            <th>Montant</th>
-                            <th>Actions</th>
-
-                        </tr>
-                    </thead>
-
-
-                    <tfoot>
-                        <tr>
-                            <td colspan="1" class="text-right">
-                                <strong>Total:</strong>
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-
-                            <td id="val">
-                                <input type="number" id="estimated_ammount" class="estimated_ammount" value="0"
-                                    readonly>
-                            </td>
-                            <td></td>
-
-                        </tr>
-                    </tfoot>
-                </table>
-
-                <div class="row mt-2 mx-3">
-                    @if ($test_order->status != 1)
-                    <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}" id="finalisationBtn"
-                        class="btn btn-info w-full disabled">ENREGISTRER</a>
-                    @endif
-                    @if ($test_order->status == 1)
-                    <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
-                        class="btn btn-success w-full">CONSULTEZ LE
-                        COMPTE RENDU</a>
-                    @endif
-                </div>
-            </div>
-
-        </div>
-    </div> <!-- end card-->
-
-</div>
+@section('css')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.css"
+        integrity="sha512-In/+MILhf6UMDJU4ZhDL0R0fEpsp4D3Le23m6+ujDWXwl3whwpucJG1PEmI3B07nyJx+875ccs+yX2CqQJUxUw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 @endsection
 
+@section('content')
+    <div class="">
+
+        @include('layouts.alerts')
+
+        {{-- @include('examens.details.create') --}}
+
+        <div class="card my-3">
+            @if ($test_order->status == 1)
+                <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
+                    class="btn btn-success w-full">CONSULTEZ LE
+                    COMPTE RENDU</a>
+            @endif
+
+            <div class="card-header">
+                Demande d'examen : <strong>{{ $test_order->code }}</strong>
+            </div>
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="simpleinput" class="form-label">Patient</label>
+                        <input type="text" name="name"
+                            value="{{ $test_order->getPatient()->lastname }} {{ $test_order->getPatient()->firstname }} - {{ $test_order->getPatient()->code }}"
+                            class="form-control" readonly>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="simpleinput" class="form-label">Médecin traitant</label>
+                        <input type="text" name="name" value="{{ $test_order->getDoctor()->name }}"
+                            class="form-control" readonly>
+                    </div>
+
+                    <input id="contrat_id" type="hidden" value="{{ $test_order->getContrat()->id }}">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Référence hôpital</label>
+                        <input class="form-control" name="reference_hopital" value="{{ $test_order->reference_hopital }}"
+                            readonly>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="simpleinput" class="form-label">Hôpital de provenance</label>
+                        <input type="text" name="name" value="{{ $test_order->getHospital()->name }}"
+                            class="form-control" readonly>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Date prélèvement</label>
+                        <input type="text" class="form-control date" name="prelevement_date" id="prelevement_date"
+                            value="{{ $test_order->prelevement_date }}" readonly>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label for="simpleinput" class="form-label">Contrat</label>
+                                <input type="text" name="name" class="form-control"
+                                    value="{{ $test_order->getContrat()->name }}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="exampleFormControlInput1" class="form-label">Type d'examen<span
+                                style="color:red;">*</span></label>
+                        <select class="form-control" readonly id="type_examen" name="type_examen">
+                            <option>Sélectionner le type d'examen</option>
+                            @forelse ($types_orders as $type)
+                                <option value="{{ $type->id }}"
+                                    {{ $test_order->type_order_id == $type->id ? 'selected' : '' }}>
+                                    {{ $type->title }}</option>
+                            @empty
+                                Ajouter un Type d'examen
+                            @endforelse
+                        </select>
+
+                        <label class="form-label mt-3">Docteur signataire</label>
+                        <select name="attribuate_doctor_id" id="" class="form-control" readonly>
+                            <option value="">Choississez un docteur signataire</option>
+                            @foreach (getUsersByRole('docteur') as $item)
+                                <option value="{{ $item->id }}"
+                                    {{ $test_order->attribuate_doctor_id == $item->id ? 'selected' : '' }}>
+                                    {{ $item->lastname }} {{ $item->firstname }} </option>
+                            @endforeach
+                        </select>
+
+                        <label class="form-label mt-3"">Cas urgent</label> <br>
+                        <input type="checkbox" id="switch3" class="form-control" name="is_urgent" readonly
+                            {{ $test_order->is_urgent != 0 ? 'checked' : '' }} data-switch="success" />
+                        <label for="switch3" data-on-label="Urgent" data-off-label="Normal"></label>
+
+                    </div>
+                    <div class="col-md-6">
+                        <label for="example-fileinput" class="form-label">Pièce jointe</label>
+                        <input type="file" class="dropify" name="favicon"
+                            data-default-file="{{ $test_order ? Storage::url($test_order->examen_file) : '' }}"
+                            data-max-file-size="3M" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card mb-md-0 mb-3">
+            <div class="card-header">
+                Liste des examens demandés
+            </div>
+            <h5 class="card-title mb-0"></h5>
+
+            <div class="card-body">
+
+                <!-- Ajouter un examen | si le statut de la demande est 1 alors on peut plus ajouter de nouveau examen dans la demande-->
+                @if ($test_order->status != 1)
+                    <form method="POST" id="addDetailForm" autocomplete="off">
+                        @csrf
+                        <div class="row d-flex align-items-end">
+                            <div class="col-md-4 col-12">
+                                <input type="hidden" name="test_order_id" id="test_order_id"
+                                    value="{{ $test_order->id }}" class="form-control">
+
+                                <div class="mb-3">
+                                    <label for="example-select" class="form-label">Examen</label>
+                                    <select class="form-select select2" data-toggle="select2" id="test_id"
+                                        name="test_id" required onchange="getTest()">
+                                        <option>Sélectionner l'examen</option>
+                                        @foreach ($tests as $test)
+                                            <option data-category_test_id="{{ $test->category_test_id }}"
+                                                value="{{ $test->id }}">{{ $test->name }}</option>
+                                        @endforeach
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-12">
+
+                                <div class="mb-3">
+                                    <label for="simpleinput" class="form-label">Prix</label>
+                                    <input type="text" name="price" id="price" class="form-control" required
+                                        readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-12">
+                                <div class="mb-3">
+                                    <label for="simpleinput" class="form-label">Remise</label>
+                                    <input type="text" name="remise" id="remise" class="form-control" required
+                                        readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-12">
+                                <div class="mb-3">
+                                    <label for="example-select" class="form-label">Total</label>
+
+                                    <input type="text" name="total" id="total" class="form-control" required
+                                        readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-12">
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                @endif
+
+                <div id="cardCollpase1" class="show collapse pt-3">
+
+                    <table id="datatable1" class="detail-list-table table-striped dt-responsive nowrap w-100 table">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Examen</th>
+                                <th>Prix</th>
+                                <th>Remise</th>
+                                <th>Montant</th>
+                                <th>Actions</th>
+
+                            </tr>
+                        </thead>
+
+                        <tfoot>
+                            <tr>
+                                <td colspan="1" class="text-right">
+                                    <strong>Total:</strong>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+
+                                <td id="val">
+                                    <input type="number" id="estimated_ammount" class="estimated_ammount"
+                                        value="0" readonly>
+                                </td>
+                                <td></td>
+
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="row mx-3 mt-2">
+                        @if ($test_order->status != 1)
+                            <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}"
+                                id="finalisationBtn" class="btn btn-info disabled w-full">ENREGISTRER</a>
+                        @endif
+                        @if ($test_order->status == 1)
+                            <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
+                                class="btn btn-success w-full">CONSULTEZ LE
+                                COMPTE RENDU</a>
+                        @endif
+                    </div>
+                </div>
+
+            </div>
+        </div> <!-- end card-->
+
+    </div>
+@endsection
 
 @push('extra-js')
-<script></script>
-<script type="text/javascript">
-    $(document).ready(function() {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
+        integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $('.dropify').dropify();
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
             var test_order = {!! json_encode($test_order) !!}
             // console.log(test_order)
 
@@ -412,11 +464,11 @@
             $.ajax({
                 type: "POST",
                 url: "{{ route('examens.getTestAndRemise') }}",
-                data:{
+                data: {
                     "_token": "{{ csrf_token() }}",
-                    testId:test_id, 
-                    contratId:contrat_id, 
-                    categoryTestId:category_test_id
+                    testId: test_id,
+                    contratId: contrat_id,
+                    categoryTestId: category_test_id
                 },
                 success: function(data) {
 
@@ -435,6 +487,5 @@
             });
 
         }
-
-</script>
+    </script>
 @endpush

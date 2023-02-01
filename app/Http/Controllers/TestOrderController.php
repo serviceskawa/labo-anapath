@@ -278,7 +278,8 @@ class TestOrderController extends Controller
 
         $details = DetailTestOrder::where('test_order_id', $test_order->id)->get();
 
-        return view('examens.details.index', compact(['test_order', 'details', 'tests']));
+        $types_orders = TypeOrder::all();
+        return view('examens.details.index', compact(['test_order', 'details', 'tests', 'types_orders']));
     }
 
     public function details_store(Request $request)
