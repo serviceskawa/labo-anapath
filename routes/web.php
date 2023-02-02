@@ -15,11 +15,13 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\TestOrderController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PrestationController;
 use App\Http\Controllers\AppointementController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\TestCategoryController;
 use App\Http\Controllers\DetailsContratController;
 use App\Http\Controllers\TypeConsultationController;
+use App\Http\Controllers\CategoryPrestationController;
 use App\Http\Controllers\SettingReportTemplateController;
 
 /*
@@ -218,5 +220,25 @@ Route::middleware(['auth'])->group(function () {
         Route::get('show/{id}', [ConsultationController::class, 'show'])->name('consultation.show');
         Route::get('delete/{id}', [ConsultationController::class, 'destroy'])->name('consultation.delete');
         Route::get('getConsultations', [ConsultationController::class, 'getConsultations'])->name('consultation.getConsultations');
+    });
+
+
+    Route::prefix('category_prestation')->group(function () {
+        Route::get('', [CategoryPrestationController::class, 'index'])->name('categoryPrestation.index');
+        Route::get('create', [CategoryPrestationController::class, 'create'])->name('categoryPrestation.create');
+        Route::post('store', [CategoryPrestationController::class, 'store'])->name('categoryPrestation.store');
+        Route::post('update', [CategoryPrestationController::class, 'update'])->name('categoryPrestation.update');
+        Route::get('show/{id}', [CategoryPrestationController::class, 'show'])->name('categoryPrestation.show');
+        Route::get('edit/{id}', [CategoryPrestationController::class, 'edit'])->name('categoryPrestation.edit');
+        Route::get('delete/{id}', [CategoryPrestationController::class, 'destroy'])->name('categoryPrestation.delete');
+    });
+    Route::prefix('prestation')->group(function () {
+        Route::get('', [PrestationController::class, 'index'])->name('prestation.index');
+        Route::get('create', [PrestationController::class, 'create'])->name('prestation.create');
+        Route::post('store', [PrestationController::class, 'store'])->name('prestation.store');
+        Route::post('update', [PrestationController::class, 'update'])->name('prestation.update');
+        Route::get('show/{id}', [PrestationController::class, 'show'])->name('prestation.show');
+        Route::get('edit/{id}', [PrestationController::class, 'edit'])->name('prestation.edit');
+        Route::get('delete/{id}', [PrestationController::class, 'destroy'])->name('prestation.delete');
     });
 });
