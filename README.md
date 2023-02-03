@@ -65,3 +65,5 @@ https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-st
 Ajout du champs attribuate_doctor_id à test_order pour l'attribution du docteur signataire
 
 demande d'examen, ajout de la fonction filter pour le tableau de index2; retrait des titres de values et ajout des ids;
+
+php artisan db:seed --class=CategoryPrestationSeeder
