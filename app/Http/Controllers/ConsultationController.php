@@ -8,6 +8,7 @@ use App\Models\Patient;
 use App\Models\Consultation;
 use Illuminate\Http\Request;
 use App\Models\TypeConsultation;
+use App\Models\CategoryPrestation;
 use App\Models\ConsultationTypeConsultationFiles;
 
 class ConsultationController extends Controller
@@ -68,7 +69,12 @@ class ConsultationController extends Controller
     {
         $patients = Patient::all();
         $doctors = Doctor::all();
-        $types = TypeConsultation::all();
+        // $types = TypeConsultation::all();
+
+        // Le types de consultation sont les prestations de typecategorie consultation
+        $categoryPrestation =  CategoryPrestation::whereSlug('Consultation')->first();
+        $types = $categoryPrestation->prestations;
+
         return view('consultation.create', compact('patients', 'doctors', 'types'));
     }
 
