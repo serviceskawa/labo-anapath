@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DataTables;
 use App\Models\Doctor;
 use App\Models\Patient;
+use App\Models\Prestation;
 use App\Models\Consultation;
 use Illuminate\Http\Request;
 use App\Models\TypeConsultation;
@@ -69,13 +70,12 @@ class ConsultationController extends Controller
     {
         $patients = Patient::all();
         $doctors = Doctor::all();
-        // $types = TypeConsultation::all();
+        $types = TypeConsultation::all();
 
-        // Le types de consultation sont les prestations de typecategorie consultation
         $categoryPrestation =  CategoryPrestation::whereSlug('Consultation')->first();
-        $types = $categoryPrestation->prestations;
+        $prestations = $categoryPrestation->prestations;
 
-        return view('consultation.create', compact('patients', 'doctors', 'types'));
+        return view('consultation.create', compact('patients', 'doctors', 'types', 'prestations'));
     }
 
     public function show($id)
@@ -87,11 +87,13 @@ class ConsultationController extends Controller
 
         $consultation = Consultation::findOrFail($id);
 
+        $categoryPrestation =  CategoryPrestation::whereSlug('Consultation')->first();
+        $prestations = $categoryPrestation->prestations;
         if (empty($consultation)) {
             return back()->with('error', "Une Erreur est survenue. Cette consultation n'existe pas");
         }
 
-        return view('consultation.show', compact('patients', 'doctors', 'types', 'consultation'));
+        return view('consultation.show', compact('patients', 'doctors', 'types', 'consultation', 'prestations'));
     }
 
     public function store(Request $request)
@@ -103,7 +105,7 @@ class ConsultationController extends Controller
             'status' => 'required',
             'date' => 'required',
             'motif' => 'nullable',
-            'fees' => 'required',
+            'fees' => 'nullable',
             'anamnese' => 'nullable',
             'examen_physique' => 'nullable',
             'diagnostic' => 'nullable',
@@ -111,12 +113,18 @@ class ConsultationController extends Controller
             'payement_mode' => 'required',
             'next_appointment' => 'nullable',
             'id' => 'nullable',
+            'prestation_id' => 'required|exists:prestations,id',
         ]);
 
         // dd($request);
         $latest = Consultation::orderBy('id', 'DESC')->first();
         $code = sprintf('%04d', empty($latest->id) ? "1" : $latest->id);
 
+        $prestation = Prestation::findorfail($data['prestation_id']);
+
+        if (empty($prestation)) {
+            return redirect()->route('consultation.index',)->with('error', "Cette prestation n'existe pas");;
+        }
         try {
             Consultation::Create(
                 [
@@ -126,15 +134,16 @@ class ConsultationController extends Controller
                     "type_consultation_id" => $data['type_id'],
                     "status" => $data['status'],
                     "date" => convertDateTime($data['date']),
-                    "fees" => $data['fees'],
+                    "fees" => $prestation->price,
                     "payement_mode" => $data['payement_mode'],
                     "next_appointment" => convertDateTime($data['next_appointment']),
+                    "prestation_id" => $data['prestation_id'],
                 ]
             );
             return redirect()->route('consultation.index',)->with('success', "Consultation ajouté avec succès");;
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
-            // dd($error);
+            dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
@@ -149,19 +158,25 @@ class ConsultationController extends Controller
             'status' => 'required',
             'date' => 'required',
             'motif' => 'nullable',
-            'fees' => 'required',
+            'fees' => 'nullable',
             'anamnese' => 'nullable',
             'examen_physique' => 'nullable',
             'diagnostic' => 'nullable',
             'antecedent' => 'nullable',
             'payement_mode' => 'nullable',
             'next_appointment' => 'nullable',
+            'prestation_id' => 'required|exists:prestations,id',
         ]);
 
         $consultation = Consultation::findOrFail($id);
 
         if (empty($consultation)) {
             return back()->with('error', "Une Erreur est survenue. Cette consultation n'existe pas");
+        }
+
+        $prestation = Prestation::findorfail($data['prestation_id']);
+        if (empty($prestation)) {
+            return redirect()->route('consultation.index',)->with('error', "Cette prestation n'existe pas");;
         }
         // dd($request);
         $tab = [];
@@ -198,12 +213,13 @@ class ConsultationController extends Controller
                     "status" => $data['status'],
                     "date" => convertDateTime($data['date']),
                     "motif" => $data['motif'],
-                    "fees" => $data['fees'],
+                    "fees" => $prestation->price,
                     "anamnese" => $data['anamnese'],
                     "examen_physique" => $data['examen_physique'],
                     "diagnostic" => $data['diagnostic'],
                     "antecedent" => $data['antecedent'],
                     "next_appointment" => convertDateTime($data['next_appointment']),
+                    "prestation_id" => $data['prestation_id'],
                 ]
             );
 
