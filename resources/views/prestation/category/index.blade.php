@@ -8,7 +8,7 @@
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#standard-modal">Ajouter une nouvelle catégorie</button>
                 </div>
-                <h4 class="page-title">Catégories d'examen</h4>
+                <h4 class="page-title">Catégories de prestation</h4>
             </div>
 
             <!----MODAL---->
@@ -32,7 +32,7 @@
                         aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                     <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                 </div>
-                <h5 class="card-title mb-0">Liste des catégories d'examens</h5>
+                <h5 class="card-title mb-0">Liste des catégories de prestations</h5>
 
                 <div id="cardCollpase1" class="show collapse pt-3">
 
