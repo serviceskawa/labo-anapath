@@ -6,16 +6,16 @@
     <div class="">
 
         @include('layouts.alerts')
-
+        @include('component.modal_create_patient')
         <div class="card my-3">
             <div class="card-header">
                 <div class="col-12">
                     <div class="page-title-box">
-                        {{-- <div class="page-title-right mt-0">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#standard-modal">Ajouter un nouveau patient</button>
-                    </div> --}}
-                        Créer une consultation
+                        <div class="page-title-right mt-0">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#standard-modal">Ajouter un nouveau patient</button>
+                        </div>
+                        Ajouter une nouvelle consultation
                     </div>
 
                 </div>
@@ -60,7 +60,7 @@
 
                     <div class="row mb-3">
                         <div class="col-md-3">
-                            <label for="exampleFormControlInput1" class="form-label">Type de consultation<span
+                            <label for="exampleFormControlInput1" class="form-label">Categorie de consultation<span
                                     style="color:red;">*</span></label>
                             <select class="form-select select2" data-toggle="select2" name="type_id" id="type_id"
                                 required>
@@ -83,15 +83,16 @@
                         </div>
 
                         <div class="col-md-3">
-                            <label class="control-label form-label">Status</label>
+                            <label class="control-label form-label">Statut de la consultation</label>
                             <select class="form-select" name="status" id="priority" required="">
-                                <option value="pending">Pending </option>
+                                <option value="pending">En cours </option>
                                 <option value="approved">Approuvé </option>
                                 <option value="cancel">Rejetter</option>
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Heure <span style="color:red;">*</span></label>
+                            <label class="form-label">Date(Date et heure par defaut) <span
+                                    style="color:red;">*</span></label>
                             <input type="datetime-local" class="form-control" name="date" value="">
                         </div>
                         {{-- <div class="col-md-3">
@@ -99,7 +100,7 @@
                         <input type="number" class="form-control" name="fees" value="">
                     </div> --}}
                     </div>
-
+                    {{-- 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="control-label form-label">Methode de paiement</label>
@@ -113,11 +114,11 @@
                             <input type="datetime-local" class="form-control" name="next_appointment" value="">
                         </div>
 
-                    </div>
+                    </div> --}}
             </div>
 
             <div class="modal-footer">
-                <button type="submit" class="btn w-100 btn-warning">Enregistrer</button>
+                <button type="submit" class="btn w-100 btn-success">Ajouter une nouvelle consultation</button>
             </div>
 
             </form>
@@ -167,5 +168,50 @@
         //             }
         //         });
         //     });
+    </script>
+
+    {{-- Patient modal submit --}}
+    <script>
+        $(document).ready(function() {
+
+            $('#createPatientForm').on('submit', function(e) {
+                e.preventDefault();
+                let code = $('#code').val();
+                let lastname = $('#lastname').val();
+                let firstname = $('#firstname').val();
+                let age = $('#age').val();
+                let telephone1 = $('#telephone1').val();
+                let genre = $('#genre').val();
+                // alert(firstname);
+                $.ajax({
+                    url: "{{ route('patients.storePatient') }}",
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        code: code,
+                        lastname: lastname,
+                        firstname: firstname,
+                        age: age,
+                        telephone1: telephone1,
+                        genre: genre
+                    },
+                    success: function(data) {
+
+                        $('#createPatientForm').trigger("reset")
+                        $('#standard-modal').modal('hide');
+                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                        $('#patient_id').append('<option value="' + data.id + '">' + data.code +
+                                ' - ' + data.firstname + ' ' + data.lastname + '</option>')
+                            .trigger('change').val(data.id);
+
+                    },
+                    error: function(data) {
+                        console.log(data)
+                    },
+                    // processData: false,
+                });
+
+            });
+        });
     </script>
 @endpush

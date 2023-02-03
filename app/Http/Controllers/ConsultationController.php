@@ -110,7 +110,7 @@ class ConsultationController extends Controller
             'examen_physique' => 'nullable',
             'diagnostic' => 'nullable',
             'antecedent' => 'nullable',
-            'payement_mode' => 'required',
+            'payement_mode' => 'nullable',
             'next_appointment' => 'nullable',
             'id' => 'nullable',
             'prestation_id' => 'required|exists:prestations,id',
@@ -135,8 +135,8 @@ class ConsultationController extends Controller
                     "status" => $data['status'],
                     "date" => convertDateTime($data['date']),
                     "fees" => $prestation->price,
-                    "payement_mode" => $data['payement_mode'],
-                    "next_appointment" => convertDateTime($data['next_appointment']),
+                    "payement_mode" => !empty($data['payement_mode']) ? $data['payement_mode'] : "espèce",
+                    "next_appointment" => !empty($data['next_appointment']) ? convertDateTime($data['next_appointment']) : null,
                     "prestation_id" => $data['prestation_id'],
                 ]
             );
@@ -220,6 +220,8 @@ class ConsultationController extends Controller
                     "antecedent" => $data['antecedent'],
                     "next_appointment" => convertDateTime($data['next_appointment']),
                     "prestation_id" => $data['prestation_id'],
+                    "payement_mode" => !empty($data['payement_mode']) ? $data['payement_mode'] : "espèce",
+                    "next_appointment" => !empty($data['next_appointment']) ? convertDateTime($data['next_appointment']) : null,
                 ]
             );
 
