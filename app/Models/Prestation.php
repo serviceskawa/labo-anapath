@@ -19,6 +19,6 @@ class Prestation extends Model
      */
     public function category()
     {
-        return $this->belongsTo(CategoryPrestation::class);
+        return $this->belongsTo(CategoryPrestation::class, 'category_prestation_id');
     }
 }

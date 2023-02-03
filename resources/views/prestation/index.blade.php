@@ -52,7 +52,7 @@
                             @foreach ($prestations as $item)
                                 <tr>
                                     <td>{{ $item->name }}</td>
-                                    <td>{{ $item->category()->name }}</td>
+                                    <td>{{ $item->category->name }}</td>
                                     <td>{{ number_format($item->price, 0, '.', '') }}</td>
                                     <td>
                                         <button type="button" onclick="edit({{ $item->id }})"
@@ -87,7 +87,7 @@
                 cancelButtonText: "Non !",
             }).then(function(result) {
                 if (result.value) {
-                    window.location.href = "{{ url('test/delete') }}" + "/" + id;
+                    window.location.href = "{{ url('prestations/delete') }}" + "/" + id;
                     Swal.fire(
                         "Suppression !",
                         "En cours de traitement ...",
@@ -132,12 +132,12 @@
             // Populate Data in Edit Modal Form
             $.ajax({
                 type: "GET",
-                url: "{{ url('gettest') }}" + '/' + e_id,
+                url: "{{ url('prestations/edit') }}" + '/' + e_id,
                 success: function(data) {
 
                     $('#id2').val(data.id);
                     $('#price2').val(data.price);
-                    $('#category_test_id2').val(data.category_test_id).change();
+                    $('#category_prestation_id2').val(data.category_prestation_id).change();
                     $('#name2').val(data.name);
 
                     //

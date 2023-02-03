@@ -232,7 +232,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('edit/{id}', [CategoryPrestationController::class, 'edit'])->name('categoryPrestation.edit');
         Route::get('delete/{id}', [CategoryPrestationController::class, 'destroy'])->name('categoryPrestation.delete');
     });
-    Route::prefix('prestation')->group(function () {
+    Route::prefix('prestations')->group(function () {
         Route::get('', [PrestationController::class, 'index'])->name('prestation.index');
         Route::get('create', [PrestationController::class, 'create'])->name('prestation.create');
         Route::post('store', [PrestationController::class, 'store'])->name('prestation.store');

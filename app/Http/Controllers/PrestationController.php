@@ -26,16 +26,6 @@ class PrestationController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -43,13 +33,15 @@ class PrestationController extends Controller
      */
     public function store(Request $request)
     {
-        if (!getOnlineUser()->can('create-examens')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('create-examens')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+
+        // dd($request);
         $data = $this->validate($request, [
             'price' => 'required |numeric|gt:0',
-            'name' => 'required |unique:tests,name',
-            'category_test_id' => 'required'
+            'name' => 'required |unique:prestations,name',
+            'category_prestation_id' => 'required'
         ]);
 
         try {
@@ -82,7 +74,7 @@ class PrestationController extends Controller
         if (!getOnlineUser()->can('edit-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = Test::find($id);
+        $data = Prestation::find($id);
         return response()->json($data);
     }
 
@@ -95,22 +87,22 @@ class PrestationController extends Controller
      */
     public function update(Request $request)
     {
-        if (!getOnlineUser()->can('edit-examens')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('edit-examens')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $data = $this->validate($request, [
             'id2' => 'required ',
             'price2' => 'required |numeric|gt:0',
             'name2' => 'required ',
-            'category_test_id2' => 'required'
+            'category_prestation_id2' => 'required'
         ]);
 
         try {
-            $test = Test::find($data['id2']);
-            $test->name = $data['name2'];
-            $test->price = $data['price2'];
-            $test->category_test_id = $data['category_test_id2'];
-            $test->save();
+            $prestation = Prestation::find($data['id2']);
+            $prestation->name = $data['name2'];
+            $prestation->price = $data['price2'];
+            $prestation->category_prestation_id = $data['category_prestation_id2'];
+            $prestation->save();
             return back()->with('success', " Mise à jour effectuée avec succès  ! ");
         } catch (\Throwable $ex) {
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
@@ -125,25 +117,11 @@ class PrestationController extends Controller
      */
     public function destroy($id)
     {
-        if (!getOnlineUser()->can('delete-examens')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
-        $test = Test::find($id)->delete();
+        // if (!getOnlineUser()->can('delete-examens')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+        $prestation = Prestation::find($id)->delete();
 
         return back()->with('success', " Elément supprimé avec succès  ! ");
-    }
-
-    public function getTestAndRemise(Request $request)
-    {
-
-        $data = Test::find($request->testId);
-
-        $detail = Details_Contrat::where(['contrat_id' => $request->contratId, 'category_test_id' => $request->categoryTestId])->first();
-        if ($detail == null) {
-            $detail = 0;
-        } else {
-            $detail = $detail->pourcentage;
-        }
-        return response()->json(["data" => $data, "detail" => $detail]);
     }
 }

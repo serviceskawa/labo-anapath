@@ -28,9 +28,9 @@ date_default_timezone_set('Europe/Paris');
     </div>
     <div style="display: inline-block; position: absolute; right: 0px;width: 200px;padding: 10px;  margin-top:-20px">
         <p>
-            <b>N° ANAPTH :</b> {{$code}}
+            <b>N° ANAPTH :</b> {{ $code }}
             <br>
-            <b>Date :</b> {{$current_date}}
+            <b>Date :</b> {{ $current_date }}
         </p>
     </div>
     <div
@@ -47,14 +47,13 @@ date_default_timezone_set('Europe/Paris');
 
             <p style="margin-left:10px; margin-right:10px; display:block; width: 100%;">
 
-
             <table style="max-width: 100%;width: 500px ">
                 <tbody>
                     <tr>
                         <th width="25%;">Nom :</th>
                         <td width="25%;">{{ $patient_firstname }} </td>
                         <th width="40%;">Date prélèvement : </th>
-                        <td width="20%;">{{$prelevement_date}} </td>
+                        <td width="20%;">{{ $prelevement_date }} </td>
                     </tr>
                     <tr>
                         <th>Prénoms :</th>
@@ -86,17 +85,13 @@ date_default_timezone_set('Europe/Paris');
         style="font-size: 1.5em; padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255);">
         <b>Récapitulatifs</b>
     </legend>
-    <br>
-    <div class="border_t"></div>
+    {{-- <br> --}}
+    {{-- <div class="border_t"></div> --}}
 
-    <div style="text-align: justify;">
-        <div>
-            {!! $content !!}
-        </div>
-    </div>
-    <br><br><br>
+    {!! $content !!}
+    {{-- <br><br><br> --}}
 
-    <div class="border_b"></div>
+    {{-- <div class="border_b"></div> --}}
 
     <div style="">
         <table style="width: 100%;">
@@ -105,21 +100,21 @@ date_default_timezone_set('Europe/Paris');
 
                 <td style="text-align: center;    width: 33%">
                     @if ($signatory1 != null)
-                    <img width="100" src="{{ storage_path('app/public/' . $signature1) }}" alt=""><br><br>{{
-                    $signatory1 }}
+                        <img width="100" src="{{ storage_path('app/public/' . $signature1) }}"
+                            alt=""><br><br>{{ $signatory1 }}
                     @endif
                 </td>
                 <td style="text-align: center;    width: 33%">
                     @if ($signatory2 != null)
-                    <img width="200" src="{{ storage_path('app/public/' . $signature2) }}" alt=""><br><br>{{
-                    $signatory2 }}
+                        <img width="200" src="{{ storage_path('app/public/' . $signature2) }}"
+                            alt=""><br><br>{{ $signatory2 }}
                     @endif
 
                 </td>
                 <td style="text-align: center;    width: 33%">
                     @if ($signatory3 != null)
-                    <img width="85" src="{{ storage_path('app/public/' . $signature3) }}" alt=""><br><br>{{
-                    $signatory3 }}
+                        <img width="85" src="{{ storage_path('app/public/' . $signature3) }}"
+                            alt=""><br><br>{{ $signatory3 }}
                     @endif
                 </td>
             </tr>

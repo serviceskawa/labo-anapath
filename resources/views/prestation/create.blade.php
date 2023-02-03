@@ -6,14 +6,14 @@
                 <h4 class="modal-title" id="standard-modalLabel">Ajouter un nouvel examen</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
-            <form action="{{ route('examens.store') }}" method="POST" autocomplete="off">
+            <form action="{{ route('prestation.store') }}" method="POST" autocomplete="off">
                 @csrf
                 <div class="modal-body">
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
                     <div class="mb-3">
                         <label for="example-select" class="form-label">Catégorie parente<span
                                 style="color:red;">*</span></label>
-                        <select class="form-select" id="example-select" name="category_test_id" required>
+                        <select class="form-select" id="example-select" name="category_prestation_id" required>
                             <option value="">Sélectionner la catégorie</option>
                             @foreach ($categories as $categorie)
                                 <option value="{{ $categorie->id }}">{{ $categorie->name }}</option>
@@ -23,7 +23,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="simpleinput" class="form-label">Nom de l'examen<span
+                        <label for="simpleinput" class="form-label">Nom de la prestation<span
                                 style="color:red;">*</span></label>
                         <input type="text" name="name" class="form-control" required>
                     </div>
