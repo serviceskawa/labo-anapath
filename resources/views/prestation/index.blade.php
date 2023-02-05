@@ -39,7 +39,8 @@
                     <table id="datatable1" class="table-striped dt-responsive nowrap w-100 table">
                         <thead>
                             <tr>
-                                <th>Nom de l'examen</th>
+                                <th>#</th>
+                                <th>Nom de la prestation</th>
                                 <th>Catégorie</th>
                                 <th>Prix</th>
                                 <th>Actions</th>
@@ -49,8 +50,9 @@
 
                         <tbody>
 
-                            @foreach ($prestations as $item)
+                            @foreach ($prestations as $key => $item)
                                 <tr>
+                                    <td>{{ $key + 1 }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->category->name }}</td>
                                     <td>{{ number_format($item->price, 0, '.', '') }}</td>
