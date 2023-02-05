@@ -233,8 +233,11 @@
                     <div class="card-body">
                         <p><b>Code</b> : {{ $consultation->code }}</p>
                         <p><b>Statut</b> : {{ $consultation->status == 'pending' ? 'En cours' : 'Terminé' }}</p>
-                        <p><b>Créé le</b> : {{ date_format($consultation->created_at, 'd/m/Y') }}</p>
-                        <p><b>Dernière mise à jour</b> : {{ date_format($consultation->updated_at, 'd/m/Y') }}</p>
+                        <p><b>Créé le</b> :
+                            {{ empty($consultation->created_at) ? '' : date_format($consultation->created_at, 'd/m/Y') }}
+                        </p>
+                        <p><b>Dernière mise à jour</b> :
+                            {{ empty($consultation->updated_at) ? '' : date_format($consultation->updated_at, 'd/m/Y') }}</p>
                         <p><b>Categorie de consultation</b> :
                             {{ !empty($consultation->type) ? $consultation->type->name : '' }}</p>
                         <p><b>Prestation</b> : {{ $consultation->prestation->name }}</p>
