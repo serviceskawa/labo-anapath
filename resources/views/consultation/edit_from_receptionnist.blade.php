@@ -237,11 +237,15 @@
                             {{ empty($consultation->created_at) ? '' : date_format($consultation->created_at, 'd/m/Y') }}
                         </p>
                         <p><b>Dernière mise à jour</b> :
-                            {{ empty($consultation->updated_at) ? '' : date_format($consultation->updated_at, 'd/m/Y') }}</p>
+                            {{ empty($consultation->updated_at) ? '' : date_format($consultation->updated_at, 'd/m/Y') }}
+                        </p>
                         <p><b>Categorie de consultation</b> :
                             {{ !empty($consultation->type) ? $consultation->type->name : '' }}</p>
-                        <p><b>Prestation</b> : {{ $consultation->prestation->name }}</p>
-                        <p><b>Prochaine consultation</b> : {{ date_format($consultation->updated_at, 'd/m/Y') }}</p>
+                        <p><b>Prestation</b> :
+                            {{ empty($consultation->prestation) ? '' : $consultation->prestation->name }}</p>
+                        <p><b>Prochaine consultation</b> :
+                            {{ empty($consultation->next_appointment) ? '' : date_format($consultation->next_appointment, 'd/m/Y') }}
+                        </p>
                     </div>
                 </div>
 
