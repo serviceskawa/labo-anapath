@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Doctor;
 use App\Models\Patient;
+use App\Models\Prestation;
 use App\Models\TypeConsultation;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ConsultationTypeConsultationFiles;
@@ -44,4 +45,15 @@ class Consultation extends Model
     {
         return $this->hasMany(ConsultationTypeConsultationFiles::class, 'consultation_id');
     }
+
+    /**
+     * Get the prestation that owns the Consultation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function prestation()
+    {
+        return $this->belongsTo(Prestation::class, 'prestation_id');
+    }
+    
 }

@@ -220,6 +220,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('show/{id}', [ConsultationController::class, 'show'])->name('consultation.show');
         Route::get('delete/{id}', [ConsultationController::class, 'destroy'])->name('consultation.delete');
         Route::get('getConsultations', [ConsultationController::class, 'getConsultations'])->name('consultation.getConsultations');
+
+        Route::get('edit/{id}', [ConsultationController::class, 'edit'])->name('consultation.edit');
+        Route::post('update_by_doctor/{id}', [ConsultationController::class, 'update_by_doctor'])->name('consultation.updateDoctor');
+        Route::post('update_type_consultation', [ConsultationController::class, 'update_type_consultation'])->name('consultation.updateTypeConsultation');
     });
 
 

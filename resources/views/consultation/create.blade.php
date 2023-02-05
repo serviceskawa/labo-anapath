@@ -59,17 +59,19 @@
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-3">
-                            <label for="exampleFormControlInput1" class="form-label">Categorie de consultation<span
-                                    style="color:red;">*</span></label>
-                            <select class="form-select select2" data-toggle="select2" name="type_id" id="type_id"
-                                required>
-                                <option>Sélectionner le type de consultation</option>
-                                @foreach ($types as $type)
-                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        @if ($user->hasRole('docteur') || $user->hasRole('superadmin'))
+                            <div class="col-md-3">
+                                <label for="exampleFormControlInput1" class="form-label">Categorie de consultation<span
+                                        style="color:red;">*</span></label>
+                                <select class="form-select select2" data-toggle="select2" name="type_id" id="type_id">
+                                    <option value="">Sélectionner le type de consultation</option>
+                                    @foreach ($types as $type)
+                                        <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
+
                         <div class="col-md-3">
                             <label for="exampleFormControlInput1" class="form-label">Prestations<span
                                     style="color:red;">*</span></label>

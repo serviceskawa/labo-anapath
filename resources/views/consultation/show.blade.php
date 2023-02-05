@@ -3,8 +3,7 @@
 @section('title', 'Mettre à jour une consultation')
 
 @section('css')
-    <link href="{{ asset('/adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('/adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" />
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.css"
         integrity="sha512-In/+MILhf6UMDJU4ZhDL0R0fEpsp4D3Le23m6+ujDWXwl3whwpucJG1PEmI3B07nyJx+875ccs+yX2CqQJUxUw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -105,9 +104,9 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label class="control-label form-label">Status</label>
+                            <label class="control-label form-label">Statut</label>
                             <select class="form-select" name="status" id="priority" required="">
-                                <option value="pending" {{ $consultation->status == 'pending' ? 'selected' : '' }}>Pending
+                                <option value="pending" {{ $consultation->status == 'pending' ? 'selected' : '' }}>En cours
                                 </option>
                                 <option value="approved" {{ $consultation->status == 'approved' ? 'selected' : '' }}>
                                     Approuvé
@@ -125,6 +124,25 @@
                             <label class="form-label">Frais <span style="color:red;">*</span></label>
                             <input type="number" class="form-control" name="fees" value="{{ $consultation->fees }}">
                         </div> --}}
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="control-label form-label">Methode de paiement</label>
+                            <select class="form-select" name="payement_mode">
+                                <option value="espece" {{ $consultation->payement_mode == 'espece' ? 'selected' : '' }}>
+                                    Espèce
+                                </option>
+                                <option value="carte" {{ $consultation->payement_mode == 'carte' ? 'selected' : '' }}>
+                                    Carte
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Prochaine Consultation <span style="color:red;">*</span></label>
+                            <input type="datetime-local" class="form-control" name="next_appointment"
+                                value="{{ $consultation->next_appointment }}">
+                        </div>
+
                     </div>
 
                     <div class="row mb-3">
@@ -161,25 +179,6 @@
                         </div>
                     </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="control-label form-label">Methode de paiement</label>
-                            <select class="form-select" name="payement_mode">
-                                <option value="espece" {{ $consultation->payement_mode == 'espece' ? 'selected' : '' }}>
-                                    Espèce
-                                </option>
-                                <option value="carte" {{ $consultation->payement_mode == 'carte' ? 'selected' : '' }}>
-                                    Carte
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Prochaine Consultation <span style="color:red;">*</span></label>
-                            <input type="datetime-local" class="form-control" name="next_appointment"
-                                value="{{ $consultation->next_appointment }}">
-                        </div>
-
-                    </div>
                     <div class="row mb-3">
                         @if (!empty($consultation->type))
                             @forelse ($consultation->type->type_files as $type_file)
