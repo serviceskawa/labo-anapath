@@ -18,7 +18,7 @@ class AppointementController extends Controller
     public function index()
     {
         $patients = Patient::all();
-        $doctors = Doctor::all();
+        $doctors = getUsersByRole("docteur");
         return view('appointement.index', compact('patients', 'doctors'));
     }
 
