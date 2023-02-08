@@ -194,14 +194,13 @@
                         <div class="collapse" id="sidebarConsultation">
                             <ul class="side-nav-second-level">
                                 <li>
-                                    <a href="{{ route('type_consultation.index') }}">Ajouter un type de
-                                        consultation</a>
+                                    <a href="{{ route('consultation.index') }}">Toutes les consultations</a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('consultation.index') }}">Consultations</a>
+                                    <a href="{{ route('consultation.create') }}">Ajouter </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('consultation.create') }}">Ajouter une consultation</a>
+                                    <a href="{{ route('type_consultation.index') }}">Categories</a>
                                 </li>
 
                             </ul>

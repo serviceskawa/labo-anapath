@@ -77,7 +77,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-3">
+                        {{-- <div class="col-md-3">
                             <label for="exampleFormControlInput1" class="form-label">Type de consultation<span
                                     style="color:red;">*</span></label>
                             <select class="form-select select2" data-toggle="select2" name="type_id" id="type_id"
@@ -89,7 +89,7 @@
                                         {{ $type->name }}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="col-md-3">
                             <label for="exampleFormControlInput1" class="form-label">Prestations<span
                                     style="color:red;">*</span></label>
@@ -99,14 +99,16 @@
                                 @foreach ($prestations as $prestation)
                                     <option value="{{ $prestation->id }}"
                                         {{ $consultation->prestation_id == $prestation->id ? 'selected' : '' }}>
-                                        {{ $prestation->name }}</option>
+                                        {{ $prestation->name }} ({{ number_format($prestation->price, 0, '.', '') }})
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-3">
                             <label class="control-label form-label">Statut</label>
                             <select class="form-select" name="status" id="priority" required="">
-                                <option value="pending" {{ $consultation->status == 'pending' ? 'selected' : '' }}>En cours
+                                <option value="pending" {{ $consultation->status == 'pending' ? 'selected' : '' }}>En
+                                    attente
                                 </option>
                                 <option value="approved" {{ $consultation->status == 'approved' ? 'selected' : '' }}>
                                     Approuvé
@@ -120,12 +122,13 @@
                             <input type="datetime-local" class="form-control" name="date"
                                 value="{{ $consultation->date }}">
                         </div>
-                        {{-- <div class="col-md-3">
+                        <div class="col-md-3">
                             <label class="form-label">Frais <span style="color:red;">*</span></label>
-                            <input type="number" class="form-control" name="fees" value="{{ $consultation->fees }}">
-                        </div> --}}
+                            <input type="number" class="form-control" name="fees" value="{{ $consultation->fees }}"
+                                readonly>
+                        </div>
                     </div>
-                    <div class="row mb-3">
+                    {{-- <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="control-label form-label">Methode de paiement</label>
                             <select class="form-select" name="payement_mode">
@@ -143,9 +146,9 @@
                                 value="{{ $consultation->next_appointment }}">
                         </div>
 
-                    </div>
+                    </div> --}}
 
-                    <div class="row mb-3">
+                    {{-- <div class="row mb-3">
 
                         <div class="col-12">
                             <div class="mb-3">
@@ -195,11 +198,11 @@
                             @empty
                             @endforelse
                         @endif
-                    </div>
+                    </div> --}}
             </div>
 
             <div class="modal-footer">
-                <button type="submit" class="btn w-100 btn-warning">Enregistrer</button>
+                <button type="submit" class="btn w-100 btn-warning text-white">Mettre à jour</button>
             </div>
 
             </form>

@@ -59,7 +59,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        @if ($user->hasRole('docteur') || $user->hasRole('superadmin'))
+                        @if ($user->hasRole('docteur'))
                             <div class="col-md-3">
                                 <label for="exampleFormControlInput1" class="form-label">Categorie de consultation<span
                                         style="color:red;">*</span></label>
@@ -92,10 +92,10 @@
                                 <option value="cancel">Rejetter</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Date(Date et heure par defaut) <span
-                                    style="color:red;">*</span></label>
-                            <input type="datetime-local" class="form-control" name="date" value="">
+                        <div class="col-md-6">
+                            <label class="form-label">Date<span style="color:red;">*</span></label>
+                            <input type="datetime-local" id="dateConsultation" class="form-control" name="date"
+                                value="">
                         </div>
                         {{-- <div class="col-md-3">
                         <label class="form-label">Frais <span style="color:red;">*</span></label>
@@ -156,7 +156,15 @@
                 }
             });
         }
-
+        // Chargement de la date par defaut
+        window.addEventListener("load", function() {
+            var now = new Date();
+            var offset = now.getTimezoneOffset() * 60000;
+            var adjustedDate = new Date(now.getTime() - offset);
+            var formattedDate = adjustedDate.toISOString().substring(0, 16); // For minute precision
+            var datetimeField = document.getElementById("dateConsultation");
+            datetimeField.value = formattedDate;
+        });
         //     $("#type_id").on("change", function() {
         //         alert('a')
         //         $.ajax({

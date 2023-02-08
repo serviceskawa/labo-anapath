@@ -41,187 +41,145 @@
             <div class="col-9">
                 {{-- Card données --}}
                 <div class="card mb-md-0 mb-3">
-                    <h5 class="card-header">Contenu du compte rendu</h5>
+                    <h5 class="card-header">Consultation</h5>
                     <div class="card-body">
                         <div id="cardCollpase1" class="show collapse pt-3">
-                            <form action="#" method="post" enctype="multipart/form-data">
+
+                            <form action="{{ route('consultation.updateDoctor', $consultation->id) }}" id="consultationForm"
+                                method="post" enctype="multipart/form-data">
                                 @csrf
+                                <div id="basicwizard">
 
-                                {{-- <div class="row mb-3">
+                                    <ul class="nav nav-pills nav-justified form-wizard-header mb-4">
+                                        <li class="nav-item">
+                                            <a href="#basictab1" data-bs-toggle="tab" data-toggle="tab"
+                                                class="nav-link rounded-0 pt-2 pb-2">
+                                                <i class="mdi mdi-account-circle me-1"></i>
+                                                <span class="d-none d-sm-inline">Categorie de consultation</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="#basictab2" data-bs-toggle="tab" data-toggle="tab"
+                                                class="nav-link rounded-0 pt-2 pb-2">
+                                                <i class="mdi mdi-face-profile me-1"></i>
+                                                <span class="d-none d-sm-inline">Observations</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="#basictab3" data-bs-toggle="tab" data-toggle="tab"
+                                                class="nav-link rounded-0 pt-2 pb-2">
+                                                <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i>
+                                                <span class="d-none d-sm-inline">Fichiers attachés</span>
+                                            </a>
+                                        </li>
+                                    </ul>
 
-                                    <div class="col-md-6">
-                                        <label for="exampleFormControlInput1" class="form-label">Patient <span
-                                                style="color:red;">*</span></label>
-                                        <select class="form-select select2" data-toggle="select2" name="patient_id"
-                                            id="patient_id" required disabled>
-                                            <option>Sélectionner le nom du patient</option>
-                                            @foreach ($patients as $patient)
-                                                <option value="{{ $patient->id }}"
-                                                    {{ $consultation->patient_id == $patient->id ? 'selected' : '' }}>
-                                                    {{ $patient->code }} - {{ $patient->firstname }}
-                                                    {{ $patient->lastname }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                    <div class="tab-content b-0 mb-0">
+                                        <div class="tab-pane" id="basictab1">
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <label for="exampleFormControlInput1" class="form-label">Type de
+                                                        consultation<span style="color:red;">*</span></label>
+                                                    <select class="form-select select2" data-toggle="select2" name="type_id"
+                                                        onchange="update_type_consultation({{ $consultation->id }}, this)"
+                                                        id="type_id" required>
+                                                        <option>Sélectionner le type de consultation</option>
+                                                        @foreach ($types as $type)
+                                                            <option value="{{ $type->id }}"
+                                                                {{ $consultation->type_consultation_id == $type->id ? 'selected' : '' }}>
+                                                                {{ $type->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div> <!-- end col -->
+                                            </div> <!-- end row -->
+                                        </div>
 
-                                    <div class="col-md-6">
-                                        <label for="exampleFormControlInput1" class="form-label">Médecin traitant<span
-                                                style="color:red;">*</span></label>
-                                        <select class="form-select select2" data-toggle="select2" name="doctor_id"
-                                            id="doctor_id" required disabled>
-                                            <option>Sélectionner le médecin traitant</option>
-                                            @foreach ($doctors as $doctor)
-                                                <option value="{{ $doctor->id }}"
-                                                    {{ $consultation->doctor_id == $doctor->id ? 'selected' : '' }}>
-                                                    {{ $doctor->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                        <div class="tab-pane" id="basictab2">
+                                            <div class="row mb-3">
 
-                                </div> --}}
+                                                <div class="col-6">
+                                                    <div class="mb-3">
+                                                        <label class="control-label form-label">Motif</label>
+                                                        <textarea name="motif" class="form-control" id="" cols="30" rows="5"> {{ $consultation->motif }} </textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="mb-3">
+                                                        <label class="control-label form-label">Anamnèse</label>
+                                                        <textarea name="anamnese" class="form-control" id="" cols="30" rows="5">{{ $consultation->anamnese }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="mb-3">
+                                                        <label class="control-label form-label">Antécédent</label>
+                                                        <textarea name="antecedent" class="form-control" id="" cols="30" rows="5"> {{ $consultation->antecedent }} </textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="mb-3">
+                                                        <label class="control-label form-label">Examen physique</label>
+                                                        <textarea name="examen_physique" class="form-control" id="" cols="30" rows="5">{{ $consultation->examen_physique }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="mb-3">
+                                                        <label class="control-label form-label">Diagnostic</label>
+                                                        <textarea name="diagnostic" class="form-control" id="" cols="30" rows="5">{{ $consultation->diagnostic }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="mb-3">
+                                                        <label class="control-label form-label">Traitement</label>
+                                                        <textarea name="traitement" class="form-control" id="" cols="30" rows="5">{{ $consultation->diagnostic }}</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="exampleFormControlInput1" class="form-label">Type de consultation<span
-                                                style="color:red;">*</span></label>
-                                        <select class="form-select select2" data-toggle="select2" name="type_id"
-                                            onchange="update_type_consultation({{ $consultation->id }}, this)"
-                                            id="type_id" required>
-                                            <option>Sélectionner le type de consultation</option>
-                                            @foreach ($types as $type)
-                                                <option value="{{ $type->id }}"
-                                                    {{ $consultation->type_consultation_id == $type->id ? 'selected' : '' }}>
-                                                    {{ $type->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    {{-- <div class="col-md-3">
-                                        <label for="exampleFormControlInput1" class="form-label">Prestations<span
-                                                style="color:red;">*</span></label>
-                                        <select class="form-select select2" data-toggle="select2" name="prestation_id"
-                                            id="prestation_id" required disabled>
-                                            <option>Sélectionner la prestation</option>
-                                            @foreach ($prestations as $prestation)
-                                                <option value="{{ $prestation->id }}"
-                                                    {{ $consultation->prestation_id == $prestation->id ? 'selected' : '' }}>
-                                                    {{ $prestation->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div> --}}
-                                    <div class="col-md-6">
-                                        <label class="control-label form-label">Statut</label>
-                                        <select class="form-select" name="status" id="priority" required="">
-                                            <option value="pending"
-                                                {{ $consultation->status == 'pending' ? 'selected' : '' }}>En cours
-                                            </option>
-                                            <option value="approved"
-                                                {{ $consultation->status == 'approved' ? 'selected' : '' }}>
-                                                Approuvé
-                                            </option>
-                                            <option value="cancel"
-                                                {{ $consultation->status == 'cancel' ? 'selected' : '' }}>Rejetter
-                                            </option>
-                                        </select>
-                                    </div>
-                                    {{-- <div class="col-md-3">
-                                        <label class="form-label">Heure <span style="color:red;">*</span></label>
-                                        <input type="datetime-local" class="form-control" name="date"
-                                            value="{{ $consultation->date }}" disabled>
-                                    </div> --}}
-                                </div>
+                                        <div class="tab-pane" id="basictab3">
+                                            <div class="row mb-3">
+                                                @if (!empty($consultation->type))
+                                                    @forelse ($consultation->type->type_files as $type_file)
+                                                        <div class="col-md-6 mb-3">
+                                                            <label
+                                                                class="control-label form-label">{{ $type_file->title }}</label>
+                                                            <input type="file" class="dropify"
+                                                                name="type_file[{{ $type_file->id }}]"
+                                                                data-default-file="{{ !empty(getConsultationTypeFiles($consultation->id, $type_file->id)->path) ? Storage::url(getConsultationTypeFiles($consultation->id, $type_file->id)->path) : '' }}"
+                                                                data-max-file-size="3M" />
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Comment<span
+                                                                    style="color:red;">*</span></label>
+                                                            <textarea name="comment[{{ $type_file->id }}]" class="form-control" id="" cols="30" rows="8">{{ !empty(getConsultationTypeFiles($consultation->id, $type_file->id)->comment) ? getConsultationTypeFiles($consultation->id, $type_file->id)->comment : '' }}</textarea>
+                                                        </div>
+                                                    @empty
+                                                    @endforelse
+                                                @endif
+                                            </div>
+                                        </div>
 
+                                        <ul class="list-inline wizard mb-0">
+                                            <li class="previous list-inline-item">
+                                                <a href="#" class="btn btn-info">Retour</a>
+                                            </li>
+
+                                            @if (!empty($consultation->type))
+                                                <li class="next list-inline-item float-end">
+                                                    <a href="#" class="btn btn-info">Suivant</a>
+                                                </li>
+                                            @endif
+
+                                        </ul>
+
+                                    </div> <!-- tab-content -->
+                                </div> <!-- end #basicwizard-->
                             </form>
 
                         </div>
                     </div>
                 </div>
 
-                {{-- Card files --}}
-                <form action="{{ route('consultation.updateDoctor', $consultation->id) }}" id="consultationForm"
-                    method="post" enctype="multipart/form-data">
-                    @csrf
-                    <div class="card mb-md-0 mt-3">
-                        <h5 class="card-header">Obersvations</h5>
-
-                        <div class="card-body">
-                            <div id="cardCollpase1" class="show collapse pt-3">
-
-                                <div class="row mb-3">
-
-                                    <div class="col-6">
-                                        <div class="mb-3">
-                                            <label class="control-label form-label">Motif</label>
-                                            <textarea name="motif" class="form-control" id="" cols="30" rows="5"> {{ $consultation->motif }} </textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="mb-3">
-                                            <label class="control-label form-label">Anamnèse</label>
-                                            <textarea name="anamnese" class="form-control" id="" cols="30" rows="5">{{ $consultation->anamnese }}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="mb-3">
-                                            <label class="control-label form-label">Antécédent</label>
-                                            <textarea name="antecedent" class="form-control" id="" cols="30" rows="5"> {{ $consultation->antecedent }} </textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="mb-3">
-                                            <label class="control-label form-label">Examen physique</label>
-                                            <textarea name="examen_physique" class="form-control" id="" cols="30" rows="5">{{ $consultation->examen_physique }}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="mb-3">
-                                            <label class="control-label form-label">Diagnostic</label>
-                                            <textarea name="diagnostic" class="form-control" id="" cols="30" rows="5">{{ $consultation->diagnostic }}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="mb-3">
-                                            <label class="control-label form-label">Traitement</label>
-                                            <textarea name="traitement" class="form-control" id="" cols="30" rows="5">{{ $consultation->diagnostic }}</textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="card mb-md-0 mt-3">
-                        <h5 class="card-header">Fichiers attachés</h5>
-
-                        <div class="card-body">
-                            <div id="cardCollpase1" class="show collapse pt-3">
-
-                                <div class="row mb-3">
-                                    @if (!empty($consultation->type))
-                                        @forelse ($consultation->type->type_files as $type_file)
-                                            <div class="col-md-6 mb-3">
-                                                <label class="control-label form-label">{{ $type_file->title }}</label>
-                                                <input type="file" class="dropify"
-                                                    name="type_file[{{ $type_file->id }}]"
-                                                    data-default-file="{{ !empty(getConsultationTypeFiles($consultation->id, $type_file->id)->path) ? Storage::url(getConsultationTypeFiles($consultation->id, $type_file->id)->path) : '' }}"
-                                                    data-max-file-size="3M" />
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">Comment<span style="color:red;">*</span></label>
-                                                <textarea name="comment[{{ $type_file->id }}]" class="form-control" id="" cols="30" rows="8">{{ !empty(getConsultationTypeFiles($consultation->id, $type_file->id)->comment) ? getConsultationTypeFiles($consultation->id, $type_file->id)->comment : '' }}</textarea>
-                                            </div>
-                                        @empty
-                                        @endforelse
-                                    @endif
-                                </div>
-                                <button type="submit" class="btn btn-warning w-100 mt-3">Mettre à jour</button>
-
-                            </div>
-                        </div>
-
-                    </div>
-                </form>
             </div>
 
             <!-- Colonne laterale -->
@@ -277,6 +235,8 @@
 @endsection
 
 @push('extra-js')
+    {{-- <script src="{{ asset('adminassets/js/pages/demo.form-wizard.js') }}"></script> --}}
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
         integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -466,5 +426,26 @@
             });
 
         }
+    </script>
+
+    {{-- Form wizard personal script --}}
+    <script>
+        $(function() {
+            "use strict";
+            // $("#basicwizard").bootstrapWizard()
+            $("#basicwizard").bootstrapWizard({
+                onNext: function(t, r, a) {
+                    var o = $($(t).data("targetForm"));
+                    var x = document.getElementsByClassName("tab-pane");
+
+                    if (a >= x.length) {
+                        // ... the form gets submitted:
+                        document.getElementById("consultationForm").submit();
+                        // return false;
+                    }
+
+                },
+            });
+        });
     </script>
 @endpush
