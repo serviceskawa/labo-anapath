@@ -218,7 +218,7 @@
                             <ul class="side-nav-second-level">
                                 <li>
                                     <a href="{{ route('categoryPrestation.index') }}">
-                                        Categorie</a>
+                                        Categories</a>
                                 </li>
                                 <li>
                                     <a href="{{ route('prestation.index') }}">Toutes les prestations</a>

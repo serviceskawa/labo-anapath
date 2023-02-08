@@ -41,7 +41,6 @@
                             <tr>
                                 <th>#</th>
                                 <th>Nom de la categorie</th>
-                                <th>Prestations</th>
                                 <th>Actions</th>
 
                             </tr>
@@ -52,7 +51,6 @@
                             @foreach ($categories as $key => $item)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ $item->name }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td>
                                         <button type="button" onclick="edit({{ $item->id }})"
