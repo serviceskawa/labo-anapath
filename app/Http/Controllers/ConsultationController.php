@@ -102,7 +102,10 @@ class ConsultationController extends Controller
     // Affiche la vue docteur pour edition
     public function edit($id)
     {
-        // dd(getConsultationTypeFiles(2, 2)->path);
+        if (!getOnlineUser()->hasRole('docteur')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
         $patients = Patient::all();
         $doctors = Doctor::all();
         $types = TypeConsultation::all();
