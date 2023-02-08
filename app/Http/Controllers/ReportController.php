@@ -192,7 +192,7 @@ class ReportController extends Controller
         $report->fill([
             "is_deliver" => 1,
         ])->save();
-
+        // dd($report);
         return redirect()->back()->with('success', "Ce compte rendu a été livré ! ");
     }
 }

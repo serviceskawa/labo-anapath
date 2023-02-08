@@ -68,7 +68,8 @@
                                             class="btn btn-secondary"><i class="mdi mdi-printer"></i> </a>
                                         @if ($item->status == 1)
                                             <a type="button" href="{{ route('report.updateDeliver', $item->id) }}"
-                                                class="btn btn-success"><i class="uil uil-envelope-upload"></i> </a>
+                                                class="btn btn-{{ $item->is_deliver == 1 ? 'success' : 'warning' }}"><i
+                                                    class="uil uil-envelope-upload"></i> </a>
                                         @endif
 
                                     </td>

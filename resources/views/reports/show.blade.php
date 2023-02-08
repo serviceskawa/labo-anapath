@@ -26,7 +26,7 @@
                     <a href="{{ route('report.index') }}" type="button" class="btn btn-primary">Retour à la liste des
                         comptes rendus</a>
                 </div>
-                <h4 class="page-title">Compte rendu</h4>
+                <h4 class="page-title">Compte rendu : {{ $report->code }}</h4>
             </div>
         </div>
     </div>
