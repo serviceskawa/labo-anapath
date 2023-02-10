@@ -87,6 +87,8 @@
                                     <option value="">Tous</option>
                                     <option value="Valider">Valider</option>
                                     <option value="En attente">En attente</option>
+                                    <option value="Livrer">Livrer</option>
+                                    <option value="Non livrer">Non livrer"</option>
                                 </select>
                             </div>
 
@@ -187,9 +189,16 @@
                             <td>
                                 <a type="button" href="{{ route('details_test_order.index', $item->id) }}"
                                     class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i> </a>
+                                <a type="button" href="{{ route('test_order.edit', $item->id) }}"
+                                    class="btn btn-primary" title="Mettre à jour l'examen"><i
+                                        class="mdi mdi-lead-pencil"></i>
+                                </a>
                                 <a type="button"
-                                    href=" {{!empty($item->getReportId($item->id)) ? route('report.show', $item->report->id) : "" }}"
+                                    href="{{!empty($item->getReportId($item->id)) ? route('report.show', $item->report->id) : "" }}"
                                     class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>
+                                <a href="{{!empty($item->invoice->id) ? route('invoice.show',$item->invoice->id):
+                                    route('invoice.storeFromOrder',$item->id)}}" class="btn btn-success"
+                                    title="Facture"><i class="mdi mdi-printer"></i></a>
                                 @if ($item->status != 1)
                                 <button type="button" onclick="deleteModal({{ $item->id }})" class="btn btn-danger"><i
                                         class="mdi mdi-trash-can-outline" title="Supprimer"></i>

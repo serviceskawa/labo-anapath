@@ -1,22 +1,28 @@
 <?php
 
-use App\Http\Controllers\ContratController;
-use App\Http\Controllers\DetailsContratController;
-use App\Http\Controllers\DoctorController;
-use App\Http\Controllers\HospitalController;
-use App\Http\Controllers\PatientController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\SettingController;
-use App\Http\Controllers\SettingReportTemplateController;
-use App\Http\Controllers\TestCategoryController;
-use App\Http\Controllers\TestController;
-use App\Http\Controllers\TestOrderController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ContratController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PatientController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\TestOrderController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PrestationController;
+use App\Http\Controllers\AppointementController;
+use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\TestCategoryController;
+use App\Http\Controllers\DetailsContratController;
+use App\Http\Controllers\TypeConsultationController;
+use App\Http\Controllers\CategoryPrestationController;
+use App\Http\Controllers\SettingReportTemplateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,7 +101,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/contrats_details/update', [ContratController::class, 'contrat_details_update'])->name('contrat_details.update');
 
     //TEST_ORDER
-    Route::get('/test_order/index', [TestOrderController::class, 'index'])->name('test_order.index');
+    Route::get('/test_order/index', [TestOrderController::class, 'index2'])->name('test_order.index');
     Route::post('/test_order/store', [TestOrderController::class, 'store'])->name('test_order.store');
     Route::get('/test_order/create', [TestOrderController::class, 'create'])->name('test_order.create');
     Route::get('/test_order/delete/{id}', [TestOrderController::class, 'destroy']);
@@ -103,6 +109,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/test_order/updatestatus/{id}', [TestOrderController::class, 'updateStatus'])->name('test_order.updatestatus');
     Route::get('/get_test_order', [TestOrderController::class, 'getTestOrders'])->name('test_order.get_test_order');
     Route::get('/get_all_test_order', [TestOrderController::class, 'getAllTestOrders'])->name('test_order.get_all_test_order');
+    Route::get('/test_order/edit/{id}', [TestOrderController::class, 'edit'])->name('test_order.edit');
+    Route::post('/test_order/update/{id}', [TestOrderController::class, 'update'])->name('test_order.update');
+    Route::get('/testOrders', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('test_order.getTestOrdersforDatatable');
+
+    // Attribuer docteur signataire
+    Route::get('/attribuateDoctor/{doctorId}/{orderId}', [TestOrderController::class, 'attribuateDoctor'])->name('test_order.attribuateDoctor');
 
     //details_test_order
     Route::get('/test_order/details/{id}', [TestOrderController::class, 'details_index'])->name('details_test_order.index');
@@ -120,6 +132,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('report-gettemplate', [ReportController::class, 'getTemplate'])->name('template.report-getTemplate');
 
+        // Mis à jour du statut livré
+        Route::get('updateDeliver/{id}', [ReportController::class, 'updateDeliverStatus'])->name('report.updateDeliver');
     });
 
     Route::prefix('settings')->group(function () {
@@ -129,7 +143,6 @@ Route::middleware(['auth'])->group(function () {
         // App settings
         Route::get('app', [SettingController::class, 'app'])->name('settings.app-index');
         Route::post('app-store', [SettingController::class, 'app_store'])->name('settings.app-store');
-
     });
 
     Route::get('/mm', function () {
@@ -153,7 +166,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('user-store', [UserController::class, 'store'])->name('user.store');
         Route::get('role-edit/{id}', [UserController::class, 'edit'])->name('user.edit');
         Route::post('user-update', [UserController::class, 'update'])->name('user.update');
-
     });
 
     // Profile
@@ -168,6 +180,69 @@ Route::middleware(['auth'])->group(function () {
         Route::get('report-edit/{id}', [SettingReportTemplateController::class, 'edit'])->name('template.report-edit');
         Route::post('report-store', [SettingReportTemplateController::class, 'store'])->name('template.report-store');
         Route::get('report-delete/{id}', [SettingReportTemplateController::class, 'delete'])->name('template.report-delete');
+    });
 
+    // Factures
+    Route::prefix('invoices')->group(function () {
+        Route::get('', [InvoiceController::class, 'index'])->name('invoice.index');
+        Route::get('create', [InvoiceController::class, 'create'])->name('invoice.create');
+        Route::post('store', [InvoiceController::class, 'store'])->name('invoice.store');
+        Route::get('show/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
+        Route::get('store-from-order/{id}', [InvoiceController::class, 'storeFromOrder'])->name('invoice.storeFromOrder');
+        Route::get('print/{id}', [InvoiceController::class, 'print'])->name('invoice.print');
+        Route::get('updateStatus/{id}', [InvoiceController::class, 'updateStatus'])->name('invoice.updateStatus');
+    });
+
+    Route::prefix('appointements')->group(function () {
+        Route::get('', [AppointementController::class, 'index'])->name('appointement.index');
+        Route::post('store', [AppointementController::class, 'store'])->name('appointement.store');
+        Route::post('update/{id}', [AppointementController::class, 'update'])->name('appointement.update');
+        Route::get('getAppointements', [AppointementController::class, 'getAppointements'])->name('appointement.getAppointements');
+        Route::get('show/{id}', [AppointementController::class, 'show'])->name('appointement.show');
+
+        // Create consultation
+        Route::get('createConsultation/{id}', [AppointementController::class, 'createConsultation'])->name('appointement.createConsultation');
+    });
+
+
+    Route::prefix('type_consultations')->group(function () {
+        Route::get('', [TypeConsultationController::class, 'index'])->name('type_consultation.index');
+        Route::post('store', [TypeConsultationController::class, 'store'])->name('type_consultation.store');
+        Route::get('show/{id}', [TypeConsultationController::class, 'show'])->name('type_consultation.show');
+        Route::get('delete/{id}', [TypeConsultationController::class, 'destroy'])->name('type_consultation.delete');
+    });
+
+    Route::prefix('consultations')->group(function () {
+        Route::get('', [ConsultationController::class, 'index'])->name('consultation.index');
+        Route::get('create', [ConsultationController::class, 'create'])->name('consultation.create');
+        Route::post('store', [ConsultationController::class, 'store'])->name('consultation.store');
+        Route::post('update/{id}', [ConsultationController::class, 'update'])->name('consultation.update');
+        Route::get('show/{id}', [ConsultationController::class, 'show'])->name('consultation.show');
+        Route::get('delete/{id}', [ConsultationController::class, 'destroy'])->name('consultation.delete');
+        Route::get('getConsultations', [ConsultationController::class, 'getConsultations'])->name('consultation.getConsultations');
+
+        Route::get('edit/{id}', [ConsultationController::class, 'edit'])->name('consultation.edit');
+        Route::post('update_by_doctor/{id}', [ConsultationController::class, 'update_by_doctor'])->name('consultation.updateDoctor');
+        Route::post('update_type_consultation', [ConsultationController::class, 'update_type_consultation'])->name('consultation.updateTypeConsultation');
+    });
+
+
+    Route::prefix('category_prestation')->group(function () {
+        Route::get('', [CategoryPrestationController::class, 'index'])->name('categoryPrestation.index');
+        Route::get('create', [CategoryPrestationController::class, 'create'])->name('categoryPrestation.create');
+        Route::post('store', [CategoryPrestationController::class, 'store'])->name('categoryPrestation.store');
+        Route::post('update', [CategoryPrestationController::class, 'update'])->name('categoryPrestation.update');
+        Route::get('show/{id}', [CategoryPrestationController::class, 'show'])->name('categoryPrestation.show');
+        Route::get('edit/{id}', [CategoryPrestationController::class, 'edit'])->name('categoryPrestation.edit');
+        Route::get('delete/{id}', [CategoryPrestationController::class, 'destroy'])->name('categoryPrestation.delete');
+    });
+    Route::prefix('prestations')->group(function () {
+        Route::get('', [PrestationController::class, 'index'])->name('prestation.index');
+        Route::get('create', [PrestationController::class, 'create'])->name('prestation.create');
+        Route::post('store', [PrestationController::class, 'store'])->name('prestation.store');
+        Route::post('update', [PrestationController::class, 'update'])->name('prestation.update');
+        Route::get('show/{id}', [PrestationController::class, 'show'])->name('prestation.show');
+        Route::get('edit/{id}', [PrestationController::class, 'edit'])->name('prestation.edit');
+        Route::get('delete/{id}', [PrestationController::class, 'destroy'])->name('prestation.delete');
     });
 });

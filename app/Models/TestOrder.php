@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\Contrat;
-use App\Models\DetailTestOrder;
-use App\Models\Hospital;
 use App\Models\Report;
+use App\Models\Contrat;
+use App\Models\Invoice;
+use App\Models\Hospital;
 use App\Models\TypeOrder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\DetailTestOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TestOrder extends Model
 {
@@ -61,7 +62,7 @@ class TestOrder extends Model
     {
         $data = Report::where('test_order_id', $id)->first();
         if (is_null($data)) {
-            return null; // pour différencier les valeurs des status. 0 pour en attente, 1 valider et 2 pour examin qui n'a pas été enregistré
+            return null;
         } else {
             return $data->id;
         }
@@ -84,7 +85,7 @@ class TestOrder extends Model
      */
     public function doctor()
     {
-        return $this->belongsTo(Doctor::class, );
+        return $this->belongsTo(Doctor::class,);
     }
 
     /**
@@ -135,5 +136,21 @@ class TestOrder extends Model
     public function type()
     {
         return $this->belongsTo(TypeOrder::class, 'type_order_id');
+    }
+
+
+    /**
+     * Get the invoice associated with the TestOrder
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
+    }
+
+    public function attribuateToDoctor()
+    {
+        return $this->belongsTo(Doctor::class, 'attribuate_doctor_id');
     }
 }

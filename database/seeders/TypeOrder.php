@@ -19,13 +19,17 @@ class TypeOrder extends Seeder
         $type_orders = [
             [
                 'id' => '1', 'title' => 'Histologie', 'slug' => Str::slug("Histologie"),
-            ], [
+            ],
+            [
                 'id' => '2', 'title' => 'Immuno Externe', 'slug' => Str::slug("Immuno Exterme"),
-            ], [
+            ],
+            [
                 'id' => '3', 'title' => 'Immuno Interne', 'slug' => Str::slug("Immuno Interne"),
+            ],
+            [
+                'id' => '4', 'title' => 'Cytologie', 'slug' => Str::slug("Cytologie"),
             ],
         ];
         DB::table('type_orders')->insert($type_orders);
-
     }
 }

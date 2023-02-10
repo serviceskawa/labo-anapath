@@ -1,11 +1,14 @@
 <?php
 
-use App\Models\DataCode;
 use App\Models\Role;
+use App\Models\Doctor;
+use App\Models\Patient;
 use App\Models\Setting;
-use Illuminate\Support\Facades\Auth;
 use App\Models\TestOrder;
 use Illuminate\Support\Str;
+use App\Models\Consultation;
+use App\Models\TypeConsultation;
+use Illuminate\Support\Facades\Auth;
 
 define("SERVER", "http://sms.wallyskak.com");
 define("API_KEY", "cd571010a5549230264e74b9c89349fdcf5ed81c");
@@ -408,13 +411,15 @@ if (!function_exists('getSignatory1')) {
         $setting = Setting::findorfail(1);
         return $setting->signatory1;
     }
-}if (!function_exists('getSignatory2')) {
+}
+if (!function_exists('getSignatory2')) {
     function getSignatory2()
     {
         $setting = Setting::findorfail(1);
         return $setting->signatory2;
     }
-}if (!function_exists('getSignatory3')) {
+}
+if (!function_exists('getSignatory3')) {
     function getSignatory3()
     {
         $setting = Setting::findorfail(1);
@@ -435,22 +440,22 @@ if (!function_exists('generateCodeExamen')) {
     {
         //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
         $lastTestOrder = TestOrder::whereYear('created_at', '=', now()->year)
-        ->whereNotNull('code')
-        ->orderByRaw('RIGHT(code, 4) DESC')
-        ->first();
+            ->whereNotNull('code')
+            ->orderByRaw('RIGHT(code, 4) DESC')
+            ->first();
 
         // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
         if (!$lastTestOrder || $lastTestOrder->created_at->year != now()->year) {
-        $code = "0001";
+            $code = "0001";
         }
         // Sinon, incrémente le dernier code de 1
         else {
-        // Récupère les quatre derniers caractères du code
-        $lastCode = substr($lastTestOrder->code, -4);
+            // Récupère les quatre derniers caractères du code
+            $lastCode = substr($lastTestOrder->code, -4);
 
-        // Convertit la chaîne en entier et l'incrémente de 1
-        $code = intval($lastCode) + 1;
-        $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+            // Convertit la chaîne en entier et l'incrémente de 1
+            $code = intval($lastCode) + 1;
+            $code = str_pad($code, 4, '0', STR_PAD_LEFT);
         }
 
         // Ajoute les deux derniers chiffres de l'année au début du code
@@ -458,4 +463,112 @@ if (!function_exists('generateCodeExamen')) {
     }
 }
 
+// recupère les informations d'une demande d'examen
+if (!function_exists('getTestOrderData')) {
+    function getTestOrderData(int $testOrderId = null)
+    {
+        $result = "";
+        if (!empty($testOrderId)) {
+            $testOrder = TestOrder::find($testOrderId);
+            $result = $testOrder;
+        }
+        return $result;
+    }
+}
 
+// recupère les informations d'un patient
+if (!function_exists('getPatientData')) {
+    function getPatientData(int $patientId = null)
+    {
+        $result = "";
+        if (!empty($patientId)) {
+            $patient = Patient::find($patientId);
+            $result = $patient;
+        }
+        return $result;
+    }
+}
+
+if (!function_exists('getDoctorData')) {
+    function getDoctorData(int $doctorId = null)
+    {
+        $result = "";
+        if (!empty($doctorId)) {
+            $doctor = Doctor::find($doctorId);
+            $result = $doctor;
+        }
+        return $result;
+    }
+}
+
+if (!function_exists('randColor')) {
+    function randColor($priority)
+    {
+        $data = [
+            "normal" => 'bg-info',
+            "urgent" => 'bg-warning',
+            "tres urgent" => 'bg-danger',
+        ];
+
+        return $data[$priority];
+    }
+}
+
+if (!function_exists('convertDate')) {
+    function convertDateTime($date)
+    {
+        $date_input = date('Y-m-d H:i:s', strtotime($date));
+        return $date_input;
+    }
+}
+
+if (!function_exists('randColorStatus')) {
+    function randColorStatus($priority)
+    {
+        $data = [
+            "pending" => 'bg-warning',
+            "approved" => 'bg-success',
+            "cancel" => 'bg-danger',
+        ];
+
+        return $data[$priority];
+    }
+}
+
+
+if (!function_exists('checkTypeConsultationFile')) {
+    function checkTypeConsultationFile($typeConsultationFileId, $typeConsultationId)
+    {
+        $typeConsultation = TypeConsultation::findorfail($typeConsultationId);
+        $type_files = $typeConsultation->type_files();
+
+        $data = $typeConsultation->type_files()->where('type_file_id', $typeConsultationFileId)->exists();
+
+        return $data;
+    }
+}
+
+if (!function_exists('getConsultationTypeFiles')) {
+    function getConsultationTypeFiles($ConsultationId, $typeConsultationFileId)
+    {
+        $Consultation = Consultation::findorfail($ConsultationId);
+
+        $data = $Consultation->type_files()->where('type_file_id', $typeConsultationFileId)->first();
+
+        return $data;
+    }
+}
+
+if (!function_exists('getUsersByRole')) {
+    function getUsersByRole($roleSlug)
+    {
+        $users = [];
+        $role = Role::whereSlug($roleSlug)->first();
+
+        if (!empty($role)) {
+            $users = $role->users;
+        }
+
+        return $users;
+    }
+}
