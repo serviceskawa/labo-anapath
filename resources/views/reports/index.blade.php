@@ -72,6 +72,11 @@
                                     class="btn btn-danger"><i class="mdi mdi-android-messages"></i> </a>
                                 <a type="button" href="{{ route('report.pdf', $item->id) }}"
                                     class="btn btn-secondary"><i class="mdi mdi-printer"></i> </a>
+                                @if ($item->status == 1)
+                                <a type="button" href="{{route('report.updateDeliver', $item->id)}}"
+                                    class="btn btn-success"><i class="uil uil-envelope-upload"></i> </a>
+                                @endif
+
                             </td>
 
                         </tr>
@@ -91,82 +96,39 @@
 @push('extra-js')
 <script>
     // SUPPRESSION
-        function deleteModal(id) {
+    function deleteModal(id) {
 
-            Swal.fire({
-                title: "Voulez-vous supprimer l'élément ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Oui ",
-                cancelButtonText: "Non !",
-            }).then(function(result) {
-                if (result.value) {
-                    window.location.href = "{{ url('contrats/delete') }}" + "/" + id;
-                    Swal.fire(
-                        "Suppression !",
-                        "En cours de traitement ...",
-                        "success"
-                    )
-                }
-            });
-        }
-
-
-        /* DATATABLE */
-        $(document).ready(function() {
-
-            // $('#datatable1').DataTable({
-            //     "order": [
-            //         [0, "asc"]
-            //     ],
-            //     "columnDefs": [{
-            //         "targets": [0],
-            //         "searchable": true
-            //     }],
-            //     "language": {
-            //         "lengthMenu": "Afficher _MENU_ enregistrements par page",
-            //         "zeroRecords": "Aucun enregistrement disponible",
-            //         "info": "Afficher page _PAGE_ sur _PAGES_",
-            //         "infoEmpty": "Aucun enregistrement disponible",
-            //         "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-            //         "sSearch": "Rechercher:",
-            //         "paginate": {
-            //             "previous": "Précédent",
-            //             "next": "Suivant"
-            //         }
-            //     },
-            //     "initComplete": function () {
-            //         this.api()
-            //             .columns()
-            //             .every(function () {
-            //                 var column = this;
-            //                 var select = $('<select><option value=""></option></select>')
-            //                     .appendTo($(column.footer()).empty())
-            //                     .on('change', function () {
-            //                         var val = $.fn.dataTable.util.escapeRegex($(this).val());
-        
-            //                         column.search(val ? '^' + val + '$' : '', true, false).draw();
-            //                     });
-        
-            //                 column
-            //                     .data()
-            //                     .unique()
-            //                     .sort()
-            //                     .each(function (d, j) {
-            //                         select.append('<option value="' + d + '">' + d + '</option>');
-            //                     });
-            //             });
-            //     },
-            // });
-
+        Swal.fire({
+            title: "Voulez-vous supprimer l'élément ?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Oui ",
+            cancelButtonText: "Non !",
+        }).then(function(result) {
+            if (result.value) {
+                window.location.href = "{{ url('contrats/delete') }}" + "/" + id;
+                Swal.fire(
+                    "Suppression !",
+                    "En cours de traitement ...",
+                    "success"
+                )
+            }
         });
+    }
 
-        $(document).ready(function() {
-            $('#datatable1').DataTable({
-                language: {
-                    url: "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json",
-                },
-                initComplete: function() {
+
+    $(document).ready(function() {
+        $('#datatable1').DataTable({
+            // columnDefs: [
+            //     {
+            //         target: 6,
+            //         visible: false,
+            //     }
+            // ],
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json",
+            },
+            initComplete: function() {
                 this.api().columns([0, 1, 2, 3, 4, 5]).every(function() {
                     var column = this;
                     var title = this.header();
@@ -188,37 +150,37 @@
                     select.append('<option value="' + d + '">' + d + '</option>')
                     });
                 });
-                }
-            });
+            }
         });
+    });
 
 
-        //EDITION
-        function edit(id) {
-            var e_id = id;
+    //EDITION
+    function edit(id) {
+        var e_id = id;
 
-            // Populate Data in Edit Modal Form
-            $.ajax({
-                type: "GET",
-                url: "{{ url('getcontrat') }}" + '/' + e_id,
-                success: function(data) {
+        // Populate Data in Edit Modal Form
+        $.ajax({
+            type: "GET",
+            url: "{{ url('getcontrat') }}" + '/' + e_id,
+            success: function(data) {
 
-                    $('#id2').val(data.id);
-                    $('#name2').val(data.name);
-                    $('#type2').val(data.type).change();
-                    $('#status2').val(data.status).change();
-                    $('#description2').val(data.description);
-
-
+                $('#id2').val(data.id);
+                $('#name2').val(data.name);
+                $('#type2').val(data.type).change();
+                $('#status2').val(data.status).change();
+                $('#description2').val(data.description);
 
 
-                    console.log(data);
-                    $('#editModal').modal('show');
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                }
-            });
-        }
+
+
+                console.log(data);
+                $('#editModal').modal('show');
+            },
+            error: function(data) {
+                console.log('Error:', data);
+            }
+        });
+    }
 </script>
 @endpush

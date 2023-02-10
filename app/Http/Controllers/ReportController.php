@@ -22,9 +22,9 @@ class ReportController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth'); 
+        $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -86,7 +86,6 @@ class ReportController extends Controller
         $templates = SettingReportTemplate::all();
 
         return view('reports.show', compact('report', 'setting', 'templates'));
-
     }
 
     public function send_sms($id)
@@ -99,21 +98,20 @@ class ReportController extends Controller
         $tel = $report->patient->telephone1;
         $number = "+22996631611";
         $message = "test one";
-        
+
         try {
 
             sendSingleMessage($tel, $message);
 
             return redirect()->back()->with('success', "SMS envoyé avec succes ");
+        } catch (\Throwable $ex) {
 
-        } catch(\Throwable $ex){
-
-          return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
-
     }
 
-    public function pdf($id){
+    public function pdf($id)
+    {
 
         if (!getOnlineUser()->can('edit-compte-rendu')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
@@ -142,14 +140,16 @@ class ReportController extends Controller
             'patient_genre' => $report->patient->genre,
             'hospital_name' => $report->order->hospital->name,
             'doctor_name' => $report->order->doctor->name,
-            'created_at' => date_format($report->created_at,"d/m/Y"),
+            'created_at' => date_format($report->created_at, "d/m/Y"),
             'date' => date('d/m/Y')
         ];
- 
+
         try {
             $content = view('pdf/canva', $data)->render();
-        
+
             $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
+            $html2pdf->pdf->SetDisplayMode('fullpage');
+            $html2pdf->setTestTdInOnePage(false);
             $html2pdf->__construct(
                 $orientation = 'P',
                 $format = 'A4',
@@ -160,23 +160,39 @@ class ReportController extends Controller
                 $pdfa = false
             );
             $html2pdf->writeHTML($content);
-            $newname= 'CO-'.$report->order->code.'.pdf';
+            $newname = 'CO-' . $report->order->code . '.pdf';
             $html2pdf->output($newname);
-            
         } catch (Html2PdfException $e) {
             $html2pdf->clean();
-        
+
             $formatter = new ExceptionFormatter($e);
             echo $formatter->getHtmlMessage();
         }
-
     }
 
     public function getTemplate(Request $request)
     {
 
-       $template = SettingReportTemplate::findorfail($request->id);
+        $template = SettingReportTemplate::findorfail($request->id);
 
-       return response()->json($template, 200);
+        return response()->json($template, 200);
+    }
+
+    // Met à jour le statut livré
+    public function updateDeliverStatus($reportId)
+    {
+        if (!getOnlineUser()->can('edit-compte-rendu')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $report = Report::findorfail($reportId);
+
+        if (empty($report)) {
+            return redirect()->back()->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
+        }
+        $report->fill([
+            "is_deliver" => 1,
+        ])->save();
+
+        return redirect()->back()->with('success', "Ce compte rendu a été livré ! ");
     }
 }

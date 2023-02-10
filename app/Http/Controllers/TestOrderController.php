@@ -508,7 +508,7 @@ class TestOrderController extends Controller
     public function getTestOrdersforDatatable()
     {
 
-        $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])->orderBy('created_at', 'desc')->get();
+        $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])->orderBy('created_at', 'desc')->take(2);
 
         return Datatables::of($data)->addIndexColumn()
             ->editColumn('created_at', function ($data) {
@@ -529,15 +529,15 @@ class TestOrderController extends Controller
             ->setRowClass(function ($data) {
                 return $data->is_urgent == 1 ? 'table-danger urgent' : '';
             })
-            ->addColumn('examen_file', function ($data) {
-                //change over 
-                if (!empty($data->examen_file)) {
-                    $btn = '<a href="' . Storage::url($data->examen_file) . '" class="btn btn-primary btn-sm" target="_blank"  rel="noopener noreferrer" type="button"><i class="mdi mdi-cloud-download"></i></a>';
-                } else {
-                    $btn = 'Aucun fichier';
-                }
-                return $btn;
-            })
+            // ->addColumn('examen_file', function ($data) {
+            //     //change over 
+            //     if (!empty($data->examen_file)) {
+            //         $btn = '<a href="' . Storage::url($data->examen_file) . '" class="btn btn-primary btn-sm" target="_blank"  rel="noopener noreferrer" type="button"><i class="mdi mdi-cloud-download"></i></a>';
+            //     } else {
+            //         $btn = 'Aucun fichier';
+            //     }
+            //     return $btn;
+            // })
             ->addColumn('action', function ($data) {
                 $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
                 $btnEdit = ' <a type="button" href="' . route('test_order.edit', $data->id) . '" class="btn btn-primary" title="Mettre à jour examen"><i class="mdi mdi-lead-pencil"></i></a>';
@@ -564,9 +564,11 @@ class TestOrderController extends Controller
                 return $data->contrat->name;
             })
             ->addColumn('details', function (TestOrder $testOrder) {
-                return $testOrder->details->map(function ($detail) {
+                $a = $testOrder->details->map(function ($detail) {
                     return Str::limit($detail->test_name, 30, '...');
+                    // return '<strong>' . $detail->order->type->title . '</strong>: ' . Str::limit($detail->test_name, 30, '...');
                 })->implode('<br>');
+                return '<strong>' . $testOrder->type->title . '</strong>: ' . $a;
             })
             ->addColumn('rendu', function ($data) {
                 if (!empty($data->report)) {
@@ -584,7 +586,13 @@ class TestOrderController extends Controller
             ->addColumn('urgence', function ($data) {
                 return $data->is_urgent;
             })
-            ->rawColumns(['action', 'patient', 'contrat', 'details', 'rendu', 'type', 'examen_file'])
+            ->addColumn('dropdown', function ($data) {
+                $dropdown = "<select name='contrat_id' class='form-control'>
+                <option value=''>Tous les contrats</option>
+            </select>";
+                return $dropdown;
+            })
+            ->rawColumns(['action', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
             ->make(true);
     }
 }

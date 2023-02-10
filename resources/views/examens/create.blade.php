@@ -2,6 +2,19 @@
 
 @section('title', 'Créer un examen')
 
+@section('css')
+
+<style>
+    input[data-switch]+label {
+        width: 90px !important;
+    }
+
+    input[data-switch]:checked+label:after {
+        left: 62px !important;
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="">
 
@@ -30,12 +43,56 @@
                 enctype="multipart/form-data">
                 @csrf
                 <div class="row mb-3">
-                    {{-- <div class="alert alert-warning">
-                        <strong>Attention! </strong><small>Si un élément ne s'affiche pas dans la liste déroulante,
-                            ajoutez-le à la section correspondante et rechargez la page avant de procéder.</small>
-                    </div> --}}
-
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
+
+                    <div class="col-md-6">
+                        <label for="exampleFormControlInput1" class="form-label">Type d'examen<span
+                                style="color:red;">*</span></label>
+                        <select class="form-select select2" data-toggle="select2" required id="type_examen"
+                            name="type_examen">
+                            <option>Sélectionner le type d'examen</option>
+                            @forelse ($types_orders as $type)
+                            <option value="{{ $type->id }}">{{ $type->title }}</option>
+                            @empty
+                            Ajouter un Type d'examen
+                            @endforelse
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="exampleFormControlInput1" class="form-label">Contrat<span
+                                style="color:red;">*</span></label>
+                        <select class="form-select select2" data-toggle="select2" required name="contrat_id">
+                            <option>Sélectionner le contrat</option>
+                            @forelse ($contrats as $contrat)
+                            <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
+                            @empty
+                            Ajouter un contrat
+                            @endforelse
+                        </select>
+                    </div>
+
+                    <div class="col-md-12">
+
+                        <div class="examenReferenceSelect" style="display: none !important">
+                            <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
+                                    style="color:red;">*</span></label>
+                            <select class="form-select select2" data-toggle="select2" name="examen_reference_select"
+                                id="examen_reference_select">
+                                <option value="">Sélectionner dans la liste</option>
+
+                            </select>
+                        </div>
+                        <div class="examenReferenceInput" style="display: none !important">
+                            <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
+                                    style="color:red;">*</span></label>
+                            <input type="text" name="examen_reference_input" class="form-control"
+                                placeholder="Saisir l'examen de reference">
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row mb-3">
 
                     <div class="col-md-6">
                         <label for="exampleFormControlInput1" class="form-label">Patient<span
@@ -95,62 +152,18 @@
                             data-date-format="dd/mm/yyyy" required>
                     </div>
                     <div class="col-md-6">
-                        <div class="mb-3">
+                        <div class="">
                             <label for="example-fileinput" class="form-label">Pièce jointe</label>
                             <input type="file" name="examen_file" id="example-fileinput" class="form-control">
                         </div>
                     </div>
                 </div>
 
-                <div class="row ">
-                    <div class="col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">Type d'examen<span
-                                style="color:red;">*</span></label>
-                        <select class="form-select select2" data-toggle="select2" required id="type_examen"
-                            name="type_examen">
-                            <option>Sélectionner le type d'examen</option>
-                            @forelse ($types_orders as $type)
-                            <option value="{{ $type->id }}">{{ $type->title }}</option>
-                            @empty
-                            Ajouter un Type d'examen
-                            @endforelse
-                        </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Contrat<span
-                                style="color:red;">*</span></label>
-                        <select class="form-select select2" data-toggle="select2" required name="contrat_id">
-                            <option>Sélectionner le contrat</option>
-                            @forelse ($contrats as $contrat)
-                            <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
-                            @empty
-                            Ajouter un contrat
-                            @endforelse
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-12 mb-3">
-
-                    <div class="examenReferenceSelect" style="display: none !important">
-                        <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
-                                style="color:red;">*</span></label>
-                        <select class="form-select select2" data-toggle="select2" name="examen_reference_select"
-                            id="examen_reference_select">
-                            <option value="">Sélectionner dans la liste</option>
-
-                        </select>
-                    </div>
-                    <div class="examenReferenceInput" style="display: none !important">
-                        <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
-                                style="color:red;">*</span></label>
-                        <input type="text" name="examen_reference_input" class="form-control"
-                            placeholder="Saisir l'examen de reference">
-                    </div>
-
-                </div>
                 <div class="col-md-6">
-                    <input type="checkbox" class="form-check-input" name="is_urgent" id="">
-                    <label class="form-label">Cas urgent</label>
+                    {{-- <input type="checkbox" class="form-check-input" name="is_urgent" id=""> --}}
+                    <label class="form-label">Cas urgent</label><br>
+                    <input type="checkbox" id="switch3" class="form-control" name="is_urgent" data-switch="success" />
+                    <label for="switch3" data-on-label="Urgent" data-off-label="Normal"></label>
                 </div>
 
         </div>
