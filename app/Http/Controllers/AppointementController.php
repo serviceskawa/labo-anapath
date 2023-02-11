@@ -25,7 +25,7 @@ class AppointementController extends Controller
     public function getAppointements()
     {
         $data = Appointment::with(['doctor', 'patient'])->get();
-
+        $events = [];
         foreach ($data as $key => $value) {
             $events[$key] = [
                 "title" => "RDV " . $value['doctor']->name,
@@ -136,7 +136,7 @@ class AppointementController extends Controller
             $appointement->date =  convertDateTime($data['date']);
             $appointement->save();
 
-            return redirect()->route('appointement.index')->with('success', "Rendez-vous mis à jour avec succès ! ");
+            return response()->json($data);
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
             dd($error);
@@ -155,8 +155,9 @@ class AppointementController extends Controller
         // if (!getOnlineUser()->can('delete-hopitaux')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-        Appointment::find($id)->delete();
-        return redirect()->route('appointement.index')->with('success', "Rendez-vous supprimé ! ");
+        Appointment::whereId($id)->delete();
+        return response()->json();
+        // return redirect()->route('appointement.index')->with('success', "Rendez-vous supprimé ! ");
     }
 
     public function createConsultation($appointementId)

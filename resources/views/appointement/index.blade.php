@@ -32,9 +32,28 @@
                 },
                 eventClick: function(info) {
                     console.log(info.event.id)
-                    var id = info.event.id;
-                    window.location.href = " {{ url('/') }}/appointements/show/" + id;
 
+                    var id = info.event.id;
+
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ url('appointements/getAppointementsById') }}" + '/' + id,
+                        success: function(data) {
+
+                            $('#appointement_id2').val(data.id);
+                            $('#patient_id2').val(data.patient_id).change();
+                            $('#doctor_id2').val(data.doctor_id).change();
+                            $('#time2').val(data.date);
+                            $('#message2').val(data.message);
+                            $('#priority2').val(data.priority).change();
+
+                            console.log(data);
+                            $('#event-modal-edit').modal('show');
+                        },
+                        error: function(data) {
+                            console.log('Error:', data);
+                        }
+                    });
                 },
                 events: "{{ route('appointement.getAppointements') }}",
             });
@@ -64,6 +83,61 @@
                         $('#form-event').trigger("reset");
                         $('#event-modal').modal('hide');
                         toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                        console.log(data);
+                    },
+                    error: function(data) {
+                        console.log(data);
+                    },
+
+                });
+
+            });
+            $('#form-event-edit').on('submit', function(e) {
+                e.preventDefault();
+                let doctorId = $('#doctor_id2').val();
+                let patientId = $('#patient_id2').val();
+                let priority = $('#priority2').val();
+                let message = $('#message2').val();
+                let time = $('#time2').val();
+                let id = $('#appointement_id2').val();
+                console.log(time);
+                $.ajax({
+                    url: "{{ url('appointements/update') }}" + '/' + id,
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        doctor_id: doctorId,
+                        patient_id: patientId,
+                        priority: priority,
+                        message: message,
+                        date: time
+                    },
+                    success: function(data) {
+                        calendar.refetchEvents();
+                        $('#form-event-edit').trigger("reset");
+                        $('#event-modal-edit').modal('hide');
+                        toastr.success("Donnée mis à jour avec succès", 'Mis à jour réussi');
+                        console.log(data);
+                    },
+                    error: function(data) {
+                        console.log(data);
+                    },
+
+                });
+
+            });
+            $('#deleteAppointement').on('click', function(e) {
+                e.preventDefault();
+
+                let id = $('#appointement_id2').val();
+
+                $.ajax({
+                    url: "{{ url('appointements/delete') }}" + '/' + id,
+                    type: "get",
+                    success: function(data) {
+                        calendar.refetchEvents();
+                        $('#event-modal-edit').modal('hide');
+                        toastr.success("Donnée supprimé avec succès", 'Supprimé réussi');
                         console.log(data);
                     },
                     error: function(data) {
@@ -167,7 +241,8 @@
                                                     id="doctor_id" required>
                                                     <option>Sélectionner le médecin traitant</option>
                                                     @foreach ($doctors as $doctor)
-                                                        <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
+                                                        <option value="{{ $doctor->id }}">
+                                                            {{ $doctor->firstname . ' ' . $doctor->firstname }}</option>
                                                     @endforeach
                                                 </select>
                                                 <div class="invalid-feedback">Please select a valid event category</div>
@@ -213,6 +288,92 @@
                         </div> <!-- end modal-content-->
                     </div> <!-- end modal dialog-->
                 </div>
+                <div class="modal fade" id="event-modal-edit" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form class="needs-validation" name="event-form" id="form-event-edit" novalidate="">
+                                @csrf
+                                <div class="modal-header border-bottom-0 py-3 px-4">
+                                    <h5 class="modal-title" id="modal-title">Modifier le Rendez-vous</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body px-4 pb-4 pt-0">
+                                    <div class="row">
+                                        <input type="hidden" name="appointement_id2" id="appointement_id2">
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="exampleFormControlInput1" class="form-label">Patient<span
+                                                        style="color:red;">*</span></label>
+                                                <select class="form-select select2" data-toggle="select2"
+                                                    name="patient_id2" id="patient_id2" required>
+                                                    <option>Sélectionner le nom du patient</option>
+                                                    @foreach ($patients as $patient)
+                                                        <option value="{{ $patient->id }}">{{ $patient->code }} -
+                                                            {{ $patient->firstname }}
+                                                            {{ $patient->lastname }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <div class="invalid-feedback">Please select a valid event category</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="exampleFormControlInput1" class="form-label">Médecin
+                                                    traitant<span style="color:red;">*</span></label>
+                                                <select class="form-select select2" data-toggle="select2"
+                                                    name="doctor_id2" id="doctor_id2" required>
+                                                    <option>Sélectionner le médecin traitant</option>
+                                                    @foreach ($doctors as $doctor)
+                                                        <option value="{{ $doctor->id }}">
+                                                            {{ $doctor->firstname . ' ' . $doctor->firstname }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <div class="invalid-feedback">Please select a valid event category</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label class="control-label form-label">Heure de rendez-vous</label>
+                                            <input class="form-control" type="datetime-local" id="time2" required>
+                                            <div class="invalid-feedback">Insérer une date valide</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label class="control-label form-label">Priorité</label>
+                                            <select class="form-select" name="priority2" id="priority2" required="">
+                                                <option value="normal" selected="">Normal</option>
+                                                <option value="urgent">Urgent</option>
+                                                <option value="tres urgent">Très urgent</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label class="control-label form-label">Commentaire</label>
+                                            <textarea name="message2" id="message2" class="form-control" cols="30" rows="10"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <button type="button" class="btn btn-danger"
+                                                id="deleteAppointement">Supprimer</button>
+                                        </div>
+                                        <div class="col-8 text-end">
+                                            <button type="button" class="btn btn-light me-1"
+                                                data-bs-dismiss="modal">Annuler</button>
+                                            <button type="submit" class="btn btn-success" id="btn-save-event">Mettre à
+                                                jour </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div> <!-- end modal-content-->
+                    </div> <!-- end modal dialog-->
+                </div>
                 <!-- end modal-->
             </div>
             <!-- end col-12 -->
@@ -230,6 +391,14 @@
         });
         $('#doctor_id').select2({
             dropdownParent: $('#event-modal')
+        });
+
+        // Edit modal
+        $('#patient_id2').select2({
+            dropdownParent: $('#event-modal-edit')
+        });
+        $('#doctor_id2').select2({
+            dropdownParent: $('#event-modal-edit')
         });
         $(document).ready(function() {
 
