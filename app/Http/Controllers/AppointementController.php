@@ -24,15 +24,15 @@ class AppointementController extends Controller
 
     public function getAppointements()
     {
-        $data = Appointment::with(['doctor', 'patient'])->get();
+        $data = Appointment::with(['doctor', 'patient', 'doctor_interne'])->get();
         $events = [];
         foreach ($data as $key => $value) {
             $events[$key] = [
-                "title" => "RDV " . $value['doctor']->name,
+                "title" => "RDV " . $value['doctor_interne']->firstname . ' ' . $value['doctor_interne']->lastname, // change doctor_id en  user_id pour la reference dses docteurs internes
                 "id" => $value['id'],
                 "start" => $value['date'],
-                "doctorId" => $value['doctor_id'],
-                "doctorName" => $value['doctor']->name,
+                "doctorId" => $value['user_id'],
+                "doctorName" => $value['doctor_interne']->firstname . ' ' . $value['doctor_interne']->lastname,
                 "className" => randColor($value['priority']),
             ];
         }
@@ -41,7 +41,7 @@ class AppointementController extends Controller
 
     public function getAppointementsById(Request $request)
     {
-        $data = Appointment::with(['doctor', 'patient'])->whereId($request->id)->first();
+        $data = Appointment::with(['doctor', 'patient', 'doctor_interne'])->whereId($request->id)->first();
 
         return response()->json($data);
     }
@@ -64,7 +64,7 @@ class AppointementController extends Controller
         ]);
 
         Appointment::create([
-            "doctor_id" => $data['doctorId'],
+            "user_id" => $data['doctorId'], // change doctor_id en  user_id pour la reference dses docteurs internes
             "patient_id" => $data['patientId'],
             "priority" => $data['priority'],
             "message" => $data['message'],
@@ -129,7 +129,7 @@ class AppointementController extends Controller
 
         try {
             $appointement = Appointment::find($id);
-            $appointement->doctor_id = $data['doctor_id'];
+            $appointement->user_id = $data['doctor_id'];
             $appointement->patient_id = $data['patient_id'];
             $appointement->message = $data['message'];
             $appointement->priority = $data['priority'];
@@ -139,7 +139,7 @@ class AppointementController extends Controller
             return response()->json($data);
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
-            dd($error);
+            // dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }

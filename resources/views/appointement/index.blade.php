@@ -42,7 +42,7 @@
 
                             $('#appointement_id2').val(data.id);
                             $('#patient_id2').val(data.patient_id).change();
-                            $('#doctor_id2').val(data.doctor_id).change();
+                            $('#doctor_id2').val(data.user_id).change();
                             $('#time2').val(data.date);
                             $('#message2').val(data.message);
                             $('#priority2').val(data.priority).change();
