@@ -621,7 +621,17 @@ class TestOrderController extends Controller
                     $query->where('type_order_id', $request->get('type_examen'));
                 }
                 if (!empty($request->get('exams_status'))) {
-                    $query->where('status', $request->get('exams_status'));
+                    if ($request->get('exams_status') == "livrer") {
+                        $query->whereHas('report', function ($query) {
+                            $query->where('is_deliver', 1);
+                        });
+                    } elseif ($request->get('exams_status') == "non_livrer") {
+                        $query->whereHas('report', function ($query) {
+                            $query->where('is_deliver', 0);
+                        });
+                    } else {
+                        $query->where('status', $request->get('exams_status'));
+                    }
                 }
             })
             ->rawColumns(['action', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])

@@ -84,6 +84,8 @@
                                             <option value="">Tous</option>
                                             <option value="1">Valider</option>
                                             <option value="0">En attente</option>
+                                            <option value="livrer">Livrer</option>
+                                            <option value="non_livrer">Non Livrer</option>
                                         </select>
                                     </div>
 
