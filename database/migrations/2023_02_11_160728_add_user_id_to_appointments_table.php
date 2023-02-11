@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddUserIdToTableAppointments extends Migration
+class AddUserIdToAppointmentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,10 @@ class AddUserIdToTableAppointments extends Migration
     public function up()
     {
         Schema::table('appointments', function (Blueprint $table) {
-            //
+            $table->foreignId('user_id')->nullable()
+                ->constrained('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 
