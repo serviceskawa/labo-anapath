@@ -30,7 +30,7 @@ class AddAttribuateDoctorIdToTableTestOrders extends Migration
     {
         Schema::table('test_orders', function (Blueprint $table) {
             $table->foreignId('attribuate_doctor_id')->nullable()
-                ->constrained('doctors')
+                ->constrained('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });

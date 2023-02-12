@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\Report;
 use App\Models\Contrat;
 use App\Models\Invoice;
@@ -151,6 +152,6 @@ class TestOrder extends Model
 
     public function attribuateToDoctor()
     {
-        return $this->belongsTo(Doctor::class, 'attribuate_doctor_id');
+        return $this->belongsTo(User::class, 'attribuate_doctor_id');
     }
 }
