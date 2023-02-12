@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddAttribuateDoctorIdToTableTestOrders extends Migration
+class ChangeAttribuateDoctorIdToTableTestOrders extends Migration
 {
     /**
      * Run the migrations.
@@ -14,9 +14,11 @@ class AddAttribuateDoctorIdToTableTestOrders extends Migration
     public function up()
     {
         Schema::table('test_orders', function (Blueprint $table) {
-            $table->foreignId('attribuate_doctor_id')->nullable()
-                ->constrained('doctors')
-                ->onUpdate('cascade')
+            $table->dropForeign(['attribuate_doctor_id']);
+
+            $table->foreign('attribuate_doctor_id')->nullable()
+                ->references('id')
+                ->on('users')
                 ->onDelete('cascade');
         });
     }
@@ -29,10 +31,7 @@ class AddAttribuateDoctorIdToTableTestOrders extends Migration
     public function down()
     {
         Schema::table('test_orders', function (Blueprint $table) {
-            $table->foreignId('attribuate_doctor_id')->nullable()
-                ->constrained('doctors')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            //
         });
     }
 }
