@@ -23,99 +23,177 @@
             @endif
 
             <div class="card-header">
-                Demande d'examen : <strong>{{ $test_order->code }}</strong>
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right mt-0">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#standard-modal">Ajouter un nouveau patient</button>
+                        </div>
+                        Demande d'examen : <strong>{{ $test_order->code }}</strong>
+                    </div>
+
+                </div>
             </div>
-            <div class="card-body">
+            {{-- Fusion de read et updaye --}}
+            <form action="{{ route('test_order.update', $test_order->id) }}" method="post" autocomplete="off"
+                enctype="multipart/form-data">
+                <div class="card-body">
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="simpleinput" class="form-label">Patient</label>
-                        <input type="text" name="name"
-                            value="{{ $test_order->getPatient()->lastname }} {{ $test_order->getPatient()->firstname }} - {{ $test_order->getPatient()->code }}"
-                            class="form-control" readonly>
+                    @csrf
+                    <div class="row mb-3">
+
+                        <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
+
+                        <div class="col-md-6">
+                            <label for="exampleFormControlInput1" class="form-label">Patient <span
+                                    style="color:red;">*</span></label>
+                            <select class="form-select select2" data-toggle="select2" name="patient_id" id="patient_id"
+                                required>
+                                <option>Sélectionner le nom du patient</option>
+                                @foreach ($patients as $patient)
+                                    <option value="{{ $patient->id }}"
+                                        {{ $test_order->patient_id == $patient->id ? 'selected' : '' }}>
+                                        {{ $patient->code }} - {{ $patient->firstname }}
+                                        {{ $patient->lastname }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="exampleFormControlInput1" class="form-label">Médecin traitant<span
+                                    style="color:red;">*</span></label>
+                            <select class="form-select select2" data-toggle="select2" name="doctor_id" id="doctor_id"
+                                required>
+                                <option>Sélectionner le médecin traitant</option>
+                                @foreach ($doctors as $doctor)
+                                    <option value="{{ $doctor->name }}"
+                                        {{ $test_order->doctor_id == $doctor->id ? 'selected' : '' }}>
+                                        {{ $doctor->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                     </div>
 
-                    <div class="col-md-6 mb-3">
-                        <label for="simpleinput" class="form-label">Médecin traitant</label>
-                        <input type="text" name="name" value="{{ $test_order->getDoctor()->name }}"
-                            class="form-control" readonly>
-                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="exampleFormControlInput1" class="form-label">Hôpital de provenance<span
+                                    style="color:red;">*</span></label>
+                            <select class="form-select select2" data-toggle="select2" name="hospital_id" id="hospital_id"
+                                required>
+                                <option>Sélectionner le centre hospitalier de provenance</option>
+                                @foreach ($hopitals as $hopital)
+                                    <option value="{{ $hopital->name }}"
+                                        {{ $test_order->hospital_id == $hopital->id ? 'selected' : '' }}>
+                                        {{ $hopital->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                    <input id="contrat_id" type="hidden" value="{{ $test_order->getContrat()->id }}">
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Référence hôpital</label>
-                        <input class="form-control" name="reference_hopital" value="{{ $test_order->reference_hopital }}"
-                            readonly>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="simpleinput" class="form-label">Hôpital de provenance</label>
-                        <input type="text" name="name" value="{{ $test_order->getHospital()->name }}"
-                            class="form-control" readonly>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <label class="form-label">Date prélèvement</label>
-                        <input type="text" class="form-control date" name="prelevement_date" id="prelevement_date"
-                            value="{{ $test_order->prelevement_date }}" readonly>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="mb-3">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="simpleinput" class="form-label">Contrat</label>
-                                <input type="text" name="name" class="form-control"
-                                    value="{{ $test_order->getContrat()->name }}" readonly>
+                                <label for="exampleFormControlInput1" class="form-label">Référence hôpital</label>
+                                <input type="text" class="form-control" name="reference_hopital"
+                                    value="{{ $test_order->reference_hopital }}">
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">Type d'examen<span
-                                style="color:red;">*</span></label>
-                        <select class="form-control" readonly id="type_examen" name="type_examen">
-                            <option>Sélectionner le type d'examen</option>
-                            @forelse ($types_orders as $type)
-                                <option value="{{ $type->id }}"
-                                    {{ $test_order->type_order_id == $type->id ? 'selected' : '' }}>
-                                    {{ $type->title }}</option>
-                            @empty
-                                Ajouter un Type d'examen
-                            @endforelse
-                        </select>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Date prélèvement<span style="color:red;">*</span></label>
+                            <input type="date" class="form-control" name="prelevement_date" id="prelevement_date"
+                                data-date-format="dd/mm/yyyy" value="{{ $test_order->prelevement_date }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="example-fileinput" class="form-label">Pièce jointe</label>
+                                <input type="file" name="examen_file" id="example-fileinput" class="form-control">
+                            </div>
+                        </div>
+                    </div>
 
-                        <label class="form-label mt-3">Docteur signataire</label>
-                        <select name="attribuate_doctor_id" id="" class="form-control" readonly>
-                            <option value="">Choississez un docteur signataire</option>
-                            @foreach (getUsersByRole('docteur') as $item)
-                                <option value="{{ $item->id }}"
-                                    {{ $test_order->attribuate_doctor_id == $item->id ? 'selected' : '' }}>
-                                    {{ $item->lastname }} {{ $item->firstname }} </option>
-                            @endforeach
-                        </select>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="exampleFormControlInput1" class="form-label">Type d'examen<span
+                                    style="color:red;">*</span></label>
+                            <select class="form-select select2" data-toggle="select2" required id="type_examen"
+                                name="type_examen">
+                                <option>Sélectionner le type d'examen</option>
+                                @forelse ($types_orders as $type)
+                                    <option value="{{ $type->id }}"
+                                        {{ $test_order->type_order_id == $type->id ? 'selected' : '' }}>
+                                        {{ $type->title }}</option>
+                                @empty
+                                    Ajouter un Type d'examen
+                                @endforelse
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Contrat<span
+                                    style="color:red;">*</span></label>
+                            <select class="form-select select2" data-toggle="select2" required name="contrat_id">
+                                <option>Sélectionner le contrat</option>
+                                @forelse ($contrats as $contrat)
+                                    <option value="{{ $contrat->id }}"
+                                        {{ $test_order->contrat_id == $contrat->id ? 'selected' : '' }}>
+                                        {{ $contrat->name }}</option>
+                                @empty
+                                    Ajouter un contrat
+                                @endforelse
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
 
-                        <label class="form-label mt-3"">Cas urgent</label> <br>
-                        <input type="checkbox" id="switch3" class="form-control" name="is_urgent" readonly
-                            {{ $test_order->is_urgent != 0 ? 'checked' : '' }} data-switch="success" />
-                        <label for="switch3" data-on-label="Urgent" data-off-label="Normal"></label>
+                        <div class="examenReferenceSelect" style="display: none !important">
+                            <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
+                                    style="color:red;">*</span></label>
+                            <select class="form-select select2" data-toggle="select2" name="examen_reference_select"
+                                id="examen_reference_select">
+                                <option value="">Sélectionner dans la liste</option>
+                            </select>
+                        </div>
+                        <div class="examenReferenceInput" style="display: none !important">
+                            <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
+                                    style="color:red;">*</span></label>
+                            <input type="text" name="examen_reference_input" class="form-control"
+                                placeholder="Saisir l'examen de reference" value="{{ $test_order->test_affiliate }}">
+                        </div>
 
                     </div>
-                    <div class="col-md-6">
-                        <label for="example-fileinput" class="form-label">Pièce jointe</label>
-                        <input type="file" class="dropify" name="favicon"
-                            data-default-file="{{ $test_order ? Storage::url($test_order->examen_file) : '' }}"
-                            data-max-file-size="3M" />
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{-- <input type="checkbox" class="form-check-input" name="is_urgent" id=""
+                                {{ $test_order->is_urgent != 0 ? 'checked' : '' }}> --}}
+                            <label class="form-label">Cas urgent</label> <br>
+                            <input type="checkbox" id="switch3" class="form-control" name="is_urgent"
+                                {{ $test_order->is_urgent != 0 ? 'checked' : '' }} data-switch="success" />
+                            <label for="switch3" data-on-label="Urgent" data-off-label="Normal"></label>
+
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Docteur signataire</label>
+                            <select name="attribuate_doctor_id" id="" class="form-control">
+                                <option value="">Choississez un docteur signataire</option>
+                                @foreach (getUsersByRole('docteur') as $item)
+                                    <option value="{{ $item->id }}"
+                                        {{ $test_order->attribuate_doctor_id == $item->id ? 'selected' : '' }}>
+                                        {{ $item->lastname }} {{ $item->firstname }} </option>
+                                @endforeach
+                            </select>
+
+                        </div>
                     </div>
+
                 </div>
 
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn w-100 btn-warning">Mettre à jour</button>
+                </div>
+
+            </form>
         </div>
 
         <div class="card mb-md-0 mb-3">
@@ -232,7 +310,85 @@
 
             </div>
         </div> <!-- end card-->
+        {{-- Modal --}}
+        <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="standard-modalLabel">Ajouter un nouveau patient</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                    </div>
+                    <form method="POST" id="createPatientForm" autocomplete="off">
+                        @csrf
+                        <div class="modal-body">
 
+                            <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Code</label>
+                                <input type="text" name="code" id="code" value="<?php echo substr(md5(rand(0, 1000000)), 0, 10); ?>"
+                                    class="form-control" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Nom <span style="color:red;">*</span></label>
+                                <input type="text" name="firstname" id="firstname" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Prénom<span
+                                        style="color:red;">*</span></label>
+                                <input type="text" name="lastname" id="lastname" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="example-select" class="form-label">Genre<span
+                                        style="color:red;">*</span></label>
+                                <select class="form-select" id="genre" name="genre" required>
+                                    <option value="">Sélectionner le genre</option>
+                                    <option value="M">Masculin</option>
+                                    <option value="F">Féminin</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="example-date" class="form-label">Date de naissance</label>
+                                <input class="form-control" id="example-date" type="date" name="birthday">
+                            </div>
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Age<span style="color:red;">*</span></label>
+                                <input type="number" name="age" id="age" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Profession</label>
+                                <input type="text" name="profession" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Contact 1<span
+                                        style="color:red;">*</span></label>
+                                <input type="tel" name="telephone1" id="telephone1" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Contact 2</label>
+                                <input type="tel" name="telephone2" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Adresse<span
+                                        style="color:red;">*</span></label>
+                                <textarea type="text" name="adresse" class="form-control" required></textarea>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-primary">Ajouter un nouveau patient</button>
+                        </div>
+                    </form>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
     </div>
 @endsection
 
@@ -488,4 +644,6 @@
 
         }
     </script>
+
+    {{-- Fusion --}}
 @endpush

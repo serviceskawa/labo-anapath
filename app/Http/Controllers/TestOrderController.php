@@ -279,7 +279,13 @@ class TestOrderController extends Controller
         $details = DetailTestOrder::where('test_order_id', $test_order->id)->get();
 
         $types_orders = TypeOrder::all();
-        return view('examens.details.index', compact(['test_order', 'details', 'tests', 'types_orders']));
+
+        // fusion update et read
+        $patients = Patient::all();
+        $doctors = Doctor::all();
+        $hopitals = Hospital::all();
+        $contrats = Contrat::ofStatus('ACTIF')->get();
+        return view('examens.details.index', compact(['test_order', 'details', 'tests', 'types_orders', 'patients', 'doctors', 'hopitals', 'contrats',]));
     }
 
     public function details_store(Request $request)
@@ -546,7 +552,7 @@ class TestOrderController extends Controller
             // })
             ->addColumn('action', function ($data) {
                 $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
-                $btnEdit = ' <a type="button" href="' . route('test_order.edit', $data->id) . '" class="btn btn-primary" title="Mettre à jour examen"><i class="mdi mdi-lead-pencil"></i></a>';
+                // $btnEdit = ' <a type="button" href="' . route('test_order.edit', $data->id) . '" class="btn btn-primary" title="Mettre à jour examen"><i class="mdi mdi-lead-pencil"></i></a>';
                 if ($data->status != 1) {
                     $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
                     $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
@@ -561,7 +567,7 @@ class TestOrderController extends Controller
                     $btnInvoice = ' <a type="button" href="' . route('invoice.storeFromOrder', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
                 }
 
-                return $btnVoir . $btnEdit . $btnReport . $btnInvoice . $btnDelete;
+                return $btnVoir .  $btnReport . $btnInvoice . $btnDelete;
             })
             ->addColumn('patient', function ($data) {
                 return $data->patient->firstname . ' ' . $data->patient->lastname;

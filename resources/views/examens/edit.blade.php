@@ -34,10 +34,10 @@
                 </div>
 
             </div>
-            <div class="card-body">
+            <form action="{{ route('test_order.update', $test_order->id) }}" method="post" autocomplete="off"
+                enctype="multipart/form-data">
+                <div class="card-body">
 
-                <form action="{{ route('test_order.update', $test_order->id) }}" method="post" autocomplete="off"
-                    enctype="multipart/form-data">
                     @csrf
                     <div class="row mb-3">
 
@@ -186,11 +186,11 @@
                         </div>
                     </div>
 
-            </div>
+                </div>
 
-            <div class="modal-footer">
-                <button type="submit" class="btn w-100 btn-warning">Mettre à jour</button>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn w-100 btn-warning">Mettre à jour</button>
+                </div>
 
             </form>
         </div>
