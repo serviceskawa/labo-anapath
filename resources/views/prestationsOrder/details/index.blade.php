@@ -246,6 +246,7 @@
                             <div class="col-md-2 col-12">
                                 <div class="mb-3">
                                     <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
+
                                 </div>
                             </div>
                         </div>
@@ -302,7 +303,6 @@
 
             </div>
         </div> <!-- end card-->
-        
         {{-- Modal --}}
         <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel"
             aria-hidden="true">
@@ -393,7 +393,6 @@
         $('.dropify').dropify();
     </script>
     <script type="text/javascript">
-
         $(document).ready(function() {
             var test_order = {!! json_encode($test_order) !!}
             // console.log(test_order)
@@ -637,7 +636,6 @@
             });
 
         }
-
     </script>
 
     {{-- Fusion --}}
@@ -646,7 +644,6 @@
             format: 'dd/mm/yyyy',
             startDate: '-3d'
         });
-
         // SUPPRESSION
         function deleteModal(id) {
 
@@ -796,10 +793,8 @@
 
             });
         });
-
     </script>
     <script type="text/javascript">
-
         $(document).ready(function() {
             var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 
@@ -840,6 +835,5 @@
                 }
 
         });
-        
     </script>
 @endpush

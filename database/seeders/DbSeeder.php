@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\CategoryTest;
+use App\Models\Patient;
 use App\Models\Test;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -18,26 +19,27 @@ class DbSeeder extends Seeder
      */
     public function run()
     {
+        Patient::factory(100)->create();
 
-        $faker = Faker::create();
+        // $faker = Faker::create();
         
-        //CREATION UTILISATEUR
-        User::create([
-            'name' => 'Administrateur',
-            'email' => 'admin@admin.com',
-            'password' => Hash::make('P@ssw0rd'),
+        // //CREATION UTILISATEUR
+        // User::create([
+        //     'name' => 'Administrateur',
+        //     'email' => 'admin@admin.com',
+        //     'password' => Hash::make('P@ssw0rd'),
     
-        ]);
+        // ]);
 
 
-        //CREATION CATEGORIE TEST
-        foreach(range(1,5) as $index){
-            $categorie = CategoryTest::create([
-                'code' => $faker->numerify('CA-####'),
-                'name' => $faker->word,
-            ]);
-        };
-        $categories = CategoryTest::all();
+        // //CREATION CATEGORIE TEST
+        // foreach(range(1,5) as $index){
+        //     $categorie = CategoryTest::create([
+        //         'code' => $faker->numerify('CA-####'),
+        //         'name' => $faker->word,
+        //     ]);
+        // };
+        // $categories = CategoryTest::all();
 
 
         //CREATION TEST

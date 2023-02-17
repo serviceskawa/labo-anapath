@@ -15,7 +15,7 @@
 
         {{-- @include('examens.details.create') --}}
 
-        <div class="card my-3">
+        {{-- <div class="card my-3">
             @if ($test_order->status == 1)
                 <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
                     class="btn btn-success w-full">CONSULTEZ LE
@@ -34,7 +34,7 @@
 
                 </div>
             </div>
-            {{-- Fusion de read et updaye --}}
+            <!-- Fusion de read et updaye -->
             <form action="{{ route('test_order.update', $test_order->id) }}" method="post" autocomplete="off"
                 enctype="multipart/form-data">
                 <div class="card-body">
@@ -187,33 +187,47 @@
                 </div>
 
             </form>
-        </div>
+        </div> --}}
 
         <div class="card mb-md-0 mb-3">
             <div class="card-header">
-                Liste des examens demandés
+                Demande de prestations
             </div>
             <h5 class="card-title mb-0"></h5>
 
             <div class="card-body">
 
                 <!-- Ajouter un examen | si le statut de la demande est 1 alors on peut plus ajouter de nouveau examen dans la demande-->
-                @if ($test_order->status != 1)
-                    <form method="POST" id="addDetailForm" autocomplete="off">
+                {{-- @if ($test_order->status != 1) --}}
+
+                    <form method="POST" action={{ route('prestations_order.store')}} id="addDetailForm" autocomplete="off">
                         @csrf
                         <div class="row d-flex align-items-end">
                             <div class="col-md-4 col-12">
-                                <input type="hidden" name="test_order_id" id="test_order_id"
-                                    value="{{ $test_order->id }}" class="form-control">
 
                                 <div class="mb-3">
-                                    <label for="example-select" class="form-label">Examen</label>
-                                    <select class="form-select select2" data-toggle="select2" id="test_id"
-                                        name="test_id" required onchange="getTest()">
-                                        <option>Sélectionner l'examen</option>
-                                        @foreach ($tests as $test)
-                                            <option data-category_test_id="{{ $test->category_test_id }}"
-                                                value="{{ $test->id }}">{{ $test->name }}</option>
+                                    <label for="example-select" class="form-label">Patients</label>
+                                    <select class="form-select select2" data-toggle="select2" id=""
+                                        name="patient_id" required>
+                                        <option>Tous les patients</option>
+                                        @foreach ($patients as $patient)
+                                            <option 
+                                                value="{{ $patient->id }}"> {{ $patient->firstname }} {{ $patient->lastname }}</option>
+                                        @endforeach
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-12">
+
+                                <div class="mb-3">
+                                    <label for="example-select" class="form-label">Prestations</label>
+                                    <select class="form-select select2" data-toggle="select2" id="prestation_id"
+                                        name="prestation_id" required onchange="getTest()">
+                                        <option>Toutes les prestations</option>
+                                        @foreach ($prestations as $prestation)
+                                            <option data-category_test_id="{{ $prestation->id }}"
+                                                value="{{ $prestation->id }}">{{ $prestation->name }}</option>
                                         @endforeach
 
                                     </select>
@@ -227,21 +241,6 @@
                                         readonly>
                                 </div>
                             </div>
-                            <div class="col-md-2 col-12">
-                                <div class="mb-3">
-                                    <label for="simpleinput" class="form-label">Remise</label>
-                                    <input type="text" name="remise" id="remise" class="form-control" required
-                                        readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-12">
-                                <div class="mb-3">
-                                    <label for="example-select" class="form-label">Total</label>
-
-                                    <input type="text" name="total" id="total" class="form-control" required
-                                        readonly>
-                                </div>
-                            </div>
 
                             <div class="col-md-2 col-12">
                                 <div class="mb-3">
@@ -251,7 +250,7 @@
                         </div>
 
                     </form>
-                @endif
+                {{-- @endif --}}
 
                 <div id="cardCollpase1" class="show collapse pt-3">
 
@@ -259,36 +258,49 @@
                         <thead class="table-light">
                             <tr>
                                 <th>#</th>
-                                <th>Examen</th>
+                                <th>Patient</th>
+                                <th>Prestations</th>
                                 <th>Prix</th>
-                                <th>Remise</th>
-                                <th>Montant</th>
+                                <th>Status</th>
                                 <th>Actions</th>
 
                             </tr>
                         </thead>
 
                         <tfoot>
-                            <tr>
-                                <td colspan="1" class="text-right">
-                                    <strong>Total:</strong>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
 
-                                <td id="val">
-                                    <input type="number" id="estimated_ammount" class="estimated_ammount"
-                                        value="0" readonly>
-                                </td>
-                                <td></td>
+                           @if ($prestationOrders)
+                               @foreach ($prestationOrders as $prestationOrder)
+                                    <tr>
+                                        <td>{{$prestationOrder->id}}</td>
+                                        <td>{{$prestationOrder->patient->firstname}}</td>
+                                        <td>{{$prestationOrder->prestation->name}}</td>
+                                        <td>{{$prestationOrder->total}}</td>
+                                        <td>
+                                            <span class="bg-{{$prestationOrder->status != "ended" ? 'danger' : 'success' }} badge
+                                                float-end">{{$prestationOrder->status}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if ($prestationOrder->status == "new" | $prestationOrder->status =="progress")    
+                                            <a type="button" href="{{route('prestations_order.edit', $prestationOrder->id)}}" id="deleteBtn" class="btn btn-warning"><i class="mdi mdi-lead-pencil"></i> </a>
+                                            <button type="button" id="deleteBtn" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
+                                            @else
+                                                Pas d'action
+                                            @endif
+                                            {{-- <button type="button" id="deleteBtn" class="btn btn-success"><i class="mdi mdi-eye"></i> </button> --}}
+                                        </td>
 
-                            </tr>
+                                    </tr>
+                                @endforeach
+                           @else
+                               Pas de demande de prestations
+                           @endif
                         </tfoot>
                     </table>
 
                     <div class="row mx-3 mt-2">
-                        @if ($test_order->status != 1)
+                        {{-- @if ($test_order->status != 1)
                             <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}"
                                 id="finalisationBtn" class="btn btn-info disabled w-full">ENREGISTRER</a>
                         @endif
@@ -296,7 +308,7 @@
                             <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
                                 class="btn btn-success w-full">CONSULTEZ LE
                                 COMPTE RENDU</a>
-                        @endif
+                        @endif --}}
                     </div>
                 </div>
 
@@ -385,251 +397,155 @@
     </div>
 @endsection
 
+ 
 @push('extra-js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
         integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
+    {{-- <script>
         $('.dropify').dropify();
-    </script>
+    </script> --}}
+
     <script type="text/javascript">
 
-        $(document).ready(function() {
-            var test_order = {!! json_encode($test_order) !!}
-            // console.log(test_order)
+        // $(document).ready(function() {
+        //     var prestation = {!! json_encode($prestation) !!}
+        //     var patient = {!! json_encode($patient) !!}
+        //     console.log(patient);
+        //     // console.log(test_order)
 
-            var dtDetailTable = $('.detail-list-table')
+        //     var dtDetailTable = $('.detail-list-table')
 
-            var dt_basic = $('#datatable1').DataTable({
-                ajax: {
-                    url: '/test_order/detailstest/' + test_order.id,
-                    dataSrc: ''
-                },
-                // deferRender: true,
-                columns: [
-                    // columns according to JSON
-                    {
-                        data: 'id'
-                    },
-                    {
-                        data: 'test_name'
-                    },
-                    {
-                        data: 'price'
-                    },
-                    {
-                        data: 'discount'
-                    },
-                    {
-                        data: 'total'
-                    },
-                    {
-                        data: null
-                    }
-                ],
-                columnDefs: [{
-                    "targets": -1,
-                    "render": function(data, type, row) {
-                        if (row["status"] != 1) {
-                            return (
-                                '<button type="button" id="deleteBtn" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>'
-                            );
-                        }
-                        return "";
-                    }
+        //     var dt_basic = $('#datatable1').DataTable({
+        //         ajax: {
+        //             url: '/prestation/detailstest/' + prestation.id'/' + patient.id,
+        //             dataSrc: ''
+        //         },
+        //         // deferRender: true,
+        //         columns: [
+        //             // columns according to JSON
+        //             {
+        //                 data: 'id'
+        //             },
+        //             {
+        //                 data: 'firtname'
+        //             },
+        //             {
+        //                 data: 'name'
+        //             },
+        //             {
+        //                 data: 'price'
+        //             },
+        //             {
+        //                 data: 'status'
+        //             },
+        //             {
+        //                 data: null
+        //             }
+        //         ],
 
-                }],
+        //         columnDefs: [{
+        //             "targets": -1,
+        //             "render": function(data, type, row) {
+        //                 // if (row["status"] != 1) {
+        //                 // }
+        //                 // return "";
+        //                 return (
+        //                         '<button type="button" id="deleteBtn" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>'
+        //                     );
+        //             }
 
-                footerCallback: function(row, data, start, end, display) {
-                    var api = this.api();
+        //         }],
 
-                    // Remove the formatting to get integer data for summation
-                    var intVal = function(i) {
-                        return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i ===
-                            'number' ? i : 0;
-                    };
+        //         footerCallback: function(row, data, start, end, display) {
+        //             var api = this.api();
 
-                    // Total over all pages
-                    total = api
-                        .column(4)
-                        .data()
-                        .reduce(function(a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0);
-                    // 
-                    discount = api
-                        .column(3)
-                        .data()
-                        .reduce(function(a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0);
+        //             // Remove the formatting to get integer data for summation
+        //             var intVal = function(i) {
+        //                 return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i ===
+        //                     'number' ? i : 0;
+        //             };
 
-                    subTotal = api
-                        .column(2)
-                        .data()
-                        .reduce(function(a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0);
+        //             // Total over all pages
+        //             status = api
+        //                 .column(4)
+        //                 .data();
+        //             // 
+        //             price = api
+        //                 .column(3)
+        //                 .data();
 
-                    // Update footer
-                    $(api.column(4).footer()).html(total);
-                    $(api.column(3).footer()).html(discount);
-                    $(api.column(2).footer()).html(subTotal);
+        //             name = api
+        //                 .column(2)
+        //                 .data();
 
-                    sendTotal(test_order.id, total, discount, subTotal);
+        //             firstname = api
+        //                 .column(1)
+        //                 .data();
 
-                    // if ($(api.column(4).footer()).html(total)) {
-                    //     // console.log('footer');
-                    // }
 
-                    var numRows = api.rows().count();
-                    if (numRows > 0) {
-                        var element = document.getElementById('finalisationBtn');
+        //             // Update footer
+        //             $(api.column(4).footer()).html(status);
+        //             $(api.column(3).footer()).html(price);
+        //             $(api.column(2).footer()).html(name);
+        //             $(api.column(1).footer()).html(firstname);
+                    
+        //         },
 
-                        element.classList.remove("disabled");
-                    }
-                },
+        //     });
 
-            });
+        // });
 
-            // setInterval(function() {
-            //     dt_basic.ajax.reload();
-            // }, 3000);
+        // $('#addDetailForm').on('submit', function(e) {
+        //     e.preventDefault();
+        //     let test_order_id = $('#test_order_id').val();
+        //     let test_id = $('#test_id').val();
+        //     let price = $('#price').val();
+        //     let remise = $('#remise').val();
+        //     let total = $('#total').val();
 
-            // 
-            $('.detail-list-table tbody').on('click', '#deleteBtn', function() {
-                var data = dt_basic.row($(this).parents('tr')).data();
-                var id = $(this).data('id');
-                console.log(data)
-                Swal.fire({
-                    title: "Voulez-vous supprimer l'élément ?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Oui ",
-                    cancelButtonText: "Non !",
-                }).then(function(result) {
-                    if (result.value) {
-                        // window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
-                        $.ajax({
-                            url: "/test_order/detailsdelete",
-                            type: "post",
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                id: data.id,
-                            },
-                            success: function(response) {
+        //     $.ajax({
+        //         url: "{{ route('details_test_order.store') }}",
+        //         type: "POST",
+        //         data: {
+        //             "_token": "{{ csrf_token() }}",
+        //             test_order_id: test_order_id,
+        //             test_id: test_id,
+        //             price: price,
+        //             discount: remise,
+        //             total: total
 
-                                console.log(response);
-                                Swal.fire(
-                                    "Suppression !",
-                                    "En cours de traitement ...",
-                                    "success"
-                                )
-                                dt_basic.ajax.reload()
-                                // window.location.reload();
-                            },
-                            error: function(response) {
-                                console.log(response);
-                                dt_basic.ajax.reload()
+        //         },
+        //         success: function(response) {
+        //             $('#addDetailForm').trigger("reset")
 
-                                // Command: toastr["error"]("Error")
-                            },
-                        });
+        //             if (response) {
+        //                 toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+        //             }
+        //             $('#datatable1').DataTable().ajax.reload();
+        //             // $('#addDetailForm').trigger("reset")
+        //             // updateSubTotal();
+        //         },
+        //         error: function(response) {
+        //             console.log(response)
+        //         },
+        //     });
 
-                    }
-                });
-            });
-
-            function sendTotal(test_order_id, total, discount, subTotal) {
-                console.log(test_order_id, total, discount, subTotal);
-
-                $.ajax({
-                    url: "{{ route('test_order.updateorder') }}",
-                    type: "POST",
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        test_order_id: test_order_id,
-                        discount: discount,
-                        subTotal: subTotal,
-                        total: total
-
-                    },
-                    success: function(response) {
-                        console.log(response)
-
-                    },
-                    error: function(response) {
-                        console.log(response)
-                    },
-                });
-            };
-
-        });
-
-        $('#addDetailForm').on('submit', function(e) {
-            e.preventDefault();
-            let test_order_id = $('#test_order_id').val();
-            let test_id = $('#test_id').val();
-            let price = $('#price').val();
-            let remise = $('#remise').val();
-            let total = $('#total').val();
-
-            $.ajax({
-                url: "{{ route('details_test_order.store') }}",
-                type: "POST",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    test_order_id: test_order_id,
-                    test_id: test_id,
-                    price: price,
-                    discount: remise,
-                    total: total
-
-                },
-                success: function(response) {
-                    $('#addDetailForm').trigger("reset")
-
-                    if (response) {
-                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-                    }
-                    $('#datatable1').DataTable().ajax.reload();
-                    // $('#addDetailForm').trigger("reset")
-                    // updateSubTotal();
-                },
-                error: function(response) {
-                    console.log(response)
-                },
-            });
-
-        });
+        // });
 
         function getTest() {
-            var test_id = $('#test_id').val();
-
-            // Importation des paramètres de getRemise
-            var contrat_id = $('#contrat_id').val();
-            let element = document.getElementById("test_id");
-            let category_test_id = element.options[element.selectedIndex].getAttribute("data-category_test_id");
+            var prestation_id = $('#prestation_id').val();
 
             $.ajax({
                 type: "POST",
-                url: "{{ route('examens.getTestAndRemise') }}",
+                url: "{{ route('prestations_order.getPrestationOrder') }}",
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    testId: test_id,
-                    contratId: contrat_id,
-                    categoryTestId: category_test_id
+                    prestationId: prestation_id,
                 },
                 success: function(data) {
-
-                    $('#price').val(data.data.price);
-
-                    var discount = $('#price').val() * data.detail / 100;
-                    $('#remise').val(discount);
-
-                    var total = $('#price').val() - discount;
-                    $('#total').val(total);
-
+                    console.log(data.price);
+                    $('#price').val(data.price);
                 },
                 error: function(data) {
                     console.log('Error:', data);
@@ -640,8 +556,9 @@
 
     </script>
 
-    {{-- Fusion --}}
-    <script>
+    <!--// Fusion-->
+
+    {{-- <script>
         $('.datepicker').datepicker({
             format: 'dd/mm/yyyy',
             startDate: '-3d'
@@ -841,5 +758,6 @@
 
         });
         
-    </script>
-@endpush
+    </script> --}}
+
+@endpush 

@@ -150,6 +150,30 @@
                         </li>
                     @endif
 
+                    @if (getOnlineUser()->can('view-demandes-examens'))
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEcommerce2" aria-expanded="false"
+                                aria-controls="sidebarEcommerce2" class="side-nav-link">
+                                <i class="uil-syringe"></i>
+                                <span> Demande prestations</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce2">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{{ route('prestations_order.index') }}">Toutes les demandes </a>
+                                    </li>
+                                    @if (getOnlineUser()->can('create-demandes-examens'))
+                                        <li>
+                                            <a href="{{ route('prestations_order.create') }}">Ajouter</a>
+                                        </li>
+                                    @endif
+
+                                </ul>
+                            </div>
+                        </li>
+                    @endif
+
                     @if (getOnlineUser()->can('view-compte-rendu'))
                         <li class="side-nav-item">
                             <a href="{{ route('report.index') }}" class="side-nav-link">
@@ -177,6 +201,7 @@
                             </ul>
                         </div>
                     </li>
+
                     <li class="side-nav-item">
                         <a href="{{ route('appointement.index') }}" class="side-nav-link">
                             <i class="uil-calender"></i>
@@ -206,6 +231,7 @@
                             </ul>
                         </div>
                     </li>
+
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarcategoryPrestation" aria-expanded="false"
                             aria-controls="sidebarAppoint" class="side-nav-link">
