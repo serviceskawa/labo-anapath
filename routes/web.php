@@ -141,7 +141,7 @@ Route::middleware(['auth'])->group(function () {
     // Route::get('/get_prestations_order', [PrestationsOrderrController::class, 'getTestOrders'])->name('prestations_order.get_prestations_order');
     // Route::get('/get_all_prestations_order', [PrestationsOrderrController::class, 'getAllTestOrders'])->name('prestations_order.get_all_prestations_order');
     Route::get('/prestations_order/edit/{id}', [PrestationsOrderrController::class, 'edit'])->name('prestations_order.edit');
-    Route::post('/prestations_order/update/{id}', [PrestationsOrderrController::class, 'update'])->name('prestations_order.update');
+    Route::post('/prestations_order/update', [PrestationsOrderrController::class, 'update'])->name('prestations_order.update');
     Route::post('/prestationsOrders', [PrestationsOrderrController::class, 'getPrestationOrder'])->name('prestations_order.getPrestationOrder');
     //Route::post('/prestation_order', [TestOrderController::class, 'getDetailsPrestation'])->name('prestations_order.getDetailsPrestation');
 

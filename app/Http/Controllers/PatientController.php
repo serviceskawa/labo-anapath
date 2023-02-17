@@ -60,7 +60,7 @@ class PatientController extends Controller
 
         try {
             Patient::create($data);
-            return back()->with('success', "Un patient enregistrée ! ");
+            return back()->with('success', "Un patient enregistré ! ");
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());

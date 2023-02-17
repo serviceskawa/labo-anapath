@@ -15,11 +15,11 @@ class PrestationOrder extends Model
 
     public function patient()
     {
-        return $this->belongsTo(Patient::class, 'patients_id');
+        return $this->belongsTo(Patient::class, 'patient_id');
     }
 
     public function prestation()
     {
-        return $this->belongsTo(Prestation::class, 'prestations_id');
+        return $this->belongsTo(Prestation::class, 'prestation_id');
     }
 }

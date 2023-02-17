@@ -9,6 +9,7 @@
 @endsection
 
 @section('content')
+    
     <div class="">
 
         @include('layouts.alerts')
@@ -190,72 +191,76 @@
         </div> --}}
 
         <div class="card mb-md-0 mb-3">
-            <div class="card-header">
-                Demande de prestations
-            </div>
-            <h5 class="card-title mb-0"></h5>
+            
 
             <div class="card-body">
-
+                @include('prestationsOrder.edit')
                 <!-- Ajouter un examen | si le statut de la demande est 1 alors on peut plus ajouter de nouveau examen dans la demande-->
                 {{-- @if ($test_order->status != 1) --}}
 
-                    <form method="POST" action={{ route('prestations_order.store')}} id="addDetailForm" autocomplete="off">
-                        @csrf
-                        <div class="row d-flex align-items-end">
-                            <div class="col-md-4 col-12">
+                <form method="POST" action={{ route('prestations_order.store') }} id="addDetailForm" autocomplete="off">
+                    @csrf
+                    <div class="row d-flex align-items-end">
+                        <div class="col-md-4 col-12">
 
-                                <div class="mb-3">
-                                    <label for="example-select" class="form-label">Patients</label>
-                                    <select class="form-select select2" data-toggle="select2" id=""
-                                        name="patient_id" required>
-                                        <option>Tous les patients</option>
-                                        @foreach ($patients as $patient)
-                                            <option 
-                                                value="{{ $patient->id }}"> {{ $patient->firstname }} {{ $patient->lastname }}</option>
-                                        @endforeach
+                            <div class="mb-3">
+                                <label for="example-select" class="form-label">Patients</label>
+                                <select class="form-select select2" data-toggle="select2" id="" name="patient_id"
+                                    required>
+                                    <option>Tous les patients</option>
+                                    @foreach ($patients as $patient)
+                                        <option value="{{ $patient->id }}"> {{ $patient->firstname }}
+                                            {{ $patient->lastname }}</option>
+                                    @endforeach
 
-                                    </select>
-                                </div>
+                                </select>
                             </div>
-                            <div class="col-md-4 col-12">
+                        </div>
+                        <div class="col-md-4 col-12">
 
-                                <div class="mb-3">
-                                    <label for="example-select" class="form-label">Prestations</label>
-                                    <select class="form-select select2" data-toggle="select2" id="prestation_id"
-                                        name="prestation_id" required onchange="getTest()">
-                                        <option>Toutes les prestations</option>
-                                        @foreach ($prestations as $prestation)
-                                            <option data-category_test_id="{{ $prestation->id }}"
-                                                value="{{ $prestation->id }}">{{ $prestation->name }}</option>
-                                        @endforeach
+                            <div class="mb-3">
+                                <label for="example-select" class="form-label">Prestations</label>
+                                <select class="form-select select2" data-toggle="select2" id="prestation_id"
+                                    name="prestation_id" required onchange="getTest()">
+                                    <option>Toutes les prestations</option>
+                                    @foreach ($prestations as $prestation)
+                                        <option data-category_test_id="{{ $prestation->id }}" value="{{ $prestation->id }}">
+                                            {{ $prestation->name }}</option>
+                                    @endforeach
 
-                                    </select>
-                                </div>
+                                </select>
                             </div>
-                            <div class="col-md-2 col-12">
+                        </div>
+                        <div class="col-md-2 col-12">
 
-                                <div class="mb-3">
-                                    <label for="simpleinput" class="form-label">Prix</label>
-                                    <input type="text" name="price" id="price" class="form-control" required
-                                        readonly>
-                                </div>
-                            </div>
-
-                            <div class="col-md-2 col-12">
-                                <div class="mb-3">
-                                    <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
-                                </div>
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Prix</label>
+                                <input type="text" name="total" id="total" class="form-control" required readonly>
                             </div>
                         </div>
 
-                    </form>
-                {{-- @endif --}}
+                        <div class="col-md-2 col-12">
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
+                            </div>
+                        </div>
+                    </div>
 
-                <div id="cardCollpase1" class="show collapse pt-3">
+                </form>
 
-                    <table id="datatable1" class="detail-list-table table-striped dt-responsive nowrap w-100 table">
-                        <thead class="table-light">
+                <div class="card-widgets">
+                    <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
+                    <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false"
+                        aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
+                    <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                </div>
+                <h5 class="card-title mb-0">Liste des demandes</h5>
+
+                <div id="cardCollpase1" class="collapse pt-3 show">
+
+
+                    <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                        <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Patient</th>
@@ -267,271 +272,131 @@
                             </tr>
                         </thead>
 
-                        <tfoot>
 
-                           @if ($prestationOrders)
-                               @foreach ($prestationOrders as $prestationOrder)
-                                    <tr>
-                                        <td>{{$prestationOrder->id}}</td>
-                                        <td>{{$prestationOrder->patient->firstname}}</td>
-                                        <td>{{$prestationOrder->prestation->name}}</td>
-                                        <td>{{$prestationOrder->total}}</td>
-                                        <td>
-                                            <span class="bg-{{$prestationOrder->status != "ended" ? 'danger' : 'success' }} badge
-                                                float-end">{{$prestationOrder->status}}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            @if ($prestationOrder->status == "new" | $prestationOrder->status =="progress")    
-                                            <a type="button" href="{{route('prestations_order.edit', $prestationOrder->id)}}" id="deleteBtn" class="btn btn-warning"><i class="mdi mdi-lead-pencil"></i> </a>
-                                            <button type="button" id="deleteBtn" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
-                                            @else
-                                                Pas d'action
-                                            @endif
-                                            {{-- <button type="button" id="deleteBtn" class="btn btn-success"><i class="mdi mdi-eye"></i> </button> --}}
-                                        </td>
+                        <tbody>
 
-                                    </tr>
-                                @endforeach
-                           @else
-                               Pas de demande de prestations
-                           @endif
-                        </tfoot>
+                            @foreach ($prestationOrders as $prestationOrder)
+                                <tr>
+                                    <td>{{ $prestationOrder->id }}</td>
+                                    <td>{{ $prestationOrder->patient->firstname }} {{ $prestationOrder->patient->lastname }}</td>
+                                    <td>{{ $prestationOrder->prestation->name }}</td>
+                                    <td>{{ $prestationOrder->total }}</td>
+                                    <td>
+                                        <span
+                                            class="bg-{{ $prestationOrder->status != 1 ? 'danger' : 'success' }} badge
+                                            float-end">{{ $prestationOrder->status != 1 ? 'en cours' : 'payé' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if ( $prestationOrder->status != 1)
+                                            <button type="button" onclick="edit({{ $prestationOrder->id }})"
+                                                class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
+                                            <button type="button" onclick="deleteModal({{ $prestationOrder->id }})"
+                                                class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
+                                        @endif
+                                    </td>
+
+                                </tr>
+                            @endforeach
+
+
+
+
+                        </tbody>
                     </table>
 
-                    <div class="row mx-3 mt-2">
-                        {{-- @if ($test_order->status != 1)
-                            <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}"
-                                id="finalisationBtn" class="btn btn-info disabled w-full">ENREGISTRER</a>
-                        @endif
-                        @if ($test_order->status == 1)
-                            <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
-                                class="btn btn-success w-full">CONSULTEZ LE
-                                COMPTE RENDU</a>
-                        @endif --}}
-                    </div>
                 </div>
+
+
 
             </div>
         </div> <!-- end card-->
-        
-        {{-- Modal --}}
-        <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="standard-modalLabel">Ajouter un nouveau patient</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-                    </div>
-                    <form method="POST" id="createPatientForm" autocomplete="off">
-                        @csrf
-                        <div class="modal-body">
 
-                            <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
-                            <div class="mb-3">
-                                <label for="simpleinput" class="form-label">Code</label>
-                                <input type="text" name="code" id="code" value="<?php echo substr(md5(rand(0, 1000000)), 0, 10); ?>"
-                                    class="form-control" readonly>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="simpleinput" class="form-label">Nom <span style="color:red;">*</span></label>
-                                <input type="text" name="firstname" id="firstname" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="simpleinput" class="form-label">Prénom<span
-                                        style="color:red;">*</span></label>
-                                <input type="text" name="lastname" id="lastname" class="form-control" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="example-select" class="form-label">Genre<span
-                                        style="color:red;">*</span></label>
-                                <select class="form-select" id="genre" name="genre" required>
-                                    <option value="">Sélectionner le genre</option>
-                                    <option value="M">Masculin</option>
-                                    <option value="F">Féminin</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="example-date" class="form-label">Date de naissance</label>
-                                <input class="form-control" id="example-date" type="date" name="birthday">
-                            </div>
-                            <div class="mb-3">
-                                <label for="simpleinput" class="form-label">Age<span style="color:red;">*</span></label>
-                                <input type="number" name="age" id="age" class="form-control" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="simpleinput" class="form-label">Profession</label>
-                                <input type="text" name="profession" class="form-control">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="simpleinput" class="form-label">Contact 1<span
-                                        style="color:red;">*</span></label>
-                                <input type="tel" name="telephone1" id="telephone1" class="form-control" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="simpleinput" class="form-label">Contact 2</label>
-                                <input type="tel" name="telephone2" class="form-control">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="simpleinput" class="form-label">Adresse<span
-                                        style="color:red;">*</span></label>
-                                <textarea type="text" name="adresse" class="form-control" required></textarea>
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn btn-primary">Ajouter un nouveau patient</button>
-                        </div>
-                    </form>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
     </div>
 @endsection
 
- 
+
 @push('extra-js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
         integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    {{-- <script>
+    <script>
         $('.dropify').dropify();
-    </script> --}}
+    </script>
 
     <script type="text/javascript">
+        // SUPPRESSION
+        function deleteModal(id) {
 
-        // $(document).ready(function() {
-        //     var prestation = {!! json_encode($prestation) !!}
-        //     var patient = {!! json_encode($patient) !!}
-        //     console.log(patient);
-        //     // console.log(test_order)
-
-        //     var dtDetailTable = $('.detail-list-table')
-
-        //     var dt_basic = $('#datatable1').DataTable({
-        //         ajax: {
-        //             url: '/prestation/detailstest/' + prestation.id'/' + patient.id,
-        //             dataSrc: ''
-        //         },
-        //         // deferRender: true,
-        //         columns: [
-        //             // columns according to JSON
-        //             {
-        //                 data: 'id'
-        //             },
-        //             {
-        //                 data: 'firtname'
-        //             },
-        //             {
-        //                 data: 'name'
-        //             },
-        //             {
-        //                 data: 'price'
-        //             },
-        //             {
-        //                 data: 'status'
-        //             },
-        //             {
-        //                 data: null
-        //             }
-        //         ],
-
-        //         columnDefs: [{
-        //             "targets": -1,
-        //             "render": function(data, type, row) {
-        //                 // if (row["status"] != 1) {
-        //                 // }
-        //                 // return "";
-        //                 return (
-        //                         '<button type="button" id="deleteBtn" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>'
-        //                     );
-        //             }
-
-        //         }],
-
-        //         footerCallback: function(row, data, start, end, display) {
-        //             var api = this.api();
-
-        //             // Remove the formatting to get integer data for summation
-        //             var intVal = function(i) {
-        //                 return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i ===
-        //                     'number' ? i : 0;
-        //             };
-
-        //             // Total over all pages
-        //             status = api
-        //                 .column(4)
-        //                 .data();
-        //             // 
-        //             price = api
-        //                 .column(3)
-        //                 .data();
-
-        //             name = api
-        //                 .column(2)
-        //                 .data();
-
-        //             firstname = api
-        //                 .column(1)
-        //                 .data();
+            Swal.fire({
+                title: "Voulez-vous supprimer l'élément ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Oui ",
+                cancelButtonText: "Non !",
+            }).then(function(result) {
+                if (result.value) {
+                    window.location.href = "{{ url('prestations_order/delete') }}" + "/" + id;
+                    Swal.fire(
+                        "Suppression !",
+                        "En cours de traitement ...",
+                        "success"
+                    )
+                }
+            });
+        }
 
 
-        //             // Update footer
-        //             $(api.column(4).footer()).html(status);
-        //             $(api.column(3).footer()).html(price);
-        //             $(api.column(2).footer()).html(name);
-        //             $(api.column(1).footer()).html(firstname);
-                    
-        //         },
+        /* DATATABLE */
+        $(document).ready(function() {
 
-        //     });
+            $('#datatable1').DataTable({
+                "order": [
+                    [0, "desc"]
+                ],
+                "columnDefs": [{
+                    "targets": [0],
+                    "searchable": false
+                }],
+                "language": {
+                    "lengthMenu": "Afficher _MENU_ enregistrements par page",
+                    "zeroRecords": "Aucun enregistrement disponible",
+                    "info": "Afficher page _PAGE_ sur _PAGES_",
+                    "infoEmpty": "Aucun enregistrement disponible",
+                    "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+                    "sSearch": "Rechercher:",
+                    "paginate": {
+                        "previous": "Précédent",
+                        "next": "Suivant"
+                    }
+                },
+            });
+        });
 
-        // });
 
-        // $('#addDetailForm').on('submit', function(e) {
-        //     e.preventDefault();
-        //     let test_order_id = $('#test_order_id').val();
-        //     let test_id = $('#test_id').val();
-        //     let price = $('#price').val();
-        //     let remise = $('#remise').val();
-        //     let total = $('#total').val();
+        //EDITION
+        function edit(id) {
+            var e_id = id;
 
-        //     $.ajax({
-        //         url: "{{ route('details_test_order.store') }}",
-        //         type: "POST",
-        //         data: {
-        //             "_token": "{{ csrf_token() }}",
-        //             test_order_id: test_order_id,
-        //             test_id: test_id,
-        //             price: price,
-        //             discount: remise,
-        //             total: total
+            // Populate Data in Edit Modal Form
+            $.ajax({
+                type: "GET",
+                url: "{{ url('prestations_order/edit') }}" + '/' + e_id,
+                success: function(data) {
 
-        //         },
-        //         success: function(response) {
-        //             $('#addDetailForm').trigger("reset")
-
-        //             if (response) {
-        //                 toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-        //             }
-        //             $('#datatable1').DataTable().ajax.reload();
-        //             // $('#addDetailForm').trigger("reset")
-        //             // updateSubTotal();
-        //         },
-        //         error: function(response) {
-        //             console.log(response)
-        //         },
-        //     });
-
-        // });
+                    $('#id').val(data.id);
+                    $('#patient').val(data.patient_id);
+                    $('#prestation_id2').val(data.prestation_id);
+                    $('#total2').val(data.total);
+                    $('#status').val(data.status);
+                    console.log(data);
+                    $('#editModal').modal('show');
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                }
+            });
+        }
 
         function getTest() {
             var prestation_id = $('#prestation_id').val();
@@ -544,8 +409,8 @@
                     prestationId: prestation_id,
                 },
                 success: function(data) {
-                    console.log(data.price);
-                    $('#price').val(data.price);
+                    console.log(data.total);
+                    $('#total').val(data.total);
                 },
                 error: function(data) {
                     console.log('Error:', data);
@@ -553,211 +418,5 @@
             });
 
         }
-
     </script>
-
-    <!--// Fusion-->
-
-    {{-- <script>
-        $('.datepicker').datepicker({
-            format: 'dd/mm/yyyy',
-            startDate: '-3d'
-        });
-
-        // SUPPRESSION
-        function deleteModal(id) {
-
-            Swal.fire({
-                title: "Voulez-vous supprimer l'élément ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Oui ",
-                cancelButtonText: "Non !",
-            }).then(function(result) {
-                if (result.value) {
-                    window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
-                    Swal.fire(
-                        "Suppression !",
-                        "En cours de traitement ...",
-                        "success"
-                    )
-                }
-            });
-        }
-
-        //EDITION
-        function edit(id) {
-            var e_id = id;
-
-            // Populate Data in Edit Modal Form
-            $.ajax({
-                type: "GET",
-                url: "{{ url('getcontratdetails') }}" + '/' + e_id,
-                success: function(data) {
-
-                    $('#category_test_id2').val(data.category_test_id).change();
-                    $('#pourcentage2').val(data.pourcentage);
-                    $('#contrat_id2').val(data.contrat_id);
-                    $('#contrat_details_id2').val(data.id);
-
-
-
-                    console.log(data);
-                    $('#editModal').modal('show');
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                }
-            });
-        }
-
-        $(document).ready(function() {
-
-            $('#doctor_id').select2({
-                placeholder: 'Select Category',
-                theme: 'bootstrap4',
-                tags: true,
-            }).on('select2:close', function() {
-                var element = $(this);
-                var new_category = $.trim(element.val());
-
-                if (new_category != '') {
-                    $.ajax({
-                        url: "{{ route('doctors.storeDoctor') }}",
-                        method: "POST",
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            name: new_category
-                        },
-                        success: function(data) {
-
-                            if (data.status === "created") {
-                                toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-
-                                element.append('<option value="' + data.id + '">' + data.name +
-                                    '</option>').val(new_category);
-                            }
-                        }
-                    })
-                }
-
-            });
-
-            // Create hopital
-            $('#hospital_id').select2({
-                placeholder: 'Choisissez un hopital',
-                theme: 'bootstrap4',
-                tags: true,
-            }).on('select2:close', function() {
-                var element = $(this);
-                var new_category = $.trim(element.val());
-
-                if (new_category != '') {
-                    $.ajax({
-                        url: "{{ route('hopitals.storeHospital') }}",
-                        method: "POST",
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            name: new_category
-                        },
-                        success: function(data) {
-
-                            if (data.status === "created") {
-                                toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-
-                                element.append('<option value="' + data.id + '">' + data.name +
-                                    '</option>').val(new_category);
-                            }
-                        }
-                    })
-                }
-
-            });
-
-            $('#createPatientForm').on('submit', function(e) {
-                e.preventDefault();
-                let code = $('#code').val();
-                let lastname = $('#lastname').val();
-                let firstname = $('#firstname').val();
-                let age = $('#age').val();
-                let telephone1 = $('#telephone1').val();
-                let genre = $('#genre').val();
-                // alert(firstname);
-                $.ajax({
-                    url: "{{ route('patients.storePatient') }}",
-                    type: "POST",
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        code: code,
-                        lastname: lastname,
-                        firstname: firstname,
-                        age: age,
-                        telephone1: telephone1,
-                        genre: genre
-                    },
-                    success: function(data) {
-
-                        $('#createPatientForm').trigger("reset")
-                        $('#standard-modal').modal('hide');
-                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-                        $('#patient_id').append('<option value="' + data.id + '">' + data.code +
-                                ' - ' + data.firstname + ' ' + data.lastname + '</option>')
-                            .trigger('change').val(data.id);
-
-                    },
-                    error: function(data) {
-                        console.log(data)
-                    },
-                    // processData: false,
-                });
-
-            });
-        });
-
-    </script>
-    <script type="text/javascript">
-
-        $(document).ready(function() {
-            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-
-            $('#type_examen').on('change', function(e) {
-                var typeExamenOption = $('#type_examen option:selected').text();
-                alert(typeExamenOption);
-                if (typeExamenOption == "Immuno Externe") {
-                    $(".examenReferenceSelect").hide();
-                    $(".examenReferenceInput").show();
-
-                } else if (typeExamenOption == "Immuno Interne") {
-                    $(".examenReferenceSelect").hide();
-                    $(".examenReferenceInput").show();
-
-                } else {
-                    $(".examenReferenceInput").hide();
-                    $(".examenReferenceSelect").hide();
-                }
-            });
-            
-
-        });
-
-        window.addEventListener("load", (event) => {
-            var typeExamenOption = $('#type_examen option:selected').text();
-                // alert(typeExamenOption);
-                if (typeExamenOption == "Immuno Externe") {
-                    $(".examenReferenceSelect").hide();
-                    $(".examenReferenceInput").show();
-
-                } else if (typeExamenOption == "Immuno Interne") {
-                    $(".examenReferenceSelect").hide();
-                    $(".examenReferenceInput").show();
-
-                } else {
-                    $(".examenReferenceInput").hide();
-                    $(".examenReferenceSelect").hide();
-                }
-
-        });
-        
-    </script> --}}
-
-@endpush 
+@endpush
