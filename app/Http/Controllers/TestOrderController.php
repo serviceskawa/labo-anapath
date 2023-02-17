@@ -440,7 +440,7 @@ class TestOrderController extends Controller
 
         $data = $this->validate($request, [
             'patient_id' => 'required',
-            'doctor_id' => 'required|exists:doctors,name', // verification de l'existance du nom envoyé depuis le select
+            'doctor_id' => 'nullable', // verification de l'existance du nom envoyé depuis le select
             'hospital_id' => 'required|exists:hospitals,name',
             'prelevement_date' => 'required',
             'reference_hopital' => 'nullable',
