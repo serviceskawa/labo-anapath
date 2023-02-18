@@ -234,7 +234,7 @@ class TestOrderController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::findorfail($id);
-        dd($test_order);
+        // dd($test_order);
     }
 
     public function edit($id)
@@ -449,7 +449,7 @@ class TestOrderController extends Controller
             'examen_reference_select' => 'nullable',
             'examen_reference_input' => 'nullable',
             'type_examen' => 'required|exists:type_orders,id',
-            'attribuate_doctor_id' => 'required|exists:doctors,id',
+            'attribuate_doctor_id' => 'required|exists:users,id',
         ]);
 
         $contrat = Contrat::FindOrFail($data['contrat_id']);
@@ -497,7 +497,7 @@ class TestOrderController extends Controller
         try {
 
             $test_order = TestOrder::find($id);
-            // $test_order->contrat_id = $data['contrat_id'];
+            $test_order->contrat_id = $data['contrat_id']; // on peut modifier le contrat
             $test_order->patient_id = $data['patient_id'];
             $test_order->hospital_id = $data['hospital_id'];
             $test_order->prelevement_date = $data['prelevement_date'];
