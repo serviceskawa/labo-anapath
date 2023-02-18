@@ -267,13 +267,13 @@
 
                     @if (getOnlineUser()->can('edit-users'))
                         <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false"
-                                aria-controls="sidebarProjects" class="side-nav-link">
+                            <a data-bs-toggle="collapse" href="#sidebarProjects2" aria-expanded="false"
+                                aria-controls="sidebarProjects2" class="side-nav-link">
                                 <i class="uil-user-check"></i>
                                 <span> Utilisateurs </span>
                                 <span class="menu-arrow"></span>
                             </a>
-                            <div class="collapse" id="sidebarProjects">
+                            <div class="collapse" id="sidebarProjects2">
                                 <ul class="side-nav-second-level">
                                     @if (getOnlineUser()->can('view-permissions'))
                                         <li>
