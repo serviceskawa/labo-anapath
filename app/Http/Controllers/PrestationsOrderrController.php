@@ -23,16 +23,15 @@ class PrestationsOrderrController extends Controller
      */
     public function index()
     {
-        if (!getOnlineUser()->can('view-demandes-examens')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('view-demandes-examens')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
 
         $patients = Patient::all();
         $prestations = Prestation::all();
-        $prestationOrders = PrestationOrder::orderBy('created_at','DESC')->get();
+        $prestationOrders = PrestationOrder::orderBy('created_at', 'DESC')->get();
 
         return view('prestationsOrder.index', compact(['patients', 'prestations', 'prestationOrders']));
-        
     }
 
     /**
@@ -53,37 +52,22 @@ class PrestationsOrderrController extends Controller
      */
     public function store(Request $request)
     {
-        if (!getOnlineUser()->can('create-contrats')) {
-                    return back()->with('error', "Vous n'êtes pas autorisé");
-                }
+
         $patients = Patient::all();
         $prestations = Prestation::all();
 
-        
-        
-
-        $data = $this->validate($request,[
-            'patient_id' =>'required',
-            'prestation_id' =>'required',
-            'total' =>'required'
+        $data = $this->validate($request, [
+            'patient_id' => 'required',
+            'prestation_id' => 'required',
+            'total' => 'required'
         ]);
 
         try {
-                PrestationOrder::create($data);
-                return back()->with('success', "Nouvelle demande de prestation enregistrée ! ");
-        //     $prestationOrder = new PrestationOrder();
-        //     $prestationOrder->patients_id = $data['patient_id'];
-        //     $prestationOrder->prestations_id = $data['prestation_id'];
-        //     $prestationOrder->total = $data['price'];
-        //     $prestationOrder->save();
-
-        //     $prestationOrders = PrestationOrder::orderBy('created_at','DESC')->get();
-
-        // return view('prestationsOrder.index', compact(['patients', 'prestations', 'prestationOrders']))->with('success', "Demande enregistré avec succès ! ");
-        } catch (\Throwable$ex) {
+            PrestationOrder::create($data);
+            return back()->with('success', "Nouvelle demande de prestation enregistrée ! ");
+        } catch (\Throwable $ex) {
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
-
     }
 
     /**
@@ -105,14 +89,11 @@ class PrestationsOrderrController extends Controller
      */
     public function edit($id)
     {
-        // $prestationOrderSelected = PrestationORder::find($id);
-        // dd($prestationOrderSelected);
-
-        if (!getOnlineUser()->can('edit-patients')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('edit-patients')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $data = PrestationORder::find($id);
-        $patient=Patient::find($data->patient_id);
+        $patient = Patient::find($data->patient_id);
 
         return response()->json($data);
     }
@@ -126,13 +107,13 @@ class PrestationsOrderrController extends Controller
      */
     public function update(Request $request)
     {
-        if (!getOnlineUser()->can('edit-patients')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
-        $data=$this->validate($request, [
+        // if (!getOnlineUser()->can('edit-patients')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+        $data = $this->validate($request, [
             'id' => 'required',
-            'patient'=>'required',
-            'prestation_id'=> 'required',
+            'patient' => 'required',
+            'prestation_id' => 'required',
             'total' => 'required',
             'status' => 'required'
         ]);
@@ -148,9 +129,8 @@ class PrestationsOrderrController extends Controller
             $prestationOrder->save();
 
             return back()->with('success', "Un demande mis à jour ! ");
-
-        } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }
 
@@ -162,11 +142,11 @@ class PrestationsOrderrController extends Controller
      */
     public function destroy($id)
     {
-        if (!getOnlineUser()->can('delete-patients')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('delete-patients')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $prestationOrder = PrestationOrder::find($id)->delete();
-        
+
         if ($prestationOrder) {
             return back()->with('success', "    Un élement a été supprimé ! ");
         } else {
@@ -176,13 +156,13 @@ class PrestationsOrderrController extends Controller
 
     public function getPrestationOrder(Request $request)
     {
-        if (!getOnlineUser()->can('view-demandes-examens')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('view-demandes-examens')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         //dd($request->prestationId);
         $prestation = Prestation::find($request->prestationId);
 
-        return response()->json(["total"=>$prestation->price]);
+        return response()->json(["total" => $prestation->price]);
     }
 
     public function getDetailsPrestation(Request $request)
@@ -190,7 +170,7 @@ class PrestationsOrderrController extends Controller
         if (!getOnlineUser()->can('view-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        dd($request);
+        // dd($request);
 
         $prestation = Prestation::find($id);
         return response()->json($prestation);
