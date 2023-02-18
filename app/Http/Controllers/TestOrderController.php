@@ -556,6 +556,7 @@ class TestOrderController extends Controller
                 if ($data->status != 1) {
                     $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
                     $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
+                    $btnreport = "";
                 } else {
                     $btnReport = ' <a type="button" href="' . route('report.show', $data->report->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
                     $btnDelete = "";
@@ -567,7 +568,13 @@ class TestOrderController extends Controller
                     $btnInvoice = ' <a type="button" href="' . route('invoice.storeFromOrder', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
                 }
 
-                return $btnVoir .  $btnReport . $btnInvoice . $btnDelete;
+                if ($data->report->is_deliver == 1) {
+                    $btnreport = ' <a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-success" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
+                } else {
+                    $btnreport = ' <a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
+                }
+
+                return $btnVoir .  $btnReport . $btnInvoice . $btnreport . $btnDelete;
             })
             ->addColumn('patient', function ($data) {
                 return $data->patient->firstname . ' ' . $data->patient->lastname;
@@ -636,7 +643,10 @@ class TestOrderController extends Controller
                             $query->where('is_deliver', 0);
                         });
                     } else {
-                        $query->where('status', $request->get('exams_status'));
+                        $query->whereHas('report', function ($query) use ($request) {
+                            $query->where('status', $request->get('exams_status'));
+                        });
+                        // $query->where('status', $request->get('exams_status'));
                     }
                 }
             })

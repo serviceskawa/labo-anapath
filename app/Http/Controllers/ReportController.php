@@ -54,7 +54,7 @@ class ReportController extends Controller
         $data = $this->validate($request, [
             'content' => 'required',
             'report_id' => 'required|exists:reports,id',
-            'status' => 'required|boolean',
+            'status' => 'required|boolean', 
             // 'signatory1' => 'nullable|required_if:signatory1,on',
         ]);
 
