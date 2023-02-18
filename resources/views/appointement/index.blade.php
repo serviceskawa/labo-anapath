@@ -235,11 +235,11 @@
                                         </div>
                                         <div class="col-12">
                                             <div class="mb-3">
-                                                <label for="exampleFormControlInput1" class="form-label">Médecin
-                                                    traitant<span style="color:red;">*</span></label>
+                                                <label for="exampleFormControlInput1" class="form-label">Docteur<span
+                                                        style="color:red;">*</span></label>
                                                 <select class="form-select select2" data-toggle="select2" name="doctor_id"
                                                     id="doctor_id" required>
-                                                    <option>Sélectionner le médecin traitant</option>
+                                                    <option>Sélectionner le Docteur</option>
                                                     @foreach ($doctors as $doctor)
                                                         <option value="{{ $doctor->id }}">
                                                             {{ $doctor->firstname . ' ' . $doctor->firstname }}</option>
@@ -320,11 +320,11 @@
                                         </div>
                                         <div class="col-12">
                                             <div class="mb-3">
-                                                <label for="exampleFormControlInput1" class="form-label">Médecin
-                                                    traitant<span style="color:red;">*</span></label>
+                                                <label for="exampleFormControlInput1" class="form-label">Docteur<span
+                                                        style="color:red;">*</span></label>
                                                 <select class="form-select select2" data-toggle="select2"
                                                     name="doctor_id2" id="doctor_id2" required>
-                                                    <option>Sélectionner le médecin traitant</option>
+                                                    <option>Sélectionner le Docteur</option>
                                                     @foreach ($doctors as $doctor)
                                                         <option value="{{ $doctor->id }}">
                                                             {{ $doctor->firstname . ' ' . $doctor->firstname }}</option>
