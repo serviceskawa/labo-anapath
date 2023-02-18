@@ -23,7 +23,7 @@ class ConsultationController extends Controller
 
     public function getConsultations()
     {
-        $data = Consultation::with(['doctor', 'patient', 'type'])->orderBy('created_at', 'desc')->get();
+        $data = Consultation::with(['doctor', 'patient', 'type', 'attribuateToDoctor'])->orderBy('created_at', 'desc')->get();
 
         return Datatables::of($data)->addIndexColumn()
             ->editColumn('created_at', function ($data) {
@@ -54,7 +54,12 @@ class ConsultationController extends Controller
                 return $data->patient->firstname . ' ' . $data->patient->lastname;
             })
             ->addColumn('doctor', function ($data) {
-                return $data->doctor->name;
+                if (empty($data->attribuateToDoctor)) {
+                    $result = "";
+                } else {
+                    $result = $data->attribuateToDoctor->firstname;
+                }
+                return $result;
             })
             ->addColumn('type', function ($data) {
                 if (empty($data->type)) {
@@ -125,9 +130,9 @@ class ConsultationController extends Controller
     {
         $data = $this->validate($request, [
             'patient_id' => 'required|exists:patients,id',
-            'doctor_id' => 'required|exists:doctors,id',
+            // 'doctor_id' => 'required|exists:doctors,id',
             'type_id' => 'nullable',
-            'status' => 'required',
+            'status' => 'nullable',
             'date' => 'required',
             'motif' => 'nullable',
             'fees' => 'nullable',
@@ -139,6 +144,7 @@ class ConsultationController extends Controller
             'next_appointment' => 'nullable',
             'id' => 'nullable',
             'prestation_id' => 'required|exists:prestations,id',
+            'doctor_id' => 'nullable',
         ]);
 
         // dd($request);
@@ -150,26 +156,27 @@ class ConsultationController extends Controller
         if (empty($prestation)) {
             return redirect()->route('consultation.index',)->with('error', "Cette prestation n'existe pas");;
         }
-        // dd($data['type_id']);
+        // dd($request);
         try {
             Consultation::Create(
                 [
                     "code" => "CON" . $code,
                     "patient_id" => $data['patient_id'],
-                    "doctor_id" => $data['doctor_id'],
+                    // "doctor_id" => $data['doctor_id'],
                     "type_consultation_id" => empty($data['type_id']) ? null : $data['type_id'],
-                    "status" => $data['status'],
+                    "status" => empty($data['status']) ? "pending" : $data['status'],
                     "date" => convertDateTime($data['date']),
                     "fees" => $prestation->price,
                     "payement_mode" => !empty($data['payement_mode']) ? $data['payement_mode'] : "espèce",
                     "next_appointment" => !empty($data['next_appointment']) ? convertDateTime($data['next_appointment']) : null,
                     "prestation_id" => $data['prestation_id'],
+                    "attribuate_doctor_id" => $data['doctor_id'],
                 ]
             );
             return redirect()->route('consultation.index',)->with('success', "Consultation ajouté avec succès");;
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
-            dd($error);
+            // dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
@@ -179,7 +186,7 @@ class ConsultationController extends Controller
         // dd($request);
         $data = $this->validate($request, [
             'patient_id' => 'required|exists:patients,id',
-            'doctor_id' => 'required|exists:doctors,id',
+            // 'doctor_id' => 'required|exists:doctors,id',
             'type_id' => 'nullable',
             'status' => 'required',
             'date' => 'required',
@@ -192,6 +199,7 @@ class ConsultationController extends Controller
             'payement_mode' => 'nullable',
             'next_appointment' => 'nullable',
             'prestation_id' => 'required|exists:prestations,id',
+            'doctor_id' => 'nullable',
         ]);
 
         $consultation = Consultation::findOrFail($id);
@@ -234,7 +242,7 @@ class ConsultationController extends Controller
             $consultation->update(
                 [
                     "patient_id" => $data['patient_id'],
-                    "doctor_id" => $data['doctor_id'],
+                    // "doctor_id" => $data['doctor_id'],
                     // "type_consultation_id" => $data['type_id'],
                     "status" => $data['status'],
                     "date" => convertDateTime($data['date']),
@@ -248,6 +256,7 @@ class ConsultationController extends Controller
                     "prestation_id" => $data['prestation_id'],
                     "payement_mode" => !empty($data['payement_mode']) ? $data['payement_mode'] : "espèce",
                     "next_appointment" => !empty($data['next_appointment']) ? convertDateTime($data['next_appointment']) : null,
+                    "attribuate_doctor_id" => $data['doctor_id'],
                 ]
             );
 

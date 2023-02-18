@@ -45,13 +45,14 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="exampleFormControlInput1" class="form-label">Médecin traitant<span
+                            <label for="exampleFormControlInput1" class="form-label">Docteur<span
                                     style="color:red;">*</span></label>
                             <select class="form-select select2" data-toggle="select2" name="doctor_id" id="doctor_id"
                                 required>
-                                <option>Sélectionner le médecin traitant</option>
-                                @foreach ($doctors as $doctor)
-                                    <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
+                                <option>Sélectionner le Docteur</option>
+                                @foreach (getUsersByRole('docteur') as $item)
+                                    <option value="{{ $item->id }}">
+                                        {{ $item->lastname }} {{ $item->firstname }} </option>
                                 @endforeach
                             </select>
                         </div>
@@ -86,8 +87,8 @@
 
                         <div class="col-md-3">
                             <label class="control-label form-label">Statut de la consultation</label>
-                            <select class="form-select" name="status" id="priority" required="">
-                                <option value="pending">En cours </option>
+                            <select class="form-select" name="status" id="priority" required disabled>
+                                <option value="pending" selected>En attente </option>
                                 <option value="approved">Approuvé </option>
                                 <option value="cancel">Rejetter</option>
                             </select>

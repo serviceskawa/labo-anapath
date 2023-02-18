@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\Prestation;
@@ -55,5 +56,9 @@ class Consultation extends Model
     {
         return $this->belongsTo(Prestation::class, 'prestation_id');
     }
-    
+
+    public function attribuateToDoctor()
+    {
+        return $this->belongsTo(User::class, 'attribuate_doctor_id');
+    }
 }
