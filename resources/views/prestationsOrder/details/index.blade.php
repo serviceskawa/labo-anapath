@@ -52,7 +52,7 @@
                                 @forelse ($types_orders as $type)
                                     <option {{ $test_order->type_order_id == $type->id ? 'selected' : '' }}
                                         value="{{ $type->id }}">{{ $type->title }}</option>
-
+                                        
                                 @empty
                                     Ajouter un Type d'examen
                                 @endforelse
@@ -173,9 +173,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Pièce jointe</label>
-                                <input type="file" name="examen_file" id="example-fileinput"
-                                    class="form-control dropify"
-                                    data-default-file="{{ $test_order ? Storage::url($test_order->examen_file) : '' }}">
+                                <input type="file" name="examen_file" id="example-fileinput" class="form-control dropify" data-default-file="{{ $test_order ? Storage::url($test_order->examen_file) : '' }}">
                             </div>
                         </div>
                     </div>
@@ -248,6 +246,7 @@
                             <div class="col-md-2 col-12">
                                 <div class="mb-3">
                                     <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
+
                                 </div>
                             </div>
                         </div>
@@ -304,7 +303,6 @@
 
             </div>
         </div> <!-- end card-->
-        
         {{-- Modal --}}
         <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel"
             aria-hidden="true">
@@ -395,7 +393,6 @@
         $('.dropify').dropify();
     </script>
     <script type="text/javascript">
-
         $(document).ready(function() {
             var test_order = {!! json_encode($test_order) !!}
             // console.log(test_order)
@@ -639,7 +636,6 @@
             });
 
         }
-
     </script>
 
     {{-- Fusion --}}
@@ -648,7 +644,6 @@
             format: 'dd/mm/yyyy',
             startDate: '-3d'
         });
-
         // SUPPRESSION
         function deleteModal(id) {
 
@@ -798,16 +793,14 @@
 
             });
         });
-
     </script>
     <script type="text/javascript">
-
         $(document).ready(function() {
             var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 
             $('#type_examen').on('change', function(e) {
                 var typeExamenOption = $('#type_examen option:selected').text();
-                // alert(typeExamenOption);
+                alert(typeExamenOption);
                 if (typeExamenOption == "Immuno Externe") {
                     $(".examenReferenceSelect").hide();
                     $(".examenReferenceInput").show();
@@ -821,27 +814,26 @@
                     $(".examenReferenceSelect").hide();
                 }
             });
-
+            
 
         });
 
         window.addEventListener("load", (event) => {
             var typeExamenOption = $('#type_examen option:selected').text();
-            // alert(typeExamenOption);
-            if (typeExamenOption == "Immuno Externe") {
-                $(".examenReferenceSelect").hide();
-                $(".examenReferenceInput").show();
+                // alert(typeExamenOption);
+                if (typeExamenOption == "Immuno Externe") {
+                    $(".examenReferenceSelect").hide();
+                    $(".examenReferenceInput").show();
 
-            } else if (typeExamenOption == "Immuno Interne") {
-                $(".examenReferenceSelect").hide();
-                $(".examenReferenceInput").show();
+                } else if (typeExamenOption == "Immuno Interne") {
+                    $(".examenReferenceSelect").hide();
+                    $(".examenReferenceInput").show();
 
-            } else {
-                $(".examenReferenceInput").hide();
-                $(".examenReferenceSelect").hide();
-            }
+                } else {
+                    $(".examenReferenceInput").hide();
+                    $(".examenReferenceSelect").hide();
+                }
 
         });
-        
     </script>
 @endpush

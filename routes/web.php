@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\TestOrderController;
+use App\Http\Controllers\PrestationsOrderrController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrestationController;
 use App\Http\Controllers\AppointementController;
@@ -100,6 +101,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/updatecontratstatus/{id}', [ContratController::class, 'update_detail_status'])->name('contrat_details.update-status');
     Route::post('/contrats_details/update', [ContratController::class, 'contrat_details_update'])->name('contrat_details.update');
 
+    
+    
     //TEST_ORDER
     Route::get('/test_order/index', [TestOrderController::class, 'index2'])->name('test_order.index');
     Route::post('/test_order/store', [TestOrderController::class, 'store'])->name('test_order.store');
@@ -113,6 +116,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/test_order/update/{id}', [TestOrderController::class, 'update'])->name('test_order.update');
     Route::get('/testOrders', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('test_order.getTestOrdersforDatatable');
 
+
+
     // Attribuer docteur signataire
     Route::get('/attribuateDoctor/{doctorId}/{orderId}', [TestOrderController::class, 'attribuateDoctor'])->name('test_order.attribuateDoctor');
 
@@ -122,6 +127,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/test_order/detailstest/{id}', [TestOrderController::class, 'getDetailsTest']);
     Route::post('/test_order/detailsdelete', [TestOrderController::class, 'details_destroy']);
     Route::get('/test_order/show/{id}', [TestOrderController::class, 'show'])->name('test_order.show');
+
+
+
+
+    //PRESTATIONS_ORDER
+    Route::get('/prestations_order/index', [PrestationsOrderrController::class, 'index'])->name('prestations_order.index');
+    Route::post('/prestations_order/store', [PrestationsOrderrController::class, 'store'])->name('prestations_order.store');
+    Route::get('/prestations_order/create', [PrestationsOrderrController::class, 'create'])->name('prestations_order.create');
+    Route::get('/prestations_order/delete/{id}', [PrestationsOrderrController::class, 'destroy']);
+    // Route::post('/prestations_order/updatetest', [PrestationsOrderrController::class, 'updateTestTotal'])->name('prestations_order.updateorder');
+    // Route::get('/prestations_order/updatestatus/{id}', [PrestationsOrderrController::class, 'updateStatus'])->name('prestations_order.updatestatus');
+    // Route::get('/get_prestations_order', [PrestationsOrderrController::class, 'getTestOrders'])->name('prestations_order.get_prestations_order');
+    // Route::get('/get_all_prestations_order', [PrestationsOrderrController::class, 'getAllTestOrders'])->name('prestations_order.get_all_prestations_order');
+    Route::get('/prestations_order/edit/{id}', [PrestationsOrderrController::class, 'edit'])->name('prestations_order.edit');
+    Route::post('/prestations_order/update', [PrestationsOrderrController::class, 'update'])->name('prestations_order.update');
+    Route::post('/prestationsOrders', [PrestationsOrderrController::class, 'getPrestationOrder'])->name('prestations_order.getPrestationOrder');
+    //Route::post('/prestation_order', [TestOrderController::class, 'getDetailsPrestation'])->name('prestations_order.getDetailsPrestation');
+
 
     Route::prefix('report')->group(function () {
         Route::get('list', [ReportController::class, 'index'])->name('report.index');
