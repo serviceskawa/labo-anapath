@@ -54,7 +54,7 @@ class ReportController extends Controller
         $data = $this->validate($request, [
             'content' => 'required',
             'report_id' => 'required|exists:reports,id',
-            'status' => 'required|boolean', 
+            'status' => 'required|boolean',
             // 'signatory1' => 'nullable|required_if:signatory1,on',
         ]);
 
@@ -189,10 +189,15 @@ class ReportController extends Controller
         if (empty($report)) {
             return redirect()->back()->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
         }
+        if ($report->is_deliver == 1) {
+            $state = 0;
+        } else {
+            $state = 1;
+        }
         $report->fill([
-            "is_deliver" => 1,
+            "is_deliver" => $state,
         ])->save();
         // dd($report);
-        return redirect()->back()->with('success', "Ce compte rendu a été livré ! ");
+        return redirect()->back()->with('success', "Effectué avec succès ! ");
     }
 }

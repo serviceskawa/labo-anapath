@@ -571,11 +571,11 @@ class TestOrderController extends Controller
                 if (!empty($data->report)) {
                     switch ($data->report->is_deliver) {
                         case 1:
-                            $btnreport = ' <a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-success" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
+                            $btnreport = ' <a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-success" title="Cliquer pour marquer comme non livré"><i class="uil uil-envelope-upload"></i> Marquer comme Non Livrer</a>';
                             break;
 
                         default:
-                            $btnreport = ' <a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
+                            $btnreport = ' <a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Cliquer pour marquer comme livré"><i class="uil uil-envelope-upload"></i> Marquer comme livrer</a>';
                             break;
                     }
                 } else {
@@ -605,9 +605,17 @@ class TestOrderController extends Controller
             ->addColumn('rendu', function ($data) {
                 if (!empty($data->report)) {
                     // $btn = $data->getReport($data->id);
-                    $btn = 'Valider';
+                    switch ($data->report->status) {
+                        case 1:
+                            $btn = 'Valider';
+                            break;
+
+                        default:
+                            $btn = 'En attente';
+                            break;
+                    }
                 } else {
-                    $btn = 'En attente';
+                    $btn = 'Non enregistré';
                 }
                 $span = '<span class="badge bg-primary rounded-pill">' . $btn . '</span>';
                 return $span;
