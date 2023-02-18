@@ -39,11 +39,9 @@ date_default_timezone_set('Europe/Paris');
     </div>
     <br><br>
     <div>
-        <legend
-            style="font-size: 1.5em; padding-bottom: 10px; padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); ">
+        <h3 style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
             <b>Informations prélèvement</b>
-        </legend>
-        <fieldset style="border: solid rgb(0,0,0,0)">
+        </h3>
 
             <p style="margin-left:10px; margin-right:10px; display:block; width: 100%;">
 
@@ -77,18 +75,15 @@ date_default_timezone_set('Europe/Paris');
             </table>
             </p>
             <br>
-        </fieldset>
     </div>
-    <br><br>
 
-    <legend
-        style="font-size: 1.5em; padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255);">
+    <h3 style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
         <b>Récapitulatifs</b>
-    </legend>
+    </h3>
     {{-- <br> --}}
     {{-- <div class="border_t"></div> --}}
-
-    {!! $content !!}
+        {!! $content !!}
+    
     {{-- <br><br><br> --}}
 
     {{-- <div class="border_b"></div> --}}

@@ -372,46 +372,45 @@
 
             });
 
-            $('#createPatientForm').on('submit', function(e) {
-                e.preventDefault();
-                let code = $('#code').val();
-                let lastname = $('#lastname').val();
-                let firstname = $('#firstname').val();
-                let age = $('#age').val();
-                let telephone1 = $('#telephone1').val();
-                let genre = $('#genre').val();
-                // alert(firstname);
-                $.ajax({
-                    url: "{{ route('patients.storePatient') }}",
-                    type: "POST",
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        code: code,
-                        lastname: lastname,
-                        firstname: firstname,
-                        age: age,
-                        telephone1: telephone1,
-                        genre: genre
-                    },
-                    success: function(data) {
-
-                        $('#createPatientForm').trigger("reset")
-                        $('#standard-modal').modal('hide');
-                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-                        $('#patient_id').append('<option value="' + data.id + '">' + data.code +
-                                ' - ' + data.firstname + ' ' + data.lastname + '</option>')
-                            .trigger('change').val(data.id);
-
-                    },
-                    error: function(data) {
-                        console.log(data)
-                    },
-                    // processData: false,
-                });
-
+        $('#createPatientForm').on('submit', function(e) {
+            e.preventDefault();
+            let code = $('#code').val();
+            let lastname = $('#lastname').val();
+            let firstname = $('#firstname').val();
+            let age = $('#age').val();
+            let telephone1 = $('#telephone1').val();
+            let genre = $('#genre').val();
+            // alert(firstname);
+            $.ajax({
+                url: "{{ route('patients.storePatient') }}",
+                type: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    code: code,
+                    lastname: lastname,
+                    firstname: firstname,
+                    age:age,
+                    telephone1:telephone1,
+                    genre:genre
+                },
+                success: function(data) {
+                    
+                    $('#createPatientForm').trigger("reset")
+                    $('#standard-modal').modal('hide');
+                    toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                    $('#patient_id').append('<option value="'+data.id+'">'+data.code+' - '+data.firstname+' '+data.lastname+'</option>').trigger('change').val(data.id);
+                    
+                },
+                error: function(data) {
+                    console.log(data)
+                },
+                // processData: false,
             });
+
         });
-    </script>
+    });
+
+</script>
 
     <script type="text/javascript">
         $(document).ready(function() {
