@@ -60,7 +60,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        @if ($user->hasRole('docteur'))
+                        {{-- @if ($user->hasRole('docteur'))
                             <div class="col-md-3">
                                 <label for="exampleFormControlInput1" class="form-label">Categorie de consultation<span
                                         style="color:red;">*</span></label>
@@ -71,7 +71,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        @endif
+                        @endif --}}
 
                         <div class="col-md-3">
                             <label for="exampleFormControlInput1" class="form-label">Prestations<span
@@ -93,15 +93,16 @@
                                 <option value="cancel">Rejetter</option>
                             </select>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Date<span style="color:red;">*</span></label>
+                        <div class="col-md-3">
+                            <label class="form-label">Frais <span style="color:red;">*</span></label>
+                            <input type="number" class="form-control" name="fees" id="fees" value="">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Heure<span style="color:red;">*</span></label>
                             <input type="datetime-local" id="dateConsultation" class="form-control" name="date"
                                 value="">
                         </div>
-                        {{-- <div class="col-md-3">
-                        <label class="form-label">Frais <span style="color:red;">*</span></label>
-                        <input type="number" class="form-control" name="fees" value="">
-                    </div> --}}
+
                     </div>
                     {{-- 
                     <div class="row mb-3">
@@ -220,6 +221,23 @@
                         console.log(data)
                     },
                     // processData: false,
+                });
+
+            });
+            $('#prestation_id').on('change', function(e) {
+                e.preventDefault();
+                let prestation_id = $('#prestation_id').val();
+
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url('prestations/show_by_id') }}" + '/' + prestation_id,
+                    success: function(data) {
+
+                        $('#fees').val(data.price);
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                    }
                 });
 
             });

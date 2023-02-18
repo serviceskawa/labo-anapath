@@ -128,4 +128,12 @@ class PrestationController extends Controller
             return back()->with('error', "Cette prestation est utilisée ! ");
         }
     }
+    public function show_by_id($id)
+    {
+        // if (!getOnlineUser()->can('delete-examens')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+        $data = Prestation::find($id);
+        return response()->json($data);
+    }
 }

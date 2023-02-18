@@ -246,5 +246,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('show/{id}', [PrestationController::class, 'show'])->name('prestation.show');
         Route::get('edit/{id}', [PrestationController::class, 'edit'])->name('prestation.edit');
         Route::get('delete/{id}', [PrestationController::class, 'destroy'])->name('prestation.delete');
+
+        Route::get('show_by_id/{id}', [PrestationController::class, 'show_by_id'])->name('prestation.showById');
     });
 });

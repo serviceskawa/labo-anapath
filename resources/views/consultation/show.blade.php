@@ -65,12 +65,13 @@
                                     style="color:red;">*</span></label>
                             <select class="form-select select2" data-toggle="select2" name="doctor_id" id="doctor_id"
                                 required>
-                                <option>Sélectionner le médecin traitant</option>
-                                @foreach ($doctors as $doctor)
-                                    <option value="{{ $doctor->id }}"
-                                        {{ $consultation->doctor_id == $doctor->id ? 'selected' : '' }}>
-                                        {{ $doctor->name }}</option>
+                                <option>Sélectionner un Docteur</option>
+                                @foreach (getUsersByRole('docteur') as $item)
+                                    <option value="{{ $item->id }}"
+                                        {{ $consultation->attribuate_doctor_id == $item->id ? 'selected' : '' }}>
+                                        {{ $item->lastname }} {{ $item->firstname }} </option>
                                 @endforeach
+
                             </select>
                         </div>
 
