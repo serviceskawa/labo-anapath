@@ -95,7 +95,7 @@
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Frais <span style="color:red;">*</span></label>
-                            <input type="number" class="form-control" name="fees" id="fees" value="">
+                            <input type="number" class="form-control" name="fees" id="fees" disabled>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Heure<span style="color:red;">*</span></label>

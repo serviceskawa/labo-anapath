@@ -14,8 +14,16 @@ class AddKeyPatientsPrestation extends Migration
     public function up()
     {
         Schema::table('prestation_orders', function (Blueprint $table) {
-            $table->unsignedBigInteger('patients_id')->after('id');
-            $table->unsignedBigInteger('prestations_id')->after('patients_id');
+            // $table->unsignedBigInteger('patients_id')->after('id');
+            // $table->unsignedBigInteger('prestations_id')->after('patients_id');
+            $table->foreignId('prestation_id')->nullable()
+                ->constrained('prestations')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreignId('patient_id')->nullable()
+                ->constrained('patients')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 
