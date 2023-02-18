@@ -99,7 +99,7 @@
                                 @foreach ($prestations as $prestation)
                                     <option value="{{ $prestation->id }}"
                                         {{ $consultation->prestation_id == $prestation->id ? 'selected' : '' }}>
-                                        {{ $prestation->name }} ({{ number_format($prestation->price, 0, '.', '') }})
+                                        {{ $prestation->name }} ({{ number_format($prestation->price, 0, '.', '') }} FCFA)
                                     </option>
                                 @endforeach
                             </select>

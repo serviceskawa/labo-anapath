@@ -122,6 +122,10 @@ class PrestationController extends Controller
         // }
         $prestation = Prestation::find($id)->delete();
 
-        return back()->with('success', " Elément supprimé avec succès  ! ");
+        if ($prestation) {
+            return back()->with('success', " Elément supprimé avec succès  ! ");
+        } else {
+            return back()->with('error', "Cette prestation est utilisée ! ");
+        }
     }
 }
