@@ -313,7 +313,7 @@
                                     @endif
                                     @if (getOnlineUser()->can('view-users'))
                                         <li>
-                                            <a href="{{ route('user.index') }} ">Tout les utilisateurs </a>
+                                            <a href="{{ route('user.index') }} ">Tous les utilisateurs </a>
                                         </li>
                                     @endif
 

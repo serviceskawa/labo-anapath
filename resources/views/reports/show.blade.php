@@ -53,7 +53,8 @@
                                         <select class="form-select" id="template" name="">
                                             <option value="">Sélectionner un template</option>
                                             @forelse ($templates as $template)
-                                                <option value="{{ $template->id }}">{{ $template->title }} </option>
+                                                <option value="{{ $template->id }}"
+                                                    >{{ $template->title }} </option>
                                             @empty
                                             @endforelse
                                         </select>
@@ -76,54 +77,52 @@
                                 </div>
 
                                 <div class="row my-3">
-
                                     <label for="simpleinput" class="form-label">Cocher les signataires du compte rendu<span
                                             style="color:red;">*</span></label>
-                                    <div class="my-3">
-                                        <div class="my-3">
+                                    <div class="">
+                                        <div class="my-3  form-check-inline">
                                             <label for="example-fileinput" class="form-label">Signatiare 1</label>
                                             <select name="doctor_signataire1" id="doctor_signataire1" class="form-control">
-                                                <option value="">Tous</option>
+                                                <option value="">Selectionner un docteur</option>
                                                 @foreach (getUsersByRole('docteur') as $item)
-                                                    <option value="{{ $item->id }}">
+                                                    <option value="{{ $item->id }}"
+                                                        {{ $report->signatory1 == $item->id ? 'selected' : '' }}>
                                                         {{ $item->lastname }} {{ $item->firstname }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
-
-                                        <div class="my-3">
+    
+                                        <div class="m-3 form-check-inline">
                                             <label for="example-fileinput" class="form-label">Signatiare 2</label>
                                             <select name="doctor_signataire2" id="doctor_signataire2" class="form-control">
-                                                <option value="">Tous</option>
+                                                <option value="">Selectionner un docteur</option>
                                                 @foreach (getUsersByRole('docteur') as $item)
-                                                    <option value="{{ $item->id }}">
+                                                    <option value="{{ $item->id }}"
+                                                        {{ $report->signatory2 == $item->id ? 'selected' : '' }}>
                                                         {{ $item->lastname }} {{ $item->firstname }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="my-3">
+                                        <div class="m-3 form-check-inline">
                                             <label for="example-fileinput" class="form-label">Signataire 3</label>
                                             <select name="doctor_signataire3" id="doctor_signataire3" class="form-control">
-                                                <option value="">Tous</option>
+                                                <option value="">Selectionner un docteur</option>
                                                 @foreach (getUsersByRole('docteur') as $item)
-                                                    <option value="{{ $item->id }}">
+                                                    <option value="{{ $item->id }}"
+                                                        {{ $report->signatory3 == $item->id ? 'selected' : '' }}>
                                                         {{ $item->lastname }} {{ $item->firstname }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
-
-                                        {{-- @foreach (getUsersByRole('docteur') as $item)
-                                            <input type="checkbox" class="form-check-input" value="{{ $item->id }}" name="doctor[]"
-                                            id="{{ $item->id }}"">
-                                            <label class="form-check-label"
-                                            for="{{ $item->id }}""> {{ $item->lastname }} {{ $item->firstname }} </label>
-                                        @endforeach --}}
-                                        
+    
                                     </div>
                                 </div>
+
+                               
+
                                 <div class="row">
                                     <div class="mb-3">
                                         <label for="simpleinput" class="form-label mb-3">Etat du compte rendu<span
@@ -173,9 +172,12 @@
                     <h5 class="card-header">Signataires</h5>
 
                     <div class="card-body">
-                        <p><b>Signature 1</b> : {{ $report->signatory1 == null ? 'Inactif' : getSignatory1($report->signatory1) }}</p>
-                        <p><b>Signature 2</b> : {{ $report->signatory2 == null ? 'Inactif' : getSignatory2($report->signatory2) }}</p>
-                        <p><b>Signature 3</b> : {{ $report->signatory3 == null  ? 'Inactif' : getSignatory3($report->signatory3) }}</p>
+                        <p><b>Signature 1</b> :
+                            {{ $report->signatory1 == null ? 'Inactif' : getSignatory1($report->signatory1) }}</p>
+                        <p><b>Signature 2</b> :
+                            {{ $report->signatory2 == null ? 'Inactif' : getSignatory2($report->signatory2) }}</p>
+                        <p><b>Signature 3</b> :
+                            {{ $report->signatory3 == null ? 'Inactif' : getSignatory3($report->signatory3) }}</p>
                     </div>
 
                 </div>
@@ -209,6 +211,10 @@
                 console.error(error);
             });
     </script> --}}
+
+    <script>
+
+    </script>
 
     <script>
         // This sample still does not showcase all CKEditor 5 features (!)

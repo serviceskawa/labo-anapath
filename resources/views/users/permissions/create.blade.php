@@ -1,5 +1,7 @@
 @extends('layouts.app2')
 
+@section('title', 'Permissions')
+
 @section('content')
     <div class="">
         @include('layouts.alerts')

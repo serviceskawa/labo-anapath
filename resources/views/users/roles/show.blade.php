@@ -1,5 +1,7 @@
 @extends('layouts.app2')
 
+@section('title', 'Show')
+
 @section('content')
     <div class="">
 
@@ -80,7 +82,7 @@
 
             <div class="modal-footer">
                 <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-warning">Update</button>
+                <button type="submit" class="btn btn-warning">Mettre à jour</button>
             </div>
 
 

@@ -125,7 +125,7 @@
                             </div>
                             <div class="card-footer">
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-xs btn-success">Update</button>
+                                    <button type="submit" class="btn btn-xs btn-success">Mettre à jour</button>
                                 </div>
                             </div> <!-- end card-body -->
                         </form>
