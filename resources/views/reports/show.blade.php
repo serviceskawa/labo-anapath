@@ -77,7 +77,7 @@
                                 </div>
 
                                 <div class="row my-3">
-                                    <label for="simpleinput" class="form-label">Cocher les signataires du compte rendu<span
+                                    <label for="simpleinput" class="form-label">Selectionner les signataires du compte rendu<span
                                             style="color:red;">*</span></label>
                                     <div class="">
                                         <div class="my-3  form-check-inline">

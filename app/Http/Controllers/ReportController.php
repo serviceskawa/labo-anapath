@@ -76,7 +76,7 @@ class ReportController extends Controller
             "status" => $request->status == "1" ? '1' : '0'
         ])->save();
 
-        return redirect()->back()->with('success', "   Examen finalisé ! ");
+        return redirect()->back()->with('success', "   Examen mis à jour ! ");
     }
 
     /**

@@ -183,6 +183,9 @@
                                 <i class="uil-file-medical"></i>
                                 <span> Comptes rendu</span>
                             </a>
+                            @if (Route::current()->getName() == 'report.show')
+                                <a style="display: none" href="">show  </a>
+                            @endif
                         </li>
                     @endif
 
@@ -315,6 +318,11 @@
                                         <li>
                                             <a href="{{ route('user.index') }} ">Tous les utilisateurs </a>
                                         </li>
+                                        @if (Route::current()->getName() == 'user.edit')
+                                            <li style="display: none">
+                                                <a href="">show  </a>
+                                            </li>
+                                        @endif
                                     @endif
 
                                 </ul>
