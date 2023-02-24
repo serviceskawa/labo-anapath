@@ -109,9 +109,9 @@ class DoctorController extends Controller
             'id2' => 'required',
             'name' => 'required',
             'email' => 'nullable',
-            'role' => 'required',
-            'telephone' => 'required',
-            'commission' => 'required',
+            'role' => 'nullable',
+            'telephone' => 'nullable',
+            'commission' => 'nullable',
         ]);
 
 
@@ -121,7 +121,7 @@ class DoctorController extends Controller
             $doctor = Doctor::find($data['id2']);
             $doctor->name = $data['name'];
             $doctor->email = $data['email'];
-            $doctor->role = $data['role'];
+            // $doctor->role = $data['role'];
             $doctor->telephone = $data['telephone'];
             $doctor->commission = $data['commission'];
             $doctor->save();

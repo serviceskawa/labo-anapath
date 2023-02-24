@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\Console\Input\Input;
 
 class UserController extends Controller
 {
@@ -24,7 +25,7 @@ class UserController extends Controller
         if (!getOnlineUser()->can('view-users')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $users = User::all();
+        $users = User::latest()->get();
         $roles = Role::all();
 
         $user = Auth::user();
@@ -43,7 +44,7 @@ class UserController extends Controller
         if (!getOnlineUser()->can('create-users')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $users = User::all();
+        $users = User::latest()->get();
         $roles = Role::all();
         return view('users.create', compact('users','roles'));
     }
@@ -60,19 +61,30 @@ class UserController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         // dd($request);
-        $data = $this->validate($request, [
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'email' => 'required|unique:users,email',
-        ]);
+
+        if ($request->file('signature') ) {
+            $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();  
+            
+            $path_signature = $request->file('signature')->storeAs('settings/app', $signature, 'public');
+        }
+
+            //dd($path_signature);
+
+        // $data = $this->validate($request, [
+        //     'firstname' => 'required',
+        //     'lastname' => 'required',
+        //     'email' => 'required|unique:users,email',
+        // ]);
 
        
 
         try {
+           // dd($path_signature);
             $user = User::firstOrCreate(["email" =>$request->email],[
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
                 "password" => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+                "signature" => $path_signature,
             ]);
             $user->roles()->attach($request->roles);
             
@@ -88,7 +100,7 @@ class UserController extends Controller
     
             return redirect()->route('user.index')->with('success', " Utilisateur crée ! ");
         } catch (\Throwable $th) {
-            return redirect()->route('user.index')->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+            return redirect()->route('user.index')->with('error', "Échec de l'enregistrement ! " .$th->getMessage());
 
         }
 
@@ -137,6 +149,7 @@ class UserController extends Controller
                 "email" =>$request->email,
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
+                "signature" => $request->signature,
             ]);
             $user->roles()->sync([]);
             $user->roles()->attach($request->roles);

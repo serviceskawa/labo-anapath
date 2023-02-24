@@ -125,6 +125,8 @@ class SettingController extends Controller
         }
         // dd($request);
         $setting = Setting::find(1);
+        
+        dd($request);
 
         if ($request->file('logo') ) {
 

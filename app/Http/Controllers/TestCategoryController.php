@@ -17,7 +17,7 @@ class TestCategoryController extends Controller
         if (!getOnlineUser()->can('view-examens-categories')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $testcategories = CategoryTest::with(['tests'])->get();
+        $testcategories = CategoryTest::with(['tests'])->orderBy('created_at', 'DESC')->get();
         // dd($testcategories);
         return view('tests.category.index',compact(['testcategories']));
     }

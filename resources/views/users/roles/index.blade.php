@@ -50,6 +50,8 @@
                                     <td>{{ $item->user->firstname }} {{ $item->user->lastname }} </td>
                                     <td> <a type="button" href="{{ route('user.role-show', $item->slug) }}"
                                             class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
+                                            <a type="button" href="{{ route('user.role-delete', $item->id) }}"
+                                                class="btn btn-primary"> <i class="mdi mdi-trash-can-outline"></i></a>
                                     </td>
 
                                 </tr>
@@ -67,4 +69,26 @@
 
 
 @push('extra-js')
+    <script>
+        // SUPPRESSION
+        function deleteModal(id) {
+
+        Swal.fire({
+                title: "Voulez-vous supprimer l'élément ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Oui ",
+                cancelButtonText: "Non !",
+            }).then(function(result) {
+                if (result.value) {
+                    window.location.href="{{url('roles-delete')}}"+"/"+id;
+                    Swal.fire(
+                        "Suppression !",
+                        "En cours de traitement ...",
+                        "success"
+                    )
+                }
+            });
+        }                                                                                    
+    </script>
 @endpush

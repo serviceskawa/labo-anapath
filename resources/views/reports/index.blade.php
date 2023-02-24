@@ -112,6 +112,7 @@
 
         $(document).ready(function() {
             $('#datatable1').DataTable({
+                "order": [],
                 // columnDefs: [
                 //     {
                 //         target: 6,

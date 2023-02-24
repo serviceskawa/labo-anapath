@@ -20,9 +20,9 @@ class TestController extends Controller
         if (!getOnlineUser()->can('view-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $tests = Test::all();
+        $tests = Test::orderBy('created_at','DESC')->get();
    
-        $categories = CategoryTest::all();
+        $categories = CategoryTest::orderBy('created_at','DESC')->get();
 
         return view('tests.index',compact(['tests','categories']));
 

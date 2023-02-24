@@ -29,7 +29,7 @@ class RoleController extends Controller
         if (!getOnlineUser()->can('view-roles')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $roles = Role::all();
+        $roles = Role::latest()->get();
         return view('users.roles.index', compact('roles'));
 
     }
@@ -197,5 +197,14 @@ class RoleController extends Controller
             return redirect()->route('user.role-index')->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
 
         }
+    }
+
+    public function destroy($id)
+    {
+        if (!getOnlineUser()->can('delete-demandes-examens')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $role = Role::find($id)->delete();
+        return redirect()->route('user.role-index')->with('success', "    Un élement a été supprimé ! ");
     }
 }

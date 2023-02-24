@@ -178,6 +178,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('role-show/{slug}', [RoleController::class, 'show'])->name('user.role-show');
         Route::post('roles-store', [RoleController::class, 'store'])->name('user.role-store');
         Route::post('roles-update', [RoleController::class, 'update'])->name('user.role-update');
+        Route::get('/roles-delete/{id}', [RoleController::class, 'destroy'])->name('user.role-delete');
+
 
         // PERMISSIONS
         Route::get('permissions', [PermissionController::class, 'create'])->name('user.permission-index');

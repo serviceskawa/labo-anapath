@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 
-use App\Models\Contrat;
+//use App\Models\Contrat;
+use App\Models\Doctor;
 use App\Models\Setting;
-use App\Helpers\herpers;
+//use App\Helpers\herpers;
 use Illuminate\Http\Request;
 use Spipu\Html2Pdf\Html2Pdf;
 
@@ -14,6 +15,7 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 // require _DIR_.'/vendor/autoload.php';
 use App\Models\SettingReportTemplate;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
@@ -35,9 +37,10 @@ class ReportController extends Controller
         if (!getOnlineUser()->can('view-compte-rendu')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $reports = Report::all();
+        $reports = Report::orderBy('created_at', 'DESC')->get();
+        $doctors = Doctor::all();
 
-        return view('reports.index', compact('reports'));
+        return view('reports.index', compact('reports','doctors'));
     }
 
     /**
@@ -51,6 +54,12 @@ class ReportController extends Controller
         if (!getOnlineUser()->can('create-compte-rendu')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+        $doctor_signataire1 = $request->doctor_signataire1;
+        $doctor_signataire2 = $request->doctor_signataire2;
+        $doctor_signataire3 = $request->doctor_signataire3;
+
+       
+
         $data = $this->validate($request, [
             'content' => 'required',
             'report_id' => 'required|exists:reports,id',
@@ -61,9 +70,9 @@ class ReportController extends Controller
         $report = Report::findorfail($request->report_id);
         $report->fill([
             "description" => $request->content,
-            "signatory1" => $request->signatory1 ? '1' : '0',
-            "signatory2" => $request->signatory2 ? '1' : '0',
-            "signatory3" => $request->signatory3 ? '1' : '0',
+            "signatory1" => $doctor_signataire1,
+            "signatory2" => $doctor_signataire2,
+            "signatory3" => $doctor_signataire3,
             "status" => $request->status == "1" ? '1' : '0'
         ])->save();
 
@@ -117,23 +126,27 @@ class ReportController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $report = Report::findorfail($id);
-        $setting = Setting::find(1);
+        $signatory1 = User::findorfail($report->signature1);
+        $signatory2 = User::findorfail($report->signature2);
+        $signatory3 = User::findorfail($report->signature3);
+        
 
         setlocale(LC_TIME, 'fr_FR');
         date_default_timezone_set('Africa/Porto-Novo');
         //date_format($report->updated_at,"d/m/Y")
+
 
         $data = [
             'code' => $report->code,
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
             'prelevement_date' => date('d/m/Y', strtotime($report->order->prelevement_date)),
             'content' => $report->description,
-            'signatory1' => $report->signatory1 == '1' ? $setting->signatory1 : '',
-            'signature1' => $report->signatory1 == '1' ? $setting->signature1 : '',
-            'signatory2' => $report->signatory2 == '1' ? $setting->signatory2 : '',
-            'signature2' => $report->signatory2 == '1' ? $setting->signature2 : '',
-            'signatory3' => $report->signatory3 == '1' ? $setting->signatory3 : '',
-            'signature3' => $report->signatory3 == '1' ? $setting->signature3 : '',
+            'signatory1' => $signatory1->lastname.' '.$signatory1->firstname,
+            'signature1' => $signatory1->signature ? $signatory1->signature : '',
+            'signatory2' => $signatory2->lastname.' '.$signatory2->firstname,
+            'signature2' => $signatory2->signature ? $signatory2->signature : '',
+            'signatory3' => $signatory3->lastname.' '.$signatory3->firstname,
+            'signature3' => $signatory3->signature ? $signatory3->signature : '',
             'patient_firstname' => $report->patient->firstname,
             'patient_lastname' => $report->patient->lastname,
             'patient_age' => $report->patient->age,
@@ -143,6 +156,9 @@ class ReportController extends Controller
             'created_at' => date_format($report->created_at, "d/m/Y"),
             'date' => date('d/m/Y')
         ];
+
+        dd($data);
+        
 
         try {
             $content = view('pdf/canva', $data)->render();

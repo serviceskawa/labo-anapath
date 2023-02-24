@@ -81,7 +81,7 @@ date_default_timezone_set('Europe/Paris');
     </h3>
     {{-- <br> --}}
     {{-- <div class="border_t"></div> --}}
-        {!! $content !!}
+        {!! dd($content) !!}
     
     {{-- <br><br><br> --}}
 

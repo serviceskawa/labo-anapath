@@ -17,7 +17,7 @@ class HospitalController extends Controller
         if (!getOnlineUser()->can('view-hopitaux')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $hopitals = Hospital::orderBy('name','asc')->get();
+        $hopitals = Hospital::orderBy('created_at','DESC')->get();
         return view('hopitals.index',compact(['hopitals']));
 
     }

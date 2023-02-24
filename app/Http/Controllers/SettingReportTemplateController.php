@@ -17,7 +17,7 @@ class SettingReportTemplateController extends Controller
         if (!getOnlineUser()->can('view-template-compte-rendu')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $templates = SettingReportTemplate::all();
+        $templates = SettingReportTemplate::orderBy('created_at', 'DESC')->get();
         return view('templates.reports.index', compact('templates'));
     }
 

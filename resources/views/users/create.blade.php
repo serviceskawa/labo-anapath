@@ -1,5 +1,22 @@
 @extends('layouts.app2')
 
+@section('title', 'Create')
+
+@section('css')
+<link href="{{ asset('/adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('/adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.css"
+    integrity="sha512-In/+MILhf6UMDJU4ZhDL0R0fEpsp4D3Le23m6+ujDWXwl3whwpucJG1PEmI3B07nyJx+875ccs+yX2CqQJUxUw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+    .ck-editor__editable[role="textbox"] {
+        /* editing area */
+        min-height: 200px;
+    }
+</style>
+@endsection
+
 @section('content')
     <div class="">
 
@@ -11,7 +28,7 @@
             </div>
             <div class="card-body">
 
-                <form action="{{ route('user.store') }}" method="post" autocomplete="off">
+                <form action="{{ route('user.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row mb-3">
                         <div class="col-md-12 mb-3">
@@ -31,6 +48,13 @@
                                 <label for="exampleFormControlInput1" class="form-label">Email</label>
                                 <input type="email" class="form-control" name="email" required>
                             </div>
+                        </div>
+                        {{-- data-default-file="{{ $setting ? Storage::url($setting->logo) : '' }}" --}}
+                        <div class="col-md-12 mb-3">
+                            <label for="example-fileinput" class="form-label">Signature</label>
+                            <input type="file" class="dropify" name="signature" id="signature"
+                                data-default-file=" "
+                                data-max-file-size="3M" />
                         </div>
                         <div class="mb-3">
                             <label for="example-select" class="form-label">Roles<span style="color:red;">*</span></label>
@@ -65,4 +89,12 @@
 
 
 @push('extra-js')
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
+    integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $('.dropify').dropify();
+</script>
+
 @endpush

@@ -1,5 +1,7 @@
 @extends('layouts.app2')
 
+@section('title', 'Docteurs')
+
 @section('content')
 
 <div class="row">
@@ -112,7 +114,7 @@ $(document).ready(function() {
         "columnDefs": [
             {
                 "targets": [ 0 ],
-                "searchable": false
+                "searchable": true
             }],
         "language": {
             "lengthMenu": "Afficher _MENU_ enregistrements par page",

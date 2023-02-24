@@ -76,31 +76,52 @@
                                 </div>
 
                                 <div class="row my-3">
+
                                     <label for="simpleinput" class="form-label">Cocher les signataires du compte rendu<span
                                             style="color:red;">*</span></label>
-                                    <div class="">
+                                    <div class="my-3">
+                                        <div class="my-3">
+                                            <label for="example-fileinput" class="form-label">Signatiare 1</label>
+                                            <select name="doctor_signataire1" id="doctor_signataire1" class="form-control">
+                                                <option value="">Tous</option>
+                                                @foreach (getUsersByRole('docteur') as $item)
+                                                    <option value="{{ $item->id }}">
+                                                        {{ $item->lastname }} {{ $item->firstname }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
 
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input"
-                                                {{ $report->signatory1 == '1' ? 'checked' : '' }} name="signatory1"
-                                                id="customCheck3">
-                                            <label class="form-check-label"
-                                                for="customCheck3">{{ $setting->signatory1 }}</label>
+                                        <div class="my-3">
+                                            <label for="example-fileinput" class="form-label">Signatiare 2</label>
+                                            <select name="doctor_signataire2" id="doctor_signataire2" class="form-control">
+                                                <option value="">Tous</option>
+                                                @foreach (getUsersByRole('docteur') as $item)
+                                                    <option value="{{ $item->id }}">
+                                                        {{ $item->lastname }} {{ $item->firstname }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input"
-                                                {{ $report->signatory2 == '1' ? 'checked' : '' }} name="signatory2"
-                                                id="customCheck3">
-                                            <label class="form-check-label"
-                                                for="customCheck3">{{ $setting->signatory2 }}</label>
+                                        <div class="my-3">
+                                            <label for="example-fileinput" class="form-label">Signataire 3</label>
+                                            <select name="doctor_signataire3" id="doctor_signataire3" class="form-control">
+                                                <option value="">Tous</option>
+                                                @foreach (getUsersByRole('docteur') as $item)
+                                                    <option value="{{ $item->id }}">
+                                                        {{ $item->lastname }} {{ $item->firstname }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input"
-                                                {{ $report->signatory3 == '1' ? 'checked' : '' }} name="signatory3"
-                                                id="customCheck3">
+
+                                        {{-- @foreach (getUsersByRole('docteur') as $item)
+                                            <input type="checkbox" class="form-check-input" value="{{ $item->id }}" name="doctor[]"
+                                            id="{{ $item->id }}"">
                                             <label class="form-check-label"
-                                                for="customCheck3">{{ $setting->signatory3 }}</label>
-                                        </div>
+                                            for="{{ $item->id }}""> {{ $item->lastname }} {{ $item->firstname }} </label>
+                                        @endforeach --}}
+                                        
                                     </div>
                                 </div>
                                 <div class="row">

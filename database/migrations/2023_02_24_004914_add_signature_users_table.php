@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddKeyPatientsPrestation extends Migration
+class AddSignatureUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class AddKeyPatientsPrestation extends Migration
      */
     public function up()
     {
-        Schema::table('prestation_orders', function (Blueprint $table) {
-            $table->unsignedBigInteger('patient_id')->after('id');
-            $table->unsignedBigInteger('prestation_id')->after('patient_id');
-           
+        Schema::table('users', function (Blueprint $table) {
+            $table->text('signature')->after('password')->nullable();
         });
     }
 
@@ -27,7 +25,7 @@ class AddKeyPatientsPrestation extends Migration
      */
     public function down()
     {
-        Schema::table('prestation_orders', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             //
         });
     }

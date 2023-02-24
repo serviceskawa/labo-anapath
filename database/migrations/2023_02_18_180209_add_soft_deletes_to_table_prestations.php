@@ -14,7 +14,7 @@ class AddSoftDeletesToTablePrestations extends Migration
     public function up()
     {
         Schema::table('prestations', function (Blueprint $table) {
-            $table->softDeletes();
+            //$table->softDeletes();
         });
     }
 

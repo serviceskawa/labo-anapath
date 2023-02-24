@@ -97,12 +97,10 @@
         $(document).ready(function() {
 
             $('#datatable1').DataTable({
-                "order": [
-                    [0, "asc"]
-                ],
+                "order": [],
                 "columnDefs": [{
                     "targets": [0],
-                    "searchable": false
+                    "searchable": true
                 }],
                 "language": {
                     "lengthMenu": "Afficher _MENU_ enregistrements par page",
