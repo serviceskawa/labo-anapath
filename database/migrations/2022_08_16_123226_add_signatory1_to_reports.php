@@ -14,7 +14,7 @@ class AddSignatory1ToReports extends Migration
     public function up()
     {
         Schema::table('reports', function (Blueprint $table) {
-            $table->boolean('signatory1')->default(false);
+            $table->integer('signatory1')->nullable();
         });
     }
 

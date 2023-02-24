@@ -121,16 +121,21 @@ class ReportController extends Controller
 
     public function pdf($id)
     {
-        
         if (!getOnlineUser()->can('edit-compte-rendu')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $report = Report::find($id);
         //dd($report);
-        $signatory1 = User::findorfail($report->signatory1);
-        $signatory2 = User::findorfail($report->signatory2);
-        $signatory3 = User::findorfail($report->signatory3);
-        //dd($signatory1,$signatory2,$signatory3);
+        $report = Report::find($id);
+        
+        if($report->signatory1 != null)
+            {$signatory1 = User::findorfail($report->signatory1);}
+            
+        if($report->signatory2 != null)
+            {$signatory2 = User::findorfail($report->signatory2);}
+            
+        if($report->signatory3 != null)
+            {$signatory3 = User::findorfail($report->signatory3);}
+            
         
 
         setlocale(LC_TIME, 'fr_FR');
@@ -143,12 +148,15 @@ class ReportController extends Controller
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
             'prelevement_date' => date('d/m/Y', strtotime($report->order->prelevement_date)),
             'content' => $report->description,
-            'signatory1' => $signatory1->lastname.' '.$signatory1->firstname,
-            'signature1' => $signatory1->signature ? $signatory1->signature : '',
-            'signatory2' => $signatory2->lastname.' '.$signatory2->firstname,
-            'signature2' => $signatory2->signature ? $signatory2->signature : '',
-            'signatory3' => $signatory3->lastname.' '.$signatory3->firstname,
-            'signature3' => $signatory3->signature ? $signatory3->signature : '',
+            'signatory1' => $report->signatory1 != null ? $signatory1->lastname.' '.$signatory1->firstname : '',
+            'signature1' => $report->signatory1 != null ? $signatory1->signature : '',
+            
+            'signatory2' => $report->signatory2 != null ? $signatory2->lastname.' '.$signatory2->firstname : '',
+            'signature2' => $report->signatory2 != null ? $signatory2->signature : '',
+            
+            'signatory3' => $report->signatory3 != null ? $signatory3->lastname.' '.$signatory3->firstname : '',
+            'signature3' => $report->signatory3 != null ? $signatory3->signature : '',
+            
             'patient_firstname' => $report->patient->firstname,
             'patient_lastname' => $report->patient->lastname,
             'patient_age' => $report->patient->age,
@@ -158,10 +166,9 @@ class ReportController extends Controller
             'created_at' => date_format($report->created_at, "d/m/Y"),
             'date' => date('d/m/Y')
         ];
-
+        
         //dd($data);
         
-
         try {
             $content = view('pdf/canva', $data)->render();
 

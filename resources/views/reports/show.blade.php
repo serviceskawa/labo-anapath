@@ -173,9 +173,9 @@
                     <h5 class="card-header">Signataires</h5>
 
                     <div class="card-body">
-                        <p><b>Signature 1</b> : {{ $report->signatory1 == 0 ? 'Inactif' : getSignatory1(1) }}</p>
-                        <p><b>Signature 2</b> : {{ $report->signatory2 == 0 ? 'Inactif' : getSignatory2(1) }}</p>
-                        <p><b>Signature 3</b> : {{ $report->signatory3 == 0 ? 'Inactif' : getSignatory3(1) }}</p>
+                        <p><b>Signature 1</b> : {{ $report->signatory1 == null ? 'Inactif' : getSignatory1($report->signatory1) }}</p>
+                        <p><b>Signature 2</b> : {{ $report->signatory2 == null ? 'Inactif' : getSignatory2($report->signatory2) }}</p>
+                        <p><b>Signature 3</b> : {{ $report->signatory3 == null  ? 'Inactif' : getSignatory3($report->signatory3) }}</p>
                     </div>
 
                 </div>
