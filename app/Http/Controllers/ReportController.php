@@ -121,14 +121,16 @@ class ReportController extends Controller
 
     public function pdf($id)
     {
-
+        
         if (!getOnlineUser()->can('edit-compte-rendu')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $report = Report::findorfail($id);
-        $signatory1 = User::findorfail($report->signature1);
-        $signatory2 = User::findorfail($report->signature2);
-        $signatory3 = User::findorfail($report->signature3);
+        $report = Report::find($id);
+        //dd($report);
+        $signatory1 = User::findorfail($report->signatory1);
+        $signatory2 = User::findorfail($report->signatory2);
+        $signatory3 = User::findorfail($report->signatory3);
+        //dd($signatory1,$signatory2,$signatory3);
         
 
         setlocale(LC_TIME, 'fr_FR');
@@ -157,7 +159,7 @@ class ReportController extends Controller
             'date' => date('d/m/Y')
         ];
 
-        dd($data);
+        //dd($data);
         
 
         try {
