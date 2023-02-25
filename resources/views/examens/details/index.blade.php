@@ -61,7 +61,7 @@
                         <div class="col-md-6">
                             <label for="exampleFormControlInput1" class="form-label">Contrat<span
                                     style="color:red;">*</span></label>
-                            <select class="form-select select2" data-toggle="select2" required name="contrat_id">
+                            <select class="form-select select2" data-toggle="select2" required name="contrat_id" id="contrat_id">
                                 <option>Sélectionner le contrat</option>
                                 @forelse ($contrats as $contrat)
                                     <option value="{{ $contrat->id }}"
@@ -610,6 +610,7 @@
 
             // Importation des paramètres de getRemise
             var contrat_id = $('#contrat_id').val();
+            
             let element = document.getElementById("test_id");
             let category_test_id = element.options[element.selectedIndex].getAttribute("data-category_test_id");
 
