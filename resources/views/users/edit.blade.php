@@ -19,7 +19,7 @@
             </div>
             <div class="card-body">
 
-                <form action="{{ route('user.update') }}" method="post" autocomplete="off">
+                <form action="{{ route('user.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row mb-3">
                         <div class="col-md-12 mb-3">
@@ -44,7 +44,7 @@
 
                         <div class="col-md-12 mb-3">
                             <label for="example-fileinput" class="form-label">Signature</label>
-                            <input type="file" class="dropify" name="signature"
+                            <input type="file" class="dropify" name="signature" data-default-file="{{ $user->signature ? Storage::url('app/public/'.$user->signature) : '' }}"
                                 data-max-file-size="3M" />
                         </div>
 

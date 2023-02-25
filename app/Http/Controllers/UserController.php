@@ -142,6 +142,12 @@ class UserController extends Controller
             'email' => 'required',
         ]);
 
+        if ($request->file('signature') ) {
+            $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();  
+            
+            $path_signature = $request->file('signature')->storeAs('settings/app', $signature, 'public');
+        }
+
         // dd($request->roles);
 
         try {
@@ -149,7 +155,7 @@ class UserController extends Controller
                 "email" =>$request->email,
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
-                "signature" => $request->signature,
+                "signature" => $path_signature,
             ]);
             $user->roles()->sync([]);
             $user->roles()->attach($request->roles);
