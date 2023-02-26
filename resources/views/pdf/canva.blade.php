@@ -95,8 +95,7 @@ date_default_timezone_set('Europe/Paris');
                 <td style="text-align: center;    width: 33%">
                     @if ($signatory1 != null)
                         @if($signature1 != null)
-                            <img width="85" src="{{ storage_path('app/public/' . $signature1) }}"
-                            alt="">
+                          <img width="85" src="{{ asset('storage/' . $signature1) }}" alt="">
                         @endif
                         <br><br>{{ $signatory1 }}
                     @endif
@@ -105,8 +104,7 @@ date_default_timezone_set('Europe/Paris');
                 <td style="text-align: center;    width: 33%">
                     @if ($signatory2 != null)
                         @if($signature2 != null)
-                            <img width="85" src="{{ storage_path('app/public/' . $signature2) }}"
-                            alt="">
+                            <img width="85" src="{{ asset('storage/' . $signature2) }}" alt="">
                         @endif
                         <br><br>{{ $signatory2 }}
                     @endif
@@ -116,8 +114,7 @@ date_default_timezone_set('Europe/Paris');
                 <td style="text-align: center;    width: 33%">
                     @if ($signatory3 != null)
                         @if($signature3 != null)
-                            <img width="85" src="{{ storage_path('app/public/' . $signature3) }}"
-                            alt="">
+                            <img width="85" src="{{ asset('storage/' . $signature3) }}" alt="">
                         @endif
                         <br><br>{{ $signatory3 }}
                     @endif
