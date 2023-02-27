@@ -24,21 +24,21 @@
                     <div class="row mb-3">
                         <div class="col-md-12 mb-3">
                             <div class="form-group">
-                                <label for="exampleFormControlInput1" class="form-label">Nom</label>
-                                <input type="text" class="form-control" name="firstname" value="{{ $user->firstname }}">
+                                <label for="exampleFormControlInput1" class="form-label">Nom<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control" name="firstname" required value="{{ $user->firstname }}">
                                 <input type="hidden" class="form-control" name="id" value="{{ $user->id }}">
                             </div>
                         </div>
                         <div class="col-md-12 mb-3">
                             <div class="form-group">
-                                <label for="exampleFormControlInput1" class="form-label">Lastname</label>
-                                <input type="text" class="form-control" name="lastname" value="{{ $user->lastname }}">
+                                <label for="exampleFormControlInput1" class="form-label">Lastname<span style="color:red;">*</span></label>
+                                <input type="text" class="form-control" name="lastname" required value="{{ $user->lastname }}">
                             </div>
                         </div>
                         <div class="col-md-12 mb-3">
                             <div class="form-group">
-                                <label for="exampleFormControlInput1" class="form-label">Email</label>
-                                <input type="email" class="form-control" name="email" value="{{ $user->email }}">
+                                <label for="exampleFormControlInput1" class="form-label">Email<span style="color:red;">*</span></label>
+                                <input type="email" class="form-control" name="email" required value="{{ $user->email }}">
                             </div>
                         </div>
 

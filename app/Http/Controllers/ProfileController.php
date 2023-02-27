@@ -21,12 +21,19 @@ class ProfileController extends Controller
             'lastname' => 'required',
         ]);
 
+        if ($request->file('signature') ) {
+            $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();  
+            
+            $path_signature = $request->file('signature')->storeAs('settings/app', $signature, 'public');
+        }
+
         $user = Auth::user(); 
 
         if ($user) {
             $user = User::find(Auth::user()->id);
             $user->firstname = $request->firstname;
             $user->lastname = $request->lastname;
+            $user->signature = $request->file('signature') ? $path_signature:'';
             $user->save();
 
             return back()->with('success', " Informations mis à jour ");

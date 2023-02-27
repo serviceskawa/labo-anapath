@@ -398,11 +398,12 @@ class TestOrderController extends Controller
                 "test_order_id" => $test_order->id,
                 "date" => date('Y-m-d'),
                 "patient_id" => $test_order->patient_id,
-                "client_name" => $test_order->patient->firstname . ' ' . $test_order->patient->firstname,
+                "client_name" => $test_order->patient->firstname . ' ' . $test_order->patient->lastname,
                 "client_address" => $test_order->patient->adresse,
                 "subtotal" => $test_order->subtotal,
                 "discount" => $test_order->discount,
                 "total" => $test_order->total,
+                "code" => "FA". $test_order->code
             ]);
             // Recupération des details de la demande d'examen
             $tests = $test_order->details()->get();

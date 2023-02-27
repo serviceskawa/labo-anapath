@@ -55,7 +55,7 @@
                                 <img src="{{ $setting ? Storage::url($setting->logo_blanc) : '' }}" alt="" height="18">
                             </div>
                             <div class="float-end">
-                                <h4 class="m-0 d-print-none">Facture</h4>
+                                <h4 class="m-0 d-print-none">Reçu de paiement</h4>
                             </div>
                         </div>
 
@@ -95,8 +95,8 @@
                                                 <th>#</th>
                                                 <th>Titre de l'examen</th>
                                                 <th>Quantité</th>
-                                                <th>Prix</th>
-                                                <th class="text-end">Total</th>
+                                                <th>Prix(F CFA)</th>
+                                                <th class="text-end">Total(F CFA)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -122,12 +122,12 @@
 
                         <div class="row">
                             <div class="col-sm-6">
-                                <div class="clearfix pt-3">
+                                {{-- <div class="clearfix pt-3">
                                     <h6 class="text-muted">Notes:</h6>
                                     <small>
                                         Toutes mes transactions
                                     </small>
-                                </div>
+                                </div> --}}
                             </div> <!-- end col -->
                             <div class="col-sm-6">
                                 <div class="float-end mt-3 mt-sm-0">

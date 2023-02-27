@@ -21,7 +21,7 @@
             <div class="col-xl-8 col-lg-7">
                 <div class="card">
                     <div class="card-body">
-                        <form method="POST" action="{{ route('profile.update-name') }}">
+                        <form method="POST" action="{{ route('profile.update-name') }}" enctype="multipart/form-data">
                             @csrf
                             <h5 class="mb-4 text-uppercase"><i class="mdi mdi-account-circle me-1"></i>INFORMATIONS DE BASE
 
@@ -30,7 +30,7 @@
                             <div class="row">  
                                 <div class="col-md-12">
                                     <div class="mb-3">
-                                        <label for="lastname" class="form-label">Nom</label>
+                                        <label for="lastname" class="form-label">Nom<span style="color:red;">*</span></label>
                                         <input type="text" class="form-control" name="lastname"
                                             value="{{ Auth::user()->lastname }}">
                                     </div>
@@ -40,9 +40,19 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="mb-3">
-                                        <label for="firstname" class="form-label">Prénom</label>
+                                        <label for="firstname" class="form-label">Prénom<span style="color:red;">*</span></label>
                                         <input type="text" class="form-control" name="firstname"
                                             value="{{ Auth::user()->firstname }}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="example-fileinput" class="form-label">Signature</label>
+                                        <input type="file" class="dropify" name="signature" data-default-file="{{ $user->signature ? Storage::url('app/public/'.$user->signature) : '' }}"
+                                            data-max-file-size="3M" />
                                     </div>
                                 </div>
                             </div>

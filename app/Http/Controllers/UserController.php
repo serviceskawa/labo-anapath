@@ -84,7 +84,7 @@ class UserController extends Controller
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
                 "password" => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-                "signature" => $path_signature,
+                "signature" => $request->file('signature') ? $path_signature:'',
             ]);
             $user->roles()->attach($request->roles);
             
@@ -155,7 +155,7 @@ class UserController extends Controller
                 "email" =>$request->email,
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
-                "signature" => $path_signature,
+                "signature" => $request->file('signature') ? $path_signature:'',
             ]);
             $user->roles()->sync([]);
             $user->roles()->attach($request->roles);
