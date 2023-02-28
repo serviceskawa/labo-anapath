@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Patient;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class PatientController extends Controller
@@ -18,7 +19,8 @@ class PatientController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $patients = Patient::orderBy('id','desc')->get();
-
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('patients.index',compact(['patients']));
 
     }

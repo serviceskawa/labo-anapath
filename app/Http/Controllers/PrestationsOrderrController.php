@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Patient;
 use App\Models\Prestation;
 use App\Models\PrestationOrder;
+use App\Models\Setting;
 
 class PrestationsOrderrController extends Controller
 {
@@ -30,7 +31,8 @@ class PrestationsOrderrController extends Controller
         $patients = Patient::all();
         $prestations = Prestation::all();
         $prestationOrders = PrestationOrder::orderBy('created_at', 'DESC')->get();
-
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);    
         return view('prestationsOrder.index', compact(['patients', 'prestations', 'prestationOrders']));
     }
 

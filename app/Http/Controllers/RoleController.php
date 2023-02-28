@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\Operation;
 use App\Models\Ressource;
 use App\Models\Permission;
+use App\Models\Setting;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +31,8 @@ class RoleController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $roles = Role::latest()->get();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('users.roles.index', compact('roles'));
 
     }
@@ -41,6 +44,8 @@ class RoleController extends Controller
         }
         $permissions = Permission::all();
         $ressources = Ressource::all();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('users.roles.create', compact('permissions', 'ressources'));
         
     }
@@ -119,6 +124,8 @@ class RoleController extends Controller
         $role = Role::whereSlug($slug)->first();
         $permissions = Permission::all();
         $ressources = Ressource::all();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('users.roles.show', compact('role', 'permissions', 'ressources'));
         
     }

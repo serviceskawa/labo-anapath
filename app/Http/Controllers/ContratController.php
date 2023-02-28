@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CategoryTest;
 use App\Models\Contrat;
 use App\Models\Details_Contrat;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -22,6 +23,8 @@ class ContratController extends Controller
         }
 
         $contrats = Contrat::with(['orders', 'detail'])->get();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('contrats.index', compact(['contrats']));
 
     }
@@ -36,6 +39,8 @@ class ContratController extends Controller
         $contrat = Contrat::find($id);
         $test_caterories = CategoryTest::all();
         $details = Details_Contrat::where('contrat_id', $contrat->id)->get();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('contrats_details.index', compact(['contrat', 'details', 'test_caterories']));
 
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use App\Models\SettingReportTemplate;
 
@@ -18,6 +19,8 @@ class SettingReportTemplateController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $templates = SettingReportTemplate::orderBy('created_at', 'DESC')->get();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('templates.reports.index', compact('templates'));
     }
 
@@ -27,6 +30,8 @@ class SettingReportTemplateController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $template = "";
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('templates.reports.create', compact('template'));
     }
 

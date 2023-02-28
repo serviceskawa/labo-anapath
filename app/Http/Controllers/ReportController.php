@@ -93,7 +93,7 @@ class ReportController extends Controller
         $report = Report::findorfail($id);
         $setting = Setting::find(1);
         $templates = SettingReportTemplate::all();
-
+        config(['app.name' => $setting->titre]);
         return view('reports.show', compact('report', 'setting', 'templates'));
     }
 

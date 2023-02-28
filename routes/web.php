@@ -191,6 +191,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('user-store', [UserController::class, 'store'])->name('user.store');
         Route::get('role-edit/{id}', [UserController::class, 'edit'])->name('user.edit');
         Route::post('user-update', [UserController::class, 'update'])->name('user.update');
+        Route::get('role-delete/{id}', [UserController::class, 'destroy'])->name('user.delete');
     });
 
     // Profile

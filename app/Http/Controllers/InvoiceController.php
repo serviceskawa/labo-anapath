@@ -18,6 +18,8 @@ class InvoiceController extends Controller
     public function index()
     {
         $invoices = Invoice::orderBy('date','DESC')->get();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('invoices.index', compact('invoices'));
     }
 
@@ -29,6 +31,8 @@ class InvoiceController extends Controller
     public function create()
     {
         $testOrders = TestOrder::all();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('invoices.create', compact('testOrders'));
     }
 
@@ -62,6 +66,7 @@ class InvoiceController extends Controller
         if (!empty($invoiceExist)) {
             return back()->with('error', "Il existe deja une facture pour cette demande. Veuillez réessayer! ");
         }
+        $code_facture = generateCodeFacture();
         try {
             // Creation de la facture
             $invoice = Invoice::create([
@@ -72,6 +77,7 @@ class InvoiceController extends Controller
                 "subtotal" => $testOrder->subtotal,
                 "discount" => $testOrder->discount,
                 "total" => $testOrder->total,
+                "code" => $code_facture
             ]);
 
             if (!empty($invoice)) {
@@ -108,6 +114,7 @@ class InvoiceController extends Controller
             return back()->with('error', "Cette facture n'existe pas. Verifiez et réessayez svp ! ");
         }
 
+        config(['app.name' => $setting->titre]);
         return view('invoices.show', compact('invoice', 'setting'));
     }
 
@@ -119,7 +126,7 @@ class InvoiceController extends Controller
         if (empty($invoice)) {
             return back()->with('error', "Cette facture n'existe pas. Verifiez et réessayez svp ! ");
         }
-
+        config(['app.name' => $setting->titre]);
         return view('invoices.print', compact('invoice', 'setting'));
     }
 

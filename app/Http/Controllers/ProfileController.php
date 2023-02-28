@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use Hash;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,6 +12,8 @@ class ProfileController extends Controller
 {
     public function index()
     {
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('profile.index');
     }
 

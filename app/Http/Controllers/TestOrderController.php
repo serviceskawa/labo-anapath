@@ -41,6 +41,8 @@ class TestOrderController extends Controller
         //$tests = Test::all();
         $hopitals = Hospital::all();
         $types_orders = TypeOrder::all();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         // dd($examens);
         return view('examens.index', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
     }
@@ -60,6 +62,8 @@ class TestOrderController extends Controller
         //$tests = Test::all();
         $hopitals = Hospital::all();
         $types_orders = TypeOrder::all();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         // dd($examens);
         return view('examens.index2', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
     }
@@ -136,6 +140,8 @@ class TestOrderController extends Controller
         $hopitals = Hospital::all();
         $contrats = Contrat::ofStatus('ACTIF')->get();
         $types_orders = TypeOrder::all();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('examens.create', compact(['patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
     }
 
@@ -254,6 +260,8 @@ class TestOrderController extends Controller
         $hopitals = Hospital::all();
         $contrats = Contrat::ofStatus('ACTIF')->get();
         $types_orders = TypeOrder::all();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('examens.edit', compact(['test_order', 'patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
     }
 
@@ -285,6 +293,8 @@ class TestOrderController extends Controller
         $doctors = Doctor::all();
         $hopitals = Hospital::all();
         $contrats = Contrat::ofStatus('ACTIF')->get();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('examens.details.index', compact(['test_order', 'details', 'tests', 'types_orders', 'patients', 'doctors', 'hopitals', 'contrats',]));
     }
 
@@ -392,6 +402,7 @@ class TestOrderController extends Controller
                 "description" => $settings ? $settings->placeholder : '',
                 "test_order_id" => $test_order->id,
             ]);
+            $code_facture = generateCodeFacture();
 
             // Creation de la facture
             $invoice = Invoice::create([
@@ -403,7 +414,7 @@ class TestOrderController extends Controller
                 "subtotal" => $test_order->subtotal,
                 "discount" => $test_order->discount,
                 "total" => $test_order->total,
-                "code" => "FA". $test_order->code
+                "code" => $code_facture
             ]);
             // Recupération des details de la demande d'examen
             $tests = $test_order->details()->get();
@@ -639,6 +650,8 @@ class TestOrderController extends Controller
             // })
             ->addColumn('dropdown', function ($data) {
                 $order = $data;
+                $setting = Setting::find(1);
+                config(['app.name' => $setting->titre]);
                 return view('examens.datatables.attribuate', compact('order'));
             })
             ->filter(function ($query) use ($request) {

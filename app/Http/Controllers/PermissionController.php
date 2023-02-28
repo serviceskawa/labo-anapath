@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Operation;
 use App\Models\Ressource;
 use App\Models\Permission;
+use App\Models\Setting;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -23,6 +24,8 @@ class PermissionController extends Controller
         $permissions = Permission::all();
             $ressources = Ressource::all();
             $operations = Operation::all();
+            $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
             return view('users.permissions.create', compact('permissions', 'ressources', 'operations'));
 
     }

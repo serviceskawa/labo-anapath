@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CategoryPrestation;
 use App\Models\Prestation;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class PrestationController extends Controller
@@ -21,7 +22,8 @@ class PrestationController extends Controller
         $prestations = Prestation::all();
 
         $categories = CategoryPrestation::all();
-
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('prestation.index', compact(['prestations', 'categories']));
     }
 

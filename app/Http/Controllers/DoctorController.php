@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Doctor;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class DoctorController extends Controller
@@ -24,6 +25,8 @@ class DoctorController extends Controller
         }
         $doctors = Doctor::orderBy('name','asc')->get();
 
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('doctors.index',compact(['doctors']));
 
     }

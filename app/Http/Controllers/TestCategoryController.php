@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CategoryTest;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -18,6 +19,8 @@ class TestCategoryController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $testcategories = CategoryTest::with(['tests'])->orderBy('created_at', 'DESC')->get();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         // dd($testcategories);
         return view('tests.category.index',compact(['testcategories']));
     }

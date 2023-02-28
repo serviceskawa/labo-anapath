@@ -6,6 +6,7 @@ use App\Models\Test;
 use App\Models\Contrat;
 use App\Models\CategoryTest;
 use App\Models\Details_Contrat;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class TestController extends Controller
@@ -23,6 +24,9 @@ class TestController extends Controller
         $tests = Test::orderBy('created_at','DESC')->get();
    
         $categories = CategoryTest::orderBy('created_at','DESC')->get();
+
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
 
         return view('tests.index',compact(['tests','categories']));
 

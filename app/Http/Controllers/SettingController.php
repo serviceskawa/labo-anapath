@@ -18,6 +18,7 @@ class SettingController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         // dd($setting);
         return view('settings.report.index' , compact('setting'));
     }
@@ -27,9 +28,7 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('create-parametres-compte-rendu')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        if (!getOnlineUser()->can('edit-parametres-compte-rendu') ) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+
         $setting = Setting::find(1);
 
         if ($request->file('img1') ) {
@@ -114,6 +113,7 @@ class SettingController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         // dd($setting);
         return view('settings.app.index' , compact('setting'));
     }

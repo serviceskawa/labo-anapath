@@ -6,6 +6,7 @@ use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\Appointment;
 use App\Models\Consultation;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class AppointementController extends Controller
@@ -19,6 +20,8 @@ class AppointementController extends Controller
     {
         $patients = Patient::all();
         $doctors = getUsersByRole("docteur");
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('appointement.index', compact('patients', 'doctors'));
     }
 
@@ -89,6 +92,9 @@ class AppointementController extends Controller
         if (empty($appointement)) {
             return back()->with('error', "Une Erreur est survenue. Ce rendez-vous n'hesite pas");
         }
+
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
 
         return view('appointement.show', compact('appointement', 'patients', 'doctors'));
     }

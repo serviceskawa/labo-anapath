@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hospital;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class HospitalController extends Controller
@@ -18,6 +19,8 @@ class HospitalController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $hopitals = Hospital::orderBy('created_at','DESC')->get();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('hopitals.index',compact(['hopitals']));
 
     }

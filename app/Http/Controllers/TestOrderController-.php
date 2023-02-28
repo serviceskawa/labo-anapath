@@ -36,6 +36,8 @@ class TestOrderController extends Controller
         //$tests = Test::all();
         $hopitals = Hospital::all();
         $types_orders = TypeOrder::all();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         // dd($examens);
         return view('examens.index', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
     }
@@ -118,6 +120,8 @@ class TestOrderController extends Controller
         $hopitals = Hospital::all();
         $contrats = Contrat::ofStatus('ACTIF')->get();
         $types_orders = TypeOrder::all();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('examens.create', compact(['patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
     }
 
@@ -242,6 +246,8 @@ class TestOrderController extends Controller
 
         $details = DetailTestOrder::where('test_order_id', $test_order->id)->get();
 
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('examens.details.index', compact(['test_order', 'details', 'tests']));
     }
 

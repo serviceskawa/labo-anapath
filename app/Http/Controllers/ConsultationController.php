@@ -12,12 +12,15 @@ use App\Models\TypeConsultation;
 use App\Models\CategoryPrestation;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ConsultationTypeConsultationFiles;
+use App\Models\Setting;
 
 class ConsultationController extends Controller
 {
 
     public function index()
     {
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('consultation.index');
     }
 
@@ -83,6 +86,8 @@ class ConsultationController extends Controller
 
         $user = Auth::user();
 
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('consultation.create', compact('patients', 'doctors', 'types', 'prestations', 'user'));
     }
 
@@ -101,6 +106,8 @@ class ConsultationController extends Controller
             return back()->with('error', "Une Erreur est survenue. Cette consultation n'existe pas");
         }
 
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('consultation.show', compact('patients', 'doctors', 'types', 'consultation', 'prestations'));
     }
 
@@ -123,6 +130,8 @@ class ConsultationController extends Controller
             return back()->with('error', "Une Erreur est survenue. Cette consultation n'existe pas");
         }
 
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('consultation.edit_from_receptionnist', compact('patients', 'doctors', 'types', 'consultation', 'prestations'));
     }
 

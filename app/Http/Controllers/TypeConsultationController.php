@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\TypeConsultation;
@@ -14,6 +15,8 @@ class TypeConsultationController extends Controller
         $types = TypeConsultation::all();
 
         $files = TypeConsultationFile::all();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('type_consultation.index', compact('types', 'files'));
     }
 
@@ -57,6 +60,8 @@ class TypeConsultationController extends Controller
             return back()->with('error', "Une Erreur est survenue. Cette consultation n'existe pas");
         }
         $files = TypeConsultationFile::all();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('type_consultation.create', compact('type', 'files'));
     }
 

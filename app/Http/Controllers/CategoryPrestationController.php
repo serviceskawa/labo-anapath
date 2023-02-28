@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\CategoryPrestation;
+use App\Models\Setting;
 
 class CategoryPrestationController extends Controller
 {
@@ -21,6 +22,8 @@ class CategoryPrestationController extends Controller
         $categories = CategoryPrestation::all();
         // $categories = CategoryPrestation::with(['prestations'])->get();
         // dd($categories);
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('prestation.category.index', compact(['categories']));
     }
 

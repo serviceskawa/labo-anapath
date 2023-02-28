@@ -52,7 +52,7 @@
                         <!-- Invoice Logo-->
                         <div class="clearfix">
                             <div class="float-start mb-3">
-                                <img src="{{ $setting ? Storage::url($setting->logo_blanc) : '' }}" alt="" height="18">
+                                <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt="" height="100">
                             </div>
                             <div class="float-end">
                                 <h4 class="m-0 d-print-none">Reçu de paiement</h4>

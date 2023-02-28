@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +31,8 @@ class UserController extends Controller
 
         $user = Auth::user();
         // dd($user->hasRole('test-contrats'), $user->can('delete.hopitaux'));
-        
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('users.index', compact('users','roles'));
     }
 
@@ -46,6 +48,8 @@ class UserController extends Controller
         }
         $users = User::latest()->get();
         $roles = Role::all();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('users.create', compact('users','roles'));
     }
 
@@ -121,6 +125,8 @@ class UserController extends Controller
         $user = User::findorfail($id);
         $roles = Role::all();
 
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
         return view('users.edit', compact('user', 'roles'));
     }
 
@@ -189,6 +195,10 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if (!getOnlineUser()->can('delete-demandes-examens')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        User::find($id)->delete();
+        return redirect()->route('user.role-index')->with('success', "    Un utilisateur a été supprimé ! ");
     }
 }
