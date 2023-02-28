@@ -7,7 +7,7 @@
     <div class="col-12">
         <div class="page-title-box">
 
-            <h4 class="page-title">Facture de {{$invoice->order->code}}</h4>
+            <h4 class="page-title">Reçu de paiement de {{$invoice->order->code}}</h4>
         </div>
     </div>
 </div>
@@ -23,7 +23,7 @@
                     <div class="float-start mb-3">
                         <img src="{{ $setting ? Storage::url($setting->logo_blanc) : '' }}" alt="" height="18">
                     </div>
-                    <div class="float-end">
+                    <div class="float-start">
                         <h4 class="m-0 d-print-none">Reçu de paiement</h4>
                     </div>
                 </div>

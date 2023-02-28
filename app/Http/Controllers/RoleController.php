@@ -204,7 +204,7 @@ class RoleController extends Controller
         if (!getOnlineUser()->can('delete-demandes-examens')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $role = Role::find($id)->delete();
+        Role::find($id)->delete();
         return redirect()->route('user.role-index')->with('success', "    Un élement a été supprimé ! ");
     }
 }
