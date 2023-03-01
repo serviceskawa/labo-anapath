@@ -51,7 +51,7 @@
                                 <div class="col-md-12">
                                     <div class="mb-3">
                                         <label for="example-fileinput" class="form-label">Signature</label>
-                                        <input type="file" class="dropify" name="signature" data-default-file="{{ $user->signature ? Storage::url('app/public/'.$user->signature) : '' }}"
+                                        <input type="file" class="dropify" name="signature" data-default-file="{{ Auth::user()->signature ? Storage::url('app/public/'.Auth::user()->signature) : '' }}"
                                             data-max-file-size="3M" />
                                     </div>
                                 </div>
