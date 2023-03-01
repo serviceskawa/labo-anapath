@@ -183,7 +183,7 @@ class InvoiceController extends Controller
     // Met à jour le statut paid pour le payement
     public function updateStatus($id)
     {
-        // if (!getOnlineUser()->can('edit-demandes-examens')) {
+        // if (!getOnlineUser()->can('edit-test-orders')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
         $invoice = Invoice::findorfail($id);

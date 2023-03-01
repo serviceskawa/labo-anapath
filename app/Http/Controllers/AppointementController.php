@@ -158,7 +158,7 @@ class AppointementController extends Controller
      */
     public function destroy($id)
     {
-        // if (!getOnlineUser()->can('delete-hopitaux')) {
+        // if (!getOnlineUser()->can('delete-hospitals')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
         Appointment::whereId($id)->delete();

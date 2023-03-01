@@ -30,7 +30,7 @@ class UserController extends Controller
         $roles = Role::all();
 
         $user = Auth::user();
-        // dd($user->hasRole('test-contrats'), $user->can('delete.hopitaux'));
+        // dd($user->hasRole('test-contrats'), $user->can('delete.hospitals'));
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
         return view('users.index', compact('users','roles'));
@@ -195,7 +195,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        if (!getOnlineUser()->can('delete-demandes-examens')) {
+        if (!getOnlineUser()->can('delete-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         User::find($id)->delete();

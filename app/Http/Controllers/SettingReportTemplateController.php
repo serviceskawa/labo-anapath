@@ -15,7 +15,7 @@ class SettingReportTemplateController extends Controller
 
     public function index()
     {
-        if (!getOnlineUser()->can('view-template-compte-rendu')) {
+        if (!getOnlineUser()->can('view-setting-report-templates')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $templates = SettingReportTemplate::orderBy('created_at', 'DESC')->get();
@@ -26,7 +26,7 @@ class SettingReportTemplateController extends Controller
 
     public function create()
     {
-        if (!getOnlineUser()->can('create-template-compte-rendu')) {
+        if (!getOnlineUser()->can('create-setting-report-templates')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $template = "";
@@ -37,7 +37,7 @@ class SettingReportTemplateController extends Controller
 
     public function store(Request $request)
     {
-        if (!getOnlineUser()->can('create-template-compte-rendu')) {
+        if (!getOnlineUser()->can('create-setting-report-templates')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         // dd($request);
@@ -62,7 +62,7 @@ class SettingReportTemplateController extends Controller
 
     public function edit($id)
     {
-        if (!getOnlineUser()->can('edit-template-compte-rendu')) {
+        if (!getOnlineUser()->can('edit-setting-report-templates')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $template = SettingReportTemplate::findorfail($id);
@@ -71,7 +71,7 @@ class SettingReportTemplateController extends Controller
 
     public function delete($id)
     {
-        if (!getOnlineUser()->can('delete-template-compte-rendu')) {
+        if (!getOnlineUser()->can('delete-setting-report-templates')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $template = SettingReportTemplate::find($id)->delete();

@@ -155,9 +155,9 @@
                             <input type="date" class="form-control" name="prelevement_date" id="prelevement_date"
                                 data-date-format="dd/mm/yyyy" value="{{ $test_order->prelevement_date }}" required>
 
-                            <label class="form-label mt-3">Docteur signataire</label>
+                            <label class="form-label mt-3">Affecter à</label>
                             <select name="attribuate_doctor_id" id="" class="form-control">
-                                <option value="">Choississez un docteur signataire</option>
+                                <option value="">Selectionnez un docteur signataire</option>
                                 @foreach (getUsersByRole('docteur') as $item)
                                     <option value="{{ $item->id }}"
                                         {{ $test_order->attribuate_doctor_id == $item->id ? 'selected' : '' }}>
@@ -431,6 +431,7 @@
                 ],
                 columnDefs: [{
                     "targets": -1,
+                    //"targets": [0],
                     "render": function(data, type, row) {
                         if (row["status"] != 1) {
                             return (
@@ -487,8 +488,9 @@
                     var numRows = api.rows().count();
                     if (numRows > 0) {
                         var element = document.getElementById('finalisationBtn');
-
-                        element.classList.remove("disabled");
+                       if(element){
+                            element.classList.remove("disabled");
+                       }
                     }
                 },
 

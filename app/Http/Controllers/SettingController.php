@@ -14,7 +14,7 @@ class SettingController extends Controller
     
     public function report_index()
     {
-        if (!getOnlineUser()->can('view-parametres-compte-rendu')) {
+        if (!getOnlineUser()->can('view-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $setting = Setting::find(1);
@@ -25,7 +25,7 @@ class SettingController extends Controller
 
     public function report_store(Request $request)
     {
-        if (!getOnlineUser()->can('create-parametres-compte-rendu')) {
+        if (!getOnlineUser()->can('create-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
@@ -85,10 +85,10 @@ class SettingController extends Controller
 
     public function report_store_placeholder(Request $request)
     {
-        if (!getOnlineUser()->can('create-parametres-compte-rendu') ) {
+        if (!getOnlineUser()->can('create-settings') ) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        if (!getOnlineUser()->can('edit-parametres-compte-rendu') ) {
+        if (!getOnlineUser()->can('edit-settings') ) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $setting = Setting::find(1);
@@ -109,7 +109,7 @@ class SettingController extends Controller
 
     public function app()
     {
-        if (!getOnlineUser()->can('view-parametres-systeme')) {
+        if (!getOnlineUser()->can('view-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $setting = Setting::find(1);
@@ -120,7 +120,7 @@ class SettingController extends Controller
 
     public function app_store(Request $request)
     {
-        if (!getOnlineUser()->can('create-parametres-systeme')) {
+        if (!getOnlineUser()->can('create-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         // dd($request);

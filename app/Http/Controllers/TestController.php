@@ -18,7 +18,7 @@ class TestController extends Controller
      */
     public function index()
     {
-        if (!getOnlineUser()->can('view-examens')) {
+        if (!getOnlineUser()->can('view-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $tests = Test::orderBy('created_at','DESC')->get();
@@ -50,7 +50,7 @@ class TestController extends Controller
      */
     public function store(Request $request)
     {
-        if (!getOnlineUser()->can('create-examens')) {
+        if (!getOnlineUser()->can('create-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data = $this->validate($request, [
@@ -87,7 +87,7 @@ class TestController extends Controller
      */
     public function edit($id)
     {
-        if (!getOnlineUser()->can('edit-examens')) {
+        if (!getOnlineUser()->can('edit-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data = Test::find($id);
@@ -103,7 +103,7 @@ class TestController extends Controller
      */
     public function update(Request $request)
     {
-        if (!getOnlineUser()->can('edit-examens')) {
+        if (!getOnlineUser()->can('edit-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data=$this->validate($request, [
@@ -134,7 +134,7 @@ class TestController extends Controller
      */
     public function destroy($id)
     {
-        if (!getOnlineUser()->can('delete-examens')) {
+        if (!getOnlineUser()->can('delete-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test = Test::find($id)->delete();

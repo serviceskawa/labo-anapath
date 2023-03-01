@@ -24,7 +24,7 @@ class PrestationsOrderrController extends Controller
      */
     public function index()
     {
-        // if (!getOnlineUser()->can('view-demandes-examens')) {
+        // if (!getOnlineUser()->can('view-test-orders')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
 
@@ -158,7 +158,7 @@ class PrestationsOrderrController extends Controller
 
     public function getPrestationOrder(Request $request)
     {
-        // if (!getOnlineUser()->can('view-demandes-examens')) {
+        // if (!getOnlineUser()->can('view-test-orders')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
         //dd($request->prestationId);
@@ -169,7 +169,7 @@ class PrestationsOrderrController extends Controller
 
     public function getDetailsPrestation(Request $request)
     {
-        if (!getOnlineUser()->can('view-demandes-examens')) {
+        if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         // dd($request);

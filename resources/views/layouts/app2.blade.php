@@ -65,7 +65,7 @@
 
                     <!--- Examen -->
 
-                    @if (getOnlineUser()->can('view-examens'))
+                    @if (getOnlineUser()->can('view-tests'))
                         <li class="side-nav-item">
                             <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false"
                                 aria-controls="sidebarEcommerce" class="side-nav-link">
@@ -76,13 +76,13 @@
 
                             <div class="collapse" id="sidebarEcommerce">
                                 <ul class="side-nav-second-level">
-                                    @if (getOnlineUser()->can('view-examens'))
+                                    @if (getOnlineUser()->can('view-tests'))
                                         <li>
                                             <a href="{{ route('examens.index') }}">Tous les examens</a>
                                         </li>
                                     @endif
 
-                                    @if (getOnlineUser()->can('view-examens-categories'))
+                                    @if (getOnlineUser()->can('view-category-tests'))
                                         <li>
                                             <a href="{{ route('examens.categories.index') }}">Catégories</a>
                                         </li>
@@ -102,16 +102,16 @@
                         </li>
                     @endif
 
-                    @if (getOnlineUser()->can('view-hopitaux'))
+                    @if (getOnlineUser()->can('view-hospitals'))
                         <li class="side-nav-item">
                             <a href="{{ route('hopitals.index') }}" class="side-nav-link">
                                 <i class="uil-building"></i>
-                                <span> Hopitaux </span>
+                                <span> Hopitaux</span>
                             </a>
                         </li>
                     @endif
 
-                    @if (getOnlineUser()->can('view-medecins-traitants'))
+                    @if (getOnlineUser()->can('view-doctors'))
                         <li class="side-nav-item">
                             <a href="{{ route('doctors.index') }}" class="side-nav-link">
                                 <i class="uil-users-alt"></i>
@@ -129,7 +129,7 @@
                         </li>
                     @endif
 
-                    @if (getOnlineUser()->can('view-demandes-examens'))
+                    @if (getOnlineUser()->can('view-test-orders'))
                         <li class="side-nav-item">
                             <a data-bs-toggle="collapse" href="#sidebarEcommerce1" aria-expanded="false"
                                 aria-controls="sidebarEcommerce1" class="side-nav-link">
@@ -142,7 +142,7 @@
                                     <li>
                                         <a href="{{ route('test_order.index') }}">Toutes les demandes </a>
                                     </li>
-                                    @if (getOnlineUser()->can('create-demandes-examens'))
+                                    @if (getOnlineUser()->can('create-test-orders'))
                                         <li>
                                             <a href="{{ route('test_order.create') }}">Ajouter</a>
                                         </li>
@@ -153,40 +153,26 @@
                         </li>
                     @endif
 
-                    @if (getOnlineUser()->can('view-demandes-examens'))
+                    {{-- @if (getOnlineUser()->can('view-test-orders'))
                         <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" href="#sidebarEcommerce2" aria-expanded="false"
-                                aria-controls="sidebarEcommerce2" class="side-nav-link">
+                            <a href="{{ route('prestations_order.index') }}" class="side-nav-link">
                                 <i class="uil-syringe"></i>
                                 <span> Demande prestations</span>
-                                <span class="menu-arrow"></span>
                             </a>
-                            <div class="collapse" id="sidebarEcommerce2">
-                                <ul class="side-nav-second-level">
-                                    <li>
-                                        <a href="{{ route('prestations_order.index') }}">Toutes les demandes </a>
-                                    </li>
-                                    @if (getOnlineUser()->can('create-demandes-examens'))
-                                        <li>
-                                            <a href="{{ route('prestations_order.create') }}">Ajouter</a>
-                                        </li>
-                                    @endif
-
-                                </ul>
-                            </div>
                         </li>
-                    @endif
+                    @endif --}}
 
-                    @if (getOnlineUser()->can('view-compte-rendu'))
+                    @if (getOnlineUser()->can('view-reports'))
                         <li class="side-nav-item">
                             <a href="{{ route('report.index') }}" class="side-nav-link">
                                 <i class="uil-file-medical"></i>
                                 <span> Comptes rendu</span>
                             </a>
-                            @if (Route::current()->getName() == 'report.show')
-                                <a style="display: none" href="">show  </a>
+                            @if (Route::current()->getName() == 'report.show' )
+                                <a style="display:none" href="">show</a>
                             @endif
                         </li>
+                        
                     @endif
 
                     <li class="side-nav-item">
@@ -215,7 +201,7 @@
                         </a>
                     </li>
 
-                    <li class="side-nav-item">
+                    {{-- <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarConsultation" aria-expanded="false"
                             aria-controls="sidebarAppoint" class="side-nav-link">
                             <i class="uil-calender"></i>
@@ -236,9 +222,9 @@
 
                             </ul>
                         </div>
-                    </li>
+                    </li> --}}
 
-                    <li class="side-nav-item">
+                    {{-- <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarcategoryPrestation" aria-expanded="false"
                             aria-controls="sidebarAppoint" class="side-nav-link">
                             <i class="uil-calender"></i>
@@ -257,9 +243,9 @@
 
                             </ul>
                         </div>
-                    </li>
+                    </li> --}}
 
-                    @if (getOnlineUser()->can('view-template-compte-rendu'))
+                    @if (getOnlineUser()->can('view-report-templates'))
                         <li class="side-nav-item">
                             <a href="{{ route('template.report-index') }}" class="side-nav-link">
                                 <i class="uil-document-layout-right"></i>
@@ -268,7 +254,7 @@
                         </li>
                     @endif
 
-                    @if (getOnlineUser()->can('view-parametres-systeme') || getOnlineUser()->can('view-template-compte-rendu'))
+                    @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
                         <li class="side-nav-item">
                             <a data-bs-toggle="collapse" href="#sidebarForms" aria-expanded="false"
                                 aria-controls="sidebarForms" class="side-nav-link">
@@ -278,12 +264,12 @@
                             </a>
                             <div class="collapse" id="sidebarForms">
                                 <ul class="side-nav-second-level">
-                                    @if (getOnlineUser()->can('view-parametres-systeme'))
+                                    @if (getOnlineUser()->can('view-settings'))
                                         <li>
                                             <a href="{{ route('settings.app-index') }}">Paramètres Systeme</a>
                                         </li>
                                     @endif
-                                    @if (getOnlineUser()->can('view-template-compte-rendu'))
+                                    @if (getOnlineUser()->can('view-setting-report-templates'))
                                         <li>
                                             <a href="{{ route('settings.report-index') }}">Paramètres compte rendu</a>
                                         </li>
@@ -319,8 +305,8 @@
                                             <a href="{{ route('user.index') }} ">Tous les utilisateurs </a>
                                         </li>
                                         @if (Route::current()->getName() == 'user.edit')
-                                            <li style="display: none">
-                                                <a href="">show  </a>
+                                            <li style="display:none">
+                                                <a href="">show</a>
                                             </li>
                                         @endif
                                     @endif

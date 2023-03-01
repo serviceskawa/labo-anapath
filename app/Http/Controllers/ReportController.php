@@ -34,7 +34,7 @@ class ReportController extends Controller
      */
     public function index()
     {
-        if (!getOnlineUser()->can('view-compte-rendu')) {
+        if (!getOnlineUser()->can('view-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $reports = Report::orderBy('created_at', 'DESC')->get();
@@ -51,7 +51,7 @@ class ReportController extends Controller
      */
     public function store(Request $request)
     {
-        if (!getOnlineUser()->can('create-compte-rendu')) {
+        if (!getOnlineUser()->can('create-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $doctor_signataire1 = $request->doctor_signataire1;
@@ -87,7 +87,7 @@ class ReportController extends Controller
      */
     public function show($id)
     {
-        if (!getOnlineUser()->can('view-compte-rendu')) {
+        if (!getOnlineUser()->can('view-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $report = Report::findorfail($id);
@@ -99,7 +99,7 @@ class ReportController extends Controller
 
     public function send_sms($id)
     {
-        if (!getOnlineUser()->can('edit-compte-rendu')) {
+        if (!getOnlineUser()->can('edit-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $report = Report::findorfail($id);
@@ -121,7 +121,7 @@ class ReportController extends Controller
 
     public function pdf($id)
     {
-        if (!getOnlineUser()->can('edit-compte-rendu')) {
+        if (!getOnlineUser()->can('edit-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         //dd($report);
@@ -206,7 +206,7 @@ class ReportController extends Controller
     // Met à jour le statut livré
     public function updateDeliverStatus($reportId)
     {
-        if (!getOnlineUser()->can('edit-compte-rendu')) {
+        if (!getOnlineUser()->can('edit-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $report = Report::findorfail($reportId);

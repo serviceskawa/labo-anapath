@@ -1,5 +1,7 @@
 @extends('layouts.app2')
 
+@section('title', 'Roles create')
+
 @section('content')
     <div class="">
 

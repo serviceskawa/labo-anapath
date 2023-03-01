@@ -15,7 +15,7 @@ class HospitalController extends Controller
      */
     public function index()
     {
-        if (!getOnlineUser()->can('view-hopitaux')) {
+        if (!getOnlineUser()->can('view-hospitals')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $hopitals = Hospital::orderBy('created_at','DESC')->get();
@@ -43,7 +43,7 @@ class HospitalController extends Controller
      */
     public function store(Request $request)
     {
-        if (!getOnlineUser()->can('create-hopitaux')) {
+        if (!getOnlineUser()->can('create-hospitals')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data=$this->validate($request, [
@@ -67,7 +67,7 @@ class HospitalController extends Controller
 
     public function storeHospital(Request $request)
     {
-        if (!getOnlineUser()->can('create-hopitaux')) {
+        if (!getOnlineUser()->can('create-hospitals')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data = $this->validate($request, [
@@ -112,7 +112,7 @@ class HospitalController extends Controller
      */
     public function edit($id)
     {
-        if (!getOnlineUser()->can('edit-hopitaux')) {
+        if (!getOnlineUser()->can('edit-hospitals')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data = Hospital::find($id);
@@ -128,7 +128,7 @@ class HospitalController extends Controller
      */
     public function update(Request $request)
     {
-        if (!getOnlineUser()->can('edit-hopitaux')) {
+        if (!getOnlineUser()->can('edit-hospitals')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data=$this->validate($request, [
@@ -165,7 +165,7 @@ class HospitalController extends Controller
      */
     public function destroy($id)
     {
-        if (!getOnlineUser()->can('delete-hopitaux')) {
+        if (!getOnlineUser()->can('delete-hospitals')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         Hospital::find($id)->delete();

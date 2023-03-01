@@ -114,7 +114,7 @@ class ConsultationController extends Controller
     // Affiche la vue docteur pour edition
     public function edit($id)
     {
-        if (!getOnlineUser()->hasRole('docteur')) {
+        if (!getOnlineUser()->hasRole('doctors')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 

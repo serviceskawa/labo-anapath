@@ -16,7 +16,7 @@ class CategoryPrestationController extends Controller
 
     public function index()
     {
-        // if (!getOnlineUser()->can('view-examens-categories')) {
+        // if (!getOnlineUser()->can('view-category-tests')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
         $categories = CategoryPrestation::all();
@@ -29,7 +29,7 @@ class CategoryPrestationController extends Controller
 
     public function store(Request $request)
     {
-        if (!getOnlineUser()->can('create-examens-categories')) {
+        if (!getOnlineUser()->can('create-category-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data = $this->validate($request, [
@@ -50,7 +50,7 @@ class CategoryPrestationController extends Controller
 
     public function update(Request $request)
     {
-        if (!getOnlineUser()->can('edit-examens-categories')) {
+        if (!getOnlineUser()->can('edit-category-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data = $this->validate($request, [
@@ -72,7 +72,7 @@ class CategoryPrestationController extends Controller
 
     public function destroy($id)
     {
-        if (!getOnlineUser()->can('delete-examens-categories')) {
+        if (!getOnlineUser()->can('delete-category-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $CategoryPrestation = CategoryPrestation::find($id)->delete();
@@ -87,7 +87,7 @@ class CategoryPrestationController extends Controller
 
     public function edit($id)
     {
-        if (!getOnlineUser()->can('edit-examens-categories')) {
+        if (!getOnlineUser()->can('edit-category-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data = CategoryPrestation::find($id);

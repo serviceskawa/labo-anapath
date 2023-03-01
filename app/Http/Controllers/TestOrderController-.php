@@ -25,7 +25,7 @@ class TestOrderController extends Controller
 
     public function index()
     {
-        if (!getOnlineUser()->can('view-demandes-examens')) {
+        if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
@@ -45,7 +45,7 @@ class TestOrderController extends Controller
     // Fonction de recherche
     public function getTestOrders(Request $request)
     {
-        if (!getOnlineUser()->can('view-demandes-examens')) {
+        if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
@@ -112,7 +112,7 @@ class TestOrderController extends Controller
     public function create()
     {
 
-        if (!getOnlineUser()->can('create-demandes-examens')) {
+        if (!getOnlineUser()->can('create-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $patients = Patient::all();
@@ -128,7 +128,7 @@ class TestOrderController extends Controller
     public function store(request $request)
     {
 
-        if (!getOnlineUser()->can('create-demandes-examens')) {
+        if (!getOnlineUser()->can('create-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
@@ -218,7 +218,7 @@ class TestOrderController extends Controller
 
     public function show($id)
     {
-        if (!getOnlineUser()->can('view-demandes-examens')) {
+        if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::findorfail($id);
@@ -227,7 +227,7 @@ class TestOrderController extends Controller
     }
     public function destroy($id)
     {
-        if (!getOnlineUser()->can('delete-demandes-examens')) {
+        if (!getOnlineUser()->can('delete-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::find($id)->delete();
@@ -237,7 +237,7 @@ class TestOrderController extends Controller
     public function details_index($id)
     {
 
-        if (!getOnlineUser()->can('view-demandes-examens')) {
+        if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::find($id);
@@ -253,7 +253,7 @@ class TestOrderController extends Controller
 
     public function details_store(Request $request)
     {
-        if (!getOnlineUser()->can('create-demandes-examens')) {
+        if (!getOnlineUser()->can('create-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data = $this->validate($request, [
@@ -295,7 +295,7 @@ class TestOrderController extends Controller
 
     public function getDetailsTest($id)
     {
-        if (!getOnlineUser()->can('view-demandes-examens')) {
+        if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::find($id);
@@ -306,7 +306,7 @@ class TestOrderController extends Controller
 
     public function updateTestTotal(Request $request)
     {
-        if (!getOnlineUser()->can('edit-demandes-examens')) {
+        if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::findorfail($request->test_order_id);
@@ -322,7 +322,7 @@ class TestOrderController extends Controller
 
     public function details_destroy(Request $request)
     {
-        if (!getOnlineUser()->can('delete-demandes-examens')) {
+        if (!getOnlineUser()->can('delete-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $detail = DetailTestOrder::findorfail($request->id);
@@ -334,7 +334,7 @@ class TestOrderController extends Controller
 
     public function updateStatus($id)
     {
-        if (!getOnlineUser()->can('edit-demandes-examens')) {
+        if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::findorfail($id);

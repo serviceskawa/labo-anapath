@@ -53,7 +53,7 @@
                                     <td> <a type="button" href="{{ route('user.role-show', $item->slug) }}"
                                             class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
                                             <a type="button" href="{{ route('user.role-delete', $item->id) }}"
-                                                class="btn btn-primary"> <i class="mdi mdi-trash-can-outline"></i></a>
+                                                class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i></a>
                                     </td>
 
                                 </tr>

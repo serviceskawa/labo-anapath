@@ -16,7 +16,7 @@ class PrestationController extends Controller
      */
     public function index()
     {
-        if (!getOnlineUser()->can('view-examens')) {
+        if (!getOnlineUser()->can('view-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $prestations = Prestation::all();
@@ -35,7 +35,7 @@ class PrestationController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!getOnlineUser()->can('create-examens')) {
+        // if (!getOnlineUser()->can('create-tests')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
 
@@ -73,7 +73,7 @@ class PrestationController extends Controller
      */
     public function edit($id)
     {
-        if (!getOnlineUser()->can('edit-examens')) {
+        if (!getOnlineUser()->can('edit-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data = Prestation::find($id);
@@ -89,7 +89,7 @@ class PrestationController extends Controller
      */
     public function update(Request $request)
     {
-        // if (!getOnlineUser()->can('edit-examens')) {
+        // if (!getOnlineUser()->can('edit-tests')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
         $data = $this->validate($request, [
@@ -119,7 +119,7 @@ class PrestationController extends Controller
      */
     public function destroy($id)
     {
-        // if (!getOnlineUser()->can('delete-examens')) {
+        // if (!getOnlineUser()->can('delete-tests')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
         $prestation = Prestation::find($id)->delete();
@@ -132,7 +132,7 @@ class PrestationController extends Controller
     }
     public function show_by_id($id)
     {
-        // if (!getOnlineUser()->can('delete-examens')) {
+        // if (!getOnlineUser()->can('delete-tests')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
         $data = Prestation::find($id);

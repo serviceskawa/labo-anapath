@@ -30,7 +30,7 @@ class TestOrderController extends Controller
 
     public function index()
     {
-        if (!getOnlineUser()->can('view-demandes-examens')) {
+        if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
@@ -51,7 +51,7 @@ class TestOrderController extends Controller
     public function index2()
     {
 
-        if (!getOnlineUser()->can('view-demandes-examens')) {
+        if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
@@ -71,7 +71,7 @@ class TestOrderController extends Controller
     // Fonction de recherche
     public function getTestOrders(Request $request)
     {
-        if (!getOnlineUser()->can('view-demandes-examens')) {
+        if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
@@ -132,7 +132,7 @@ class TestOrderController extends Controller
     public function create()
     {
 
-        if (!getOnlineUser()->can('create-demandes-examens')) {
+        if (!getOnlineUser()->can('create-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $patients = Patient::all();
@@ -148,7 +148,7 @@ class TestOrderController extends Controller
     public function store(request $request)
     {
 
-        if (!getOnlineUser()->can('create-demandes-examens')) {
+        if (!getOnlineUser()->can('create-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
@@ -236,7 +236,7 @@ class TestOrderController extends Controller
 
     public function show($id)
     {
-        if (!getOnlineUser()->can('view-demandes-examens')) {
+        if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::findorfail($id);
@@ -246,7 +246,7 @@ class TestOrderController extends Controller
     public function edit($id)
     {
 
-        if (!getOnlineUser()->can('edit-demandes-examens')) {
+        if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::findOrFail($id);
@@ -267,7 +267,7 @@ class TestOrderController extends Controller
 
     public function destroy($id)
     {
-        if (!getOnlineUser()->can('delete-demandes-examens')) {
+        if (!getOnlineUser()->can('delete-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::find($id)->delete();
@@ -277,7 +277,7 @@ class TestOrderController extends Controller
     public function details_index($id)
     {
 
-        if (!getOnlineUser()->can('view-demandes-examens')) {
+        if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::find($id);
@@ -300,7 +300,7 @@ class TestOrderController extends Controller
 
     public function details_store(Request $request)
     {
-        if (!getOnlineUser()->can('create-demandes-examens')) {
+        if (!getOnlineUser()->can('create-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data = $this->validate($request, [
@@ -341,7 +341,7 @@ class TestOrderController extends Controller
 
     public function getDetailsTest($id)
     {
-        if (!getOnlineUser()->can('view-demandes-examens')) {
+        if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::find($id);
@@ -352,7 +352,7 @@ class TestOrderController extends Controller
 
     public function updateTestTotal(Request $request)
     {
-        if (!getOnlineUser()->can('edit-demandes-examens')) {
+        if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::findorfail($request->test_order_id);
@@ -368,7 +368,7 @@ class TestOrderController extends Controller
 
     public function details_destroy(Request $request)
     {
-        if (!getOnlineUser()->can('delete-demandes-examens')) {
+        if (!getOnlineUser()->can('delete-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $detail = DetailTestOrder::findorfail($request->id);
@@ -380,7 +380,7 @@ class TestOrderController extends Controller
 
     public function updateStatus($id)
     {
-        if (!getOnlineUser()->can('edit-demandes-examens')) {
+        if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::findorfail($id);
@@ -440,7 +440,7 @@ class TestOrderController extends Controller
     public function update(request $request, $id)
     {
 
-        if (!getOnlineUser()->can('edit-demandes-examens')) {
+        if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
@@ -537,6 +537,7 @@ class TestOrderController extends Controller
         return Datatables::of($data)->addIndexColumn()
             ->editColumn('created_at', function ($data) {
                 //change over here
+                //return date('y/m/d',$data->created_at);
                 return $data->created_at;
             })
             ->setRowData([
@@ -550,8 +551,27 @@ class TestOrderController extends Controller
                     return 'mytag=' . $result;
                 },
             ])
-            ->setRowClass(function ($data) {
-                return $data->is_urgent == 1 ? 'table-danger urgent' : '';
+            ->setRowClass(function ($data) use ($request) {
+                if($data->is_urgent == 1){
+                    if ($request->get('exams_status') == "livrer") {
+                        return 'table-success urgent';
+                    }elseif (!empty($data->report)) {
+                        if($data->report->status == 1){
+                            return 'table-warning urgent';
+                        } 
+                    } 
+                    else {
+                        return 'table-danger urgent';
+                    }
+                }elseif ($request->get('exams_status') == "livrer") {
+                    return 'table-success';
+                }elseif (!empty($data->report)) {
+                    if($data->report->status == 1){
+                        return 'table-warning';
+                    }                 
+                }else {
+                    return '';
+                }
             })
             // ->addColumn('examen_file', function ($data) {
             //     //change over 

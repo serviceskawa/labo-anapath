@@ -130,7 +130,7 @@
                 <table id="datatable1" class="table dt-responsive nowrap w-100">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>Actions</th>
                             <th>Date</th>
                             <th>Code</th>
                             <th>Patient</th>
@@ -140,7 +140,6 @@
                             <th>Montant</th>
                             <th>Compte rendu</th>
                             <th>Type examen</th>
-                            <th>Actions</th>
 
                         </tr>
                     </thead>

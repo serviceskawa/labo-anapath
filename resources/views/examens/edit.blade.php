@@ -173,9 +173,9 @@
 
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Docteur signataire</label>
+                            <label class="form-label">Affecter à</label>
                             <select name="attribuate_doctor_id" id="" class="form-control">
-                                <option value="">Choississez un docteur signataire</option>
+                                <option value="">Selectionnez un docteur signataire</option>
                                 @foreach (getUsersByRole('docteur') as $item)
                                     <option value="{{ $item->id }}"
                                         {{ $test_order->attribuate_doctor_id == $item->id ? 'selected' : '' }}>

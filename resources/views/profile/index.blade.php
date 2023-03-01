@@ -69,7 +69,7 @@
                                 <div class="col-md-12">
                                     <div class="mb-3">
                                         <label for="useremail" class="form-label">E-mail</label>
-                                        <input type="email" class="form-control" id="useremail"
+                                        <input type="email" class="form-control" id="useremail" readonly
                                             value="{{ Auth::user()->email }}" >
                                     </div>
                                 </div>

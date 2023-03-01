@@ -20,8 +20,8 @@ class RoleController extends Controller
     
     protected function store_roles_permission($role, $value, $operation)
     {   
-        $ope->id = Operation::whereOperation($operation)->first();
-        $permission = Permission::whereRessourceId($value)->whereOperationId($ope->id)->get();
+        $operation->id = Operation::whereOperation($operation)->first();
+        $permission = Permission::whereRessourceId($value)->whereOperationId($operation->id)->get();
         $role->permissions()->save($permission);
     }
 
@@ -208,7 +208,7 @@ class RoleController extends Controller
 
     public function destroy($id)
     {
-        if (!getOnlineUser()->can('delete-demandes-examens')) {
+        if (!getOnlineUser()->can('delete-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         Role::find($id)->delete();

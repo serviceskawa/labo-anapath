@@ -139,9 +139,10 @@
                         <table id="datatable1" class="dt-responsive nowrap w-100 table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>Actions</th>
                                     <th>Date</th>
                                     <th>Code</th>
+                                    <th>Affecter à</th>
                                     <th>Patient</th>
                                     <th>Examens</th>
                                     <th>Contrat</th>
@@ -150,9 +151,7 @@
                                     <th>Montant</th>
                                     <th>Compte rendu</th>
                                     {{-- <th>Type examen</th> --}}
-                                    <th>Affecter à</th>
                                     <th>Urgent</th>
-                                    <th>Actions</th>
 
                                 </tr>
                             </thead>
@@ -206,8 +205,10 @@
                         }
                     },
                     columns: [{
-                            data: 'id',
-                            name: 'id'
+                            data: 'action',
+                            name: 'action',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'created_at',
@@ -215,7 +216,11 @@
                         }, {
                             data: 'code',
                             name: 'code'
-                        }, {
+                        },{
+                            data: 'dropdown',
+                            name: 'dropdown'
+                        },
+                         {
                             data: 'patient',
                             name: 'patient'
                         },
@@ -236,19 +241,9 @@
                             name: 'rendu'
                         },
                         {
-                            data: 'dropdown',
-                            name: 'dropdown'
-                        },
-                        {
                             data: 'urgence',
                             name: 'urgence',
                             visible: false,
-                        },
-                        {
-                            data: 'action',
-                            name: 'action',
-                            orderable: false,
-                            searchable: false
                         },
                     ],
                     order: [
