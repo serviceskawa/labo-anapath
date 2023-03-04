@@ -135,8 +135,12 @@ class ReportController extends Controller
             
         if($report->signatory3 != null)
             {$signatory3 = User::findorfail($report->signatory3);}
-            
-        
+        $year_month = "";
+        if($report->patient->year_or_month !=1){
+            $year_month = "mois";
+        }else{
+            $year_month = "ans";
+        }
 
         setlocale(LC_TIME, 'fr_FR');
         date_default_timezone_set('Africa/Porto-Novo');
@@ -147,6 +151,7 @@ class ReportController extends Controller
             'code' => $report->code,
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
             'prelevement_date' => date('d/m/Y', strtotime($report->order->prelevement_date)),
+            'test_afiliate' => $report->order->test_afiliate,
             'content' => $report->description,
             'signatory1' => $report->signatory1 != null ? $signatory1->lastname.' '.$signatory1->firstname : '',
             'signature1' => $report->signatory1 != null ? $signatory1->signature : '',
@@ -160,6 +165,7 @@ class ReportController extends Controller
             'patient_firstname' => $report->patient->firstname,
             'patient_lastname' => $report->patient->lastname,
             'patient_age' => $report->patient->age,
+            'patient_year_or_month' => $year_month,
             'patient_genre' => $report->patient->genre,
             'hospital_name' => $report->order->hospital->name,
             'doctor_name' => $report->order->doctor->name,

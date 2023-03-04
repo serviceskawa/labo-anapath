@@ -25,9 +25,12 @@ date_default_timezone_set('Europe/Paris');
             <br><span style="font-size:10px; text-align:right;">Laboratoire d’Anatomie Pathologique</span>
         </div>
     </div>
-    <div style="display: inline-block; position: absolute; right: 0px;width: 200px;padding: 10px;  margin-top:-20px">
+    <div style="display: inline-block; position: absolute; right: 100px;width: 200px;padding: 10px;  margin-top:-20px">
         <p>
-            <b>N° ANAPTH :</b> {{ $code }}
+            <b>N° ANAPTH :</b> {{ $code }} 
+            @if ($test_afiliate!=null)
+                <b>Examen Référence:</b> {{$test_afiliate}}
+            @endif
             <br>
             <b>Date :</b> {{ $current_date }}
         </p>
@@ -60,7 +63,7 @@ date_default_timezone_set('Europe/Paris');
                     </tr>
                     <tr>
                         <th>Age :</th>
-                        <td>{{ $patient_age }} </td>
+                        <td>{{ $patient_age }} {{ $patient_year_or_month }} </td>
                         <th>Service demandeur :</th>
                         <td>{{ $hospital_name }} </td>
                     </tr>

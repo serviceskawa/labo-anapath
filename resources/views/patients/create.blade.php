@@ -38,9 +38,18 @@
                         <label for="example-date" class="form-label">Date de naissance</label>
                         <input class="form-control" id="example-date" type="date" name="birthday">
                     </div>
+
                     <div class="mb-3">
                         <label for="simpleinput" class="form-label">Age<span style="color:red;">*</span></label>
                         <input type="number" name="age" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="example-select" class="form-label">Mois ou Années<span style="color:red;">*</span></label>
+                        <select class="form-select" id="example-select" name="year_or_month" required>
+                            <option value="">Sélectionner entre mois ou ans</option>
+                            <option value="0">Mois</option>
+                            <option value="1">Ans</option>
+                        </select>
                     </div>
 
                     <div class="mb-3">

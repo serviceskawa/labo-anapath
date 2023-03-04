@@ -73,7 +73,6 @@ class InvoiceController extends Controller
                 "test_order_id" => $data['test_orders_id'],
                 "date" => $data['invoice_date'],
                 "patient_id" => $testOrder->patient_id,
-                "code" => "FA" . $testOrder->code,
                 "subtotal" => $testOrder->subtotal,
                 "discount" => $testOrder->discount,
                 "total" => $testOrder->total,

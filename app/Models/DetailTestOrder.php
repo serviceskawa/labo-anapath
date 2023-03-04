@@ -26,6 +26,10 @@ class DetailTestOrder extends Model
         return $data;
     }
 
+    public function getTest(){
+        return $this->belongsTo(Test::class, 'test_id');
+    }
+
     /**
      * Get the order that owns the DetailTestOrder
      *

@@ -41,139 +41,139 @@
                 <form action="{{ route('test_order.store') }}" method="post" autocomplete="off"
                     enctype="multipart/form-data">
                     @csrf
-                    <div class="row mb-3">
-                        <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
+                        <div class="row mb-3">
+                            <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
 
-                        <div class="col-md-6">
-                            <label for="exampleFormControlInput1" class="form-label">Type d'examen<span
-                                    style="color:red;">*</span></label>
-                            <select class="form-select select2" data-toggle="select2" required id="type_examen"
-                                name="type_examen">
-                                <option>Sélectionner le type d'examen</option>
-                                @forelse ($types_orders as $type)
-                                    <option value="{{ $type->id }}">{{ $type->title }}</option>
-                                @empty
-                                    Ajouter un Type d'examen
-                                @endforelse
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="exampleFormControlInput1" class="form-label">Contrat<span
-                                    style="color:red;">*</span></label>
-                            <select class="form-select select2" data-toggle="select2" required name="contrat_id">
-                                <option>Sélectionner le contrat</option>
-                                @forelse ($contrats as $contrat)
-                                    <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
-                                @empty
-                                    Ajouter un contrat
-                                @endforelse
-                            </select>
-                        </div>
-
-                        <div class="col-md-12">
-
-                            <div class="examenReferenceSelect" style="display: none !important">
-                                <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
+                            <div class="col-md-6">
+                                <label for="exampleFormControlInput1" class="form-label">Type d'examen<span
                                         style="color:red;">*</span></label>
-                                <select class="form-select select2" data-toggle="select2" name="examen_reference_select"
-                                    id="examen_reference_select">
-                                    <option value="">Sélectionner dans la liste</option>
-
+                                <select class="form-select select2" data-toggle="select2" required id="type_examen"
+                                    name="type_examen">
+                                    <option>Sélectionner le type d'examen</option>
+                                    @forelse ($types_orders as $type)
+                                        <option value="{{ $type->id }}">{{ $type->title }}</option>
+                                    @empty
+                                        Ajouter un Type d'examen
+                                    @endforelse
                                 </select>
                             </div>
-                            <div class="examenReferenceInput mt-3" style="display: none !important">
-                                <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
+                            <div class="col-md-6">
+                                <label for="exampleFormControlInput1" class="form-label">Contrat<span
                                         style="color:red;">*</span></label>
-                                <input type="text" name="examen_reference_input" class="form-control"
-                                    placeholder="Saisir l'examen de reference">
+                                <select class="form-select select2" data-toggle="select2" required name="contrat_id">
+                                    <option>Sélectionner le contrat</option>
+                                    @forelse ($contrats as $contrat)
+                                        <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
+                                    @empty
+                                        Ajouter un contrat
+                                    @endforelse
+                                </select>
+                            </div>
+
+                            <div class="col-md-12">
+
+                                <div class="examenReferenceSelect" style="display: none !important">
+                                    <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
+                                            style="color:red;">*</span></label>
+                                    <select class="form-select select2" data-toggle="select2" name="examen_reference_select"
+                                        id="examen_reference_select">
+                                        <option value="">Sélectionner dans la liste</option>
+
+                                    </select>
+                                </div>
+                                <div class="examenReferenceInput mt-3" style="display: none !important">
+                                    <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
+                                            style="color:red;">*</span></label>
+                                    <input type="text" name="examen_reference_input" class="form-control"
+                                        placeholder="Saisir l'examen de reference">
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+
+                            <div class="col-md-6">
+                                <label for="exampleFormControlInput1" class="form-label">Patient<span
+                                        style="color:red;">*</span></label>
+                                <select class="form-select select2" data-toggle="select2" name="patient_id" id="patient_id"
+                                    required>
+                                    <option>Sélectionner le nom du patient</option>
+                                    @foreach ($patients as $patient)
+                                        <option value="{{ $patient->id }}">{{ $patient->code }} - {{ $patient->firstname }}
+                                            {{ $patient->lastname }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="exampleFormControlInput1" class="form-label">Médecin traitant<span
+                                        style="color:red;">*</span></label>
+                                <select class="form-select select2" data-toggle="select2" name="doctor_id" id="doctor_id"
+                                    required>
+                                    <option>Sélectionner le médecin traitant</option>
+                                    @foreach ($doctors as $doctor)
+                                        <option value="{{ $doctor->name }}">{{ $doctor->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
                         </div>
-                    </div>
 
-                    <div class="row mb-3">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="exampleFormControlInput1" class="form-label">Hôpital de provenance<span
+                                        style="color:red;">*</span></label>
+                                <select class="form-select select2" data-toggle="select2" name="hospital_id" id="hospital_id"
+                                    required>
+                                    <option>Sélectionner le centre hospitalier de provenance</option>
+                                    @foreach ($hopitals as $hopital)
+                                        <option value="{{ $hopital->name }}">{{ $hopital->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                        <div class="col-md-6">
-                            <label for="exampleFormControlInput1" class="form-label">Patient<span
-                                    style="color:red;">*</span></label>
-                            <select class="form-select select2" data-toggle="select2" name="patient_id" id="patient_id"
-                                required>
-                                <option>Sélectionner le nom du patient</option>
-                                @foreach ($patients as $patient)
-                                    <option value="{{ $patient->id }}">{{ $patient->code }} - {{ $patient->firstname }}
-                                        {{ $patient->lastname }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="exampleFormControlInput1" class="form-label">Médecin traitant<span
-                                    style="color:red;">*</span></label>
-                            <select class="form-select select2" data-toggle="select2" name="doctor_id" id="doctor_id"
-                                required>
-                                <option>Sélectionner le médecin traitant</option>
-                                @foreach ($doctors as $doctor)
-                                    <option value="{{ $doctor->name }}">{{ $doctor->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="exampleFormControlInput1" class="form-label">Hôpital de provenance<span
-                                    style="color:red;">*</span></label>
-                            <select class="form-select select2" data-toggle="select2" name="hospital_id" id="hospital_id"
-                                required>
-                                <option>Sélectionner le centre hospitalier de provenance</option>
-                                @foreach ($hopitals as $hopital)
-                                    <option value="{{ $hopital->name }}">{{ $hopital->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1" class="form-label">Référence hôpital</label>
-                                <input type="text" class="form-control" name="reference_hopital"
-                                    placeholder="Le numéro de référence qui se trouve sur le bon d'examen du patient.">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="exampleFormControlInput1" class="form-label">Référence hôpital</label>
+                                    <input type="text" class="form-control" name="reference_hopital"
+                                        placeholder="Le numéro de référence qui se trouve sur le bon d'examen du patient.">
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Date prélèvement<span style="color:red;">*</span></label>
-                            <input type="date" class="form-control" name="prelevement_date" id="prelevement_date"
-                                data-date-format="dd/mm/yyyy" required>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="">
-                                <label for="example-fileinput" class="form-label">Pièce jointe</label>
-                                <input type="file" name="examen_file" id="example-fileinput" class="form-control">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Date prélèvement<span style="color:red;">*</span></label>
+                                <input type="date" class="form-control" name="prelevement_date" id="prelevement_date"
+                                    data-date-format="dd/mm/yyyy" required>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="">
+                                    <label for="example-fileinput" class="form-label">Pièce jointe</label>
+                                    <input type="file" name="examen_file" id="example-fileinput" class="form-control">
+                                </div>
                             </div>
                         </div>
+
+                        <div class="col-md-6">
+                            {{-- <input type="checkbox" class="form-check-input" name="is_urgent" id=""> --}}
+                            <label class="form-label">Cas urgent</label><br>
+                            <input type="checkbox" id="switch3" class="form-control" name="is_urgent"
+                                data-switch="success" />
+                            <label for="switch3" data-on-label="Urgent" data-off-label="Normal"></label>
+                        </div>
+
                     </div>
 
-                    <div class="col-md-6">
-                        {{-- <input type="checkbox" class="form-check-input" name="is_urgent" id=""> --}}
-                        <label class="form-label">Cas urgent</label><br>
-                        <input type="checkbox" id="switch3" class="form-control" name="is_urgent"
-                            data-switch="success" />
-                        <label for="switch3" data-on-label="Urgent" data-off-label="Normal"></label>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Ajouter une nouvelle demande d'examen</button>
                     </div>
 
+                </form>
             </div>
-
-            <div class="modal-footer">
-                <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-primary">Ajouter une nouvelle demande d'examen</button>
-            </div>
-
-            </form>
-        </div>
     </div>
 
     {{-- Modal --}}
@@ -372,45 +372,46 @@
 
             });
 
-        $('#createPatientForm').on('submit', function(e) {
-            e.preventDefault();
-            let code = $('#code').val();
-            let lastname = $('#lastname').val();
-            let firstname = $('#firstname').val();
-            let age = $('#age').val();
-            let telephone1 = $('#telephone1').val();
-            let genre = $('#genre').val();
-            // alert(firstname);
-            $.ajax({
-                url: "{{ route('patients.storePatient') }}",
-                type: "POST",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    code: code,
-                    lastname: lastname,
-                    firstname: firstname,
-                    age:age,
-                    telephone1:telephone1,
-                    genre:genre
-                },
-                success: function(data) {
-                    
-                    $('#createPatientForm').trigger("reset")
-                    $('#standard-modal').modal('hide');
-                    toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-                    $('#patient_id').append('<option value="'+data.id+'">'+data.code+' - '+data.firstname+' '+data.lastname+'</option>').trigger('change').val(data.id);
-                    
-                },
-                error: function(data) {
-                    console.log(data)
-                },
-                // processData: false,
+            $('#createPatientForm').on('submit', function(e) {
+                e.preventDefault();
+                let code = $('#code').val();
+                let lastname = $('#lastname').val();
+                let firstname = $('#firstname').val();
+                let age = $('#age').val();
+                let telephone1 = $('#telephone1').val();
+                let genre = $('#genre').val();
+                // alert(firstname);
+                $.ajax({
+                    url: "{{ route('patients.storePatient') }}",
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        code: code,
+                        lastname: lastname,
+                        firstname: firstname,
+                        age: age,
+                        telephone1: telephone1,
+                        genre: genre
+                    },
+                    success: function(data) {
+
+                        $('#createPatientForm').trigger("reset")
+                        $('#standard-modal').modal('hide');
+                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                        $('#patient_id').append('<option value="' + data.id + '">' + data.code +
+                                ' - ' + data.firstname + ' ' + data.lastname + '</option>')
+                            .trigger('change').val(data.id);
+
+                    },
+                    error: function(data) {
+                        console.log(data)
+                    },
+                    // processData: false,
+                });
+
             });
-
         });
-    });
-
-</script>
+    </script>
 
     <script type="text/javascript">
         $(document).ready(function() {

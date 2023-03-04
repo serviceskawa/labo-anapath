@@ -13,15 +13,17 @@
 
         @include('layouts.alerts')
 
+        
         {{-- @include('examens.details.create') --}}
-
+        
         <div class="card my-3">
             @if ($test_order->status == 1)
-                <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
+            <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
                     class="btn btn-success w-full">CONSULTEZ LE
                     COMPTE RENDU</a>
             @endif
-
+                    
+            @include('examens.details.edit')
             <div class="card-header">
                 <div class="col-12">
                     <div class="page-title-box">
@@ -157,7 +159,7 @@
 
                             <label class="form-label mt-3">Affecter à</label>
                             <select name="attribuate_doctor_id" id="" class="form-control">
-                                <option value="">Selectionnez un docteur signataire</option>
+                                <option value="">Selectionnez un docteur</option>
                                 @foreach (getUsersByRole('docteur') as $item)
                                     <option value="{{ $item->id }}"
                                         {{ $test_order->attribuate_doctor_id == $item->id ? 'selected' : '' }}>
@@ -354,6 +356,15 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="example-select" class="form-label">Mois ou Années<span style="color:red;">*</span></label>
+                                <select class="form-select" id="example-select" name="year_or_month" required>
+                                    <option value="">Sélectionner entre mois ou ans</option>
+                                    <option value="0">Mois</option>
+                                    <option value="1">Ans</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="simpleinput" class="form-label">Profession</label>
                                 <input type="text" name="profession" class="form-control">
                             </div>
@@ -396,9 +407,35 @@
     </script>
     <script type="text/javascript">
 
+        function getInvoice(id) {
+         
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('test_order.invoice') }}",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        testId: id,
+                    },
+                    success: function(data) {
+                        //console.log(data[0]["paid"]);
+                        if (data) {
+                            return data[0]["paid"];
+                        } else {
+                            return "";
+                        }
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                    }
+                });
+
+            };
+
         $(document).ready(function() {
+
+           
             var test_order = {!! json_encode($test_order) !!}
-            // console.log(test_order)
+            console.log(test_order)
 
             var dtDetailTable = $('.detail-list-table')
 
@@ -433,11 +470,24 @@
                     "targets": -1,
                     //"targets": [0],
                     "render": function(data, type, row) {
-                        if (row["status"] != 1) {
-                            return (
-                                '<button type="button" id="deleteBtn" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>'
-                            );
+                        //var invoice = getInvoice(data.test_order_id);
+                        if (test_order.status !=1) {
+                            if (row["status"] != 1) {
+                                return (
+                                    '<button type="button" id="deleteBtn" class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i> </button>'
+                                );
+                            }
+                            //onclick="edit('+ test_order.id +')"
+                        }else{
+                            if (getInvoice(data.test_order_id)!=1) {
+                                return (
+                                    '<button type="button" id="editBtn" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>'
+                                );
+                        }else{
+                            return "";
                         }
+                        }
+                        
                         return "";
                     }
 
@@ -496,11 +546,6 @@
 
             });
 
-            // setInterval(function() {
-            //     dt_basic.ajax.reload();
-            // }, 3000);
-
-            // 
             $('.detail-list-table tbody').on('click', '#deleteBtn', function() {
                 var data = dt_basic.row($(this).parents('tr')).data();
                 var id = $(this).data('id');
@@ -544,6 +589,19 @@
                 });
             });
 
+            $('.detail-list-table tbody').on('click', '#editBtn', function() {
+                var data = dt_basic.row($(this).parents('tr')).data();
+                var dataline = dt_basic.row($(this).parents('tr'))
+                console.log(dataline[0][0]);
+                        $('#row_id').val(dataline[0][0]);
+                        $('#test_id1').val(data.test_id);
+                        $('#price1').val(data.price);
+                        $('#remise1').val(data.discount);
+
+                        $('#total1').val(data.total);
+                        $('#editModal').modal('show');
+            });
+
             function sendTotal(test_order_id, total, discount, subTotal) {
                 console.log(test_order_id, total, discount, subTotal);
 
@@ -566,6 +624,26 @@
                         console.log(response)
                     },
                 });
+            };
+
+            function getInvoice(id) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('test_order.invoice') }}",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        testId: id,
+                    },
+                    success: function(data) {
+                        var invoice = data[0];
+                        console.log(invoice.paid);
+                        return invoice.paid;
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                    }
+                });
+
             };
 
         });
@@ -643,172 +721,214 @@
 
         }
 
-    </script>
-
-    {{-- Fusion --}}
-    <script>
-        $('.datepicker').datepicker({
-            format: 'dd/mm/yyyy',
-            startDate: '-3d'
-        });
-
-        // SUPPRESSION
-        function deleteModal(id) {
-
-            Swal.fire({
-                title: "Voulez-vous supprimer l'élément ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Oui ",
-                cancelButtonText: "Non !",
-            }).then(function(result) {
-                if (result.value) {
-                    window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
-                    Swal.fire(
-                        "Suppression !",
-                        "En cours de traitement ...",
-                        "success"
-                    )
-                }
-            });
-        }
-
-        //EDITION
         function edit(id) {
             var e_id = id;
 
             // Populate Data in Edit Modal Form
-            $.ajax({
-                type: "GET",
-                url: "{{ url('getcontratdetails') }}" + '/' + e_id,
-                success: function(data) {
-
-                    $('#category_test_id2').val(data.category_test_id).change();
-                    $('#pourcentage2').val(data.pourcentage);
-                    $('#contrat_id2').val(data.contrat_id);
-                    $('#contrat_details_id2').val(data.id);
-
-
-
-                    console.log(data);
-                    $('#editModal').modal('show');
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                }
-            });
-        }
-
-        $(document).ready(function() {
-
-            $('#doctor_id').select2({
-                placeholder: 'Select Category',
-                theme: 'bootstrap4',
-                tags: true,
-            }).on('select2:close', function() {
-                var element = $(this);
-                var new_category = $.trim(element.val());
-
-                if (new_category != '') {
-                    $.ajax({
-                        url: "{{ route('doctors.storeDoctor') }}",
-                        method: "POST",
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            name: new_category
-                        },
-                        success: function(data) {
-
-                            if (data.status === "created") {
-                                toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-
-                                element.append('<option value="' + data.id + '">' + data.name +
-                                    '</option>').val(new_category);
-                            }
-                        }
-                    })
-                }
-
-            });
-
-            // Create hopital
-            $('#hospital_id').select2({
-                placeholder: 'Choisissez un hopital',
-                theme: 'bootstrap4',
-                tags: true,
-            }).on('select2:close', function() {
-                var element = $(this);
-                var new_category = $.trim(element.val());
-
-                if (new_category != '') {
-                    $.ajax({
-                        url: "{{ route('hopitals.storeHospital') }}",
-                        method: "POST",
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            name: new_category
-                        },
-                        success: function(data) {
-
-                            if (data.status === "created") {
-                                toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-
-                                element.append('<option value="' + data.id + '">' + data.name +
-                                    '</option>').val(new_category);
-                            }
-                        }
-                    })
-                }
-
-            });
-
-            $('#createPatientForm').on('submit', function(e) {
-                e.preventDefault();
-                let code = $('#code').val();
-                let lastname = $('#lastname').val();
-                let firstname = $('#firstname').val();
-                let age = $('#age').val();
-                let telephone1 = $('#telephone1').val();
-                let genre = $('#genre').val();
-                // alert(firstname);
                 $.ajax({
-                    url: "{{ route('patients.storePatient') }}",
-                    type: "POST",
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        code: code,
-                        lastname: lastname,
-                        firstname: firstname,
-                        age: age,
-                        telephone1: telephone1,
-                        genre: genre
-                    },
+                    url:  '/test_order/detailstest/' + e_id,
+                    dataSrc: '',
                     success: function(data) {
-
-                        $('#createPatientForm').trigger("reset")
-                        $('#standard-modal').modal('hide');
-                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-                        $('#patient_id').append('<option value="' + data.id + '">' + data.code +
-                                ' - ' + data.firstname + ' ' + data.lastname + '</option>')
-                            .trigger('change').val(data.id);
-
+                        console.log(data);
+                        $('#test_id1').val(data.test_id);
+                        $('#price1').val(data.price);
+                        $('#remise1').val(data.discount);
+                        $('#total1').val(data.total);
+                        $('#editModal').modal('show');
                     },
                     error: function(data) {
-                        console.log(data)
-                    },
-                    // processData: false,
+                        console.log('Error:', data);
+                    }
                 });
-
-            });
-        });
+        }
 
     </script>
-    <script type="text/javascript">
 
-        $(document).ready(function() {
-            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        {{-- Fusion --}}
+        <script>
+            $('.datepicker').datepicker({
+                format: 'dd/mm/yyyy',
+                startDate: '-3d'
+            });
 
-            $('#type_examen').on('change', function(e) {
+            // SUPPRESSION
+            function deleteModal(id) {
+
+                Swal.fire({
+                    title: "Voulez-vous supprimer l'élément ?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Oui ",
+                    cancelButtonText: "Non !",
+                }).then(function(result) {
+                    if (result.value) {
+                        window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
+                        Swal.fire(
+                            "Suppression !",
+                            "En cours de traitement ...",
+                            "success"
+                        )
+                    }
+                });
+            }
+
+            //EDITION
+            function edit(id) {
+                var e_id = id;
+
+                // Populate Data in Edit Modal Form
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url('getcontratdetails') }}" + '/' + e_id,
+                    success: function(data) {
+
+                        $('#category_test_id2').val(data.category_test_id).change();
+                        $('#pourcentage2').val(data.pourcentage);
+                        $('#contrat_id2').val(data.contrat_id);
+                        $('#contrat_details_id2').val(data.id);
+
+
+
+                        console.log(data);
+                        $('#editModal').modal('show');
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                    }
+                });
+            }
+
+            $(document).ready(function() {
+
+                $('#doctor_id').select2({
+                    placeholder: 'Select Category',
+                    theme: 'bootstrap4',
+                    tags: true,
+                }).on('select2:close', function() {
+                    var element = $(this);
+                    var new_category = $.trim(element.val());
+
+                    if (new_category != '') {
+                        $.ajax({
+                            url: "{{ route('doctors.storeDoctor') }}",
+                            method: "POST",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                name: new_category
+                            },
+                            success: function(data) {
+
+                                if (data.status === "created") {
+                                    toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+
+                                    element.append('<option value="' + data.id + '">' + data.name +
+                                        '</option>').val(new_category);
+                                }
+                            }
+                        })
+                    }
+
+                });
+
+                // Create hopital
+                $('#hospital_id').select2({
+                    placeholder: 'Choisissez un hopital',
+                    theme: 'bootstrap4',
+                    tags: true,
+                }).on('select2:close', function() {
+                    var element = $(this);
+                    var new_category = $.trim(element.val());
+
+                    if (new_category != '') {
+                        $.ajax({
+                            url: "{{ route('hopitals.storeHospital') }}",
+                            method: "POST",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                name: new_category
+                            },
+                            success: function(data) {
+
+                                if (data.status === "created") {
+                                    toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+
+                                    element.append('<option value="' + data.id + '">' + data.name +
+                                        '</option>').val(new_category);
+                                }
+                            }
+                        })
+                    }
+
+                });
+
+                $('#createPatientForm').on('submit', function(e) {
+                    e.preventDefault();
+                    let code = $('#code').val();
+                    let lastname = $('#lastname').val();
+                    let firstname = $('#firstname').val();
+                    let age = $('#age').val();
+                    let telephone1 = $('#telephone1').val();
+                    let genre = $('#genre').val();
+                    // alert(firstname);
+                    $.ajax({
+                        url: "{{ route('patients.storePatient') }}",
+                        type: "POST",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            code: code,
+                            lastname: lastname,
+                            firstname: firstname,
+                            age: age,
+                            telephone1: telephone1,
+                            genre: genre
+                        },
+                        success: function(data) {
+
+                            $('#createPatientForm').trigger("reset")
+                            $('#standard-modal').modal('hide');
+                            toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                            $('#patient_id').append('<option value="' + data.id + '">' + data.code +
+                                    ' - ' + data.firstname + ' ' + data.lastname + '</option>')
+                                .trigger('change').val(data.id);
+
+                        },
+                        error: function(data) {
+                            console.log(data)
+                        },
+                        // processData: false,
+                    });
+
+                });
+            });
+
+        </script>
+
+        <script type="text/javascript">
+
+            $(document).ready(function() {
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+                $('#type_examen').on('change', function(e) {
+                    var typeExamenOption = $('#type_examen option:selected').text();
+                    // alert(typeExamenOption);
+                    if (typeExamenOption == "Immuno Externe") {
+                        $(".examenReferenceSelect").hide();
+                        $(".examenReferenceInput").show();
+
+                    } else if (typeExamenOption == "Immuno Interne") {
+                        $(".examenReferenceSelect").hide();
+                        $(".examenReferenceInput").show();
+
+                    } else {
+                        $(".examenReferenceInput").hide();
+                        $(".examenReferenceSelect").hide();
+                    }
+                });
+
+
+            });
+
+            window.addEventListener("load", (event) => {
                 var typeExamenOption = $('#type_examen option:selected').text();
                 // alert(typeExamenOption);
                 if (typeExamenOption == "Immuno Externe") {
@@ -823,28 +943,8 @@
                     $(".examenReferenceInput").hide();
                     $(".examenReferenceSelect").hide();
                 }
+
             });
-
-
-        });
-
-        window.addEventListener("load", (event) => {
-            var typeExamenOption = $('#type_examen option:selected').text();
-            // alert(typeExamenOption);
-            if (typeExamenOption == "Immuno Externe") {
-                $(".examenReferenceSelect").hide();
-                $(".examenReferenceInput").show();
-
-            } else if (typeExamenOption == "Immuno Interne") {
-                $(".examenReferenceSelect").hide();
-                $(".examenReferenceInput").show();
-
-            } else {
-                $(".examenReferenceInput").hide();
-                $(".examenReferenceSelect").hide();
-            }
-
-        });
-        
-    </script>
+            
+        </script>
 @endpush

@@ -108,12 +108,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/test_order/store', [TestOrderController::class, 'store'])->name('test_order.store');
     Route::get('/test_order/create', [TestOrderController::class, 'create'])->name('test_order.create');
     Route::get('/test_order/delete/{id}', [TestOrderController::class, 'destroy']);
-    Route::post('/test_order/updatetest', [TestOrderController::class, 'updateTestTotal'])->name('test_order.updateorder');
+    Route::post('/test_order/updatetesttotal', [TestOrderController::class, 'updateTestTotal'])->name('test_order.updateorder');
     Route::get('/test_order/updatestatus/{id}', [TestOrderController::class, 'updateStatus'])->name('test_order.updatestatus');
     Route::get('/get_test_order', [TestOrderController::class, 'getTestOrders'])->name('test_order.get_test_order');
     Route::get('/get_all_test_order', [TestOrderController::class, 'getAllTestOrders'])->name('test_order.get_all_test_order');
     Route::get('/test_order/edit/{id}', [TestOrderController::class, 'edit'])->name('test_order.edit');
     Route::post('/test_order/update/{id}', [TestOrderController::class, 'update'])->name('test_order.update');
+    Route::post('/test_order/updatetest',[TestOrderController::class, 'updateTest'])->name('test_order.updateTest');
     Route::get('/testOrders', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('test_order.getTestOrdersforDatatable');
 
 
@@ -126,6 +127,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/test_order/details', [TestOrderController::class, 'details_store'])->name('details_test_order.store');
     Route::get('/test_order/detailstest/{id}', [TestOrderController::class, 'getDetailsTest']);
     Route::post('/test_order/detailsdelete', [TestOrderController::class, 'details_destroy']);
+    Route::post('/test_order/invoice_details/', [TestOrderController::class, 'getInvoice'])->name('test_order.invoice');
     Route::get('/test_order/show/{id}', [TestOrderController::class, 'show'])->name('test_order.show');
 
 

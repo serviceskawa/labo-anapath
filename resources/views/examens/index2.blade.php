@@ -207,8 +207,6 @@
                     columns: [{
                             data: 'action',
                             name: 'action',
-                            orderable: false,
-                            searchable: false
                         },
                         {
                             data: 'created_at',
@@ -222,7 +220,7 @@
                         },
                          {
                             data: 'patient',
-                            name: 'patient'
+                            name: 'patient',
                         },
                         {
                             data: 'details',
@@ -247,51 +245,19 @@
                         },
                     ],
                     order: [
-                        [0, 'desc']
+                        [0, 'asc']
                     ],
-
-                });
-
-                // Recherche dans la colonne  contrat
-                $("#contrat_id").on("change", function() {
-                    table.draw();
-                    // table
-                    //     .columns(4)
-                    //     .search(this.value)
-                    //     .draw();
-                });
-
-                // Recherche dans la colonne  compte rendu
-                $("#exams_status").on("change", function() {
-                    table.draw();
-                    // table
-                    //     .columns(8)
-                    //     .search(this.value)
-                    //     .draw();
-                });
-
-                // Recherche dans la colonne  type d'examen
-                $("#type_examen").on("change", function() {
-                    table.draw();
-                    // table
-                    //     .columns(9)
-                    //     .search(this.value)
-                    //     .draw();
-                });
-
-                // Recherche selon les cas
-                $("#cas_status").on("change", function() {
-                    table.draw();
-                    // table
-                    //     .columns(10)
-                    //     .search(this.value)
-                    //     .draw();
+                    columnDefs: [
+                        {
+                            searchable: true
+                        }
+                    ],
                 });
 
                 $.fn.dataTable.ext.search.push(
                     function(settings, searchData, index, rowData, counter) {
                         var row = table.row(index).node();
-                        // var filterValue = $(row).data('mytag');
+                        var filterValue = $(row).data('mytag');
                         var e = document.getElementById("cas_status");
                         var filter = e.options[e.selectedIndex].value;
 

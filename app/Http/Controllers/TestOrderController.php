@@ -285,6 +285,7 @@ class TestOrderController extends Controller
         $tests = Test::all();
 
         $details = DetailTestOrder::where('test_order_id', $test_order->id)->get();
+       
 
         $types_orders = TypeOrder::all();
 
@@ -296,6 +297,15 @@ class TestOrderController extends Controller
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
         return view('examens.details.index', compact(['test_order', 'details', 'tests', 'types_orders', 'patients', 'doctors', 'hopitals', 'contrats',]));
+    }
+
+    public function getInvoice(Request $request)
+    {
+        if (!getOnlineUser()->can('view-test-orders')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $invoice = Invoice::where('test_order_id', $request->testId)->get();
+        return response()->json($invoice);
     }
 
     public function details_store(Request $request)
@@ -348,6 +358,53 @@ class TestOrderController extends Controller
         $tests = Test::all();
         $details = DetailTestOrder::where('test_order_id', $test_order->id)->get();
         return response()->json($details);
+    }
+
+    public function updateTest(Request $request)
+    {
+        if (!getOnlineUser()->can('edit-test-orders')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $test_order = TestOrder::findorfail($request->test_order_id);
+        $test = Test::findorfail($request->test_id1);
+        $row_id = (int)$request->row_id;
+        $price = $request->price1;
+        $remise = $request->remise1;
+        $total = $request->total1;
+
+        //$invoice = Invoice::where('test_order_id','=',$request->test_order_id)->get();
+        $invoice = $test_order->invoice()->first();
+        $invoiceDetails = $invoice->details()->get();
+        //dd($invoice);
+        $details = $test_order->details()->get();
+        //dd($details[$row_id]);
+        $detail = $details[$row_id];
+        $invoiceDetail = $invoiceDetails[$row_id];
+        if ($invoice->paid !=1) {
+            $detail->fill([
+                "test_id" =>  $request->test_id1,
+                "test_name" =>  $test->name,
+                "price" => $test->price,
+                "discount" => $remise,
+                "total" => $total,
+            ])->save();
+           $invoice->fill([
+                "subtotal" =>$test_order->subtotal,
+                "discount" =>$test_order->discount,
+                "total" =>$test_order->total,
+           ])->save();
+            $invoiceDetail->fill([
+                "test_id" =>  $request->test_id1,
+                "test_name" =>  $test->name,
+                "price" => $test->price,
+                "discount" => $remise,
+                "total" => $total,
+            ])->save();
+
+            return back()->with('success', "Mis à jour de la demande éffectué");
+        }else{
+            return back()->with('error', "Cette opération n'est pas possible car la facture a déjà été payé");
+        }
     }
 
     public function updateTestTotal(Request $request)
@@ -414,7 +471,7 @@ class TestOrderController extends Controller
                 "subtotal" => $test_order->subtotal,
                 "discount" => $test_order->discount,
                 "total" => $test_order->total,
-                "code" => $code_facture
+                "code" => $code_facture,
             ]);
             // Recupération des details de la demande d'examen
             $tests = $test_order->details()->get();
@@ -559,10 +616,8 @@ class TestOrderController extends Controller
                         if($data->report->status == 1){
                             return 'table-warning urgent';
                         } 
-                    } 
-                    else {
-                        return 'table-danger urgent';
                     }
+                    return 'table-danger urgent';
                 }elseif ($request->get('exams_status') == "livrer") {
                     return 'table-success';
                 }elseif (!empty($data->report)) {

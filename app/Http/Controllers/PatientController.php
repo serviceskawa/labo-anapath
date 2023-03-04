@@ -18,7 +18,7 @@ class PatientController extends Controller
         if (!getOnlineUser()->can('view-patients')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $patients = Patient::orderBy('id','desc')->get();
+        $patients = Patient::latest()->get();
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
         return view('patients.index',compact(['patients']));
@@ -54,6 +54,7 @@ class PatientController extends Controller
             'telephone1' => 'nullable',
             'adresse' => 'nullable',
             'genre' => 'required',
+            'year_or_month' => 'required',
             'age' => 'required | integer',
             'profession' => 'nullable',
             'birthday' => 'nullable||date'
@@ -80,6 +81,7 @@ class PatientController extends Controller
             'lastname' => 'required',
             'telephone1' => 'required',
             'age' => 'required',
+            'year_or_month' => 'required',
             'genre' => 'required',
         ]);
 
@@ -141,6 +143,7 @@ class PatientController extends Controller
             'adresse2' => 'nullable',
             'genre2' => 'required',
             'age2' => 'required | integer',
+            'year_or_month2' => 'required',
             'profession2' => 'nullable'
         ]);
 
@@ -156,6 +159,7 @@ class PatientController extends Controller
             $patient->telephone2 = $data['telephone2_2'];
             $patient->adresse = $data['adresse2'];
             $patient->age = $data['age2'];
+            $patient->year_or_month = $data['year_or_month2'];
             $patient->profession = $data['profession2'];
 
             $patient->save();

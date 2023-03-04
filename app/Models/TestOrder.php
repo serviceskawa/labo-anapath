@@ -139,7 +139,6 @@ class TestOrder extends Model
         return $this->belongsTo(TypeOrder::class, 'type_order_id');
     }
 
-
     /**
      * Get the invoice associated with the TestOrder
      *

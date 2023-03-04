@@ -44,6 +44,15 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="example-select" class="form-label">Mois ou Années<span style="color:red;">*</span></label>
+                        <select class="form-select" id="example-select" name="year_or_month" required>
+                            <option value="">Sélectionner entre mois ou ans</option>
+                            <option value="0">Mois</option>
+                            <option value="1">Ans</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="simpleinput" class="form-label">Profession</label>
                         <input type="text" name="profession" class="form-control">
                     </div>

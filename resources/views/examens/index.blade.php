@@ -261,7 +261,7 @@
             "columnDefs": [
                 {
                     "targets": [0],
-                    "searchable": false
+                    "searchable": true
                 }
             ],
             "language": {
