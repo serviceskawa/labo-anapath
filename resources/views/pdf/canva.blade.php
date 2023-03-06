@@ -50,31 +50,35 @@ date_default_timezone_set('Europe/Paris');
             <table style="max-width: 100%;width: 500px ">
                 <tbody>
                     <tr>
-                        <th width="25%;">Nom :</th>
-                        <td width="25%;">{{ $patient_firstname }} </td>
+                        <th width="55%;">Nom :</th>
+                        <td width="55%;">{{ $patient_firstname }} </td>
                         <th width="40%;">Date prélèvement : </th>
                         <td width="20%;">{{ $prelevement_date }} </td>
                     </tr>
+                    
                     <tr>
-                        <th>Prénoms :</th>
-                        <td>{{ $patient_lastname }} </td>
-                        <th>Date d’arrivée labo : </th>
-                        <td> {{ $created_at }} </td>
+                        <th width="55%;">Prénoms :</th>
+                        <td width="55%;">{{ $patient_lastname }} </td>
+                        <th width="40%;">Date d’arrivée labo : </th>
+                        <td width="20%;"> {{ $created_at }} </td>
                     </tr>
+
                     <tr>
-                        <th>Age :</th>
-                        <td>{{ $patient_age }} {{ $patient_year_or_month }} </td>
-                        <th>Service demandeur :</th>
-                        <td>{{ $hospital_name }} </td>
+                        <th width="55%;">Age :</th>
+                        <td width="55%;">{{ $patient_age }} {{ $patient_year_or_month }} </td>
+                        <th width="40%;">Service demandeur :</th>
+                        <td width="20%;">{{ $hospital_name }} </td>
                     </tr>
+                    
                     <tr>
-                        <th>Sexe :</th>
-                        <td>{{ $patient_genre }} </td>
-                        <th>Médecin prescripteur : </th>
-                        <td> {{ $doctor_name }} </td>
+                        <th width="55%;">Sexe :</th>
+                        <td width="55%;">{{ $patient_genre }} </td>
+                        <th width="40%;">Médecin prescripteur : </th>
+                        <td width="20%;"> {{ $doctor_name }} </td>
                     </tr>
                 </tbody>
             </table>
+
             </p>
             <br>
     </div>

@@ -164,6 +164,9 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('settings')->group(function () {
         Route::get('reports', [SettingController::class, 'report_index'])->name('settings.report-index');
         Route::post('reports-store', [SettingController::class, 'report_store'])->name('report.report-store');
+        Route::post('reports-edit/{id}', [SettingController::class, 'report_update'])->name('report.report-edit');
+        Route::post('reports-update', [SettingController::class, 'report_update'])->name('report.report-update');
+        Route::get('reports-delete/{id}', [SettingController::class, 'report_delete'])->name('report.report-delete');
 
         // App settings
         Route::get('app', [SettingController::class, 'app'])->name('settings.app-index');

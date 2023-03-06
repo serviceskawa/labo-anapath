@@ -175,9 +175,9 @@
                         <p><b>Signature 1</b> :
                             {{ $report->signatory1 == null ? 'Inactif' : getSignatory1($report->signatory1) }}</p>
                         <p><b>Signature 2</b> :
-                            {{ $report->signatory2 == null ? 'Inactif' : getSignatory2($report->signatory2) }}</p>
+                            {{ $report->signatory2 == null ? 'Inactif' : getSignatory1($report->signatory2) }}</p>
                         <p><b>Signature 3</b> :
-                            {{ $report->signatory3 == null ? 'Inactif' : getSignatory3($report->signatory3) }}</p>
+                            {{ $report->signatory3 == null ? 'Inactif' : getSignatory1($report->signatory3) }}</p>
                     </div>
 
                 </div>

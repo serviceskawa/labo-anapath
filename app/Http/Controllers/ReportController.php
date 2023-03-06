@@ -220,15 +220,16 @@ class ReportController extends Controller
         if (empty($report)) {
             return redirect()->back()->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
         }
-        if ($report->is_deliver == 1) {
-            $state = 0;
-        } else {
-            $state = 1;
-        }
+        // if ($report->is_deliver == 1) {
+        //     $state = 0;
+        // } else {
+        //     $state = 1;
+        // }
         $report->fill([
-            "is_deliver" => $state,
+            "is_deliver" => 1,
         ])->save();
+        $this->pdf($reportId);
         // dd($report);
-        return redirect()->back()->with('success', "Effectué avec succès ! ");
+        //return redirect()->back()->with('success', "Effectué avec succès ! ");
     }
 }

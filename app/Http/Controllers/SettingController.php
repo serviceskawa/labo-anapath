@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
+use App\Models\TitleReport;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
@@ -19,8 +20,8 @@ class SettingController extends Controller
         }
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
-        // dd($setting);
-        return view('settings.report.index' , compact('setting'));
+        $titles = TitleReport::latest()->get();
+        return view('settings.report.index' , compact('titles'));
     }
 
     public function report_store(Request $request)
@@ -28,59 +29,66 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('create-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+        $data = $this->validate($request, [
+            'title' => 'required |unique:title_reports,title',
+        ]);
 
-        $setting = Setting::find(1);
-
-        if ($request->file('img1') ) {
-
-            $img1 = time() . '_settings_report_signature1.' . $request->file('img1')->extension();  
-            
-            $path_img1 = $request->file('img1')->storeAs('settings/reports', $img1, 'public');
-
-        }
-        if ($request->file('img2') ) {
-
-            $img2 = time() . '_settings_report_signature2.' . $request->file('img2')->extension();  
-            
-            $path_img2 = $request->file('img2')->storeAs('settings/reports', $img2, 'public');
-            
-        }
-        if ($request->file('img3') ) {
-
-            $img2 = time() . '_settings_report_signature3.' . $request->file('img3')->extension();  
-            
-            $path_img3 = $request->file('img3')->storeAs('settings/reports', $img2, 'public');
-            
-        }
-
-        if ($setting) {
-
-            $setting->fill([
-                "signatory1" => $request->Signator1,
-                "signatory2" => $request->Signator2,
-                "signatory3" => $request->Signator3,
-                "placeholder" => $request->placeholder,
-                "placeholder2" => $request->placeholder2,
-                "signature1" => $request->file('img1') ? $path_img1 : $setting->signature1,
-                "signature2" => $request->file('img2') ? $path_img2 : $setting->signature2,
-                "signature3" => $request->file('img3') ? $path_img3 : $setting->signature3
-            ])->save();
-
-        }else {
-            $setting = Setting::create([
-                "signatory1" => $request->Signator1,
-                "signatory2" => $request->Signator2,
-                "signatory3" => $request->Signator3,
-                "placeholder" => $request->placeholder,
-                "placeholder2" => $request->placeholder2,
-                "signature1" => $request->file('img1') ? $path_img1 : "",
-                "signature2" => $request->file('img2') ? $path_img2 : "",
-                "signature3" => $request->file('img3') ? $path_img3 : ""
+        try {
+            TitleReport::create([
+                "title" => $data['title'],
             ]);
+            return back()->with('success', " Opération effectuée avec succès  ! ");
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
-        
 
         return back()->with('success', " Elément mis à jour avec succès  ! ");
+    }
+
+    public function report_edit($id)
+    {
+        if (!getOnlineUser()->can('view-settings')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $data = TitleReport::find($id);
+        return response()->json($data);
+    }
+
+    public function report_update(Request $request)
+    {
+        if (!getOnlineUser()->can('view-settings')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $data = $this->validate($request, [
+            'id' => 'required',
+            'title' => 'required'
+        ]);
+
+
+        try {
+
+            $titleReport = TitleReport::find($data['id']);
+            $titleReport->patient_id = $data['title'];
+            $titleReport->save();
+
+            return back()->with('success', "Un titre mis à jour ! ");
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de la mis à jour ! " . $ex->getMessage());
+        }
+    }
+
+    public function report_delete($id)
+    {
+        if (!getOnlineUser()->can('view-settings')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $titleReport = TitleReport::find($id)->delete();
+
+        if ($titleReport) {
+            return back()->with('success', "    Un élement a été supprimé ! ");
+        } else {
+            return back()->with('error', "    Element utilisé ailleurs ! ");
+        }
     }
 
     public function report_store_placeholder(Request $request)

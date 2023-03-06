@@ -5,10 +5,7 @@
 @section('css')
     <link href="{{ asset('/adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('/adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.css"
-        integrity="sha512-In/+MILhf6UMDJU4ZhDL0R0fEpsp4D3Le23m6+ujDWXwl3whwpucJG1PEmI3B07nyJx+875ccs+yX2CqQJUxUw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    
     <style>
         .ck-editor__editable[role="textbox"] {
             /* editing area */
@@ -20,13 +17,18 @@
 @section('content')
     <div class="row">
         <div class="col-12">
-            <div class="page-title-box">
-                <div class="page-title-right mr-3 mb-1">
-                    <a href="{{ route('report.index') }}" type="button" class="btn btn-primary">Retour à la liste des
-                        reports</a>
+                <div class="page-title-box">
+                    <div class="page-title-right mr-3 mb-1">
+                        <a href="{{ route('report.index') }}" type="button" class="btn btn-primary">Retour à la liste des comptes rendu</a>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#standard-modal">Ajouter un nouveau titre</button>
+                    </div>
+                    <h4 class="page-title"></h4>
+                    
+                    @include('settings.report.create')
+                    
+                    @include('settings.report.edit')
                 </div>
-                <h4 class="page-title"></h4>
-            </div>
 
 
         </div>
@@ -50,7 +52,7 @@
                         <li class="nav-item">
                             <a href="#input-types-preview" data-bs-toggle="tab" aria-expanded="false"
                                 class="nav-link active">
-                                Signatures
+                                Titres
                             </a>
                         </li>
                         {{-- <li class="nav-item">
@@ -59,80 +61,52 @@
                             </a>
                         </li> --}}
                     </ul> <!-- end nav-->
-
-                    <div class="tab-content">
-                        <div class="tab-pane show active" id="input-types-preview">
-                            <form action="{{ route('report.report-store') }}" method="post" enctype="multipart/form-data">
-                                <div class="row">
-
-                                    @csrf
-                                    <div class="col-lg-4">
-
-                                        <div class="mb-3">
-                                            <label for="simpleinput" class="form-label">Signataire 1</label>
-                                            <input type="text" id="simpleinput" name="Signator1" class="form-control"
-                                                value="{{ $setting ? $setting->signatory1 : '' }}">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="example-fileinput" class="form-label">Signature 1</label>
-                                            <input type="file" class="dropify" name="img1"
-                                                data-default-file="{{ $setting ? Storage::url($setting->signature1) : '' }}"
-                                                data-max-file-size="3M" />
-                                        </div>
-
-
-                                    </div> <!-- end col -->
-
-                                    <div class="col-lg-4">
-
-                                        <div class="mb-3">
-                                            <label for="simpleinput" class="form-label">Signataire 2</label>
-                                            <input type="text" id="simpleinput" name="Signator2"
-                                                value="{{ $setting ? $setting->signatory2 : '' }}" class="form-control">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="example-fileinput" class="form-label">Signature 2</label>
-                                            <input type="file" class="dropify" name="img2"
-                                                data-default-file="{{ $setting ? Storage::url($setting->signature2) : '' }}"
-                                                data-max-file-size="3M" />
-                                        </div>
-
-
-                                    </div> <!-- end col -->
-
-                                    <div class="col-lg-4">
-
-                                        <div class="mb-3">
-                                            <label for="simpleinput" class="form-label">Signataire 3</label>
-                                            <input type="text" id="simpleinput" name="Signator3"
-                                                value="{{ $setting ? $setting->signatory3 : '' }}" class="form-control">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="example-fileinput" class="form-label">Signature 3</label>
-                                            <input type="file" class="dropify" name="img3"
-                                                data-default-file="{{ $setting ? Storage::url($setting->signature3) : '' }}"
-                                                data-max-file-size="3M" />
-                                        </div>
-                                    </div> <!-- end col -->
-                                </div>
-                                <div class="card-footer">
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-xs btn-success">Mettre a jour</button>
-                                    </div>
-                                </div> <!-- end card-body -->
-                            </form>
-                            <!-- end row-->
-                        </div> <!-- end preview-->
-                        <div class="tab-pane" id="input-types-code">
-                            <pre class="mb-0">
-                                <span class="html escape">
-
-                                </span>
-                            </pre> <!-- end highlight-->
+                    <div class="card-body">
+                        <div class="card-widgets">
+                            <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
+                            <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false"
+                                aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
+                            <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                         </div>
+                        <h5 class="card-title mb-0">Liste des Titres</h5>
+        
+                        <div id="cardCollpase1" class="collapse pt-3 show">
+        
+        
+                            <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                                <thead class="col-lg-12" style="text-align: center;">
+                                    <tr>
+                                        <th class="col-lg-2">#</th>
+                                        <th class="col-lg-6">Titres</th>
+                                        <th class="col-lg-4">Actions</th>
+        
+                                    </tr>
+                                </thead>
+        
+        
+                                <tbody>
+        
+                                    @foreach ($titles as $item)
+                                        <tr>
+                                            <td style="text-align: center;">{{ $item->id }}</td>
+                                            <td style="text-align: center;">{{ $item->title }}</td>
+                                            <td style="text-align: center;">
+                                                <button type="button" onclick="edit({{ $item->id }})"
+                                                    class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
+                                                <button type="button" onclick="deleteModal({{ $item->id }})"
+                                                    class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
+                                            </td>
+        
+                                        </tr>
+                                    @endforeach
+        
+                                </tbody>
+                            </table>
+        
+                        </div>
+                    </div>
+                    <div class="tab-content">
+                        
                     </div> <!-- end tab-content-->
                 </div>
 
@@ -143,26 +117,71 @@
 
 
 @push('extra-js')
-    <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
+    <script>
+        // SUPPRESSION
+        function deleteModal(id) {
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
-        integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        $('.dropify').dropify();
-    </script>
-    <script>
-        ClassicEditor
-            .create(document.querySelector('#editor'))
-            .catch(error => {
-                console.error(error);
+            Swal.fire({
+                title: "Voulez-vous supprimer l'élément ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Oui ",
+                cancelButtonText: "Non !",
+            }).then(function(result) {
+                if (result.value) {
+                    window.location.href = "{{ url('settings/report-delete') }}" + "/" + id;
+                    Swal.fire(
+                        "Suppression !",
+                        "En cours de traitement ...",
+                        "success"
+                    )
+                }
             });
-    </script>
-    <script>
-        ClassicEditor
-            .create(document.querySelector('#editor2'))
-            .catch(error => {
-                console.error(error);
+        }
+
+
+        /* DATATABLE */
+        $(document).ready(function() {
+
+            $('#datatable1').DataTable({
+                "order": [ ],
+                "columnDefs": [{
+                    "targets": [0],
+                    "searchable": true
+                }],
+                "language": {
+                    "lengthMenu": "Afficher _MENU_ enregistrements par page",
+                    "zeroRecords": "Aucun enregistrement disponible",
+                    "info": "Afficher page _PAGE_ sur _PAGES_",
+                    "infoEmpty": "Aucun enregistrement disponible",
+                    "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+                    "sSearch": "Rechercher:",
+                    "paginate": {
+                        "previous": "Précédent",
+                        "next": "Suivant"
+                    }
+                },
             });
+        });
+
+
+        //EDITION
+        function edit(id) {
+            var e_id = id;
+
+            // Populate Data in Edit Modal Form
+            $.ajax({
+                type: "GET",
+                url: "{{ url('settings/reports-edit') }}" + '/' + e_id,
+                success: function(data) {
+                    $('#id2').val(data.id);
+                    $('#title2').val(data.title);
+                    $('#editModal').modal('show');
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                }
+            });
+        }
     </script>
 @endpush

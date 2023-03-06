@@ -656,15 +656,16 @@ class TestOrderController extends Controller
                 }
 
                 if (!empty($data->report)) {
-                    switch ($data->report->is_deliver) {
-                        case 1:
-                            $btnreport = ' <a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-success" title="Cliquer pour marquer comme non livré"><i class="uil uil-envelope-upload"></i> Marquer comme Non Livrer</a>';
-                            break;
+                    $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </a>';
+                    // switch ($data->report->is_deliver) {
+                    //     //<a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-success" title="Cliquer pour marquer comme non livré"><i class="uil uil-envelope-upload"></i> Marquer comme Non Livrer</a>
+                    //     case 1:
+                    //         $btnreport = '';
+                    //         break;
 
-                        default:
-                            $btnreport = ' <a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Cliquer pour marquer comme livré"><i class="uil uil-envelope-upload"></i> Marquer comme livrer</a>';
-                            break;
-                    }
+                    //     default:
+                    //         break;
+                    // }
                 } else {
                     $btnreport = "";
                 }

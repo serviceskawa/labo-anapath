@@ -247,11 +247,11 @@
                     order: [
                         [0, 'asc']
                     ],
-                    columnDefs: [
-                        {
-                            searchable: true
-                        }
-                    ],
+                    // columnDefs: [
+                    //     {
+                    //         searchable: true
+                    //     }
+                    // ],
                 });
 
                 $.fn.dataTable.ext.search.push(

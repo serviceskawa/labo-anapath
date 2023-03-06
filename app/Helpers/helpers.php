@@ -8,6 +8,7 @@ use App\Models\TestOrder;
 use Illuminate\Support\Str;
 use App\Models\Consultation;
 use App\Models\Invoice;
+use App\Models\Report;
 use App\Models\TypeConsultation;
 use Illuminate\Support\Facades\Auth;
 
@@ -407,14 +408,15 @@ if (!function_exists('getPermission')) {
 }
 
 if (!function_exists('getSignatory1')) {
-    function getSignatory1()
+    function getSignatory1($signatory_id)
     {
-        $setting = Setting::findorfail(1);
-        return $setting->signatory1;
+        $users =getUsersByRole('docteur');
+        $signatory = $users->find($signatory_id);
+        return $signatory->lastname ." ". $signatory->firstname;
     }
 }
 if (!function_exists('getSignatory2')) {
-    function getSignatory2()
+    function getSignatory2($signatory_id)
     {
         $setting = Setting::findorfail(1);
         return $setting->signatory2;
