@@ -151,7 +151,7 @@ class ReportController extends Controller
             'code' => $report->code,
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
             'prelevement_date' => date('d/m/Y', strtotime($report->order->prelevement_date)),
-            'test_afiliate' => $report->order->test_afiliate,
+            'test_affiliate' => $report->order->test_affiliate,
             'content' => $report->description,
             'signatory1' => $report->signatory1 != null ? $signatory1->lastname.' '.$signatory1->firstname : '',
             'signature1' => $report->signatory1 != null ? $signatory1->signature : '',
