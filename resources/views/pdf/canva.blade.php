@@ -25,16 +25,16 @@ date_default_timezone_set('Europe/Paris');
             <br><span style="font-size:10px; text-align:right;">Laboratoire d’Anatomie Pathologique</span>
         </div>
     </div>
-    <div style="display: inline-block; position: absolute; right: 100px;width: 200px;padding: 10px;  margin-top:-20px">
-        <p>
-            <b>N° ANAPTH :</b> {{ $code }} 
-            @if ($test_afiliate!=null)
-                <b>Examen Référence:</b> {{$test_afiliate}}
-            @endif
-            <br>
-            <b>Date :</b> {{ $current_date }}
-        </p>
-    </div>
+    <div style="display: inline-block; position: absolute; top: 0; right: 0; width: 320px; padding: 10px; text-align: right;">
+    <p>
+        <b>N° ANAPTH :</b>  {{ $code }} 
+        <b>{{ $test_affiliate !=null ? "| Examen reference : " : '' }}</b>
+        {{ $test_affiliate !=null ? $test_affiliate : '' }}    
+        <br>
+        <b>Date :</b> {{ $current_date }}
+    </p>
+</div>
+
     <div
         style="margin-top:20px; background-color:#0070C1; width:100%; height:50px;color:rgb(255,255,255); text-align: center; padding-top:19px;font-size:25px;">
         <b>COMPTE RENDU HISTOPATHOLOGIQUE</b>
@@ -124,7 +124,9 @@ date_default_timezone_set('Europe/Paris');
                 </td>
             </tr>
         </table>
-
+<!--@if ($test_affiliate!="")
+                Examen Référence: {{$test_affiliate}}
+            @endif-->
     </div>
     <br><br>
     <page_footer>
