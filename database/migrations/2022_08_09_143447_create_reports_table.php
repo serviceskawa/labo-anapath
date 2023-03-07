@@ -32,7 +32,7 @@ class CreateReportsTable extends Migration
             $table->foreignId('user_id')->nullable()
                 ->constrained('users')
                 ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->onDelete('cascade'); 
             $table->timestamps();
         });
     }

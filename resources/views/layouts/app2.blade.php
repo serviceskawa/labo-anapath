@@ -254,6 +254,15 @@
                         </li>
                     @endif
 
+                    @if (getOnlineUser()->can('view-reports'))
+                        <li class="side-nav-item">
+                            <a href="{{ route('log.report-index') }}" class="side-nav-link">
+                                <i class="uil-document-layout-right"></i>
+                                <span> Historiques</span>
+                            </a>
+                        </li>
+                    @endif
+
                     @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
                         <li class="side-nav-item">
                             <a data-bs-toggle="collapse" href="#sidebarForms" aria-expanded="false"

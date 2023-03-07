@@ -17,6 +17,8 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\InvoiceDetail;
 use App\Models\DetailTestOrder;
+use App\Models\LogReport;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -442,6 +444,7 @@ class TestOrderController extends Controller
         }
         $test_order = TestOrder::findorfail($id);
         $settings = Setting::find(1);
+        $user = Auth::user();
 
         if ($test_order->status) {
 
@@ -459,6 +462,14 @@ class TestOrderController extends Controller
                 "description" => $settings ? $settings->placeholder : '',
                 "test_order_id" => $test_order->id,
             ]);
+            $reportnow = Report::latest()->first();
+
+            $log = new LogReport();
+            $log->operation = "Créer un nouveau report";
+            $log->report_id = $reportnow->id;
+            $log->user_id = $user->id;
+            $log->save();
+
             $code_facture = generateCodeFacture();
 
             // Creation de la facture

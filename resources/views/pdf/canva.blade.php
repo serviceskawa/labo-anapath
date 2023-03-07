@@ -37,7 +37,7 @@ date_default_timezone_set('Europe/Paris');
 
     <div
         style="margin-top:20px; background-color:#0070C1; width:100%; height:50px;color:rgb(255,255,255); text-align: center; padding-top:19px;font-size:25px;">
-        <b>COMPTE RENDU HISTOPATHOLOGIQUE</b>
+        <b> {{ $title }} </b>
     </div>
     <br><br>
     <div>
@@ -93,6 +93,13 @@ date_default_timezone_set('Europe/Paris');
     {{-- <br><br><br> --}}
 
     {{-- <div class="border_b"></div> --}}
+
+    @if ($content_supplementaire!="")
+        <h3 style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
+            <b>Récapitulatifs supplementaire</b>
+        </h3>
+            {!! $content_supplementaire !!}
+    @endif
 
     <div style="">
         <table style="width: 100%;">

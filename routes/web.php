@@ -23,6 +23,7 @@ use App\Http\Controllers\TestCategoryController;
 use App\Http\Controllers\DetailsContratController;
 use App\Http\Controllers\TypeConsultationController;
 use App\Http\Controllers\CategoryPrestationController;
+use App\Http\Controllers\LogReportController;
 use App\Http\Controllers\SettingReportTemplateController;
 
 /*
@@ -152,6 +153,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('list', [ReportController::class, 'index'])->name('report.index');
         Route::get('show/{id}', [ReportController::class, 'show'])->name('report.show');
         Route::post('/store', [ReportController::class, 'store'])->name('report.store');
+        Route::post('/auto', [ReportController::class, 'saveauto'])->name('report.saveauto');
         Route::get('send_sms/{id}', [ReportController::class, 'send_sms'])->name('report.send-sms');
         Route::get('pdf/{id}', [ReportController::class, 'pdf'])->name('report.pdf');
 
@@ -164,14 +166,19 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('settings')->group(function () {
         Route::get('reports', [SettingController::class, 'report_index'])->name('settings.report-index');
         Route::post('reports-store', [SettingController::class, 'report_store'])->name('report.report-store');
-        Route::post('reports-edit/{id}', [SettingController::class, 'report_update'])->name('report.report-edit');
+        Route::get('/reports-edit/{id}', [SettingController::class, 'report_edit']);
         Route::post('reports-update', [SettingController::class, 'report_update'])->name('report.report-update');
-        Route::get('reports-delete/{id}', [SettingController::class, 'report_delete'])->name('report.report-delete');
+        Route::get('reports-delete/{id}', [SettingController::class, 'report_delete']);
 
         // App settings
         Route::get('app', [SettingController::class, 'app'])->name('settings.app-index');
         Route::post('app-store', [SettingController::class, 'app_store'])->name('settings.app-store');
     });
+
+    //Historique
+    Route::get('log/report',[LogReportController::class, 'index'])->name('log.report-index');
+    Route::get('log/show/{id}',[LogReportController::class, 'show']);
+    Route::get('log/user/{id}',[LogReportController::class, 'getuser']);
 
     Route::get('/mm', function () {
         return view('myPDF');

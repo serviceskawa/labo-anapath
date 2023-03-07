@@ -129,7 +129,7 @@
                 cancelButtonText: "Non !",
             }).then(function(result) {
                 if (result.value) {
-                    window.location.href = "{{ url('settings/report-delete') }}" + "/" + id;
+                    window.location.href = "{{ url('settings/reports-delete') }}" + "/" + id;
                     Swal.fire(
                         "Suppression !",
                         "En cours de traitement ...",
@@ -176,7 +176,7 @@
                 success: function(data) {
                     $('#id2').val(data.id);
                     $('#title2').val(data.title);
-                    $('#editModal').modal('show');
+                    $('#editModal1').modal('show');
                 },
                 error: function(data) {
                     console.log('Error:', data);

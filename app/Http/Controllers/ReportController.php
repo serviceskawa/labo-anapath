@@ -6,6 +6,7 @@ use App\Models\Report;
 
 //use App\Models\Contrat;
 use App\Models\Doctor;
+use App\Models\LogReport;
 use App\Models\Setting;
 //use App\Helpers\herpers;
 use Illuminate\Http\Request;
@@ -15,8 +16,10 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 // require _DIR_.'/vendor/autoload.php';
 use App\Models\SettingReportTemplate;
+use App\Models\TitleReport;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Illuminate\Support\Facades\Auth;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
@@ -39,6 +42,11 @@ class ReportController extends Controller
         }
         $reports = Report::orderBy('created_at', 'DESC')->get();
         $doctors = Doctor::all();
+        $user = Auth::user();
+        $log = new LogReport();
+        $log->operation = "Voir la liste";
+        $log->user_id = $user->id;
+        $log->save();
 
         return view('reports.index', compact('reports','doctors'));
     }
@@ -57,12 +65,14 @@ class ReportController extends Controller
         $doctor_signataire1 = $request->doctor_signataire1;
         $doctor_signataire2 = $request->doctor_signataire2;
         $doctor_signataire3 = $request->doctor_signataire3;
+        $user = Auth::user();
 
        
 
         $data = $this->validate($request, [
             'content' => 'required',
             'report_id' => 'required|exists:reports,id',
+            'title' => 'required', 
             'status' => 'required|boolean',
             // 'signatory1' => 'nullable|required_if:signatory1,on',
         ]);
@@ -73,10 +83,52 @@ class ReportController extends Controller
             "signatory1" => $doctor_signataire1,
             "signatory2" => $doctor_signataire2,
             "signatory3" => $doctor_signataire3,
-            "status" => $request->status == "1" ? '1' : '0'
+            "status" => $request->status == "1" ? '1' : '0',
+            "title_id" => $request->title,
+            "description_supplementaire" => $request->description_supplementaire !="" ? $request->description_supplementaire :'',
         ])->save();
 
+        $log = new LogReport();
+        $log->operation = "Mettre à jour ";
+        $log->report_id = $request->report_id;
+        $log->user_id = $user->id;
+        $log->save();
+
         return redirect()->back()->with('success', "   Examen mis à jour ! ");
+    }
+
+    public function saveauto(Request $request)
+    {
+        if (!getOnlineUser()->can('create-reports')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
+        $doctor_signataire1 = $request->doctor_signataire1;
+        $doctor_signataire2 = $request->doctor_signataire2;
+        $doctor_signataire3 = $request->doctor_signataire3;
+        //dd($request->description_supplementaire,$request->title_supplementaire);
+        try{
+            $report = Report::findorfail($request->report_id);
+                $report->fill([
+                    "description" => $request->content,
+                    "signatory1" => $doctor_signataire1,
+                    "signatory2" => $doctor_signataire2,
+                    "signatory3" => $doctor_signataire3,
+                    "status" => $request->status == "1" ? '1' : '0',
+                    "title_id" => $request->title,
+                    "description_supplementaire" => $request->description_supplementaire !=""? $request->description_supplementaire :'',
+                    ])->save();
+            return response()->json($report);
+        }catch (\Throwable $ex) {
+            return response()->json($ex->getMessage());
+        //return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
+        }
+        
+
+     
+
+
+        //return redirect()->back()->with('success', "   Examen mis à jour ! ");
     }
 
     /**
@@ -91,10 +143,11 @@ class ReportController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $report = Report::findorfail($id);
-        $setting = Setting::find(1);
         $templates = SettingReportTemplate::all();
+        $titles = TitleReport::all();
+        $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
-        return view('reports.show', compact('report', 'setting', 'templates'));
+        return view('reports.show', compact('report', 'setting', 'templates','titles'));
     }
 
     public function send_sms($id)
@@ -107,10 +160,16 @@ class ReportController extends Controller
         $tel = $report->patient->telephone1;
         $number = "+22996631611";
         $message = "test one";
+        $user = Auth::user();
 
         try {
 
             sendSingleMessage($tel, $message);
+            $log = new LogReport();
+            $log->operation = "Evoyer un message";
+            $log->report_id = $id;
+            $log->user_id = $user->id;
+            $log->save();
 
             return redirect()->back()->with('success', "SMS envoyé avec succes ");
         } catch (\Throwable $ex) {
@@ -126,6 +185,7 @@ class ReportController extends Controller
         }
         //dd($report);
         $report = Report::find($id);
+        $user = Auth::user();
         
         if($report->signatory1 != null)
             {$signatory1 = User::findorfail($report->signatory1);}
@@ -152,7 +212,9 @@ class ReportController extends Controller
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
             'prelevement_date' => date('d/m/Y', strtotime($report->order->prelevement_date)),
             'test_affiliate' => $report->order->test_affiliate,
+            'title' => $report->title->title,
             'content' => $report->description,
+            'content_supplementaire' => $report->description_supplementaire !=""? $report->description_supplementaire : '',
             'signatory1' => $report->signatory1 != null ? $signatory1->lastname.' '.$signatory1->firstname : '',
             'signature1' => $report->signatory1 != null ? $signatory1->signature : '',
             
@@ -176,6 +238,11 @@ class ReportController extends Controller
         //dd($data);
         
         try {
+            $log = new LogReport();
+            $log->operation = "Imprimer";
+            $log->report_id = $id;
+            $log->user_id = $user->id;
+            $log->save();
             $content = view('pdf/canva', $data)->render();
 
             $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);

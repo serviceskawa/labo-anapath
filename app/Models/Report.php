@@ -24,6 +24,17 @@ class Report extends Model
         return $this->belongsTo(TestOrder::class, 'test_order_id');
     }
 
+
+    /**
+     * Get the title that owns the Report
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function title()
+    {
+        return $this->belongsTo(TitleReport::class, 'title_id');
+    }
+
     /**
      * Get the patient that owns the Report
      *

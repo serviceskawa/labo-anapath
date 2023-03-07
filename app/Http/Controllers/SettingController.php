@@ -47,9 +47,9 @@ class SettingController extends Controller
 
     public function report_edit($id)
     {
-        if (!getOnlineUser()->can('view-settings')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('view-settings')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $data = TitleReport::find($id);
         return response()->json($data);
     }
@@ -60,15 +60,15 @@ class SettingController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data = $this->validate($request, [
-            'id' => 'required',
-            'title' => 'required'
+            'id2' => 'required',
+            'title2' => 'required'
         ]);
 
 
         try {
 
-            $titleReport = TitleReport::find($data['id']);
-            $titleReport->patient_id = $data['title'];
+            $titleReport = TitleReport::find($data['id2']);
+            $titleReport->title = $data['title2'];
             $titleReport->save();
 
             return back()->with('success', "Un titre mis à jour ! ");

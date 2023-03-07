@@ -61,6 +61,21 @@
                                     </div>
                                 </div>
 
+                                <div class="row">
+                                    <div class="mb-3">
+                                        <label for="simpleinput" class="form-label">Titre</label>
+                                        <select class="form-select" id="title" name="title">
+                                            <option value="">Sélectionner un titre</option>
+                                            @forelse ($titles as $title)
+                                                <option value="{{ $title->id }}"
+                                                    {{ $report->title_id == $title->id ? 'selected' : '' }}
+                                                    >{{ $title->title }} </option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <input type="hidden" name="report_id" value="{{ $report->id }}">
 
                                 <div class="row">
@@ -73,6 +88,54 @@
                                         </div>
                                         <textarea name="content" hidden id="snow-editor-hidden" class="form-control mb-3" cols="30" rows="50"
                                             style="height: 500px;"></textarea> --}}
+                                    </div>
+                                </div>
+                                <label for="show-text" style="margin-right: 10px;">A-t-il un compte rendu supplémentaire?</label>
+                                <input type="checkbox" id="show">
+                                <br>
+                                <div id="show-field" style="display: none">
+                                    <div class="row">
+                                        <div class="mb-3">
+                                            <label for="simpleinput" class="form-label">Template</label>
+                                            <select class="form-select" id="template_supplementaire" name="template_supplementaire">
+                                                <option value="">Sélectionner un template</option>
+                                                @forelse ($templates as $template)
+                                                    <option value="{{ $template->id }}"
+                                                        >{{ $template->title }} </option>
+                                                @empty
+                                                @endforelse
+                                            </select>
+                                        </div>
+                                    </div>
+    
+                                    <div class="row">
+                                        <div class="mb-3">
+                                            <label for="simpleinput" class="form-label">Titre</label>
+                                            <select class="form-select" id="title_supplementaire" name="title_supplementaire">
+                                                <option value="">Sélectionner un titre</option>
+                                                @forelse ($titles as $title)
+                                                    <option value="{{ $title->id }}"
+                                                        {{ $report->title_id_supplementaire == $title->id ? 'selected' : '' }}
+                                                        >{{ $title->title }} </option>
+                                                @empty
+                                                @endforelse
+                                            </select>
+                                        </div>
+                                    </div>
+    
+                                    {{-- <input type="hidden" name="report_id" value="{{ $report->id }}"> --}}
+    
+                                    <div class="row">
+                                        <div class="mb-3">
+                                            <label for="simpleinput" class="form-label">Récapitulatifs<span
+                                                    style="color:red;">*</span></label>
+                                            <textarea name="description_supplementaire" id="editor2" class="form-control mb-3" cols="30" rows="50" style="height: 500px;">{{ $report->description_supplementaire }}</textarea>
+                                            {{-- <div id="snow-editor" style="height: 300px;">
+                                                {!! $report->description !!}
+                                            </div>
+                                            <textarea name="content" hidden id="snow-editor-hidden" class="form-control mb-3" cols="30" rows="50"
+                                                style="height: 500px;"></textarea> --}}
+                                        </div>
                                     </div>
                                 </div>
 
@@ -199,24 +262,7 @@
 @endsection
 
 @push('extra-js')
-    {{-- <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script> --}}
-    {{-- <script src="https://cdn.ckeditor.com/ckeditor5/36.0.0/super-build/ckeditor.js"></script> --}}
-    {{-- <script>
-        ClassicEditor
-            .create(document.querySelector('#editor'))
-            .then(editor => {
-                // console.log(editor);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    </script> --}}
-
-    <script>
-
-    </script>
-
-    <script>
+       <script>
         // This sample still does not showcase all CKEditor 5 features (!)
         // Visit https://ckeditor.com/docs/ckeditor5/latest/features/index.html to browse all the features.
         const ck_options = {
@@ -373,10 +419,77 @@
             ]
         };
         CKEDITOR.ClassicEditor.create(document.getElementById("editor"), ck_options);
+        CKEDITOR.ClassicEditor.create(document.getElementById("editor2"), ck_options);
     </script>
+
+    <script>
+        var checkbox = document.getElementById("show");
+        var textField = document.getElementById("show-field");
+
+        checkbox.addEventListener('change', function() {
+            if (checkbox.checked) {
+                textField.style.display = 'block';
+            } else {
+                textField.style.display = 'none';
+            }
+        });
+    </script>
+
+    <script>
+        const templateInput = document.getElementById('template');
+        const titleInput = document.getElementById('title');
+        const editorInput = document.getElementById('editor');
+        const signatory1Input = document.getElementById('doctor_signatory1');
+        const signatory2Input = document.getElementById('doctor_signatory2');
+        const signatory3Input = document.getElementById('doctor_signatory3');
+
+
+        if (typeof(Storage) === "undefined") {
+            alert("Le localStorage est désactivé dans votre navigateur. Pour utiliser cette fonctionnalité, veuillez activer le localStorage dans les paramètres de votre navigateur.");
+        }else{
+            //alert("cool activé");
+        }
+
+        // Charger les données sauvegardées dans le localStorage
+        if (localStorage.getItem('template')) {
+            templateInput.value = localStorage.getItem('template');
+        }else{
+            console.log(templateInput.value);
+            localStorage.setItem('editor', templateInput.value)
+        }
+        if (localStorage.getItem('title')) {
+            titleInput.value = localStorage.getItem('title');
+        }else{
+            console.log(titleInput.value);
+            localStorage.setItem('editor', titleInput.value)
+        }
+        if (localStorage.getItem('editor')) {
+            editorInput.value = localStorage.getItem('editor');
+            $('#editor').val(editorInput.value);
+        }else{
+            console.log(editorInput.value);
+            localStorage.setItem('editor', editorInput.value)
+        }
+        if (localStorage.getItem('doctor_signatory1')) {
+            signatory1Input.value = localStorage.getItem('doctor_signatory1');
+        }
+        if (localStorage.getItem('doctor_signatory2')) {
+            signatory2Input.value = localStorage.getItem('doctor_signatory2');
+        }
+        if (localStorage.getItem('doctor_signatory3')) {
+            signatory3Input.value = localStorage.getItem('doctor_signatory3');
+        }
+        // Enregistrer automatiquement les données toutes les 5 secondes
+        // setInterval(function() {
+        //     console.log(editorInput.value);
+        //     localStorage.setItem('editor', editorInput.value);
+        //     $('#editor').val(editorInput.value);
+        // }, 5000);
+    </script>
+
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#template').on('change', function(e) {
+            $('#doctor_signatory1').on('change', function(e) {
                 var template_id = $('#template').val();
                 const report = {!! json_encode($report) !!};
 
@@ -435,6 +548,65 @@
                     }
                 })
             });
+            $('#doctor_signatory1').on('change', function(e) {
+                var template_id_sup = $('#template_supplementaire').val();
+                const report = {!! json_encode($report) !!};
+
+                $.ajax({
+                    url: "{{ route('template.report-getTemplate') }}",
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        id: template_id_sup,
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        // $('#page_id').val()
+                        if (data) {
+                            $('#editor2').val(data.content);
+
+                            CKEDITOR.ClassicEditor
+                                .create(document.querySelector('#editor2'), ck_options)
+                                .then(editor => {})
+                                .catch(error => {
+                                    console.error(error);
+                                });
+
+                            document.querySelector('.ck-editor__editable').ckeditorInstance
+                                .destroy()
+
+                        } else {
+                            $('#editor2').val("Texte");
+
+                            ClassicEditor
+                                .create(document.querySelector('#editor'))
+                                .then(editor => {})
+                                .catch(error => {
+                                    console.error(error);
+                                });
+
+                            document.querySelector('.ck-editor__editable').ckeditorInstance
+                                .destroy()
+
+                        }
+
+                    },
+                    error: function(error) {
+                        $('#editor').val(report.description);
+
+                        ClassicEditor
+                            .create(document.querySelector('#editor'))
+                            .then(editor => {})
+                            .catch(error => {
+                                console.error(error);
+                            });
+
+                        document.querySelector('.ck-editor__editable').ckeditorInstance
+                            .destroy()
+
+                    }
+                })
+            });
         });
     </script>
 
@@ -442,6 +614,7 @@
     <script src="{{ asset('adminassets/js/vendor/quill.min.js') }}"></script>
     <!-- quill Init js-->
     {{-- <script src="{{ asset('adminassets/js/pages/demo.quilljs.js') }}"></script> --}}
+    
     <script>
         var quill = new Quill("#snow-editor", {
                 theme: "snow",
