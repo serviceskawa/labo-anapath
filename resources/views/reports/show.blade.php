@@ -90,9 +90,11 @@
                                             style="height: 500px;"></textarea> --}}
                                     </div>
                                 </div>
+
                                 <label for="show-text" style="margin-right: 10px;">A-t-il un compte rendu supplémentaire?</label>
                                 <input type="checkbox" id="show">
                                 <br>
+
                                 <div id="show-field" style="display: none">
                                     <div class="row">
                                         <div class="mb-3">
@@ -130,11 +132,7 @@
                                             <label for="simpleinput" class="form-label">Récapitulatifs<span
                                                     style="color:red;">*</span></label>
                                             <textarea name="description_supplementaire" id="editor2" class="form-control mb-3" cols="30" rows="50" style="height: 500px;">{{ $report->description_supplementaire }}</textarea>
-                                            {{-- <div id="snow-editor" style="height: 300px;">
-                                                {!! $report->description !!}
-                                            </div>
-                                            <textarea name="content" hidden id="snow-editor-hidden" class="form-control mb-3" cols="30" rows="50"
-                                                style="height: 500px;"></textarea> --}}
+                                          
                                         </div>
                                     </div>
                                 </div>
@@ -444,6 +442,59 @@
         const signatory3Input = document.getElementById('doctor_signatory3');
 
 
+
+        // function save() {
+        //     var report_id = $('#report_id').val();
+        //     var title = $('#title');
+        //     var editor =$('#editor');
+
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "{{ route('report.saveauto') }}",
+        //         data: {
+        //             "_token": "{{ csrf_token() }}",
+        //             report_id: report_id,
+        //             title_id: title,
+        //             content: editor,
+        //         },
+        //         success: function(data) {
+        //             console.log(data);
+        //             $('#title').val(data.title);
+        //             $('#editor').val(data.description);
+        //         },
+        //         error: function(data) {
+        //             console.log('Error:', data);
+        //         }
+        //     });
+
+        // }
+
+        setInterval(function() {
+            var report_id = $('#report_id').val();
+            var title = $('#title');
+            var editor =$('#editor');
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('report.saveauto') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    report_id: report_id,
+                    title_id: title,
+                    content: editor,
+                },
+                success: function(data) {
+                    console.log(data);
+                    $('#title').val(data.title);
+                    $('#editor').val(data.description);
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                }
+            });
+        }, 5000);
+
+
         if (typeof(Storage) === "undefined") {
             alert("Le localStorage est désactivé dans votre navigateur. Pour utiliser cette fonctionnalité, veuillez activer le localStorage dans les paramètres de votre navigateur.");
         }else{
@@ -451,39 +502,52 @@
         }
 
         // Charger les données sauvegardées dans le localStorage
-        if (localStorage.getItem('template')) {
-            templateInput.value = localStorage.getItem('template');
-        }else{
-            console.log(templateInput.value);
-            localStorage.setItem('editor', templateInput.value)
-        }
-        if (localStorage.getItem('title')) {
-            titleInput.value = localStorage.getItem('title');
-        }else{
-            console.log(titleInput.value);
-            localStorage.setItem('editor', titleInput.value)
-        }
+        // if (localStorage.getItem('template')) {
+        //     templateInput.value = localStorage.getItem('template');
+        // }else{
+        //     console.log(templateInput.value);
+        //     localStorage.setItem('editor', templateInput.value)
+        // }
+        // if (localStorage.getItem('title')) {
+        //     titleInput.value = localStorage.getItem('title');
+        // }else{
+        //     console.log(titleInput.value);
+        //     localStorage.setItem('editor', titleInput.value)
+        // }
+
         if (localStorage.getItem('editor')) {
-            editorInput.value = localStorage.getItem('editor');
-            $('#editor').val(editorInput.value);
-        }else{
-            console.log(editorInput.value);
-            localStorage.setItem('editor', editorInput.value)
+            //console.log(editorInput.defaultValue);
+            editorInput.defaultValue = localStorage.getItem('editor');
+            $('#editor').val(editorInput.defaultValue);
         }
-        if (localStorage.getItem('doctor_signatory1')) {
-            signatory1Input.value = localStorage.getItem('doctor_signatory1');
-        }
-        if (localStorage.getItem('doctor_signatory2')) {
-            signatory2Input.value = localStorage.getItem('doctor_signatory2');
-        }
-        if (localStorage.getItem('doctor_signatory3')) {
-            signatory3Input.value = localStorage.getItem('doctor_signatory3');
-        }
-        // Enregistrer automatiquement les données toutes les 5 secondes
+        // else{
+        //     console.log(editorInput.defaultValue);
+        //     localStorage.setItem('editor', editorInput.defaultValue)
+        // }
+
+        // if (localStorage.getItem('doctor_signatory1')) {
+        //     signatory1Input.value = localStorage.getItem('doctor_signatory1');
+        // }
+        // if (localStorage.getItem('doctor_signatory2')) {
+        //     signatory2Input.value = localStorage.getItem('doctor_signatory2');
+        // }
+        // if (localStorage.getItem('doctor_signatory3')) {
+        //     signatory3Input.value = localStorage.getItem('doctor_signatory3');
+        // }
+        //Enregistrer automatiquement les données toutes les 5 secondes
+
+            editorInput.addEventListener('change', function () {
+                console.log(editorInput.value);
+            });
+
+            editorInput.oninput = function() {
+                console.log(editorInput.value);
+            }
         // setInterval(function() {
-        //     console.log(editorInput.value);
-        //     localStorage.setItem('editor', editorInput.value);
-        //     $('#editor').val(editorInput.value);
+        //     const editorInput = document.getElementById('editor');
+        //     
+        //     localStorage.setItem('editor', editorInput.defaultValue);
+        //     $('#editor').val(editorInput.defaultValue);
         // }, 5000);
     </script>
 

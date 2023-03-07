@@ -103,22 +103,18 @@ class ReportController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $doctor_signataire1 = $request->doctor_signataire1;
-        $doctor_signataire2 = $request->doctor_signataire2;
-        $doctor_signataire3 = $request->doctor_signataire3;
+        // $doctor_signataire1 = $request->doctor_signataire1;
+        // $doctor_signataire2 = $request->doctor_signataire2;
+        // $doctor_signataire3 = $request->doctor_signataire3;
         //dd($request->description_supplementaire,$request->title_supplementaire);
         try{
             $report = Report::findorfail($request->report_id);
                 $report->fill([
                     "description" => $request->content,
-                    "signatory1" => $doctor_signataire1,
-                    "signatory2" => $doctor_signataire2,
-                    "signatory3" => $doctor_signataire3,
-                    "status" => $request->status == "1" ? '1' : '0',
                     "title_id" => $request->title,
                     "description_supplementaire" => $request->description_supplementaire !=""? $request->description_supplementaire :'',
                     ])->save();
-            return response()->json($report);
+            return response()->json("cool");
         }catch (\Throwable $ex) {
             return response()->json($ex->getMessage());
         //return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());

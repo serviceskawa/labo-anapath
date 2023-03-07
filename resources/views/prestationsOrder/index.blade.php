@@ -2,12 +2,6 @@
 
 @section('title', 'Demande de prestations')
 
-@section('css')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.css"
-        integrity="sha512-In/+MILhf6UMDJU4ZhDL0R0fEpsp4D3Le23m6+ujDWXwl3whwpucJG1PEmI3B07nyJx+875ccs+yX2CqQJUxUw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-@endsection
-
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -141,12 +135,6 @@
 @endsection
 
 @push('extra-js')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
-        integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        $('.dropify').dropify();
-    </script>
 
     <script type="text/javascript">
         // SUPPRESSION
