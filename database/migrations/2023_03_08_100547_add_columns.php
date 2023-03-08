@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddOperationIdToTable extends Migration
+class AddColumns extends Migration
 {
     /**
      * Run the migrations.
@@ -14,15 +14,11 @@ class AddOperationIdToTable extends Migration
     public function up()
     {
         Schema::table('log_reports', function (Blueprint $table) {
-             $table->foreignId('operation_id')->nullable()
-                ->constrained('operations')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            $table->string('operation');
             $table->foreignId('report_id')->nullable()
                 ->constrained('reports')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-                
             $table->foreignId('user_id')->nullable()
                 ->constrained('users')
                 ->onUpdate('cascade')

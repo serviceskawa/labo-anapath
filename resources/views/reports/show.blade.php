@@ -67,8 +67,8 @@
                                         <select class="form-select" id="title" name="title">
                                             <option value="">Sélectionner un titre</option>
                                             @forelse ($titles as $title)
-                                                <option value="{{ $title->id }}"
-                                                    {{ $report->title_id == $title->id ? 'selected' : '' }}
+                                                <option value="{{ $title->title }}"
+                                                    {{ $report->title == $title->title ? 'selected' : '' }}
                                                     >{{ $title->title }} </option>
                                             @empty
                                             @endforelse
@@ -92,10 +92,10 @@
                                 </div>
 
                                 <label for="show-text" style="margin-right: 10px;">A-t-il un compte rendu supplémentaire?</label>
-                                <input type="checkbox" id="show">
+                                <input type="checkbox" {{$report->description_supplementaire !=null ?'checked' : ''}} id="show">
                                 <br>
 
-                                <div id="show-field" style="display: none">
+                                <div id="show-field" style="{{$report->description_supplementaire==null ?'display: none' : ''}}">
                                     <div class="row">
                                         <div class="mb-3">
                                             <label for="simpleinput" class="form-label">Template</label>
@@ -109,30 +109,13 @@
                                             </select>
                                         </div>
                                     </div>
-    
-                                    <div class="row">
-                                        <div class="mb-3">
-                                            <label for="simpleinput" class="form-label">Titre</label>
-                                            <select class="form-select" id="title_supplementaire" name="title_supplementaire">
-                                                <option value="">Sélectionner un titre</option>
-                                                @forelse ($titles as $title)
-                                                    <option value="{{ $title->id }}"
-                                                        {{ $report->title_id_supplementaire == $title->id ? 'selected' : '' }}
-                                                        >{{ $title->title }} </option>
-                                                @empty
-                                                @endforelse
-                                            </select>
-                                        </div>
-                                    </div>
-    
-                                    {{-- <input type="hidden" name="report_id" value="{{ $report->id }}"> --}}
-    
+
                                     <div class="row">
                                         <div class="mb-3">
                                             <label for="simpleinput" class="form-label">Récapitulatifs<span
                                                     style="color:red;">*</span></label>
                                             <textarea name="description_supplementaire" id="editor2" class="form-control mb-3" cols="30" rows="50" style="height: 500px;">{{ $report->description_supplementaire }}</textarea>
-                                          
+
                                         </div>
                                     </div>
                                 </div>
@@ -153,7 +136,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-    
+
                                         <div class="m-3 form-check-inline">
                                             <label for="example-fileinput" class="form-label">Signatiare 2</label>
                                             <select name="doctor_signataire2" id="doctor_signataire2" class="form-control">
@@ -178,11 +161,11 @@
                                                 @endforeach
                                             </select>
                                         </div>
-    
+
                                     </div>
                                 </div>
 
-                               
+
 
                                 <div class="row">
                                     <div class="mb-3">
@@ -469,30 +452,30 @@
 
         // }
 
-        setInterval(function() {
-            var report_id = $('#report_id').val();
-            var title = $('#title');
-            var editor =$('#editor');
+        // setInterval(function() {
+        //     var report_id = $('#report_id').val();
+        //     var title = $('#title');
+        //     var editor =$('#editor');
 
-            $.ajax({
-                type: "POST",
-                url: "{{ route('report.saveauto') }}",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    report_id: report_id,
-                    title_id: title,
-                    content: editor,
-                },
-                success: function(data) {
-                    console.log(data);
-                    $('#title').val(data.title);
-                    $('#editor').val(data.description);
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                }
-            });
-        }, 5000);
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "{{ route('report.saveauto') }}",
+        //         data: {
+        //             "_token": "{{ csrf_token() }}",
+        //             report_id: report_id,
+        //             title_id: title,
+        //             content: editor,
+        //         },
+        //         success: function(data) {
+        //             console.log(data);
+        //             $('#title').val(data.title);
+        //             $('#editor').val(data.description);
+        //         },
+        //         error: function(data) {
+        //             console.log('Error:', data);
+        //         }
+        //     });
+        // }, 5000);
 
 
         if (typeof(Storage) === "undefined") {
@@ -545,7 +528,7 @@
             }
         // setInterval(function() {
         //     const editorInput = document.getElementById('editor');
-        //     
+        //
         //     localStorage.setItem('editor', editorInput.defaultValue);
         //     $('#editor').val(editorInput.defaultValue);
         // }, 5000);
@@ -612,73 +595,14 @@
                     }
                 })
             });
-            $('#doctor_signatory1').on('change', function(e) {
-                var template_id_sup = $('#template_supplementaire').val();
-                const report = {!! json_encode($report) !!};
-
-                $.ajax({
-                    url: "{{ route('template.report-getTemplate') }}",
-                    type: "POST",
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        id: template_id_sup,
-                    },
-                    success: function(data) {
-                        console.log(data);
-                        // $('#page_id').val()
-                        if (data) {
-                            $('#editor2').val(data.content);
-
-                            CKEDITOR.ClassicEditor
-                                .create(document.querySelector('#editor2'), ck_options)
-                                .then(editor => {})
-                                .catch(error => {
-                                    console.error(error);
-                                });
-
-                            document.querySelector('.ck-editor__editable').ckeditorInstance
-                                .destroy()
-
-                        } else {
-                            $('#editor2').val("Texte");
-
-                            ClassicEditor
-                                .create(document.querySelector('#editor'))
-                                .then(editor => {})
-                                .catch(error => {
-                                    console.error(error);
-                                });
-
-                            document.querySelector('.ck-editor__editable').ckeditorInstance
-                                .destroy()
-
-                        }
-
-                    },
-                    error: function(error) {
-                        $('#editor').val(report.description);
-
-                        ClassicEditor
-                            .create(document.querySelector('#editor'))
-                            .then(editor => {})
-                            .catch(error => {
-                                console.error(error);
-                            });
-
-                        document.querySelector('.ck-editor__editable').ckeditorInstance
-                            .destroy()
-
-                    }
-                })
-            });
         });
     </script>
 
     <!-- quill js -->
-    <script src="{{ asset('adminassets/js/vendor/quill.min.js') }}"></script>
+    {{-- <script src="{{ asset('adminassets/js/vendor/quill.min.js') }}"></script> --}}
     <!-- quill Init js-->
     {{-- <script src="{{ asset('adminassets/js/pages/demo.quilljs.js') }}"></script> --}}
-    
+
     <script>
         var quill = new Quill("#snow-editor", {
                 theme: "snow",

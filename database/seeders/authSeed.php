@@ -22,10 +22,16 @@ class authSeed extends Seeder
     public function run()
     {
 
+        $user = User::updateorcreate(["email" =>'test@test.bj'],[
+            "firstname" => 'Root',
+            "lastname" => 'Root',
+            "password" =>  Hash::make('password'),
+        ]);
+
         $role = role::updateOrCreate(
             ['name' => 'rootuser', 'slug' => 'rootuser'],
             ['created_by' => 1, 'description' =>'Super utilisateur']
-        ); 
+        );
 
         $permission = permission::all();
 
@@ -35,13 +41,13 @@ class authSeed extends Seeder
 
         $roles = [$last_role->id];
 
-        $user = User::updateorcreate(["email" =>'test@test.bj'],[
-            "firstname" => 'Root',
-            "lastname" => 'Root',
-            "password" =>  Hash::make('password'), 
-        ]);
+        // $user = User::updateorcreate(["email" =>'test@test.bj'],[
+        //     "firstname" => 'Root',
+        //     "lastname" => 'Root',
+        //     "password" =>  Hash::make('password'),
+        // ]);
         $user->roles()->attach($roles);
-        
+
         $permsTab = [];
         foreach ($roles as $key => $role_id) {
             $role = role::findorfail($role_id);

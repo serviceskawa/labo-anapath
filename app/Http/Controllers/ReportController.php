@@ -67,12 +67,12 @@ class ReportController extends Controller
         $doctor_signataire3 = $request->doctor_signataire3;
         $user = Auth::user();
 
-       
+
 
         $data = $this->validate($request, [
             'content' => 'required',
             'report_id' => 'required|exists:reports,id',
-            'title' => 'required', 
+            'title' => 'required',
             'status' => 'required|boolean',
             // 'signatory1' => 'nullable|required_if:signatory1,on',
         ]);
@@ -84,7 +84,7 @@ class ReportController extends Controller
             "signatory2" => $doctor_signataire2,
             "signatory3" => $doctor_signataire3,
             "status" => $request->status == "1" ? '1' : '0',
-            "title_id" => $request->title,
+            "title" => $request->title,
             "description_supplementaire" => $request->description_supplementaire !="" ? $request->description_supplementaire :'',
         ])->save();
 
@@ -119,9 +119,9 @@ class ReportController extends Controller
             return response()->json($ex->getMessage());
         //return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
-        
 
-     
+
+
 
 
         //return redirect()->back()->with('success', "   Examen mis à jour ! ");
@@ -182,13 +182,13 @@ class ReportController extends Controller
         //dd($report);
         $report = Report::find($id);
         $user = Auth::user();
-        
+
         if($report->signatory1 != null)
             {$signatory1 = User::findorfail($report->signatory1);}
-            
+
         if($report->signatory2 != null)
             {$signatory2 = User::findorfail($report->signatory2);}
-            
+
         if($report->signatory3 != null)
             {$signatory3 = User::findorfail($report->signatory3);}
         $year_month = "";
@@ -208,18 +208,18 @@ class ReportController extends Controller
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
             'prelevement_date' => date('d/m/Y', strtotime($report->order->prelevement_date)),
             'test_affiliate' => $report->order->test_affiliate,
-            'title' => $report->title->title,
+            'title' => $report->title,
             'content' => $report->description,
             'content_supplementaire' => $report->description_supplementaire !=""? $report->description_supplementaire : '',
             'signatory1' => $report->signatory1 != null ? $signatory1->lastname.' '.$signatory1->firstname : '',
             'signature1' => $report->signatory1 != null ? $signatory1->signature : '',
-            
+
             'signatory2' => $report->signatory2 != null ? $signatory2->lastname.' '.$signatory2->firstname : '',
             'signature2' => $report->signatory2 != null ? $signatory2->signature : '',
-            
+
             'signatory3' => $report->signatory3 != null ? $signatory3->lastname.' '.$signatory3->firstname : '',
             'signature3' => $report->signatory3 != null ? $signatory3->signature : '',
-            
+
             'patient_firstname' => $report->patient->firstname,
             'patient_lastname' => $report->patient->lastname,
             'patient_age' => $report->patient->age,
@@ -230,9 +230,9 @@ class ReportController extends Controller
             'created_at' => date_format($report->created_at, "d/m/Y"),
             'date' => date('d/m/Y')
         ];
-        
+
         //dd($data);
-        
+
         try {
             $log = new LogReport();
             $log->operation = "Imprimer";

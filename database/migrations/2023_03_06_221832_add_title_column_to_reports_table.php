@@ -15,7 +15,7 @@ class AddTitleColumnToReportsTable extends Migration
     {
         Schema::table('reports', function (Blueprint $table) {
             $table->foreignId('title_id')->nullable()->after('test_order_id')
-                ->constrained('titles_reports')
+                ->constrained('title_reports')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });

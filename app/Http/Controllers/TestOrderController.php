@@ -287,7 +287,7 @@ class TestOrderController extends Controller
         $tests = Test::all();
 
         $details = DetailTestOrder::where('test_order_id', $test_order->id)->get();
-       
+
 
         $types_orders = TypeOrder::all();
 
@@ -626,7 +626,7 @@ class TestOrderController extends Controller
                     }elseif (!empty($data->report)) {
                         if($data->report->status == 1){
                             return 'table-warning urgent';
-                        } 
+                        }
                     }
                     return 'table-danger urgent';
                 }elseif ($request->get('exams_status') == "livrer") {
@@ -634,13 +634,13 @@ class TestOrderController extends Controller
                 }elseif (!empty($data->report)) {
                     if($data->report->status == 1){
                         return 'table-warning';
-                    }                 
+                    }
                 }else {
                     return '';
                 }
             })
             // ->addColumn('examen_file', function ($data) {
-            //     //change over 
+            //     //change over
             //     if (!empty($data->examen_file)) {
             //         $btn = '<a href="' . Storage::url($data->examen_file) . '" class="btn btn-primary btn-sm" target="_blank"  rel="noopener noreferrer" type="button"><i class="mdi mdi-cloud-download"></i></a>';
             //     } else {
