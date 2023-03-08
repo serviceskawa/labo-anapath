@@ -52,8 +52,8 @@ date_default_timezone_set('Europe/Paris');
                     <tr>
                         <th width="25%">Nom :</th>
                         <td width="40%;">{{ $patient_firstname }} </td>
-                        <th width="40%;">Date prélèvement : </th>
-                        <td width="20%;">{{ $prelevement_date }} </td>
+                        <th width="25%;">Date prélèvement : </th>
+                        <td width="40%;">{{ $prelevement_date }} </td>
                     </tr>
 
                     <tr>
