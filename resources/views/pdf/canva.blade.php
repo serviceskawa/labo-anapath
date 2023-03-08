@@ -50,9 +50,9 @@ date_default_timezone_set('Europe/Paris');
             <table style="max-width: 100%;width: 500px ">
                 <tbody>
                     <tr>
-                        <th width="25%">Nom :</th>
+                        <th width="30%">Nom :</th>
                         <td width="40%;">{{ $patient_firstname }} </td>
-                        <th width="25%;">Date prélèvement : </th>
+                        <th width="30%;">Date prélèvement : </th>
                         <td width="40%;">{{ $prelevement_date }} </td>
                     </tr>
 
