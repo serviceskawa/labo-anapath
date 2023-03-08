@@ -265,7 +265,7 @@
                                 @foreach ($logs as $log)
                                     <tr>
                                         <td>{{ $log->id }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($log->created_at)->format('d/m/Y') }}</td>
+                                        <td>{{ $log->created_at }}</td>
                                         <td>{{ $log->operation }}</td>
                                         <td>{{ $log->user->lastname }} {{ $log->user->firstname }}</td>
                                     </tr>
