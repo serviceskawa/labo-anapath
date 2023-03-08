@@ -428,7 +428,7 @@
                     $(".examenReferenceSelect").hide();
                     $(".examenReferenceInput").show();
                     // $( "#examen_reference_select" ).select2({
-                    //     ajax: { 
+                    //     ajax: {
                     //     url: "{{ route('test_order.get_all_test_order') }}",
                     //     dataType: 'json',
                     //     delay: 250,

@@ -38,154 +38,156 @@
         <div class="row">
             <!-- Contenu du compte rendu -->
             <div class="col-9">
-                <div class="card mb-md-0 mb-3">
-                    <!-- <h5 class="card-header">Contenu du compte rendu</h5> -->
+                <div style="text-align:right; margin-bottom:10px;"><span style="color:red;">*</span>champs obligatoires
+                </div>
 
-                    <div class="card-body">
-                        <div id="cardCollpase1" class="show collapse pt-3">
-                            <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
+                <form action="{{ route('report.store') }}" id="reportForm" method="post">
+                    @csrf
+                    <input type="hidden" name="report_id" value="{{ $report->id }}">
 
-                            <form action="{{ route('report.store') }}" id="reportForm" method="post">
-                                @csrf
-                                <div class="row">
-                                    <div class="mb-3">
-                                        <label for="simpleinput" class="form-label">Template</label>
-                                        <select class="form-select" id="template" name="">
-                                            <option value="">Sélectionner un template</option>
-                                            @forelse ($templates as $template)
-                                                <option value="{{ $template->id }}"
-                                                    >{{ $template->title }} </option>
-                                            @empty
-                                            @endforelse
-                                        </select>
-                                    </div>
+                    <div class="card mb-md-0 mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <label for="simpleinput" class="form-label">Titre <span style="color:red;">*</span></label>
+                                <select class="form-select" id="title" name="title">
+                                    <option value="">Sélectionner un titre</option>
+                                    @forelse ($titles as $title)
+                                        <option value="{{ $title->title }}"
+                                            {{ $report->title == $title->title ? 'selected' : '' }}>{{ $title->title }}
+                                        </option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="card mb-md-0 mb-3 mt-3">
+                        <h5 class="card-header">Contenu de base</h5>
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="mb-3">
+                                    <label for="simpleinput" class="form-label">Template</label>
+                                    <select class="form-select" id="template" name="">
+                                        <option value="">Sélectionner un template</option>
+                                        @forelse ($templates as $template)
+                                            <option value="{{ $template->id }}">{{ $template->title }} </option>
+                                        @empty
+                                        @endforelse
+                                    </select>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class="mb-3">
-                                        <label for="simpleinput" class="form-label">Titre</label>
-                                        <select class="form-select" id="title" name="title">
-                                            <option value="">Sélectionner un titre</option>
-                                            @forelse ($titles as $title)
-                                                <option value="{{ $title->title }}"
-                                                    {{ $report->title == $title->title ? 'selected' : '' }}
-                                                    >{{ $title->title }} </option>
-                                            @empty
-                                            @endforelse
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <input type="hidden" name="report_id" value="{{ $report->id }}">
-
-                                <div class="row">
-                                    <div class="mb-3">
-                                        <label for="simpleinput" class="form-label">Récapitulatifs<span
-                                                style="color:red;">*</span></label>
-                                        <textarea name="content" id="editor" class="form-control mb-3" cols="30" rows="50" style="height: 500px;">{{ $report->description }}</textarea>
-                                        {{-- <div id="snow-editor" style="height: 300px;">
-                                            {!! $report->description !!}
-                                        </div>
-                                        <textarea name="content" hidden id="snow-editor-hidden" class="form-control mb-3" cols="30" rows="50"
-                                            style="height: 500px;"></textarea> --}}
-                                    </div>
-                                </div>
-
-                                <label for="show-text" style="margin-right: 10px;">A-t-il un compte rendu supplémentaire?</label>
-                                <input type="checkbox" {{$report->description_supplementaire !=null ?'checked' : ''}} id="show">
-                                <br>
-
-                                <div id="show-field" style="{{$report->description_supplementaire==null ?'display: none' : ''}}">
-                                    <div class="row">
-                                        <div class="mb-3">
-                                            <label for="simpleinput" class="form-label">Template</label>
-                                            <select class="form-select" id="template_supplementaire" name="template_supplementaire">
-                                                <option value="">Sélectionner un template</option>
-                                                @forelse ($templates as $template)
-                                                    <option value="{{ $template->id }}"
-                                                        >{{ $template->title }} </option>
-                                                @empty
-                                                @endforelse
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="mb-3">
-                                            <label for="simpleinput" class="form-label">Récapitulatifs<span
-                                                    style="color:red;">*</span></label>
-                                            <textarea name="description_supplementaire" id="editor2" class="form-control mb-3" cols="30" rows="50" style="height: 500px;">{{ $report->description_supplementaire }}</textarea>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row my-3">
-                                    <label for="simpleinput" class="form-label">Selectionner les signataires du compte rendu<span
+                            <div class="row">
+                                <div class="mb-3">
+                                    <label for="simpleinput" class="form-label">Récapitulatifs<span
                                             style="color:red;">*</span></label>
-                                    <div class="">
-                                        <div class="my-3  form-check-inline">
-                                            <label for="example-fileinput" class="form-label">Signatiare 1</label>
-                                            <select name="doctor_signataire1" id="doctor_signataire1" class="form-control">
-                                                <option value="">Selectionner un docteur</option>
-                                                @foreach (getUsersByRole('docteur') as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ $report->signatory1 == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->lastname }} {{ $item->firstname }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                    <textarea name="content" id="editor" class="form-control mb-3" cols="30" rows="50" style="height: 500px;">{{ $report->description }}</textarea>
 
-                                        <div class="m-3 form-check-inline">
-                                            <label for="example-fileinput" class="form-label">Signatiare 2</label>
-                                            <select name="doctor_signataire2" id="doctor_signataire2" class="form-control">
-                                                <option value="">Selectionner un docteur</option>
-                                                @foreach (getUsersByRole('docteur') as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ $report->signatory2 == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->lastname }} {{ $item->firstname }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="m-3 form-check-inline">
-                                            <label for="example-fileinput" class="form-label">Signataire 3</label>
-                                            <select name="doctor_signataire3" id="doctor_signataire3" class="form-control">
-                                                <option value="">Selectionner un docteur</option>
-                                                @foreach (getUsersByRole('docteur') as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ $report->signatory3 == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->lastname }} {{ $item->firstname }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                    </div>
                                 </div>
-
-
-
-                                <div class="row">
-                                    <div class="mb-3">
-                                        <label for="simpleinput" class="form-label mb-3">Etat du compte rendu<span
-                                                style="color:red;">*</span></label>
-                                        <select class="form-select" name="status">
-                                            <option value="0" {{ $report->status == 0 ? 'selected' : '' }}>En attente
-                                                de
-                                                relecture</option>
-                                            <option value="1" {{ $report->status == 1 ? 'selected' : '' }}>Terminé
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-warning w-100 mt-3">Mettre à jour</button>
-                            </form>
+                            </div>
 
                         </div>
                     </div>
-                </div>
+
+                    <div id="show-field" style="{{ $report->description_supplementaire == null ? 'display: none;' : '' }}"
+                        class="card mb-md-0 mb-3 mt-3">
+                        <h5 class="card-header">Contenu supplémentaire</h5>
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="mb-3">
+                                    <label for="simpleinput" class="form-label">Template</label>
+                                    <select class="form-select" id="template" name="">
+                                        <option value="">Sélectionner un template</option>
+                                        @forelse ($templates as $template)
+                                            <option value="{{ $template->id }}">{{ $template->title }} </option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="mb-3">
+                                    <label for="simpleinput" class="form-label">Récapitulatifs<span
+                                            style="color:red;">*</span></label>
+                                    <textarea name="description_supplementaire" id="editor2" class="form-control mb-3" cols="30" rows="50"
+                                        style="height: 500px;">{{ $report->description_supplementaire }}</textarea>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card mb-md-0 mb-3 mt-3">
+                        <h5 class="card-header">Signataires du compte rendu<span style="color:red;">*</span></h5>
+                        <div class="card-body">
+                            <div class="row my-3">
+                                <div class="">
+                                    <div class="my-3  form-check-inline">
+                                        <label for="example-fileinput" class="form-label">Signatiare 1</label>
+                                        <select name="doctor_signataire1" id="doctor_signataire1" class="form-control">
+                                            <option value="">Selectionner un docteur</option>
+                                            @foreach (getUsersByRole('docteur') as $item)
+                                                <option value="{{ $item->id }}"
+                                                    {{ $report->signatory1 == $item->id ? 'selected' : '' }}>
+                                                    {{ $item->lastname }} {{ $item->firstname }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="m-3 form-check-inline">
+                                        <label for="example-fileinput" class="form-label">Signatiare 2</label>
+                                        <select name="doctor_signataire2" id="doctor_signataire2" class="form-control">
+                                            <option value="">Selectionner un docteur</option>
+                                            @foreach (getUsersByRole('docteur') as $item)
+                                                <option value="{{ $item->id }}"
+                                                    {{ $report->signatory2 == $item->id ? 'selected' : '' }}>
+                                                    {{ $item->lastname }} {{ $item->firstname }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="m-3 form-check-inline">
+                                        <label for="example-fileinput" class="form-label">Signataire 3</label>
+                                        <select name="doctor_signataire3" id="doctor_signataire3" class="form-control">
+                                            <option value="">Selectionner un docteur</option>
+                                            @foreach (getUsersByRole('docteur') as $item)
+                                                <option value="{{ $item->id }}"
+                                                    {{ $report->signatory3 == $item->id ? 'selected' : '' }}>
+                                                    {{ $item->lastname }} {{ $item->firstname }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3">
+                                    <label for="simpleinput" class="form-label mb-3">Etat du compte rendu<span
+                                            style="color:red;">*</span></label>
+                                    <select class="form-select" name="status">
+                                        <option value="0" {{ $report->status == 0 ? 'selected' : '' }}>En attente
+                                            de
+                                            relecture</option>
+                                        <option value="1" {{ $report->status == 1 ? 'selected' : '' }}>Terminé
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-warning w-100 mt-3">Mettre à jour</button>
+                        </div>
+                    </div>
+
+
+                </form>
+
             </div>
 
             <!-- Colonne laterale -->
@@ -197,6 +199,10 @@
                     <div class="card-body">
                         <p><b>État</b> : {{ $report->status == 0 ? 'En attente de relecture' : 'Terminé' }}</p>
                         <p><b>Créé le</b> : {{ date_format($report->created_at, 'd/m/Y') }}</p>
+                        <label class="form-label">Supplementaire</label><br>
+                        <input type="checkbox" id="switch3" class="form-control"
+                            {{ $report->description_supplementaire != null ? 'checked' : '' }} data-switch="success" />
+                        <label for="switch3" data-on-label="oui" data-off-label="non"></label>
                         <p><b>Dernière mise à jour</b> : {{ date_format($report->updated_at, 'd/m/Y') }}</p>
                     </div>
                 </div>
@@ -238,12 +244,45 @@
             </div>
 
         </div>
+        <div class="col-12">
+            @if ($logs)
+                <div class="card mb-md-0 mb-3 mt-3">
+                    <h5 class="card-header">Historiques</h5>
+                    <div class="card-body">
+                        <table id="datatable1" class="table-striped dt-responsive nowrap w-100 table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>Opération</th>
+                                    <th>Utilisateur</th>
+
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @foreach ($logs as $log)
+                                    <tr>
+                                        <td>{{ $log->id }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($log->created_at)->format('d/m/Y') }}</td>
+                                        <td>{{ $log->operation }}</td>
+                                        <td>{{ $log->user->lastname }} {{ $log->user->firstname }}</td>
+                                    </tr>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
+        </div>
 
     </div>
 @endsection
 
 @push('extra-js')
-       <script>
+    <script>
         // This sample still does not showcase all CKEditor 5 features (!)
         // Visit https://ckeditor.com/docs/ckeditor5/latest/features/index.html to browse all the features.
         const ck_options = {
@@ -404,7 +443,7 @@
     </script>
 
     <script>
-        var checkbox = document.getElementById("show");
+        var checkbox = document.getElementById("switch3");
         var textField = document.getElementById("show-field");
 
         checkbox.addEventListener('change', function() {
@@ -479,8 +518,10 @@
 
 
         if (typeof(Storage) === "undefined") {
-            alert("Le localStorage est désactivé dans votre navigateur. Pour utiliser cette fonctionnalité, veuillez activer le localStorage dans les paramètres de votre navigateur.");
-        }else{
+            alert(
+                "Le localStorage est désactivé dans votre navigateur. Pour utiliser cette fonctionnalité, veuillez activer le localStorage dans les paramètres de votre navigateur."
+                );
+        } else {
             //alert("cool activé");
         }
 
@@ -519,13 +560,13 @@
         // }
         //Enregistrer automatiquement les données toutes les 5 secondes
 
-            editorInput.addEventListener('change', function () {
-                console.log(editorInput.value);
-            });
+        editorInput.addEventListener('change', function() {
+            console.log(editorInput.value);
+        });
 
-            editorInput.oninput = function() {
-                console.log(editorInput.value);
-            }
+        editorInput.oninput = function() {
+            console.log(editorInput.value);
+        }
         // setInterval(function() {
         //     const editorInput = document.getElementById('editor');
         //
@@ -536,6 +577,29 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
+
+            $('#datatable1').DataTable({
+                "order": [
+                    [0, "desc"]
+                ],
+                "columnDefs": [{
+                    "targets": [0],
+                    "searchable": false
+                }],
+                "language": {
+                    "lengthMenu": "Afficher _MENU_ enregistrements par page",
+                    "zeroRecords": "Aucun enregistrement disponible",
+                    "info": "Afficher page _PAGE_ sur _PAGES_",
+                    "infoEmpty": "Aucun enregistrement disponible",
+                    "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+                    "sSearch": "Rechercher:",
+                    "paginate": {
+                        "previous": "Précédent",
+                        "next": "Suivant"
+                    }
+                },
+            });
+
             $('#doctor_signatory1').on('change', function(e) {
                 var template_id = $('#template').val();
                 const report = {!! json_encode($report) !!};

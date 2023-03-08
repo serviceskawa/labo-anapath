@@ -43,10 +43,10 @@ class ReportController extends Controller
         $reports = Report::orderBy('created_at', 'DESC')->get();
         $doctors = Doctor::all();
         $user = Auth::user();
-        $log = new LogReport();
-        $log->operation = "Voir la liste";
-        $log->user_id = $user->id;
-        $log->save();
+        // $log = new LogReport();
+        // $log->operation = "Voir la liste";
+        // $log->user_id = $user->id;
+        // $log->save();
 
         return view('reports.index', compact('reports','doctors'));
     }
@@ -141,9 +141,10 @@ class ReportController extends Controller
         $report = Report::findorfail($id);
         $templates = SettingReportTemplate::all();
         $titles = TitleReport::all();
+        $logs = LogReport::where('report_id','like',$report->id)->latest()->get();
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
-        return view('reports.show', compact('report', 'setting', 'templates','titles'));
+        return view('reports.show', compact('report', 'setting', 'templates','titles', 'logs'));
     }
 
     public function send_sms($id)

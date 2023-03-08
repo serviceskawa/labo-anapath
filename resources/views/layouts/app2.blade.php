@@ -162,46 +162,63 @@
                         </li>
                     @endif --}}
 
-                    @if (getOnlineUser()->can('view-reports'))
+                        @if (getOnlineUser()->can('view-reports'))
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarForms" aria-expanded="false"
+                                    aria-controls="sidebarForms" class="side-nav-link">
+                                    <i class="dripicons-gear noti-icon"></i>
+                                    <span>Comptes rendu</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarForms">
+                                    <ul class="side-nav-second-level">
+                                        <li>
+                                            <a href="{{ route('report.index') }}">Tous les comptes rendu</a>
+                                        </li>
+                                        @if (Route::current()->getName() == 'report.show')
+                                            <a style="display:none" href="">show</a>
+                                        @endif
+                                        <li>
+                                            <a href="{{ route('log.report-index') }}">
+                                                <span> Historiques</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('settings.report-index') }}">Paramètres </a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </li>
+                        @endif
+
                         <li class="side-nav-item">
-                            <a href="{{ route('report.index') }}" class="side-nav-link">
-                                <i class="uil-file-medical"></i>
-                                <span> Comptes rendu</span>
+                            <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false"
+                                aria-controls="sidebarProjects" class="side-nav-link">
+                                <i class="uil-user-check"></i>
+                                <span> Factures </span>
+                                <span class="menu-arrow"></span>
                             </a>
-                            @if (Route::current()->getName() == 'report.show' )
-                                <a style="display:none" href="">show</a>
-                            @endif
+                            <div class="collapse" id="sidebarProjects">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{{ route('invoice.index') }}">Toutes les Factures</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('invoice.create') }}">Créer</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
 
-                    @endif
+                        <li class="side-nav-item">
+                            <a href="{{ route('appointement.index') }}" class="side-nav-link">
+                                <i class="uil-calender"></i>
+                                <span> Agenda</span>
+                            </a>
+                        </li>
 
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false"
-                            aria-controls="sidebarProjects" class="side-nav-link">
-                            <i class="uil-user-check"></i>
-                            <span> Factures </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="sidebarProjects">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href="{{ route('invoice.index') }}">Toutes les Factures</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('invoice.create') }}">Créer</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li class="side-nav-item">
-                        <a href="{{ route('appointement.index') }}" class="side-nav-link">
-                            <i class="uil-calender"></i>
-                            <span> Agenda</span>
-                        </a>
-                    </li>
-
-                    {{-- <li class="side-nav-item">
+                        {{-- <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarConsultation" aria-expanded="false"
                             aria-controls="sidebarAppoint" class="side-nav-link">
                             <i class="uil-calender"></i>
@@ -224,7 +241,7 @@
                         </div>
                     </li> --}}
 
-                    {{-- <li class="side-nav-item">
+                        {{-- <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarcategoryPrestation" aria-expanded="false"
                             aria-controls="sidebarAppoint" class="side-nav-link">
                             <i class="uil-calender"></i>
@@ -245,85 +262,64 @@
                         </div>
                     </li> --}}
 
-                    @if (getOnlineUser()->can('view-report-templates'))
-                        <li class="side-nav-item">
-                            <a href="{{ route('template.report-index') }}" class="side-nav-link">
-                                <i class="uil-document-layout-right"></i>
-                                <span> Templates compte rendu</span>
-                            </a>
-                        </li>
-                    @endif
+                        @if (getOnlineUser()->can('view-report-templates'))
+                            <li class="side-nav-item">
+                                <a href="{{ route('template.report-index') }}" class="side-nav-link">
+                                    <i class="uil-document-layout-right"></i>
+                                    <span> Templates compte rendu</span>
+                                </a>
+                            </li>
+                        @endif
 
-                    @if (getOnlineUser()->can('view-reports'))
-                        <li class="side-nav-item">
-                            <a href="{{ route('log.report-index') }}" class="side-nav-link">
-                                <i class="uil-document-layout-right"></i>
-                                <span> Historiques</span>
-                            </a>
-                        </li>
-                    @endif
+                        @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
+                            <li class="side-nav-item">
+                                <a href="{{ route('settings.app-index') }}" class="side-nav-link">
+                                    <i class="uil-document-layout-right"></i>
+                                    <span>Paramètres Systeme </span>
+                                </a>
+                            </li>
+                        @endif
 
-                    @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
-                        <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" href="#sidebarForms" aria-expanded="false"
-                                aria-controls="sidebarForms" class="side-nav-link">
-                                <i class="dripicons-gear noti-icon"></i>
-                                <span>Paramètres</span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <div class="collapse" id="sidebarForms">
-                                <ul class="side-nav-second-level">
-                                    @if (getOnlineUser()->can('view-settings'))
-                                        <li>
-                                            <a href="{{ route('settings.app-index') }}">Paramètres Systeme</a>
-                                        </li>
-                                    @endif
-                                    @if (getOnlineUser()->can('view-setting-report-templates'))
-                                        <li>
-                                            <a href="{{ route('settings.report-index') }}">Paramètres compte rendu</a>
-                                        </li>
-                                    @endif
-
-                                </ul>
-                            </div>
-                        </li>
-                    @endif
-
-                    @if (getOnlineUser()->can('edit-users'))
-                        <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" href="#sidebarProjects2" aria-expanded="false"
-                                aria-controls="sidebarProjects2" class="side-nav-link">
-                                <i class="uil-user-check"></i>
-                                <span> Utilisateurs </span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <div class="collapse" id="sidebarProjects2">
-                                <ul class="side-nav-second-level">
-                                    @if (getOnlineUser()->can('view-permissions'))
-                                        <li>
-                                            <a href="{{ route('user.permission-index') }}">Permissions</a>
-                                        </li>
-                                    @endif
-                                    @if (getOnlineUser()->can('view-roles'))
-                                        <li>
-                                            <a href="{{ route('user.role-index') }}">Rôles</a>
-                                        </li>
-                                    @endif
-                                    @if (getOnlineUser()->can('view-users'))
-                                        <li>
-                                            <a href="{{ route('user.index') }} ">Tous les utilisateurs </a>
-                                        </li>
-                                        @if (Route::current()->getName() == 'user.edit')
-                                            <li style="display:none">
-                                                <a href="">show</a>
+                        @if (getOnlineUser()->can('edit-users'))
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarProjects2" aria-expanded="false"
+                                    aria-controls="sidebarProjects2" class="side-nav-link">
+                                    <i class="uil-user-check"></i>
+                                    <span> Utilisateurs </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarProjects2">
+                                    <ul class="side-nav-second-level">
+                                        @if (getOnlineUser()->can('view-permissions'))
+                                            <li>
+                                                <a href="{{ route('user.permission-index') }}">Permissions</a>
                                             </li>
                                         @endif
-                                    @endif
+                                        @if (getOnlineUser()->can('view-roles'))
+                                            <li>
+                                                <a href="{{ route('user.role-index') }}">Rôles</a>
+                                            </li>
+                                        @endif
+                                        @if (getOnlineUser()->can('view-users'))
+                                            <li>
+                                                <a href="{{ route('user.index') }} ">Tous les utilisateurs </a>
+                                            </li>
+                                            @if (Route::current()->getName() == 'user.edit')
+                                                <li style="display:none">
+                                                    <a href="">show</a>
+                                                </li>
+                                            @endif
+                                            @if (Route::current()->getName() == 'user.create')
+                                                <li style="display:none">
+                                                    <a href="">show</a>
+                                                </li>
+                                            @endif
+                                        @endif
 
-                                </ul>
-                            </div>
-                        </li>
-                    @endif
+                                    </ul>
+                                </div>
+                            </li>
+                        @endif
 
                 </ul>
 

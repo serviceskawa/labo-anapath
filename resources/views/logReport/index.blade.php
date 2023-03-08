@@ -6,154 +6,7 @@
 
     <link href="{{ asset('adminassets/css/fullcalendar/main.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ asset('adminassets/js/fullcalendar/main.js') }}"></script>
-    
-    {{-- <script>
-        var calendarEl = document.getElementById('calendar');
-        document.addEventListener('DOMContentLoaded', function() {
-            var SITEURL = "{{ url('/') }}";
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                locale: 'fr',
-                initialView: 'dayGridMonth',
-                slotDuration: "00:15:00",
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,listWeek'
-                },
-                buttonText: {
-                    today: "Aujourd'hui",
-                    month: 'Mois',
-                    week: 'Semaine',
-                    day: 'day',
-                    list: 'Liste'
-                },
-                eventClick: function(info) {
-                    console.log(info.event.id)
 
-                    var id = info.event.id;
-
-                    $.ajax({
-                        type: "GET",
-                        url: "{{ url('appointements/getAppointementsById') }}" + '/' + id,
-                        success: function(data) {
-
-                            $('#appointement_id2').val(data.id);
-                            $('#patient_id2').val(data.patient_id).change();
-                            $('#doctor_id2').val(data.user_id).change();
-                            $('#time2').val(data.date);
-                            $('#message2').val(data.message);
-                            $('#priority2').val(data.priority).change();
-
-                            console.log(data);
-                            $('#event-modal-edit').modal('show');
-                        },
-                        error: function(data) {
-                            console.log('Error:', data);
-                        }
-                    });
-                },
-                events: "{{ route('appointement.getAppointements') }}",
-            });
-            calendar.render();
-
-            $('#form-event').on('submit', function(e) {
-                e.preventDefault();
-                let doctorId = $('#doctor_id').val();
-                let patientId = $('#patient_id').val();
-                let priority = $('#priority').val();
-                let message = $('#message').val();
-                let time = $('#time').val();
-                // console.log(time);
-                $.ajax({
-                    url: "{{ route('appointement.store') }}",
-                    type: "POST",
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        doctorId: doctorId,
-                        patientId: patientId,
-                        priority: priority,
-                        message: message,
-                        time: time
-                    },
-                    success: function(data) {
-                        calendar.refetchEvents();
-                        $('#form-event').trigger("reset");
-                        $('#event-modal').modal('hide');
-                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-                        console.log(data);
-                    },
-                    error: function(data) {
-                        console.log(data);
-                    },
-
-                });
-
-            });
-            $('#form-event-edit').on('submit', function(e) {
-                e.preventDefault();
-                let doctorId = $('#doctor_id2').val();
-                let patientId = $('#patient_id2').val();
-                let priority = $('#priority2').val();
-                let message = $('#message2').val();
-                let time = $('#time2').val();
-                let id = $('#appointement_id2').val();
-                console.log(time);
-                $.ajax({
-                    url: "{{ url('appointements/update') }}" + '/' + id,
-                    type: "POST",
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        doctor_id: doctorId,
-                        patient_id: patientId,
-                        priority: priority,
-                        message: message,
-                        date: time
-                    },
-                    success: function(data) {
-                        calendar.refetchEvents();
-                        $('#form-event-edit').trigger("reset");
-                        $('#event-modal-edit').modal('hide');
-                        toastr.success("Donnée mis à jour avec succès", 'Mis à jour réussi');
-                        console.log(data);
-                    },
-                    error: function(data) {
-                        console.log(data);
-                    },
-
-                });
-
-            });
-            $('#deleteAppointement').on('click', function(e) {
-                e.preventDefault();
-
-                let id = $('#appointement_id2').val();
-
-                $.ajax({
-                    url: "{{ url('appointements/delete') }}" + '/' + id,
-                    type: "get",
-                    success: function(data) {
-                        calendar.refetchEvents();
-                        $('#event-modal-edit').modal('hide');
-                        toastr.success("Donnée supprimé avec succès", 'Supprimé réussi');
-                        console.log(data);
-                    },
-                    error: function(data) {
-                        console.log(data);
-                    },
-
-                });
-
-            });
-        });
-    </script>
-
-    <style>
-        #calendar {
-            /* max-width: 1100px; */
-            margin: 25px;
-        }
-    </style> --}}
 
 @endsection
 @section('content')
@@ -193,11 +46,10 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Traitement effectué</th>
-                                <th>Code compte rendu</th>
                                 <th>Date</th>
-                                <th>Effectué par</th>
-                                <th>Actions</th>
+                                <th>Compte rendu</th>
+                                <th>Opération</th>
+                                <th>Utilisateur</th>
 
                             </tr>
                         </thead>
@@ -207,18 +59,10 @@
                             @foreach ($logs as $log)
                                 <tr>
                                     <td>{{ $log->id }}</td>
-                                    <td>{{ $log->operation }}
-                                    </td>
-                                    <td>{{ $log->report !=null ? $log->report->code :'Toute la liste'}}</td>
                                     <td>{{ \Carbon\Carbon::parse($log->created_at)->format('d/m/Y') }}</td>
+                                    <td>{{ $log->report !=null ? $log->report->code :'Aucun'}}</td>
+                                    <td>{{ $log->operation }}</td>
                                     <td>{{ $log->user->lastname }} {{ $log->user->firstname }}</td>
-                                    <td>
-                                        <button type="button" onclick="edit({{ $log->id }})"
-                                            class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
-                                        {{-- <button type="button" onclick="deleteModal({{ $log->id }})"
-                                            class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button> --}}
-                                    </td>
-
                                 </tr>
                             @endforeach
 
@@ -235,26 +79,6 @@
 
 @push('extra-js')
     <script type="text/javascript">
-        // SUPPRESSION
-        // function deleteModal(id) {
-
-        //     Swal.fire({
-        //         title: "Voulez-vous supprimer l'élément ?",
-        //         icon: "warning",
-        //         showCancelButton: true,
-        //         confirmButtonText: "Oui ",
-        //         cancelButtonText: "Non !",
-        //     }).then(function(result) {
-        //         if (result.value) {
-        //             window.location.href = "{{ url('prestations_order/delete') }}" + "/" + id;
-        //             Swal.fire(
-        //                 "Suppression !",
-        //                 "En cours de traitement ...",
-        //                 "success"
-        //             )
-        //         }
-        //     });
-        // }
 
 
         /* DATATABLE */
