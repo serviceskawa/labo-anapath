@@ -27,9 +27,9 @@ date_default_timezone_set('Europe/Paris');
     </div>
     <div style="display: inline-block; position: absolute; top: 0; right: 0; width: 320px; padding: 10px; text-align: right;">
     <p>
-        <b>N° ANAPTH :</b>  {{ $code }} 
+        <b>N° ANAPTH :</b>  {{ $code }}
         <b>{{ $test_affiliate !=null ? "| Examen reference : " : '' }}</b>
-        {{ $test_affiliate !=null ? $test_affiliate : '' }}    
+        {{ $test_affiliate !=null ? $test_affiliate : '' }}
         <br>
         <b>Date :</b> {{ $current_date }}
     </p>
@@ -50,31 +50,31 @@ date_default_timezone_set('Europe/Paris');
             <table style="max-width: 100%;width: 500px ">
                 <tbody>
                     <tr>
-                        <th width="55%;">Nom :</th>
-                        <td width="55%;">{{ $patient_firstname }} </td>
+                        <th width="25%">Nom :</th>
+                        <td width="40%;">{{ $patient_firstname }} </td>
                         <th width="40%;">Date prélèvement : </th>
                         <td width="20%;">{{ $prelevement_date }} </td>
                     </tr>
-                    
+
                     <tr>
-                        <th width="55%;">Prénoms :</th>
-                        <td width="55%;">{{ $patient_lastname }} </td>
-                        <th width="40%;">Date d’arrivée labo : </th>
-                        <td width="20%;"> {{ $created_at }} </td>
+                        <th>Prénoms :</th>
+                        <td>{{ $patient_lastname }} </td>
+                        <th>Date d’arrivée labo : </th>
+                        <td> {{ $created_at }} </td>
                     </tr>
 
                     <tr>
-                        <th width="55%;">Age :</th>
-                        <td width="55%;">{{ $patient_age }} {{ $patient_year_or_month }} </td>
-                        <th width="40%;">Service demandeur :</th>
-                        <td width="20%;">{{ $hospital_name }} </td>
+                        <th>Age :</th>
+                        <td>{{ $patient_age }} {{ $patient_year_or_month }} </td>
+                        <th>Service demandeur :</th>
+                        <td>{{ $hospital_name }} </td>
                     </tr>
-                    
+
                     <tr>
-                        <th width="55%;">Sexe :</th>
-                        <td width="55%;">{{ $patient_genre }} </td>
-                        <th width="40%;">Médecin prescripteur : </th>
-                        <td width="20%;"> {{ $doctor_name }} </td>
+                        <th>Sexe :</th>
+                        <td>{{ $patient_genre }} </td>
+                        <th>Médecin prescripteur : </th>
+                        <td> {{ $doctor_name }} </td>
                     </tr>
                 </tbody>
             </table>
@@ -89,7 +89,7 @@ date_default_timezone_set('Europe/Paris');
     {{-- <br> --}}
     {{-- <div class="border_t"></div> --}}
         {!! $content !!}
-    
+
     {{-- <br><br><br> --}}
 
     {{-- <div class="border_b"></div> --}}
@@ -114,7 +114,7 @@ date_default_timezone_set('Europe/Paris');
                         <br><br>{{ $signatory1 }}
                     @endif
                 </td>
-                
+
                 <td style="text-align: center;    width: 33%">
                     @if ($signatory2 != null)
                         @if($signature2 != null)
@@ -124,7 +124,7 @@ date_default_timezone_set('Europe/Paris');
                     @endif
 
                 </td>
-                
+
                 <td style="text-align: center;    width: 33%">
                     @if ($signatory3 != null)
                         @if($signature3 != null)
