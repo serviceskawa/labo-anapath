@@ -13,16 +13,16 @@
 
         @include('layouts.alerts')
 
-        
+
         {{-- @include('examens.details.create') --}}
-        
+
         <div class="card my-3">
             @if ($test_order->status == 1)
             <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
                     class="btn btn-success w-full">CONSULTEZ LE
                     COMPTE RENDU</a>
             @endif
-                    
+
             @include('examens.details.edit')
             <div class="card-header">
                 <div class="col-12">
@@ -33,7 +33,7 @@
                                     data-bs-target="#standard-modal">Ajouter un nouveau patient</button>
                             </div>
                         @endif
-                        
+
                         Demande d'examen : <strong>{{ $test_order->code }}</strong>
                     </div>
 
@@ -185,7 +185,7 @@
                         </div>
                     </div>
 
-                    
+
 
                 </div>
 
@@ -309,7 +309,7 @@
 
             </div>
         </div> <!-- end card-->
-        
+
         {{-- Modal --}}
         <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel"
             aria-hidden="true">
@@ -357,6 +357,17 @@
                                 <label for="simpleinput" class="form-label">Age<span style="color:red;">*</span></label>
                                 <input type="number" name="age" id="age" class="form-control" required>
                             </div>
+
+
+                            <div class="mb-3">
+                                <label for="example-select" class="form-label">Mois ou Années<span style="color:red;">*</span></label>
+                                <select class="form-select" id="year_or_month" name="year_or_month" required>
+                                    <option value="">Sélectionner entre mois ou ans</option>
+                                    <option value="0">Mois</option>
+                                    <option value="1">Ans</option>
+                                </select>
+                            </div>
+
 
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Mois ou Années<span style="color:red;">*</span></label>
@@ -411,7 +422,7 @@
     <script type="text/javascript">
 
         function getInvoice(id) {
-         
+
                 $.ajax({
                     type: "POST",
                     url: "{{ route('test_order.invoice') }}",
@@ -436,7 +447,7 @@
 
         $(document).ready(function() {
 
-           
+
             var test_order = {!! json_encode($test_order) !!}
             console.log(test_order)
 
@@ -490,7 +501,7 @@
                             return "";
                         }
                         }
-                        
+
                         return "";
                     }
 
@@ -512,7 +523,7 @@
                         .reduce(function(a, b) {
                             return intVal(a) + intVal(b);
                         }, 0);
-                    // 
+                    //
                     discount = api
                         .column(3)
                         .data()
@@ -693,7 +704,7 @@
 
             // Importation des paramètres de getRemise
             var contrat_id = $('#contrat_id').val();
-            
+
             let element = document.getElementById("test_id");
             let category_test_id = element.options[element.selectedIndex].getAttribute("data-category_test_id");
 
@@ -870,6 +881,7 @@
                     let lastname = $('#lastname').val();
                     let firstname = $('#firstname').val();
                     let age = $('#age').val();
+                    let year_month = $('#year_month').val();
                     let telephone1 = $('#telephone1').val();
                     let genre = $('#genre').val();
                     // alert(firstname);
@@ -882,6 +894,7 @@
                             lastname: lastname,
                             firstname: firstname,
                             age: age,
+                            year_or_month: year_month,
                             telephone1: telephone1,
                             genre: genre
                         },
@@ -948,6 +961,6 @@
                 }
 
             });
-            
+
         </script>
 @endpush

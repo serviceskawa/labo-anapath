@@ -32,7 +32,7 @@
 
                     <div class="mb-3">
                         <label for="example-select" class="form-label">Mois ou Années<span style="color:red;">*</span></label>
-                        <select class="form-select" id="example-select" name="year_or_month2" required>
+                        <select class="form-select" id="year_or_month2" name="year_or_month2" required>
                             <option value="">Sélectionner entre mois ou ans</option>
                             <option value="0">Mois</option>
                             <option value="1">Ans</option>

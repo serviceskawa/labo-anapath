@@ -162,6 +162,7 @@
                     $('#name2').val(data.firstname);
                     $('#lastname').val(data.lastname);
                     $('#age2').val(data.age);
+                    $('#year_or_month2').val(data.year_or_month);
                     $('#profession2').val(data.profession);
                     $('#adresse2').val(data.adresse);
                     $('#telephone1_2').val(data.telephone1);

@@ -403,7 +403,7 @@ class TestOrderController extends Controller
                 "total" => $total,
             ])->save();
 
-            return back()->with('success', "Mis à jour de la demande éffectué");
+            return redirect()->route('invoice.show', [$invoice->id])->with('success', " Modification effectuée avec succès  ! ");
         }else{
             return back()->with('error', "Cette opération n'est pas possible car la facture a déjà été payé");
         }
@@ -574,6 +574,43 @@ class TestOrderController extends Controller
             }
         }
 
+        /*
+
+        //$invoice = Invoice::where('test_order_id','=',$request->test_order_id)->get();
+
+
+        //dd($invoice);
+
+        //dd($details[$row_id]);
+
+        if ($invoice->paid !=1) {
+            $detail->fill([
+                "test_id" =>  $request->test_id1,
+                "test_name" =>  $test->name,
+                "price" => $test->price,
+                "discount" => $remise,
+                "total" => $total,
+            ])->save();
+           $invoice->fill([
+                "subtotal" =>$test_order->subtotal,
+                "discount" =>$test_order->discount,
+                "total" =>$test_order->total,
+           ])->save();
+            $invoiceDetail->fill([
+                "test_id" =>  $request->test_id1,
+                "test_name" =>  $test->name,
+                "price" => $test->price,
+                "discount" => $remise,
+                "total" => $total,
+            ])->save();
+
+            return back()->with('success', "Mis à jour de la demande éffectué");
+        }else{
+            return back()->with('error', "Cette opération n'est pas possible car la facture a déjà été payé");
+        }
+
+        */
+
         try {
 
             $test_order = TestOrder::find($id);
@@ -589,6 +626,17 @@ class TestOrderController extends Controller
             $test_order->type_order_id = $data['type_examen'];
             $test_order->attribuate_doctor_id = $data['attribuate_doctor_id'];
             $test_order->save();
+
+            $invoice = $test_order->invoice()->first();
+
+            if ($invoice->paid !=1) {
+                $invoice->fill([
+                    "date" => date('Y-m-d'),
+                    "patient_id" => $test_order->patient_id,
+                    "client_name" => $test_order->patient->firstname . ' ' . $test_order->patient->lastname,
+                    "client_address" => $test_order->patient->adresse,
+               ])->save();
+            }
 
             return redirect()->route('details_test_order.index', $test_order->id)->with('success', "Demande d'examen a été mis à jour ! ");
         } catch (\Throwable $ex) {
@@ -622,18 +670,26 @@ class TestOrderController extends Controller
             ->setRowClass(function ($data) use ($request) {
                 if($data->is_urgent == 1){
                     if ($request->get('exams_status') == "livrer") {
-                        return 'table-success urgent';
-                    }elseif (!empty($data->report)) {
-                        if($data->report->status == 1){
-                            return 'table-warning urgent';
+                        return 'table-success';
+                    }else{
+                        if (!empty($data->report)) {
+                            if($request->get('exams_status') == "livrer"){
+                                return 'table-success';
+                            }else {
+                                if($data->report->status == 1){
+                                    return 'table-warning';
+                                }
+                            }
+
                         }
+                            return 'table-danger urgent';
                     }
-                    return 'table-danger urgent';
+
                 }elseif ($request->get('exams_status') == "livrer") {
                     return 'table-success';
                 }elseif (!empty($data->report)) {
-                    if($data->report->status == 1){
-                        return 'table-warning';
+                    if($request->get('exams_status') == "livrer"){
+                        return 'table-success';
                     }
                 }else {
                     return '';
@@ -667,7 +723,11 @@ class TestOrderController extends Controller
                 }
 
                 if (!empty($data->report)) {
-                    $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </a>';
+                    if ($data->report->status ==1) {
+                        $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </a>';
+                    }else {
+                        $btnreport ="";
+                    }
                     // switch ($data->report->is_deliver) {
                     //     //<a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-success" title="Cliquer pour marquer comme non livré"><i class="uil uil-envelope-upload"></i> Marquer comme Non Livrer</a>
                     //     case 1:
@@ -767,6 +827,22 @@ class TestOrderController extends Controller
                     } else {
                         $query->whereHas('report', function ($query) use ($request) {
                             $query->where('status', $request->get('exams_status'));
+                        });
+                        // $query->where('status', $request->get('exams_status'));
+                    }
+                }
+                if (!empty($request->get('datatable1'))) {
+                    if ($request->get('datatable1') == "livrer") {
+                        $query->whereHas('report', function ($query) {
+                            $query->where('is_deliver', 1);
+                        });
+                    } elseif ($request->get('datatable1') == "non_livrer") {
+                        $query->whereHas('report', function ($query) {
+                            $query->where('is_deliver', 0);
+                        });
+                    } else {
+                        $query->whereHas('report', function ($query) use ($request) {
+                            $query->where('status', $request->get('datatable1'));
                         });
                         // $query->where('status', $request->get('exams_status'));
                     }

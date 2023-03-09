@@ -51,15 +51,15 @@
                             @csrf
                             <div class="row mb-3">
 
-                                {{-- <div class="col-lg-3">
+                                    {{-- <div class="col-lg-3">
 
-                            <div class="mb-3">
-                                <label for="example-fileinput" class="form-label">Date</label>
-                                <input type="text" id="reportrange" class="form-control">
-                            </div>
+                                <div class="mb-3">
+                                    <label for="example-fileinput" class="form-label">Date</label>
+                                    <input type="text" id="reportrange" class="form-control">
+                                </div>
 
 
-                        </div> <!-- end col --> --}}
+                            </div> <!-- end col --> --}}
 
                                 <div class="col-lg-3">
 
@@ -202,6 +202,7 @@
                             d.contrat_id = $('#contrat_id').val()
                             d.exams_status = $('#exams_status').val()
                             d.type_examen = $('#type_examen').val()
+
                         }
                     },
                     columns: [{
@@ -271,8 +272,37 @@
 
                     }
                 );
+
+
+                var search = document.getElementsByClassName('form-control-sm')[0];
+                search.oninput
+                search.oninput = function() {
+                    table.draw();
+                    console.log(search.value);
+                 };
+
                 // Recherche selon les docteurs signataires
                 $("#doctor_signataire").on("change", function() {
+                    // alert(this.value)
+                    table.draw();
+                });
+                 // Recherche selon les contrats
+                 $("#contrat_id").on("change", function() {
+                    // alert(this.value)
+                    table.draw();
+                });
+                 // Recherche selon le status d'examen
+                 $("#exams_status").on("change", function() {
+                    // alert(this.value)
+                    table.draw();
+                });
+                 // Recherche selon les types d'examen
+                 $("#type_examen").on("change", function() {
+                    // alert(this.value)
+                    table.draw();
+                });
+                 // Recherche selon les cas
+                 $("#cas_status").on("change", function() {
                     // alert(this.value)
                     table.draw();
                 });

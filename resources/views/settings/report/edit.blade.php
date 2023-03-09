@@ -11,10 +11,10 @@
 
                 <input type="hidden"  name="id2" id="id2" class="form-control" required>
 
-               
+
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Titre</label>
-                    <input type="text" name="title2" id="title2" class="form-control" required>
+                    <input type="text" name="title2" style="text-transform: uppercase;" id="title2" class="form-control" required>
                 </div>
 
             </div>

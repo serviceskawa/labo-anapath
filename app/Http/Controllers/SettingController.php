@@ -10,9 +10,9 @@ class SettingController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth'); 
+        $this->middleware('auth');
     }
-    
+
     public function report_index()
     {
         if (!getOnlineUser()->can('view-settings')) {
@@ -35,7 +35,7 @@ class SettingController extends Controller
 
         try {
             TitleReport::create([
-                "title" => $data['title'],
+                "title" => strtoupper($data['title']),
             ]);
             return back()->with('success', " Opération effectuée avec succès  ! ");
         } catch (\Throwable $ex) {
@@ -68,7 +68,7 @@ class SettingController extends Controller
         try {
 
             $titleReport = TitleReport::find($data['id2']);
-            $titleReport->title = $data['title2'];
+            $titleReport->title = strtoupper($data['title2']);
             $titleReport->save();
 
             return back()->with('success', "Un titre mis à jour ! ");
@@ -133,29 +133,29 @@ class SettingController extends Controller
         }
         // dd($request);
         $setting = Setting::find(1);
-        
+
         dd($request);
 
         if ($request->file('logo') ) {
 
-            $logo = time() . '_settings_app_logo.' . $request->file('logo')->extension();  
-            
+            $logo = time() . '_settings_app_logo.' . $request->file('logo')->extension();
+
             $path_logo = $request->file('logo')->storeAs('settings/app', $logo, 'public');
 
         }
         if ($request->file('favicon') ) {
 
-            $favicon = time() . '_settings_app_favicon.' . $request->file('favicon')->extension();  
-            
+            $favicon = time() . '_settings_app_favicon.' . $request->file('favicon')->extension();
+
             $path_favicon = $request->file('favicon')->storeAs('settings/app', $favicon, 'public');
-            
+
         }
         if ($request->file('img3') ) {
 
-            $img3 = time() . '_settings_app_blanc.' . $request->file('img3')->extension();  
-            
+            $img3 = time() . '_settings_app_blanc.' . $request->file('img3')->extension();
+
             $path_img3 = $request->file('img3')->storeAs('settings/app', $img3, 'public');
-            
+
         }
 
         if ($setting) {
@@ -179,7 +179,7 @@ class SettingController extends Controller
                 "api_key_sms" => $request->api_key_sms,
             ]);
         }
-        
+
 
         return back()->with('success', " Elément mis à jour avec succès  ! ");
     }

@@ -223,6 +223,15 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="example-select" class="form-label">Mois ou Années<span style="color:red;">*</span></label>
+                            <select class="form-select" id="year_or_month" name="year_or_month" required>
+                                <option value="">Sélectionner entre mois ou ans</option>
+                                <option value="0">Mois</option>
+                                <option value="1">Ans</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="simpleinput" class="form-label">Profession</label>
                             <input type="text" name="profession" class="form-control">
                         </div>
@@ -378,6 +387,7 @@
                 let lastname = $('#lastname').val();
                 let firstname = $('#firstname').val();
                 let age = $('#age').val();
+                let year_month = $('#year_month').val();
                 let telephone1 = $('#telephone1').val();
                 let genre = $('#genre').val();
                 // alert(firstname);
@@ -390,6 +400,7 @@
                         lastname: lastname,
                         firstname: firstname,
                         age: age,
+                        year_or_month: year_month,
                         telephone1: telephone1,
                         genre: genre
                     },

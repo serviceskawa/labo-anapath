@@ -10,11 +10,11 @@
                 @csrf
                 <div class="modal-body">
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
-                    
+
                     <div class="mb-3">
                         <label for="simpleinput" class="form-label">Titre<span
                                 style="color:red;">*</span></label>
-                        <input type="text" name="title" class="form-control" required>
+                        <input type="text" name="title" style="text-transform: uppercase;" class="form-control" required>
                     </div>
 
                 </div>

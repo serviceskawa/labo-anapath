@@ -262,7 +262,7 @@
                         </div>
                     </li> --}}
 
-                        @if (getOnlineUser()->can('view-report-templates'))
+                        @if (getOnlineUser()->can('view-setting-report-templates'))
                             <li class="side-nav-item">
                                 <a href="{{ route('template.report-index') }}" class="side-nav-link">
                                     <i class="uil-document-layout-right"></i>

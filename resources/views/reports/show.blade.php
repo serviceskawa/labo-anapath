@@ -9,6 +9,10 @@
             /* editing area */
             min-height: 200px;
         }
+        .ck-editor2__editable[role="application"] {
+
+            /* min-height: 200px; */
+        }
     </style>
 
     <!-- Quill css -->
@@ -70,7 +74,7 @@
                             <div class="row">
                                 <div class="mb-3">
                                     <label for="simpleinput" class="form-label">Template</label>
-                                    <select class="form-select" id="template" name="">
+                                    <select class="form-select" id="template" name="template">
                                         <option value="">Sélectionner un template</option>
                                         @forelse ($templates as $template)
                                             <option value="{{ $template->id }}">{{ $template->title }} </option>
@@ -92,15 +96,14 @@
                         </div>
                     </div>
 
-                    <div id="show-field" style="{{ $report->description_supplementaire == null ? 'display: none;' : '' }}"
-                        class="card mb-md-0 mb-3 mt-3">
+                    <div id="show-field" style="{{ $report->description_supplementaire == null ? 'display: none;' : '' }}" class="card mb-md-0 mb-3 mt-3">
                         <h5 class="card-header">Contenu supplémentaire</h5>
                         <div class="card-body">
 
                             <div class="row">
                                 <div class="mb-3">
                                     <label for="simpleinput" class="form-label">Template</label>
-                                    <select class="form-select" id="template" name="">
+                                    <select class="form-select" id="template_supplementaire" name="">
                                         <option value="">Sélectionner un template</option>
                                         @forelse ($templates as $template)
                                             <option value="{{ $template->id }}">{{ $template->title }} </option>
@@ -111,7 +114,7 @@
                             </div>
 
                             <div class="row">
-                                <div class="mb-3">
+                                <div class="mb-3 supplementaireid">
                                     <label for="simpleinput" class="form-label">Récapitulatifs<span
                                             style="color:red;">*</span></label>
                                     <textarea name="description_supplementaire" id="editor2" class="form-control mb-3" cols="30" rows="50"
@@ -438,8 +441,161 @@
                 'MathType'
             ]
         };
+        const ck_options2 = {
+            // https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/toolbar.html#extended-toolbar-configuration-format
+            toolbar: {
+                items: [
+
+                    'findAndReplace', 'selectAll', '|',
+                    'heading', '|',
+                    'bold', 'italic', 'underline', 'code', 'removeFormat', '|',
+                    'bulletedList', 'numberedList', 'todoList', '|',
+                    'outdent', 'indent', '|',
+                    'undo', 'redo', '-',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+                    'alignment', '|',
+                    'link', 'blockQuote', '|',
+                    'specialCharacters', 'horizontalLine', 'pageBreak', '|',
+                    'sourceEditing'
+                ],
+                shouldNotGroupWhenFull: true
+            },
+            // Changing the language of the interface requires loading the language file using the <script> tag.
+            // language: 'es',
+            list: {
+                properties: {
+                    styles: true,
+                    startIndex: true,
+                    reversed: true
+                }
+            },
+            // https://ckeditor.com/docs/ckeditor5/latest/features/headings.html#configuration
+            heading: {
+                options: [{
+                        model: 'paragraph',
+                        title: 'Paragraph',
+                        class: 'ck-heading_paragraph'
+                    },
+                    {
+                        model: 'heading1',
+                        view: 'h1',
+                        title: 'Heading 1',
+                        class: 'ck-heading_heading1'
+                    },
+                    {
+                        model: 'heading2',
+                        view: 'h2',
+                        title: 'Heading 2',
+                        class: 'ck-heading_heading2'
+                    },
+                    {
+                        model: 'heading3',
+                        view: 'h3',
+                        title: 'Heading 3',
+                        class: 'ck-heading_heading3'
+                    },
+                    {
+                        model: 'heading4',
+                        view: 'h4',
+                        title: 'Heading 4',
+                        class: 'ck-heading_heading4'
+                    },
+                    {
+                        model: 'heading5',
+                        view: 'h5',
+                        title: 'Heading 5',
+                        class: 'ck-heading_heading5'
+                    },
+                    {
+                        model: 'heading6',
+                        view: 'h6',
+                        title: 'Heading 6',
+                        class: 'ck-heading_heading6'
+                    }
+                ]
+            },
+            // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-family-feature
+            fontFamily: {
+                options: [
+                    'default',
+                    'Arial, Helvetica, sans-serif',
+                    'Courier New, Courier, monospace',
+                    'Georgia, serif',
+                    'Lucida Sans Unicode, Lucida Grande, sans-serif',
+                    'Tahoma, Geneva, sans-serif',
+                    'Times New Roman, Times, serif',
+                    'Trebuchet MS, Helvetica, sans-serif',
+                    'Verdana, Geneva, sans-serif'
+                ],
+                supportAllValues: true
+            },
+            // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-size-feature
+            fontSize: {
+                options: [10, 12, 14, 'default', 18, 20, 22],
+                supportAllValues: true
+            },
+            // https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators
+            link: {
+                decorators: {
+                    addTargetToExternalLinks: true,
+                    defaultProtocol: 'https://',
+                    toggleDownloadable: {
+                        mode: 'manual',
+                        label: 'Downloadable',
+                        attributes: {
+                            download: 'file'
+                        }
+                    }
+                }
+            },
+            // https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html#configuration
+            mention: {
+                feeds: [{
+                    marker: '@',
+                    feed: [
+                        '@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes',
+                        '@chocolate', '@cookie', '@cotton', '@cream',
+                        '@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread',
+                        '@gummi', '@ice', '@jelly-o',
+                        '@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding',
+                        '@sesame', '@snaps', '@soufflé',
+                        '@sugar', '@sweet', '@topping', '@wafer'
+                    ],
+                    minimumCharacters: 1
+                }]
+            },
+            // The "super-build" contains more premium features that require additional configuration, disable them below.
+            // Do not turn them on unless you read the documentation and know how to configure them and setup the editor.
+            removePlugins: [
+                // These two are commercial, but you can try them out without registering to a trial.
+                // 'ExportPdf',
+                // 'ExportWord',
+                'CKBox',
+                'CKFinder',
+                'EasyImage',
+                // This sample uses the Base64UploadAdapter to handle image uploads as it requires no configuration.
+                // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html
+                // Storing images as Base64 is usually a very bad idea.
+                // Replace it on production website with other solutions:
+                // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html
+                // 'Base64UploadAdapter',
+                'RealTimeCollaborativeComments',
+                'RealTimeCollaborativeTrackChanges',
+                'RealTimeCollaborativeRevisionHistory',
+                'PresenceList',
+                'Comments',
+                'TrackChanges',
+                'TrackChangesData',
+                'RevisionHistory',
+                'Pagination',
+                'WProofreader',
+                // Careful, with the Mathtype plugin CKEditor will not load when loading this sample
+                // from a local file system (file://) - load this site via HTTP server if you enable MathType
+                'MathType'
+            ]
+        };
         CKEDITOR.ClassicEditor.create(document.getElementById("editor"), ck_options);
-        CKEDITOR.ClassicEditor.create(document.getElementById("editor2"), ck_options);
+        CKEDITOR.ClassicEditor.create(document.getElementById("editor2"), ck_options2);
     </script>
 
     <script>
@@ -455,125 +611,6 @@
         });
     </script>
 
-    <script>
-        const templateInput = document.getElementById('template');
-        const titleInput = document.getElementById('title');
-        const editorInput = document.getElementById('editor');
-        const signatory1Input = document.getElementById('doctor_signatory1');
-        const signatory2Input = document.getElementById('doctor_signatory2');
-        const signatory3Input = document.getElementById('doctor_signatory3');
-
-
-
-        // function save() {
-        //     var report_id = $('#report_id').val();
-        //     var title = $('#title');
-        //     var editor =$('#editor');
-
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "{{ route('report.saveauto') }}",
-        //         data: {
-        //             "_token": "{{ csrf_token() }}",
-        //             report_id: report_id,
-        //             title_id: title,
-        //             content: editor,
-        //         },
-        //         success: function(data) {
-        //             console.log(data);
-        //             $('#title').val(data.title);
-        //             $('#editor').val(data.description);
-        //         },
-        //         error: function(data) {
-        //             console.log('Error:', data);
-        //         }
-        //     });
-
-        // }
-
-        // setInterval(function() {
-        //     var report_id = $('#report_id').val();
-        //     var title = $('#title');
-        //     var editor =$('#editor');
-
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "{{ route('report.saveauto') }}",
-        //         data: {
-        //             "_token": "{{ csrf_token() }}",
-        //             report_id: report_id,
-        //             title_id: title,
-        //             content: editor,
-        //         },
-        //         success: function(data) {
-        //             console.log(data);
-        //             $('#title').val(data.title);
-        //             $('#editor').val(data.description);
-        //         },
-        //         error: function(data) {
-        //             console.log('Error:', data);
-        //         }
-        //     });
-        // }, 5000);
-
-
-        if (typeof(Storage) === "undefined") {
-            alert(
-                "Le localStorage est désactivé dans votre navigateur. Pour utiliser cette fonctionnalité, veuillez activer le localStorage dans les paramètres de votre navigateur."
-                );
-        } else {
-            //alert("cool activé");
-        }
-
-        // Charger les données sauvegardées dans le localStorage
-        // if (localStorage.getItem('template')) {
-        //     templateInput.value = localStorage.getItem('template');
-        // }else{
-        //     console.log(templateInput.value);
-        //     localStorage.setItem('editor', templateInput.value)
-        // }
-        // if (localStorage.getItem('title')) {
-        //     titleInput.value = localStorage.getItem('title');
-        // }else{
-        //     console.log(titleInput.value);
-        //     localStorage.setItem('editor', titleInput.value)
-        // }
-
-        if (localStorage.getItem('editor')) {
-            //console.log(editorInput.defaultValue);
-            editorInput.defaultValue = localStorage.getItem('editor');
-            $('#editor').val(editorInput.defaultValue);
-        }
-        // else{
-        //     console.log(editorInput.defaultValue);
-        //     localStorage.setItem('editor', editorInput.defaultValue)
-        // }
-
-        // if (localStorage.getItem('doctor_signatory1')) {
-        //     signatory1Input.value = localStorage.getItem('doctor_signatory1');
-        // }
-        // if (localStorage.getItem('doctor_signatory2')) {
-        //     signatory2Input.value = localStorage.getItem('doctor_signatory2');
-        // }
-        // if (localStorage.getItem('doctor_signatory3')) {
-        //     signatory3Input.value = localStorage.getItem('doctor_signatory3');
-        // }
-        //Enregistrer automatiquement les données toutes les 5 secondes
-
-        editorInput.addEventListener('change', function() {
-            console.log(editorInput.value);
-        });
-
-        editorInput.oninput = function() {
-            console.log(editorInput.value);
-        }
-        // setInterval(function() {
-        //     const editorInput = document.getElementById('editor');
-        //
-        //     localStorage.setItem('editor', editorInput.defaultValue);
-        //     $('#editor').val(editorInput.defaultValue);
-        // }, 5000);
-    </script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -600,7 +637,7 @@
                 },
             });
 
-            $('#doctor_signatory1').on('change', function(e) {
+            $('#template').on('change', function(e) {
                 var template_id = $('#template').val();
                 const report = {!! json_encode($report) !!};
 
@@ -659,6 +696,7 @@
                     }
                 })
             });
+
         });
     </script>
 
