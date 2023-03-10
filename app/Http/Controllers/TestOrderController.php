@@ -669,9 +669,6 @@ class TestOrderController extends Controller
             ])
             ->setRowClass(function ($data) use ($request) {
                 if($data->is_urgent == 1){
-                    if ($data->report->is_deliver ==1) {
-                        return 'table-success';
-                    }else{
                         if (!empty($data->report)) {
                             if($data->report->is_deliver ==1){
                                 return 'table-success';
@@ -683,7 +680,6 @@ class TestOrderController extends Controller
 
                         }
                             return 'table-danger urgent';
-                    }
 
                 }elseif ($data->report->is_deliver ==1) {
                     return 'table-success';
