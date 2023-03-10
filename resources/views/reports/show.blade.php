@@ -53,7 +53,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <label for="simpleinput" class="form-label">Titre <span style="color:red;">*</span></label>
-                                <select class="form-select" id="title" name="title">
+                                <select class="form-select" id="title" name="title" required>
                                     <option value="">Sélectionner un titre</option>
                                     @forelse ($titles as $title)
                                         <option value="{{ $title->title }}"
