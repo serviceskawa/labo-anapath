@@ -38,8 +38,8 @@ class Permission extends Seeder
         foreach ($tables as $table) {
            $ressources[$filler] = [
                 'id' => $filler + 1,
-                'titre' => $table->Tables_in_labocaap,
-                'slug' => Str::slug($table->Tables_in_labocaap)
+                'titre' => $table->Tables_in_kawa_gestion_caap,
+                'slug' => Str::slug($table->Tables_in_kawa_gestion_caap)
            ];
            $filler++;
         }
@@ -55,7 +55,7 @@ class Permission extends Seeder
                 $op = Operation::find(($k + 1));
                 $res = Ressource::all();
                 foreach ($res as $re) {
-                    if ($re->titre == $table->Tables_in_labocaap) {
+                    if ($re->titre == $table->Tables_in_kawa_gestion_caap) {
                         $res_index = $re->id;
                         break;
                     }
@@ -63,8 +63,8 @@ class Permission extends Seeder
                 $ress = Ressource::find($res_index);
                 $permissions[$filler] = [
                     'id' => $filler + 1,
-                    "titre" => $value.' '.$table->Tables_in_labocaap,
-                    "slug" => Str::slug($value.' '.$table->Tables_in_labocaap),
+                    "titre" => $value.' '.$table->Tables_in_kawa_gestion_caap,
+                    "slug" => Str::slug($value.' '.$table->Tables_in_kawa_gestion_caap),
                     "operation_id" => $op->id,
                     "ressource_id" => $ress->id
                 ];
