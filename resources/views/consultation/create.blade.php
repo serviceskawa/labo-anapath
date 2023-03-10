@@ -104,7 +104,7 @@
                         </div>
 
                     </div>
-                    {{-- 
+                    {{--
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="control-label form-label">Methode de paiement</label>
@@ -192,6 +192,7 @@
                 let lastname = $('#lastname').val();
                 let firstname = $('#firstname').val();
                 let age = $('#age').val();
+                let year_or_month = $('#year_or_month').val();
                 let telephone1 = $('#telephone1').val();
                 let genre = $('#genre').val();
                 // alert(firstname);
@@ -204,6 +205,7 @@
                         lastname: lastname,
                         firstname: firstname,
                         age: age,
+                        year_or_month: year_or_month,
                         telephone1: telephone1,
                         genre: genre
                     },
