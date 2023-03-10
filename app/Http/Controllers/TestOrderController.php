@@ -669,11 +669,11 @@ class TestOrderController extends Controller
             ])
             ->setRowClass(function ($data) use ($request) {
                 if($data->is_urgent == 1){
-                    if ($request->get('exams_status') == "livrer") {
+                    if ($data->report->is_deliver ==1) {
                         return 'table-success';
                     }else{
                         if (!empty($data->report)) {
-                            if($data->invoice->paid == 1){
+                            if($data->report->is_deliver ==1){
                                 return 'table-success';
                             }else {
                                 if($data->report->status == 1){
@@ -685,11 +685,15 @@ class TestOrderController extends Controller
                             return 'table-danger urgent';
                     }
 
-                }elseif ($request->get('exams_status') == "livrer") {
+                }elseif ($data->report->is_deliver ==1) {
                     return 'table-success';
                 }elseif (!empty($data->report)) {
-                    if($data->invoice->paid == 1){
+                    if($data->report->is_deliver ==1){
                         return 'table-success';
+                    }else {
+                        if($data->report->status == 1){
+                            return 'table-warning';
+                        }
                     }
                 }else {
                     return '';
