@@ -136,6 +136,18 @@
                             </div>
                         </form>
 
+                       <div class="row mb-3">
+                            <div class="col-lg-1 p-1 alert alert-success rounded-pill" style="margin-right: 5px; text-align:center;">
+                                Livrer
+                            </div>
+                            <div class="col-lg-1 p-1 alert alert-warning rounded-pill" style="margin-right: 5px; text-align:center;">
+                                Valider
+                            </div>
+                            <div class="col-lg-1 p-1 ml-3 alert alert-danger rounded-pill" style="margin-right: 5px; text-align:center;">
+                                Cas urgent
+                            </div>
+                       </div>
+
                         <table id="datatable1" class="dt-responsive nowrap w-100 table">
                             <thead>
                                 <tr>

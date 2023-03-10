@@ -178,6 +178,15 @@
                                         @if (Route::current()->getName() == 'report.show')
                                             <a style="display:none" href="">show</a>
                                         @endif
+
+                                        @if (getOnlineUser()->can('view-setting-report-templates'))
+                                            <li>
+                                                <a href="{{ route('template.report-index') }}">
+                                                    Templates
+                                                </a>
+                                            </li>
+                                        @endif
+
                                         <li>
                                             <a href="{{ route('log.report-index') }}">
                                                 <span> Historiques</span>
@@ -262,14 +271,7 @@
                         </div>
                     </li> --}}
 
-                        @if (getOnlineUser()->can('view-setting-report-templates'))
-                            <li class="side-nav-item">
-                                <a href="{{ route('template.report-index') }}" class="side-nav-link">
-                                    <i class="uil-document-layout-right"></i>
-                                    <span> Templates compte rendu</span>
-                                </a>
-                            </li>
-                        @endif
+
 
                         @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
                             <li class="side-nav-item">

@@ -638,7 +638,7 @@ class TestOrderController extends Controller
                ])->save();
             }
 
-            return redirect()->route('details_test_order.index', $test_order->id)->with('success', "Demande d'examen a été mis à jour ! ");
+            return redirect()->route('invoice.show', [$invoice->id])->with('success', " Modification effectuée avec succès  ! ");
         } catch (\Throwable $ex) {
 
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
@@ -673,7 +673,7 @@ class TestOrderController extends Controller
                         return 'table-success';
                     }else{
                         if (!empty($data->report)) {
-                            if($request->get('exams_status') == "livrer"){
+                            if($data->invoice->paid == 1){
                                 return 'table-success';
                             }else {
                                 if($data->report->status == 1){
@@ -688,7 +688,7 @@ class TestOrderController extends Controller
                 }elseif ($request->get('exams_status') == "livrer") {
                     return 'table-success';
                 }elseif (!empty($data->report)) {
-                    if($request->get('exams_status') == "livrer"){
+                    if($data->invoice->paid == 1){
                         return 'table-success';
                     }
                 }else {
