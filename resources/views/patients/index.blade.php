@@ -75,6 +75,8 @@
                                             class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
                                         <button type="button" onclick="deleteModal({{ $item->id }})"
                                             class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
+                                        <a type="button" href="{{ route('patients.profil', $item->id) }}"
+                                            class="btn btn-secondary"><i class="mdi mdi-eye"></i> </a>
                                     </td>
 
                                 </tr>
