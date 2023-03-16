@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Consultation;
+use App\Models\Invoice;
 use App\Models\Patient;
+use App\Models\PrestationOrder;
 use App\Models\Setting;
+use App\Models\TestOrder;
 use Illuminate\Http\Request;
 
 class PatientController extends Controller
@@ -183,7 +187,7 @@ class PatientController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $patient = Patient::find($id)->delete();
-        
+
         if ($patient) {
             return back()->with('success', "    Un élement a été supprimé ! ");
         } else {
@@ -195,5 +199,24 @@ class PatientController extends Controller
     {
         $patients = Patient::orderBy('id','desc')->get();
         return response()->json($patients);
+    }
+
+    public function profil($id)
+    {
+
+        $invoices =Invoice::where('patient_id','=',$id)->latest()->get();
+
+        $patient = Patient::find($id);
+
+        $testorders =TestOrder::where('patient_id','=',$id)->latest()->get();
+
+        $consultations = Consultation::where('patient_id','=',$id)->latest()->get();
+
+        $prestationOrders = PrestationOrder::where('patient_id','=',$id)->latest()->get();
+
+
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
+        return view('patients.profil', compact(['invoices', 'testorders', 'consultations', 'prestationOrders', 'patient']));
     }
 }
