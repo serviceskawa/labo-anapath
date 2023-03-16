@@ -197,4 +197,6 @@ class InvoiceController extends Controller
             return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
         }
     }
+
+    
 }

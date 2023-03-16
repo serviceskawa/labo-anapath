@@ -2,8 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
+use App\Models\Consultation;
+use App\Models\Contrat;
+use App\Models\Invoice;
+use App\Models\Patient;
+use App\Models\Prestation;
+use App\Models\PrestationOrder;
 use App\Models\Setting;
+use App\Models\Test;
+use App\Models\TestOrder;
+use App\Models\User;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -32,6 +44,58 @@ class HomeController extends Controller
     {
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
-        return view('dashboard');
+
+        $patients = Patient::all()->count();
+        $contrats = Contrat::all()->count();
+        $tests = Test::all()->count();
+        $prestations = Prestation::all()->count();
+
+        $curmonth = now()->format('m'); // Récupérer le mois en cours sous forme de chiffre (ex : '01' pour janvier)
+        $totalMonth = Invoice::whereMonth('created_at', $curmonth)->sum('total');
+
+        $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'
+        $totalToday = Invoice::whereDate('created_at', $today)->sum('total');
+
+
+        $testOrdersCount = TestOrder::all()->count();
+        $testOrders = TestOrder::all();
+        $noFinishTest = 0;
+        $finishTest = 0;
+        foreach ($testOrders as $testOrder) {
+            if ($testOrder->report->is_deliver == 0) {
+                $noFinishTest ++;
+            }else {
+                $finishTest++;
+            }
+        }
+
+        $prestationOrderCount = PrestationOrder::all()->count();
+        $prestationOrders = PrestationOrder::all();
+        $noFinishPrestation = 0;
+        $finishPrestation = 0;
+        foreach ($prestationOrders as $prestationOrder){
+            if ($prestationOrder->invoice->paid ==0) {
+                $noFinishPrestation ++;
+            } else {
+                $finishPrestation ++;
+            }
+
+        }
+
+        $testOrdersToday = TestOrder::whereDate('created_at', $today)->get();
+
+        $consultations = Consultation::all()->count();
+        $invoice = Invoice::all()->sum('total');
+
+        $appointements = Appointment::whereDate('date',$today);
+
+
+        // $sessions = Session::get('user_id');
+        // $users = User::whereIn('id', $sessions)->get();
+
+        //dd($users);
+        return view('dashboard', compact('patients', 'contrats', 'tests', 'prestations', 'totalToday', 'totalMonth',
+        'testOrdersCount','noFinishTest','finishTest','appointements',
+        'prestationOrderCount', 'noFinishPrestation', 'finishPrestation', 'testOrdersToday','consultations','invoice'));
     }
 }
