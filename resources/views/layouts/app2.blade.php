@@ -323,7 +323,16 @@
                             </li>
                         @endif
 
+                         <!--- Tableau de bord -->
+                        <li class="side-nav-item">
+                            <a href="{{ route('dashboard') }}" class="side-nav-link">
+                                <i class="uil-home-alt"></i>
+                                <span> Dashbaord </span>
+                            </a>
+                        </li>
+
                 </ul>
+
 
                 <div class="clearfix"></div>
 

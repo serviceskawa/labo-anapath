@@ -32,7 +32,7 @@
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                         <div class="avatar-lg">
-                                            <img src="assets/images/users/avatar-2.jpg" alt="" class="rounded-circle img-thumbnail">
+                                            {{-- <img src="assets/images/users/avatar-2.jpg" alt="" class="rounded-circle img-thumbnail"> --}}
                                         </div>
                                     </div>
                                     <div class="col">
@@ -40,7 +40,7 @@
                                             <h4 class="mt-1 mb-1 text-white">{{ $patient->lastname }} {{ $patient->firstname }} </h4>
                                             <p class="font-13 text-white-50"> {{ $patient->profession }}</p>
 
-                                            <ul class="mb-0 list-inline text-light">
+                                            {{-- <ul class="mb-0 list-inline text-light">
                                                 <li class="list-inline-item me-3">
                                                     <h5 class="mb-1">$ 25,184</h5>
                                                     <p class="mb-0 font-13 text-white-50">Total Revenue</p>
@@ -49,7 +49,7 @@
                                                     <h5 class="mb-1">5482</h5>
                                                     <p class="mb-0 font-13 text-white-50">Number of Orders</p>
                                                 </li>
-                                            </ul>
+                                            </ul> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -115,8 +115,8 @@
                         <div class="card tilebox-one">
                             <div class="card-body">
                                 <i class="dripicons-basket float-end text-muted"></i>
-                                <h6 class="text-muted text-uppercase mt-0">Total</h6>
-                                <h2 class="m-b-20">{{$total}}</h2>
+                                <h6 class="text-muted text-uppercase mt-0 mb-2">Total</h6>
+                                <h3 class="m-b-20 pb-3 pr-2">{{$total}} F CFA</h3>
                                 {{-- <span class="badge bg-primary"> +11% </span> <span class="text-muted">From previous period</span> --}}
                             </div> <!-- end card-body-->
                         </div> <!--end card-->
@@ -126,8 +126,8 @@
                         <div class="card tilebox-one">
                             <div class="card-body">
                                 <i class="dripicons-box float-end text-muted"></i>
-                                <h6 class="text-muted text-uppercase mt-0">Payé</h6>
-                                <h2 class="m-b-20">$<span>{{$paye}}</span></h2>
+                                <h6 class="text-muted text-uppercase mt-0 mb-2">Payé</h6>
+                                <h3 class="m-b-20 pb-3 pr-2"><span>{{$paye}}</span> F CFA</h3>
                                 {{-- <span class="badge bg-danger"> -29% </span> <span class="text-muted">From previous period</span> --}}
                             </div> <!-- end card-body-->
                         </div> <!--end card-->
@@ -137,8 +137,8 @@
                         <div class="card tilebox-one">
                             <div class="card-body">
                                 <i class="dripicons-jewel float-end text-muted"></i>
-                                <h6 class="text-muted text-uppercase mt-0">Non payé</h6>
-                                <h2 class="m-b-20">{{$nopaye}}</h2>
+                                <h6 class="text-muted text-uppercase mt-0 mb-2">Non payé</h6>
+                                <h3 class="m-b-20 pb-3 pr-2">{{$nopaye}} F CFA</h3>
                                 {{-- <span class="badge bg-primary"> +89% </span> <span class="text-muted">Last year</span> --}}
                             </div> <!-- end card-body-->
                         </div> <!--end card-->
@@ -320,68 +320,6 @@
 
     </div> <!-- container -->
 
-    {{-- <div class="row">
-        <div class="col-12">
-            <div class="page-title-box">
-                <h4 class="page-title">Dossier patient</h4>
-
-            </div>
-        </div>
-    </div>
-
-    <div class="">
-
-        @include('layouts.alerts')
-
-
-
-        <div class="row">
-            <!-- Contenu du compte rendu -->
-            <div class="col-12">
-
-                    <!-- Info patient -->
-                    <div class="card mb-md-0 mb-3">
-                        <h5 class="card-header">Informations patient</h5>
-
-                        <div class="card-body">
-                            <table >
-                                <tbody>
-                                    <tr>
-                                        <th width="10%">Nom :</th>
-                                        <td width="30%;">{{ $patient->firstname }} </td>
-                                        <th width="10%;">Code: </th>
-                                        <td width="10%;">{{ $patient->code }} </td>
-                                    </tr>
-
-                                    <tr>
-                                        <th>Prénoms :</th>
-                                        <td>{{ $patient->lastname }}  </td>
-                                        <th>Téléphone : </th>
-                                        <td> {{ $patient->telephone1 }} </td>
-                                    </tr>
-
-                                    <tr>
-                                        <th>Age :</th>
-                                        <td>{{ $patient->age }} {{ $patient->year_or_month }} </td>
-                                        <th>Arrivée :</th>
-                                        <td>{{  $patient->created_at }} </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </div>
-
-
-                </form>
-
-            </div>
-
-            <!-- Colonne laterale -->
-
-        </div>
-
-    </div> --}}
 @endsection
 
 @push('extra-js')

@@ -28,4 +28,10 @@ class HomeController extends Controller
         config(['app.name' => $setting->titre]);
         return view('home');
     }
+    public function dashboard()
+    {
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
+        return view('dashboard');
+    }
 }
