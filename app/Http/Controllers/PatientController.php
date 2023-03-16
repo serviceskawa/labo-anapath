@@ -208,6 +208,10 @@ class PatientController extends Controller
 
         $patient = Patient::find($id);
 
+        $total = Invoice::where('patient_id','=',$id)->sum('total');
+        $nopaye = Invoice::where(['patient_id'=>$id,'paid'=>0])->sum('total');
+        $paye = Invoice::where(['patient_id'=>$id,'paid'=>1])->sum('total');
+
         $testorders =TestOrder::where('patient_id','=',$id)->latest()->get();
 
         $consultations = Consultation::where('patient_id','=',$id)->latest()->get();
@@ -217,6 +221,6 @@ class PatientController extends Controller
 
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
-        return view('patients.profil', compact(['invoices', 'testorders', 'consultations', 'prestationOrders', 'patient']));
+        return view('patients.profil', compact(['invoices', 'testorders', 'consultations', 'prestationOrders', 'patient','total','nopaye','paye']));
     }
 }
