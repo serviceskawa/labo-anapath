@@ -48,11 +48,10 @@
                             <tr>
                                 <th>Code</th>
                                 <th>Nom & Prénoms</th>
-                                <th>Age</th>
-                                <!-- <th>Profession</th>
-                                                        <th>Genre</th> -->
                                 <th>Contacts</th>
-                                <th>Adresse</th>
+                                <th>Total</th>
+                                <th>Paye</th>
+                                <th>Due</th>
                                 <th>Actions</th>
 
                             </tr>
@@ -65,11 +64,11 @@
                                 <tr>
                                     <td>{{ $item->code }}</td>
                                     <td>{{ $item->firstname }} {{ $item->lastname }}</td>
-                                    <td>{{ $item->age }}</td>
-                                    <!-- <td>{{ $item->profession }}</td>
-                                                        <td>{{ $item->genre }}</td> -->
+
                                     <td>{{ $item->telephone1 . ' / ' . $item->telephone2 }}</td>
-                                    <td>{{ $item->adresse }}</td>
+                                    <td>{{ getTotalByPatient($item->id) }}</td>
+                                    <td>{{ getPaidByPatient($item->id) }}</td>
+                                    <td>{{ getNoPaidByPatient($item->id) }}</td>
                                     <td>
                                         <button type="button" onclick="edit({{ $item->id }})"
                                             class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>

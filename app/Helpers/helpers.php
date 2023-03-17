@@ -10,6 +10,8 @@ use App\Models\Consultation;
 use App\Models\Invoice;
 use App\Models\Report;
 use App\Models\TypeConsultation;
+use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Support\Facades\Auth;
 
 define("SERVER", "http://sms.wallyskak.com");
@@ -520,6 +522,19 @@ if (!function_exists('getPatientData')) {
     }
 }
 
+// recupère les informations d'un utilisateur
+if (!function_exists('getUsertData')) {
+    function getUserData(int $userId = null)
+    {
+        $result = "";
+        if (!empty($userId)) {
+            $user = User::find($userId);
+            $result = $user;
+        }
+        return $result;
+    }
+}
+
 if (!function_exists('getDoctorData')) {
     function getDoctorData(int $doctorId = null)
     {
@@ -603,3 +618,42 @@ if (!function_exists('getUsersByRole')) {
         return $users;
     }
 }
+
+if (!function_exists('getRolesByUser')) {
+    function getRolesByUser($userID)
+    {
+        $roles = [];
+        $rolesusers = UserRole::where('user_id',$userID)->get();
+        foreach ($rolesusers as $value) {
+            $role = Role::find($value->role_id);
+            $roles[] = $role;
+        }
+        return $roles;
+    }
+}
+
+if (!function_exists('getTotalByPatient')) {
+    function getTotalByPatient($id)
+    {
+        $total = Invoice::where('patient_id','=',$id)->sum('total');
+        return $total;
+    }
+}
+
+if (!function_exists('getNoPaidByPatient')) {
+    function getNoPaidByPatient($id)
+    {
+        $nopaye = Invoice::where(['patient_id'=>$id,'paid'=>0])->sum('total');
+        return $nopaye;
+    }
+}
+
+if (!function_exists('getPaidByPatient')) {
+    function getPaidByPatient($id)
+    {
+        $paye = Invoice::where(['patient_id'=>$id,'paid'=>1])->sum('total');
+        return $paye;
+    }
+}
+
+

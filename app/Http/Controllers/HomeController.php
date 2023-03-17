@@ -9,13 +9,13 @@ use App\Models\Invoice;
 use App\Models\Patient;
 use App\Models\Prestation;
 use App\Models\PrestationOrder;
+use App\Models\Report;
 use App\Models\Setting;
 use App\Models\Test;
 use App\Models\TestOrder;
 use App\Models\User;
-use Illuminate\Contracts\Session\Session;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\UserRole;
+use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
@@ -82,20 +82,47 @@ class HomeController extends Controller
 
         }
 
-        $testOrdersToday = TestOrder::whereDate('created_at', $today)->get();
+        $testOrdersToday = Report::whereDate('updated_at', $today)->get();
 
         $consultations = Consultation::all()->count();
         $invoice = Invoice::all()->sum('total');
 
-        $appointements = Appointment::whereDate('date',$today);
+        $appointements = Appointment::whereDate('date',$today)->get();
 
+
+        $loggedInUserIds = [];
+
+        // Vérifier si l'ID est stocké dans la session
+        if (session()->has('user_id')) {
+            $loggedInUserIds[] = session()->get('user_id');
+        }
+
+        // foreach ($loggedInUserIds as $userId) {
+        //     dd($userId);
+        // }
 
         // $sessions = Session::get('user_id');
         // $users = User::whereIn('id', $sessions)->get();
 
-        //dd($users);
+        // $sessions = Session::getActiveSessions();
+        // $session  = session()->get('user_id');
+
+        //dd($sessions);
+
+        // foreach ($sessions as $session) {
+        //     $userData = $session->get('user_id');
+        //     if ($userData !== null) {
+        //         dd($userData);
+        //         // Faites quelque chose avec l'ID de l'utilisateur connecté
+        //         $userId = $userData['id'];
+
+        //     }
+        // }
+
+
+       // dd($sessions);
         return view('dashboard', compact('patients', 'contrats', 'tests', 'prestations', 'totalToday', 'totalMonth',
-        'testOrdersCount','noFinishTest','finishTest','appointements',
+        'testOrdersCount','noFinishTest','finishTest','appointements', 'loggedInUserIds',
         'prestationOrderCount', 'noFinishPrestation', 'finishPrestation', 'testOrdersToday','consultations','invoice'));
     }
 }
