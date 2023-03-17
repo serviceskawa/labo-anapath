@@ -21,56 +21,6 @@
         </div>
         <!-- end page title -->
 
-
-        <div class="row">
-            <div class="col-sm-12">
-                <!-- Profile -->
-                <div class="card bg-primary">
-                    <div class="card-body profile-user-box">
-                        <div class="row">
-                            <div class="col-sm-8">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <div class="avatar-lg">
-                                            {{-- <img src="assets/images/users/avatar-2.jpg" alt="" class="rounded-circle img-thumbnail"> --}}
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div>
-                                            <h4 class="mt-1 mb-1 text-white">{{ $patient->lastname }} {{ $patient->firstname }} </h4>
-                                            <p class="font-13 text-white-50"> {{ $patient->profession }}</p>
-
-                                            {{-- <ul class="mb-0 list-inline text-light">
-                                                <li class="list-inline-item me-3">
-                                                    <h5 class="mb-1">$ 25,184</h5>
-                                                    <p class="mb-0 font-13 text-white-50">Total Revenue</p>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <h5 class="mb-1">5482</h5>
-                                                    <p class="mb-0 font-13 text-white-50">Number of Orders</p>
-                                                </li>
-                                            </ul> --}}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> <!-- end col-->
-
-                            <div class="col-sm-4">
-                                <div class="text-center mt-sm-0 mt-3 text-sm-end">
-                                    <button type="button" class="btn btn-light">
-                                        <i class="mdi mdi-account-edit me-1"></i> Edit Profile
-                                    </button>
-                                </div>
-                            </div> <!-- end col-->
-                        </div> <!-- end row -->
-
-                    </div> <!-- end card-body/ profile-user-box-->
-                </div><!--end profile/ card -->
-            </div> <!-- end col-->
-        </div>
-        <!-- end row -->
-
-
         <div class="row">
             <div class="col-xl-4">
                 <!-- Personal-Information -->
@@ -92,13 +42,6 @@
                             <p class="text-muted"><strong>Âge :</strong> <span class="ms-2">{{ $patient->age }} {{ $patient->year_or_month !=1 ? 'mois' : 'ans' }} </span></p>
 
                             <p class="text-muted"><strong>Adresse :</strong> <span class="ms-2">{{ $patient->adresse }}</span></p>
-
-
-                            <p class="text-muted mb-0" id="tooltip-container"><strong>Elsewhere :</strong>
-                                <a class="d-inline-block ms-2 text-muted" data-bs-container="#tooltip-container" data-bs-placement="top" data-bs-toggle="tooltip" href="" title="Facebook"><i class="mdi mdi-facebook"></i></a>
-                                <a class="d-inline-block ms-2 text-muted" data-bs-container="#tooltip-container" data-bs-placement="top" data-bs-toggle="tooltip" href="" title="Twitter"><i class="mdi mdi-twitter"></i></a>
-                                <a class="d-inline-block ms-2 text-muted" data-bs-container="#tooltip-container" data-bs-placement="top" data-bs-toggle="tooltip" href="" title="Skype"><i class="mdi mdi-skype"></i></a>
-                            </p>
 
                         </div>
                     </div>
