@@ -36,7 +36,7 @@ date_default_timezone_set('Europe/Paris');
 </div>
 
     <div
-        style="margin-top:20px; background-color:#0070C1; width:100%; height:50px;color:rgb(255,255,255); text-align: center; padding-top:19px;font-size:25px;">
+        style="margin-top:20px; background-color:#0070C1; width:100%; height:50px;color:rgb(255,255,255); text-align: center; padding-top:19px;font-size:25px; text-transform: uppercase;">
         <b> {{ $title }} </b>
     </div>
     <br><br>

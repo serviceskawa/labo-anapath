@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\operation;
-use App\Models\permission;
-use App\Models\ressource;
-use App\Models\role;
+use App\Models\Operation;
+use App\Models\Permission;
+use App\Models\Ressource;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -22,22 +22,22 @@ class authSeed extends Seeder
     public function run()
     {
 
-        $user = User::updateorcreate(["email" =>'test@test.bj'],[
-            "firstname" => 'Root',
-            "lastname" => 'Root',
+        $user = User::updateorcreate(["email" =>'admin@caap.bj'],[
+            "firstname" => 'Admin',
+            "lastname" => 'Admin',
             "password" =>  Hash::make('password'),
         ]);
 
-        $role = role::updateOrCreate(
+        $role = Role::updateOrCreate(
             ['name' => 'rootuser', 'slug' => 'rootuser'],
             ['created_by' => 1, 'description' =>'Super utilisateur']
         );
 
-        $permission = permission::all();
+        $permission = Permission::all();
 
         $role->permissions()->attach($permission);
 
-        $last_role = role::whereSlug('rootuser')->first();
+        $last_role = Role::whereSlug('rootuser')->first();
 
         $roles = [$last_role->id];
 
@@ -50,7 +50,7 @@ class authSeed extends Seeder
 
         $permsTab = [];
         foreach ($roles as $key => $role_id) {
-            $role = role::findorfail($role_id);
+            $role = Role::findorfail($role_id);
             foreach ($role->permissions as $key => $perms) {
                 $permsTab[] = $perms->id;
             }
