@@ -77,26 +77,6 @@
                 </div> <!-- end card -->
             </div> <!-- end col -->
 
-
-            {{-- Prestations --}}
-            <div class="col-lg-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-6">
-                                <h5 class="text-muted fw-normal mt-0 text-truncate" title="Deals">Prestations</h5>
-                                <h3 class="my-2 py-1">{{$prestations}}</h3>
-                            </div>
-                            <div class="col-6">
-                                <div class="text-end">
-                                    <div id="deals-chart" data-colors="#727cf5"></div>
-                                </div>
-                            </div>
-                        </div> <!-- end row-->
-                    </div> <!-- end card-body -->
-                </div> <!-- end card -->
-            </div> <!-- end col -->
-
         </div>
 
         {{-- Revenue --}}
@@ -131,167 +111,130 @@
             <!-- end col-->
         </div>
 
-        <div class="row">
+        {{-- Demande d'Examens --}}
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
 
-            {{-- Demande d'Examens --}}
-            <div class="col-lg-6">
-                <div class="card">
-                    <div class="card-body">
+                    <h4 class="header-title mb-1">Demande d'Examens</h4>
 
-                        <h4 class="header-title mb-1">Demande d'Examens</h4>
-
-                        <div class="row text-center mt-2">
-                            <div class="col-md-4">
-                                <h3 class="fw-normal mt-3">
-                                    <span>{{$testOrdersCount}}</span>
-                                </h3>
-                                <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-warning"></i> Total</p>
-                            </div>
-                            <div class="col-md-4">
-                                <h3 class="fw-normal mt-3">
-                                    <span>{{$noFinishTest}}</span>
-                                </h3>
-                                <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-primary"></i> En attente</p>
-                            </div>
-                            <div class="col-md-4">
-                                <h3 class="fw-normal mt-3">
-                                    <span>{{$finishTest}}</span>
-                                </h3>
-                                <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-success"></i> Terminée</p>
-                            </div>
+                    <div class="row text-center mt-2">
+                        <div class="col-md-4">
+                            <h3 class="fw-normal mt-3">
+                                <span>{{$testOrdersCount}}</span>
+                            </h3>
+                            <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-warning"></i> Total</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3 class="fw-normal mt-3">
+                                <span>{{$noFinishTest}}</span>
+                            </h3>
+                            <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-primary"></i> En attente</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3 class="fw-normal mt-3">
+                                <span>{{$finishTest}}</span>
+                            </h3>
+                            <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-success"></i> Terminée</p>
                         </div>
                     </div>
-                    <!-- end card body-->
                 </div>
-                <!-- end card -->
+                <!-- end card body-->
             </div>
+            <!-- end card -->
+        </div>
 
-            {{-- Demande de Prestations --}}
-            <div class="col-lg-6">
-                <div class="card">
-                    <div class="card-body">
+        <div class="row">
 
-                        <h4 class="header-title mb-1">Demande de Prestations</h4>
+                {{-- Examen terminé aujourd'hi --}}
 
+                <div class="col-xl-6 col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
 
-                        <div class="row text-center mt-2">
-                            <div class="col-md-4">
-                                <h3 class="fw-normal mt-3">
-                                    <span>{{$prestationOrderCount}}</span>
-                                </h3>
-                                <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-warning"></i> Total</p>
-                            </div>
-                            <div class="col-md-4">
+                            <h4 class="header-title mb-3">Comptes rendu dsponible aujourd'hui</h4>
 
-                                <h3 class="fw-normal mt-3">
-                                    <span>{{$finishPrestation}}</span>
-                                </h3>
-                                <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-primary"></i> Payé</p>
-                            </div>
-                            <div class="col-md-4">
-                                <h3 class="fw-normal mt-3">
-                                    <span>{{$noFinishPrestation}}</span>
-                                </h3>
-                                <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-success"></i> Non payé</p>
-                            </div>
+                            <div class="table-responsive">
+                                <table table id="datatable1" class="table table-hover table-centered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Code</th>
+                                            <th>Patiens</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($testOrdersToday as $testOrderToday)
+                                            @if ($testOrderToday->status==1)
+                                                <tr>
+                                                    <td>
+                                                        {{$testOrderToday->order->created_at}}
+                                                    </td>
+                                                    <td>{{$testOrderToday->order->code}}</td>
+                                                    <td>{{$testOrderToday->patient->lastname}} {{$testOrderToday->patient->firstname}}</td>
+                                                    <td class="table-action">
+                                                        <a type="button" href="{{route('report.show', $testOrderToday->id)}}" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>
+                                                    </td>
+                                                </tr>
+                                            @else
+
+                                            @endif
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div> <!-- end table-responsive-->
+
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+                </div>
+                <!-- end col-->
+
+                {{-- Agenda d'aujourd'hui --}}
+                <div class="col-xl-6 col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <h4 class="header-title mb-4">Les rendez-vous d'aujourd'hui</h4>
+
+                            <div class="table-responsive">
+                                <table table id="datatable1" class="table table-hover table-centered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Patiens</th>
+                                            <th>Docteur</th>
+                                            <th>Priorité</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($appointements as $appointement)
+                                                <tr>
+                                                    <td>
+                                                        {{$appointement->date}}
+                                                    </td>
+                                                    <td>{{$appointement->patient->lastname}} {{$testOrderToday->patient->firstname}}</td>
+                                                    <td>{{$appointement->doctor_interne->lastname}} {{$appointement->doctor_interne->firstname}}</td>
+                                                    <td>{{$appointement->priority}}</td>
+
+                                                </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div> <!-- end table-responsive-->
+
                         </div>
+                        <!-- end card-body -->
                     </div>
-                    <!-- end card body-->
+                    <!-- end card-->
                 </div>
-                <!-- end card -->
-            </div>
+                <!-- end col -->
 
         </div>
 
-        {{-- Examen terminé aujourd'hi --}}
-        <div class="row">
-            <div class="col-xl-12 col-lg-12">
-                <div class="card">
-                    <div class="card-body">
 
-                        <h4 class="header-title mb-3">Demande d'examen terminée aujourd'hui</h4>
 
-                        <div class="table-responsive">
-                            <table table id="datatable1" class="table table-hover table-centered mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Code compte rendu</th>
-                                        <th>Patiens</th>
-                                        <th>Code Examen</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($testOrdersToday as $testOrderToday)
-                                        @if ($testOrderToday->status==1)
-                                            <tr>
-                                                <td>
-                                                    {{$testOrderToday->order->created_at}}
-                                                </td>
-                                                <td>{{$testOrderToday->code}}</td>
-                                                <td>{{$testOrderToday->patient->lastname}} {{$testOrderToday->patient->firstname}}</td>
-                                                <td>{{$testOrderToday->order->code}}</td>
-                                                <td class="table-action">
-                                                    <a type="button" href="{{route('report.show', $testOrderToday->id)}}" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>
-                                                </td>
-                                            </tr>
-                                        @else
 
-                                        @endif
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div> <!-- end table-responsive-->
-
-                    </div> <!-- end card-body-->
-                </div> <!-- end card-->
-            </div>
-            <!-- end col-->
-
-        </div>
-
-        {{-- Agenda d'aujourd'hui --}}
-        <div class="row">
-            <div class="col-xl-12 col-lg-6">
-                <div class="card">
-                    <div class="card-body">
-
-                        <h4 class="header-title mb-4">Les rendez-vous d'aujourd'hui</h4>
-
-                        <div class="table-responsive">
-                            <table table id="datatable1" class="table table-hover table-centered mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Patiens</th>
-                                        <th>Docteur</th>
-                                        <th>Priorité</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($appointements as $appointement)
-                                            <tr>
-                                                <td>
-                                                    {{$appointement->date}}
-                                                </td>
-                                                <td>{{$appointement->patient->lastname}} {{$testOrderToday->patient->firstname}}</td>
-                                                <td>{{$appointement->doctor_interne->lastname}} {{$appointement->doctor_interne->firstname}}</td>
-                                                <td>{{$appointement->priority}}</td>
-
-                                            </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div> <!-- end table-responsive-->
-
-                    </div>
-                    <!-- end card-body -->
-                </div>
-                <!-- end card-->
-            </div>
-            <!-- end col -->
-        </div>
 
         {{-- utilisateur connecté --}}
         <div class="row">

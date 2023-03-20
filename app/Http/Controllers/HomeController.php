@@ -48,7 +48,6 @@ class HomeController extends Controller
         $patients = Patient::all()->count();
         $contrats = Contrat::all()->count();
         $tests = Test::all()->count();
-        $prestations = Prestation::all()->count();
 
         $curmonth = now()->format('m'); // Récupérer le mois en cours sous forme de chiffre (ex : '01' pour janvier)
         $totalMonth = Invoice::whereMonth('created_at', $curmonth)->sum('total');
@@ -69,22 +68,8 @@ class HomeController extends Controller
             }
         }
 
-        $prestationOrderCount = PrestationOrder::all()->count();
-        $prestationOrders = PrestationOrder::all();
-        $noFinishPrestation = 0;
-        $finishPrestation = 0;
-        foreach ($prestationOrders as $prestationOrder){
-            if ($prestationOrder->invoice->paid ==0) {
-                $noFinishPrestation ++;
-            } else {
-                $finishPrestation ++;
-            }
-
-        }
-
         $testOrdersToday = Report::whereDate('updated_at', $today)->get();
-
-        $consultations = Consultation::all()->count();
+        
         $invoice = Invoice::all()->sum('total');
 
         $appointements = Appointment::whereDate('date',$today)->get();
@@ -97,32 +82,9 @@ class HomeController extends Controller
             $loggedInUserIds[] = session()->get('user_id');
         }
 
-        // foreach ($loggedInUserIds as $userId) {
-        //     dd($userId);
-        // }
-
-        // $sessions = Session::get('user_id');
-        // $users = User::whereIn('id', $sessions)->get();
-
-        // $sessions = Session::getActiveSessions();
-        // $session  = session()->get('user_id');
-
-        //dd($sessions);
-
-        // foreach ($sessions as $session) {
-        //     $userData = $session->get('user_id');
-        //     if ($userData !== null) {
-        //         dd($userData);
-        //         // Faites quelque chose avec l'ID de l'utilisateur connecté
-        //         $userId = $userData['id'];
-
-        //     }
-        // }
-
-
        // dd($sessions);
-        return view('dashboard', compact('patients', 'contrats', 'tests', 'prestations', 'totalToday', 'totalMonth',
+        return view('dashboard', compact('patients', 'contrats', 'tests', 'totalToday', 'totalMonth',
         'testOrdersCount','noFinishTest','finishTest','appointements', 'loggedInUserIds',
-        'prestationOrderCount', 'noFinishPrestation', 'finishPrestation', 'testOrdersToday','consultations','invoice'));
+        'testOrdersToday','invoice'));
     }
 }

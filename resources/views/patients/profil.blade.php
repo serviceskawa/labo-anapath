@@ -3,10 +3,10 @@
 @section('title', 'Profil')
 
 @section('content')
+@include('layouts.alerts')
 
     <!-- Start Content-->
     <div class="container-fluid">
-
         <!-- start page title -->
         <div class="row">
             <div class="col-12">
@@ -47,13 +47,11 @@
                     </div>
                 </div>
                 <!-- Personal-Information -->
-
-
             </div> <!-- end col-->
 
             <div class="col-xl-8">
 
-                <div class="row">
+                <div class="row" style="margin-top: 100px;" >
                     <div class="col-sm-4">
                         <div class="card tilebox-one">
                             <div class="card-body">
@@ -88,211 +86,119 @@
                     </div><!-- end col -->
 
                 </div>
-                <!-- end row -->
-
-
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="header-title mb-3">Historique Factures</h4>
-
-                        <div class="table-responsive">
-                            <table id="datatable1" class="table table-hover table-centered mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Date</th>
-                                        <th>Code</th>
-                                        <th>Total</th>
-                                        <th>Remise</th>
-                                        <th>Statut</th>
-                                        <th>Actions</th>
-
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-
-                                    @foreach ($invoices as $key =>$invoice)
-                                        <tr>
-                                            <td>{{ $key+1 }}</td>
-                                            <td>{{ $invoice->date }}</td>
-                                            <td>{{$invoice->code !=null ? $invoice->code : ''}}</td>
-                                            <td>{{ $invoice->subtotal }}</td>
-                                            <td>{{ $invoice->total }}</td>
-                                            <td><span class="bg-{{$invoice->paid != 1 ? 'danger' : 'success' }} badge
-                                                float-end">{{$invoice->paid == 1 ? "Payé" : "En
-                                                    attente"}}
-                                                </span></td>
-                                            <td>
-                                                <a type="button" href="{{route('invoice.show',$invoice->id)}}" class="btn btn-warning"><i
-                                                        class="mdi mdi-eye"></i> </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-
-                                </tbody>
-                            </table>
-                        </div> <!-- end table responsive-->
-
-                    </div> <!-- end col-->
-                </div> <!-- end row-->
-
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="header-title mb-3">Examen anapath</h4>
-
-                        <div class="table-responsive">
-                            <table id="datatable2" class="table table-hover table-centered mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Date</th>
-                                        <th>Code</th>
-                                        <th>Contrat</th>
-                                        <th>Montant</th>
-                                        <th>Action</th>
-
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-
-                                    @foreach ($testorders as $key =>$testorder)
-                                        <tr>
-                                            <td>{{ $key+1 }}</td>
-                                            <td> {{$testorder->created_at}} </td>
-                                            <td> {{$testorder->code}} </td>
-                                            <td> {{$testorder->contrat->name}} </td>
-                                            <td> {{$testorder->total}} </td>
-                                            <td>
-                                                <a type="button" href="{{route('details_test_order.index', $testorder->id)}}" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-
-                                </tbody>
-                            </table>
-                        </div> <!-- end table responsive-->
-
-                    </div> <!-- end col-->
-                </div> <!-- end row-->
-
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="header-title mb-3">Consultations</h4>
-
-                        <div class="table-responsive">
-                            <table id="datatable3" class="table table-hover table-centered mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Date</th>
-                                        <th>Code</th>
-                                        <th>Docteur</th>
-                                        <th>Actions</th>
-
-
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-
-                                    @foreach ($consultations as $key => $consultation)
-                                        <tr>
-                                            <td>{{$key+1}}</td>
-                                            <td> {{$consultation->created_at}} </td>
-                                            <td> {{$consultation->code}} </td>
-                                            <td> {{$consultation->doctor->firstname}}.' '.{{$consultation->doctor->lastname}} </td>
-                                            <td><a type="button" href="' . route('consultation.show', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a></td>
-                                        </tr>
-                                    @endforeach
-
-                                </tbody>
-                            </table>
-                        </div> <!-- end table responsive-->
-                    </div> <!-- end col-->
-                </div> <!-- end row-->
-
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="header-title mb-3">Demande de prestation</h4>
-
-                        <div class="table-responsive">
-                            <table id="datatable4" class="table table-hover table-centered mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Date</th>
-                                        <th>Code</th>
-                                        <th>Contrat</th>
-                                        <th>Montant</th>
-                                        <th>Status</th>
-
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-
-                                    @foreach ($prestationOrders as $key => $prestationOrder)
-                                        <tr>
-                                            <td> {{$key+1}} </td>
-                                            <td> {{$prestationOrder->created_at}} </td>
-                                            <td> {{$prestationOrder->code}} </td>
-                                            <td> {{$prestationOrder->contrat->name}} </td>
-                                            <td> {{$prestationOrder->total}} </td>
-                                            <td><span class="bg-{{$prestationOrder->invoice->paid !=1 ? 'danger' : 'success' }} badge
-                                                float-end">{{$prestationOrder->invoice->paid ==1 ? "Payé" : "En
-                                                    attente"}}
-                                                </span></td>
-                                            <td>
-                                        </tr>
-                                    @endforeach
-
-                                </tbody>
-                            </table>
-
-                        </div> <!-- end table responsive-->
-                    </div> <!-- end col-->
-                </div> <!-- end row-->
 
             </div>
             <!-- end col -->
+
+                <div class="row">
+
+
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mb-3">Demandes d'examen</h4>
+
+                                <div class="table-responsive">
+                                    <table id="datatable2" class="table table-hover table-centered mb-0">
+
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date</th>
+                                                <th>Code</th>
+                                                <th>Montant</th>
+                                                <th>Action</th>
+
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+                                            @foreach ($testorders as $key =>$testorder)
+                                                <tr>
+                                                    <td>{{ $key+1 }}</td>
+                                                    <td> {{$testorder->created_at}} </td>
+                                                    <td> {{$testorder->code}} </td>
+                                                    <td> {{$testorder->total}} </td>
+                                                    <td>
+                                                        <a type="button" href="{{route('details_test_order.index', $testorder->id)}}" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+
+                                        </tbody>
+                                    </table>
+
+                                </div> <!-- end table responsive-->
+
+                            </div> <!-- end col-->
+                        </div> <!-- end row-->
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mb-3">Factures</h4>
+
+                                <div class="table-responsive">
+                                    <table id="datatable2" class="table table-hover table-centered mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date</th>
+                                                <th>Code</th>
+                                                <th>Total</th>
+                                                <th>Remise</th>
+                                                <th>Statut</th>
+                                                <th>Actions</th>
+
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+                                            @foreach ($invoices as $key =>$invoice)
+                                                <tr>
+                                                    <td>{{ $key+1 }}</td>
+                                                    <td>{{ $invoice->date }}</td>
+                                                    <td>{{$invoice->code !=null ? $invoice->code : ''}}</td>
+                                                    <td>{{ $invoice->subtotal }}</td>
+                                                    <td>{{ $invoice->total }}</td>
+                                                    <td><span class="bg-{{$invoice->paid != 1 ? 'danger' : 'success' }} badge
+                                                        float-end">{{$invoice->paid == 1 ? "Payé" : "En
+                                                            attente"}}
+                                                        </span></td>
+                                                    <td>
+                                                        <a type="button" href="{{route('invoice.show',$invoice->id)}}" class="btn btn-warning"><i
+                                                                class="mdi mdi-eye"></i> </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+
+                                        </tbody>
+                                    </table>
+
+                                </div> <!-- end table responsive-->
+
+                            </div> <!-- end col-->
+                        </div> <!-- end row-->
+                    </div>
+
+                </div>
 
         </div>
         <!-- end row -->
 
     </div> <!-- container -->
-
 @endsection
 
 @push('extra-js')
-    <script>
+
+    <script type="text/javascript">
         /* DATATABLE */
         $(document).ready(function() {
 
             $('#datatable1').DataTable({
-                "order": [
-                    [0, "asc"]
-                ],
-                "columnDefs": [{
-                    "targets": [0],
-                    "searchable": false
-                }],
-                "language": {
-                    "lengthMenu": "Afficher _MENU_ enregistrements par page",
-                    "zeroRecords": "Aucun enregistrement disponible",
-                    "info": "Afficher page _PAGE_ sur _PAGES_",
-                    "infoEmpty": "Aucun enregistrement disponible",
-                    "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-                    "sSearch": "Rechercher:",
-                    "paginate": {
-                        "previous": "Précédent",
-                        "next": "Suivant"
-                    }
-                },
-            });
-
-            $('#datatable2').DataTable({
                 "order": [
                     [0, "asc"]
                 ],
@@ -336,28 +242,7 @@
                 },
             });
 
-            $('#datatable4').DataTable({
-                "order": [
-                    [0, "asc"]
-                ],
-                "columnDefs": [{
-                    "targets": [0],
-                    "searchable": false
-                }],
-                "language": {
-                    "lengthMenu": "Afficher _MENU_ enregistrements par page",
-                    "zeroRecords": "Aucun enregistrement disponible",
-                    "info": "Afficher page _PAGE_ sur _PAGES_",
-                    "infoEmpty": "Aucun enregistrement disponible",
-                    "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-                    "sSearch": "Rechercher:",
-                    "paginate": {
-                        "previous": "Précédent",
-                        "next": "Suivant"
-                    }
-                },
-            });
-
         });
+
     </script>
 @endpush
