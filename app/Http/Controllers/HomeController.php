@@ -57,10 +57,12 @@ class HomeController extends Controller
             $noFinishTest = 0;
             $finishTest = 0;
             foreach ($testOrders as $testOrder) {
-                if ($testOrder->report->is_deliver == 0) {
-                    $noFinishTest ++;
-                }else {
-                    $finishTest++;
+                if ($testOrder->report !=null) {
+                    if ($testOrder->report->is_deliver == 0) {
+                        $noFinishTest ++;
+                    }else {
+                        $finishTest++;
+                    }
                 }
             }
 
