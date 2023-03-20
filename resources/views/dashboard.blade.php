@@ -191,7 +191,6 @@
                                                                 <a type="button" target="_blank" href="{{route('report.updateDeliver',  $testOrderToday->id)}}" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </a>
                                                             @endif
                                                         @endif
-                                                        <a type="button" href="{{route('details_test_order.index', $testOrderToday->order->id)}}" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>
                                                     </td>
                                                 </tr>
                                             @else
