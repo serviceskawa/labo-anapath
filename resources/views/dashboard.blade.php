@@ -166,7 +166,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($testOrdersToday as $testOrderToday)
-                                            @if ($testOrderToday->report->is_deliver==1)
+                                            @if ($testOrderToday->report)
                                                 <tr>
                                                     <td>
                                                         {{$testOrderToday->order->created_at}}
