@@ -178,7 +178,7 @@
                                                             <a type="button" href="{{route('details_test_order.index', $testOrderToday->id)}}" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>;
                                                             <button type="button" onclick="deleteModal($testOrderToday->id)" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>;
                                                         @else
-                                                            <a type="button" href="{{route('report.show', $testOrderToday->report->id)}}" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>
+                                                            <a type="button" href="{{route('report.show', $testOrderToday->id)}}" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>
                                                         @endif
 
                                                         @if (!empty($testOrderToday->invoice->id))
@@ -188,10 +188,10 @@
                                                         @endif
                                                         @if (!empty($testOrderToday))
                                                             @if ($testOrderToday->status ==1)
-                                                                <a type="button" target="_blank" href="{{route('report.updateDeliver',  $testOrderToday->report->id)}}" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </a>
+                                                                <a type="button" target="_blank" href="{{route('report.updateDeliver',  $testOrderToday->id)}}" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </a>
                                                             @endif
                                                         @endif
-                                                        <a type="button" href="{{route('details_test_order.index', $testOrderToday->id)}}" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>
+                                                        <a type="button" href="{{route('details_test_order.index', $testOrderToday->order->id)}}" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>
                                                     </td>
                                                 </tr>
                                             @else
