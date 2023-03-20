@@ -148,7 +148,7 @@
 
                 {{-- Examen terminé aujourd'hi --}}
 
-                <div class="col-xl-6 col-lg-12">
+                <div class="col-xl-12 col-lg-12">
                     <div class="card">
                         <div class="card-body">
 
@@ -174,7 +174,22 @@
                                                     <td>{{$testOrderToday->order->code}}</td>
                                                     <td>{{$testOrderToday->patient->lastname}} {{$testOrderToday->patient->firstname}}</td>
                                                     <td class="table-action">
-                                                        <a type="button" href="{{route('report.show', $testOrderToday->id)}}" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>
+                                                        @if ($testOrderToday->status !=1)
+                                                            <a type="button" href="{{route('details_test_order.index', $testOrderToday->id)}}" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>;
+                                                            <button type="button" onclick="deleteModal($testOrderToday->id)" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>;
+                                                        @else
+                                                            <a type="button" href="{{route('report.show', $testOrderToday->report->id)}}" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>
+                                                        @endif
+
+                                                        @if (!empty($testOrderToday->invoice->id))
+                                                        <a type="button" href="{{route('invoice.show', $testOrderToday->invoice->id)}}" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>
+                                                        @else
+                                                        <a type="button" href="{{route('invoice.storeFromOrder', $testOrderToday->id)}}" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>
+                                                        @endif
+                                                        @if (!empty($data->report))
+                                                            <a type="button" target="_blank" href="{{route('report.updateDeliver',  $testOrderToday->report->id)}}" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </a>
+                                                        @endif
+                                                        <a type="button" href="{{route('details_test_order.index', $testOrderToday->id)}}" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>
                                                     </td>
                                                 </tr>
                                             @else
@@ -191,7 +206,7 @@
                 <!-- end col-->
 
                 {{-- Agenda d'aujourd'hui --}}
-                <div class="col-xl-6 col-lg-6">
+                {{-- <div class="col-xl-6 col-lg-6">
                     <div class="card">
                         <div class="card-body">
 
@@ -227,7 +242,7 @@
                         <!-- end card-body -->
                     </div>
                     <!-- end card-->
-                </div>
+                </div> --}}
                 <!-- end col -->
 
         </div>
