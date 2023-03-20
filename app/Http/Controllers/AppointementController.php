@@ -67,7 +67,7 @@ class AppointementController extends Controller
         ]);
 
         Appointment::create([
-            "user_id" => $data['doctorId']!=null ? $data['doctorId'] : '', // change doctor_id en  user_id pour la reference dses docteurs internes
+            "user_id" => $data['doctorId'], // change doctor_id en  user_id pour la reference dses docteurs internes
             "patient_id" => $data['patientId'],
             "priority" => $data['priority'],
             "message" => $data['message'],
