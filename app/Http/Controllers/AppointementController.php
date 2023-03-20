@@ -31,11 +31,11 @@ class AppointementController extends Controller
         $events = [];
         foreach ($data as $key => $value) {
             $events[$key] = [
-                //"title" => "RDV " . $value['doctor_interne']->firstname . ' ' . $value['doctor_interne']->lastname, // change doctor_id en  user_id pour la reference dses docteurs internes
+                "title" => $data['doctor_interne'] !=null ? "RDV " . $value['doctor_interne']->firstname . ' ' . $value['doctor_interne']->lastname : '', // change doctor_id en  user_id pour la reference dses docteurs internes
                 "id" => $value['id'],
                 "start" => $value['date'],
                 "doctorId" => $value['user_id'],
-                //"doctorName" => $value['doctor_interne']->firstname . ' ' . $value['doctor_interne']->lastname,
+                "doctorName" => $data['doctor_interne'] !=null ? $value['doctor_interne']->firstname . ' ' . $value['doctor_interne']->lastname : '',
                 "className" => randColor($value['priority']),
             ];
         }
@@ -59,7 +59,7 @@ class AppointementController extends Controller
     public function store(Request $request)
     {
         $data = $this->validate($request, [
-            'doctorId' => 'required',
+            'doctorId' => 'nullable',
             'patientId' => 'required',
             'time' => 'required',
             'message' => 'nullable',
@@ -67,7 +67,7 @@ class AppointementController extends Controller
         ]);
 
         Appointment::create([
-            "user_id" => $data['doctorId'], // change doctor_id en  user_id pour la reference dses docteurs internes
+            "user_id" => $data['doctorId']!=null ? $data['doctorId'] : '', // change doctor_id en  user_id pour la reference dses docteurs internes
             "patient_id" => $data['patientId'],
             "priority" => $data['priority'],
             "message" => $data['message'],
@@ -122,7 +122,7 @@ class AppointementController extends Controller
 
         $data = $this->validate($request, [
             'patient_id' => 'required',
-            'doctor_id' => 'required',
+            'doctor_id' => 'nullable',
             'date' => 'required',
             'message' => 'nullable',
             'priority' => 'required',
@@ -135,7 +135,7 @@ class AppointementController extends Controller
 
         try {
             $appointement = Appointment::find($id);
-            $appointement->user_id = $data['doctor_id'];
+            $appointement->user_id = $data['doctor_id'] != null ? $data['doctor_id'] : '';
             $appointement->patient_id = $data['patient_id'];
             $appointement->message = $data['message'];
             $appointement->priority = $data['priority'];
