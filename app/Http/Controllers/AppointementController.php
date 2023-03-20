@@ -31,11 +31,11 @@ class AppointementController extends Controller
         $events = [];
         foreach ($data as $key => $value) {
             $events[$key] = [
-                "title" => $data['doctor_interne'] !=null ? "RDV " . $value['doctor_interne']->firstname . ' ' . $value['doctor_interne']->lastname : '', // change doctor_id en  user_id pour la reference dses docteurs internes
+                "title" => $value['doctor_interne'] !=null ? "RDV " . $value['doctor_interne']->firstname . ' ' . $value['doctor_interne']->lastname : '', // change doctor_id en  user_id pour la reference dses docteurs internes
                 "id" => $value['id'],
                 "start" => $value['date'],
                 "doctorId" => $value['user_id'],
-                "doctorName" => $data['doctor_interne'] !=null ? $value['doctor_interne']->firstname . ' ' . $value['doctor_interne']->lastname : '',
+                "doctorName" => $value['doctor_interne'] !=null ? $value['doctor_interne']->firstname . ' ' . $value['doctor_interne']->lastname : '',
                 "className" => randColor($value['priority']),
             ];
         }
