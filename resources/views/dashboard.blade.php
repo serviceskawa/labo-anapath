@@ -166,7 +166,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($testOrdersToday as $testOrderToday)
-                                            @if ($testOrderToday->report)
+                                            @if ($testOrderToday->is_deliver==1)
                                                 <tr>
                                                     <td>
                                                         {{$testOrderToday->order->created_at}}
@@ -177,7 +177,7 @@
                                                         @if ($testOrderToday->status !=1)
                                                             <a type="button" href="{{route('details_test_order.index', $testOrderToday->id)}}" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>;
                                                             <button type="button" onclick="deleteModal($testOrderToday->id)" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>;
-                                                        @elseif (!empty($testOrderToday->report))
+                                                        @else
                                                             <a type="button" href="{{route('report.show', $testOrderToday->report->id)}}" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>
                                                         @endif
 
@@ -186,8 +186,10 @@
                                                         @else
                                                         <a type="button" href="{{route('invoice.storeFromOrder', $testOrderToday->id)}}" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>
                                                         @endif
-                                                        @if (!empty($testOrderToday->report))
-                                                            <a type="button" target="_blank" href="{{route('report.updateDeliver',  $testOrderToday->report->id)}}" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </a>
+                                                        @if (!empty($testOrderToday))
+                                                            @if ($testOrderToday->status ==1)
+                                                                <a type="button" target="_blank" href="{{route('report.updateDeliver',  $testOrderToday->report->id)}}" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </a>
+                                                            @endif
                                                         @endif
                                                         <a type="button" href="{{route('details_test_order.index', $testOrderToday->id)}}" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>
                                                     </td>
