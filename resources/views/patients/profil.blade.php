@@ -15,7 +15,7 @@
                         <a href="{{ route('patients.index') }}" type="button" class="btn btn-primary">Retour à la liste des
                             patients</a>
                     </div>
-                    <h4 class="page-title">Dossier Profile</h4>
+                    <h4 class="page-title">Dossier Patient</h4>
                 </div>
             </div>
         </div>

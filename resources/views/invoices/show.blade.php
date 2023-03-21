@@ -66,6 +66,7 @@
                                         <th>Titre de l'examen</th>
                                         <th>Quantité</th>
                                         <th>Prix(F CFA)</th>
+                                        <th>Remise(F CFA)</th>
                                         <th class="text-end">Total(F CFA)</th>
                                     </tr>
                                 </thead>
@@ -78,6 +79,7 @@
                                         </td>
                                         <td>1</td>
                                         <td>{{$item->price}}</td>
+                                        <td>{{$item->discount}}</td>
                                         <td class="text-end">{{$item->total}}</td>
                                     </tr>
                                     @endforeach
