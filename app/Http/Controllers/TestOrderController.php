@@ -21,6 +21,7 @@ use App\Models\LogReport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Contracts\DataTable;
 
 class TestOrderController extends Controller
 {
@@ -645,8 +646,14 @@ class TestOrderController extends Controller
         }
     }
 
+    public function search(Request $request)
+    {
+
+    }
+
     public function getTestOrdersforDatatable(Request $request)
     {
+
 
         $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])->orderBy('created_at', 'desc');
 
@@ -831,22 +838,23 @@ class TestOrderController extends Controller
                         // $query->where('status', $request->get('exams_status'));
                     }
                 }
-                if (!empty($request->get('datatable1'))) {
-                    if ($request->get('datatable1') == "livrer") {
-                        $query->whereHas('report', function ($query) {
-                            $query->where('is_deliver', 1);
-                        });
-                    } elseif ($request->get('datatable1') == "non_livrer") {
-                        $query->whereHas('report', function ($query) {
-                            $query->where('is_deliver', 0);
-                        });
-                    } else {
-                        $query->whereHas('report', function ($query) use ($request) {
-                            $query->where('status', $request->get('datatable1'));
-                        });
-                        // $query->where('status', $request->get('exams_status'));
-                    }
-                }
+                
+                /*
+                    if (!empty($request->get('q'))) {
+                    //     $query->whereHas('patient', function ($query) use ($request){
+                    //             $query->where('firstname','like', $request->get('q'))
+                    //                 ->orwhere('lastname', 'like', $request->get('q'));
+                    //         });
+                    //         // ->orwhereHas('doctor', function ($query) use ($request){
+                    //         //     $query->where('firstname','like', $request->get('q'))
+                    //         //         ->orwhere('lastname', 'like', $request->get('q'));
+                    //         // })
+                    //         // ->orwhereHas('contrat', function ($query) use ($request){
+                    //         //     $query->where('name','like', $request->get('q'));
+                    //         // });
+                    //     // $query->where('status', $request->get('exams_status'));
+                    / }
+                */
             })
             ->rawColumns(['action', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
             ->make(true);

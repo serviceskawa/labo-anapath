@@ -202,8 +202,28 @@
 
             /* DATATABLE */
             $(document).ready(function() {
+                var search = document.getElementsByClassName('form-control-sm')[0];
 
                 var table = $('#datatable1').DataTable({
+                    "order": [
+                    [0, "desc"]
+                    ],
+                    "columnDefs": [{
+                        "targets": [0],
+                        "searchable": false
+                    }],
+                    "language": {
+                        "lengthMenu": "Afficher _MENU_ enregistrements par page",
+                        "zeroRecords": "Aucun enregistrement disponible",
+                        "info": "Afficher page _PAGE_ sur _PAGES_",
+                        "infoEmpty": "Aucun enregistrement disponible",
+                        "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+                        "sSearch": "Rechercher:",
+                        "paginate": {
+                            "previous": "Précédent",
+                            "next": "Suivant"
+                        }
+                    },
                     processing: true,
                     serverSide: true,
                     ajax: {
@@ -214,6 +234,7 @@
                             d.contrat_id = $('#contrat_id').val()
                             d.exams_status = $('#exams_status').val()
                             d.type_examen = $('#type_examen').val()
+                            // d.q = search.val()
 
                         }
                     },
@@ -285,14 +306,6 @@
                     }
                 );
 
-
-                var search = document.getElementsByClassName('form-control-sm')[0];
-                search.oninput
-                search.oninput = function() {
-                    table.draw();
-                    console.log(search.value);
-                 };
-
                 // Recherche selon les docteurs signataires
                 $("#doctor_signataire").on("change", function() {
                     // alert(this.value)
@@ -318,6 +331,11 @@
                     // alert(this.value)
                     table.draw();
                 });
+
+                search.oninput = function() {
+                    table.draw();
+                    console.log(search.value);
+                };
             });
 
 

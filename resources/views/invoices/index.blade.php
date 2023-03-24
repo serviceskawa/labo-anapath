@@ -50,10 +50,10 @@
                         <tr>
                             <td>{{ $key+1 }}</td>
                             <td>{{ $item->date }}</td>
-                            <td>{{ getTestOrderData($item->test_order_id)->code }}</td>
-                            <td>{{
+                            <td>{{$item->test_order_id ? getTestOrderData($item->test_order_id)->code :'' }}</td>
+                            <td>{{$item->test_order_id?
                                 getTestOrderData($item->test_order_id)->patient->firstname.'
-                                '.getTestOrderData($item->test_order_id)->patient->lastname
+                                '.getTestOrderData($item->test_order_id)->patient->lastname :''
                                 }}
                             </td>
                             <td>{{ $item->subtotal }}</td>
