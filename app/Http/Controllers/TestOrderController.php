@@ -67,8 +67,26 @@ class TestOrderController extends Controller
         $types_orders = TypeOrder::all();
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
+
+        $testOrders = TestOrder::all();
+        $noFinishTest = 0;
+        $finishTest = 0;
+        $is_urgent = 0;
+        foreach ($testOrders as $testOrder) {
+            if($testOrder->report){
+                if ($testOrder->report->is_deliver == 0) {
+                    $noFinishTest ++;
+                }else {
+                    $finishTest++;
+                }
+            }
+            if ($testOrder->is_urgent ==1) {
+                $is_urgent++;
+            }
+        }
+
         // dd($examens);
-        return view('examens.index2', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
+        return view('examens.index2', compact(['examens', 'finishTest', 'noFinishTest', 'is_urgent',  'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
     }
 
     // Fonction de recherche
@@ -835,6 +853,12 @@ class TestOrderController extends Controller
                         });
                         // $query->where('status', $request->get('exams_status'));
                     }
+                }
+                if(!empty($request->get('contenu')))
+                {
+                    $query->whereHas('report', function($query) use ($request){
+                        $query->where('description', 'like', '%'.$request->get('contenu').'%');
+                    });
                 }
 
                 /*

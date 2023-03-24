@@ -133,6 +133,13 @@
 
                                 </div> <!-- end col -->
 
+                                <div class="col-lg-3">
+                                    <div class="mb-3">
+                                        <label for="example-fileinput" class="form-label">Contenu</label>
+                                        <input type="text" name="contenu" id="contenu" class="form-control">
+                                    </div>
+                                </div> <!-- end col -->
+
                             </div>
                         </form>
 
@@ -234,6 +241,7 @@
                             d.contrat_id = $('#contrat_id').val()
                             d.exams_status = $('#exams_status').val()
                             d.type_examen = $('#type_examen').val()
+                            d.contenu = $('#contenu').val()
                             // d.q = search.val()
 
                         }
@@ -311,6 +319,7 @@
                     // alert(this.value)
                     table.draw();
                 });
+
                  // Recherche selon les contrats
                  $("#contrat_id").on("change", function() {
                     // alert(this.value)
@@ -331,6 +340,10 @@
                     // alert(this.value)
                     table.draw();
                 });
+
+                // $.('#contenu').on("change", function(){
+                //     table.draw();
+                // });
 
                 search.oninput = function() {
                     table.draw();
