@@ -688,8 +688,6 @@ class TestOrderController extends Controller
                         }
                             return 'table-danger urgent';
 
-                }elseif ($data->report->is_deliver ==1) {
-                    return 'table-success';
                 }elseif (!empty($data->report)) {
                     if($data->report->is_deliver ==1){
                         return 'table-success';
@@ -838,7 +836,7 @@ class TestOrderController extends Controller
                         // $query->where('status', $request->get('exams_status'));
                     }
                 }
-                
+
                 /*
                     if (!empty($request->get('q'))) {
                     //     $query->whereHas('patient', function ($query) use ($request){
