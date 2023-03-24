@@ -137,14 +137,14 @@
                         </form>
 
                        <div class="row mb-3">
-                            <div class="col-lg-1 p-1 alert alert-success rounded-pill" style="margin-right: 5px; text-align:center;">
-                                Livrer
+                            <div class="col-lg-2 p-1 alert alert-success rounded-pill" style="margin-right: 5px; text-align:center;">
+                                Livrer : {{$finishTest}}
                             </div>
-                            <div class="col-lg-1 p-1 alert alert-warning rounded-pill" style="margin-right: 5px; text-align:center;">
-                                Valider
+                            <div class="col-lg-2 p-1 alert alert-warning rounded-pill" style="margin-right: 5px; text-align:center;">
+                                Valider : {{$noFinishTest}}
                             </div>
-                            <div class="col-lg-1 p-1 ml-3 alert alert-danger rounded-pill" style="margin-right: 5px; text-align:center;">
-                                Cas urgent
+                            <div class="col-lg-2 p-1 ml-3 alert alert-danger rounded-pill" style="margin-right: 5px; text-align:center;">
+                                Cas urgent : {{$is_urgent}}
                             </div>
                        </div>
 
