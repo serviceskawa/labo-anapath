@@ -70,8 +70,13 @@ class HomeController extends Controller
             $finishTest = 0;
             foreach ($testOrders as $testOrder) {
                 if ($testOrder->report !=null) {
+                    if ($testOrder->whereDate('created_at', '<', $threeWeeksAgo))
+                    {
+                        if ($testOrder->report->is_deliver == 0) {
+                            $noFinishWeek ++;
+                        }
+                    }
                     if ($testOrder->report->is_deliver == 0) {
-                        $noFinishWeek = $testOrder->whereDate('created_at', '<', $threeWeeksAgo)->count();
                         $noFinishTest ++;
                     }else {
                         $finishTest++;
