@@ -209,7 +209,13 @@
 
             /* DATATABLE */
             $(document).ready(function() {
-                var search = document.getElementsByClassName('form-control-sm')[0];
+                var search = document.getElementsByClassName('form-control-sm');
+                var searchInput = document.querySelector('input[wfd-id="id4"]');
+                //const searchValue = searchInput.value;
+                console.log(search);
+
+                //search.id = "search"
+                // search.setAttribute("id", "search");
 
                 var table = $('#datatable1').DataTable({
                     "order": [
@@ -242,7 +248,7 @@
                             d.exams_status = $('#exams_status').val()
                             d.type_examen = $('#type_examen').val()
                             d.contenu = $('#contenu').val()
-                            // d.q = search.val()
+                            d.q = $('#search').val()
 
                         }
                     },
@@ -341,14 +347,14 @@
                     table.draw();
                 });
 
-                // $.('#contenu').on("change", function(){
-                //     table.draw();
-                // });
+                $('#contenu').on("input", function(){
+                    table.draw();
+                });
 
-                search.oninput = function() {
+                $('#search').on('input', function() {
                     table.draw();
                     console.log(search.value);
-                };
+                });
             });
 
 

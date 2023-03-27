@@ -44,6 +44,7 @@
                                 <th>Telephone</th>
                                 <th>Date</th>
                                 <th>Statut</th>
+                                <th hidden style="display: none"></th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -59,17 +60,19 @@
                                     <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
                                     <td>{{ $item->status == '1' ? 'Valider' : 'Attente' }}</td>
 
+                                    <td hidden >{{$item->description }}</td>
+
                                     <td>
                                         <a type="button" href="{{ route('report.show', $item->id) }}"
                                             class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
-                                        <a type="button" href="{{ route('report.send-sms', $item->id) }}"
-                                            class="btn btn-danger"><i class="mdi mdi-android-messages"></i> </a>
+                                            <a type="button" href="{{route('details_test_order.index', $item->order->id)}}" class="btn btn-warning" title="Demande {{$item->order->code}}"><i class="uil-file-medical"></i> </a>
+                                        {{-- <a type="button" href="{{ route('report.send-sms', $item->id) }}"
+                                            class="btn btn-danger"><i class="mdi mdi-android-messages"></i> </a> --}}
                                         <a type="button" href="{{ route('report.pdf', $item->id) }}"
                                             class="btn btn-secondary"><i class="mdi mdi-printer"></i> </a>
                                         @if ($item->status == 1)
                                             <a type="button" href="{{ route('report.updateDeliver', $item->id) }}"
-                                                class="btn btn-{{ $item->is_deliver == 1 ? 'success' : 'warning' }}"><i
-                                                    class="uil uil-envelope-upload"></i> </a>
+                                                class="btn btn-{{ $item->is_deliver == 1 ? 'success' : 'warning' }}">Imprimer </a>
                                         @endif
 
                                     </td>
@@ -110,8 +113,12 @@
         }
 
 
+
+
+
+
         $(document).ready(function() {
-            $('#datatable1').DataTable({
+            var table =  $('#datatable1').DataTable({
                 "order": [],
                 // columnDefs: [
                 //     {
@@ -119,6 +126,8 @@
                 //         visible: false,
                 //     }
                 // ],
+                // processing: true,
+                // serverSide: true,
                 language: {
                     url: "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json",
                 },
@@ -148,7 +157,23 @@
                         });
                     });
                 }
+
             });
+
+            // $('#search').on('input', function(){
+            //     q = $('#search').val();
+            //     $.ajax({
+            //         type: "GET",
+            //         url: "{{ url('report/search') }}"+'/'+q,
+            //         success: function(data) {
+            //             console.log(data);
+            //         },
+            //         error: function(data) {
+            //             console.log('Error:',data);
+            //         }
+            //     })
+            // });
+
         });
 
 

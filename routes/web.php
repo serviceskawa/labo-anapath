@@ -155,6 +155,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('report')->group(function () {
         Route::get('list', [ReportController::class, 'index'])->name('report.index');
         Route::get('show/{id}', [ReportController::class, 'show'])->name('report.show');
+        //Route::get('search/{q}', [ReportController::class, 'search'])->name('report.search');
         Route::post('/store', [ReportController::class, 'store'])->name('report.store');
         Route::post('/auto', [ReportController::class, 'saveauto'])->name('report.saveauto');
         Route::get('send_sms/{id}', [ReportController::class, 'send_sms'])->name('report.send-sms');

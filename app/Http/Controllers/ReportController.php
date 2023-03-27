@@ -147,6 +147,11 @@ class ReportController extends Controller
         return view('reports.show', compact('report', 'setting', 'templates','titles', 'logs'));
     }
 
+    // public function search($q){
+    //     $results = Report::where('description', 'like', '%'.$q.'%')->get();
+    //     return response()->json($results);
+    // }
+
     public function send_sms($id)
     {
         if (!getOnlineUser()->can('edit-reports')) {
