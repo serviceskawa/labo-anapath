@@ -19,7 +19,7 @@
         <div class="row">
 
             {{-- Patients --}}
-            <div class="col-lg-6 col-xl-3">
+            <div class="col-lg-6 col-xl-4">
                 <div class="card">
                     <div class="card-body">
                         <div class="row align-items-center">
@@ -39,7 +39,7 @@
 
 
             {{-- Contrats --}}
-            <div class="col-lg-6 col-xl-3">
+            <div class="col-lg-6 col-xl-4">
                 <div class="card">
                     <div class="card-body">
                         <div class="row align-items-center">
@@ -59,7 +59,7 @@
 
 
             {{-- Examens --}}
-            <div class="col-lg-6 col-xl-3">
+            <div class="col-lg-6 col-xl-4">
                 <div class="card">
                     <div class="card-body">
                         <div class="row align-items-center">
@@ -80,7 +80,7 @@
         </div>
 
         {{-- Revenue --}}
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
@@ -115,7 +115,7 @@
                 <!-- end card -->
             </div>
             <!-- end col-->
-        </div>
+        </div> --}}
 
         {{-- Demande d'Examens --}}
         <div class="col-lg-12">
@@ -262,7 +262,45 @@
         </div>
 
 
+       @if (getOnlineUser()->can('view-dashbord-finance'))
+             <!-- tasks panel -->
+            <div class="mt-2 mb-3">
+                <h5 class="m-0 pb-2">
+                    <a class="text-dark" data-bs-toggle="collapse" href="#todayTasks" role="button" aria-expanded="false" aria-controls="todayTasks">
+                        <i class='uil uil-angle-down font-18'></i>Revenu</span>
+                    </a>
+                </h5>
 
+                <div class="collapse" id="todayTasks">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="chart-content-bg">
+                                <div class="row text-center">
+                                    <div class="col-md-4">
+                                        <p class="text-muted mb-0 mt-3">Aujourd'hui</p>
+                                        <h2 class="fw-normal mb-3">
+                                            <span>{{ $totalToday }}F CFA</span>
+                                        </h2>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class="text-muted mb-0 mt-3">Ce Mois</p>
+                                        <h2 class="fw-normal mb-3">
+                                            <span>{{$totalMonth}} F CFA</span>
+                                        </h2>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class="text-muted mb-0 mt-3">Mois précedent</p>
+                                        <h2 class="fw-normal mb-3">
+                                            <span>{{$totalLastMonth}} F CFA</span>
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- end .collapse-->
+            </div> <!-- end .mt-2-->
+       @endif
 
 
         {{-- utilisateur connecté --}}

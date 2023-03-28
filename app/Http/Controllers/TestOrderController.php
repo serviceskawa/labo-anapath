@@ -856,25 +856,23 @@ class TestOrderController extends Controller
                 }
                 if(!empty($request->get('contenu')))
                 {
-                    $query->whereHas('report', function($query) use ($request){
+                    $query->where('code','like','%'.$request->get('contenu').'%')
+                        ->orwhereHas('report', function($query) use ($request){
                         $query->where('description', 'like', '%'.$request->get('contenu').'%');
-                    });
+                            })
+                        ->orwhereHas('patient', function ($query) use ($request){
+                        $query->where('firstname','like', '%'.$request->get('contenu').'%')
+                            ->orwhere('lastname', 'like', '%'.$request->get('contenu').'%');
+                            })
+                        ->orwhereHas('doctor', function ($query) use ($request){
+                            $query->where('firstname','like','%'.$request->get('contenu').'%')
+                                ->orwhere('lastname', 'like','%'.$request->get('contenu').'%');
+                        })
+                        ->orwhereHas('contrat', function ($query) use ($request){
+                            $query->where('name','like', '%'.$request->get('contenu').'%');
+                        });
                 }
 
-                    if (!empty($request->get('q'))) {
-                        $query->whereHas('patient', function ($query) use ($request){
-                                $query->where('firstname','like', $request->get('q'))
-                                    ->orwhere('lastname', 'like', $request->get('q'));
-                            });
-                            // ->orwhereHas('doctor', function ($query) use ($request){
-                            //     $query->where('firstname','like', $request->get('q'))
-                            //         ->orwhere('lastname', 'like', $request->get('q'));
-                            // })
-                            // ->orwhereHas('contrat', function ($query) use ($request){
-                            //     $query->where('name','like', $request->get('q'));
-                            // });
-                        // $query->where('status', $request->get('exams_status'));
-                     }
             })
             ->rawColumns(['action', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
             ->make(true);

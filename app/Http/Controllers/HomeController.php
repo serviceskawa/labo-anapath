@@ -61,7 +61,10 @@ class HomeController extends Controller
 
 
 
+            //plus de 3 semaines
             $threeWeeksAgo = Carbon::now()->subWeeks(3);
+            $weekTest = TestOrder::whereDate('created_at', '<', $threeWeeksAgo)->get();
+
 
             $testOrdersCount = TestOrder::all()->count();
             $testOrders = TestOrder::all();
@@ -70,16 +73,22 @@ class HomeController extends Controller
             $finishTest = 0;
             foreach ($testOrders as $testOrder) {
                 if ($testOrder->report !=null) {
-                    if ($testOrder->whereDate('created_at', '<', $threeWeeksAgo))
-                    {
-                        if ($testOrder->report->is_deliver == 0) {
-                            $noFinishWeek ++;
-                        }
-                    }
+
                     if ($testOrder->report->is_deliver == 0) {
                         $noFinishTest ++;
+
                     }else {
                         $finishTest++;
+                    }
+                }
+            }
+            $weekTests = TestOrder::whereDate('created_at', '>', $threeWeeksAgo)->get();
+            foreach ($weekTests as $testOrder) {
+                if ($testOrder->report !=null) {
+
+                    //$weekTest[] = $testOrder->whereDate('updated_at', '<', $threeWeeksAgo)->get();
+                    if ($testOrder->report->is_deliver == 0) {
+                        $noFinishWeek ++;
                     }
                 }
             }
@@ -91,14 +100,27 @@ class HomeController extends Controller
             $appointements = Appointment::whereDate('date',$today)->get();
 
 
-            $loggedInUserId = [];
             $loggedInUserIds = [];
+            $sessionData = session()->all();
 
-            // Vérifier si l'ID est stocké dans la session
-            if (session()->has('user_id')) {
-                $loggedInUserId[] = session()->get('user_id');
-                $loggedInUserIds += $loggedInUserId;
+            // dd($sessionData);
+
+            foreach ($sessionData as $key => $value) {
+                if ($key === 'user_id') {
+                    $loggedInUserIds[]= $value;
+                }
             }
+
+            // $loggedInUserId = [];
+            // $loggedInUserIds = [];
+
+            // // Vérifier si l'ID est stocké dans la session
+            // if (session()->has('user_id')) {
+            //     $loggedInUserId[] = session()->get('user_id');
+            //     $loggedInUserIds+= $loggedInUserId;
+            // }
+
+            //dd($loggedInUserIds);
 
         // dd($sessions);
             return view('dashboard', compact('patients', 'contrats', 'tests', 'totalToday', 'totalMonth', 'totalLastMonth',

@@ -135,7 +135,7 @@
 
                                 <div class="col-lg-3">
                                     <div class="mb-3">
-                                        <label for="example-fileinput" class="form-label">Contenu</label>
+                                        <label for="example-fileinput" class="form-label">Rechercher</label>
                                         <input type="text" name="contenu" id="contenu" class="form-control">
                                     </div>
                                 </div> <!-- end col -->
@@ -231,7 +231,7 @@
                         "info": "Afficher page _PAGE_ sur _PAGES_",
                         "infoEmpty": "Aucun enregistrement disponible",
                         "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-                        "sSearch": "Rechercher:",
+                        //"sSearch": "Rechercher:",
                         "paginate": {
                             "previous": "Précédent",
                             "next": "Suivant"
