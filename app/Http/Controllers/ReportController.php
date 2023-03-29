@@ -8,6 +8,7 @@ use App\Models\Report;
 use App\Models\Doctor;
 use App\Models\LogReport;
 use App\Models\Setting;
+use GuzzleHttp\Client;
 //use App\Helpers\herpers;
 use Illuminate\Http\Request;
 use Spipu\Html2Pdf\Html2Pdf;
@@ -294,10 +295,29 @@ class ReportController extends Controller
         // } else {
         //     $state = 1;
         // }
-        $report->fill([
-            "is_deliver" => 1,
-        ])->save();
-        $this->pdf($reportId);
+
+        // $report->fill([
+        //     "is_deliver" => 1,
+        // ])->save();
+
+        $client = new Client();
+        $accessToken = "89|NGMC7skSCt6rFUQFxOUgnRlLxUByqMpc4uhfI8zsmm3aonaMPnQVyRVgWqWqtC5Dc66GX6ssI0i0lMPiX7NMWlGNSyGTDyDoI0woVisMBtHsonM4TuFopUqPZ4ayCJAdXGhDWXmsqOI1Yr6QBTaglTq0mc8n0I6eJQhuuE1L46h23PgzEG7ZBYnqSQF3SIIs6uR7v2DGHHBF5Hnh5GgVt3jyUDA2NJgmRx3gTtjP9CaWX3EI";
+
+        $response = $client->request('POST', "https://staging.getourvoice.com/api/v1/messages", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+                "Content-Type"=> "application/json",
+                "Accept"=> "application/json",
+            ]
+        ]);
+
+        $data = json_decode($response->getBody(), true);
+
+        dd($data);
+
+
+
+       // $this->pdf($reportId);
         // dd($report);
         //return redirect()->back()->with('success', "Effectué avec succès ! ");
     }
