@@ -21,6 +21,7 @@ use App\Models\TitleReport;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
@@ -303,7 +304,7 @@ class ReportController extends Controller
         $client = new Client();
         $accessToken = "89|NGMC7skSCt6rFUQFxOUgnRlLxUByqMpc4uhfI8zsmm3aonaMPnQVyRVgWqWqtC5Dc66GX6ssI0i0lMPiX7NMWlGNSyGTDyDoI0woVisMBtHsonM4TuFopUqPZ4ayCJAdXGhDWXmsqOI1Yr6QBTaglTq0mc8n0I6eJQhuuE1L46h23PgzEG7ZBYnqSQF3SIIs6uR7v2DGHHBF5Hnh5GgVt3jyUDA2NJgmRx3gTtjP9CaWX3EI";
 
-        $response = $client->request('POST', "https://staging.getourvoice.com/api/v1/messages", [
+        $response = $client->request('POST', "https://staging.getourvoice.com/api/v1/calls", [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
                 "Content-Type"=> "application/json",
@@ -311,10 +312,11 @@ class ReportController extends Controller
             ],
             'json' => [
                 'to' => [
-                    "est"
+                    "22954325390"
                 ],
-                "body"=> "TEST TEST",
-                "sender_id"=> "a6d76d9f-f9c1-44d7-8864-1f3aef691fd5"
+                "audio_url"=> '/audio.mp3',
+                // "body"=> "TEST TEST",
+                // "sender_id"=> "d823ac53-658c-4790-af0c-adc009b9a830"
             ]
         ]);
 
