@@ -296,35 +296,35 @@ class ReportController extends Controller
         //     $state = 1;
         // }
 
-        $report->fill([
-            "is_deliver" => 1,
-        ])->save();
+        // $report->fill([
+        //     "is_deliver" => 1,
+        // ])->save();
 
-        // $client = new Client();
-        // $accessToken = "89|NGMC7skSCt6rFUQFxOUgnRlLxUByqMpc4uhfI8zsmm3aonaMPnQVyRVgWqWqtC5Dc66GX6ssI0i0lMPiX7NMWlGNSyGTDyDoI0woVisMBtHsonM4TuFopUqPZ4ayCJAdXGhDWXmsqOI1Yr6QBTaglTq0mc8n0I6eJQhuuE1L46h23PgzEG7ZBYnqSQF3SIIs6uR7v2DGHHBF5Hnh5GgVt3jyUDA2NJgmRx3gTtjP9CaWX3EI";
+        $client = new Client();
+        $accessToken = "89|NGMC7skSCt6rFUQFxOUgnRlLxUByqMpc4uhfI8zsmm3aonaMPnQVyRVgWqWqtC5Dc66GX6ssI0i0lMPiX7NMWlGNSyGTDyDoI0woVisMBtHsonM4TuFopUqPZ4ayCJAdXGhDWXmsqOI1Yr6QBTaglTq0mc8n0I6eJQhuuE1L46h23PgzEG7ZBYnqSQF3SIIs6uR7v2DGHHBF5Hnh5GgVt3jyUDA2NJgmRx3gTtjP9CaWX3EI";
 
-        // $response = $client->request('POST', "https://staging.getourvoice.com/api/v1/messages", [
-        //     'headers' => [
-        //         'Authorization' => 'Bearer ' . $accessToken,
-        //         "Content-Type"=> "application/json",
-        //         "Accept"=> "application/json",
-        //     ],
-        //     'json' => [
-        //         'to' => [
-        //             "est"
-        //         ],
-        //         "body"=> "TEST TEST",
-        //         "sender_id"=> "a6d76d9f-f9c1-44d7-8864-1f3aef691fd5"
-        //     ]
-        // ]);
+        $response = $client->request('POST', "https://staging.getourvoice.com/api/v1/messages", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+                "Content-Type"=> "application/json",
+                "Accept"=> "application/json",
+            ],
+            'json' => [
+                'to' => [
+                    "est"
+                ],
+                "body"=> "TEST TEST",
+                "sender_id"=> "a6d76d9f-f9c1-44d7-8864-1f3aef691fd5"
+            ]
+        ]);
 
-        // $data = json_decode($response->getBody(), true);
+        $data = json_decode($response->getBody(), true);
 
-        // dd($data);
+        dd($data);
 
 
 
-        $this->pdf($reportId);
+        //$this->pdf($reportId);
         // dd($report);
         //return redirect()->back()->with('success', "Effectué avec succès ! ");
     }
