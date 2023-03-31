@@ -233,6 +233,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('store-from-order/{id}', [InvoiceController::class, 'storeFromOrder'])->name('invoice.storeFromOrder');
         Route::get('print/{id}', [InvoiceController::class, 'print'])->name('invoice.print');
         Route::get('updateStatus/{id}', [InvoiceController::class, 'updateStatus'])->name('invoice.updateStatus');
+        Route::post('/invoice_confirm', [InvoiceController::class, 'confirmInvoice'])->name('invoice.confirmInvoice');
+        Route::post('/invoice_cancel', [InvoiceController::class, 'cancelInvoice'])->name('invoice.cancelInvoice');
+        Route::post('updatePayment', [InvoiceController::class, 'updatePayment'])->name('invoice.updatePayment');
+        Route::get('/setting', [SettingController::class, 'invoice_index'])->name('invoice.setting.index');
+        Route::post('/setting-Update', [SettingController::class, 'invoice_update'])->name('invoice.setting.update');
     });
 
     Route::prefix('appointements')->group(function () {
