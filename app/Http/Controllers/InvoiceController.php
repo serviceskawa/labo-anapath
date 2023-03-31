@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
 use App\Models\Setting;
+use App\Models\SettingInvoice;
 use App\Models\TestOrder;
 use Illuminate\Http\Request;
 
@@ -108,25 +109,27 @@ class InvoiceController extends Controller
     public function show(Request $request, $id)
     {
         $invoice = Invoice::findorfail($id);
+        $settingInvoice = SettingInvoice::find(1);
         $setting = Setting::find(1);
         if (empty($invoice)) {
             return back()->with('error', "Cette facture n'existe pas. Verifiez et réessayez svp ! ");
         }
 
         config(['app.name' => $setting->titre]);
-        return view('invoices.show', compact('invoice', 'setting'));
+        return view('invoices.show', compact('invoice', 'setting', 'settingInvoice'));
     }
 
     function print($id)
     {
         $invoice = Invoice::findorfail($id);
+        $settingInvoice = SettingInvoice::find(1);
         $setting = Setting::find(1);
 
         if (empty($invoice)) {
             return back()->with('error', "Cette facture n'existe pas. Verifiez et réessayez svp ! ");
         }
         config(['app.name' => $setting->titre]);
-        return view('invoices.print', compact('invoice', 'setting'));
+        return view('invoices.print', compact('invoice', 'setting', 'settingInvoice'));
     }
 
     public function storeFromOrder($id)
@@ -186,17 +189,96 @@ class InvoiceController extends Controller
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
         $invoice = Invoice::findorfail($id);
+        $settingInvoice = SettingInvoice::find(1);
 
         if ($invoice->paid == 1) {
 
             return redirect()->back()->with('success', "Cette facture a déjà été payé ! ");
-        } else {
+        }
+        else {
 
-            $invoice->fill(["paid" => '1'])->save();
 
-            return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
+            if ($settingInvoice->status==1) {
+                if ($invoice->test_order_id!=null) {
+                    return response()->json(invoiceNormeTest($invoice->test_order_id));
+                }
+            } else {
+                $invoice->fill(["paid" => '1'])->save();
+                return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
+            }
+
         }
     }
 
-    
+    public function updatePayment(Request $request)
+    {
+        $invoice=Invoice::find($request->id);
+
+        if ($invoice->paid ==1) {
+            return response()->json('Facture déjà validée');
+        } else {
+            $invoice->fill([
+                'payment'=> $request->payment
+            ])->save();
+            return response()->json('Mis à jour du payment');
+        }
+
+    }
+
+    public function confirmInvoice(Request $request)
+    {
+        $client = new \GuzzleHttp\Client();
+        // $accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAyMDIzNjc4MDc0MDN8VFMwMTAwNTQ2NyIsInJvbGUiOiJUYXhwYXllciIsIm5iZiI6MTY3OTU1OTk2OCwiZXhwIjoxNjk1NDU3NTY4LCJpYXQiOjE2Nzk1NTk5NjgsImlzcyI6ImltcG90cy5iaiIsImF1ZCI6ImltcG90cy5iaiJ9.g80Hdsm2VInc7WBfiSvc7MVC34ZEXbwqyJX_66ePDGQ';
+        // $ifu = "0202367807403";
+        $settingInvoice = SettingInvoice::find(1);
+        $accessToken = $settingInvoice->token;
+        $ifu = $settingInvoice->ifu;
+        $response = $client->request('PUT', 'https://developper.impots.bj/sygmef-emcf/api/invoice/'.$request->uid.'/confirm',[
+            'headers' => [
+                'Authorization' => 'Bearer ' .$accessToken,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ],
+        ]);
+        $test = json_decode($response->getBody(), true);
+
+        $invoice = Invoice::find($request->invoice_id);
+
+        if (!empty($invoice)) {
+            $invoice->fill([
+               "paid" => '1',
+               "codeMecef" => $test['codeMECeFDGI'],
+               "counters" => $test['counters'],
+               "dategenerate" => $test['dateTime'],
+               "nim" => $test['nim'],
+               "qrcode" => $test['qrCode']
+           ])->save();
+        }
+
+        //'response' => $test['qrCode'],
+
+        return response()->json(['status'=>200, 'type'=>"confirm", "invoice" => $invoice]);
+    }
+
+    public function cancelInvoice(Request $request)
+    {
+        $client = new \GuzzleHttp\Client();
+        // $accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAyMDIzNjc4MDc0MDN8VFMwMTAwNTQ2NyIsInJvbGUiOiJUYXhwYXllciIsIm5iZiI6MTY3OTU1OTk2OCwiZXhwIjoxNjk1NDU3NTY4LCJpYXQiOjE2Nzk1NTk5NjgsImlzcyI6ImltcG90cy5iaiIsImF1ZCI6ImltcG90cy5iaiJ9.g80Hdsm2VInc7WBfiSvc7MVC34ZEXbwqyJX_66ePDGQ';
+        // $ifu = "0202367807403";
+        $settingInvoice = SettingInvoice::find(1);
+        $accessToken = $settingInvoice->token;
+        $ifu = $settingInvoice->ifu;
+        $response = $client->request('PUT', 'https://developper.impots.bj/sygmef-emcf/api/invoice/'.$request->uid.'/cancel',[
+            'headers' => [
+                'Authorization' => 'Bearer ' .$accessToken,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ],
+        ]
+        );
+        $test = json_decode($response->getBody(), true);
+        return response()->json(['status'=>200, 'type'=>"cancel", 'response'=> $test]);
+    }
+
+
 }

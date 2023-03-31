@@ -74,10 +74,11 @@
                             <div class="col-sm-4 offset-sm-2">
                                 <div class="mt-3 float-sm-end">
                                     <p class="font-13"><strong>Date: </strong> {{$invoice->created_at}}</p>
-                                    <p class="font-13"><strong>Status: </strong> <span
-                                            class="badge bg-{{$invoice->paid ? " success" : "danger" }}
-                                            float-end">{{$invoice->paid ? "Payé" : "En attente"}}</span>
-                                    </p>
+                                    @if ($settingInvoice!=null)
+                                        @if ($settingInvoice->status ==1)
+                                            <p class="font-13"><strong>Type de payment: </strong> {{$invoice->payment}}</p>
+                                        @endif
+                                    @endif
                                     <p class="font-13"><strong>Code: </strong> <span
                                             class="float-end">{{$invoice->code}}</span>
 
@@ -143,6 +144,26 @@
                         </div>
                         <!-- end row-->
 
+                        @if ($settingInvoice!=null)
+                            @if ($invoice->qrcode && $settingInvoice->status ==1)
+
+                                <div class="row">
+
+                                    <p style="font-style: italic">­­­---ELÉMENTS DE SÉCURITÉ DE LA FACTURE NORMALISÉE­­­---</p>
+                                    <hr style="margin-left: 5px; margin-right: 5px;">
+                                    <div class="col-6" style="display: flex; padding-left:75px;">
+                                        <div id="qrcode"></div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div style="text-align: center">Code MECeFDGI <br> {{$invoice->codeMecef}} </div>
+                                        <div style="display:flex; justify-content:space-between"><span>MECef NIM:</span> <span>{{$invoice->nim}}</span> </div>
+                                        <div style="display:flex; justify-content:space-between"><span>MECef Compteurs :</span> {{$invoice->counters}} </div>
+                                        <div style="display:flex; justify-content:space-between"><span>MECef Heure :</span> {{$invoice->dategenerate}} </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endif
+
                     </div> <!-- end card-body-->
                 </div> <!-- end card -->
             </div> <!-- end col-->
@@ -153,7 +174,19 @@
     <script src="{{ asset('/adminassets/js/vendor.min.js') }}"></script>
     <script src="{{ asset('/adminassets/js/app.min.js') }}"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
+
+        var invoice = {!! json_encode($invoice) !!}
+        var code = new QRCode(document.getElementById("qrcode"), {
+            text: invoice.qrcode,
+            width: 100,
+            height: 105,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+
         window.addEventListener("load", (event) => {
             console.log('aa')
             window.print()

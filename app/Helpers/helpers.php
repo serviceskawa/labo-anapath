@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\Consultation;
 use App\Models\Invoice;
 use App\Models\Report;
+use App\Models\SettingInvoice;
 use App\Models\TypeConsultation;
 use App\Models\User;
 use App\Models\UserRole;
@@ -508,6 +509,71 @@ if (!function_exists('getTestOrderData')) {
         return $result;
     }
 }
+
+
+if(!function_exists('invoiceNormeTest')) {
+    function invoiceNormeTest($id){
+        $client = new \GuzzleHttp\Client();
+
+        $test_order = TestOrder::find($id);
+        $invoice = Invoice::where('test_order_id', '=', $id)->first();
+
+        $item = [];
+        $items = [];
+
+        $details = $test_order->details()->get();
+
+        if ($details!=null) {
+            foreach ($details as $key =>$value) {
+                {
+                    $item['name'] = $value->test_name;
+                    $item['price'] = $value->total;
+                    $item['quantity'] = 1;
+                    $item['taxGroup'] ="A";
+                    $items[]=$item;
+                }
+            }
+        }
+        //return response()->json($items);
+
+        // $accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAyMDIzNjc4MDc0MDN8VFMwMTAwNTQ2NyIsInJvbGUiOiJUYXhwYXllciIsIm5iZiI6MTY3OTU1OTk2OCwiZXhwIjoxNjk1NDU3NTY4LCJpYXQiOjE2Nzk1NTk5NjgsImlzcyI6ImltcG90cy5iaiIsImF1ZCI6ImltcG90cy5iaiJ9.g80Hdsm2VInc7WBfiSvc7MVC34ZEXbwqyJX_66ePDGQ';
+        // $ifu = "0202367807403";
+        $settingInvoice = SettingInvoice::find(1);
+        $accessToken = $settingInvoice->token;
+        $ifu = $settingInvoice->ifu;
+        $response = $client->request('POST', 'https://developper.impots.bj/sygmef-emcf/api/invoice',[
+            'headers' => [
+                'Authorization' => 'Bearer ' .$accessToken,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ],
+            'json' => [
+                'ifu' => $ifu,
+                'type' => "FV",
+                'items' => $items,
+                "client"=>[
+                    "name"=>$invoice->client_name,
+                    "address"=>$invoice->client_address
+                ],
+                "operator"=>[
+                    "id"=>Auth::user()->id,
+                    "name"=>Auth::user()->lastname,
+                ],
+                "payment"=>[
+                    [
+                        "name"=>$invoice->payment,
+                        "amount"=>$invoice->total,
+                    ]
+                ],
+            ]
+        ]
+        );
+        $test = json_decode($response->getBody(), true);
+
+        return ["id"=>$id,"uid"=>$test['uid']];
+    }
+}
+
 
 // recupère les informations d'un patient
 if (!function_exists('getPatientData')) {

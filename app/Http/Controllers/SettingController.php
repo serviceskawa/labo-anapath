@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
+use App\Models\SettingInvoice;
 use App\Models\TitleReport;
 use Illuminate\Http\Request;
 
@@ -182,5 +183,46 @@ class SettingController extends Controller
 
 
         return back()->with('success', " Elément mis à jour avec succès  ! ");
+    }
+
+    public function invoice_index()
+    {
+        if (!getOnlineUser()->can('view-settings')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        // $app_name = config('app.name');
+        // $setting = Setting::where('titre','like',$app_name)->first();
+        $setting = Setting::find(1);
+        config(['app.name' => $setting->titre]);
+        $settingInvoice = SettingInvoice::find(1);
+        return view('invoices.setting' , compact('settingInvoice'));
+    }
+
+    public function invoice_update(Request $request)
+    {
+        if (!getOnlineUser()->can('view-settings')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        //dd($request);
+        $data = $this->validate($request, [
+            'ifu' => 'required',
+            'token' => 'required',
+            'status' => 'nullable'
+        ]);
+
+        try {
+
+            $settingInvoice = SettingInvoice::find(1);
+            $settingInvoice->ifu = $data['ifu'];
+            $settingInvoice->token = $data['token'];
+            $settingInvoice->status = $request->status?1:0;
+            $settingInvoice->save();
+
+            return back()->with('success', "Mise à jour éffectué avec success ");
+            //return response()->json(200);
+            //return response()->json($request);
+        } catch (\Throwable $ex) {
+            return response()->json('error', "Échec de la mis à jour ! " . $ex->getMessage());
+        }
     }
 }

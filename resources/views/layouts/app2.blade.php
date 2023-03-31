@@ -216,6 +216,11 @@
                                     <li>
                                         <a href="{{ route('invoice.create') }}">Créer</a>
                                     </li>
+                                    @if (getOnlineUser()->can('view-setting-invoice'))
+                                    <li>
+                                        <a href="{{ route('invoice.setting.index') }}">Paramètre</a>
+                                    </li>
+                                @endif
                                 </ul>
                             </div>
                         </li>
