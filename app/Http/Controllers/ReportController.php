@@ -191,13 +191,13 @@ class ReportController extends Controller
         $report = Report::find($id);
         $user = Auth::user();
 
-        if($report->signatory1 != null)
+        if($report->signatory1 != 0)
             {$signatory1 = User::findorfail($report->signatory1);}
 
-        if($report->signatory2 != null)
+        if($report->signatory2 != 0)
             {$signatory2 = User::findorfail($report->signatory2);}
 
-        if($report->signatory3 != null)
+        if($report->signatory3 != 0)
             {$signatory3 = User::findorfail($report->signatory3);}
         $year_month = "";
         if($report->patient->year_or_month !=1){
@@ -219,14 +219,14 @@ class ReportController extends Controller
             'title' => $report->title,
             'content' => $report->description,
             'content_supplementaire' => $report->description_supplementaire !=""? $report->description_supplementaire : '',
-            'signatory1' => $report->signatory1 != null ? $signatory1->lastname.' '.$signatory1->firstname : '',
-            'signature1' => $report->signatory1 != null ? $signatory1->signature : '',
+            'signatory1' => $report->signatory1 != 0 ? $signatory1->lastname.' '.$signatory1->firstname : '',
+            'signature1' => $report->signatory1 != 0 ? $signatory1->signature : '',
 
-            'signatory2' => $report->signatory2 != null ? $signatory2->lastname.' '.$signatory2->firstname : '',
-            'signature2' => $report->signatory2 != null ? $signatory2->signature : '',
+            'signatory2' => $report->signatory2 != 0 ? $signatory2->lastname.' '.$signatory2->firstname : '',
+            'signature2' => $report->signatory2 != 0 ? $signatory2->signature : '',
 
-            'signatory3' => $report->signatory3 != null ? $signatory3->lastname.' '.$signatory3->firstname : '',
-            'signature3' => $report->signatory3 != null ? $signatory3->signature : '',
+            'signatory3' => $report->signatory3 != 0 ? $signatory3->lastname.' '.$signatory3->firstname : '',
+            'signature3' => $report->signatory3 != 0 ? $signatory3->signature : '',
 
             'patient_firstname' => $report->patient->firstname,
             'patient_lastname' => $report->patient->lastname,
@@ -234,7 +234,7 @@ class ReportController extends Controller
             'patient_year_or_month' => $year_month,
             'patient_genre' => $report->patient->genre,
             'hospital_name' => $report->order ? $report->order->hospital->name :'',
-            'doctor_name' => $report->order ? $report->order->doctor->name :'',
+            'doctor_name' => $report->order->doctor ? $report->order->doctor->firstname.' '->order->doctor->lastname :'',
             'created_at' => date_format($report->created_at, "d/m/Y"),
             'date' => date('d/m/Y')
         ];

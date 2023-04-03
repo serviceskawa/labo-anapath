@@ -36,11 +36,11 @@ return [
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
-            'host' => 'mail.caap.bj',
-            'port' => 26,
+            'host' => 'node10-ca.n0c.com',
+            'port' => 587,
             'encryption' => 'tls',
-            'username' => 'admin@caap.bj',
-            'password' => 'h&qa4D@l7J',
+            'username' => 'mail@caap.bj',
+            'password' => '_zZk)969:Zr9ZTS_!T',
             'timeout' => null,
             'auth_mode' => null,
         ],

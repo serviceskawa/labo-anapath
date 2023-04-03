@@ -415,7 +415,9 @@ if (!function_exists('getSignatory1')) {
     {
         $users =getUsersByRole('docteur');
         $signatory = $users->find($signatory_id);
-        return $signatory->lastname ." ". $signatory->firstname;
+        if($signatory)
+            return $signatory->lastname ." ". $signatory->firstname;
+            
     }
 }
 if (!function_exists('getSignatory2')) {

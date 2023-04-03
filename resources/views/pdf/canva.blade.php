@@ -104,7 +104,7 @@ date_default_timezone_set('Europe/Paris');
     <div style="">
         <table style="width: 100%;">
             <tr>
-                <!-- <td style="text-align: left;    width: 10%"></td> -->
+                 <td style="text-align: left;    width: 10%"></td> 
 
                 <td style="text-align: center;    width: 33%">
                     @if ($signatory1 != null)
