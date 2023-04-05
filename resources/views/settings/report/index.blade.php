@@ -55,58 +55,80 @@
                                 Titres
                             </a>
                         </li>
-                        {{-- <li class="nav-item">
+                        <li class="nav-item">
                             <a href="#input-types-code" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
                                 Placeholder
                             </a>
-                        </li> --}}
+                        </li>
                     </ul> <!-- end nav-->
-                    <div class="card-body">
-                        <div class="card-widgets">
-                            <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
-                            <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false"
-                                aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
-                            <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
-                        </div>
-                        <h5 class="card-title mb-0">Liste des Titres</h5>
 
-                        <div id="cardCollpase1" class="collapse pt-3 show">
-
-
-                            <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
-                                <thead class="col-lg-12" style="text-align: center;">
-                                    <tr>
-                                        <th class="col-lg-2">#</th>
-                                        <th class="col-lg-6">Titres</th>
-                                        <th class="col-lg-4">Actions</th>
-
-                                    </tr>
-                                </thead>
-
-
-                                <tbody>
-
-                                    @foreach ($titles as $item)
-                                        <tr>
-                                            <td style="text-align: center;">{{ $item->id }}</td>
-                                            <td style="text-align: center;">{{ $item->title }} {{ $item->status !=0 ? '(Par defaut)':'' }} </td>
-                                            <td style="text-align: center;">
-                                                <button type="button" onclick="edit({{ $item->id }})"
-                                                    class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
-                                                <button type="button" onclick="deleteModal({{ $item->id }})"
-                                                    class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
-                                            </td>
-
-                                        </tr>
-                                    @endforeach
-
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </div>
                     <div class="tab-content">
+                        <div class="tab-pane active" id="input-types-preview">
+                            <div class="card-body">
+                                <div class="card-widgets">
+                                    <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
+                                    <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false"
+                                        aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
+                                    <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                                </div>
+                                <h5 class="card-title mb-0">Liste des Titres</h5>
 
+                                <div id="cardCollpase1" class="collapse pt-3 show">
+
+
+                                    <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                                        <thead class="col-lg-12" style="text-align: center;">
+                                            <tr>
+                                                <th class="col-lg-2">#</th>
+                                                <th class="col-lg-6">Titres</th>
+                                                <th class="col-lg-4">Actions</th>
+
+                                            </tr>
+                                        </thead>
+
+
+                                        <tbody>
+
+                                            @foreach ($titles as $item)
+                                                <tr>
+                                                    <td style="text-align: center;">{{ $item->id }}</td>
+                                                    <td style="text-align: center;">{{ $item->title }} {{ $item->status !=0 ? '(Par defaut)':'' }} </td>
+                                                    <td style="text-align: center;">
+                                                        <button type="button" onclick="edit({{ $item->id }})"
+                                                            class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
+                                                        <button type="button" onclick="deleteModal({{ $item->id }})"
+                                                            class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
+                                                    </td>
+
+                                                </tr>
+                                            @endforeach
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="input-types-code">
+                            <div class="card-body">
+                                <form action="{{route('report.footer-update')}}" method="post">
+                                    @csrf
+                                    <div class="row mb-3">
+                                        <label for="" class="form-label">Pied de page</label>
+                                        <div class="col-lg-12">
+                                            <textarea name="footer" id="footer" class="form-control" cols="30" rows="5">{{ $setting->footer ? $setting->footer : '' }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-xs btn-success">Mettre à jour</button>
+                                        </div>
+                                    </div> <!-- end card-body -->
+                                </form>
+                            </div>
+                        </div>
                     </div> <!-- end tab-content-->
                 </div>
 

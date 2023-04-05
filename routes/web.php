@@ -159,7 +159,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/store', [ReportController::class, 'store'])->name('report.store');
         Route::post('/auto', [ReportController::class, 'saveauto'])->name('report.saveauto');
         Route::get('send_sms/{id}', [ReportController::class, 'send_sms'])->name('report.send-sms');
-        Route::get('pdf/{id}', [ReportController::class, 'pdf'])->name('report.pdf');
+        Route::get('pdf/{id}', [ReportController::class, 'pdf'])->name('report.pdf')->middleware('pdf');
 
         Route::post('report-gettemplate', [ReportController::class, 'getTemplate'])->name('template.report-getTemplate');
 
@@ -172,6 +172,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('reports-store', [SettingController::class, 'report_store'])->name('report.report-store');
         Route::get('/reports-edit/{id}', [SettingController::class, 'report_edit']);
         Route::post('reports-update', [SettingController::class, 'report_update'])->name('report.report-update');
+        Route::post('reports-fonter-update', [SettingController::class, 'report_store_footer'])->name('report.footer-update');
         Route::get('reports-delete/{id}', [SettingController::class, 'report_delete']);
 
         // App settings

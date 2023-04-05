@@ -10,7 +10,7 @@ class SettingReportTemplateController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth'); 
+        $this->middleware('auth');
     }
 
     public function index()
@@ -21,7 +21,7 @@ class SettingReportTemplateController extends Controller
         $templates = SettingReportTemplate::orderBy('created_at', 'DESC')->get();
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
-        return view('templates.reports.index', compact('templates'));
+        return view('templates.reports.index', compact('templates',));
     }
 
     public function create()
@@ -43,8 +43,8 @@ class SettingReportTemplateController extends Controller
         // dd($request);
 
         $data = $this->validate($request, [
-            'titre' => 'required', 
-            'content'=>'required'        
+            'titre' => 'required',
+            'content'=>'required'
         ]);
 
         try {
@@ -75,7 +75,7 @@ class SettingReportTemplateController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $template = SettingReportTemplate::find($id)->delete();
-        
+
         if ($template) {
             return back()->with('success', "    Un élement a été supprimé ! ");
         } else {

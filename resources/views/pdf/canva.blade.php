@@ -96,7 +96,7 @@ date_default_timezone_set('Europe/Paris');
 
     @if ($content_supplementaire!="")
         <h3 style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
-            
+
         </h3>
             {!! $content_supplementaire !!}
     @endif
@@ -143,10 +143,8 @@ date_default_timezone_set('Europe/Paris');
     <page_footer>
         <table style="width: 100%; margin-top:1em !important">
             <tr>
-                <td style="text-align: left; width: 100%; font-size:12px;"> Centre ADECHINA Anatomie Pathologique • <br>
-                    Adresse : Carre 1915 "G" Fifadji, 072 BP 059 Cotonou, Benin • Téléphone : (+229)96110311 • RCCM
-                    RB/COT/18 B22364<br>
-                    Contact@caap.bj • Ouvert du Lundi au Vendredi de 08:00 - 17:00 • www.caap.bj
+                <td style="text-align: left; width: 100%; font-size:12px;">
+                    {{$footer}}
                 </td>
             </tr>
         </table>

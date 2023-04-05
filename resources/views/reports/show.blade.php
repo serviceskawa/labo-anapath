@@ -306,6 +306,7 @@
 @endsection
 
 @push('extra-js')
+
     <script>
         // This sample still does not showcase all CKEditor 5 features (!)
         // Visit https://ckeditor.com/docs/ckeditor5/latest/features/index.html to browse all the features.
@@ -644,7 +645,7 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-
+            var report = {!! json_encode($report) !!}
             $('#datatable1').DataTable({
                 "order": [
                     [0, "desc"]
@@ -667,6 +668,28 @@
                 },
             });
 
+            function autoSave(editor) {
+                // Sauvegarder les données de l'éditeur dans la base de données ou tout autre système de stockage
+                const editorData = editor;
+                // Exemple de sauvegarde des données avec Ajax et jQuery
+                $.ajax({
+                    type: 'POST',
+                    url: 'report/auto',
+                    data: {
+                        content: editorData
+                        report_id: report.id
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        // Afficher un message à l'utilisateur ou effectuer d'autres actions si la sauvegarde a réussi
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        // Afficher un message d'erreur à l'utilisateur ou effectuer d'autres actions si la sauvegarde a échoué
+                    }
+                });
+            }
+
             $('#template').on('change', function(e) {
                 var template_id = $('#template').val();
                 const report = {!! json_encode($report) !!};
@@ -688,12 +711,11 @@
                                 .create(document.querySelector('#editor'),
                                     plugins: [
                                         Autosave,
-
                                     ],
-
                                     autosave: {
+                                        waitingTime: 5000,
                                         save(editor) {
-                                            return saveData(editor.getData());
+                                            return autoSave(editor.getData());
                                         }
                                     }
                                     ck_options)
@@ -737,6 +759,8 @@
                     }
                 })
             });
+
+
 
             $('#template_supplementaire').on('change', function(e) {
                 var template_id = $('#template_supplementaire').val();

@@ -113,7 +113,6 @@ class ReportController extends Controller
             $report = Report::findorfail($request->report_id);
                 $report->fill([
                     "description" => $request->content,
-                    "title_id" => $request->title,
                     "description_supplementaire" => $request->description_supplementaire !=""? $request->description_supplementaire :'',
                     ])->save();
             return response()->json("cool");
@@ -189,6 +188,7 @@ class ReportController extends Controller
         }
         //dd($report);
         $report = Report::find($id);
+        $setting = Setting::find(1);
         $user = Auth::user();
 
         if($report->signatory1 != null)
@@ -233,6 +233,7 @@ class ReportController extends Controller
             'patient_age' => $report->patient->age,
             'patient_year_or_month' => $year_month,
             'patient_genre' => $report->patient->genre,
+            'footer' => $setting->footer,
             'hospital_name' => $report->order ? $report->order->hospital->name :'',
             'doctor_name' => $report->order ? $report->order->doctor->name :'',
             'created_at' => date_format($report->created_at, "d/m/Y"),

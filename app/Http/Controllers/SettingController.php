@@ -22,7 +22,7 @@ class SettingController extends Controller
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
         $titles = TitleReport::latest()->get();
-        return view('settings.report.index' , compact('titles'));
+        return view('settings.report.index' , compact('titles','setting'));
     }
 
     public function report_store(Request $request)
@@ -144,6 +144,30 @@ class SettingController extends Controller
             ]);
         }
         return back()->with('success', "Placeholder mis à jour avec succès  ! ");
+    }
+
+    public function report_store_footer(Request $request)
+    {
+        if (!getOnlineUser()->can('create-settings') ) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        if (!getOnlineUser()->can('edit-settings') ) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $setting = Setting::find(1);
+
+        if ($setting) {
+
+            $setting->fill([
+                "footer" => $request->footer
+            ])->save();
+
+        }else {
+            $setting = Setting::create([
+                "footer" => $request->footer
+            ]);
+        }
+        return back()->with('success', "Pied de page mis à jour avec succès  ! ");
     }
 
     public function app()
