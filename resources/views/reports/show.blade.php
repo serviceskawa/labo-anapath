@@ -9,9 +9,10 @@
             /* editing area */
             min-height: 200px;
         }
-        .ck-editor2__editable[role="application"] {
 
-            /* min-height: 200px; */
+        .ck-editor__editable2[role="textbox"] {
+
+            min-height: 200px;
         }
     </style>
 
@@ -19,6 +20,9 @@
     <link href="{{ asset('adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" />
     <script src="https://cdn.ckeditor.com/ckeditor5/36.0.0/super-build/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/37.0.0/classic/ckeditor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 
 @endsection
 
@@ -54,11 +58,17 @@
                             <div class="row">
                                 <label for="simpleinput" class="form-label">Titre <span style="color:red;">*</span></label>
                                 <select class="form-select" id="title" name="title" required>
-                                    <option value="">Sélectionner un titre</option>
+                                    {{-- <option value="">Sélectionner un titre</option> --}}
                                     @forelse ($titles as $title)
-                                        <option value="{{ $title->title }}"
-                                            {{ $report->title == $title->title ? 'selected' : '' }}>{{ $title->title }}
-                                        </option>
+                                        @if ($report->title == '')
+                                            <option {{ $title->status != 0 ? 'selected' : '' }} value="{{ $title->title }}">
+                                                {{ $title->title }} {{ $title->status != 0 ? '(Par defaut)' : '' }}</option>
+                                        @else
+                                            <option value="{{ $title->title }}"
+                                                {{ $report->title == $title->title ? 'selected' : '' }}>
+                                                {{ $title->title }} {{ $title->status != 0 ? '(Par defaut)' : '' }}
+                                            </option>
+                                        @endif
                                     @empty
                                     @endforelse
                                 </select>
@@ -96,8 +106,9 @@
                         </div>
                     </div>
 
-                    <div id="show-field" style="{{ $report->description_supplementaire == null ? 'display: none;' : '' }}" class="card mb-md-0 mb-3 mt-3">
-                        <h5 class="card-header">Contenu supplémentaire</h5>
+                    <div id="show-field" style="{{ $report->description_supplementaire == null ? 'display: none;' : '' }}"
+                        class="card mb-md-0 mb-3 mt-3">
+                        <h5 class="card-header">Contenu complémentaire</h5>
                         <div class="card-body">
 
                             <div class="row">
@@ -117,8 +128,8 @@
                                 <div class="mb-3 supplementaireid">
                                     <label for="simpleinput" class="form-label">Récapitulatifs<span
                                             style="color:red;">*</span></label>
-                                    <textarea name="description_supplementaire" id="editor2" class="form-control mb-3" cols="30" rows="50"
-                                        style="height: 500px;">{{ $report->description_supplementaire }}</textarea>
+                                    <textarea name="description_supplementaire" id="editor2" class="form-control mb-3" cols="15" rows="10"
+                                        style="height: 250px;">{{ $report->description_supplementaire }}</textarea>
 
                                 </div>
                             </div>
@@ -202,7 +213,7 @@
                     <div class="card-body">
                         <p><b>État</b> : {{ $report->status == 0 ? 'En attente de relecture' : 'Terminé' }}</p>
                         <p><b>Créé le</b> : {{ date_format($report->created_at, 'd/m/Y') }}</p>
-                        <label class="form-label">Supplementaire</label><br>
+                        <label class="form-label">Complémentaire</label><br>
                         <input type="checkbox" id="switch3" class="form-control"
                             {{ $report->description_supplementaire != null ? 'checked' : '' }} data-switch="success" />
                         <label for="switch3" data-on-label="oui" data-off-label="non"></label>
@@ -604,10 +615,9 @@
                 'MathType'
             ]
         };
+
         CKEDITOR.ClassicEditor.create(document.getElementById("editor"), ck_options);
-        CKEDITOR.ClassicEditor.create(document.getElementById("editor2"), ck_options2);
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script>
         var checkbox = document.getElementById("switch3");
@@ -620,16 +630,15 @@
                 textField.style.display = 'none';
             }
         });
-        var invoice = {!! json_encode($report->order->code) !!}
-        var code = new QRCode(document.getElementById("qrcode"), {
-            text: invoice,
+        var code = {!! json_encode($report->order->code) !!}
+        var codeqr = new QRCode(document.getElementById("qrcode"), {
+            text: code,
             width: 120,
             height: 120,
             colorDark: "#000000",
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
         });
-
     </script>
 
 
@@ -676,7 +685,18 @@
                             $('#editor').val(data.content);
 
                             CKEDITOR.ClassicEditor
-                                .create(document.querySelector('#editor'), ck_options)
+                                .create(document.querySelector('#editor'),
+                                    plugins: [
+                                        Autosave,
+
+                                    ],
+
+                                    autosave: {
+                                        save(editor) {
+                                            return saveData(editor.getData());
+                                        }
+                                    }
+                                    ck_options)
                                 .then(editor => {})
                                 .catch(error => {
                                     console.error(error);
@@ -696,6 +716,66 @@
                                 });
 
                             document.querySelector('.ck-editor__editable').ckeditorInstance
+                                .destroy()
+
+                        }
+
+                    },
+                    error: function(error) {
+                        $('#editor').val(report.description);
+
+                        ClassicEditor
+                            .create(document.querySelector('#editor'))
+                            .then(editor => {})
+                            .catch(error => {
+                                console.error(error);
+                            });
+
+                        document.querySelector('.ck-editor__editable').ckeditorInstance
+                            .destroy()
+
+                    }
+                })
+            });
+
+            $('#template_supplementaire').on('change', function(e) {
+                var template_id = $('#template_supplementaire').val();
+                const report = {!! json_encode($report) !!};
+
+                $.ajax({
+                    url: "{{ route('template.report-getTemplate') }}",
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        id: template_id,
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        // $('#page_id').val()
+                        if (data) {
+                            $('#editor2').val(data.content);
+
+                            CKEDITOR.ClassicEditor
+                                .create(document.querySelector('#editor2'), ck_options2)
+                                .then(editor => {})
+                                .catch(error => {
+                                    console.error(error);
+                                });
+
+                            document.querySelector('.ck-editor__editable2').ckeditorInstance
+                                .destroy()
+
+                        } else {
+                            $('#editor2').val("Texte");
+
+                            ClassicEditor
+                                .create(document.querySelector('#editor2'))
+                                .then(editor => {})
+                                .catch(error => {
+                                    console.error(error);
+                                });
+
+                            document.querySelector('.ck-editor__editable2').ckeditorInstance
                                 .destroy()
 
                         }

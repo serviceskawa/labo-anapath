@@ -12,10 +12,13 @@
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
 
                     <div class="mb-3">
-                        <label for="simpleinput" class="form-label">Titre<span
-                                style="color:red;">*</span></label>
-                        <input type="text" name="title" style="text-transform: uppercase;" class="form-control" required>
+                        <label for="simpleinput" class="form-label">Titre<span style="color:red;">*</span></label>
+                        <input type="text" name="title" style="text-transform: uppercase;" class="form-control"
+                            required>
                     </div>
+                    <label class="form-label mt-3">Par défaut</label> <br>
+                    <input type="checkbox" id="status" name="status" class="form-control" data-switch="success">
+                    <label for="status" data-on-label="oui" data-off-label="non"></label>
 
                 </div>
                 <div class="modal-footer">

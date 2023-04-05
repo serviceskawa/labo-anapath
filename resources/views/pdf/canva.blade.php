@@ -84,7 +84,7 @@ date_default_timezone_set('Europe/Paris');
     </div>
 
     <h3 style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
-        <b>Récapitulatifs</b>
+
     </h3>
     {{-- <br> --}}
     {{-- <div class="border_t"></div> --}}
@@ -96,7 +96,7 @@ date_default_timezone_set('Europe/Paris');
 
     @if ($content_supplementaire!="")
         <h3 style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
-            <b>Récapitulatifs supplementaire</b>
+            
         </h3>
             {!! $content_supplementaire !!}
     @endif

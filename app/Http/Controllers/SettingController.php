@@ -32,12 +32,26 @@ class SettingController extends Controller
         }
         $data = $this->validate($request, [
             'title' => 'required |unique:title_reports,title',
+            'status' => 'nullable'
         ]);
 
         try {
-            TitleReport::create([
+            $title=TitleReport::create([
                 "title" => strtoupper($data['title']),
+                "status" => $request->status ?1:0,
             ]);
+            if ($title->status ==1) {
+                $titles = TitleReport::all();
+                foreach($titles as $item)
+                {
+                    if($item->id != $title->id)
+                    {
+                        $item->update([
+                            'status'=>0
+                        ]);
+                    }
+                }
+            }
             return back()->with('success', " Opération effectuée avec succès  ! ");
         } catch (\Throwable $ex) {
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
@@ -62,15 +76,31 @@ class SettingController extends Controller
         }
         $data = $this->validate($request, [
             'id2' => 'required',
-            'title2' => 'required'
+            'title2' => 'required',
+            'status2'=> 'nullable'
         ]);
+
+        //dd($request);
 
 
         try {
 
             $titleReport = TitleReport::find($data['id2']);
             $titleReport->title = strtoupper($data['title2']);
+            $titleReport->status = $request->status2 ? 1:0;
             $titleReport->save();
+            if ($titleReport->status ==1) {
+                $titles = TitleReport::all();
+                foreach($titles as $item)
+                {
+                    if($item->id != $titleReport->id)
+                    {
+                        $item->update([
+                            'status'=>0
+                        ]);
+                    }
+                }
+            }
 
             return back()->with('success', "Un titre mis à jour ! ");
         } catch (\Throwable $ex) {

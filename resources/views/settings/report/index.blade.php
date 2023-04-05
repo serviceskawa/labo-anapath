@@ -5,7 +5,7 @@
 @section('css')
     <link href="{{ asset('/adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('/adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" />
-    
+
     <style>
         .ck-editor__editable[role="textbox"] {
             /* editing area */
@@ -24,9 +24,9 @@
                             data-bs-target="#standard-modal">Ajouter un nouveau titre</button>
                     </div>
                     <h4 class="page-title"></h4>
-                    
+
                     @include('settings.report.create')
-                    
+
                     @include('settings.report.edit')
                 </div>
 
@@ -69,44 +69,44 @@
                             <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                         </div>
                         <h5 class="card-title mb-0">Liste des Titres</h5>
-        
+
                         <div id="cardCollpase1" class="collapse pt-3 show">
-        
-        
+
+
                             <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                                 <thead class="col-lg-12" style="text-align: center;">
                                     <tr>
                                         <th class="col-lg-2">#</th>
                                         <th class="col-lg-6">Titres</th>
                                         <th class="col-lg-4">Actions</th>
-        
+
                                     </tr>
                                 </thead>
-        
-        
+
+
                                 <tbody>
-        
+
                                     @foreach ($titles as $item)
                                         <tr>
                                             <td style="text-align: center;">{{ $item->id }}</td>
-                                            <td style="text-align: center;">{{ $item->title }}</td>
+                                            <td style="text-align: center;">{{ $item->title }} {{ $item->status !=0 ? '(Par defaut)':'' }} </td>
                                             <td style="text-align: center;">
                                                 <button type="button" onclick="edit({{ $item->id }})"
                                                     class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
                                                 <button type="button" onclick="deleteModal({{ $item->id }})"
                                                     class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
                                             </td>
-        
+
                                         </tr>
                                     @endforeach
-        
+
                                 </tbody>
                             </table>
-        
+
                         </div>
                     </div>
                     <div class="tab-content">
-                        
+
                     </div> <!-- end tab-content-->
                 </div>
 
@@ -169,6 +169,7 @@
         function edit(id) {
             var e_id = id;
 
+
             // Populate Data in Edit Modal Form
             $.ajax({
                 type: "GET",
@@ -176,6 +177,13 @@
                 success: function(data) {
                     $('#id2').val(data.id);
                     $('#title2').val(data.title);
+                    var stat = document.getElementById("status2");
+                    if (data.status!=0) {
+                        stat.checked = true
+                    }else{
+                        stat.checked = false
+                    }
+                    console.log(data.status);
                     $('#editModal1').modal('show');
                 },
                 error: function(data) {

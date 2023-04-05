@@ -16,6 +16,9 @@
                     <label for="simpleinput" class="form-label">Titre</label>
                     <input type="text" name="title2" style="text-transform: uppercase;" id="title2" class="form-control" required>
                 </div>
+                <label class="form-label mt-3">Par défaut</label> <br>
+                <input type="checkbox" id="status2" name="status2" class="form-control" data-switch="success" >
+                <label for="status2" data-on-label="oui" data-off-label="non"></label>
 
             </div>
             <div class="modal-footer">
