@@ -235,6 +235,15 @@
 
                 </div>
 
+                <div class="card mb-md-0 mb-3 mt-3">
+                    <h5 class="card-header">Votre code</h5>
+
+                    <div class="card-body">
+                        <div style="margin-left: 30px" id="qrcode"></div>
+                    </div>
+
+                </div>
+
                 <div class="mb-md-0 mb-3 mt-3">
                     <div class="page-title">
                         <a href="{{ route('report.pdf', $report->id) }}" target="_blank" rel="noopener noreferrer"
@@ -247,6 +256,7 @@
             </div>
 
         </div>
+
         <div class="col-12">
             @if ($logs)
                 <div class="card mb-md-0 mb-3 mt-3">
@@ -597,6 +607,7 @@
         CKEDITOR.ClassicEditor.create(document.getElementById("editor"), ck_options);
         CKEDITOR.ClassicEditor.create(document.getElementById("editor2"), ck_options2);
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script>
         var checkbox = document.getElementById("switch3");
@@ -609,6 +620,16 @@
                 textField.style.display = 'none';
             }
         });
+        var invoice = {!! json_encode($report->order->code) !!}
+        var code = new QRCode(document.getElementById("qrcode"), {
+            text: invoice,
+            width: 120,
+            height: 120,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
     </script>
 
 
