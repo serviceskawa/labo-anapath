@@ -234,7 +234,7 @@ class ReportController extends Controller
             'patient_year_or_month' => $year_month,
             'patient_genre' => $report->patient->genre,
             'hospital_name' => $report->order ? $report->order->hospital->name :'',
-            'doctor_name' => $report->order->doctor ? $report->order->doctor->firstname.' '->order->doctor->lastname :'',
+            'doctor_name' => $report->order->doctor ? $report->order->doctor->name :'',
             'created_at' => date_format($report->created_at, "d/m/Y"),
             'date' => date('d/m/Y')
         ];

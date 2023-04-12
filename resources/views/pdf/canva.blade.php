@@ -104,9 +104,8 @@ date_default_timezone_set('Europe/Paris');
     <div style="">
         <table style="width: 100%;">
             <tr>
-                 <td style="text-align: left;    width: 10%"></td> 
 
-                <td style="text-align: center;    width: 33%">
+                <td style="text-align: center;    width: 25%">
                     @if ($signatory1 != null)
                         @if($signature1 != null)
                           <img width="85" src="{{ asset('storage/' . $signature1) }}" alt="">
@@ -115,7 +114,7 @@ date_default_timezone_set('Europe/Paris');
                     @endif
                 </td>
 
-                <td style="text-align: center;    width: 33%">
+                <td style="text-align: center;    width: 25%">
                     @if ($signatory2 != null)
                         @if($signature2 != null)
                             <img width="85" src="{{ asset('storage/' . $signature2) }}" alt="">
@@ -125,7 +124,7 @@ date_default_timezone_set('Europe/Paris');
 
                 </td>
 
-                <td style="text-align: center;    width: 33%">
+                <td style="text-align: center;    width: 25%">
                     @if ($signatory3 != null)
                         @if($signature3 != null)
                             <img width="85" src="{{ asset('storage/' . $signature3) }}" alt="">

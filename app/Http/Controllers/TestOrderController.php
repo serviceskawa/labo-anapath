@@ -865,8 +865,7 @@ class TestOrderController extends Controller
                             ->orwhere('lastname', 'like', '%'.$request->get('contenu').'%');
                             })
                         ->orwhereHas('doctor', function ($query) use ($request){
-                            $query->where('firstname','like','%'.$request->get('contenu').'%')
-                                ->orwhere('lastname', 'like','%'.$request->get('contenu').'%');
+                            $query->where('name','like','%'.$request->get('contenu').'%');
                         })
                         ->orwhereHas('contrat', function ($query) use ($request){
                             $query->where('name','like', '%'.$request->get('contenu').'%');
