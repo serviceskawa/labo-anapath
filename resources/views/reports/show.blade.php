@@ -19,8 +19,11 @@
     <!-- Quill css -->
     <link href="{{ asset('adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('adminassets/css/vendor/quill.snow.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('adminassets/css/vendor/simplemde.min.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('adminassets/js/vendor/simplemde.min.js') }}"></script>
+    <script src="{{ asset('adminassets/js/vendor/quill.min.js') }}"></script>
+    {{-- <script src="{{asset('adminassets/js/pages/demo.simplemde.js')}}"></script> --}}
     <script src="https://cdn.ckeditor.com/ckeditor5/36.0.0/super-build/ckeditor.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/37.0.0/classic/ckeditor.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 
@@ -42,6 +45,7 @@
     <div class="">
 
         @include('layouts.alerts')
+        @include('reports.password')
 
         <div class="row">
             <!-- Contenu du compte rendu -->
@@ -61,12 +65,16 @@
                                     {{-- <option value="">Sélectionner un titre</option> --}}
                                     @forelse ($titles as $title)
                                         @if ($report->title == '')
-                                            <option {{ $title->status != 0 ? 'selected' : '' }} value="{{ $title->title }}">
-                                                {{ $title->title }} {{ $title->status != 0 ? '(Par defaut)' : '' }}</option>
+                                            <option {{ $title->status != 0 ? 'selected' : '' }} style="font-weight:{{ $title->status !=0 ? 'bold':'' }}"
+                                                value="{{ $title->title }}">
+                                                {{ $title->title }}
+                                            </option>
                                         @else
-                                            <option value="{{ $title->title }}"
-                                                {{ $report->title == $title->title ? 'selected' : '' }}>
-                                                {{ $title->title }} {{ $title->status != 0 ? '(Par defaut)' : '' }}
+                                            <option value="{{ $title->title }}" {{ $report->title == $title->title ? 'selected' : '' }}>
+
+                                                <span style="font-weight:{{ $title->status !=0 ? 'bold':'' }} font-style:{{ $title->status !=0 ? 'italic':'' }}">
+                                                    {{ $title->title }}
+                                                </span>
                                             </option>
                                         @endif
                                     @empty
@@ -128,6 +136,10 @@
                                 <div class="mb-3 supplementaireid">
                                     <label for="simpleinput" class="form-label">Récapitulatifs<span
                                             style="color:red;">*</span></label>
+                                    {{-- <div id="snow-editor" style="height: 300px;">
+                                        {{ $report->description_supplementaire }}
+                                    </div> --}}
+                                    {{-- <textarea id="simplemde1">{{ $report->description_supplementaire }}</textarea> --}}
                                     <textarea name="description_supplementaire" id="editor2" class="form-control mb-3" cols="15" rows="10"
                                         style="height: 250px;">{{ $report->description_supplementaire }}</textarea>
 
@@ -247,7 +259,7 @@
                 </div>
 
                 <div class="card mb-md-0 mb-3 mt-3">
-                    <h5 class="card-header">Votre code</h5>
+                    <h5 class="card-header">Code ANAPATH</h5>
 
                     <div class="card-body">
                         <div style="margin-left: 30px" id="qrcode"></div>
@@ -257,9 +269,11 @@
 
                 <div class="mb-md-0 mb-3 mt-3">
                     <div class="page-title">
+                        {{-- <button type="button" class="btn btn-secondary" onclick="passwordTest({{ $item->id }})"><i
+                                class="uil uil-print">Imprimer le compte rendu</i></button> --}}
                         <a href="{{ route('report.pdf', $report->id) }}" target="_blank" rel="noopener noreferrer"
-                            type="button" class="btn btn-secondary">
-                            <i class="uil uil-print">Imprimer le compte rendu</i>
+                            type="button" class="btn btn-secondary">Imprimer le compte rendu
+                            </i>
                         </a>
                     </div>
                 </div>
@@ -306,7 +320,6 @@
 @endsection
 
 @push('extra-js')
-
     <script>
         // This sample still does not showcase all CKEditor 5 features (!)
         // Visit https://ckeditor.com/docs/ckeditor5/latest/features/index.html to browse all the features.
@@ -618,6 +631,15 @@
         };
 
         CKEDITOR.ClassicEditor.create(document.getElementById("editor"), ck_options);
+        CKEDITOR.ClassicEditor.create(document.getElementById("editor2"), ck_options);
+        // var quill = new Quill("#snow-editor", {
+        //     theme:"bubble",
+        // })
+        // test = new SimpleMDE({
+        //     element: document.getElementById("simplemde1"),
+        //     spellChecker: !1,
+        //     // autosave: { enabled: !0, unique_id: "simplemde1" },
+        // });
     </script>
 
     <script>
@@ -631,21 +653,52 @@
                 textField.style.display = 'none';
             }
         });
-        var code = {!! json_encode($report->order->code) !!}
+        var code = {!! json_encode($report->code) !!}
         var codeqr = new QRCode(document.getElementById("qrcode"), {
-            text: code,
+            text: 'http://localhost:5173/',
             width: 120,
             height: 120,
             colorDark: "#000000",
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
         });
+
+        function passwordTest(id) {
+            $('#report_id').val(id);
+            $('#standardModal').modal('show');
+        }
+        $('#addDataform').on('submit', function(e) {
+            e.preventDefault();
+            let password = $('#password').val();
+            let e_id = $('#report_id').val()
+
+            $.ajax({
+                url: "{{ route('report.password') }}",
+                type: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    password: password
+
+                },
+                success: function(response) {
+                    if (response == 200) {
+                        window.location.href = "{{ url('report/pdf') }}" + "/" + e_id;
+                    } else {
+                        toastr.error("Mot de passe incorrect", 'Echec');
+                    }
+                },
+                error: function(response) {
+                    toastr.error("Mot de passe incorrect", 'Echec');
+                },
+            });
+
+        });
     </script>
 
 
     <script type="text/javascript">
         $(document).ready(function() {
-            var report = {!! json_encode($report) !!}
+
             $('#datatable1').DataTable({
                 "order": [
                     [0, "desc"]
@@ -668,27 +721,27 @@
                 },
             });
 
-            function autoSave(editor) {
-                // Sauvegarder les données de l'éditeur dans la base de données ou tout autre système de stockage
-                const editorData = editor;
-                // Exemple de sauvegarde des données avec Ajax et jQuery
-                $.ajax({
-                    type: 'POST',
-                    url: 'report/auto',
-                    data: {
-                        content: editorData
-                        report_id: report.id
-                    },
-                    success: function(data) {
-                        console.log(data);
-                        // Afficher un message à l'utilisateur ou effectuer d'autres actions si la sauvegarde a réussi
-                    },
-                    error: function(error) {
-                        console.log(error);
-                        // Afficher un message d'erreur à l'utilisateur ou effectuer d'autres actions si la sauvegarde a échoué
-                    }
-                });
-            }
+            // function autoSave(editor) {
+            //     // Sauvegarder les données de l'éditeur dans la base de données ou tout autre système de stockage
+            //     const editorData = editor;
+            //     // Exemple de sauvegarde des données avec Ajax et jQuery
+            //     $.ajax({
+            //         type: 'POST',
+            //         url: 'report/auto',
+            //         data: {
+            //             content: editorData
+            //             report_id: report.id
+            //         },
+            //         success: function(data) {
+            //             console.log(data);
+            //             // Afficher un message à l'utilisateur ou effectuer d'autres actions si la sauvegarde a réussi
+            //         },
+            //         error: function(error) {
+            //             console.log(error);
+            //             // Afficher un message d'erreur à l'utilisateur ou effectuer d'autres actions si la sauvegarde a échoué
+            //         }
+            //     });
+            // }
 
             $('#template').on('change', function(e) {
                 var template_id = $('#template').val();
@@ -705,27 +758,21 @@
                         console.log(data);
                         // $('#page_id').val()
                         if (data) {
-                            $('#editor').val(data.content);
+                            console.log($('#editor').val());
+                            $('#editor').val(data.content + $('#editor').val());
+                            console.log($('#editor').val());
 
                             CKEDITOR.ClassicEditor
-                                .create(document.querySelector('#editor'),
-                                    plugins: [
-                                        Autosave,
-                                    ],
-                                    autosave: {
-                                        waitingTime: 5000,
-                                        save(editor) {
-                                            return autoSave(editor.getData());
-                                        }
-                                    }
-                                    ck_options)
+                                .create(document.querySelector('#editor'), ck_options)
                                 .then(editor => {})
                                 .catch(error => {
                                     console.error(error);
                                 });
 
-                            document.querySelector('.ck-editor__editable').ckeditorInstance
+                                editorTest = document.querySelectorAll('.ck-editor__editable');
+                                editorTest[0].ckeditorInstance
                                 .destroy()
+                            // document.querySelectorAll('.ck-editor__editable')
 
                         } else {
                             $('#editor').val("Texte");
@@ -737,7 +784,7 @@
                                     console.error(error);
                                 });
 
-                            document.querySelector('.ck-editor__editable').ckeditorInstance
+                            document.querySelectorAll('.ck-editor__editable').ckeditorInstance
                                 .destroy()
 
                         }
@@ -753,7 +800,7 @@
                                 console.error(error);
                             });
 
-                        document.querySelector('.ck-editor__editable').ckeditorInstance
+                        document.querySelectorAll('.ck-editor__editable').ckeditorInstance
                             .destroy()
 
                     }
@@ -777,7 +824,9 @@
                         console.log(data);
                         // $('#page_id').val()
                         if (data) {
-                            $('#editor2').val(data.content);
+                            console.log($('#editor2').val());
+                            $('#editor2').val(data.content + $('#editor2').val());
+                            console.log($('#editor2').val());
 
                             CKEDITOR.ClassicEditor
                                 .create(document.querySelector('#editor2'), ck_options2)
@@ -786,7 +835,10 @@
                                     console.error(error);
                                 });
 
-                            document.querySelector('.ck-editor__editable2').ckeditorInstance
+
+                                editorTest = document.querySelectorAll('.ck-editor__editable');
+
+                            editorTest[1].ckeditorInstance
                                 .destroy()
 
                         } else {
@@ -799,7 +851,7 @@
                                     console.error(error);
                                 });
 
-                            document.querySelector('.ck-editor__editable2').ckeditorInstance
+                            document.querySelectorAll('.ck-editor__editable').ckeditorInstance
                                 .destroy()
 
                         }
@@ -815,7 +867,7 @@
                                 console.error(error);
                             });
 
-                        document.querySelector('.ck-editor__editable').ckeditorInstance
+                        document.querySelectorAll('.ck-editor__editable').ckeditorInstance
                             .destroy()
 
                     }

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Consultation;
+use DataTables;
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
 use App\Models\Setting;
 use App\Models\SettingInvoice;
 use App\Models\TestOrder;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
@@ -117,6 +120,72 @@ class InvoiceController extends Controller
 
         config(['app.name' => $setting->titre]);
         return view('invoices.show', compact('invoice', 'setting', 'settingInvoice'));
+    }
+
+    public function business(){
+        //Mois courant
+        $nowDay = Carbon::now();
+
+        $curmonth = now()->format('m'); // Récupérer le mois en cours sous forme de chiffre (ex : '01' pour janvier)
+        $totalMonth = Invoice::whereMonth('updated_at', $curmonth)->where('paid','=',1)->sum('total');
+
+        //Mois précédent
+        $lastMonth = $nowDay->copy()->subMonth()->format('m');
+        $totalLastMonth = Invoice::whereMonth('updated_at', $lastMonth)->where('paid','=',1)->sum('total');
+
+        //Jour actuellement
+        $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'
+        $totalToday = Invoice::whereDate('updated_at', $today)->where('paid','=',1)->sum('total');
+        return view('invoices.business', compact('nowDay','totalMonth','totalLastMonth','totalToday'));
+
+        // $data = Consultation::with(['doctor', 'patient', 'type', 'attribuateToDoctor'])->orderBy('created_at', 'desc')->get();
+
+        // return Datatables::of($data)->addIndexColumn()
+        // ->editColumn('created_at', function ($data) {
+        //     //change over here
+        //     return $data->date;
+        // })
+        // ->addColumn('action', function ($data) {
+        //     $btnVoir = '<a type="button" href="' . route('consultation.show', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+        //     $btnEdit = ' <a type="button" href="' . route('consultation.edit', $data->id) . '" class="btn btn-warning" title="Mettre à jour examen"><i class="mdi mdi-doctor"></i></a>';
+        //     if ($data->status != 1) {
+        //         $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+        //         $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
+        //     } else {
+        //         $btnReport = ' <a type="button" href="' . route('report.show', $data->report->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+        //         $btnDelete = "";
+        //     }
+
+        //     if (!empty($data->invoice->id)) {
+        //         $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->invoice->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
+        //     } else {
+        //         $btnInvoice = ' <a type="button" href="' . route('invoice.storeFromOrder', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
+        //     }
+
+        //     return $btnVoir . $btnEdit;
+        //     // return $btnVoir . $btnEdit . $btnReport . $btnInvoice . $btnDelete;
+        // })
+        // ->addColumn('patient', function ($data) {
+        //     return $data->patient->firstname . ' ' . $data->patient->lastname;
+        // })
+        // ->addColumn('doctor', function ($data) {
+        //     if (empty($data->attribuateToDoctor)) {
+        //         $result = "";
+        //     } else {
+        //         $result = $data->attribuateToDoctor->firstname;
+        //     }
+        //     return $result;
+        // })
+        // ->addColumn('type', function ($data) {
+        //     if (empty($data->type)) {
+        //         return "";
+        //     } else {
+        //         return $data->type->name;
+        //     }
+        // })
+        // ->rawColumns(['action', 'patient', 'doctor', 'type'])
+        // ->make(true);
+
     }
 
     function print($id)

@@ -91,9 +91,9 @@
 
                                             @foreach ($titles as $item)
                                                 <tr>
-                                                    <td style="text-align: center;">{{ $item->id }}</td>
-                                                    <td style="text-align: center;">{{ $item->title }} {{ $item->status !=0 ? '(Par defaut)':'' }} </td>
-                                                    <td style="text-align: center;">
+                                                    <td>{{ $item->id }}</td>
+                                                    <td style="font-weight:{{ $item->status !=0 ? 'bold':'' }}">{{ $item->title }} {{ $item->status !=0 ? '(Par defaut)':'' }}</td>
+                                                    <td>
                                                         <button type="button" onclick="edit({{ $item->id }})"
                                                             class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
                                                         <button type="button" onclick="deleteModal({{ $item->id }})"

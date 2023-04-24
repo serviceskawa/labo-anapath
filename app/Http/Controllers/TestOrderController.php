@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use App\Models\InvoiceDetail;
 use App\Models\DetailTestOrder;
 use App\Models\LogReport;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -747,7 +748,8 @@ class TestOrderController extends Controller
 
                 if (!empty($data->report)) {
                     if ($data->report->status ==1) {
-                        $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </a>';
+                        // <button type="button" target="_blank" onclick="passwordTest('. $data->report->id.')" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </button>
+                        $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </a> ';
                     }else {
                         $btnreport ="";
                     }
@@ -808,16 +810,6 @@ class TestOrderController extends Controller
             ->addColumn('urgence', function ($data) {
                 return $data->is_urgent;
             })
-            // ->addColumn('dropdown', function ($data) {
-            //     $users = getUsersByRole("docteur");
-            //     $dropdown = "<select name='doctor_id' class='form-control'>
-            //         <option value=''>Tous les contrats</option>";
-            //     $endDrop = "</select>";
-            //     $a = $users->map(function ($user) {
-            //         return "<option value='$user->id'>$user->email</option>";
-            //     });
-            //     return $dropdown . $a . $endDrop;
-            // })
             ->addColumn('dropdown', function ($data) {
                 $order = $data;
                 $setting = Setting::find(1);
@@ -871,6 +863,16 @@ class TestOrderController extends Controller
                         ->orwhereHas('contrat', function ($query) use ($request){
                             $query->where('name','like', '%'.$request->get('contenu').'%');
                         });
+                }
+
+                if(!empty($request->get('dateBegin'))){
+                    //dd($request);
+                    $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
+                    $query->whereDate('created_at','>',$newDate);
+                }
+                if(!empty($request->get('dateEnd'))){
+                    //dd($request);
+                    $query->whereDate('created_at','<',$request->get('dateEnd'));
                 }
 
             })

@@ -34,6 +34,7 @@
 
             <!----MODAL---->
             @include('layouts.alerts')
+            @include('reports.password')
 
             <div class="card mb-md-0 mb-3">
                 <div class="card-body">
@@ -140,6 +141,20 @@
                                     </div>
                                 </div> <!-- end col -->
 
+                                <div class="col-lg-3">
+                                    <div class="mb-3">
+                                        <label for="example-fileinput" class="form-label">Date Début</label>
+                                        <input type="date" name="dateBegin" id="dateBegin" class="form-control">
+                                    </div>
+                                </div> <!-- end col -->
+
+                                <div class="col-lg-3">
+                                    <div class="mb-3">
+                                        <label for="example-fileinput" class="form-label">Date fin</label>
+                                        <input type="date" name="dateEnd" id="dateEnd" class="form-control">
+                                    </div>
+                                </div> <!-- end col -->
+
                             </div>
                         </form>
 
@@ -185,6 +200,41 @@
     @endsection
 
     @push('extra-js')
+
+
+        <script>
+             function passwordTest(id)
+                {
+                    $('#report_id').val(id);
+                    $('#standardModal').modal('show');
+                }
+            $('#addDataform').on('submit', function(e) {
+                    e.preventDefault();
+                    let password = $('#password').val();
+                    let e_id = $('#report_id').val()
+
+                    $.ajax({
+                        url: "{{ route('report.password') }}",
+                        type: "POST",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            password: password
+
+                        },
+                        success: function(response) {
+                            if (response == 200) {
+                                window.location.href = "{{ url('report/updateDeliver') }}" + "/" + e_id;
+                            } else {
+                                toastr.error("Mot de passe incorrect", 'Echec');
+                            }
+                        },
+                        error: function(response) {
+                            toastr.error("Mot de passe incorrect", 'Echec');
+                        },
+                    });
+
+            });
+        </script>
         <script>
             // SUPPRESSION
             function deleteModal(id) {
@@ -248,6 +298,8 @@
                             d.exams_status = $('#exams_status').val()
                             d.type_examen = $('#type_examen').val()
                             d.contenu = $('#contenu').val()
+                            d.dateBegin = $('#dateBegin').val()
+                            d.dateEnd = $('#dateEnd').val()
                             d.q = $('#search').val()
 
                         }
@@ -351,9 +403,16 @@
                     table.draw();
                 });
 
-                $('#search').on('input', function() {
+                $('#dateEnd').on('input', function() {
+                    console.log($('#dateEnd').val());
                     table.draw();
-                    console.log(search.value);
+                    //console.log(search.value);
+                });
+
+                $('#dateBegin').on('input', function() {
+                    console.log($('#dateBegin').val());;
+                    table.draw();
+                    //console.log(search.value);
                 });
             });
 

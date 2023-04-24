@@ -11,6 +11,8 @@ use App\Models\Setting;
 use GuzzleHttp\Client;
 //use App\Helpers\herpers;
 use Illuminate\Http\Request;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 use Spipu\Html2Pdf\Html2Pdf;
 
 
@@ -22,6 +24,7 @@ use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use QRcode as GlobalQRcode;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
@@ -50,7 +53,7 @@ class ReportController extends Controller
         // $log->user_id = $user->id;
         // $log->save();
 
-        return view('reports.index', compact('reports','doctors'));
+        return view('reports.index', compact('reports', 'doctors'));
     }
 
     /**
@@ -87,7 +90,7 @@ class ReportController extends Controller
             "signatory3" => $doctor_signataire3,
             "status" => $request->status == "1" ? '1' : '0',
             "title" => $request->title,
-            "description_supplementaire" => $request->description_supplementaire !="" ? $request->description_supplementaire :'',
+            "description_supplementaire" => $request->description_supplementaire != "" ? $request->description_supplementaire : '',
         ])->save();
 
         $log = new LogReport();
@@ -109,16 +112,16 @@ class ReportController extends Controller
         // $doctor_signataire2 = $request->doctor_signataire2;
         // $doctor_signataire3 = $request->doctor_signataire3;
         //dd($request->description_supplementaire,$request->title_supplementaire);
-        try{
+        try {
             $report = Report::findorfail($request->report_id);
-                $report->fill([
-                    "description" => $request->content,
-                    "description_supplementaire" => $request->description_supplementaire !=""? $request->description_supplementaire :'',
-                    ])->save();
+            $report->fill([
+                "description" => $request->content,
+                "description_supplementaire" => $request->description_supplementaire != "" ? $request->description_supplementaire : '',
+            ])->save();
             return response()->json("cool");
-        }catch (\Throwable $ex) {
+        } catch (\Throwable $ex) {
             return response()->json($ex->getMessage());
-        //return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
+            //return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
 
 
@@ -142,10 +145,10 @@ class ReportController extends Controller
         $report = Report::findorfail($id);
         $templates = SettingReportTemplate::all();
         $titles = TitleReport::all();
-        $logs = LogReport::where('report_id','like',$report->id)->latest()->get();
+        $logs = LogReport::where('report_id', 'like', $report->id)->latest()->get();
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
-        return view('reports.show', compact('report', 'setting', 'templates','titles', 'logs'));
+        return view('reports.show', compact('report', 'setting', 'templates', 'titles', 'logs'));
     }
 
     // public function search($q){
@@ -181,6 +184,18 @@ class ReportController extends Controller
         }
     }
 
+    // public function password(Request $request)
+    // {
+    //     if (!getOnlineUser()->can('edit-reports')) {
+    //         return back()->with('error', "Vous n'êtes pas autorisé");
+    //     }
+    //     if($request->password === "testpassword"){
+    //         return response()->json(200);
+    //     }else{
+    //         return back()->with('error', "Mot de passe incorrect");
+    //     }
+    // }
+
     public function pdf($id)
     {
         if (!getOnlineUser()->can('edit-reports')) {
@@ -190,19 +205,37 @@ class ReportController extends Controller
         $report = Report::find($id);
         $setting = Setting::find(1);
         $user = Auth::user();
+        $qrCode = new QrCode('test');
+        $qrCode->setSize(300);
+        $writer = new PngWriter();
+        $result = $writer->write($qrCode);
+        $qrPng = $report->code .'_qrcode.png';
 
-        if($report->signatory1 != null)
-            {$signatory1 = User::findorfail($report->signatory1);}
+        // Save it to a file {{ asset('storage/' . $signature1) }}
+        // $result->saveToFile();
+        $result->saveToFile('storage/settings/app/'.$qrPng);
 
-        if($report->signatory2 != null)
-            {$signatory2 = User::findorfail($report->signatory2);}
+        // Generate a data URI to include image data inline (i.e. inside an <img> tag)
+        $dataUri = $result->getDataUri();
 
-        if($report->signatory3 != null)
-            {$signatory3 = User::findorfail($report->signatory3);}
+        // $qrCodeDataUri = $qrCode->writeDataUri();
+        //dd($dataUri);
+
+        if ($report->signatory1 != null) {
+            $signatory1 = User::findorfail($report->signatory1);
+        }
+
+        if ($report->signatory2 != null) {
+            $signatory2 = User::findorfail($report->signatory2);
+        }
+
+        if ($report->signatory3 != null) {
+            $signatory3 = User::findorfail($report->signatory3);
+        }
         $year_month = "";
-        if($report->patient->year_or_month !=1){
+        if ($report->patient->year_or_month != 1) {
             $year_month = "mois";
-        }else{
+        } else {
             $year_month = "ans";
         }
 
@@ -211,21 +244,24 @@ class ReportController extends Controller
         //date_format($report->updated_at,"d/m/Y")
 
 
+
         $data = [
             'code' => $report->code,
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
             'prelevement_date' => date('d/m/Y', strtotime($report->order->prelevement_date)),
             'test_affiliate' => $report->order->test_affiliate,
+            'qrcode' => $dataUri,
             'title' => $report->title,
             'content' => $report->description,
-            'content_supplementaire' => $report->description_supplementaire !=""? $report->description_supplementaire : '',
-            'signatory1' => $report->signatory1 != null ? $signatory1->lastname.' '.$signatory1->firstname : '',
+            'content_supplementaire' => $report->description_supplementaire != "" ? $report->description_supplementaire : '',
+            'signatory1' => $report->signatory1 != null ? $signatory1->lastname . ' ' . $signatory1->firstname : '',
             'signature1' => $report->signatory1 != null ? $signatory1->signature : '',
 
-            'signatory2' => $report->signatory2 != null ? $signatory2->lastname.' '.$signatory2->firstname : '',
+
+            'signatory2' => $report->signatory2 != null ? $signatory2->lastname . ' ' . $signatory2->firstname : '',
             'signature2' => $report->signatory2 != null ? $signatory2->signature : '',
 
-            'signatory3' => $report->signatory3 != null ? $signatory3->lastname.' '.$signatory3->firstname : '',
+            'signatory3' => $report->signatory3 != null ? $signatory3->lastname . ' ' . $signatory3->firstname : '',
             'signature3' => $report->signatory3 != null ? $signatory3->signature : '',
 
             'patient_firstname' => $report->patient->firstname,
@@ -234,8 +270,8 @@ class ReportController extends Controller
             'patient_year_or_month' => $year_month,
             'patient_genre' => $report->patient->genre,
             'footer' => $setting->footer,
-            'hospital_name' => $report->order ? $report->order->hospital->name :'',
-            'doctor_name' => $report->order ? $report->order->doctor->name :'',
+            'hospital_name' => $report->order ? $report->order->hospital->name : '',
+            'doctor_name' => $report->order ? $report->order->doctor->name : '',
             'created_at' => date_format($report->created_at, "d/m/Y"),
             'date' => date('d/m/Y')
         ];
@@ -253,6 +289,7 @@ class ReportController extends Controller
             $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
             $html2pdf->pdf->SetDisplayMode('fullpage');
             $html2pdf->setTestTdInOnePage(false);
+            // $html2pdf->setProtection(['copy', 'print'], 'user', 'password');
             $html2pdf->__construct(
                 $orientation = 'P',
                 $format = 'A4',
@@ -263,6 +300,19 @@ class ReportController extends Controller
                 $pdfa = false
             );
             $html2pdf->writeHTML($content);
+            // Définir le mot de passe de protection
+            $password = 'passwordPDF';
+
+            // Définir les permissions du document
+            $permissions = array(
+                'print',
+                'modify',
+                'copy',
+                'annot-forms'
+            );
+
+            // Appliquer la protection
+            $html2pdf->pdf->SetProtection($permissions, $password, $password);
             $newname = 'CO-' . $report->order->code . '.pdf';
             $html2pdf->output($newname);
         } catch (Html2PdfException $e) {
@@ -368,4 +418,6 @@ class ReportController extends Controller
         // dd($report);
         //return redirect()->back()->with('success', "Effectué avec succès ! ");
     }
+
+    
 }

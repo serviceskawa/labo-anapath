@@ -12,9 +12,7 @@
 
             <!----MODAL---->
 
-            @include('contrats.create')
-
-            @include('contrats.edit')
+            @include('reports.password')
 
         </div>
     </div>
@@ -66,10 +64,9 @@
                                         <a type="button" href="{{ route('report.show', $item->id) }}"
                                             class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
                                             <a type="button" href="{{route('details_test_order.index', $item->order->id)}}" class="btn btn-warning" title="Demande {{$item->order->code}}"><i class="uil-file-medical"></i> </a>
-                                        {{-- <a type="button" href="{{ route('report.send-sms', $item->id) }}"
-                                            class="btn btn-danger"><i class="mdi mdi-android-messages"></i> </a> --}}
-                                        <a type="button" href="{{ route('report.pdf', $item->id) }}"
-                                            class="btn btn-secondary"><i class="mdi mdi-printer"></i> </a>
+
+                                            <a type="button" href="{{route('report.pdf', $item->id)}}" class="btn btn-secondary"><i class="mdi mdi-printer"></i></a>
+
                                         @if ($item->status == 1)
                                             <a type="button" href="{{ route('report.updateDeliver', $item->id) }}"
                                                 class="btn btn-{{ $item->is_deliver == 1 ? 'success' : 'warning' }}">Imprimer </a>
@@ -111,6 +108,12 @@
                 }
             });
         }
+
+        function passwordOpen(id)
+            {
+                $('#report_id').val(id);
+                $('#standardModal').modal('show');
+            }
 
 
 
@@ -160,19 +163,36 @@
 
             });
 
-            // $('#search').on('input', function(){
-            //     q = $('#search').val();
-            //     $.ajax({
-            //         type: "GET",
-            //         url: "{{ url('report/search') }}"+'/'+q,
-            //         success: function(data) {
-            //             console.log(data);
-            //         },
-            //         error: function(data) {
-            //             console.log('Error:',data);
-            //         }
-            //     })
-            // });
+
+
+
+
+            $('#addDataform').on('submit', function(e) {
+                e.preventDefault();
+                let password = $('#password').val();
+                let e_id = $('#report_id').val()
+
+                $.ajax({
+                    url: "{{ route('report.password') }}",
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        password: password
+
+                    },
+                    success: function(response) {
+                        if(response==200){
+                            window.location.href = "{{ url('report/pdf') }}" + "/" + e_id;
+                        }else{
+                            toastr.error("Mot de passe incorrect", 'Echec');
+                        }
+                    },
+                    error: function(response) {
+                        toastr.error("Mot de passe incorrect", 'Echec');
+                    },
+                });
+
+            });
 
         });
 

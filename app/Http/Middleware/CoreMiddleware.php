@@ -4,9 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class AuthorizeGeneratePDF
+class CoreMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,9 +16,11 @@ class AuthorizeGeneratePDF
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user()->id != 'generatepdf') {
-            return redirect()->back();
-        }
-        return $next($request);
+        // Set the allowed domains to receive CORS requests
+        // If the request origin is in the allowed domains, set the CORS headers
+        return $next($request)
+                ->header('Access-Control-Allow-Origin', '*');
+        // // Otherwise, return an error response
+        // return response('Unauthorized', 401);
     }
 }

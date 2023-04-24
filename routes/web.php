@@ -158,8 +158,9 @@ Route::middleware(['auth'])->group(function () {
         //Route::get('search/{q}', [ReportController::class, 'search'])->name('report.search');
         Route::post('/store', [ReportController::class, 'store'])->name('report.store');
         Route::post('/auto', [ReportController::class, 'saveauto'])->name('report.saveauto');
+        Route::post('/passwordReport', [ReportController::class, 'password'])->name('report.password');
         Route::get('send_sms/{id}', [ReportController::class, 'send_sms'])->name('report.send-sms');
-        Route::get('pdf/{id}', [ReportController::class, 'pdf'])->name('report.pdf')->middleware('pdf');
+        Route::get('pdf/{id}', [ReportController::class, 'pdf'])->name('report.pdf');
 
         Route::post('report-gettemplate', [ReportController::class, 'getTemplate'])->name('template.report-getTemplate');
 
@@ -239,6 +240,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('updatePayment', [InvoiceController::class, 'updatePayment'])->name('invoice.updatePayment');
         Route::get('/setting', [SettingController::class, 'invoice_index'])->name('invoice.setting.index');
         Route::post('/setting-Update', [SettingController::class, 'invoice_update'])->name('invoice.setting.update');
+        Route::get('/business', [InvoiceController::class, 'business'])->name('invoice.business');
     });
 
     Route::prefix('appointements')->group(function () {
