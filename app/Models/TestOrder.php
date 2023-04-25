@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Doctor;
 use App\Models\Report;
 use App\Models\Contrat;
 use App\Models\Invoice;
@@ -86,7 +87,7 @@ class TestOrder extends Model
      */
     public function doctor()
     {
-        return $this->belongsTo(User::class, 'doctor_id');
+        return $this->belongsTo(Doctor::class, 'doctor_id');
     }
 
     /**
@@ -117,6 +118,17 @@ class TestOrder extends Model
     public function hospital()
     {
         return $this->belongsTo(Hospital::class);
+    }
+
+
+     /**
+     * Get the Hospital that owns the Doctor
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function doctorExamen()
+    {
+        return $this->belongsTo(Doctor::class, 'doctor_id');
     }
 
     /**

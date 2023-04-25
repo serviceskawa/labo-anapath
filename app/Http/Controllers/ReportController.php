@@ -419,5 +419,5 @@ class ReportController extends Controller
         //return redirect()->back()->with('success', "Effectué avec succès ! ");
     }
 
-    
+
 }

@@ -100,7 +100,7 @@ class HomeController extends Controller
             $appointements = Appointment::whereDate('date',$today)->get();
 
 
-            $loggedInUserIds = [];
+            /*$loggedInUserIds = [];
             $sessionData = session()->all();
 
             // dd($sessionData);
@@ -109,16 +109,16 @@ class HomeController extends Controller
                 if ($key === 'user_id') {
                     $loggedInUserIds[]= $value;
                 }
+            }*/
+
+            $loggedInUserId = [];
+            $loggedInUserIds = [];
+
+            // Vérifier si l'ID est stocké dans la session
+            if (session()->has('user_id')) {
+                $loggedInUserId[] = session()->get('user_id');
+                $loggedInUserIds+= $loggedInUserId;
             }
-
-            // $loggedInUserId = [];
-            // $loggedInUserIds = [];
-
-            // // Vérifier si l'ID est stocké dans la session
-            // if (session()->has('user_id')) {
-            //     $loggedInUserId[] = session()->get('user_id');
-            //     $loggedInUserIds+= $loggedInUserId;
-            // }
 
             //dd($loggedInUserIds);
 
@@ -163,12 +163,13 @@ class HomeController extends Controller
 
         $appointements = Appointment::whereDate('date',$today)->get();
 
-
+        $loggedInUserId = [];
         $loggedInUserIds = [];
 
         // Vérifier si l'ID est stocké dans la session
         if (session()->has('user_id')) {
-            $loggedInUserIds[] = session()->get('user_id');
+            $loggedInUserId = session()->get('user_id');
+            $loggedInUserIds[] = $loggedInUserId; 
         }
 
        // dd($sessions);

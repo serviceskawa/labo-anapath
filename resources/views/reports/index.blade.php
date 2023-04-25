@@ -61,10 +61,13 @@
                                     <td>
                                         <a type="button" href="{{ route('report.show', $item->id) }}"
                                             class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
-                                            <a type="button" href="{{route('details_test_order.index', $item->order->id)}}" class="btn btn-warning" title="Demande {{$item->order->code}}"><i class="uil-file-medical"></i> </a>
-
-                                            <a type="button" href="{{route('report.pdf', $item->id)}}" class="btn btn-secondary"><i class="mdi mdi-printer"></i></a>
-
+                                            @if($item->order)
+                                                <a type="button" href="{{route('details_test_order.index', $item->order->id)}}" class="btn btn-warning" title="Demande {{$item->order->code}}"><i class="uil-file-medical"></i> </a>
+                                            @endif
+                                        {{-- <a type="button" href="{{ route('report.send-sms', $item->id) }}"
+                                            class="btn btn-danger"><i class="mdi mdi-android-messages"></i> </a> --}}
+                                        <a type="button" href="{{ route('report.pdf', $item->id) }}"
+                                            class="btn btn-secondary"><i class="mdi mdi-printer"></i> </a>
                                         @if ($item->status == 1)
                                             <a type="button" href="{{ route('report.updateDeliver', $item->id) }}"
                                                 class="btn btn-{{ $item->is_deliver == 1 ? 'success' : 'warning' }}">Imprimer </a>
