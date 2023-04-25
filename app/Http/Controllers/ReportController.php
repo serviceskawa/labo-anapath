@@ -301,7 +301,7 @@ class ReportController extends Controller
             );
             $html2pdf->writeHTML($content);
             // Définir le mot de passe de protection
-            $password = 'passwordPDF';
+            $password = '1234@2023';
 
             // Définir les permissions du document
             $permissions = array(

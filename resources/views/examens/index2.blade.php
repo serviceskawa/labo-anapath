@@ -47,8 +47,8 @@
 
                     <div id="cardCollpase1" class="show collapse pt-3">
 
-                        <form method="post" id="filter_form">
-                            @csrf
+                        {{-- <form method="post" id="filter_form">
+                            @csrf --}}
                             <div class="row mb-3">
 
                                     {{-- <div class="col-lg-3">
@@ -155,7 +155,7 @@
                                 </div> <!-- end col -->
 
                             </div>
-                        </form>
+                        {{-- </form> --}}
 
                        <div class="row mb-3">
                             <div class="col-lg-2 p-1 alert alert-success rounded-pill" style="margin-right: 5px; text-align:center;">
@@ -280,7 +280,7 @@
                         "info": "Afficher page _PAGE_ sur _PAGES_",
                         "infoEmpty": "Aucun enregistrement disponible",
                         "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-                        //"sSearch": "Rechercher:",
+                        "sSearch": "Rechercher:",
                         "paginate": {
                             "previous": "Précédent",
                             "next": "Suivant"

@@ -8,7 +8,7 @@
 
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                <a href="{{ route('invoice.index') }}"><button type="button" class="btn btn-primary">Listes des
+                <a href="{{ route('invoice.index') }}"><button type="button" class="btn btn-primary">Retour à la listes des
                         factures</button></a>
             </div>
             <h4 class="page-title">Factures</h4>
@@ -45,7 +45,7 @@
                                     <td>{{ $mois }} {{Carbon\Carbon::now()->formatLocalized('%G')}}</td>
                                     <td>{{ App\Models\Invoice::whereMonth('updated_at', $key+1)->sum('total'); }} F CFA</td>
                                     <td>{{ App\Models\Invoice::whereMonth('updated_at', $key+1)->where('paid','=',1)->sum('total'); }} F CFA</td>
-                                    <td>{{ App\Models\Invoice::whereMonth('updated_at', $key+1)->where('paid','=',0)->sum('total'); }} C CFA</td>
+                                    <td>{{ App\Models\Invoice::whereMonth('updated_at', $key+1)->where('paid','=',0)->sum('total'); }} F CFA</td>
                                 </tr>
                             @endforeach
 
