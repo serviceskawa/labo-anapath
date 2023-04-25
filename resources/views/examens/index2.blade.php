@@ -34,7 +34,6 @@
 
             <!----MODAL---->
             @include('layouts.alerts')
-            @include('reports.password')
 
             <div class="card mb-md-0 mb-3">
                 <div class="card-body">

@@ -12,8 +12,6 @@
 
             <!----MODAL---->
 
-            @include('reports.password')
-
         </div>
     </div>
 

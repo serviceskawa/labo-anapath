@@ -45,7 +45,6 @@
     <div class="">
 
         @include('layouts.alerts')
-        @include('reports.password')
 
         <div class="row">
             <!-- Contenu du compte rendu -->

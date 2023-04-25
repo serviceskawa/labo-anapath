@@ -449,7 +449,8 @@
 
 
             var test_order = {!! json_encode($test_order) !!}
-            console.log(test_order)
+            var invoiceTest = {!! json_encode($test_order->invoice) !!}
+            console.log(invoiceTest)
 
             var dtDetailTable = $('.detail-list-table')
 
@@ -493,12 +494,14 @@
                             }
                             //onclick="edit('+ test_order.id +')"
                         }else{
-                            if (getInvoice(data.test_order_id)!=1) {
+                            if (invoiceTest.paid==1) {
                                 return (
                                     '<button type="button" id="editBtn" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>'
                                 );
                         }else{
-                            return "";
+                            return (
+                                    '<button type="button" id="deleteBtn" class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i> </button>'
+                                );
                         }
                         }
 
