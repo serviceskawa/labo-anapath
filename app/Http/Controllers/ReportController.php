@@ -432,7 +432,12 @@ class ReportController extends Controller
             ->editColumn('code', function ($data){
                 //change over here
                 //return date('y/m/d',$data->created_at);
-                return $data->order->code;
+                if($data->order)
+                {
+                    return $data->order->code;
+                }else{
+                    return '';
+                }
             })
 
             ->addColumn('codepatient', function ($data) {
