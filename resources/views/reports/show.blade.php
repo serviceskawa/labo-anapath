@@ -758,7 +758,7 @@
                         // $('#page_id').val()
                         if (data) {
                             console.log($('#editor').val());
-                            $('#editor').val(data.content + $('#editor').val());
+                            $('#editor').val($('#editor').val() + data.content);
                             console.log($('#editor').val());
 
                             CKEDITOR.ClassicEditor
@@ -824,7 +824,7 @@
                         // $('#page_id').val()
                         if (data) {
                             console.log($('#editor2').val());
-                            $('#editor2').val(data.content + $('#editor2').val());
+                            $('#editor2').val($('#editor2').val() + data.content + );
                             console.log($('#editor2').val());
 
                             CKEDITOR.ClassicEditor
