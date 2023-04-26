@@ -18,7 +18,7 @@ class DailyDatabaseBackup extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Faire une sauvegarde de la base de données';
 
     /**
      * Create a new command instance.
