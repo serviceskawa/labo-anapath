@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Consultation;
 use DataTables;
+use Illuminate\Support\Str;
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
 use App\Models\Setting;
@@ -11,6 +12,7 @@ use App\Models\SettingInvoice;
 use App\Models\TestOrder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
@@ -21,7 +23,7 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $invoices = Invoice::orderBy('date','DESC')->get();
+        $invoices = Invoice::orderBy('date', 'DESC')->get();
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
         return view('invoices.index', compact('invoices'));
@@ -122,70 +124,164 @@ class InvoiceController extends Controller
         return view('invoices.show', compact('invoice', 'setting', 'settingInvoice'));
     }
 
-    public function business(){
+    public function getInvoiceforDatatable(Request $request)
+    {
+
+        $data = Invoice::all();
+        $periode = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+        $todayMonth = intval(date('m')); // récupère le mois actuel en tant qu'entier
+
+        $periode = array_slice($periode, 0, $todayMonth); // garde uniquement les mois précédents la date d'aujourd'hui
+
+        return Datatables::of($periode)->addIndexColumn()
+            ->editColumn('created_at', function ($periode) {
+                //change over here
+                //return date('y/m/d',$data->created_at);
+                return $periode;
+            })
+
+            ->addColumn('factures', function ($periode) {
+                $monthIndex = array_search($periode, ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']);
+
+                $result = Invoice::whereMonth('updated_at', $monthIndex + 1)->sum('total');
+
+                return $result?$result:'Néant';
+
+                // return Invoice::whereMonth('updated_at', )->sum('total');
+            })
+            ->addColumn('avoirs', function ($periode) {
+                return '';
+            })
+            ->addColumn('chiffres', function ($periode){
+
+                $monthIndex = array_search($periode, ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']);
+
+                $chiffre= Invoice::whereMonth('updated_at', $monthIndex + 1)->where('paid','1')->sum('total');
+                return $chiffre?$chiffre:'Néant';
+            })
+            ->addColumn('encaissements', function ($periode){
+                $monthIndex = array_search($periode, ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']);
+
+                $resultat= Invoice::whereMonth('updated_at', $monthIndex + 1)->where('paid','1')->sum('total');
+                return $resultat?$resultat:'Néant';
+            })
+            ->filter(function ($query) use ($request) {
+
+                if (!empty($request->get('periode'))) {
+
+                    if($request->get('periode') == 'nowMonth'){
+                        $day = Carbon::now()->format('m');
+                        // $query->where('updated_at', $day);
+                        $query->where(DB::raw('MONTH(updated_at)'), $day);
+                    }
+                    // $query->where('attribuate_doctor_id', $request->get('attribuate_doctor_id'));
+                }
+
+            })
+            // ->filter(function ($query) use ($request) {
+            //     if (!empty($request->get('periode'))) {
+            //         $now = Carbon::now();
+            //         switch ($request->get('periode')) {
+            //             case 'nowMonth':
+            //                 $start = $now->startOfMonth();
+            //                 $end = $now->endOfMonth();
+            //                 break;
+            //             case 'lastMonth':
+            //                 $start = $now->startOfMonth()->subMonth();
+            //                 $end = $now->endOfMonth()->subMonth();
+            //                 break;
+            //             case 'nowTrimestres':
+            //                 $start = $now->startOfQuarter();
+            //                 $end = $now->endOfQuarter();
+            //                 break;
+            //             case 'lastTrimestre':
+            //                 $start = $now->startOfQuarter()->subQuarter();
+            //                 $end = $now->endOfQuarter()->subQuarter();
+            //                 break;
+            //             case 'nowYear':
+            //                 $start = $now->startOfYear();
+            //                 $end = $now->endOfYear();
+            //                 break;
+            //             case 'lastYear':
+            //                 $start = $now->startOfYear()->subYear();
+            //                 $end = $now->endOfYear()->subYear();
+            //                 break;
+            //             default:
+            //                 $start = null;
+            //                 $end = null;
+            //                 break;
+            //         }
+
+            //         if ($start && $end) {
+            //             $query->whereBetween('updated_at', [$start, $end]);
+            //         }
+            //     }
+            // })
+
+            ->rawColumns(['chiffres', 'avoirs', 'factures', 'encaissements'])
+            ->make(true);
+    }
+
+    // public function filter(Request $request)
+    // {
+    //     if (!empty($request->periode)) {
+    //         $now = Carbon::now();
+    //         switch ($request->periode) {
+    //             case 'nowMonth':
+    //                 $start = $now->startOfMonth();
+    //                 $end = $now->endOfMonth();
+    //                 break;
+    //             case 'lastMonth':
+    //                 $start = $now->startOfMonth()->subMonth();
+    //                 $end = $now->endOfMonth()->subMonth();
+    //                 break;
+    //             case 'nowTrimestres':
+    //                 $start = $now->startOfQuarter();
+    //                 $end = $now->endOfQuarter();
+    //                 break;
+    //             case 'lastTrimestre':
+    //                 $start = $now->startOfQuarter()->subQuarter();
+    //                 $end = $now->endOfQuarter()->subQuarter();
+    //                 break;
+    //             case 'nowYear':
+    //                 $start = $now->startOfYear();
+    //                 $end = $now->endOfYear();
+    //                 break;
+    //             case 'lastYear':
+    //                 $start = $now->startOfYear()->subYear();
+    //                 $end = $now->endOfYear()->subYear();
+    //                 break;
+    //             default:
+    //                 $start = null;
+    //                 $end = null;
+    //                 break;
+    //         }
+
+    //         if ($start && $end) {
+    //             $data= Invoice::whereBetween('updated_at', [$start, $end]);
+    //         }else {
+    //             $data='';
+    //         }
+    //         return response()->json($data);
+    //     }
+    // }
+
+    public function business()
+    {
         //Mois courant
         $nowDay = Carbon::now();
 
         $curmonth = now()->format('m'); // Récupérer le mois en cours sous forme de chiffre (ex : '01' pour janvier)
-        $totalMonth = Invoice::whereMonth('updated_at', $curmonth)->where('paid','=',1)->sum('total');
+        $totalMonth = Invoice::whereMonth('updated_at', $curmonth)->where('paid', '=', 1)->sum('total');
 
         //Mois précédent
         $lastMonth = $nowDay->copy()->subMonth()->format('m');
-        $totalLastMonth = Invoice::whereMonth('updated_at', $lastMonth)->where('paid','=',1)->sum('total');
+        $totalLastMonth = Invoice::whereMonth('updated_at', $lastMonth)->where('paid', '=', 1)->sum('total');
 
         //Jour actuellement
         $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'
-        $totalToday = Invoice::whereDate('updated_at', $today)->where('paid','=',1)->sum('total');
-        return view('invoices.business', compact('nowDay','totalMonth','totalLastMonth','totalToday'));
-
-        // $data = Consultation::with(['doctor', 'patient', 'type', 'attribuateToDoctor'])->orderBy('created_at', 'desc')->get();
-
-        // return Datatables::of($data)->addIndexColumn()
-        // ->editColumn('created_at', function ($data) {
-        //     //change over here
-        //     return $data->date;
-        // })
-        // ->addColumn('action', function ($data) {
-        //     $btnVoir = '<a type="button" href="' . route('consultation.show', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
-        //     $btnEdit = ' <a type="button" href="' . route('consultation.edit', $data->id) . '" class="btn btn-warning" title="Mettre à jour examen"><i class="mdi mdi-doctor"></i></a>';
-        //     if ($data->status != 1) {
-        //         $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
-        //         $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
-        //     } else {
-        //         $btnReport = ' <a type="button" href="' . route('report.show', $data->report->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
-        //         $btnDelete = "";
-        //     }
-
-        //     if (!empty($data->invoice->id)) {
-        //         $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->invoice->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
-        //     } else {
-        //         $btnInvoice = ' <a type="button" href="' . route('invoice.storeFromOrder', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
-        //     }
-
-        //     return $btnVoir . $btnEdit;
-        //     // return $btnVoir . $btnEdit . $btnReport . $btnInvoice . $btnDelete;
-        // })
-        // ->addColumn('patient', function ($data) {
-        //     return $data->patient->firstname . ' ' . $data->patient->lastname;
-        // })
-        // ->addColumn('doctor', function ($data) {
-        //     if (empty($data->attribuateToDoctor)) {
-        //         $result = "";
-        //     } else {
-        //         $result = $data->attribuateToDoctor->firstname;
-        //     }
-        //     return $result;
-        // })
-        // ->addColumn('type', function ($data) {
-        //     if (empty($data->type)) {
-        //         return "";
-        //     } else {
-        //         return $data->type->name;
-        //     }
-        // })
-        // ->rawColumns(['action', 'patient', 'doctor', 'type'])
-        // ->make(true);
-
+        $totalToday = Invoice::whereDate('updated_at', $today)->where('paid', '=', 1)->sum('total');
+        return view('invoices.business', compact('nowDay', 'totalMonth', 'totalLastMonth', 'totalToday'));
     }
 
     function print($id)
@@ -263,35 +359,32 @@ class InvoiceController extends Controller
         if ($invoice->paid == 1) {
 
             return redirect()->back()->with('success', "Cette facture a déjà été payé ! ");
-        }
-        else {
+        } else {
 
 
-            if ($settingInvoice->status==1) {
-                if ($invoice->test_order_id!=null) {
+            if ($settingInvoice->status == 1) {
+                if ($invoice->test_order_id != null) {
                     return response()->json(invoiceNormeTest($invoice->test_order_id));
                 }
             } else {
                 $invoice->fill(["paid" => '1'])->save();
                 return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
             }
-
         }
     }
 
     public function updatePayment(Request $request)
     {
-        $invoice=Invoice::find($request->id);
+        $invoice = Invoice::find($request->id);
 
-        if ($invoice->paid ==1) {
+        if ($invoice->paid == 1) {
             return response()->json('Facture déjà validée');
         } else {
             $invoice->fill([
-                'payment'=> $request->payment
+                'payment' => $request->payment
             ])->save();
             return response()->json('Mis à jour du payment');
         }
-
     }
 
     public function confirmInvoice(Request $request)
@@ -302,9 +395,9 @@ class InvoiceController extends Controller
         $settingInvoice = SettingInvoice::find(1);
         $accessToken = $settingInvoice->token;
         $ifu = $settingInvoice->ifu;
-        $response = $client->request('PUT', 'https://developper.impots.bj/sygmef-emcf/api/invoice/'.$request->uid.'/confirm',[
+        $response = $client->request('PUT', 'https://developper.impots.bj/sygmef-emcf/api/invoice/' . $request->uid . '/confirm', [
             'headers' => [
-                'Authorization' => 'Bearer ' .$accessToken,
+                'Authorization' => 'Bearer ' . $accessToken,
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json'
             ],
@@ -315,18 +408,18 @@ class InvoiceController extends Controller
 
         if (!empty($invoice)) {
             $invoice->fill([
-               "paid" => '1',
-               "codeMecef" => $test['codeMECeFDGI'],
-               "counters" => $test['counters'],
-               "dategenerate" => $test['dateTime'],
-               "nim" => $test['nim'],
-               "qrcode" => $test['qrCode']
-           ])->save();
+                "paid" => '1',
+                "codeMecef" => $test['codeMECeFDGI'],
+                "counters" => $test['counters'],
+                "dategenerate" => $test['dateTime'],
+                "nim" => $test['nim'],
+                "qrcode" => $test['qrCode']
+            ])->save();
         }
 
         //'response' => $test['qrCode'],
 
-        return response()->json(['status'=>200, 'type'=>"confirm", "invoice" => $invoice]);
+        return response()->json(['status' => 200, 'type' => "confirm", "invoice" => $invoice]);
     }
 
     public function cancelInvoice(Request $request)
@@ -337,17 +430,18 @@ class InvoiceController extends Controller
         $settingInvoice = SettingInvoice::find(1);
         $accessToken = $settingInvoice->token;
         $ifu = $settingInvoice->ifu;
-        $response = $client->request('PUT', 'https://developper.impots.bj/sygmef-emcf/api/invoice/'.$request->uid.'/cancel',[
-            'headers' => [
-                'Authorization' => 'Bearer ' .$accessToken,
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json'
-            ],
-        ]
+        $response = $client->request(
+            'PUT',
+            'https://developper.impots.bj/sygmef-emcf/api/invoice/' . $request->uid . '/cancel',
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json'
+                ],
+            ]
         );
         $test = json_decode($response->getBody(), true);
-        return response()->json(['status'=>200, 'type'=>"cancel", 'response'=> $test]);
+        return response()->json(['status' => 200, 'type' => "cancel", 'response' => $test]);
     }
-
-
 }

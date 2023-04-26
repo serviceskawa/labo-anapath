@@ -19,14 +19,17 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 // require _DIR_.'/vendor/autoload.php';
 use App\Models\SettingReportTemplate;
+
 use App\Models\TitleReport;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use QRcode as GlobalQRcode;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
+use Yajra\DataTables\Facades\DataTables;
 
 class ReportController extends Controller
 {
@@ -417,6 +420,80 @@ class ReportController extends Controller
         $this->pdf($reportId);
         // dd($report);
         //return redirect()->back()->with('success', "Effectué avec succès ! ");
+    }
+
+    public function getReportsforDatatable(Request $request)
+    {
+
+        $data = Report::all();
+
+
+        return DataTables::of($data)->addIndexColumn()
+            ->editColumn('code', function ($data){
+                //change over here
+                //return date('y/m/d',$data->created_at);
+                return $data->order->code;
+            })
+
+            ->addColumn('codepatient', function ($data) {
+
+                return $data->patient->code;
+
+                // return Invoice::whereMonth('updated_at', )->sum('total');
+            })
+            ->addColumn('patient', function ($data) {
+
+                return $data->patient->firstname . ' ' . $data->patient->lastname;
+
+                // return Invoice::whereMonth('updated_at', )->sum('total');
+            })
+            ->addColumn('telephone', function ($data) {
+                return $data->patient->telephone1;
+            })
+            ->addColumn('created_at', function ($data){
+
+               return \Carbon\Carbon::parse($data->created_at)->format('d/m/Y');
+            })
+            ->addColumn('status', function ($data) {
+                if ($data->status==1) {
+                    return 'Valider';
+                } else {
+                    return 'Attente';
+                }
+            })
+            ->addColumn('action', function ($data){
+                $btnVoir = '<a type="button" href="'. route('report.show', $data->id) .'"class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>';
+                // $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+                // $btnEdit = ' <a type="button" href="' . route('test_order.edit', $data->id) . '" class="btn btn-primary" title="Mettre à jour examen"><i class="mdi mdi-lead-pencil"></i></a>';
+                if ($data->order) {
+                    $btnReport = ' <a type="button" href="'.route('details_test_order.index', $data->order->id).'" class="btn btn-warning" title="Demande '.$data->order->code.'"><i class="uil-file-medical"></i> </a>';
+                    // $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
+                    // $btnreport = "";
+                }
+                 else {
+                    $btnReport = ' ';
+                }
+
+                if ($data->status == 1) {
+                    if ($data->is_deliver==1) {
+                        $btnInvoice = ' <a type="button" href="'. route('report.updateDeliver', $data->id) .'" class="btn btn-success">Imprimer </a>';
+                    } else {
+                        $btnInvoice = ' <a type="button" href="'. route('report.updateDeliver', $data->id) .'" class="btn btn-warning">Imprimer </a>';
+                    }
+
+                }else{
+                    $btnInvoice='';
+                }
+
+
+                return $btnVoir .  $btnReport . $btnInvoice;
+            })
+            // ->filter(function ($query) use ($request) {
+
+
+            // })
+            ->make(true);
+
     }
 
 

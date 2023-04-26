@@ -18,7 +18,7 @@
 
         <div class="card my-3">
             @if ($test_order->status == 1)
-            <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
+                <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
                     class="btn btn-success w-full">CONSULTEZ LE
                     COMPTE RENDU</a>
             @endif
@@ -51,31 +51,85 @@
                         <div class="col-md-6">
                             <label for="exampleFormControlInput1" class="form-label">Type d'examen<span
                                     style="color:red;">*</span></label>
-                            <select class="form-select select2" data-toggle="select2" required id="type_examen"
-                                name="type_examen">
-                                <option>Sélectionner le type d'examen</option>
-                                @forelse ($types_orders as $type)
-                                    <option {{ $test_order->type_order_id == $type->id ? 'selected' : '' }}
-                                        value="{{ $type->id }}">{{ $type->title }}</option>
 
-                                @empty
-                                    Ajouter un Type d'examen
-                                @endforelse
-                            </select>
+                            @if ($test_order->invoice)
+                                @if ($test_order->invoice->paid != 1)
+                                    <select class="form-select select2" data-toggle="select2" required id="type_examen"
+                                        name="type_examen">
+                                        <option>Sélectionner le type d'examen</option>
+                                        @forelse ($types_orders as $type)
+                                            <option {{ $test_order->type_order_id == $type->id ? 'selected' : '' }}
+                                                value="{{ $type->id }}">{{ $type->title }}</option>
+
+                                        @empty
+                                            Ajouter un Type d'examen
+                                        @endforelse
+                                    </select>
+                                @else
+                                    @foreach ($types_orders as $type)
+                                        @if ($test_order->type_order_id == $type->id)
+                                            <input type="text" name="type_examen" class="form-control" readonly
+                                                value="{{ $type->title }}">
+                                        @endif
+                                    @endforeach
+
+                                @endif
+                            @else
+                                <select class="form-select select2" data-toggle="select2" required id="type_examen"
+                                    name="type_examen">
+                                    <option>Sélectionner le type d'examen</option>
+                                    @forelse ($types_orders as $type)
+                                        <option {{ $test_order->type_order_id == $type->id ? 'selected' : '' }}
+                                            value="{{ $type->id }}">{{ $type->title }}</option>
+
+                                    @empty
+                                        Ajouter un Type d'examen
+                                    @endforelse
+                                </select>
+                            @endif
+
                         </div>
                         <div class="col-md-6">
                             <label for="exampleFormControlInput1" class="form-label">Contrat<span
                                     style="color:red;">*</span></label>
-                            <select class="form-select select2" data-toggle="select2" required name="contrat_id" id="contrat_id">
-                                <option>Sélectionner le contrat</option>
-                                @forelse ($contrats as $contrat)
-                                    <option value="{{ $contrat->id }}"
-                                        {{ $test_order->contrat_id == $contrat->id ? 'selected' : '' }}>
-                                        {{ $contrat->name }}</option>
-                                @empty
-                                    Ajouter un contrat
-                                @endforelse
-                            </select>
+
+                            @if ($test_order->invoice)
+                                @if ($test_order->invoice->paid != 1)
+                                    <select class="form-select select2" data-toggle="select2" required name="contrat_id"
+                                        id="contrat_id">
+                                        <option>Sélectionner le contrat</option>
+                                        @forelse ($contrats as $contrat)
+                                            <option value="{{ $contrat->id }}"
+                                                {{ $test_order->contrat_id == $contrat->id ? 'selected' : '' }}>
+                                                {{ $contrat->name }}</option>
+                                        @empty
+                                            Ajouter un contrat
+                                        @endforelse
+                                    </select>
+                                @else
+                                    @foreach ($contrats as $contrat)
+                                        @if ($test_order->contrat_id == $contrat->id)
+                                            <input type="text" name="contrat_id" id="contrat_id" class="form-control"
+                                                readonly value="{{ $contrat->name }}">
+                                        @endif
+                                    @endforeach
+
+                                @endif
+                            @else
+                                <select class="form-select select2" data-toggle="select2" required name="contrat_id"
+                                    id="contrat_id">
+                                    <option>Sélectionner le contrat</option>
+                                    @forelse ($contrats as $contrat)
+                                        <option value="{{ $contrat->id }}"
+                                            {{ $test_order->contrat_id == $contrat->id ? 'selected' : '' }}>
+                                            {{ $contrat->name }}</option>
+                                    @empty
+                                        Ajouter un contrat
+                                    @endforelse
+                                </select>
+                            @endif
+
+
                         </div>
                     </div>
                     <div class="col-md-12 my-3">
@@ -101,31 +155,84 @@
                         <div class="col-md-6">
                             <label for="exampleFormControlInput1" class="form-label">Patient <span
                                     style="color:red;">*</span></label>
-                            <select class="form-select select2" data-toggle="select2" name="patient_id" id="patient_id"
-                                required>
-                                <option>Sélectionner le nom du patient</option>
-                                @foreach ($patients as $patient)
-                                    <option value="{{ $patient->id }}"
-                                        {{ $test_order->patient_id == $patient->id ? 'selected' : '' }}>
-                                        {{ $patient->code }} - {{ $patient->firstname }}
-                                        {{ $patient->lastname }}
-                                    </option>
-                                @endforeach
-                            </select>
+
+                            @if ($test_order->invoice)
+                                @if ($test_order->invoice->paid != 1)
+                                    <select class="form-select select2" data-toggle="select2" name="patient_id"
+                                        id="patient_id" required>
+                                        <option>Sélectionner le nom du patient</option>
+                                        @foreach ($patients as $patient)
+                                            <option value="{{ $patient->id }}"
+                                                {{ $test_order->patient_id == $patient->id ? 'selected' : '' }}>
+                                                {{ $patient->code }} - {{ $patient->firstname }}
+                                                {{ $patient->lastname }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    @foreach ($patients as $patient)
+                                        @if ($test_order->patient_id == $patient->id)
+                                            <input type="text" name="patient_id" id="patient_id" class="form-control"
+                                                readonly
+                                                value="{{ $patient->code }} - {{ $patient->firstname }}
+                                    {{ $patient->lastname }}">
+                                        @endif
+                                    @endforeach
+
+                                @endif
+                            @else
+                                <select class="form-select select2" data-toggle="select2" name="patient_id"
+                                    id="patient_id" required>
+                                    <option>Sélectionner le nom du patient</option>
+                                    @foreach ($patients as $patient)
+                                        <option value="{{ $patient->id }}"
+                                            {{ $test_order->patient_id == $patient->id ? 'selected' : '' }}>
+                                            {{ $patient->code }} - {{ $patient->firstname }}
+                                            {{ $patient->lastname }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @endif
+
+
                         </div>
 
                         <div class="col-md-6">
                             <label for="exampleFormControlInput1" class="form-label">Médecin traitant<span
                                     style="color:red;">*</span></label>
-                            <select class="form-select select2" data-toggle="select2" name="doctor_id" id="doctor_id"
-                                required>
-                                <option>Sélectionner le médecin traitant</option>
-                                @foreach ($doctors as $doctor)
-                                    <option value="{{ $doctor->name }}"
-                                        {{ $test_order->doctor_id == $doctor->id ? 'selected' : '' }}>
-                                        {{ $doctor->name }}</option>
-                                @endforeach
-                            </select>
+
+
+                            @if ($test_order->invoice)
+                                @if ($test_order->invoice->paid != 1)
+                                    <select class="form-select select2" data-toggle="select2" name="doctor_id"
+                                        id="doctor_id" required>
+                                        <option>Sélectionner le médecin traitant</option>
+                                        @foreach ($doctors as $doctor)
+                                            <option value="{{ $doctor->name }}"
+                                                {{ $test_order->doctor_id == $doctor->id ? 'selected' : '' }}>
+                                                {{ $doctor->name }}</option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    @foreach ($doctors as $doctor)
+                                        @if ($test_order->doctor_id == $doctor->id)
+                                            <input type="text" name="doctor_id" id="doctor_id" class="form-control"
+                                                readonly value="{{ $doctor->name }}">
+                                        @endif
+                                    @endforeach
+
+                                @endif
+                            @else
+                                <select class="form-select select2" data-toggle="select2" name="doctor_id"
+                                    id="doctor_id" required>
+                                    <option>Sélectionner le médecin traitant</option>
+                                    @foreach ($doctors as $doctor)
+                                        <option value="{{ $doctor->name }}"
+                                            {{ $test_order->doctor_id == $doctor->id ? 'selected' : '' }}>
+                                            {{ $doctor->name }}</option>
+                                    @endforeach
+                                </select>
+                            @endif
                         </div>
 
                     </div>
@@ -134,22 +241,53 @@
                         <div class="col-md-6">
                             <label for="exampleFormControlInput1" class="form-label">Hôpital de provenance<span
                                     style="color:red;">*</span></label>
-                            <select class="form-select select2" data-toggle="select2" name="hospital_id" id="hospital_id"
-                                required>
-                                <option>Sélectionner le centre hospitalier de provenance</option>
-                                @foreach ($hopitals as $hopital)
-                                    <option value="{{ $hopital->name }}"
-                                        {{ $test_order->hospital_id == $hopital->id ? 'selected' : '' }}>
-                                        {{ $hopital->name }}</option>
-                                @endforeach
-                            </select>
+
+
+                            @if ($test_order->invoice)
+                                @if ($test_order->invoice->paid != 1)
+                                    <select class="form-select select2" data-toggle="select2" name="hospital_id"
+                                        id="hospital_id" required>
+                                        <option>Sélectionner le centre hospitalier de provenance</option>
+                                        @foreach ($hopitals as $hopital)
+                                            <option value="{{ $hopital->name }}"
+                                                {{ $test_order->hospital_id == $hopital->id ? 'selected' : '' }}>
+                                                {{ $hopital->name }}</option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    @foreach ($hopitals as $hopital)
+                                        @if ($test_order->hospital_id == $hopital->id)
+                                            <input type="text" name="hospital_id" id="hospital_id"
+                                                class="form-control" readonly value="{{ $hopital->name }}">
+                                        @endif
+                                    @endforeach
+
+                                @endif
+                            @else
+                                <select class="form-select select2" data-toggle="select2" name="hospital_id"
+                                    id="hospital_id" required>
+                                    <option>Sélectionner le centre hospitalier de provenance</option>
+                                    @foreach ($hopitals as $hopital)
+                                        <option value="{{ $hopital->name }}"
+                                            {{ $test_order->hospital_id == $hopital->id ? 'selected' : '' }}>
+                                            {{ $hopital->name }}</option>
+                                    @endforeach
+                                </select>
+                            @endif
+
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="exampleFormControlInput1" class="form-label">Référence hôpital</label>
-                                <input type="text" class="form-control" name="reference_hopital"
-                                    value="{{ $test_order->reference_hopital }}">
+                                @if ($test_order->invoice)
+                                    <input type="text" {{ $test_order->invoice->paid == 1 ? 'readonly' : '' }}
+                                        class="form-control" name="reference_hopital"
+                                        value="{{ $test_order->reference_hopital }}">
+                                @else
+                                    <input type="text" class="form-control" name="reference_hopital"
+                                        value="{{ $test_order->reference_hopital }}">
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -157,30 +295,74 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Date prélèvement<span style="color:red;">*</span></label>
-                            <input type="date" class="form-control" name="prelevement_date" id="prelevement_date"
-                                data-date-format="dd/mm/yyyy" value="{{ $test_order->prelevement_date }}" required>
+                            @if ($test_order->invoice)
+                                <input type="date" {{ $test_order->invoice->paid == 1 ? 'readonly' : '' }}
+                                    class="form-control" name="prelevement_date" id="prelevement_date"
+                                    data-date-format="dd/mm/yyyy" value="{{ $test_order->prelevement_date }}" required>
+                            @else
+                                <input type="date" class="form-control" name="prelevement_date" id="prelevement_date"
+                                    data-date-format="dd/mm/yyyy" value="{{ $test_order->prelevement_date }}" required>
+                            @endif
 
                             <label class="form-label mt-3">Affecter à</label>
-                            <select name="attribuate_doctor_id" id="" class="form-control">
-                                <option value="">Selectionnez un docteur</option>
-                                @foreach (getUsersByRole('docteur') as $item)
-                                    <option value="{{ $item->id }}"
-                                        {{ $test_order->attribuate_doctor_id == $item->id ? 'selected' : '' }}>
-                                        {{ $item->lastname }} {{ $item->firstname }} </option>
-                                @endforeach
-                            </select>
+
+                            @if ($test_order->invoice)
+                                @if ($test_order->invoice->paid != 1)
+                                    <select name="attribuate_doctor_id" id="" class="form-control">
+                                        <option value="">Selectionnez un docteur</option>
+                                        @foreach (getUsersByRole('docteur') as $item)
+                                            <option value="{{ $item->id }}"
+                                                {{ $test_order->attribuate_doctor_id == $item->id ? 'selected' : '' }}>
+                                                {{ $item->lastname }} {{ $item->firstname }} </option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    @foreach (getUsersByRole('docteur') as $item)
+                                        @if ($test_order->attribuate_doctor_id == $item->id)
+                                            <input type="text" name="attribuate_doctor_id" id=""
+                                                class="form-control" readonly
+                                                value="{{ $item->lastname }} {{ $item->firstname }}">
+                                        @endif
+                                    @endforeach
+
+                                @endif
+                            @else
+                                <select name="attribuate_doctor_id" id="" class="form-control">
+                                    <option value="">Selectionnez un docteur</option>
+                                    @foreach (getUsersByRole('docteur') as $item)
+                                        <option value="{{ $item->id }}"
+                                            {{ $test_order->attribuate_doctor_id == $item->id ? 'selected' : '' }}>
+                                            {{ $item->lastname }} {{ $item->firstname }} </option>
+                                    @endforeach
+                                </select>
+                            @endif
+
                             <label class="form-label mt-3">Cas urgent</label> <br>
-                            <input type="checkbox" id="switch3" class="form-control" name="is_urgent"
-                                {{ $test_order->is_urgent != 0 ? 'checked' : '' }} data-switch="success" />
+                            @if ($test_order->invoice)
+                                <input type="checkbox" id="switch3"
+                                    {{ $test_order->invoice->paid == 1 ? 'readonly' : '' }} class="form-control"
+                                    name="is_urgent" {{ $test_order->is_urgent != 0 ? 'checked' : '' }}
+                                    data-switch="success" />
+                            @else
+                                <input type="checkbox" id="switch3" class="form-control" name="is_urgent"
+                                    {{ $test_order->is_urgent != 0 ? 'checked' : '' }} data-switch="success" />
+                            @endif
                             <label for="switch3" data-on-label="Urgent" data-off-label="Normal"></label>
 
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Pièce jointe</label>
-                                <input type="file" name="examen_file" id="example-fileinput"
-                                    class="form-control dropify"
-                                    data-default-file="{{ $test_order ? Storage::url($test_order->examen_file) : '' }}">
+                                @if ($test_order->invoice)
+                                    <input type="file" name="examen_file"
+                                        {{ $test_order->invoice->paid == 1 ? 'readonly' : '' }} id="example-fileinput"
+                                        class="form-control dropify"
+                                        data-default-file="{{ $test_order ? Storage::url($test_order->examen_file) : '' }}">
+                                @else
+                                    <input type="file" name="examen_file" id="example-fileinput"
+                                        class="form-control dropify"
+                                        data-default-file="{{ $test_order ? Storage::url($test_order->examen_file) : '' }}">
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -190,7 +372,13 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn w-100 btn-warning">Mettre à jour</button>
+                    @if ($test_order->invoice)
+                        @if ($test_order->invoice->paid != 1)
+                            <button type="submit" class="btn w-100 btn-warning">Mettre à jour</button>
+                        @endif
+                    @else
+                        <button type="submit" class="btn w-100 btn-warning">Mettre à jour</button>
+                    @endif
                 </div>
 
             </form>
@@ -271,6 +459,13 @@
                                 <th>Remise</th>
                                 <th>Montant</th>
                                 <th>Actions</th>
+                                {{-- @if ($test_order->invoice)
+                                    @if ($test_order->invoice->paid != 1)
+                                        <th>Actions</th>
+                                    @endif
+                                @else
+                                    <th>Actions</th>
+                                @endif --}}
 
                             </tr>
                         </thead>
@@ -289,6 +484,13 @@
                                         value="0" readonly>
                                 </td>
                                 <td></td>
+                                {{-- @if ($test_order->invoice)
+                                    @if ($test_order->invoice->paid != 1)
+                                        <td></td>
+                                    @endif
+                                @else
+                                    <td></td>
+                                @endif --}}
 
                             </tr>
                         </tfoot>
@@ -360,7 +562,8 @@
 
 
                             <div class="mb-3">
-                                <label for="example-select" class="form-label">Mois ou Années<span style="color:red;">*</span></label>
+                                <label for="example-select" class="form-label">Mois ou Années<span
+                                        style="color:red;">*</span></label>
                                 <select class="form-select" id="year_or_month" name="year_or_month" required>
                                     <option value="">Sélectionner entre mois ou ans</option>
                                     <option value="0">Mois</option>
@@ -370,7 +573,8 @@
 
 
                             <div class="mb-3">
-                                <label for="example-select" class="form-label">Mois ou Années<span style="color:red;">*</span></label>
+                                <label for="example-select" class="form-label">Mois ou Années<span
+                                        style="color:red;">*</span></label>
                                 <select class="form-select" id="example-select" name="year_or_month" required>
                                     <option value="">Sélectionner entre mois ou ans</option>
                                     <option value="0">Mois</option>
@@ -420,30 +624,29 @@
         $('.dropify').dropify();
     </script>
     <script type="text/javascript">
-
         function getInvoice(id) {
 
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('test_order.invoice') }}",
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        testId: id,
-                    },
-                    success: function(data) {
-                        //console.log(data[0]["paid"]);
-                        if (data) {
-                            return data[0]["paid"];
-                        } else {
-                            return "";
-                        }
-                    },
-                    error: function(data) {
-                        console.log('Error:', data);
+            $.ajax({
+                type: "POST",
+                url: "{{ route('test_order.invoice') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    testId: id,
+                },
+                success: function(data) {
+                    //console.log(data[0]["paid"]);
+                    if (data) {
+                        return data[0]["paid"];
+                    } else {
+                        return "";
                     }
-                });
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                }
+            });
 
-            };
+        };
 
         $(document).ready(function() {
 
@@ -486,23 +689,23 @@
                     //"targets": [0],
                     "render": function(data, type, row) {
                         //var invoice = getInvoice(data.test_order_id);
-                        if (test_order.status !=1) {
+                        if (test_order.status != 1) {
                             if (row["status"] != 1) {
                                 return (
                                     '<button type="button" id="deleteBtn" class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i> </button>'
                                 );
                             }
                             //onclick="edit('+ test_order.id +')"
-                        }else{
-                            if (invoiceTest.paid==1) {
+                        } else {
+                            if (invoiceTest.paid == 1) {
                                 return (
-                                    '<button type="button" id="editBtn" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>'
+                                    ''
                                 );
-                        }else{
-                            return (
+                            } else {
+                                return (
                                     '<button type="button" id="deleteBtn" class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i> </button>'
                                 );
-                        }
+                            }
                         }
 
                         return "";
@@ -555,13 +758,19 @@
                     var numRows = api.rows().count();
                     if (numRows > 0) {
                         var element = document.getElementById('finalisationBtn');
-                       if(element){
+                        if (element) {
                             element.classList.remove("disabled");
-                       }
+                        }
                     }
                 },
 
             });
+
+            if (invoiceTest) {
+                if (invoiceTest.paid ==1) {
+                    dt_basic.column(5).visible( false );
+                }
+            }
 
             $('.detail-list-table tbody').on('click', '#deleteBtn', function() {
                 var data = dt_basic.row($(this).parents('tr')).data();
@@ -610,13 +819,13 @@
                 var data = dt_basic.row($(this).parents('tr')).data();
                 var dataline = dt_basic.row($(this).parents('tr'))
                 console.log(dataline[0][0]);
-                        $('#row_id').val(dataline[0][0]);
-                        $('#test_id1').val(data.test_id);
-                        $('#price1').val(data.price);
-                        $('#remise1').val(data.discount);
+                $('#row_id').val(dataline[0][0]);
+                $('#test_id1').val(data.test_id);
+                $('#price1').val(data.price);
+                $('#remise1').val(data.discount);
 
-                        $('#total1').val(data.total);
-                        $('#editModal').modal('show');
+                $('#total1').val(data.total);
+                $('#editModal').modal('show');
             });
 
             function sendTotal(test_order_id, total, discount, subTotal) {
@@ -742,212 +951,189 @@
             var e_id = id;
 
             // Populate Data in Edit Modal Form
-                $.ajax({
-                    url:  '/test_order/detailstest/' + e_id,
-                    dataSrc: '',
-                    success: function(data) {
-                        console.log(data);
-                        $('#test_id1').val(data.test_id);
-                        $('#price1').val(data.price);
-                        $('#remise1').val(data.discount);
-                        $('#total1').val(data.total);
-                        $('#editModal').modal('show');
-                    },
-                    error: function(data) {
-                        console.log('Error:', data);
-                    }
-                });
+            $.ajax({
+                url: '/test_order/detailstest/' + e_id,
+                dataSrc: '',
+                success: function(data) {
+                    console.log(data);
+                    $('#test_id1').val(data.test_id);
+                    $('#price1').val(data.price);
+                    $('#remise1').val(data.discount);
+                    $('#total1').val(data.total);
+                    $('#editModal').modal('show');
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                }
+            });
         }
-
     </script>
 
-        {{-- Fusion --}}
-        <script>
-            $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy',
-                startDate: '-3d'
+    {{-- Fusion --}}
+    <script>
+        $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy',
+            startDate: '-3d'
+        });
+
+        // SUPPRESSION
+        function deleteModal(id) {
+
+            Swal.fire({
+                title: "Voulez-vous supprimer l'élément ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Oui ",
+                cancelButtonText: "Non !",
+            }).then(function(result) {
+                if (result.value) {
+                    window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
+                    Swal.fire(
+                        "Suppression !",
+                        "En cours de traitement ...",
+                        "success"
+                    )
+                }
             });
+        }
 
-            // SUPPRESSION
-            function deleteModal(id) {
+        //EDITION
+        function edit(id) {
+            var e_id = id;
 
-                Swal.fire({
-                    title: "Voulez-vous supprimer l'élément ?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Oui ",
-                    cancelButtonText: "Non !",
-                }).then(function(result) {
-                    if (result.value) {
-                        window.location.href = "{{ url('contrats_details/delete') }}" + "/" + id;
-                        Swal.fire(
-                            "Suppression !",
-                            "En cours de traitement ...",
-                            "success"
-                        )
-                    }
-                });
-            }
+            // Populate Data in Edit Modal Form
+            $.ajax({
+                type: "GET",
+                url: "{{ url('getcontratdetails') }}" + '/' + e_id,
+                success: function(data) {
 
-            //EDITION
-            function edit(id) {
-                var e_id = id;
-
-                // Populate Data in Edit Modal Form
-                $.ajax({
-                    type: "GET",
-                    url: "{{ url('getcontratdetails') }}" + '/' + e_id,
-                    success: function(data) {
-
-                        $('#category_test_id2').val(data.category_test_id).change();
-                        $('#pourcentage2').val(data.pourcentage);
-                        $('#contrat_id2').val(data.contrat_id);
-                        $('#contrat_details_id2').val(data.id);
+                    $('#category_test_id2').val(data.category_test_id).change();
+                    $('#pourcentage2').val(data.pourcentage);
+                    $('#contrat_id2').val(data.contrat_id);
+                    $('#contrat_details_id2').val(data.id);
 
 
 
-                        console.log(data);
-                        $('#editModal').modal('show');
-                    },
-                    error: function(data) {
-                        console.log('Error:', data);
-                    }
-                });
-            }
+                    console.log(data);
+                    $('#editModal').modal('show');
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                }
+            });
+        }
 
-            $(document).ready(function() {
+        $(document).ready(function() {
 
-                $('#doctor_id').select2({
-                    placeholder: 'Select Category',
-                    theme: 'bootstrap4',
-                    tags: true,
-                }).on('select2:close', function() {
-                    var element = $(this);
-                    var new_category = $.trim(element.val());
+            $('#doctor_id').select2({
+                placeholder: 'Select Category',
+                theme: 'bootstrap4',
+                tags: true,
+            }).on('select2:close', function() {
+                var element = $(this);
+                var new_category = $.trim(element.val());
 
-                    if (new_category != '') {
-                        $.ajax({
-                            url: "{{ route('doctors.storeDoctor') }}",
-                            method: "POST",
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                name: new_category
-                            },
-                            success: function(data) {
-
-                                if (data.status === "created") {
-                                    toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-
-                                    element.append('<option value="' + data.id + '">' + data.name +
-                                        '</option>').val(new_category);
-                                }
-                            }
-                        })
-                    }
-
-                });
-
-                // Create hopital
-                $('#hospital_id').select2({
-                    placeholder: 'Choisissez un hopital',
-                    theme: 'bootstrap4',
-                    tags: true,
-                }).on('select2:close', function() {
-                    var element = $(this);
-                    var new_category = $.trim(element.val());
-
-                    if (new_category != '') {
-                        $.ajax({
-                            url: "{{ route('hopitals.storeHospital') }}",
-                            method: "POST",
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                name: new_category
-                            },
-                            success: function(data) {
-
-                                if (data.status === "created") {
-                                    toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-
-                                    element.append('<option value="' + data.id + '">' + data.name +
-                                        '</option>').val(new_category);
-                                }
-                            }
-                        })
-                    }
-
-                });
-
-                $('#createPatientForm').on('submit', function(e) {
-                    e.preventDefault();
-                    let code = $('#code').val();
-                    let lastname = $('#lastname').val();
-                    let firstname = $('#firstname').val();
-                    let age = $('#age').val();
-                    let year_or_month = $('#year_or_month').val();
-                    let telephone1 = $('#telephone1').val();
-                    let genre = $('#genre').val();
-                    // alert(firstname);
+                if (new_category != '') {
                     $.ajax({
-                        url: "{{ route('patients.storePatient') }}",
-                        type: "POST",
+                        url: "{{ route('doctors.storeDoctor') }}",
+                        method: "POST",
                         data: {
                             "_token": "{{ csrf_token() }}",
-                            code: code,
-                            lastname: lastname,
-                            firstname: firstname,
-                            age: age,
-                            year_or_month: year_or_month,
-                            telephone1: telephone1,
-                            genre: genre
+                            name: new_category
                         },
                         success: function(data) {
 
-                            $('#createPatientForm').trigger("reset")
-                            $('#standard-modal').modal('hide');
-                            toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-                            $('#patient_id').append('<option value="' + data.id + '">' + data.code +
-                                    ' - ' + data.firstname + ' ' + data.lastname + '</option>')
-                                .trigger('change').val(data.id);
+                            if (data.status === "created") {
+                                toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
 
-                        },
-                        error: function(data) {
-                            console.log(data)
-                        },
-                        // processData: false,
-                    });
-
-                });
-            });
-
-        </script>
-
-        <script type="text/javascript">
-
-            $(document).ready(function() {
-                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-
-                $('#type_examen').on('change', function(e) {
-                    var typeExamenOption = $('#type_examen option:selected').text();
-                    // alert(typeExamenOption);
-                    if (typeExamenOption == "Immuno Externe") {
-                        $(".examenReferenceSelect").hide();
-                        $(".examenReferenceInput").show();
-
-                    } else if (typeExamenOption == "Immuno Interne") {
-                        $(".examenReferenceSelect").hide();
-                        $(".examenReferenceInput").show();
-
-                    } else {
-                        $(".examenReferenceInput").hide();
-                        $(".examenReferenceSelect").hide();
-                    }
-                });
-
+                                element.append('<option value="' + data.id + '">' + data.name +
+                                    '</option>').val(new_category);
+                            }
+                        }
+                    })
+                }
 
             });
 
-            window.addEventListener("load", (event) => {
+            // Create hopital
+            $('#hospital_id').select2({
+                placeholder: 'Choisissez un hopital',
+                theme: 'bootstrap4',
+                tags: true,
+            }).on('select2:close', function() {
+                var element = $(this);
+                var new_category = $.trim(element.val());
+
+                if (new_category != '') {
+                    $.ajax({
+                        url: "{{ route('hopitals.storeHospital') }}",
+                        method: "POST",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            name: new_category
+                        },
+                        success: function(data) {
+
+                            if (data.status === "created") {
+                                toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+
+                                element.append('<option value="' + data.id + '">' + data.name +
+                                    '</option>').val(new_category);
+                            }
+                        }
+                    })
+                }
+
+            });
+
+            $('#createPatientForm').on('submit', function(e) {
+                e.preventDefault();
+                let code = $('#code').val();
+                let lastname = $('#lastname').val();
+                let firstname = $('#firstname').val();
+                let age = $('#age').val();
+                let year_or_month = $('#year_or_month').val();
+                let telephone1 = $('#telephone1').val();
+                let genre = $('#genre').val();
+                // alert(firstname);
+                $.ajax({
+                    url: "{{ route('patients.storePatient') }}",
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        code: code,
+                        lastname: lastname,
+                        firstname: firstname,
+                        age: age,
+                        year_or_month: year_or_month,
+                        telephone1: telephone1,
+                        genre: genre
+                    },
+                    success: function(data) {
+
+                        $('#createPatientForm').trigger("reset")
+                        $('#standard-modal').modal('hide');
+                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                        $('#patient_id').append('<option value="' + data.id + '">' + data.code +
+                                ' - ' + data.firstname + ' ' + data.lastname + '</option>')
+                            .trigger('change').val(data.id);
+
+                    },
+                    error: function(data) {
+                        console.log(data)
+                    },
+                    // processData: false,
+                });
+
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+            $('#type_examen').on('change', function(e) {
                 var typeExamenOption = $('#type_examen option:selected').text();
                 // alert(typeExamenOption);
                 if (typeExamenOption == "Immuno Externe") {
@@ -962,8 +1148,27 @@
                     $(".examenReferenceInput").hide();
                     $(".examenReferenceSelect").hide();
                 }
-
             });
 
-        </script>
+
+        });
+
+        window.addEventListener("load", (event) => {
+            var typeExamenOption = $('#type_examen option:selected').text();
+            // alert(typeExamenOption);
+            if (typeExamenOption == "Immuno Externe") {
+                $(".examenReferenceSelect").hide();
+                $(".examenReferenceInput").show();
+
+            } else if (typeExamenOption == "Immuno Interne") {
+                $(".examenReferenceSelect").hide();
+                $(".examenReferenceInput").show();
+
+            } else {
+                $(".examenReferenceInput").hide();
+                $(".examenReferenceSelect").hide();
+            }
+
+        });
+    </script>
 @endpush

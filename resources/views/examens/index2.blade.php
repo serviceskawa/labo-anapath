@@ -274,6 +274,7 @@
                         "targets": [0],
                         "searchable": false
                     }],
+                    "bFilter": false,
                     "language": {
                         "lengthMenu": "Afficher _MENU_ enregistrements par page",
                         "zeroRecords": "Aucun enregistrement disponible",

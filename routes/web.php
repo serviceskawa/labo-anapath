@@ -162,6 +162,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('send_sms/{id}', [ReportController::class, 'send_sms'])->name('report.send-sms');
         Route::get('pdf/{id}', [ReportController::class, 'pdf'])->name('report.pdf');
 
+        Route::get('/azerty', [ReportController::class, 'getReportsforDatatable'])->name('report.getReportsforDatatable');
+
         Route::post('report-gettemplate', [ReportController::class, 'getTemplate'])->name('template.report-getTemplate');
 
         // Mis à jour du statut livré
@@ -241,6 +243,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/setting', [SettingController::class, 'invoice_index'])->name('invoice.setting.index');
         Route::post('/setting-Update', [SettingController::class, 'invoice_update'])->name('invoice.setting.update');
         Route::get('/business', [InvoiceController::class, 'business'])->name('invoice.business');
+        Route::get('/s', [InvoiceController::class, 'getInvoiceforDatatable'])->name('invoice.getTestOrdersforDatatable');
+        // Route::post('/filter', [InvoiceController::class, 'filter'])->name('invoice.filter');
+        // Route::get('/testchiffres', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('invoice.getInvoiceforDatatable');
     });
 
     Route::prefix('appointements')->group(function () {

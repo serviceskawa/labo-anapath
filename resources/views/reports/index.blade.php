@@ -45,7 +45,7 @@
                             </tr>
                         </thead>
 
-                        <tbody>
+                        {{-- <tbody>
 
                             @foreach ($reports as $item)
                                 <tr>
@@ -64,8 +64,7 @@
                                             @if($item->order)
                                                 <a type="button" href="{{route('details_test_order.index', $item->order->id)}}" class="btn btn-warning" title="Demande {{$item->order->code}}"><i class="uil-file-medical"></i> </a>
                                             @endif
-                                        {{-- <a type="button" href="{{ route('report.send-sms', $item->id) }}"
-                                            class="btn btn-danger"><i class="mdi mdi-android-messages"></i> </a> --}}
+
                                         <a type="button" href="{{ route('report.pdf', $item->id) }}"
                                             class="btn btn-secondary"><i class="mdi mdi-printer"></i> </a>
                                         @if ($item->status == 1)
@@ -77,7 +76,7 @@
 
                                 </tr>
                             @endforeach
-                        </tbody>
+                        </tbody> --}}
                     </table>
 
                 </div>
@@ -110,31 +109,24 @@
             });
         }
 
-        function passwordOpen(id)
-            {
-                $('#report_id').val(id);
-                $('#standardModal').modal('show');
-            }
-
-
-
-
-
-
         $(document).ready(function() {
             var table =  $('#datatable1').DataTable({
                 "order": [],
-                // columnDefs: [
-                //     {
-                //         target: 6,
-                //         visible: false,
-                //     }
-                // ],
-                // processing: true,
-                // serverSide: true,
-                language: {
-                    url: "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json",
-                },
+                // language: {
+                //     url: "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json",
+                // },
+                "language": {
+                        "lengthMenu": "Afficher _MENU_ enregistrements par page",
+                        "zeroRecords": "Aucun enregistrement disponible",
+                        "info": "Afficher page _PAGE_ sur _PAGES_",
+                        "infoEmpty": "Aucun enregistrement disponible",
+                        "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+                        "sSearch": "Rechercher:",
+                        "paginate": {
+                            "previous": "Précédent",
+                            "next": "Suivant"
+                        }
+                    },
                 initComplete: function() {
                     this.api().columns([0, 1, 2, 3, 4, 5]).every(function() {
                         var column = this;
@@ -160,7 +152,46 @@
                                 '</option>')
                         });
                     });
-                }
+                },
+                processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "{{ route('report.getReportsforDatatable') }}",
+                        data: function(d) {
+
+                        }
+                    },
+                    columns: [
+                        {
+                            data: 'code',
+                            name: 'code'
+                        },
+                        {
+                            data: 'codepatient',
+                            name: 'codepatient'
+                        },
+                         {
+                            data: 'patient',
+                            name: 'patient',
+                        },
+                        {
+                            data: 'telephone',
+                            name: 'telephone'
+                        },{
+                            data: 'created_at',
+                            name: 'created_at'
+                        },{
+                            data: 'status',
+                            name: 'status'
+                        },
+                        {
+                            data: 'action',
+                            name: 'action',
+                        },
+                    ],
+                    order: [
+                        [0, 'asc']
+                    ],
 
             });
 
