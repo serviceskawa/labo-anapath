@@ -29,7 +29,7 @@ class settingInvoiceSeeder extends Seeder
         ]);
 
         $role = Role::updateOrCreate(
-            ['name' => 'dashbordFinance', 'slug' => 'setting-invoice'],
+            ['name' => 'settingInvoice', 'slug' => 'setting-invoice'],
             ['created_by' => 1, 'description' =>'setting invoice']
         );
         $role->permissions()->attach($permission);
