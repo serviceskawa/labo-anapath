@@ -161,34 +161,6 @@
 
                     ],
                 });
-
-                // Recherche selon les docteurs signataires
-                // $("#periode").on("change", function() {
-                //     // alert(this.value)
-                //     table.draw();
-                // });
-
-                // $('#periode').on('change', function() {
-                //     var periode = $(this).val(); // Récupère la valeur de la liste déroulante
-
-                //     // Effectue une requête AJAX pour récupérer les données filtrées
-                //     $.ajax({
-                //         type: "POST",
-                //         data: {
-                //             "_token": "{{ csrf_token() }}",
-                //             periode: periode,
-                //         },
-                //         url: '{{ route('invoice.filter') }}',
-                //         success: function(data) {
-                //             alert(data);
-                //             // Met à jour le tableau avec les nouvelles données
-                //             $('#datatable1').DataTable().clear().rows.add(data).draw();
-                //         },
-                //         error: function (error) {
-                //             alert
-                //         }
-                //     });
-                // });
             });
     </script>
 @endpush

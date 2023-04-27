@@ -63,8 +63,12 @@
                                 </div>
                             </div>
                             <label class="form-label mt-3">Activé</label> <br>
+                            @if( $settingInvoice)
                             <input type="checkbox" id="status" name="status" class="form-control" data-switch="success"
                             {{ $settingInvoice->status!=0 ? 'checked':'' }}>
+                            @else
+                            <input type="checkbox" id="status" name="status" class="form-control" data-switch="success">
+                            @endif
                             <label for="status" data-on-label="oui" data-off-label="non"></label>
 
                             <div class="card-footer">

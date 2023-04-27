@@ -15,19 +15,7 @@ date_default_timezone_set('Europe/Paris');
         border-radius: 5px;
     }
 </style>
-{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-<script>
-    var code = {!! json_encode($code) !!}
-    var codeqr = new QRCode(document.getElementById("qrcode"), {
-        text: code,
-        width: 120,
-        height: 120,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-    });
-</script> --}}
 <page backbottom="10mm">
 
     <div style="display:inline-block; ">
@@ -51,7 +39,7 @@ date_default_timezone_set('Europe/Paris');
     </div>
 
     <div style="display: inline-block; position: absolute; top: 0; right: 0; width: 320px; padding: 10px; text-align: right;">
-        {{-- <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}" alt="" srcset=""> --}}
+        <!--{{-- <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}" alt="" srcset=""> --}}-->
     </div>
 
     <div
