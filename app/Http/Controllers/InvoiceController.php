@@ -137,7 +137,7 @@ class InvoiceController extends Controller
             ->editColumn('created_at', function ($periode) {
                 //change over here
                 //return date('y/m/d',$data->created_at);
-                return $periode;
+                return $periode .' '.Carbon::now()->formatLocalized('%G');
             })
 
             ->addColumn('factures', function ($periode) {
