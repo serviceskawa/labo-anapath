@@ -15,13 +15,13 @@
                     <div class="mb-3">
                         <label for="simpleinput" class="form-label">Nom du contrat<span
                                 style="color:red;">*</span></label>
-                        <input type="text" name="name2" id="name2" class="form-control" required>
+                        <input type="text" name="name" id="name2" class="form-control" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="example-select" class="form-label">Type<span style="color:red;">*</span></label>
 
-                        <select class="form-select" id="type2" name="type2" required>
+                        <select class="form-select" id="type2" name="type" required>
                             <option value="">Sélectionner le type de contrat</option>
                             <option value="ORDINAIRE">Ordinaire</option>
                             <option value="ASSURANCE">Assurance</option>
@@ -32,7 +32,7 @@
                     <div class="mb-3">
                         <label for="example-select" class="form-label">Statut<span style="color:red;">*</span></label>
 
-                        <select class="form-select" id="status2" name="status2" required>
+                        <select class="form-select" id="status2" name="status" required>
                             <option value="">Sélectionner le statut</option>
                             <option value="ACTIF">Actif</option>
                             <option value="INACTIF">Inactif</option>
@@ -40,7 +40,7 @@
                         </select>
                     </div>
 
-                    <input type="hidden" id="id2" name="id2">
+                    <input type="hidden" id="id2" name="id">
                     <div class="mb-3">
                         <label for="simpleinput" class="form-label">Nombre d'examens<span
                                 style="color:red;">*</span></label>
@@ -49,7 +49,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="simpleinput" class="form-label">Description<span style="color:red;">*</span></label>
-                        <textarea type="text" name="description2" id="description2" class="form-control"
+                        <textarea type="text" name="description" id="description2" class="form-control"
                             required></textarea>
                     </div>
 

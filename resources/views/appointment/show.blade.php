@@ -9,7 +9,7 @@
 
     <div class="card my-3">
 
-        <a href="{{route('appointement.createConsultation', $appointement->id)}} " class="btn btn-success w-full">CREER
+        <a href="{{route('Appointment.createConsultation', $Appointment->id)}} " class="btn btn-success w-full">CREER
             UNE CONSULTATION</a>
 
         <div class="card-header">
@@ -29,7 +29,7 @@
 
         <div class="card-body">
 
-            <form action="{{ route('appointement.update', $appointement->id) }}" method="post" autocomplete="off"
+            <form action="{{ route('Appointment.update', $Appointment->id) }}" method="post" autocomplete="off"
                 enctype="multipart/form-data">
                 @csrf
                 <div class="row mb-3">
@@ -43,7 +43,7 @@
                             required>
                             <option>Sélectionner le nom du patient</option>
                             @foreach ($patients as $patient)
-                            <option value="{{ $patient->id }}" {{ $appointement->patient_id == $patient->id ? 'selected'
+                            <option value="{{ $patient->id }}" {{ $Appointment->patient_id == $patient->id ? 'selected'
                                 :
                                 ''}}>{{ $patient->code }} - {{ $patient->firstname }}
                                 {{ $patient->lastname }}
@@ -59,7 +59,7 @@
                             required>
                             <option>Sélectionner le médecin traitant</option>
                             @foreach ($doctors as $doctor)
-                            <option value="{{ $doctor->id }}" {{ $appointement->doctor_id == $doctor->id ? 'selected' :
+                            <option value="{{ $doctor->id }}" {{ $Appointment->doctor_id == $doctor->id ? 'selected' :
                                 ''}}>{{ $doctor->name }}</option>
                             @endforeach
                         </select>
@@ -70,18 +70,18 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Heure de rendez-vous<span style="color:red;">*</span></label>
-                        <input type="datetime-local" class="form-control" name="date" value="{{$appointement->date}}">
+                        <input type="datetime-local" class="form-control" name="date" value="{{$Appointment->date}}">
                     </div>
 
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="control-label form-label">Priorité</label>
                             <select class="form-select" name="priority" id="priority" required="">
-                                <option value="normal" {{$appointement->priority == "normal" ? 'selected' : ''}}>Normal
+                                <option value="normal" {{$Appointment->priority == "normal" ? 'selected' : ''}}>Normal
                                 </option>
-                                <option value="urgent" {{$appointement->priority == "urgent" ? 'selected' : ''}}>Urgent
+                                <option value="urgent" {{$Appointment->priority == "urgent" ? 'selected' : ''}}>Urgent
                                 </option>
-                                <option value="tres urgent" {{$appointement->priority == "tres urgent" ? 'selected' :
+                                <option value="tres urgent" {{$Appointment->priority == "tres urgent" ? 'selected' :
                                     ''}}>Très urgent</option>
                             </select>
                         </div>
@@ -90,7 +90,7 @@
                         <div class="mb-3">
                             <label class="control-label form-label">Message</label>
                             <textarea name="message" class="form-control" id="" cols="30"
-                                rows="10"> {{$appointement->message}} </textarea>
+                                rows="10"> {{$Appointment->message}} </textarea>
                         </div>
                     </div>
                 </div>

@@ -9,20 +9,23 @@ use App\Models\Setting;
 
 class CategoryPrestationController extends Controller
 {
-    public function __construct()
+
+    protected $categoryPrestation;
+    protected $setting;
+
+    public function __construct(CategoryPrestation $categoryPrestation, Setting $setting)
     {
         $this->middleware('auth');
+        $this->categoryPrestation = $categoryPrestation;
+        $this->setting = $setting;
     }
 
     public function index()
     {
-        // if (!getOnlineUser()->can('view-category-tests')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
-        $categories = CategoryPrestation::all();
-        // $categories = CategoryPrestation::with(['prestations'])->get();
-        // dd($categories);
-        $setting = Setting::find(1);
+
+        $categories = $this->categoryPrestation->all();
+
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('prestation.category.index', compact(['categories']));
     }
@@ -37,7 +40,7 @@ class CategoryPrestationController extends Controller
         ]);
 
         try {
-            CategoryPrestation::create([
+            $this->categoryPrestation->create([
                 "slug" => Str::slug($data['name']),
                 "name" => $data['name'],
             ]);
@@ -59,7 +62,7 @@ class CategoryPrestationController extends Controller
         ]);
 
         try {
-            $categorie = CategoryPrestation::find($data['id2']);
+            $categorie = $this->categoryPrestation->find($data['id2']);
             $categorie->name = $data['name2'];
             $categorie->save();
 
@@ -75,9 +78,9 @@ class CategoryPrestationController extends Controller
         if (!getOnlineUser()->can('delete-category-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $CategoryPrestation = CategoryPrestation::find($id)->delete();
+        $categoryPrestation = $this->categoryPrestation->find($id)->delete();
 
-        if ($CategoryPrestation) {
+        if ($categoryPrestation) {
             return back()->with('success', "    Un élement a été supprimé ! ");
         } else {
             return back()->with('error', "    Element utilisé ailleurs ! ");
@@ -90,7 +93,7 @@ class CategoryPrestationController extends Controller
         if (!getOnlineUser()->can('edit-category-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = CategoryPrestation::find($id);
+        $data = $this->categoryPrestation->find($id);
         return response()->json($data);
     }
 }

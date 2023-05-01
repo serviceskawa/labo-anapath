@@ -17,7 +17,7 @@ use App\Http\Controllers\TestOrderController;
 use App\Http\Controllers\PrestationsOrderrController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrestationController;
-use App\Http\Controllers\AppointementController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\TestCategoryController;
 use App\Http\Controllers\DetailsContratController;
@@ -248,17 +248,17 @@ Route::middleware(['auth'])->group(function () {
         // Route::get('/testchiffres', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('invoice.getInvoiceforDatatable');
     });
 
-    Route::prefix('appointements')->group(function () {
-        Route::get('', [AppointementController::class, 'index'])->name('appointement.index');
-        Route::post('store', [AppointementController::class, 'store'])->name('appointement.store');
-        Route::post('update/{id}', [AppointementController::class, 'update'])->name('appointement.update');
-        Route::get('getAppointements', [AppointementController::class, 'getAppointements'])->name('appointement.getAppointements');
-        Route::get('show/{id}', [AppointementController::class, 'show'])->name('appointement.show');
-        Route::get('getAppointementsById/{id}', [AppointementController::class, 'getAppointementsById'])->name('appointement.getAppointementsById');
-        Route::get('delete/{id}', [AppointementController::class, 'destroy'])->name('appointement.delete');
+    Route::prefix('Appointments')->group(function () {
+        Route::get('', [AppointmentController::class, 'index'])->name('Appointment.index');
+        Route::post('store', [AppointmentController::class, 'store'])->name('Appointment.store');
+        Route::post('update', [AppointmentController::class, 'update'])->name('Appointment.update');
+        Route::get('getAppointments', [AppointmentController::class, 'getAppointments'])->name('Appointment.getAppointments');
+        Route::get('show/{id}', [AppointmentController::class, 'show'])->name('Appointment.show');
+        Route::get('getAppointmentsById/{id}', [AppointmentController::class, 'getAppointmentsById'])->name('Appointment.getAppointmentsById');
+        Route::get('delete/{id}', [AppointmentController::class, 'destroy'])->name('Appointment.delete');
 
         // Create consultation
-        Route::get('createConsultation/{id}', [AppointementController::class, 'createConsultation'])->name('appointement.createConsultation');
+        Route::get('createConsultation/{id}', [AppointmentController::class, 'createConsultation'])->name('Appointment.createConsultation');
     });
 
 

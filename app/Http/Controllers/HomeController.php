@@ -97,7 +97,7 @@ class HomeController extends Controller
 
             $invoice = Invoice::all()->sum('total');
 
-            $appointements = Appointment::whereDate('date',$today)->get();
+            $Appointments = Appointment::whereDate('date',$today)->get();
 
 
             /*$loggedInUserIds = [];
@@ -124,7 +124,7 @@ class HomeController extends Controller
 
         // dd($sessions);
             return view('dashboard', compact('patients', 'contrats', 'tests', 'totalToday', 'totalMonth', 'totalLastMonth',
-            'testOrdersCount','noFinishTest', 'noFinishWeek','finishTest','appointements', 'loggedInUserIds',
+            'testOrdersCount','noFinishTest', 'noFinishWeek','finishTest','Appointments', 'loggedInUserIds',
             'testOrdersToday','invoice'));
         }
 
@@ -161,7 +161,7 @@ class HomeController extends Controller
 
         $invoice = Invoice::all()->sum('total');
 
-        $appointements = Appointment::whereDate('date',$today)->get();
+        $Appointments = Appointment::whereDate('date',$today)->get();
 
         $loggedInUserId = [];
         $loggedInUserIds = [];
@@ -174,7 +174,7 @@ class HomeController extends Controller
 
        // dd($sessions);
         return view('dashboard', compact('patients', 'contrats', 'tests', 'totalToday', 'totalMonth',
-        'testOrdersCount','noFinishTest','finishTest','appointements', 'loggedInUserIds',
+        'testOrdersCount','noFinishTest','finishTest','Appointments', 'loggedInUserIds',
         'testOrdersToday','invoice'));
     }
 }

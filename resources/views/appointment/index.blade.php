@@ -37,10 +37,10 @@
 
                     $.ajax({
                         type: "GET",
-                        url: "{{ url('appointements/getAppointementsById') }}" + '/' + id,
+                        url: "{{ url('Appointments/getAppointmentsById') }}" + '/' + id,
                         success: function(data) {
 
-                            $('#appointement_id2').val(data.id);
+                            $('#Appointment_id2').val(data.id);
                             $('#patient_id2').val(data.patient_id).change();
                             $('#doctor_id2').val(data.user_id).change();
                             $('#time2').val(data.date);
@@ -55,7 +55,7 @@
                         }
                     });
                 },
-                events: "{{ route('appointement.getAppointements') }}",
+                events: "{{ route('Appointment.getAppointments') }}",
             });
             calendar.render();
 
@@ -68,7 +68,7 @@
                 let time = $('#time').val();
                 // console.log(time);
                 $.ajax({
-                    url: "{{ route('appointement.store') }}",
+                    url: "{{ route('Appointment.store') }}",
                     type: "POST",
                     data: {
                         "_token": "{{ csrf_token() }}",
@@ -99,18 +99,19 @@
                 let priority = $('#priority2').val();
                 let message = $('#message2').val();
                 let time = $('#time2').val();
-                let id = $('#appointement_id2').val();
-                console.log(time);
+                let id = $('#Appointment_id2').val();
+                console.log(id);
                 $.ajax({
-                    url: "{{ url('appointements/update') }}" + '/' + id,
+                    url: "{{ route('Appointment.update')}}",
                     type: "POST",
                     data: {
                         "_token": "{{ csrf_token() }}",
-                        doctor_id: doctorId,
-                        patient_id: patientId,
+                        id: id,
+                        doctorId: doctorId,
+                        patientId: patientId,
                         priority: priority,
                         message: message,
-                        date: time
+                        time: time
                     },
                     success: function(data) {
                         calendar.refetchEvents();
@@ -126,13 +127,13 @@
                 });
 
             });
-            $('#deleteAppointement').on('click', function(e) {
+            $('#deleteAppointment').on('click', function(e) {
                 e.preventDefault();
 
-                let id = $('#appointement_id2').val();
+                let id = $('#Appointment_id2').val();
 
                 $.ajax({
-                    url: "{{ url('appointements/delete') }}" + '/' + id,
+                    url: "{{ url('Appointments/delete') }}" + '/' + id,
                     type: "get",
                     success: function(data) {
                         calendar.refetchEvents();
@@ -149,6 +150,7 @@
             });
         });
     </script>
+
     <style>
         #calendar {
             /* max-width: 1100px; */
@@ -222,7 +224,7 @@
                                                         style="color:red;">*</span></label>
                                                 <select class="form-select select2" data-toggle="select2" name="patient_id"
                                                     id="patient_id" required>
-                                                    <option>Sélectionner le nom du patient</option>
+                                                    <option value="">Sélectionner le nom du patient</option>
                                                     @foreach ($patients as $patient)
                                                         <option value="{{ $patient->id }}">{{ $patient->code }} -
                                                             {{ $patient->firstname }}
@@ -239,7 +241,7 @@
                                                         style="color:red;">*</span></label>
                                                 <select class="form-select select2" data-toggle="select2" name="doctor_id"
                                                     id="doctor_id" required>
-                                                    <option>Sélectionner le Docteur</option>
+                                                    <option value="">Sélectionner le Docteur</option>
                                                     @foreach ($doctors as $doctor)
                                                         <option value="{{ $doctor->id }}">
                                                             {{ $doctor->firstname . ' ' . $doctor->firstname }}</option>
@@ -288,6 +290,7 @@
                         </div> <!-- end modal-content-->
                     </div> <!-- end modal dialog-->
                 </div>
+
                 <div class="modal fade" id="event-modal-edit" tabindex="-1">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -300,14 +303,14 @@
                                 </div>
                                 <div class="modal-body px-4 pb-4 pt-0">
                                     <div class="row">
-                                        <input type="hidden" name="appointement_id2" id="appointement_id2">
+                                        <input type="hidden" name="Appointment_id2" id="Appointment_id2">
                                         <div class="col-12">
                                             <div class="mb-3">
                                                 <label for="exampleFormControlInput1" class="form-label">Patient<span
                                                         style="color:red;">*</span></label>
                                                 <select class="form-select select2" data-toggle="select2"
                                                     name="patient_id2" id="patient_id2" required>
-                                                    <option>Sélectionner le nom du patient</option>
+                                                    <option value="">Sélectionner le nom du patient</option>
                                                     @foreach ($patients as $patient)
                                                         <option value="{{ $patient->id }}">{{ $patient->code }} -
                                                             {{ $patient->firstname }}
@@ -324,7 +327,7 @@
                                                         style="color:red;">*</span></label>
                                                 <select class="form-select select2" data-toggle="select2"
                                                     name="doctor_id2" id="doctor_id2" required>
-                                                    <option>Sélectionner le Docteur</option>
+                                                    <option value="">Sélectionner le Docteur</option>
                                                     @foreach ($doctors as $doctor)
                                                         <option value="{{ $doctor->id }}">
                                                             {{ $doctor->firstname . ' ' . $doctor->firstname }}</option>
@@ -337,7 +340,7 @@
                                     <div class="col-12">
                                         <div class="mb-3">
                                             <label class="control-label form-label">Heure de rendez-vous</label>
-                                            <input class="form-control" type="datetime-local" id="time2" required>
+                                            <input class="form-control" type="datetime-local" id="time2" name="time2" required>
                                             <div class="invalid-feedback">Insérer une date valide</div>
                                         </div>
                                     </div>
@@ -354,13 +357,13 @@
                                     <div class="col-12">
                                         <div class="mb-3">
                                             <label class="control-label form-label">Commentaire</label>
-                                            <textarea name="message2" id="message2" class="form-control" cols="30" rows="10"></textarea>
+                                            <textarea name="message" id="message2" class="form-control" cols="30" rows="10"></textarea>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-4">
                                             <button type="button" class="btn btn-danger"
-                                                id="deleteAppointement">Supprimer</button>
+                                                id="deleteAppointment">Supprimer</button>
                                         </div>
                                         <div class="col-8 text-end">
                                             <button type="button" class="btn btn-light me-1"
@@ -374,6 +377,7 @@
                         </div> <!-- end modal-content-->
                     </div> <!-- end modal dialog-->
                 </div>
+
                 <!-- end modal-->
             </div>
             <!-- end col-12 -->
@@ -411,7 +415,7 @@
             //     let time = $('#time').val();
             //     // console.log(time);
             //     $.ajax({
-            //         url: "{{ route('appointement.store') }}",
+            //         url: "{{ route('Appointment.store') }}",
             //         type: "POST",
             //         data: {
             //             "_token": "{{ csrf_token() }}",

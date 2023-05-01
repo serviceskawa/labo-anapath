@@ -132,7 +132,7 @@
             if (result.value) {
                 window.location.href = "{{ url('contrats/close') }}" + "/" + id;
                 Swal.fire(
-                    "Suppression !",
+                    "Clôture !",
                     "En cours de traitement ...",
                     "success"
                 )

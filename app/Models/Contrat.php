@@ -56,4 +56,9 @@ class Contrat extends Model
     {
         return $this->hasOne(Details_Contrat::class);
     }
+
+    public function getWithDetail()
+    {
+        return $this->with(['orders', 'detail'])->get();
+    }
 }

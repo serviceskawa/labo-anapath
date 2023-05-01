@@ -13,23 +13,23 @@
 
                 <div class="mb-3">
                     <label for="example-select" class="form-label">Catégorie d'examen<span style="color:red;">*</span></label>
-                    <select class="form-select" id="category_test_id2" name="category_test_id2" required>
+                    <select class="form-select" id="category_test_id2" name="category_test_id" required>
                         <option value="">Sélectionner la catégorie</option>
-                        @foreach ($test_caterories as $test_caterorie)
-                        <option value="{{ $test_caterorie->id }}">{{ $test_caterorie->name }}</option>
+                        @foreach ($cateroriesTests as $cateroriesTest)
+                        <option value="{{ $cateroriesTest->id }}">{{ $cateroriesTest->name }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Pourcentage de prise en charge<span style="color:red;">*</span></label>
-                    <input type="number" name="pourcentage2" id="pourcentage2" min="0" max="100" class="form-control" required>
+                    <input type="number" name="pourcentage" id="pourcentage2" min="0" max="100" class="form-control" required>
                 </div>
 
 
-                    <input type="hidden" name="contrat_id2" id="contrat_id2" class="form-control"  required>
+                    <input type="hidden" name="contrat_id" id="contrat_id2" class="form-control"  required>
 
-                    <input type="hidden" name="contrat_details_id2" id="contrat_details_id2" class="form-control"  required>
+                    <input type="hidden" name="contrat_details_id" id="contrat_details_id2" class="form-control"  required>
 
 
 

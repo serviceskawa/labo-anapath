@@ -259,14 +259,14 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($appointements as $appointement)
+                                        @foreach ($Appointments as $Appointment)
                                                 <tr>
                                                     <td>
-                                                        {{$appointement->date}}
+                                                        {{$Appointment->date}}
                                                     </td>
-                                                    <td>{{$appointement->patient->lastname}} {{$testOrderToday->patient->firstname}}</td>
-                                                    <td>{{$appointement->doctor_interne->lastname}} {{$appointement->doctor_interne->firstname}}</td>
-                                                    <td>{{$appointement->priority}}</td>
+                                                    <td>{{$Appointment->patient->lastname}} {{$testOrderToday->patient->firstname}}</td>
+                                                    <td>{{$Appointment->doctor_interne->lastname}} {{$Appointment->doctor_interne->firstname}}</td>
+                                                    <td>{{$Appointment->priority}}</td>
 
                                                 </tr>
                                         @endforeach

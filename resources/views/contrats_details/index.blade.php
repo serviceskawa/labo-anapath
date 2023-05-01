@@ -66,7 +66,7 @@
                         <tbody>
                             @foreach ($details as $item)
                                 <tr>
-                                    <td>{{ $item->categorytest()->name }}</td>
+                                    <td>{{ $item->categorytest()?$item->categorytest()->name:'' }}</td>
                                     <td>{{ $item->pourcentage . ' %' }}</td>
                                     <td>
                                         <button type="button" onclick="edit({{ $item->id }})"

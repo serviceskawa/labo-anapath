@@ -231,7 +231,7 @@
                         </li>
 
                         <li class="side-nav-item">
-                            <a href="{{ route('appointement.index') }}" class="side-nav-link">
+                            <a href="{{ route('Appointment.index') }}" class="side-nav-link">
                                 <i class="uil-calender"></i>
                                 <span> Agenda</span>
                             </a>

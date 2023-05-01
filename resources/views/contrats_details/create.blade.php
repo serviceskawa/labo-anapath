@@ -15,8 +15,8 @@
                     <label for="example-select" class="form-label">Catégorie d'examen<span style="color:red;">*</span></label>
                     <select class="form-select" id="example-select" name="category_test_id" required>
                         <option value="">Sélectionner la catégorie</option>
-                        @foreach ($test_caterories as $test_caterorie)
-                        <option value="{{ $test_caterorie->id }}">{{ $test_caterorie->name }}</option>
+                        @foreach ($cateroriesTests as $cateroriesTest)
+                        <option value="{{ $cateroriesTest->id }}">{{ $cateroriesTest->name }}</option>
                         @endforeach
 
 

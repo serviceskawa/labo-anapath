@@ -17,16 +17,22 @@ use App\Models\Setting;
 class ConsultationController extends Controller
 {
 
+    protected $setting;
+    protected $consultation;
+    public function __construct(Setting $setting, Consultation $consultation){
+        $this->setting = $setting;
+        $this->consultation = $consultation;
+    }
     public function index()
     {
-        $setting = Setting::find(1);
+        $setting = $this->setting::find(1);
         config(['app.name' => $setting->titre]);
         return view('consultation.index');
     }
 
     public function getConsultations()
     {
-        $data = Consultation::with(['doctor', 'patient', 'type', 'attribuateToDoctor'])->orderBy('created_at', 'desc')->get();
+        $data = $this->consultation->with(['doctor', 'patient', 'type', 'attribuateToDoctor'])->latest()->get();
 
         return Datatables::of($data)->addIndexColumn()
             ->editColumn('created_at', function ($data) {

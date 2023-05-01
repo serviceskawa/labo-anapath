@@ -43,4 +43,8 @@ class Appointment extends Model
     {
         return $this->hasOne(Consultation::class);
     }
+
+    public function getWithNewAppointments(){
+        return $this->with(['doctor', 'patient', 'doctor_interne']);
+    }
 }
