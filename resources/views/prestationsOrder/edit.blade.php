@@ -72,25 +72,8 @@
 @push('extra-js')
 
    <script>
-     function getprestation() {
-        var prestation_id = $('#prestation_id2').val();
-
-        $.ajax({
-            type: "POST",
-            url: "{{ route('prestations_order.getPrestationOrder') }}",
-            data: {
-                "_token": "{{ csrf_token() }}",
-                prestationId: prestation_id,
-            },
-            success: function(data) {
-                console.log(data.total);
-                $('#total2').val(data.total);
-            },
-            error: function(data) {
-                console.log('Error:', data);
-            }
-        });
-
-    }
+     var ROUTEGETPRESTATIONORDER = "{{ route('prestations_order.getPrestationOrder') }}"
+     var TOKENGETPRESTATIONORDER = "{{ csrf_token() }}"
    </script>
+   <script src="{{asset('viewjs/prestation/prestationorderedit.js')}}"></script>
 @endpush

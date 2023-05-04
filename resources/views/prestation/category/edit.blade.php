@@ -9,12 +9,12 @@
                 @csrf
                 <div class="modal-body">
 
-                    <input type="hidden" name="id2" id="id2" class="form-control" required>
+                    <input type="hidden" name="id" id="id2" class="form-control" required>
 
                     <div class="mb-3">
                         <label for="simpleinput" class="form-label">Nom de la catégorie d'examen<span
                                 style="color:red;">*</span></label>
-                        <input type="text" name="name2" id="name2" class="form-control" required>
+                        <input type="text" name="name" id="name2" class="form-control" required>
                     </div>
 
                 </div>

@@ -89,27 +89,7 @@
         integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        $('.dropify').dropify();
-    </script>
-
-    <script>
-        var s2 = $("#selectRoles").select2({
-            placeholder: "Choose event type",
-            tags: true
-        });
-
         var vals = <?= isset($user->roles) ? json_encode($user->roles) : '' ?>
-
-        console.log(vals)
-
-        vals.forEach(function(e) {
-            if (!s2.find('option:contains(' + e + ')').length)
-                s2.append($('<option value=' + e.id + '>').text(e.name));
-        });
-
-        array.forEach(element => {
-
-        });
-        s2.val(vals).trigger("change");
     </script>
+    <script src="{{asset('viewjs/user/edit.js')}}"></script>
 @endpush

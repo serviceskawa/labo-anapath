@@ -33,9 +33,27 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ReportController extends Controller
 {
-    public function __construct()
+    protected $report;
+    protected $doctor;
+    protected $logReport;
+    protected $settingReportTemplate;
+    protected $titleReport;
+    protected $setting;
+    protected $user;
+    /**
+     * ReportController constructor.
+     * Instanciate Report, Doctor and LogReport classes
+     */
+    public function __construct(Report $report, Doctor $doctor, User $user, LogReport $logReport, TitleReport $titleReport, SettingReportTemplate $settingReportTemplate, Setting $setting)
     {
         $this->middleware('auth');
+        $this->report = $report;
+        $this->doctor = $doctor;
+        $this->logReport = $logReport;
+        $this->titleReport = $titleReport;
+        $this->settingReportTemplate = $settingReportTemplate;
+        $this->setting = $setting;
+        $this->user = $user;
     }
 
     /**
@@ -48,13 +66,10 @@ class ReportController extends Controller
         if (!getOnlineUser()->can('view-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $reports = Report::orderBy('created_at', 'DESC')->get();
-        $doctors = Doctor::all();
+        $reports = $this->report->orderBy('created_at', 'DESC')->get();
+        $doctors = $this->doctor->all();
         $user = Auth::user();
-        // $log = new LogReport();
-        // $log->operation = "Voir la liste";
-        // $log->user_id = $user->id;
-        // $log->save();
+
 
         return view('reports.index', compact('reports', 'doctors'));
     }
@@ -75,17 +90,7 @@ class ReportController extends Controller
         $doctor_signataire3 = $request->doctor_signataire3;
         $user = Auth::user();
 
-
-
-        $data = $this->validate($request, [
-            'content' => 'required',
-            'report_id' => 'required|exists:reports,id',
-            'title' => 'required',
-            'status' => 'required|boolean',
-            // 'signatory1' => 'nullable|required_if:signatory1,on',
-        ]);
-
-        $report = Report::findorfail($request->report_id);
+        $report = $this->report->findorfail($request->report_id);
         $report->fill([
             "description" => $request->content,
             "signatory1" => $doctor_signataire1,
@@ -105,35 +110,6 @@ class ReportController extends Controller
         return redirect()->back()->with('success', "   Examen mis à jour ! ");
     }
 
-    public function saveauto(Request $request)
-    {
-        if (!getOnlineUser()->can('create-reports')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
-
-        // $doctor_signataire1 = $request->doctor_signataire1;
-        // $doctor_signataire2 = $request->doctor_signataire2;
-        // $doctor_signataire3 = $request->doctor_signataire3;
-        //dd($request->description_supplementaire,$request->title_supplementaire);
-        try {
-            $report = Report::findorfail($request->report_id);
-            $report->fill([
-                "description" => $request->content,
-                "description_supplementaire" => $request->description_supplementaire != "" ? $request->description_supplementaire : '',
-            ])->save();
-            return response()->json("cool");
-        } catch (\Throwable $ex) {
-            return response()->json($ex->getMessage());
-            //return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
-        }
-
-
-
-
-
-        //return redirect()->back()->with('success', "   Examen mis à jour ! ");
-    }
-
     /**
      * Display the specified resource.
      *
@@ -145,57 +121,40 @@ class ReportController extends Controller
         if (!getOnlineUser()->can('view-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $report = Report::findorfail($id);
-        $templates = SettingReportTemplate::all();
-        $titles = TitleReport::all();
-        $logs = LogReport::where('report_id', 'like', $report->id)->latest()->get();
-        $setting = Setting::find(1);
+        $report = $this->report->findorfail($id);
+        $templates = $this->settingReportTemplate->all();
+        $titles = $this->titleReport->all();
+        $logs = $this->logReport->where('report_id', 'like', $report->id)->latest()->get();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('reports.show', compact('report', 'setting', 'templates', 'titles', 'logs'));
     }
 
-    // public function search($q){
-    //     $results = Report::where('description', 'like', '%'.$q.'%')->get();
-    //     return response()->json($results);
-    // }
-
-    public function send_sms($id)
-    {
-        if (!getOnlineUser()->can('edit-reports')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
-        $report = Report::findorfail($id);
-
-        $tel = $report->patient->telephone1;
-        $number = "+22996631611";
-        $message = "test one";
-        $user = Auth::user();
-
-        try {
-
-            sendSingleMessage($tel, $message);
-            $log = new LogReport();
-            $log->operation = "Evoyer un message";
-            $log->report_id = $id;
-            $log->user_id = $user->id;
-            $log->save();
-
-            return redirect()->back()->with('success', "SMS envoyé avec succes ");
-        } catch (\Throwable $ex) {
-
-            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
-        }
-    }
-
-    // public function password(Request $request)
+    // public function send_sms($id)
     // {
     //     if (!getOnlineUser()->can('edit-reports')) {
     //         return back()->with('error', "Vous n'êtes pas autorisé");
     //     }
-    //     if($request->password === "testpassword"){
-    //         return response()->json(200);
-    //     }else{
-    //         return back()->with('error', "Mot de passe incorrect");
+    //     $report = $this->report->findorfail($id);
+
+    //     $tel = $report->patient->telephone1;
+    //     $number = "+22996631611";
+    //     $message = "test one";
+    //     $user = Auth::user();
+
+    //     try {
+
+    //         sendSingleMessage($tel, $message);
+    //         $log = new LogReport();
+    //         $log->operation = "Evoyer un message";
+    //         $log->report_id = $id;
+    //         $log->user_id = $user->id;
+    //         $log->save();
+
+    //         return redirect()->back()->with('success', "SMS envoyé avec succes ");
+    //     } catch (\Throwable $ex) {
+
+    //         return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
     //     }
     // }
 
@@ -205,8 +164,8 @@ class ReportController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         //dd($report);
-        $report = Report::find($id);
-        $setting = Setting::find(1);
+        $report = $this->report->find($id);
+        $setting = $this->setting->find(1);
         $user = Auth::user();
         $qrCode = new QrCode('test');
         $qrCode->setSize(300);
@@ -225,15 +184,15 @@ class ReportController extends Controller
         //dd($dataUri);
 
         if ($report->signatory1 != null) {
-            $signatory1 = User::findorfail($report->signatory1);
+            $signatory1 = $this->user->findorfail($report->signatory1);
         }
 
         if ($report->signatory2 != null) {
-            $signatory2 = User::findorfail($report->signatory2);
+            $signatory2 = $this->user->findorfail($report->signatory2);
         }
 
         if ($report->signatory3 != null) {
-            $signatory3 = User::findorfail($report->signatory3);
+            $signatory3 = $this->user->findorfail($report->signatory3);
         }
         $year_month = "";
         if ($report->patient->year_or_month != 1) {
@@ -304,18 +263,18 @@ class ReportController extends Controller
             );
             $html2pdf->writeHTML($content);
             // Définir le mot de passe de protection
-            $password = '1234@2023';
+            //$password = '1234@2023';
 
             // Définir les permissions du document
-            $permissions = array(
-                'print',
-                'modify',
-                'copy',
-                'annot-forms'
-            );
+            // $permissions = array(
+            //     'print',
+            //     'modify',
+            //     'copy',
+            //     'annot-forms'
+            // );
 
             // Appliquer la protection
-            $html2pdf->pdf->SetProtection($permissions, $password, $password);
+            //$html2pdf->pdf->SetProtection($permissions, $password, $password);
             $newname = 'CO-' . $report->order->code . '.pdf';
             $html2pdf->output($newname);
         } catch (Html2PdfException $e) {
@@ -329,7 +288,7 @@ class ReportController extends Controller
     public function getTemplate(Request $request)
     {
 
-        $template = SettingReportTemplate::findorfail($request->id);
+        $template = $this->settingReportTemplate->findorfail($request->id);
 
         return response()->json($template, 200);
     }
@@ -340,82 +299,15 @@ class ReportController extends Controller
         if (!getOnlineUser()->can('edit-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $report = Report::findorfail($reportId);
+        $report = $this->report->findorfail($reportId);
 
         if (empty($report)) {
             return redirect()->back()->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
         }
-        // if ($report->is_deliver == 1) {
-        //     $state = 0;
-        // } else {
-        //     $state = 1;
-        // }
 
         $report->fill([
             "is_deliver" => 1,
         ])->save();
-
-        // $client = new Client();
-        // $accessToken = "89|NGMC7skSCt6rFUQFxOUgnRlLxUByqMpc4uhfI8zsmm3aonaMPnQVyRVgWqWqtC5Dc66GX6ssI0i0lMPiX7NMWlGNSyGTDyDoI0woVisMBtHsonM4TuFopUqPZ4ayCJAdXGhDWXmsqOI1Yr6QBTaglTq0mc8n0I6eJQhuuE1L46h23PgzEG7ZBYnqSQF3SIIs6uR7v2DGHHBF5Hnh5GgVt3jyUDA2NJgmRx3gTtjP9CaWX3EI";
-
-        // // Pour lancer un appel
-        // $responsevocal = $client->request('POST', "https://staging.getourvoice.com/api/v1/calls", [
-        //     'headers' => [
-        //         'Authorization' => 'Bearer ' . $accessToken,
-        //         "Content-Type"=> "application/json",
-        //         "Accept"=> "application/json",
-        //     ],
-        //     'json' => [
-        //         'to' => [
-        //             "22954325390"
-        //         ],
-        //         "audio_url"=> 'https://caap.bj/wp-content/uploads/2023/03/textToSpeech.mp3',
-        //         // "body"=> "TEST TEST",
-        //         // "sender_id"=> "d823ac53-658c-4790-af0c-adc009b9a830"
-        //     ]
-        // ]);
-
-        // $vocal = json_decode($responsevocal->getBody(), true);
-
-        // //Récupérer tous les appels vocaux
-        // $response = $client->request('GET', "https://staging.getourvoice.com/api/v1/calls", [
-        //     'headers' => [
-        //         'Authorization' => 'Bearer ' . $accessToken,
-        //         "Content-Type"=> "application/json",
-        //         "Accept"=> "application/json",
-        //     ],
-        // ]);
-
-        // $data = json_decode($response->getBody(), true);
-
-        // $getV = [];
-        // foreach ($data["data"] as $value) {
-        //     if ($value['id']=$vocal['data']['id']) {
-        //         $getV = $value;
-        //     }
-        // }
-
-        // if ($getV['status']=="busy") {
-        //     // Pour envoyer un message
-        //      $sms = "Vos résultats d'examen médical sont maintenant disponibles. Veuillez nous contacter pour plus d'informations. Centre ADechina.
-        //     ";
-        //     $responsesms = $client->request('POST', "https://staging.getourvoice.com/api/v1/messages", [
-        //         'headers' => [
-        //             'Authorization' => 'Bearer ' . $accessToken,
-        //             "Content-Type"=> "application/json",
-        //             "Accept"=> "application/json",
-        //         ],
-        //         'json' => [
-        //             'to' => [
-        //                 "22954325390"
-        //             ],
-        //             //"audio_url"=> 'https://caap.bj/wp-content/uploads/2023/03/textToSpeech.mp3',
-        //             "body"=> $sms,
-        //             "sender_id"=> "d823ac53-658c-4790-af0c-adc009b9a830"
-        //         ]
-        //     ]);
-
-        // }
 
         $this->pdf($reportId);
         // dd($report);
@@ -425,7 +317,7 @@ class ReportController extends Controller
     public function getReportsforDatatable(Request $request)
     {
 
-        $data = Report::all();
+        $data = $this->report->latest();
 
 
         return DataTables::of($data)->addIndexColumn()

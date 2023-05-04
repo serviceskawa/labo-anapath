@@ -20,14 +20,34 @@ use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
+
+    protected $patients;
+    protected $contrats;
+    protected $tests;
+    protected $invoices;
+    protected $testOrders;
+    protected $reports;
+    protected $appointments;
+    protected $setting;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Patient $patients, Setting $setting, Contrat $contrats, Test $tests, Invoice $invoices, TestOrder $testOrders, Report $reports, Appointment $appointments)
     {
         $this->middleware('auth');
+
+        //constructeur de la class avec les attributs
+
+        $this->patients = $patients;
+        $this->contrats = $contrats;
+        $this->tests = $tests;
+        $this->invoices = $invoices;
+        $this->testOrders = $testOrders;
+        $this->reports = $reports;
+        $this->appointments = $appointments;
+        $this->setting = $setting;
     }
 
     /**
@@ -37,37 +57,37 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $setting = Setting::find(1);
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         if (!getOnlineUser()->can('view-dashboard')) {
             return view('home');
         } else {
-            $patients = Patient::all()->count();
-            $contrats = Contrat::all()->count();
-            $tests = Test::all()->count();
+            $patients = $this->patients->all()->count();
+            $contrats = $this->contrats->all()->count();
+            $tests = $this->tests->all()->count();
 
             //Mois courant
             $curmonth = now()->format('m'); // Récupérer le mois en cours sous forme de chiffre (ex : '01' pour janvier)
-            $totalMonth = Invoice::whereMonth('updated_at', $curmonth)->where('paid','=',1)->sum('total');
+            $totalMonth = $this->invoices->whereMonth('updated_at', $curmonth)->where('paid','=',1)->sum('total');
 
             //Mois précédent
             $now = Carbon::now();
             $lastMonth = $now->copy()->subMonth()->format('m');
-            $totalLastMonth = Invoice::whereMonth('updated_at', $lastMonth)->where('paid','=',1)->sum('total');
+            $totalLastMonth = $this->invoices->whereMonth('updated_at', $lastMonth)->where('paid','=',1)->sum('total');
 
             //Jour actuellement
             $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'
-            $totalToday = Invoice::whereDate('updated_at', $today)->where('paid','=',1)->sum('total');
+            $totalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->sum('total');
 
 
 
             //plus de 3 semaines
             $threeWeeksAgo = Carbon::now()->subWeeks(3);
-            $weekTest = TestOrder::whereDate('created_at', '<', $threeWeeksAgo)->get();
+            $weekTest = $this->testOrders->whereDate('created_at', '<', $threeWeeksAgo)->get();
 
 
-            $testOrdersCount = TestOrder::all()->count();
-            $testOrders = TestOrder::all();
+            $testOrdersCount = $this->testOrders->all()->count();
+            $testOrders = $this->testOrders->all();
             $noFinishTest = 0;
             $noFinishWeek = 0;
             $finishTest = 0;
@@ -82,7 +102,7 @@ class HomeController extends Controller
                     }
                 }
             }
-            $weekTests = TestOrder::whereDate('created_at', '>', $threeWeeksAgo)->get();
+            $weekTests = $this->testOrders->whereDate('created_at', '>', $threeWeeksAgo)->get();
             foreach ($weekTests as $testOrder) {
                 if ($testOrder->report !=null) {
 
@@ -93,11 +113,11 @@ class HomeController extends Controller
                 }
             }
 
-            $testOrdersToday = Report::whereDate('updated_at', $today)->get();
+            $testOrdersToday = $this->reports->whereDate('updated_at', $today)->get();
 
-            $invoice = Invoice::all()->sum('total');
+            $invoice = $this->invoices->all()->sum('total');
 
-            $Appointments = Appointment::whereDate('date',$today)->get();
+            $Appointments = $this->appointments->whereDate('date',$today)->get();
 
 
             /*$loggedInUserIds = [];
@@ -116,7 +136,7 @@ class HomeController extends Controller
 
             // Vérifier si l'ID est stocké dans la session
             if (session()->has('user_id')) {
-                $loggedInUserId[] = session()->get('user_id');
+                $loggedInUserId[] = session('user_id');
                 $loggedInUserIds+= $loggedInUserId;
             }
 
@@ -145,7 +165,7 @@ class HomeController extends Controller
         $totalToday = Invoice::whereDate('created_at', $today)->sum('total');
 
 
-        $testOrdersCount = TestOrder::all()->count();
+        $testOrdersCount = $this->testOrders->all()->count();
         $testOrders = TestOrder::all();
         $noFinishTest = 0;
         $finishTest = 0;

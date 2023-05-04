@@ -11,7 +11,6 @@
 @endsection
 @section('content')
 
-    @include('logReport.show')
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
@@ -62,7 +61,7 @@
                                     <td>{{ $log->created_at }}</td>
                                     <td>{{ $log->report !=null ? $log->report->code :'Aucun'}}</td>
                                     <td>{{ $log->operation }}</td>
-                                    <td>{{ $log->user->lastname }} {{ $log->user->firstname }}</td>
+                                    <td>{{ $log->user->fullname() }}</td>
                                 </tr>
                             @endforeach
 
@@ -78,95 +77,8 @@
 @endsection
 
 @push('extra-js')
-    <script type="text/javascript">
-
-
-        /* DATATABLE */
-        $(document).ready(function() {
-
-            $('#datatable1').DataTable({
-                "order": [
-                    [0, "desc"]
-                ],
-                "columnDefs": [{
-                    "targets": [0],
-                    "searchable": false
-                }],
-                "language": {
-                    "lengthMenu": "Afficher _MENU_ enregistrements par page",
-                    "zeroRecords": "Aucun enregistrement disponible",
-                    "info": "Afficher page _PAGE_ sur _PAGES_",
-                    "infoEmpty": "Aucun enregistrement disponible",
-                    "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-                    "sSearch": "Rechercher:",
-                    "paginate": {
-                        "previous": "Précédent",
-                        "next": "Suivant"
-                    }
-                },
-            });
-        });
-
-
-        //EDITION
-        function edit(id) {
-            var e_id = id;
-
-            // Populate Data in Edit Modal Form
-            $.ajax({
-                type: "GET",
-                url: "{{ url('log/show') }}" + '/' + e_id,
-                success: function(data) {
-
-                    $('#id').val(data.id);
-                    $('#operation').val(data.operation);
-                    $('#report').val(data.report_id);
-                    getuser(data.user_id);
-                    console.log(data);
-                    $('#editModal').modal('show');
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                }
-            });
-        }
-
-        function getuser(id) {
-            var e_id = id;
-
-            // Populate Data in Edit Modal Form
-            $.ajax({
-                type: "GET",
-                url: "{{ url('log/user') }}" + '/' + e_id,
-                success: function(data) {
-                    console.log(data);
-                  $('#by').val(data.lastname +" "+ data.firstname);
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                }
-            });
-        }
-
-        // function getTest() {
-        //     var prestation_id = $('#prestation_id').val();
-
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "{{ route('prestations_order.getPrestationOrder') }}",
-        //         data: {
-        //             "_token": "{{ csrf_token() }}",
-        //             prestationId: prestation_id,
-        //         },
-        //         success: function(data) {
-        //             console.log(data.total);
-        //             $('#total').val(data.total);
-        //         },
-        //         error: function(data) {
-        //             console.log('Error:', data);
-        //         }
-        //     });
-
-        // }
+    <script>
+        var baseUrl = "{url('/')}"
     </script>
+    <script src="{{asset('viewjs/log.js')}}"></script>
 @endpush

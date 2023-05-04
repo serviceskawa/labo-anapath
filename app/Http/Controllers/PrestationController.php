@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PrestationRequest;
 use App\Models\CategoryPrestation;
 use App\Models\Prestation;
 use App\Models\Setting;
@@ -9,6 +10,15 @@ use Illuminate\Http\Request;
 
 class PrestationController extends Controller
 {
+    protected $prestations;
+    protected $categories;
+    protected $setting;
+    
+    public function __construct(Prestation $prestations, CategoryPrestation $categories, Setting $setting){
+        $this->prestations = $prestations;
+        $this->categories = $categories;
+        $this->setting = $setting;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -19,10 +29,10 @@ class PrestationController extends Controller
         if (!getOnlineUser()->can('view-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $prestations = Prestation::all();
+        $prestations = $this->prestations->all();
 
-        $categories = CategoryPrestation::all();
-        $setting = Setting::find(1);
+        $categories = $this->categories->all();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('prestation.index', compact(['prestations', 'categories']));
     }
@@ -33,36 +43,21 @@ class PrestationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PrestationRequest $request)
     {
-        // if (!getOnlineUser()->can('create-tests')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
-
-        // dd($request);
-        $data = $this->validate($request, [
-            'price' => 'required |numeric|gt:0',
-            'name' => 'required |unique:prestations,name',
-            'category_prestation_id' => 'required'
-        ]);
+        
+        $data = [
+            'price' => $request->price,
+            'name' => $request->name,
+            'category_prestation_id' => $request->category_prestation_id,
+        ];
 
         try {
-            Prestation::create($data);
+            $this->prestations->create($data);
             return back()->with('success', " Opération effectuée avec succès  ! ");
         } catch (\Throwable $ex) {
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Prestation  $Prestation
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Prestation $test)
-    {
-        //
     }
 
     /**
@@ -76,7 +71,7 @@ class PrestationController extends Controller
         if (!getOnlineUser()->can('edit-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = Prestation::find($id);
+        $data = $this->prestations->find($id);
         return response()->json($data);
     }
 
@@ -92,18 +87,18 @@ class PrestationController extends Controller
         // if (!getOnlineUser()->can('edit-tests')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-        $data = $this->validate($request, [
-            'id2' => 'required ',
-            'price2' => 'required |numeric|gt:0',
-            'name2' => 'required ',
-            'category_prestation_id2' => 'required'
-        ]);
+        $data = [
+            'id' => $request->id,
+            'price' => $request->price,
+            'name' => $request->name,
+            'category_prestation_id' => $request->category_prestation_id
+        ];
 
         try {
-            $prestation = Prestation::find($data['id2']);
-            $prestation->name = $data['name2'];
-            $prestation->price = $data['price2'];
-            $prestation->category_prestation_id = $data['category_prestation_id2'];
+            $prestation = $this->prestations->find($data['id']);
+            $prestation->name = $data['name'];
+            $prestation->price = $data['price'];
+            $prestation->category_prestation_id = $data['category_prestation_id'];
             $prestation->save();
             return back()->with('success', " Mise à jour effectuée avec succès  ! ");
         } catch (\Throwable $ex) {
@@ -114,7 +109,7 @@ class PrestationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Test  $test
+     * @param  \App\Models\Prestation  $prestation
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -122,7 +117,7 @@ class PrestationController extends Controller
         // if (!getOnlineUser()->can('delete-tests')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-        $prestation = Prestation::find($id)->delete();
+        $prestation = $this->prestations->find($id)->delete();
 
         if ($prestation) {
             return back()->with('success', " Elément supprimé avec succès  ! ");
@@ -135,7 +130,7 @@ class PrestationController extends Controller
         // if (!getOnlineUser()->can('delete-tests')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-        $data = Prestation::find($id);
+        $data = $this->prestations->find($id);
         return response()->json($data);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PermissionRequest;
 use App\Models\Operation;
 use App\Models\Ressource;
 use App\Models\Permission;
@@ -11,9 +12,18 @@ use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
-    public function __construct()
+    protected $permissions;
+    protected $ressources;
+    protected $operations;
+    protected $setting;
+
+    public function __construct(Permission $permissions, Ressource $ressources, Operation $operations, Setting $setting)
     {
         $this->middleware('auth'); 
+        $this->permissions = $permissions;
+        $this->ressources = $ressources;
+        $this->operations = $operations;
+        $this->setting = $setting;
     }
     
     public function create()
@@ -21,33 +31,32 @@ class PermissionController extends Controller
         if (!getOnlineUser()->can('view-permissions')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $permissions = Permission::all();
-            $ressources = Ressource::all();
-            $operations = Operation::all();
+        $permissions = $this->permissions->all();
+            $ressources = $this->ressources->all();
+            $operations = $this->operations->all();
             $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
             return view('users.permissions.create', compact('permissions', 'ressources', 'operations'));
 
     }
 
-    public function store(Request $request)
+    public function store(PermissionRequest $request)
     {
         if (!getOnlineUser()->can('create-permissions')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $this->validate($request, [
-            'titre' => 'required',
-        ]);
+        $op = $this->operations->findorfail($request->operation);
+        $ress = $this->ressources->findorfail($request->ressource);
 
-        $op = Operation::findorfail($request->operation);
-        $ress = Ressource::findorfail($request->ressource);
+        $permissionData = [
+            'titre' => $request->titre,
+            'slug' => Str::slug($op->operation.' '.$ress->slug),
+            'operation_id' => $op->id,
+            'ressource_id' => $ress->id,
+        ];
+       
         try {
-            Permission::create([
-                "titre" => $request->titre, 
-                "slug" => Str::slug($op->operation.' '.$ress->slug),
-                "operation_id" => $op->id,
-                "ressource_id" => $ress->id,
-            ]);
+            $this->permissions->create($permissionData);
             return back()->with('success', "Une permission a été enregistrée ! ");
 
         } catch(\Throwable $ex){

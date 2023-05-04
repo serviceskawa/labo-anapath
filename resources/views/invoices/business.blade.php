@@ -31,19 +31,6 @@
 
                     <div class="col-lg-4">
 
-                        {{-- <div class="mb-3">
-                            <label for="example-fileinput" class="form-label">Sélectionner une période</label>
-                            <select name="periode" id="periode" class="form-control">
-                                <option value="">Tous</option>
-                                <option value="nowMonth">Mois en cours</option>
-                                <option value="lastMonth">Mois précédent</option>
-                                <option value="nowTrimestres">Trimestre en cours</option>
-                                <option value="lastTrimestre">Trimestre précédent</option>
-                                <option value="nowYear">Année en cours</option>
-                                <option value="lastYear">Année précédent</option>
-                            </select>
-                        </div> --}}
-
                     </div> <!-- end col -->
                     <table id="datatable1" class="table dt-responsive nowrap w-100">
                         <thead>
@@ -56,37 +43,6 @@
 
                             </tr>
                         </thead>
-                        {{-- <thead>
-                            <tr>
-                                <th>Mois</th>
-                                <th>Facturés</th>
-                                <th>Avoir</th>
-                                <th>Chiffre d'affaires</th>
-                                <th>Encaissements</th>
-                            </tr>
-                            </thead>
-
-                            <tbody>
-                            @foreach (['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'] as $key => $mois)
-                                @if ($key+1<= Carbon\Carbon::now()->format('m'))
-                                <tr>
-                                    <td>{{ $mois }} {{Carbon\Carbon::now()->formatLocalized('%G')}}</td>
-                                    <td>
-                                        {{ App\Models\Invoice::whereMonth('updated_at', $key+1)->sum('total')? App\Models\Invoice::whereMonth('updated_at', $key+1)->sum('total').' Fr':'Néant'; }}
-                                    </td>
-                                    <td>  </td>
-                                    <td>
-                                        {{ App\Models\Invoice::whereMonth('updated_at', $key+1)->where('paid','=',1)->sum('total') ? App\Models\Invoice::whereMonth('updated_at', $key+1)->where('paid','=',1)->sum('total'). ' Fr': 'Néant'; }}
-                                    </td>
-                                    <td>
-                                        {{ App\Models\Invoice::whereMonth('updated_at', $key+1)->where('paid','=',1)->sum('total')? App\Models\Invoice::whereMonth('updated_at', $key+1)->where('paid','=',1)->sum('total').' Fr': 'Néant'; }}
-                                    </td>
-                                </tr>
-                                @endif
-                            @endforeach
-
-                            </tbody>
-                        --}}
 
                     </table>
 
@@ -101,66 +57,9 @@
 
 @push('extra-js')
     <script>
-        /* DATATABLE */
-        $(document).ready(function() {
-                var table = $('#datatable1').DataTable({
-
-                    "columnDefs": [{
-                        "targets": [0],
-                        "searchable": false
-                    }],
-                    "bFilter": false,
-                    "language": {
-                        "lengthMenu": "Afficher _MENU_ enregistrements par page",
-                        "zeroRecords": "Aucun enregistrement disponible",
-                        "info": "Afficher page _PAGE_ sur _PAGES_",
-                        "infoEmpty": "Aucun enregistrement disponible",
-                        "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-                        "sSearch": "Rechercher:",
-                        "paginate": {
-                            "previous": "Précédent",
-                            "next": "Suivant"
-                        }
-                    },
-                    processing: true,
-                    serverSide: true,
-                    ajax: {
-                        url: "{{ route('invoice.getTestOrdersforDatatable') }}",
-                        data: function(d) {
-                            // d.periode = $('#periode').val()
-
-                        }
-                    },
-                    columns: [
-                        // {
-                        //     data: 'created_at',
-                        //     name: 'created_at'
-                        // },
-                        {
-                            data: 'created_at',
-                            name: 'created_at'
-                        },
-                         {
-                            data: 'factures',
-                            name: 'factures',
-                        },
-                        {
-                            data: 'avoirs',
-                            name: 'avoirs'
-                        },
-                        {
-                            data: 'chiffres',
-                            name: 'chiffres'
-                        },
-                        {
-                            data: 'encaissements',
-                            name: 'encaissements'
-                        }
-                    ],
-                    order: [
-
-                    ],
-                });
-            });
+        var baseUrl = "{{url('/')}}"
+        var ROUTEGETDATATABLE = "{{ route('invoice.getTestOrdersforDatatable') }}"
     </script>
+
+    <script src="{{asset('viewjs/invoice/business.js')}}"></script>
 @endpush

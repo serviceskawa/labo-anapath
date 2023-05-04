@@ -5,151 +5,18 @@
 
     <link href="{{ asset('adminassets/css/fullcalendar/main.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ asset('adminassets/js/fullcalendar/main.js') }}"></script>
-    {{--
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.css">
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.js"></script> --}}
 
     <script>
-        var calendarEl = document.getElementById('calendar');
-        document.addEventListener('DOMContentLoaded', function() {
-            var SITEURL = "{{ url('/') }}";
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                locale: 'fr',
-                initialView: 'dayGridMonth',
-                slotDuration: "00:15:00",
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,listWeek'
-                },
-                buttonText: {
-                    today: "Aujourd'hui",
-                    month: 'Mois',
-                    week: 'Semaine',
-                    day: 'day',
-                    list: 'Liste'
-                },
-                eventClick: function(info) {
-                    console.log(info.event.id)
-
-                    var id = info.event.id;
-
-                    $.ajax({
-                        type: "GET",
-                        url: "{{ url('Appointments/getAppointmentsById') }}" + '/' + id,
-                        success: function(data) {
-
-                            $('#Appointment_id2').val(data.id);
-                            $('#patient_id2').val(data.patient_id).change();
-                            $('#doctor_id2').val(data.user_id).change();
-                            $('#time2').val(data.date);
-                            $('#message2').val(data.message);
-                            $('#priority2').val(data.priority).change();
-
-                            console.log(data);
-                            $('#event-modal-edit').modal('show');
-                        },
-                        error: function(data) {
-                            console.log('Error:', data);
-                        }
-                    });
-                },
-                events: "{{ route('Appointment.getAppointments') }}",
-            });
-            calendar.render();
-
-            $('#form-event').on('submit', function(e) {
-                e.preventDefault();
-                let doctorId = $('#doctor_id').val();
-                let patientId = $('#patient_id').val();
-                let priority = $('#priority').val();
-                let message = $('#message').val();
-                let time = $('#time').val();
-                // console.log(time);
-                $.ajax({
-                    url: "{{ route('Appointment.store') }}",
-                    type: "POST",
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        doctorId: doctorId,
-                        patientId: patientId,
-                        priority: priority,
-                        message: message,
-                        time: time
-                    },
-                    success: function(data) {
-                        calendar.refetchEvents();
-                        $('#form-event').trigger("reset");
-                        $('#event-modal').modal('hide');
-                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-                        console.log(data);
-                    },
-                    error: function(data) {
-                        console.log(data);
-                    },
-
-                });
-
-            });
-            $('#form-event-edit').on('submit', function(e) {
-                e.preventDefault();
-                let doctorId = $('#doctor_id2').val();
-                let patientId = $('#patient_id2').val();
-                let priority = $('#priority2').val();
-                let message = $('#message2').val();
-                let time = $('#time2').val();
-                let id = $('#Appointment_id2').val();
-                console.log(id);
-                $.ajax({
-                    url: "{{ route('Appointment.update')}}",
-                    type: "POST",
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        id: id,
-                        doctorId: doctorId,
-                        patientId: patientId,
-                        priority: priority,
-                        message: message,
-                        time: time
-                    },
-                    success: function(data) {
-                        calendar.refetchEvents();
-                        $('#form-event-edit').trigger("reset");
-                        $('#event-modal-edit').modal('hide');
-                        toastr.success("Donnée mis à jour avec succès", 'Mis à jour réussi');
-                        console.log(data);
-                    },
-                    error: function(data) {
-                        console.log(data);
-                    },
-
-                });
-
-            });
-            $('#deleteAppointment').on('click', function(e) {
-                e.preventDefault();
-
-                let id = $('#Appointment_id2').val();
-
-                $.ajax({
-                    url: "{{ url('Appointments/delete') }}" + '/' + id,
-                    type: "get",
-                    success: function(data) {
-                        calendar.refetchEvents();
-                        $('#event-modal-edit').modal('hide');
-                        toastr.success("Donnée supprimé avec succès", 'Supprimé réussi');
-                        console.log(data);
-                    },
-                    error: function(data) {
-                        console.log(data);
-                    },
-
-                });
-
-            });
-        });
+        var SITEURL = "{{ url('/') }}";
+        var ROUTEGETAPPOINTMENT = "{{ route('Appointment.getAppointments') }}"
+        var ROUTEAPPOINTMENTSTORE = "{{ route('Appointment.store') }}"
+        var ROUTEAPPOINTMENTUPDATE = "{{ route('Appointment.update')}}"
+        var TOKENSUBMIT = "{{ csrf_token() }}"
+        var TOKENUPDATE = "{{ csrf_token() }}"
+        VA
     </script>
+
+    <script src="{{asset('viewjs/appointment/index.js')}}"></script>
 
     <style>
         #calendar {
@@ -184,16 +51,6 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            {{-- <div class="col-lg-3">
-                            <div class="d-grid">
-                                <button class="btn btn-lg font-16 btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#event-modal"><i class="mdi mdi-plus-circle-outline"></i> Ajouter un
-                                    nouvel rendez-vous</button>
-                            </div>
-
-
-                        </div> <!-- end col--> --}}
-
                             <div class="col-lg-12">
                                 <div class="mt-lg-0 mt-4">
                                     <div id="calendar"></div>
@@ -387,58 +244,5 @@
 @endsection
 
 @push('extra-js')
-    {{-- <script src="{{ asset('/adminassets/js/pages/demo.calendar.js') }}"></script> --}}
-
-    <script>
-        $('#patient_id').select2({
-            dropdownParent: $('#event-modal')
-        });
-        $('#doctor_id').select2({
-            dropdownParent: $('#event-modal')
-        });
-
-        // Edit modal
-        $('#patient_id2').select2({
-            dropdownParent: $('#event-modal-edit')
-        });
-        $('#doctor_id2').select2({
-            dropdownParent: $('#event-modal-edit')
-        });
-        $(document).ready(function() {
-
-            // $('#form-event').on('submit', function(e) {
-            //     e.preventDefault();
-            //     let doctorId = $('#doctor_id').val();
-            //     let patientId = $('#patient_id').val();
-            //     let priority = $('#priority').val();
-            //     let message = $('#message').val();
-            //     let time = $('#time').val();
-            //     // console.log(time);
-            //     $.ajax({
-            //         url: "{{ route('Appointment.store') }}",
-            //         type: "POST",
-            //         data: {
-            //             "_token": "{{ csrf_token() }}",
-            //             doctorId: doctorId,
-            //             patientId: patientId,
-            //             priority: priority,
-            //             message:message,
-            //             time:time
-            //         },
-            //         success: function(data) {
-            //             calendar.refetchEvents();
-            //             $('#form-event').trigger("reset");
-            //             $('#event-modal').modal('hide');
-            //             toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-            //             console.log(data)   ;         
-            //         },
-            //         error: function(data) {
-            //             console.log(data);
-            //         },
-
-            //     });
-
-            // });
-        });
-    </script>
+   <script src="{{asset('viewjs/appointment/drop.js')}}"></script>
 @endpush

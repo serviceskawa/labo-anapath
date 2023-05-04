@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PatientRequest;
 use App\Models\Consultation;
 use App\Models\Invoice;
 use App\Models\Patient;
@@ -12,6 +13,17 @@ use Illuminate\Http\Request;
 
 class PatientController extends Controller
 {
+    protected $patients;
+    protected $setting;
+    protected $testOrders;
+    protected $invoices;
+
+    public function __construct(Patient $patients, Setting $setting, Invoice $invoices , TestOrder $testOrders){
+        $this->patients  = $patients;
+        $this->setting = $setting;
+        $this->invoices = $invoices;
+        $this->testOrders = $testOrders;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -22,22 +34,13 @@ class PatientController extends Controller
         if (!getOnlineUser()->can('view-patients')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $patients = Patient::latest()->get();
-        $setting = Setting::find(1);
+        $patients = $this->patients->latest()->get();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('patients.index',compact(['patients']));
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -45,28 +48,28 @@ class PatientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PatientRequest $request)
     {
         if (!getOnlineUser()->can('create-patients')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = $this->validate($request, [
-            'code' => 'required',
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'telephone1' => 'required',
-            'telephone1' => 'nullable',
-            'adresse' => 'nullable',
-            'genre' => 'required',
-            'year_or_month' => 'required',
-            'age' => 'required | integer',
-            'profession' => 'nullable',
-            'birthday' => 'nullable||date'
-        ]);
+        $data = [
+            'code' => $request->code,
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'telephone1' => $request->telephone1,
+            'telephone2' => $request->telephone2,
+            'adresse' => $request->adresse,
+            'genre' => $request->genre,
+            'year_or_month' => $request->year_or_month,
+            'age' => $request->age,
+            'profession' => $request->profession,
+            'birthday' => $request->birthday
+        ];
 
 
         try {
-            Patient::create($data);
+            $this->patients->create($data);
             return back()->with('success', "Un patient enregistré ! ");
 
         } catch(\Throwable $ex){
@@ -74,40 +77,29 @@ class PatientController extends Controller
         }
     }
 
-    public function storePatient(Request $request)
+    public function storePatient(PatientRequest $request)
     {
         if (!getOnlineUser()->can('create-patients')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = $this->validate($request, [
-            'code' => 'required',
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'telephone1' => 'required',
-            'age' => 'required',
-            'year_or_month' => 'required',
-            'genre' => 'required',
-        ]);
+        $data = [
+            'code' => $request->code,
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'telephone1' => $request->telephone1,
+            'age' => $request->age,
+            'year_or_month' => $request->year_or_month,
+            'genre' => $request->genre,
+        ];
 
         try {
-            $patient = Patient::create($data);
+            $patient = $this->patients->create($data);
 
             return response()->json($patient, 200);
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -121,7 +113,7 @@ class PatientController extends Controller
         if (!getOnlineUser()->can('edit-patients')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = Patient::find($id);
+        $data = $this->patients->find($id);
         return response()->json($data);
     }
 
@@ -132,39 +124,40 @@ class PatientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(PatientRequest $request)
     {
         if (!getOnlineUser()->can('edit-patients')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data=$this->validate($request, [
-            'id2' => 'required',
-            'code2' => 'required',
-            'firstname2' => 'required',
-            'lastname2' => 'required',
-            'telephone1_2' => 'required',
-            'telephone2_2' => 'nullable',
-            'adresse2' => 'nullable',
-            'genre2' => 'required',
-            'age2' => 'required | integer',
-            'year_or_month2' => 'required',
-            'profession2' => 'nullable'
-        ]);
+        $data=[
+            'id' => $request->id,
+            'code' => $request->code,
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'telephone1' => $request->telephone1,
+            'telephone2' => $request->telephone2,
+            'adresse' => $request->adresse,
+            'genre' => $request->genre,
+            'year_or_month' => $request->year_or_month,
+            'age' => $request->age,
+            'profession' => $request->profession,
+            'birthday' => $request->birthday
+        ];
 
 
         try {
 
-            $patient = Patient::find($data['id2']);
-            $patient->code = $data['code2'];
-            $patient->firstname = $data['firstname2'];
-            $patient->lastname = $data['lastname2'];
-            $patient->genre = $data['genre2'];
-            $patient->telephone1 = $data['telephone1_2'];
-            $patient->telephone2 = $data['telephone2_2'];
-            $patient->adresse = $data['adresse2'];
-            $patient->age = $data['age2'];
-            $patient->year_or_month = $data['year_or_month2'];
-            $patient->profession = $data['profession2'];
+            $patient = $this->patients->find($data['id']);
+            $patient->code = $data['code'];
+            $patient->firstname = $data['firstname'];
+            $patient->lastname = $data['lastname'];
+            $patient->genre = $data['genre'];
+            $patient->telephone1 = $data['telephone1'];
+            $patient->telephone2 = $data['telephone2'];
+            $patient->adresse = $data['adresse'];
+            $patient->age = $data['age'];
+            $patient->year_or_month = $data['year_or_month'];
+            $patient->profession = $data['profession'];
 
             $patient->save();
 
@@ -186,7 +179,7 @@ class PatientController extends Controller
         if (!getOnlineUser()->can('delete-patients')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $patient = Patient::find($id)->delete();
+        $patient = $this->patients->find($id)->delete();
 
         if ($patient) {
             return back()->with('success', "    Un élement a été supprimé ! ");
@@ -197,30 +190,26 @@ class PatientController extends Controller
 
     public function getPatients()
     {
-        $patients = Patient::orderBy('id','desc')->get();
+        $patients = $this->patients->orderBy('id','desc')->get();
         return response()->json($patients);
     }
 
     public function profil($id)
     {
 
-        $invoices =Invoice::where('patient_id','=',$id)->latest()->get();
 
-        $patient = Patient::find($id);
+        $invoices =$this->invoices->where('patient_id','=',$id)->latest()->get();
+        $patient = $this->patients->find($id);
 
-        $total = Invoice::where('patient_id','=',$id)->sum('total');
-        $nopaye = Invoice::where(['patient_id'=>$id,'paid'=>0])->sum('total');
-        $paye = Invoice::where(['patient_id'=>$id,'paid'=>1])->sum('total');
+        $total = $this->invoices->where('patient_id','=',$id)->sum('total');
+        $nopaye = $this->invoices->where(['patient_id'=>$id,'paid'=>0])->sum('total');
 
-        $testorders =TestOrder::where('patient_id','=',$id)->latest()->get();
+        $paye = $this->invoices->where(['patient_id'=>$id,'paid'=>1])->sum('total');
 
-        $consultations = Consultation::where('patient_id','=',$id)->latest()->get();
-
-        $prestationOrders = PrestationOrder::where('patient_id','=',$id)->latest()->get();
-
+        $testorders =$this->testOrders->where('patient_id','=',$id)->latest()->get();
 
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
-        return view('patients.profil', compact(['invoices', 'testorders', 'consultations', 'prestationOrders', 'patient','total','nopaye','paye']));
+        return view('patients.profil', compact(['invoices', 'testorders', 'patient','total','nopaye','paye']));
     }
 }

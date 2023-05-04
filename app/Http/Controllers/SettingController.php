@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SettingInvoiceRequest;
+use App\Http\Requests\TitleReportRequest;
 use App\Models\Setting;
 use App\Models\SettingInvoice;
 use App\Models\TitleReport;
@@ -9,9 +11,16 @@ use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
-    public function __construct()
+    protected $setting;
+    protected $settingInvoice;
+    protected $titleReport;
+
+    public function __construct(Setting $setting, SettingInvoice $settingInvoice, TitleReport $titleReport)
     {
         $this->middleware('auth');
+         $this->setting = $setting;
+         $this->settingInvoice = $settingInvoice;
+         $this->titleReport = $titleReport;
     }
 
     public function report_index()
@@ -19,29 +28,27 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('view-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $setting = Setting::find(1);
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        $titles = TitleReport::latest()->get();
+        $titles = $this->titleReport->latest()->get();
         return view('settings.report.index' , compact('titles','setting'));
     }
 
-    public function report_store(Request $request)
+    public function report_store(TitleReportRequest $request)
     {
         if (!getOnlineUser()->can('create-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = $this->validate($request, [
-            'title' => 'required |unique:title_reports,title',
-            'status' => 'nullable'
-        ]);
+        $data = [
+            'title' => strtoupper($request->title),
+            'status' => $request->status ?1:0
+        ];
 
         try {
-            $title=TitleReport::create([
-                "title" => strtoupper($data['title']),
-                "status" => $request->status ?1:0,
-            ]);
+            $title=$this->titleReport->create($data);
+
             if ($title->status ==1) {
-                $titles = TitleReport::all();
+                $titles = $this->titleReport->all();
                 foreach($titles as $item)
                 {
                     if($item->id != $title->id)
@@ -62,35 +69,34 @@ class SettingController extends Controller
 
     public function report_edit($id)
     {
-        // if (!getOnlineUser()->can('view-settings')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
-        $data = TitleReport::find($id);
+
+        $data = $this->titleReport->find($id);
         return response()->json($data);
     }
 
-    public function report_update(Request $request)
+    public function report_update(TitleReportRequest $request)
     {
         if (!getOnlineUser()->can('view-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = $this->validate($request, [
-            'id2' => 'required',
-            'title2' => 'required',
-            'status2'=> 'nullable'
-        ]);
+        $data = [
+            'id' => $request->id,
+            'title' => strtoupper($request->title),
+            'status' => $request->status ?1:0
+        ];
 
         //dd($request);
 
 
         try {
 
-            $titleReport = TitleReport::find($data['id2']);
-            $titleReport->title = strtoupper($data['title2']);
-            $titleReport->status = $request->status2 ? 1:0;
+            $titleReport = $this->titleReport->find($data['id']);
+            $titleReport->title = $data['title'];
+            $titleReport->status = $data['status'];
             $titleReport->save();
+
             if ($titleReport->status ==1) {
-                $titles = TitleReport::all();
+                $titles = $this->titleReport->all();
                 foreach($titles as $item)
                 {
                     if($item->id != $titleReport->id)
@@ -113,7 +119,7 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('view-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $titleReport = TitleReport::find($id)->delete();
+        $titleReport = $this->titleReport->find($id)->delete();
 
         if ($titleReport) {
             return back()->with('success', "    Un élement a été supprimé ! ");
@@ -130,7 +136,7 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('edit-settings') ) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $setting = Setting::find(1);
+        $setting = $this->setting->find(1);
 
         if ($setting) {
 
@@ -139,7 +145,7 @@ class SettingController extends Controller
             ])->save();
 
         }else {
-            $setting = Setting::create([
+            $setting = $this->setting->create([
                 "placeholder" => $request->placeholder
             ]);
         }
@@ -154,7 +160,7 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('edit-settings') ) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $setting = Setting::find(1);
+        $setting = $this->setting->find(1);
 
         if ($setting) {
 
@@ -163,7 +169,7 @@ class SettingController extends Controller
             ])->save();
 
         }else {
-            $setting = Setting::create([
+            $setting = $this->setting->create([
                 "footer" => $request->footer
             ]);
         }
@@ -175,7 +181,7 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('view-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $setting = Setting::find(1);
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         // dd($setting);
         return view('settings.app.index' , compact('setting'));
@@ -187,9 +193,7 @@ class SettingController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         // dd($request);
-        $setting = Setting::find(1);
-
-        dd($request);
+        $setting = $this->setting->find(1);
 
         if ($request->file('logo') ) {
 
@@ -225,7 +229,7 @@ class SettingController extends Controller
             ])->save();
 
         }else {
-            $setting = Setting::create([
+            $setting = $this->setting->create([
                 "titre" => $request->titre,
                 "logo" => $request->file('logo') ? $path_logo : "",
                 "favicon" => $request->file('favicon') ? $favicon : "",
@@ -245,28 +249,28 @@ class SettingController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         // $app_name = config('app.name');
-        // $setting = Setting::where('titre','like',$app_name)->first();
-        $setting = Setting::find(1);
+        // $setting = $this->setting->where('titre','like',$app_name)->first();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         $settingInvoice = SettingInvoice::find(1);
         return view('invoices.setting' , compact('settingInvoice'));
     }
 
-    public function invoice_update(Request $request)
+    public function invoice_update(SettingInvoiceRequest $request)
     {
         if (!getOnlineUser()->can('view-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         //dd($request);
-        $data = $this->validate($request, [
-            'ifu' => 'required',
-            'token' => 'required',
-            'status' => 'nullable'
-        ]);
+        $data = [
+            'ifu' => $request->ifu,
+            'token' => $request->token,
+            'status' => $request->status
+        ];
 
         try {
 
-            $settingInvoice = SettingInvoice::find(1);
+            $settingInvoice = $this->settingInvoice->find(1);
             $settingInvoice->ifu = $data['ifu'];
             $settingInvoice->token = $data['token'];
             $settingInvoice->status = $request->status?1:0;

@@ -176,23 +176,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
-
         var invoice = {!! json_encode($invoice) !!}
-        var code = new QRCode(document.getElementById("qrcode"), {
-            text: invoice.qrcode,
-            width: 100,
-            height: 105,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
-        });
-
-        window.addEventListener("load", (event) => {
-            console.log('aa')
-            window.print()
-        });
-
     </script>
+    <script src="{{asset('viewjs/invoice/print.js')}}"></script>
 
 </body>
 

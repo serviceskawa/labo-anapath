@@ -65,7 +65,7 @@
                             <td>
                                 <a type="button" href="{{route('invoice.show',$item->id)}}" class="btn btn-warning"><i
                                         class="mdi mdi-eye"></i> </a>
-                                <button type="button" onclick="normalize({{$item->id}})" title="Normaliser la facture" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
+                                {{-- <button type="button" onclick="normalize({{$item->id}})" title="Normaliser la facture" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button> --}}
                             </td>
 
                         </tr>
@@ -81,10 +81,3 @@
 
 </div>
 @endsection
-
-
-@push('extra-js')
-<script>
-
-</script>
-@endpush

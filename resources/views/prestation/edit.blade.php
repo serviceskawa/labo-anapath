@@ -9,11 +9,11 @@
                 @csrf
                 <div class="modal-body">
 
-                    <input type="hidden" name="id2" id="id2" class="form-control" required>
+                    <input type="hidden" name="id" id="id2" class="form-control" required>
 
                     <div class="mb-3">
                         <label for="example-select" class="form-label">Catégorie parente</label>
-                        <select class="form-select" id="category_prestation_id2" name="category_prestation_id2"
+                        <select class="form-select" id="category_prestation_id2" name="category_prestation_id"
                             required>
                             <option value="">Sélectionner une catégorie</option>
                             @foreach ($categories as $categorie)
@@ -24,12 +24,12 @@
 
                     <div class="mb-3">
                         <label for="simpleinput" class="form-label">Nom de l'examen</label>
-                        <input type="text" name="name2" id="name2" class="form-control" required>
+                        <input type="text" name="name" id="name2" class="form-control" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="simpleinput" class="form-label">Prix</label>
-                        <input type="text" name="price2" id="price2" class="form-control" required>
+                        <input type="text" name="price" id="price2" class="form-control" required>
                     </div>
 
                 </div>

@@ -11,9 +11,15 @@ use Symfony\Component\Console\Input\Input;
 
 class UserController extends Controller
 {
-    public function __construct()
+    protected $role;
+    protected $setting;
+    protected $user;
+    public function __construct(Role $role, Setting $setting, User $user )
     {
         $this->middleware('auth'); 
+        $this->role = $role;
+        $this->setting = $setting;
+        $this->user = $user;
     }
     
     /**
@@ -26,12 +32,12 @@ class UserController extends Controller
         if (!getOnlineUser()->can('view-users')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $users = User::latest()->get();
-        $roles = Role::all();
+        $users = $this->user->latest()->get();
+        $roles = $this->role->all();
 
         $user = Auth::user();
-        // dd($user->hasRole('test-contrats'), $user->can('delete.hospitals'));
-        $setting = Setting::find(1);
+
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('users.index', compact('users','roles'));
     }
@@ -46,9 +52,9 @@ class UserController extends Controller
         if (!getOnlineUser()->can('create-users')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $users = User::latest()->get();
-        $roles = Role::all();
-        $setting = Setting::find(1);
+        $users = $this->user->latest()->get();
+        $roles = $this->role->all();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('users.create', compact('users','roles'));
     }
@@ -72,19 +78,9 @@ class UserController extends Controller
             $path_signature = $request->file('signature')->storeAs('settings/app', $signature, 'public');
         }
 
-            //dd($path_signature);
-
-        // $data = $this->validate($request, [
-        //     'firstname' => 'required',
-        //     'lastname' => 'required',
-        //     'email' => 'required|unique:users,email',
-        // ]);
-
-       
-
         try {
            // dd($path_signature);
-            $user = User::firstOrCreate(["email" =>$request->email],[
+            $user = $this->user->firstOrCreate(["email" =>$request->email],[
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
                 "password" => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
@@ -94,7 +90,7 @@ class UserController extends Controller
             
             $permsTab = [];
             foreach ($request->roles as $key => $role_id) {
-                $role = Role::findorfail($role_id);
+                $role = $this->role->findorfail($role_id);
                 foreach ($role->permissions as $key => $perms) {
                     $permsTab[] = $perms->id;
                 }
@@ -122,10 +118,10 @@ class UserController extends Controller
         if (!getOnlineUser()->can('edit-users')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $user = User::findorfail($id);
-        $roles = Role::all();
+        $user = $this->user->findorfail($id);
+        $roles = $this->role->all();
 
-        $setting = Setting::find(1);
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('users.edit', compact('user', 'roles'));
     }
@@ -157,7 +153,7 @@ class UserController extends Controller
         // dd($request->roles);
 
         try {
-            $user = User::updateorcreate(["id" =>$request->id],[
+            $user = $this->user->updateorcreate(["id" =>$request->id],[
                 "email" =>$request->email,
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
@@ -168,7 +164,7 @@ class UserController extends Controller
 
             $permsTab = [];
             foreach ($request->roles as $key => $role_id) {
-                $role = Role::findorfail($role_id);
+                $role = $this->role->findorfail($role_id);
 
                 foreach ($role->permissions as $key => $perms) {
                     $permsTab[] = $perms->id;
@@ -198,7 +194,7 @@ class UserController extends Controller
         if (!getOnlineUser()->can('delete-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        User::find($id)->delete();
+        $this->user->find($id)->delete();
         return redirect()->route('user.role-index')->with('success', "    Un utilisateur a été supprimé ! ");
     }
 }

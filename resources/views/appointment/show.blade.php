@@ -114,7 +114,7 @@
 
 
 @push('extra-js')
-<script>
+{{-- <script>
     $('.datepicker').datepicker({
         format: 'dd/mm/yyyy',
         startDate: '-3d'
@@ -141,6 +141,8 @@
     }
 
 
-</script>
+</script> --}}
+
+<script src="{{asset('viewjs/appointment/index.js')}}"></script>
 
 @endpush

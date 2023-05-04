@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DoctorRequest;
 use App\Models\Doctor;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class DoctorController extends Controller
 {
-    public function __construct()
+
+    protected $doctor;
+    protected $setting;
+    public function __construct( Doctor $doctor, Setting $setting)
     {
         $this->middleware('auth'); 
+        $this->doctor = $doctor;
+        $this->setting = $setting;
     }
     
     /**
@@ -23,22 +29,14 @@ class DoctorController extends Controller
         if (!getOnlineUser()->can('view-doctors')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $doctors = Doctor::orderBy('name','asc')->get();
 
-        $setting = Setting::find(1);
+        //récupérer les données de la table doctor dans l'ordre croissant des noms
+        $doctors = $this->doctor->oldest('name')->get();
+
+        $setting = $this->setting::find(1);
         config(['app.name' => $setting->titre]);
         return view('doctors.index',compact(['doctors']));
 
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -47,38 +45,31 @@ class DoctorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(DoctorRequest $request)
     {
         if (!getOnlineUser()->can('create-doctors')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $data = $this->validate($request, [
-            'name' => 'required',
-            'email' => 'nullable',
-            'role' => 'nullable',
-            'telephone' => 'nullable',
-            'commission' => 'nullable|numeric|min:0|max:100',
-        ]);
+        
+        // Récupérer les données saisir par l'utilisateur et qui respectent les conditions
+        $doctorData = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
+            'telephone' => $request->telephone,
+            'commission' => $request->commission,
+        ];
 
+
+        // insérer les données dans la base de données
         try {
-            Doctor::create($data);
+            Doctor::create($doctorData);
             return back()->with('success', "Un médecin enregistré ! ");
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
         }        
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -92,8 +83,8 @@ class DoctorController extends Controller
         if (!getOnlineUser()->can('edit-doctors')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = Doctor::find($id);
-        return response()->json($data);
+        $doctorData = $this->doctor->find($id);
+        return response()->json($doctorData);
     }
 
     /**
@@ -103,30 +94,30 @@ class DoctorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(DoctorRequest $request)
     {
         if (!getOnlineUser()->can('edit-doctors')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data=$this->validate($request, [
-            'id2' => 'required',
-            'name' => 'required',
-            'email' => 'nullable',
-            'role' => 'nullable',
-            'telephone' => 'nullable',
-            'commission' => 'nullable',
-        ]);
+        $doctorData=[
+            'id2' => $request->id2,
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
+            'telephone' => $request->telephone,
+            'commission' => $request->commission,
+        ];
 
 
 
         try {
 
-            $doctor = Doctor::find($data['id2']);
-            $doctor->name = $data['name'];
-            $doctor->email = $data['email'];
-            // $doctor->role = $data['role'];
-            $doctor->telephone = $data['telephone'];
-            $doctor->commission = $data['commission'];
+            $doctor = Doctor::find($doctorData['id2']);
+            $doctor->name = $doctorData['name'];
+            $doctor->email = $doctorData['email'];
+            // $doctor->role = $doctorData['role'];
+            $doctor->telephone = $doctorData['telephone'];
+            $doctor->commission = $doctorData['commission'];
             $doctor->save();
 
             return back()->with('success', "Un médecin a été mis à jour ! ");
@@ -147,20 +138,20 @@ class DoctorController extends Controller
         if (!getOnlineUser()->can('delete-doctors')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        Doctor::find($id)->delete();
+        $this->doctor->find($id)->delete();
         return back()->with('success', "    Un élement a été supprimé ! ");
     }
 
-    public function storeDoctor(Request $request)
+    public function storeDoctor(DoctorRequest $request)
     {
-        $data = $this->validate($request, [
-            'name' => 'required',
-        ]);
+        $data = [
+            'name' => $request->name,
+        ];
 
-        $exist = Doctor::where('id',$request->name)->first();
+        $exist = $this->doctor->where('id',$request->name)->first();
         try {
             if ($exist === null ) {
-                $doctor = Doctor::create($data);
+                $doctor = $this->doctor->create($data);
                 $status = "created";
 
             }else {

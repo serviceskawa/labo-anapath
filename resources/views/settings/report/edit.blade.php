@@ -9,15 +9,15 @@
             @csrf
             <div class="modal-body">
 
-                <input type="hidden"  name="id2" id="id2" class="form-control" required>
+                <input type="hidden"  name="id" id="id2" class="form-control" required>
 
 
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Titre</label>
-                    <input type="text" name="title2" style="text-transform: uppercase;" id="title2" class="form-control" required>
+                    <input type="text" name="title" style="text-transform: uppercase;" id="title2" class="form-control" required>
                 </div>
                 <label class="form-label mt-3">Par défaut</label> <br>
-                <input type="checkbox" id="status2" name="status2" class="form-control" data-switch="success" >
+                <input type="checkbox" id="status2" name="status" class="form-control" data-switch="success" >
                 <label for="status2" data-on-label="oui" data-off-label="non"></label>
 
             </div>

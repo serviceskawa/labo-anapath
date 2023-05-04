@@ -8,14 +8,16 @@ use Illuminate\Http\Request;
 
 class DetailsContratController extends Controller
 {
-    public function __construct()
+    protected $detailContrat;
+    public function __construct(Details_Contrat $detailContrat)
     {
-        $this->middleware('auth'); 
+        $this->middleware('auth');
+        $this->detailContrat = $detailContrat;
     }
     
     public function getremise($contratId, $categoryTestId){
-        //dd("frh");
-        $data = Details_Contrat::where(['contrat_id' => $contratId, 'category_test_id' => $categoryTestId])->first();
+
+        $data = $this->detailContrat->where(['contrat_id' => $contratId, 'category_test_id' => $categoryTestId])->first();
         if($data == null){
             return 0;
         }else{

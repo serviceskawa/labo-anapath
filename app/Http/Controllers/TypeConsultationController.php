@@ -10,28 +10,35 @@ use App\Models\TypeConsultationFile;
 
 class TypeConsultationController extends Controller
 {
+    protected $setting;
+    protected $typeConsultation;
+    protected $typeConsultationFile;
+    
+    public function __construct(Setting $setting, TypeConsultation $typeConsultation, TypeConsultationFile $typeConsultationFile){
+        $this->setting = $setting;
+        $this->typeConsultation = $typeConsultation;
+        $this->typeConsultationFile = $typeConsultationFile;
+    }
     public function index()
     {
-        $types = TypeConsultation::all();
+        $types = $this->typeConsultation->all();
 
-        $files = TypeConsultationFile::all();
-        $setting = Setting::find(1);
+        $files = $this->typeConsultationFile->all();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('type_consultation.index', compact('types', 'files'));
     }
 
     public function store(Request $request)
     {
-        // dd($request);
         $data = $this->validate($request, [
             'name' => 'required',
             'type_files' => 'required',
             'id' => 'nullable',
         ]);
-        // dd(array_keys($request->type_files));
 
         try {
-            $type = TypeConsultation::updateOrCreate(
+            $type = $this->typeConsultation->updateOrCreate(
                 [
                     "id" => $data['id']
                 ],
@@ -54,13 +61,13 @@ class TypeConsultationController extends Controller
 
     public function show($id)
     {
-        $type = TypeConsultation::find($id);
+        $type = $this->typeConsultation->find($id);
 
         if (empty($type)) {
             return back()->with('error', "Une Erreur est survenue. Cette consultation n'existe pas");
         }
-        $files = TypeConsultationFile::all();
-        $setting = Setting::find(1);
+        $files = $this->typeConsultationFile->all();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('type_consultation.create', compact('type', 'files'));
     }
@@ -70,7 +77,7 @@ class TypeConsultationController extends Controller
         // if (!getOnlineUser()->can('delete-patients')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-        $type = TypeConsultation::find($id)->delete();
+        $type = $this->typeConsultation->find($id)->delete();
 
         if ($type) {
             return back()->with('success', "    Un élement a été supprimé ! ");

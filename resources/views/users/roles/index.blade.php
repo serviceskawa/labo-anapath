@@ -7,14 +7,13 @@
         <div class="col-12">
             <div class="page-title-box">
                 <div class="page-title-right mr-3">
-                    <a type="btn" href="{{ route('user.role-create') }} " class="btn btn-primary">Ajouter un nouveau
-                        rôle</a>
+                    <a type="btn" href="{{ route('user.role-create') }} " class="btn btn-primary">Ajouter un nouveau rôle</a>
                 </div>
                 <h4 class="page-title">Roles</h4>
             </div>
-
         </div>
     </div>
+
     <div class="">
 
         @include('layouts.alerts')
@@ -27,70 +26,50 @@
                         aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                     <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                 </div>
-                <h5 class="card-title mb-0">Liste des roles</h5>
+                <h5 class="card-title mb-0">Liste des rôles</h5>
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
-
-
-                    <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
-                        <thead>
-                            <tr>
-                                <th>Titre</th>
-                                <th>Slug</th>
-                                <th>Crée par</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-
-
-                        <tbody>
-
-                            @foreach ($roles as $item)
+                    <div class="table-responsive">
+                        <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                            <thead>
                                 <tr>
-                                    <td>{{ $item->name }} </td>
-                                    <td>{{ $item->slug }} </td>
-                                    <td>{{ $item->user->firstname }} {{ $item->user->lastname }} </td>
-                                    <td> <a type="button" href="{{ route('user.role-show', $item->slug) }}"
-                                            class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
-                                            <a type="button" href="{{ route('user.role-delete', $item->id) }}"
-                                                class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i></a>
-                                    </td>
-
+                                    <th>Titre</th>
+                                    <th>Slug</th>
+                                    <th>Créé par</th>
+                                    <th>Actions</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-
+                            </thead>
+                            <tbody>
+                                @forelse ($roles as $role)
+                                    <tr>
+                                        <td>{{ $role->name }}</td>
+                                        <td>{{ $role->slug }}</td>
+                                        <td>{{ $role->user->fullname() }}</td>
+                                        <td>
+                                            <a href="{{ route('user.role-show', $role->slug) }}"
+                                                class="btn btn-primary"><i class="mdi mdi-eye"></i></a>
+                                            <a href="{{ route('user.role-delete', $role->id) }}"
+                                                class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i></a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4">Aucun rôle trouvé</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    </div>
 @endsection
-
 
 @push('extra-js')
     <script>
-        // SUPPRESSION
-        function deleteModal(id) {
-
-        Swal.fire({
-                title: "Voulez-vous supprimer l'élément ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Oui ",
-                cancelButtonText: "Non !",
-            }).then(function(result) {
-                if (result.value) {
-                    window.location.href="{{url('roles-delete')}}"+"/"+id;
-                    Swal.fire(
-                        "Suppression !",
-                        "En cours de traitement ...",
-                        "success"
-                    )
-                }
-            });
-        }                                                                                    
+        var baseUrl = "{{url('/')}}"
     </script>
+    <script src="{{asset('viewjs/user/role.js')}}"></script>
 @endpush
+

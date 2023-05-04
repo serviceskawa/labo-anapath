@@ -7,7 +7,7 @@
         <div class="col-12">
             <div class="page-title-box">
 
-                <h4 class="page-title">Reçu de paiement de {{ $invoice->order->code }}</h4>
+                <h4 class="page-title">Reçu de paiement {{ $invoice->order?'de '.$invoice->order->code:'' }}</h4>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@
                                     float-end">{{ $invoice->paid == 1
                                         ? 'Payé'
                                         : "En
-                                                                        attente" }}
+                                                                                                            attente" }}
                                     </span>
                                 </p>
                                 <p class="font-13"><strong>Code: </strong> <span
@@ -237,113 +237,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         var invoice = {!! json_encode($invoice) !!}
-        var code = new QRCode(document.getElementById("qrcode"), {
-            text: invoice.qrcode,
-            width: 100,
-            height: 105,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-        });
-
-        function invoicebtn(id) {
-            var invoice = {!! json_encode($invoice) !!}
-            console.log(invoice);
-
-            $.ajax({
-                url: "{{ url('invoices/updateStatus') }}" + '/' + invoice.id,
-                type: "GET",
-
-                success: function(response) {
-                    console.log(response);
-                    if (response) {
-                        //console.log(response);
-                        Swal.fire({
-                            title: "Voulez-vous terminé la facture ?",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonText: "Confirm ",
-                            cancelButtonText: "Annuler",
-                        }).then(function(result) {
-
-                            if (result.value) {
-                                $.ajax({
-                                    url: "{{ route('invoice.confirmInvoice') }}",
-                                    type: "POST",
-                                    data: {
-                                        "_token": "{{ csrf_token() }}",
-                                        uid: response.uid,
-                                        id: response.id,
-                                        invoice_id: invoice.id,
-                                    },
-                                    success: function(response) {
-                                        if (response) {
-                                            console.log(response);
-                                            toastr.success("Confirmé avec succès",
-                                                'Confirmation réussi');
-                                            window.location.href =
-                                                "{{ url('invoices/print') }}" + '/' +
-                                                invoice.id;
-                                            //location.reload();
-                                        }
-                                    },
-                                    error: function(response) {
-                                        console.log(response);
-                                    }
-                                });
-                            } else {
-                                $.ajax({
-                                    url: "{{ route('invoice.cancelInvoice') }}",
-                                    type: "POST",
-                                    data: {
-                                        "_token": "{{ csrf_token() }}",
-                                        uid: response.uid,
-                                        id: response.id,
-                                        invoice_id: invoice.id,
-                                    },
-                                    success: function(response) {
-                                        if (response) {
-                                            console.log(response);
-                                            toastr.success("Annulé avec succès",
-                                                'Annulation réussi');
-                                            location.reload();
-                                        }
-                                    },
-                                    error: function(response) {
-                                        console.log(response);
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                },
-                error: function(response) {
-                    console.log(response)
-                },
-            })
-        }
-
-        function validPayment() {
-            var invoice = {!! json_encode($invoice) !!};
-            var payment = $('#payment').val();
-            $.ajax({
-                url: "{{ route('invoice.updatePayment') }}",
-                type: "POST",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    id: invoice.id,
-                    payment: payment,
-                },
-                success: function(response) {
-                    console.log(response);
-                    location.reload();
-                },
-                error: function(response) {
-                    console.log('error', response);
-                }
-            })
-        }
+        var baseUrl = "{{ url('/') }}";
+        var ROUTEVALIDATEPAYMENT = "{{ route('invoice.updatePayment') }}"
+        var TOKENVALIDATEPAYMENT = "{{ csrf_token() }}"
+        var ROUTECANCELINVOICE = "{{ route('invoice.cancelInvoice') }}"
+        var TOKENCANCELINVOICE = "{{ csrf_token() }}"
+        var ROUTECONFIRMINVOICE = "{{ route('invoice.confirmInvoice') }}"
+        var TOKENCONFIRMINVOICE = "{{ csrf_token() }}"
     </script>
-@endpush
 
+    <script src="{{ asset('viewjs/invoice/show.js') }}"></script>
+@endpush

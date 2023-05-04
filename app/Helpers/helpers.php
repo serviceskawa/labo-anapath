@@ -14,6 +14,7 @@ use App\Models\TypeConsultation;
 use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Support\Facades\Auth;
+use GuzzleHttp\Client;
 
 define("SERVER", "http://sms.wallyskak.com");
 define("API_KEY", "cd571010a5549230264e74b9c89349fdcf5ed81c");
@@ -34,7 +35,8 @@ define("USE_ALL_SIMS", 2);
  * @return array     Returns The array containing information about the message.
  * @throws Exception If there is an error while sending a message.
  */
-function sendSingleMessage($number, $message, $device = 0, $schedule = null, $isMMS = false, $attachments = null, $prioritize = false)
+// Fonction pour envoyer un message SMS
+function sendSingleSMS($number, $message, $device = 0, $schedule = null, $prioritize = false)
 {
     $url = SERVER . "/services/send.php";
     $postData = array(
@@ -43,12 +45,29 @@ function sendSingleMessage($number, $message, $device = 0, $schedule = null, $is
         'schedule' => $schedule,
         'key' => API_KEY,
         'devices' => $device,
-        'type' => $isMMS ? "mms" : "sms",
+        'type' => "sms",
+        'prioritize' => $prioritize ? 1 : 0,
+    );
+    return sendRequest($url, $postData)["messages"][0];
+}
+
+// Fonction pour envoyer un message MMS
+function sendSingleMMS($number, $message, $device = 0, $schedule = null, $attachments = null, $prioritize = false)
+{
+    $url = SERVER . "/services/send.php";
+    $postData = array(
+        'number' => $number,
+        'message' => $message,
+        'schedule' => $schedule,
+        'key' => API_KEY,
+        'devices' => $device,
+        'type' => "mms",
         'attachments' => $attachments,
         'prioritize' => $prioritize ? 1 : 0,
     );
     return sendRequest($url, $postData)["messages"][0];
 }
+
 
 /**
  * @param array  $messages        The array containing numbers and messages.
@@ -413,11 +432,10 @@ if (!function_exists('getPermission')) {
 if (!function_exists('getSignatory1')) {
     function getSignatory1($signatory_id)
     {
-        $users =getUsersByRole('docteur');
+        $users = getUsersByRole('docteur');
         $signatory = $users->find($signatory_id);
-        if($signatory)
-            return $signatory->lastname ." ". $signatory->firstname;
-            
+        if ($signatory)
+            return $signatory->lastname . " " . $signatory->firstname;
     }
 }
 if (!function_exists('getSignatory2')) {
@@ -495,7 +513,7 @@ if (!function_exists('generateCodeFacture')) {
         }
 
         // Ajoute les deux derniers chiffres de l'année au début du code
-        return "FA". now()->year % 100 . "$code";
+        return "FA" . now()->year % 100 . "$code";
     }
 }
 
@@ -513,66 +531,72 @@ if (!function_exists('getTestOrderData')) {
 }
 
 
-if(!function_exists('invoiceNormeTest')) {
-    function invoiceNormeTest($id){
-        $client = new \GuzzleHttp\Client();
+if (!function_exists('invoiceNormeTest')) {
+    function invoiceNormeTest($id)
+    {
+        $client = new Client();
+        $testOrderModel = new TestOrder();
+        $invoiceModel = new Invoice();
 
-        $test_order = TestOrder::find($id);
-        $invoice = Invoice::where('test_order_id', '=', $id)->first();
+        $testOrder = $testOrderModel->find($id);
+        $invoice = $invoiceModel->where('test_order_id', '=', $id)->first();
 
         $item = [];
         $items = [];
 
-        $details = $test_order->details()->get();
+        $details = $testOrder->details()->get();
 
-        if ($details!=null) {
-            foreach ($details as $key =>$value) {
-                {
+        if ($details != null) {
+            foreach ($details as  $value) { {
                     $item['name'] = $value->test_name;
                     $item['price'] = $value->total;
                     $item['quantity'] = 1;
-                    $item['taxGroup'] ="A";
-                    $items[]=$item;
+                    $item['taxGroup'] = "A";
+                    $items[] = $item;
                 }
             }
         }
-        //return response()->json($items);
 
         // $accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAyMDIzNjc4MDc0MDN8VFMwMTAwNTQ2NyIsInJvbGUiOiJUYXhwYXllciIsIm5iZiI6MTY3OTU1OTk2OCwiZXhwIjoxNjk1NDU3NTY4LCJpYXQiOjE2Nzk1NTk5NjgsImlzcyI6ImltcG90cy5iaiIsImF1ZCI6ImltcG90cy5iaiJ9.g80Hdsm2VInc7WBfiSvc7MVC34ZEXbwqyJX_66ePDGQ';
         // $ifu = "0202367807403";
-        $settingInvoice = SettingInvoice::find(1);
+        $settingInvoiceModel = new SettingInvoice();
+        $settingInvoice = $settingInvoiceModel->find(1);
         $accessToken = $settingInvoice->token;
-        $ifu = $settingInvoice->ifu;
-        $response = $client->request('POST', 'https://developper.impots.bj/sygmef-emcf/api/invoice',[
-            'headers' => [
-                'Authorization' => 'Bearer ' .$accessToken,
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json'
-            ],
-            'json' => [
-                'ifu' => $ifu,
-                'type' => "FV",
-                'items' => $items,
-                "client"=>[
-                    "name"=>$invoice->client_name,
-                    "address"=>$invoice->client_address
+        $ifu = "0".$settingInvoice->ifu;
+        return $ifu;
+        $response = $client->request(
+            'POST',
+            'https://developper.impots.bj/sygmef-emcf/api/invoice',
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json'
                 ],
-                "operator"=>[
-                    "id"=>Auth::user()->id,
-                    "name"=>Auth::user()->lastname,
-                ],
-                "payment"=>[
-                    [
-                        "name"=>$invoice->payment,
-                        "amount"=>$invoice->total,
-                    ]
-                ],
+                'json' => [
+                    'ifu' => $ifu,
+                    'type' => "FV",
+                    'items' => $items,
+                    "client" => [
+                        "name" => $invoice->client_name,
+                        "address" => $invoice->client_address?$invoice->client_address:'a',
+                    ],
+                    "operator" => [
+                        "id" => Auth::user()->id,
+                        "name" => Auth::user()->lastname,
+                    ],
+                    "payment" => [
+                        [
+                            "name" => $invoice->payment,
+                            "amount" => $invoice->total,
+                        ]
+                    ],
+                ]
             ]
-        ]
         );
         $test = json_decode($response->getBody(), true);
 
-        return ["id"=>$id,"uid"=>$test['uid']];
+        return ["id" => $id, "uid" => $test['uid']];
     }
 }
 
@@ -691,7 +715,7 @@ if (!function_exists('getRolesByUser')) {
     function getRolesByUser($userID)
     {
         $roles = [];
-        $rolesusers = UserRole::where('user_id',$userID)->get();
+        $rolesusers = UserRole::where('user_id', $userID)->get();
         foreach ($rolesusers as $value) {
             $role = Role::find($value->role_id);
             $roles[] = $role;
@@ -703,7 +727,7 @@ if (!function_exists('getRolesByUser')) {
 if (!function_exists('getTotalByPatient')) {
     function getTotalByPatient($id)
     {
-        $total = Invoice::where('patient_id','=',$id)->sum('total');
+        $total = Invoice::where('patient_id', '=', $id)->sum('total');
         return $total;
     }
 }
@@ -711,7 +735,7 @@ if (!function_exists('getTotalByPatient')) {
 if (!function_exists('getNoPaidByPatient')) {
     function getNoPaidByPatient($id)
     {
-        $nopaye = Invoice::where(['patient_id'=>$id,'paid'=>0])->sum('total');
+        $nopaye = Invoice::where(['patient_id' => $id, 'paid' => 0])->sum('total');
         return $nopaye;
     }
 }
@@ -719,9 +743,7 @@ if (!function_exists('getNoPaidByPatient')) {
 if (!function_exists('getPaidByPatient')) {
     function getPaidByPatient($id)
     {
-        $paye = Invoice::where(['patient_id'=>$id,'paid'=>1])->sum('total');
+        $paye = Invoice::where(['patient_id' => $id, 'paid' => 1])->sum('total');
         return $paye;
     }
 }
-
-

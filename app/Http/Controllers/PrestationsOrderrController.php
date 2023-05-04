@@ -10,10 +10,19 @@ use App\Models\Setting;
 
 class PrestationsOrderrController extends Controller
 {
+    protected $patients;
+    protected $prestations;
+    protected $prestationOrders;
+    protected $setting;
 
-    public function __construct()
+    public function __construct(Patient $patients, Prestation $prestations, PrestationOrder $prestationOrders, Setting $setting)
     {
         $this->middleware('auth');
+
+        $this->patients = $patients;
+        $this->prestations = $prestations;
+        $this->prestationOrders = $prestationOrders;
+        $this->setting = $setting;
     }
 
 
@@ -24,26 +33,14 @@ class PrestationsOrderrController extends Controller
      */
     public function index()
     {
-        // if (!getOnlineUser()->can('view-test-orders')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        
 
-        $patients = Patient::all();
-        $prestations = Prestation::all();
-        $prestationOrders = PrestationOrder::orderBy('created_at', 'DESC')->get();
-        $setting = Setting::find(1);
+        $patients = $this->patients->all();
+        $prestations = $this->prestations->all();
+        $prestationOrders = $this->prestationOrders->latest()->get();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);    
         return view('prestationsOrder.index', compact(['patients', 'prestations', 'prestationOrders']));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -55,9 +52,6 @@ class PrestationsOrderrController extends Controller
     public function store(Request $request)
     {
 
-        $patients = Patient::all();
-        $prestations = Prestation::all();
-
         $data = $this->validate($request, [
             'patient_id' => 'required',
             'prestation_id' => 'required',
@@ -65,24 +59,14 @@ class PrestationsOrderrController extends Controller
         ]);
 
         try {
-            PrestationOrder::create($data);
+            $this->prestationOrders->create($data);
             return back()->with('success', "Nouvelle demande de prestation enregistrée ! ");
         } catch (\Throwable $ex) {
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
+    
     /**
      * Show the form for editing the specified resource.
      *
@@ -91,11 +75,8 @@ class PrestationsOrderrController extends Controller
      */
     public function edit($id)
     {
-        // if (!getOnlineUser()->can('edit-patients')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
-        $data = PrestationORder::find($id);
-        $patient = Patient::find($data->patient_id);
+        $data = $this->prestationOrders->find($id);
+        $patient = $this->patients->find($data->patient_id);
 
         return response()->json($data);
     }
@@ -109,9 +90,7 @@ class PrestationsOrderrController extends Controller
      */
     public function update(Request $request)
     {
-        // if (!getOnlineUser()->can('edit-patients')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+       
         $data = $this->validate($request, [
             'id' => 'required',
             'patient' => 'required',
@@ -123,7 +102,7 @@ class PrestationsOrderrController extends Controller
 
         try {
 
-            $prestationOrder = PrestationOrder::find($data['id']);
+            $prestationOrder = $this->prestationOrders->find($data['id']);
             $prestationOrder->patient_id = $data['patient'];
             $prestationOrder->prestation_id = $data['prestation_id'];
             $prestationOrder->total = $data['total'];
@@ -144,10 +123,8 @@ class PrestationsOrderrController extends Controller
      */
     public function destroy($id)
     {
-        // if (!getOnlineUser()->can('delete-patients')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
-        $prestationOrder = PrestationOrder::find($id)->delete();
+       
+        $prestationOrder = $this->prestationOrders->find($id)->delete();
 
         if ($prestationOrder) {
             return back()->with('success', "    Un élement a été supprimé ! ");
@@ -158,11 +135,8 @@ class PrestationsOrderrController extends Controller
 
     public function getPrestationOrder(Request $request)
     {
-        // if (!getOnlineUser()->can('view-test-orders')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
-        //dd($request->prestationId);
-        $prestation = Prestation::find($request->prestationId);
+       
+        $prestation = $this->prestations->find($request->prestationId);
 
         return response()->json(["total" => $prestation->price]);
     }
@@ -172,9 +146,8 @@ class PrestationsOrderrController extends Controller
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        // dd($request);
-
-        $prestation = Prestation::find($id);
+       
+        $prestation = $this->prestations->find($id);
         return response()->json($prestation);
     }
 }

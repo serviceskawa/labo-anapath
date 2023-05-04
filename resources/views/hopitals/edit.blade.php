@@ -9,36 +9,36 @@
             @csrf
             <div class="modal-body">
 
-                <input type="hidden"  name="id2" id="id2" class="form-control">
+                <input type="hidden"  name="id" id="id2" class="form-control">
 
                 <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Nom de l'hôpital<span style="color:red;">*</span></label>
-                    <input type="text" name="name2" id="name2" class="form-control" required>
+                    <input type="text" name="name" id="name2" class="form-control" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Telephone<span style="color:red;">*</span></label>
-                    <input type="tel" name="telephone2" id="telephone2" pattern="[0-9]{2}[0-9]{2}[0-9]{2}[0-9]{2}" class="form-control" required>
+                    <input type="tel" name="telephone" id="telephone2" pattern="[0-9]{2}[0-9]{2}[0-9]{2}[0-9]{2}" class="form-control" required>
                     <small>Format: 97000000</small>
                 </div>
 
 
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Email</label>
-                    <input type="email" name="email2" id="email2" class="form-control">
+                    <input type="email" name="email" id="email2" class="form-control">
                 </div>
 
 
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Adresse<span style="color:red;">*</span></label>
-                    <textarea name="adresse2" id="adresse2" class="form-control" type="text" required></textarea>
+                    <textarea name="adresse" id="adresse2" class="form-control" type="text" required></textarea>
                 </div>
 
 
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Commision (en pourcentage)<span style="color:red;">*</span></label>
-                    <input type="number" name="commission2" id="commission2" class="form-control" required>
+                    <input type="number" name="commission" id="commission2" class="form-control" required>
                 </div>
 
 

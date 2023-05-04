@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TestRequest;
 use App\Models\Test;
 use App\Models\Contrat;
 use App\Models\CategoryTest;
@@ -11,6 +12,19 @@ use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
+    protected $test;
+    protected $categoryTest;
+    protected $contrat;
+    protected $detailsContrat;
+    protected $setting;
+
+    public function __construct(Test $test, CategoryTest $categoryTest, Contrat $contrat, Details_Contrat $detailsContrat, Setting $setting){
+        $this->test = $test;
+        $this->categoryTest = $categoryTest;
+        $this->contrat = $contrat;
+        $this->detailsContrat = $detailsContrat;
+        $this->setting = $setting;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -21,25 +35,15 @@ class TestController extends Controller
         if (!getOnlineUser()->can('view-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $tests = Test::orderBy('created_at','DESC')->get();
-   
-        $categories = CategoryTest::orderBy('created_at','DESC')->get();
+        $tests = $this->test->latest()->get();
 
-        $setting = Setting::find(1);
+        $categories = $this->categoryTest->latest()->get();
+
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
         return view('tests.index',compact(['tests','categories']));
 
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -48,35 +52,24 @@ class TestController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TestRequest $request)
     {
         if (!getOnlineUser()->can('create-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = $this->validate($request, [
-            'price' => 'required |numeric|gt:0',
-            'name' => 'required |unique:tests,name',  
-            'category_test_id'=>'required'        
-        ]);
+        $data = [
+            'price' => $request->price,
+            'name' => $request->name,
+            'category_test_id'=>$request->category_test_id,
+        ];
 
         try {
-            Test::create($data);
+            $this->test->create($data);
             return back()->with('success', " Opération effectuée avec succès  ! ");
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Test  $test
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Test $test)
-    {
-        //
     }
 
     /**
@@ -90,7 +83,7 @@ class TestController extends Controller
         if (!getOnlineUser()->can('edit-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = Test::find($id);
+        $data = $this->test->find($id);
         return response()->json($data);
     }
 
@@ -101,23 +94,23 @@ class TestController extends Controller
      * @param  \App\Models\Test  $test
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(TestRequest $request)
     {
         if (!getOnlineUser()->can('edit-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data=$this->validate($request, [
-            'id2' => 'required ', 
-            'price2' => 'required |numeric|gt:0',
-            'name2' => 'required ',  
-            'category_test_id2'=>'required'        
-        ]);
+        $data=[
+            'id' => $request->id,
+            'price' => $request->price,
+            'name' => $request->name,
+            'category_test_id'=>$request->category_test_id,
+        ];
 
         try {
-            $test = Test::find($data['id2']);
-            $test->name = $data['name2'];
-            $test->price = $data['price2'];
-            $test->category_test_id = $data['category_test_id2'];
+            $test = $this->test->find($data['id']);
+            $test->name = $data['name'];
+            $test->price = $data['price'];
+            $test->category_test_id = $data['category_test_id'];
             $test->save();
             return back()->with('success', " Mise à jour effectuée avec succès  ! ");
 
@@ -137,7 +130,7 @@ class TestController extends Controller
         if (!getOnlineUser()->can('delete-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $test = Test::find($id)->delete();
+        $test = $this->test->find($id)->delete();
 
         return back()->with('success', " Elément supprimé avec succès  ! ");
     }
@@ -145,7 +138,7 @@ class TestController extends Controller
     public function getTestAndRemise(Request $request)
     {
 
-        $data = Test::find($request->testId);
+        $data = $this->test->find($request->testId);
 
         $detail = Details_Contrat::where(['contrat_id' => $request->contratId, 'category_test_id' => $request->categoryTestId])->first();
         if($detail == null){

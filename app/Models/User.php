@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Models\Role', 'user_roles', 'user_id', 'role_id');
     }
+
+    public function fullname()
+    {
+        return $this->firstname .' '.$this->lastname ;
+    }
 }

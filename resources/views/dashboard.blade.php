@@ -79,43 +79,6 @@
 
         </div>
 
-        {{-- Revenue --}}
-        {{-- <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-
-                        <h4 class="header-title mb-3">Revenue</h4>
-
-                        <div class="chart-content-bg">
-                            <div class="row text-center">
-                                <div class="col-md-4">
-                                    <p class="text-muted mb-0 mt-3">Aujourd'hui</p>
-                                    <h2 class="fw-normal mb-3">
-                                        <span>{{ $totalToday }}F CFA</span>
-                                    </h2>
-                                </div>
-                                <div class="col-md-4">
-                                    <p class="text-muted mb-0 mt-3">Ce Mois</p>
-                                    <h2 class="fw-normal mb-3">
-                                        <span>{{$totalMonth}} F CFA</span>
-                                    </h2>
-                                </div>
-                                <div class="col-md-4">
-                                    <p class="text-muted mb-0 mt-3">Mois précedent</p>
-                                    <h2 class="fw-normal mb-3">
-                                        <span>{{$totalLastMonth}} F CFA</span>
-                                    </h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end card body-->
-                </div>
-                <!-- end card -->
-            </div>
-            <!-- end col-->
-        </div> --}}
 
         {{-- Demande d'Examens --}}
         <div class="col-lg-12">
@@ -369,27 +332,5 @@
 @endsection
 
 @push('extra-je')
-    <script>
-        $('#datatable1').DataTable({
-            "order": [
-                [0, "asc"]
-            ],
-            "columnDefs": [{
-                "targets": [0],
-                "searchable": false
-            }],
-            "language": {
-                "lengthMenu": "Afficher _MENU_ enregistrements par page",
-                "zeroRecords": "Aucun enregistrement disponible",
-                "info": "Afficher page _PAGE_ sur _PAGES_",
-                "infoEmpty": "Aucun enregistrement disponible",
-                "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-                "sSearch": "Rechercher:",
-                "paginate": {
-                    "previous": "Précédent",
-                    "next": "Suivant"
-                }
-            },
-        });
-    </script>
+    <script src="{{asset('viewjs/home.js')}}"></script>
 @endpush

@@ -9,6 +9,15 @@ use Illuminate\Http\Request;
 
 class LogReportController extends Controller
 {
+    protected $logReports;
+    protected $user;
+    protected $setting;
+
+    public function __construct(LogReport $logReports, User $user, Setting $setting){
+        $this->logReports = $logReports;
+        $this->setting = $setting;
+        $this->user = $user;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -19,33 +28,13 @@ class LogReportController extends Controller
         if (!getOnlineUser()->can('view-users')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $logs = LogReport::latest()->get();
-        $users = User::all();
-        $setting = Setting::find(1);
+        $logs = $this->logReports->latest()->get();
+        $users = $this->user->all();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('logReport.index', compact('logs'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
@@ -55,10 +44,7 @@ class LogReportController extends Controller
      */
     public function show($id)
     {
-        // if (!getOnlineUser()->can('view-settings')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
-        $data = LogReport::find($id);
+        $data = $this->logReports->find($id);
         return response()->json($data);
     }
 
@@ -67,43 +53,8 @@ class LogReportController extends Controller
         // if (!getOnlineUser()->can('view-settings')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-        $data = User::find($id);
+        $data = $this->user->find($id);
         return response()->json($data);
     }
 
-
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

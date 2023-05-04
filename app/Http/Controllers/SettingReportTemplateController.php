@@ -18,8 +18,8 @@ class SettingReportTemplateController extends Controller
         if (!getOnlineUser()->can('view-setting-report-templates')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $templates = SettingReportTemplate::orderBy('created_at', 'DESC')->get();
-        $setting = Setting::find(1);
+        $templates = (new SettingReportTemplate)->latest()->get();
+        $setting = (new Setting)->find(1);
         config(['app.name' => $setting->titre]);
         return view('templates.reports.index', compact('templates',));
     }
@@ -30,7 +30,7 @@ class SettingReportTemplateController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $template = "";
-        $setting = Setting::find(1);
+        $setting = (new Setting)->find(1);
         config(['app.name' => $setting->titre]);
         return view('templates.reports.create', compact('template'));
     }
@@ -48,7 +48,7 @@ class SettingReportTemplateController extends Controller
         ]);
 
         try {
-            SettingReportTemplate::updateorcreate(["id" => $request->id], [
+            (new SettingReportTemplate)->updateorcreate(["id" => $request->id], [
                 "title" => $request->titre,
                 "content" => $request->content,
             ]);
@@ -65,7 +65,7 @@ class SettingReportTemplateController extends Controller
         if (!getOnlineUser()->can('edit-setting-report-templates')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $template = SettingReportTemplate::findorfail($id);
+        $template = (new SettingReportTemplate)->findorfail($id);
         return view('templates.reports.create', compact('template'));
     }
 
@@ -74,7 +74,7 @@ class SettingReportTemplateController extends Controller
         if (!getOnlineUser()->can('delete-setting-report-templates')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $template = SettingReportTemplate::find($id)->delete();
+        $template = (new SettingReportTemplate)->find($id)->delete();
 
         if ($template) {
             return back()->with('success', "    Un élement a été supprimé ! ");

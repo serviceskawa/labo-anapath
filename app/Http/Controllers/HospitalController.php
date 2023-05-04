@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HospitalRequest;
 use App\Models\Hospital;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class HospitalController extends Controller
 {
+    protected $setting;
+    protected $hopitals;
+    
+    public function __construct(Setting $setting, Hospital $hopitals,){
+        $this->hopitals = $hopitals;
+        $this->setting = $setting;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -18,46 +26,36 @@ class HospitalController extends Controller
         if (!getOnlineUser()->can('view-hospitals')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $hopitals = Hospital::orderBy('created_at','DESC')->get();
-        $setting = Setting::find(1);
+        $hopitals = $this->hopitals->latest()->get();
+        
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('hopitals.index',compact(['hopitals']));
 
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(HospitalRequest $request)
     {
         if (!getOnlineUser()->can('create-hospitals')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data=$this->validate($request, [
-            'name' => 'required',
-            'adresse' => 'nullable',    
-            'email' => 'nullable',        
-            'telephone' => 'nullable',  
-            'commission' => 'nullable|numeric|min:0|max:100',  
-        ]);
+        $hospitalData=[
+            'name' => $request->name,
+            'adresse' => $request->adresse,    
+            'email' => $request->email,        
+            'telephone' => $request->telephone,  
+            'commission' => $request->commission,  
+        ];
 
         
 
         try {
-            Hospital::create($data);
+            $this->hopitals->create($hospitalData);
             return back()->with('success', "Un hôpital a été enregistré ! ");
 
         } catch(\Throwable $ex){
@@ -65,20 +63,20 @@ class HospitalController extends Controller
         }
     }
 
-    public function storeHospital(Request $request)
+    public function storeHospital(HospitalRequest $request)
     {
         if (!getOnlineUser()->can('create-hospitals')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = $this->validate($request, [
-            'name' => 'required',
-        ]);
+        $hospitalData = [
+            'name' => $request->name,
+        ];
         
-        $exist = Hospital::where('id',$request->name)->first();
+        $exist = $this->hopitals->where('id',$request->name)->first();
 
         try {
             if ($exist === null ) {
-                $hospital = Hospital::create($data);
+                $hospital = $this->hopitals->create($hospitalData);
                 $status = "created";
 
             }else {
@@ -94,17 +92,6 @@ class HospitalController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -115,8 +102,8 @@ class HospitalController extends Controller
         if (!getOnlineUser()->can('edit-hospitals')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = Hospital::find($id);
-        return response()->json($data);
+        $hospitalData = $this->hopitals->find($id);
+        return response()->json($hospitalData);
     }
 
     /**
@@ -126,28 +113,28 @@ class HospitalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(HospitalRequest $request)
     {
         if (!getOnlineUser()->can('edit-hospitals')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data=$this->validate($request, [
-            'name2' => 'required',
-            'id2' => 'required',
-            'adresse2' => 'nullable',    
-            'email2' => 'nullable',        
-            'telephone2' => 'required',  
-            'commission2' => 'required |numeric',  
-        ]);
+        $hospitalData=[
+            'id' => $request->id,
+            'name' => $request->name,
+            'adresse' => $request->adresse,    
+            'email' => $request->email,        
+            'telephone' => $request->telephone,  
+            'commission' => $request->commission,  
+        ];
 
         
         try {
-            $hopital = Hospital::find($data['id2']);
-            $hopital->name = $data['name2'];
-            $hopital->adresse = $data['adresse2'];
-            $hopital->email = $data['email2'];
-            $hopital->telephone = $data['telephone2'];
-            $hopital->commission = $data['commission2'];
+            $hopital = $this->hopitals->find($hospitalData['id']);
+            $hopital->name = $hospitalData['name'];
+            $hopital->adresse = $hospitalData['adresse'];
+            $hopital->email = $hospitalData['email'];
+            $hopital->telephone = $hospitalData['telephone'];
+            $hopital->commission = $hospitalData['commission'];
             $hopital->save();
             
             return back()->with('success', "Un hôpital a été mis à jour ! ");
@@ -168,7 +155,7 @@ class HospitalController extends Controller
         if (!getOnlineUser()->can('delete-hospitals')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        Hospital::find($id)->delete();
+        $this->hopitals->find($id)->delete();
         return back()->with('success', "    Un élement a été supprimé ! ");
 
     }

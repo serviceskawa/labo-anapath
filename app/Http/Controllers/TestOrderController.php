@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TestOrderRequest;
 use DataTables;
 use App\Models\Test;
 use App\Models\Doctor;
@@ -27,27 +28,69 @@ use Yajra\DataTables\Contracts\DataTable;
 class TestOrderController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    protected $test;
+    protected $testOrder;
+    protected $doctor;
+    protected $report;
+    protected $contrat;
+    protected $invoice;
+    protected $patient;
+    protected $setting;
+    protected $hospital;
+    protected $typeOrder;
+    protected $invoiceDetail;
+    protected $detailTestOrder;
+    protected $logReport;
 
+public function __construct(
+    Test $test,
+    TestOrder $testOrder,
+    Doctor $doctor,
+    Report $report,
+    Contrat $contrat,
+    Invoice $invoice,
+    Patient $patient,
+    Setting $setting,
+    Hospital $hospital,
+    TypeOrder $typeOrder,
+    InvoiceDetail $invoiceDetail,
+    DetailTestOrder $detailTestOrder,
+    LogReport $logReport
+) {
+    $this->middleware('auth');
+    $this->test = $test;
+    $this->testOrder = $testOrder;
+    $this->doctor = $doctor;
+    $this->report = $report;
+    $this->contrat = $contrat;
+    $this->invoice = $invoice;
+    $this->patient = $patient;
+    $this->setting = $setting;
+    $this->hospital = $hospital;
+    $this->typeOrder = $typeOrder;
+    $this->invoiceDetail = $invoiceDetail;
+    $this->detailTestOrder = $detailTestOrder;
+    $this->logReport = $logReport;
+
+}
+    // Affiche la liste des examens
     public function index()
     {
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $examens = TestOrder::with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
-        $contrats = Contrat::all();
-        $patients = Patient::all();
-        $doctors = Doctor::all();
-        //$tests = Test::all();
-        $hopitals = Hospital::all();
-        $types_orders = TypeOrder::all();
-        $setting = Setting::find(1);
+        // Récupération des données nécessaires
+        $examens = $this->testOrder->with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
+        $contrats = $this->contrat->all();
+        $patients = $this->patient->all();
+        $doctors = $this->doctor->all();
+        $hopitals = $this->hospital->all();
+        $types_orders = $this->typeOrder->all();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        // dd($examens);
+
+        // Affichage de la vue
         return view('examens.index', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
     }
 
@@ -59,20 +102,31 @@ class TestOrderController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $examens = TestOrder::with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
-        $contrats = Contrat::all();
-        $patients = Patient::all();
-        $doctors = Doctor::all();
-        //$tests = Test::all();
-        $hopitals = Hospital::all();
-        $types_orders = TypeOrder::all();
-        $setting = Setting::find(1);
+        $examens = $this->testOrder->with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
+        $contrats = $this->contrat->all();
+        $patients = $this->patient->all();
+        $doctors = $this->doctor->all();
+        $hopitals = $this->hospital->all();
+        $types_orders = $this->typeOrder->all();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
-        $testOrders = TestOrder::all();
+        $testOrders = $this->testOrder->all();
+        $testStats = $this->getTestStats($testOrders);
+
+        return view('examens.index2', array_merge(compact('examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders', 'testStats'), [
+            'finishTest' => $testStats['finishTest'],
+            'noFinishTest' => $testStats['noFinishTest'],
+            'is_urgent' => $testStats['is_urgent'],
+        ]));
+    }
+
+    private function getTestStats($testOrders)
+    {
         $noFinishTest = 0;
         $finishTest = 0;
         $is_urgent = 0;
+
         foreach ($testOrders as $testOrder) {
             if($testOrder->report){
                 if ($testOrder->report->is_deliver == 0) {
@@ -86,46 +140,40 @@ class TestOrderController extends Controller
             }
         }
 
-        // dd($examens);
-        return view('examens.index2', compact(['examens', 'finishTest', 'noFinishTest', 'is_urgent',  'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
+        return compact('finishTest', 'noFinishTest', 'is_urgent');
     }
 
-    // Fonction de recherche
     public function getTestOrders(Request $request)
     {
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        if (empty($request->date)) {
-            $examens = TestOrder::with(['patient'])->orderBy('id', 'desc')->get();
-        } else {
+        $examens = $this->testOrder->with(['patient']);
+
+        if (!empty($request->date)) {
             $date = explode("-", $request->date);
             $date[0] = str_replace('/', '-', $date[0]);
             $date[1] = str_replace('/', '-', $date[1]);
             $startDate = date("Y-m-d", strtotime($date[0]));
             $endDate = date("Y-m-d", strtotime($date[1]));
 
-            $examens = TestOrder::whereBetween('created_at', [$startDate, $endDate])->with(['patient']);
-
-            if (!empty($request->contrat_id)) {
-                $examens = $examens->where('contrat_id', $request->contrat_id);
-            }
-
-            if (is_null($request->exams_status)) {
-                $examens = $examens;
-            } else {
-                $examens = $examens->where('status', $request->exams_status);
-            }
-
-            if (is_null($request->cas_status)) {
-                $examens = $examens;
-            } else {
-                $examens = $examens->where('is_urgent', $request->cas_status);
-            }
-
-            $examens = $examens->orderBy('id', 'desc')->get();
+            $examens = $examens->whereBetween('created_at', [$startDate, $endDate]);
         }
+
+        if (!empty($request->contrat_id)) {
+            $examens = $examens->where('contrat_id', $request->contrat_id);
+        }
+
+        if (!is_null($request->exams_status)) {
+            $examens = $examens->where('status', $request->exams_status);
+        }
+
+        if (!is_null($request->cas_status)) {
+            $examens = $examens->where('is_urgent', $request->cas_status);
+        }
+
+        $examens = $examens->orderBy('id', 'desc')->get();
 
         return response()->json($examens);
     }
@@ -136,9 +184,9 @@ class TestOrderController extends Controller
         $search = $request->search;
 
         if ($search == '') {
-            $test_orders = TestOrder::orderby('id', 'desc')->limit(15)->get();
+            $test_orders = $this->testOrder->orderby('id', 'desc')->limit(15)->get();
         } else {
-            $test_orders = TestOrder::orderby('id', 'desc')->where('code', 'like', '%' . $search . '%')->limit(5)->get();
+            $test_orders = $this->testOrder->orderby('id', 'desc')->where('code', 'like', '%' . $search . '%')->limit(5)->get();
         }
 
         $response = array();
@@ -157,112 +205,80 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('create-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $patients = Patient::all();
-        $doctors = Doctor::all();
-        $hopitals = Hospital::all();
-        $contrats = Contrat::ofStatus('ACTIF')->get();
-        $types_orders = TypeOrder::all();
-        $setting = Setting::find(1);
+        $patients = $this->patient->all();
+        $doctors = $this->doctor->all();
+        $hopitals = $this->hospital->all();
+        $contrats = $this->contrat->ofStatus('ACTIF')->get();
+        $types_orders = $this->typeOrder->all();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('examens.create', compact(['patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
     }
 
-    public function store(request $request)
+    public function store(TestOrderRequest $request)
     {
 
         if (!getOnlineUser()->can('create-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $data = $this->validate($request, [
-            'patient_id' => 'required',
-            'doctor_id' => 'required|exists:doctors,name', // verification de l'existance du nom envoyé depuis le select
-            'hospital_id' => 'required|exists:hospitals,name',
-            'prelevement_date' => 'required',
-            'reference_hopital' => 'nullable',
-            'contrat_id' => 'required',
-            'is_urgent' => 'nullable',
-            'examen_reference_select' => 'nullable',
-            'examen_reference_input' => 'nullable',
-            'type_examen' => 'required|exists:type_orders,id',
-        ]);
-
-        $contrat = Contrat::FindOrFail($data['contrat_id']);
-
-        if ($contrat) {
-        }
-
-        // Verifie si le nombre de test du contrat est différent de -1 et si le nombre de contrat enregistré est inferieur ou egale au nombre de test de contrat
-
-        if ($contrat->nbr_tests != -1 && $contrat->orders->count() <= $contrat->nbr_tests) {
+        $validatedData = [
+            'patient_id' => $request->patient_id,
+            'doctor_id' => $request->doctor_id,
+            'hospital_id' => $request->hospital_id,
+            'prelevement_date' => $request->prelevement_date,
+            'reference_hopital' => $request->reference_hopital,
+            'contrat_id' => $request->contrat_id,
+            'is_urgent' => $request->is_urgent,
+            'examen_reference_select' => $request->examen_reference_select,
+            'examen_reference_input' => $request->examen_reference_input,
+            'type_examen' => $request->type_examen
+        ];
+    
+        $contrat = $this->contrat->findOrFail($validatedData['contrat_id']);
+    
+        if ($contrat->nbr_tests != -1 && $contrat->orders->count() >= $contrat->nbr_tests) {
             return back()->with('error', "Échec de l'enregistrement. Le nombre d'examen de ce contrat est atteint ");
         }
-
-        $path_examen_file = "";
-
-        if ($request->file('examen_file')) {
-
-            $examen_file = time() . '_test_order_.' . $request->file('examen_file')->extension();
-
-            $path_examen_file = $request->file('examen_file')->storeAs('tests/orders', $examen_file, 'public');
+    
+        $examenFilePath = "";
+        if ($request->hasFile('examen_file')) {
+            $examenFile = $request->file('examen_file');
+            $examenFilePath = $examenFile->store('tests/orders', 'public');
         }
-
-        if (is_string($data['doctor_id'])) {
-            $doctor = Doctor::where('name', $data['doctor_id'])->first();
-
-            $data['doctor_id'] = $doctor->id;
+    
+        $doctor = $this->doctor->firstOrCreate(['name' => $validatedData['doctor_id']]);
+        $hospital = $this->hospital->firstOrCreate(['name' => $validatedData['hospital_id']]);
+    
+        $testAffiliate = $validatedData['examen_reference_select'] ?: $validatedData['examen_reference_input'] ?: "";
+    
+        if ($validatedData['examen_reference_select'] && !$validatedData['examen_reference_input']) {
+            $testOrder = $this->testOrder->findOrFail($validatedData['examen_reference_select']);
+            $testAffiliate = $testOrder->code;
         }
-        if (is_string($data['hospital_id'])) {
-            $hopital = Hospital::where('name', $data['hospital_id'])->first();
-
-            $data['hospital_id'] = $hopital->id;
-        }
-
-        $data['test_affiliate'] = "";
-        if (empty($request->examen_reference_select) && !empty($request->examen_reference_input)) {
-
-            $data['test_affiliate'] = $request->examen_reference_input;
-        } elseif (!empty($request->examen_reference_select) && empty($request->examen_reference_input)) {
-            // Recherche l'existance du code selectionner
-            $reference = TestOrder::findorfail((int) $request->examen_reference_select);
-
-            if (!empty($reference)) {
-
-                $data['test_affiliate'] = $reference->code;
-            }
-        }
-
+    
         try {
-
-            $test_order = new TestOrder();
-            DB::transaction(function () use ($data, $test_order, $request, $path_examen_file) {
-                $test_order->contrat_id = $data['contrat_id'];
-                $test_order->patient_id = $data['patient_id'];
-                $test_order->hospital_id = $data['hospital_id'];
-                $test_order->prelevement_date = $data['prelevement_date'];
-                $test_order->doctor_id = $data['doctor_id'];
-                $test_order->reference_hopital = $data['reference_hopital'];
-                $test_order->is_urgent = $request->is_urgent ? 1 : 0;
-                $test_order->examen_file = $request->file('examen_file') ? $path_examen_file : "";
-                $test_order->test_affiliate = $data['test_affiliate'] ? $data['test_affiliate'] : "";
-                $test_order->type_order_id = $data['type_examen'];
-                $test_order->save();
+            $testOrder = new TestOrder([
+                'contrat_id' => $validatedData['contrat_id'],
+                'patient_id' => $validatedData['patient_id'],
+                'hospital_id' => $hospital->id,
+                'prelevement_date' => $validatedData['prelevement_date'],
+                'doctor_id' => $doctor->id,
+                'reference_hopital' => $validatedData['reference_hopital'] ?: "",
+                'is_urgent' => $request->has('is_urgent'),
+                'examen_file' => $examenFilePath,
+                'test_affiliate' => $testAffiliate,
+                'type_order_id' => $validatedData['type_examen']
+            ]);
+    
+            DB::transaction(function () use ($testOrder) {
+                $testOrder->save();
             });
-
-            return redirect()->route('details_test_order.index', $test_order->id);
+    
+            return redirect()->route('details_test_order.index', $testOrder->id);
         } catch (\Throwable $ex) {
-
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
-    }
-
-    public function show($id)
-    {
-        if (!getOnlineUser()->can('view-test-orders')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
-        $test_order = TestOrder::findorfail($id);
-        // dd($test_order);
     }
 
     public function edit($id)
@@ -271,18 +287,18 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $test_order = TestOrder::findOrFail($id);
+        $test_order = $this->testOrder->findOrFail($id);
 
         if (empty($test_order)) {
             return back()->with('error', "Cet examen n'existe. Veuillez réessayer! ");
         }
 
-        $patients = Patient::all();
-        $doctors = Doctor::all();
-        $hopitals = Hospital::all();
-        $contrats = Contrat::ofStatus('ACTIF')->get();
-        $types_orders = TypeOrder::all();
-        $setting = Setting::find(1);
+        $patients = $this->patient->all();
+        $doctors = $this->doctor->all();
+        $hopitals = $this->hospital->all();
+        $contrats = $this->contrat->ofStatus('ACTIF')->get();
+        $types_orders = $this->typeOrder->all();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('examens.edit', compact(['test_order', 'patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
     }
@@ -292,7 +308,7 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('delete-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $test_order = TestOrder::find($id)->delete();
+        $this->testOrder->find($id)->delete();
         return back()->with('success', "    Un élement a été supprimé ! ");
     }
 
@@ -302,21 +318,21 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $test_order = TestOrder::find($id);
+        $test_order = $this->testOrder->find($id);
 
-        $tests = Test::all();
+        $tests = $this->test->all();
 
-        $details = DetailTestOrder::where('test_order_id', $test_order->id)->get();
+        $details = $this->detailTestOrder->where('test_order_id', $test_order->id)->get();
 
 
-        $types_orders = TypeOrder::all();
+        $types_orders = $this->typeOrder->all();
 
         // fusion update et read
-        $patients = Patient::all();
-        $doctors = Doctor::all();
-        $hopitals = Hospital::all();
-        $contrats = Contrat::ofStatus('ACTIF')->get();
-        $setting = Setting::find(1);
+        $patients = $this->patient->all();
+        $doctors = $this->doctor->all();
+        $hopitals = $this->hospital->all();
+        $contrats = $this->contrat->ofStatus('ACTIF')->get();
+        $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('examens.details.index', compact(['test_order', 'details', 'tests', 'types_orders', 'patients', 'doctors', 'hopitals', 'contrats',]));
     }
@@ -326,7 +342,7 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $invoice = Invoice::where('test_order_id', $request->testId)->get();
+        $invoice = $this->invoice->where('test_order_id', $request->testId)->get();
         return response()->json($invoice);
     }
 
@@ -343,8 +359,8 @@ class TestOrderController extends Controller
             'total' => 'required |numeric',
         ]);
 
-        $test = Test::find($data['test_id']);
-        $test_order = TestOrder::findorfail($data['test_order_id']);
+        $test = $this->test->find($data['test_id']);
+        $test_order = $this->testOrder->findorfail($data['test_order_id']);
 
         $test_order_exit = $test_order->details()->whereTestId($data['test_id'])->exists();
 
@@ -376,9 +392,9 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $test_order = TestOrder::find($id);
-        $tests = Test::all();
-        $details = DetailTestOrder::where('test_order_id', $test_order->id)->get();
+        $test_order = $this->testOrder->find($id);
+        $tests = $this->test->all();
+        $details = $this->detailTestOrder->where('test_order_id', $test_order->id)->get();
         return response()->json($details);
     }
 
@@ -387,14 +403,14 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $test_order = TestOrder::findorfail($request->test_order_id);
-        $test = Test::findorfail($request->test_id1);
+        $test_order = $this->testOrder->findorfail($request->test_order_id);
+        $test = $this->test->findorfail($request->test_id1);
         $row_id = (int)$request->row_id;
         $price = $request->price1;
         $remise = $request->remise1;
         $total = $request->total1;
 
-        //$invoice = Invoice::where('test_order_id','=',$request->test_order_id)->get();
+        //$invoice = $this->invoice->where('test_order_id','=',$request->test_order_id)->get();
         $invoice = $test_order->invoice()->first();
         $invoiceDetails = $invoice->details()->get();
         //dd($invoice);
@@ -434,7 +450,7 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $test_order = TestOrder::findorfail($request->test_order_id);
+        $test_order = $this->testOrder->findorfail($request->test_order_id);
 
         $test_order->fill([
             "total" => $request->total,
@@ -450,7 +466,7 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('delete-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $detail = DetailTestOrder::findorfail($request->id);
+        $detail = $this->detailTestOrder->findorfail($request->id);
         $detail->delete();
         return response()->json(200);
 
@@ -462,8 +478,8 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $test_order = TestOrder::findorfail($id);
-        $settings = Setting::find(1);
+        $test_order = $this->testOrder->findorfail($id);
+        $settings = $this->setting->find(1);
         $user = Auth::user();
 
         if ($test_order->status) {
@@ -493,7 +509,7 @@ class TestOrderController extends Controller
             $code_facture = generateCodeFacture();
 
             // Creation de la facture
-            $invoice = Invoice::create([
+            $invoice = $this->invoice->create([
                 "test_order_id" => $test_order->id,
                 "date" => date('Y-m-d'),
                 "patient_id" => $test_order->patient_id,
@@ -510,7 +526,7 @@ class TestOrderController extends Controller
             if (!empty($invoice)) {
                 // Creation des details de la facture
                 foreach ($tests as $value) {
-                    InvoiceDetail::create([
+                    $this->invoiceDetail->create([
                         "invoice_id" => $invoice->id,
                         "test_id" => $value->test_id,
                         "test_name" => $value->test_name,
@@ -532,7 +548,7 @@ class TestOrderController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $testOrder = TestOrder::FindOrFail($id);
+        $testOrder = $this->testOrder->FindOrFail($id);
 
         if (empty($testOrder)) {
             return back()->with('error', "Erreur, cette demande d'examen n'existe pas ");
@@ -552,13 +568,7 @@ class TestOrderController extends Controller
             'attribuate_doctor_id' => 'required|exists:users,id',
         ]);
 
-        $contrat = Contrat::FindOrFail($data['contrat_id']);
-
-        // Verifie si le nombre de test du contrat est différent de -1 et si le nombre de contrat enregistré est inferieur ou egale au nombre de test de contrat
-        // Ici nous ne mettons pas à jour le contrat.
-        // if ($contrat->nbr_tests != -1 && $contrat->orders->count() <= $contrat->nbr_tests) {
-        //     return back()->with('error', "Échec de l'enregistrement. Le nombre d'examen de ce contrat est atteint ");
-        // }
+        $contrat = $this->contrat->FindOrFail($data['contrat_id']);
 
         $path_examen_file = "";
 
@@ -570,12 +580,12 @@ class TestOrderController extends Controller
         }
 
         if (is_string($data['doctor_id'])) {
-            $doctor = Doctor::where('name', $data['doctor_id'])->first();
+            $doctor = $this->doctor->where('name', $data['doctor_id'])->first();
 
             $data['doctor_id'] = $doctor->id;
         }
         if (is_string($data['hospital_id'])) {
-            $hopital = Hospital::where('name', $data['hospital_id'])->first();
+            $hopital = $this->hospital->where('name', $data['hospital_id'])->first();
 
             $data['hospital_id'] = $hopital->id;
         }
@@ -586,7 +596,7 @@ class TestOrderController extends Controller
             $data['test_affiliate'] = $request->examen_reference_input;
         } elseif (!empty($request->examen_reference_select) && empty($request->examen_reference_input)) {
             // Recherche l'existance du code selectionner
-            $reference = TestOrder::findorfail((int) $request->examen_reference_select);
+            $reference = $this->testOrder->findorfail((int) $request->examen_reference_select);
 
             if (!empty($reference)) {
 
@@ -594,46 +604,9 @@ class TestOrderController extends Controller
             }
         }
 
-        /*
-
-        //$invoice = Invoice::where('test_order_id','=',$request->test_order_id)->get();
-
-
-        //dd($invoice);
-
-        //dd($details[$row_id]);
-
-        if ($invoice->paid !=1) {
-            $detail->fill([
-                "test_id" =>  $request->test_id1,
-                "test_name" =>  $test->name,
-                "price" => $test->price,
-                "discount" => $remise,
-                "total" => $total,
-            ])->save();
-           $invoice->fill([
-                "subtotal" =>$test_order->subtotal,
-                "discount" =>$test_order->discount,
-                "total" =>$test_order->total,
-           ])->save();
-            $invoiceDetail->fill([
-                "test_id" =>  $request->test_id1,
-                "test_name" =>  $test->name,
-                "price" => $test->price,
-                "discount" => $remise,
-                "total" => $total,
-            ])->save();
-
-            return back()->with('success', "Mis à jour de la demande éffectué");
-        }else{
-            return back()->with('error', "Cette opération n'est pas possible car la facture a déjà été payé");
-        }
-
-        */
-
         try {
 
-            $test_order = TestOrder::find($id);
+            $test_order = $this->testOrder->find($id);
             $test_order->contrat_id = $data['contrat_id']; // on peut modifier le contrat
             $test_order->patient_id = $data['patient_id'];
             $test_order->hospital_id = $data['hospital_id'];
@@ -665,16 +638,11 @@ class TestOrderController extends Controller
         }
     }
 
-    public function search(Request $request)
-    {
-
-    }
-
     public function getTestOrdersforDatatable(Request $request)
     {
 
 
-        $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])->orderBy('created_at', 'desc');
+        $data = $this->testOrder->with(['patient', 'contrat', 'type', 'details', 'report'])->orderBy('created_at', 'desc');
 
         return Datatables::of($data)->addIndexColumn()
             ->editColumn('created_at', function ($data) {
@@ -812,7 +780,7 @@ class TestOrderController extends Controller
             })
             ->addColumn('dropdown', function ($data) {
                 $order = $data;
-                $setting = Setting::find(1);
+                $setting = $this->setting->find(1);
                 config(['app.name' => $setting->titre]);
                 return view('examens.datatables.attribuate', compact('order'));
             })
@@ -881,7 +849,7 @@ class TestOrderController extends Controller
 
     public function attribuateDoctor($doctorId, $orderId)
     {
-        $testOrder = TestOrder::findorfail($orderId);
+        $testOrder = $this->testOrder->findorfail($orderId);
         $testOrder->fill(["attribuate_doctor_id" => $doctorId])->save();
         return response()->json($doctorId, 200);
     }
