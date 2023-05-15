@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Permissions\HasPermissionsTrait;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -24,7 +25,9 @@ class User extends Authenticatable
         'lastname',
         'email',
         'password',
-        'signature'
+        'signature',
+        'two_factor_enabled',
+        'is_connect',
     ];
 
     /**
@@ -37,6 +40,8 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $isconnect = false;
+
     /**
      * The attributes that should be cast.
      *
@@ -45,6 +50,69 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Set attribute $isconnect value
+     */
+    public function setIsConnect($etat){
+        $this->isconnect = $etat;
+    }
+
+    public function getGoogle2faSecretAttribute()
+    {
+        return $this->two_factor_secret;
+    }
+
+    public function setGoogle2faSecretAttribute($value)
+    {
+        $this->two_factor_secret = $value;
+        $this->save();
+    }
+
+    public function generate2faSecret()
+    {
+        $google2fa = new Google2FA();
+        return $google2fa->generateSecretKey();
+    }
+
+    // public function getQRCodeGoogleUrlAttribute()
+    // {
+    //     $google2fa = new Google2FA();
+    //     return $google2fa->getQRCodeUrl(
+    //         config('app.name'),
+    //         $this->email,
+    //         $this->two_factor_secret
+    //     );
+    // }
+
+    public function getGoogle2faUrl()
+    {
+        return $this->getAttribute('qr_code_google_url');
+    }
+
+    public function isGoogle2faEnabled()
+    {
+        return $this->two_factor_enabled;
+    }
+
+    public function enableGoogle2fa()
+    {
+        $this->two_factor_enabled = true;
+        $this->setGoogle2faSecretAttribute($this->generate2faSecret());
+    }
+
+    public function disableGoogle2fa()
+    {
+        $this->two_factor_enabled = false;
+        $this->two_factor_secret = null;
+        $this->save();
+    }
+
+    public function verifyGoogle2fa($oneTimePassword)
+    {
+        $google2fa = new Google2FA();
+        return $google2fa->verifyKey($this->two_factor_secret, $oneTimePassword);
+    }
 
     public function roles()
     {

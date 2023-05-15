@@ -10,7 +10,7 @@
             <div class="modal-body">
 
                 <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
-                <input type="hidden"  name="id2" id="id2" class="form-control">
+                <input type="hidden"  name="id" id="id2" class="form-control">
 
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Nom & Prénom<span style="color:red;">*</span></label>

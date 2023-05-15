@@ -234,29 +234,29 @@ public function __construct(
             'examen_reference_input' => $request->examen_reference_input,
             'type_examen' => $request->type_examen
         ];
-    
+
         $contrat = $this->contrat->findOrFail($validatedData['contrat_id']);
-    
+
         if ($contrat->nbr_tests != -1 && $contrat->orders->count() >= $contrat->nbr_tests) {
             return back()->with('error', "Échec de l'enregistrement. Le nombre d'examen de ce contrat est atteint ");
         }
-    
+
         $examenFilePath = "";
         if ($request->hasFile('examen_file')) {
             $examenFile = $request->file('examen_file');
             $examenFilePath = $examenFile->store('tests/orders', 'public');
         }
-    
+
         $doctor = $this->doctor->firstOrCreate(['name' => $validatedData['doctor_id']]);
         $hospital = $this->hospital->firstOrCreate(['name' => $validatedData['hospital_id']]);
-    
+
         $testAffiliate = $validatedData['examen_reference_select'] ?: $validatedData['examen_reference_input'] ?: "";
-    
+
         if ($validatedData['examen_reference_select'] && !$validatedData['examen_reference_input']) {
             $testOrder = $this->testOrder->findOrFail($validatedData['examen_reference_select']);
             $testAffiliate = $testOrder->code;
         }
-    
+
         try {
             $testOrder = new TestOrder([
                 'contrat_id' => $validatedData['contrat_id'],
@@ -270,11 +270,11 @@ public function __construct(
                 'test_affiliate' => $testAffiliate,
                 'type_order_id' => $validatedData['type_examen']
             ]);
-    
+
             DB::transaction(function () use ($testOrder) {
                 $testOrder->save();
             });
-    
+
             return redirect()->route('details_test_order.index', $testOrder->id);
         } catch (\Throwable $ex) {
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());

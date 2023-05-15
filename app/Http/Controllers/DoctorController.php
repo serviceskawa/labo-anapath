@@ -14,11 +14,11 @@ class DoctorController extends Controller
     protected $setting;
     public function __construct( Doctor $doctor, Setting $setting)
     {
-        $this->middleware('auth'); 
+        $this->middleware('auth');
         $this->doctor = $doctor;
         $this->setting = $setting;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -51,7 +51,7 @@ class DoctorController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        
+
         // Récupérer les données saisir par l'utilisateur et qui respectent les conditions
         $doctorData = [
             'name' => $request->name,
@@ -69,7 +69,7 @@ class DoctorController extends Controller
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-        }        
+        }
     }
 
     /**
@@ -100,7 +100,7 @@ class DoctorController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $doctorData=[
-            'id2' => $request->id2,
+            'id' => $request->id,
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
@@ -112,7 +112,7 @@ class DoctorController extends Controller
 
         try {
 
-            $doctor = Doctor::find($doctorData['id2']);
+            $doctor = Doctor::find($doctorData['id']);
             $doctor->name = $doctorData['name'];
             $doctor->email = $doctorData['email'];
             // $doctor->role = $doctorData['role'];
@@ -163,6 +163,6 @@ class DoctorController extends Controller
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
-        }        
+        }
     }
 }

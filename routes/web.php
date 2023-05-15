@@ -18,6 +18,7 @@ use App\Http\Controllers\PrestationsOrderrController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrestationController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\TestCategoryController;
 use App\Http\Controllers\DetailsContratController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\TypeConsultationController;
 use App\Http\Controllers\CategoryPrestationController;
 use App\Http\Controllers\LogReportController;
 use App\Http\Controllers\SettingReportTemplateController;
+use App\Http\Controllers\TFAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,10 +45,18 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware(['tfauth'])->name('home');
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->name('dashboard');
 
+Route::middleware(['web'])->group(function () {
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::post('/login', [LoginController::class, 'login'])->name('login');
+});
+
 Route::middleware(['auth'])->group(function () {
+
+    Route::get('/confirm-login', [TFAuthController::class, 'show'])->name('login.confirm');
+    Route::post('/confirm-login', [TFAuthController::class, 'postAuth'])->name('login.postAuth');
     //CATEGORIE
     Route::get('/examens/categories', [TestCategoryController::class, 'index'])->name('examens.categories.index');
     Route::post('/examens/categories', [TestCategoryController::class, 'store'])->name('examens.categories.store');
@@ -150,7 +160,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/prestations_order/update', [PrestationsOrderrController::class, 'update'])->name('prestations_order.update');
     Route::post('/prestationsOrders', [PrestationsOrderrController::class, 'getPrestationOrder'])->name('prestations_order.getPrestationOrder');
     //Route::post('/prestation_order', [TestOrderController::class, 'getDetailsPrestation'])->name('prestations_order.getDetailsPrestation');
-
 
     Route::prefix('report')->group(function () {
         Route::get('list', [ReportController::class, 'index'])->name('report.index');

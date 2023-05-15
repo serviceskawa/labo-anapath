@@ -269,10 +269,10 @@
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
                                             <td>
-                                                {{ getUserData($userID)->lastname }} {{ getUserData($userID)->firstname }}
-                                                {{ $userID == Auth::user()->id ? '(Vous)' : '' }}
+                                                {{ $userID->lastname }} {{ $userID->firstname }}
+                                                {{ $userID->id == Auth::user()->id ? '(Vous)' : '' }}
                                             </td>
-                                            <td> {{ getUserData($userID)->email }}</td>
+                                            <td> {{ $userID->email }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

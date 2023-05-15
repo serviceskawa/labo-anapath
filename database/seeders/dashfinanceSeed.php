@@ -5,7 +5,9 @@ namespace Database\Seeders;
 use App\Models\Permission;
 use App\Models\Ressource;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class dashfinanceSeed extends Seeder
 {
@@ -16,6 +18,12 @@ class dashfinanceSeed extends Seeder
      */
     public function run()
     {
+        $user = User::updateorcreate(["email" =>'admin@caap.bj'],[
+            "firstname" => 'Admin',
+            "lastname" => 'Admin',
+            "password" =>  Hash::make('password'),
+        ]);
+
         $ressource = Ressource::updateOrCreate([
             'titre' => "dashbord_finance",
             'slug' => "dashbord-finance",
@@ -30,7 +38,7 @@ class dashfinanceSeed extends Seeder
 
         $role = Role::updateOrCreate(
             ['name' => 'dashbordFinance', 'slug' => 'dashbord-finance'],
-            ['created_by' => 1, 'description' =>'dashbord finance']
+            ['created_by' => $user->id, 'description' =>'dashbord finance']
         );
         $role->permissions()->attach($permission);
     }

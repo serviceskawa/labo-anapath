@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -37,6 +40,12 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+        // $this->middleware('tfauth');
+    }
+
+    public function tfauth()
+    {
+        $code = rand(100000,999999);
     }
 
     /**
@@ -48,7 +57,30 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        // Store user ID in session
-        $request->session()->put('user_id', $user->id);
+        //update attribute is_connect pour savoir qui est en ligne
+        $user->fill([
+            'is_connect' => 1,
+        ])->save();
+        dd($request);
+        return redirect()->route('login.confirm');
+    }
+
+    public function logout(Request $request)
+    {
+            // récupère l'utilisateur actuel
+            $userConnect = Auth::user();
+            $user = (new User)->findorfail($userConnect->id);
+            $user->is_connect = 0;
+            $user->two_factor_enabled =0;
+            $user->save();
+            Auth::logout(); // déconnecte l'utilisateur
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()->route('login');
+    }
+
+    public function login(Request $request)
+    {
+        dd($request);
     }
 }

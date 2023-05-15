@@ -11,7 +11,6 @@
         "php": "^7.3|^8.0",
         "barryvdh/laravel-dompdf": "^2.0",
         "doctrine/dbal": "^3.6",
-        "squizlabs/php_codesniffer": "3.5.5",
         "endroid/qr-code": "^4.8",
         "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.5",
@@ -19,7 +18,9 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
+        "pragmarx/google2fa": "^8.0",
         "spipu/html2pdf": "^5.2",
+        "squizlabs/php_codesniffer": "3.5.5",
         "yajra/laravel-datatables-oracle": "*"
     },
     "require-dev": {
