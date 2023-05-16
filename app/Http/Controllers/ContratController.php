@@ -103,7 +103,7 @@ class ContratController extends Controller
 
         try {
             $contrat = $this->contrat->create($data);
-           
+
             return redirect()->route('contrat_details.index', $contrat->id)->with('success', "Contrat enregistré avec succès ! ");
         } catch (\Throwable $ex) {
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
@@ -279,15 +279,15 @@ class ContratController extends Controller
         }
     }
 
-    public function destroy_details($id,)
+    public function destroy_details($id)
     {
         if (!getOnlineUser()->can('delete-contrats')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        //Suppression d'un contrat 
+        //Suppression d'un contrat
         $detail = $this->detailsContrat->find($id)->delete();
-        
+
         if ($detail) {
             return back()->with('success', "    Un élement a été supprimé ! ");
         } else {

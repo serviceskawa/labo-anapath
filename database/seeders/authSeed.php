@@ -22,7 +22,7 @@ class authSeed extends Seeder
     public function run()
     {
 
-        $user = User::updateorcreate(["email" =>'admin@caap.bj'],[
+        $user = User::updateorcreate(["email" =>'bmac82745@gmail.com'],[
             "firstname" => 'Admin',
             "lastname" => 'Admin',
             "password" =>  Hash::make('password'),
@@ -30,7 +30,7 @@ class authSeed extends Seeder
 
         $role = Role::updateOrCreate(
             ['name' => 'rootuser', 'slug' => 'rootuser'],
-            ['created_by' => 1, 'description' =>'Super utilisateur']
+            ['created_by' => $user->id, 'description' =>'Super utilisateur']
         );
 
         $permission = Permission::all();

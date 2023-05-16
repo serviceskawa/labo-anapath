@@ -29,10 +29,48 @@
 
             <div id="cardCollpase1" class="collapse pt-3 show">
 
+                <div class="row mb-3">
+
+                    <div class="col-lg-3">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Rechercher</label>
+                            <input type="text" placeholder="Par code d'examen" name="contenu" id="contenu" class="form-control">
+                        </div>
+                    </div> <!-- end col -->
+
+                    <div class="col-lg-3">
+
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Status</label>
+                            <select name="cas_status" id="cas_status" class="form-control">
+                                <option value="">Tous</option>
+                                <option value="0">En attente</option>
+                                <option value="1">Payé</option>
+                            </select>
+                        </div>
+
+                    </div> <!-- end col -->
+
+                    <div class="col-lg-3">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Date Début</label>
+                            <input type="date" name="dateBegin" id="dateBegin" class="form-control">
+                        </div>
+                    </div> <!-- end col -->
+
+                    <div class="col-lg-3">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Date fin</label>
+                            <input type="date" name="dateEnd" id="dateEnd" class="form-control">
+                        </div>
+                    </div> <!-- end col -->
+                </div>
+
+
                 <table id="datatable1" class="table dt-responsive nowrap w-100">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            {{-- <th>#</th> --}}
                             <th>Date</th>
                             <th>Demande</th>
                             <th>Patient</th>
@@ -44,34 +82,6 @@
                         </tr>
                     </thead>
 
-                    <tbody>
-
-                        @foreach ($invoices as $key =>$item)
-                        <tr>
-                            <td>{{ $key+1 }}</td>
-                            <td>{{ $item->date }}</td>
-                            <td>{{$item->test_order_id ? getTestOrderData($item->test_order_id)->code :'' }}</td>
-                            <td>{{$item->test_order_id?
-                                getTestOrderData($item->test_order_id)->patient->firstname.'
-                                '.getTestOrderData($item->test_order_id)->patient->lastname :''
-                                }}
-                            </td>
-                            <td>{{ $item->subtotal }}</td>
-                            <td>{{ $item->total }}</td>
-                            <td><span class="bg-{{$item->paid != 1 ? 'danger' : 'success' }} badge
-                                float-end">{{$item->paid == 1 ? "Payé" : "En
-                                    attente"}}
-                                </span></td>
-                            <td>
-                                <a type="button" href="{{route('invoice.show',$item->id)}}" class="btn btn-warning"><i
-                                        class="mdi mdi-eye"></i> </a>
-                                {{-- <button type="button" onclick="normalize({{$item->id}})" title="Normaliser la facture" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button> --}}
-                            </td>
-
-                        </tr>
-                        @endforeach
-                    </tbody>
-
                 </table>
 
             </div>
@@ -81,3 +91,12 @@
 
 </div>
 @endsection
+
+@push('extra-js')
+    <script>
+        var baseUrl = "{{url('/')}}"
+        var ROUTEGETDATATABLE = "{{ route('invoice.getInvoiceIndexforDatatable') }}"
+    </script>
+
+    <script src="{{asset('viewjs/invoice/index.js')}}"></script>
+@endpush

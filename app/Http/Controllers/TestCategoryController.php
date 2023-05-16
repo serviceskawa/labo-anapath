@@ -14,16 +14,16 @@ class TestCategoryController extends Controller
     protected $setting;
     public function __construct(CategoryTest $categoryTest, Setting $setting)
     {
-        $this->middleware('auth'); 
+        $this->middleware('auth');
         $this->categoryTest = $categoryTest;
         $this->setting = $setting;
     }
-        
+
     public function index(){
         if (!getOnlineUser()->can('view-category-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $testcategories = $this->categoryTest->with(['tests'])->orderBy('created_at', 'DESC')->get();
+        $testcategories = $this->categoryTest->with(['tests'])->latest()->get();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         // dd($testcategories);
@@ -36,11 +36,11 @@ class TestCategoryController extends Controller
         }
         $data= [
             'code' => $request->code,
-            'name' => $request->name,          
+            'name' => $request->name,
         ];
 
         try {
-            $this->categoryTest->create($data);
+            $category = $this->categoryTest->create($data);
             return back()->with('success', " Opération effectuée avec succès  ! ");
 
         } catch(\Throwable $ex){
@@ -56,7 +56,7 @@ class TestCategoryController extends Controller
         $data= [
             'id' => $request->id,
             'code' => $request->code,
-            'name' => $request->name,          
+            'name' => $request->name,
         ];
 
         try {
@@ -64,7 +64,7 @@ class TestCategoryController extends Controller
            $categorie->code = $data['code'];
            $categorie->name = $data['name'];
            $categorie->save();
-           
+
             return back()->with('success', " Mise à jour effectuée avec succès  ! ");
 
         } catch(\Throwable $ex){

@@ -29,20 +29,23 @@ class HomeController extends Controller
     protected $reports;
     protected $appointments;
     protected $setting;
+    protected $users;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(Patient $patients, Setting $setting, Contrat $contrats, Test $tests, Invoice $invoices, TestOrder $testOrders, Report $reports, Appointment $appointments)
+    public function __construct(Patient $patients, Setting $setting, Contrat $contrats, Test $tests, Invoice $invoices, TestOrder $testOrders, Report $reports, Appointment $appointments, User $users)
     {
         $this->middleware('auth');
+        $this->middleware('tfauth');
 
         //constructeur de la class avec les attributs
 
         $this->patients = $patients;
         $this->contrats = $contrats;
         $this->tests = $tests;
+        $this->users = $users;
         $this->invoices = $invoices;
         $this->testOrders = $testOrders;
         $this->reports = $reports;
@@ -120,27 +123,10 @@ class HomeController extends Controller
             $Appointments = $this->appointments->whereDate('date',$today)->get();
 
 
-            /*$loggedInUserIds = [];
-            $sessionData = session()->all();
+            $loggedInUserIds = $this->users->where('is_connect',1)->get();
 
-            // dd($sessionData);
 
-            foreach ($sessionData as $key => $value) {
-                if ($key === 'user_id') {
-                    $loggedInUserIds[]= $value;
-                }
-            }*/
-
-            $loggedInUserId = [];
-            $loggedInUserIds = [];
-
-            // Vérifier si l'ID est stocké dans la session
-            if (session()->has('user_id')) {
-                $loggedInUserId[] = session('user_id');
-                $loggedInUserIds+= $loggedInUserId;
-            }
-
-            //dd($loggedInUserIds);
+            // dd($loggedInUserIds);
 
         // dd($sessions);
             return view('dashboard', compact('patients', 'contrats', 'tests', 'totalToday', 'totalMonth', 'totalLastMonth',
@@ -189,7 +175,7 @@ class HomeController extends Controller
         // Vérifier si l'ID est stocké dans la session
         if (session()->has('user_id')) {
             $loggedInUserId = session()->get('user_id');
-            $loggedInUserIds[] = $loggedInUserId; 
+            $loggedInUserIds[] = $loggedInUserId;
         }
 
        // dd($sessions);

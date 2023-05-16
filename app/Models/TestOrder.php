@@ -19,7 +19,8 @@ class TestOrder extends Model
 
     use HasFactory, SoftDeletes;
 
-    protected $guarded = [];
+    protected $guarded = [];    
+    
 
     public function getPatient()
     {
