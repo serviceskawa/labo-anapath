@@ -306,18 +306,19 @@ class ReportController extends Controller
             );
             $html2pdf->writeHTML($content);
             // Définir le mot de passe de protection
-            $password = '1234@2023';
+            //$password = '1234@2023';
 
             // Définir les permissions du document
-            $permissions = array(
-                'print',
-                'modify',
-                'copy',
-                'annot-forms'
-            );
+            // $permissions = array(
+            //     'print',
+            //     'modify',
+            //     'copy',
+            //     'annot-forms'
+            // );
 
             // Appliquer la protection
-            $html2pdf->pdf->SetProtection($permissions, $password, $password);
+            //$html2pdf->pdf->SetProtection($permissions, $password, $password);
+            
             $newname = 'CO-' . $report->order->code . '.pdf';
             $html2pdf->output($newname);
         } catch (Html2PdfException $e) {
@@ -511,7 +512,7 @@ class ReportController extends Controller
                         ->orwhereHas('order', function($query) use ($request){
                         $query->where('code', 'like', '%'.$request->get('contenu').'%');
                             })
-                        ->where('description', 'like', '%'.$request->get('contenu').'%')
+                        ->orwhere('description', 'like', '%'.$request->get('contenu').'%')
                         ->orwhereHas('patient', function ($query) use ($request){
                         $query->where('firstname','like', '%'.$request->get('contenu').'%')
                             ->orwhere('code','like', '%'.$request->get('contenu').'%')

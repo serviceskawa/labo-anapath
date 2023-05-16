@@ -151,6 +151,7 @@
         $(document).ready(function() {
             var table =  $('#datatable1').DataTable({
                 "order": [],
+                "bFilter": false,
                 // language: {
                 //     url: "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json",
                 // },
