@@ -166,8 +166,9 @@ class ReportController extends Controller
         //dd($report);
         $report = $this->report->find($id);
         $setting = $this->setting->find(1);
+        $text = $report->order?$report->order->code:'';
         $user = Auth::user();
-        $qrCode = new QrCode('test');
+        $qrCode = new QrCode($text);
         $qrCode->setSize(300);
         $writer = new PngWriter();
         $result = $writer->write($qrCode);
@@ -181,7 +182,7 @@ class ReportController extends Controller
         $dataUri = $result->getDataUri();
 
         // $qrCodeDataUri = $qrCode->writeDataUri();
-        //dd($dataUri);
+       
 
         if ($report->signatory1 != null) {
             $signatory1 = $this->user->findorfail($report->signatory1);
@@ -203,28 +204,29 @@ class ReportController extends Controller
 
         setlocale(LC_TIME, 'fr_FR');
         date_default_timezone_set('Africa/Porto-Novo');
-        //date_format($report->updated_at,"d/m/Y")
+        //date_format($report->updated_at,"d/m/Y");
 
-
-
+        
+        //dd('cc');
         $data = [
             'code' => $report->code,
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
-            'prelevement_date' => date('d/m/Y', strtotime($report->order->prelevement_date)),
-            'test_affiliate' => $report->order->test_affiliate,
+            'prelevement_date' =>$report->order ?  date('d/m/Y', strtotime($report->order->prelevement_date)):'',
+            'test_affiliate' => $report->order ? $report->order->test_affiliate :'',
             'qrcode' => $dataUri,
             'title' => $report->title,
             'content' => $report->description,
             'content_supplementaire' => $report->description_supplementaire != "" ? $report->description_supplementaire : '',
-            'signatory1' => $report->signatory1 != null ? $signatory1->lastname . ' ' . $signatory1->firstname : '',
-            'signature1' => $report->signatory1 != null ? $signatory1->signature : '',
+            
+            'signatory1' => $report->signatory1 != 0 ? $signatory1->lastname . ' ' . $signatory1->firstname : '',
+            'signature1' => $report->signatory1 != 0  ? $signatory1->signature : '',
 
 
-            'signatory2' => $report->signatory2 != null ? $signatory2->lastname . ' ' . $signatory2->firstname : '',
-            'signature2' => $report->signatory2 != null ? $signatory2->signature : '',
+            'signatory2' => $report->signatory2 != 0  ? $signatory2->lastname . ' ' . $signatory2->firstname : '',
+            'signature2' => $report->signatory2 != 0  ? $signatory2->signature : '',
 
-            'signatory3' => $report->signatory3 != null ? $signatory3->lastname . ' ' . $signatory3->firstname : '',
-            'signature3' => $report->signatory3 != null ? $signatory3->signature : '',
+            'signatory3' => $report->signatory3 != 0 ? $signatory3->lastname . ' ' . $signatory3->firstname : '',
+            'signature3' => $report->signatory3  != 0 ? $signatory3->signature : '',
 
             'patient_firstname' => $report->patient->firstname,
             'patient_lastname' => $report->patient->lastname,
@@ -385,10 +387,42 @@ class ReportController extends Controller
 
                 return $btnVoir .  $btnReport . $btnInvoice;
             })
-            // ->filter(function ($query) use ($request) {
+            ->filter(function ($query) use ($request) {
 
+               
+                if (!empty($request->get('statusquery'))) {
+                    if ($request->get('statusquery') == 1) {
+                        $query->where('status', 1);
+                    } else {
+                        $query->where('status', 0);
+                    }
+                }
+                if(!empty($request->get('contenu')))
+                {
+                    $query->where('code','like','%'.$request->get('contenu').'%')
+                        ->orwhereHas('order', function($query) use ($request){
+                        $query->where('code', 'like', '%'.$request->get('contenu').'%');
+                            })
+                        ->orwhere('description', 'like', '%'.$request->get('contenu').'%')
+                        ->orwhereHas('patient', function ($query) use ($request){
+                        $query->where('firstname','like', '%'.$request->get('contenu').'%')
+                            ->orwhere('code','like', '%'.$request->get('contenu').'%')
+                            ->orwhere('lastname', 'like', '%'.$request->get('contenu').'%');
+                        });
+                }
 
-            // })
+                if(!empty($request->get('dateBegin'))){
+                    //dd($request);
+                    $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
+                    $query->whereDate('created_at','>',$newDate);
+                }
+                if(!empty($request->get('dateEnd'))){
+                    //dd($request);
+                    $query->whereDate('created_at','<',$request->get('dateEnd'));
+                }
+
+            })
+            
             ->make(true);
 
     }

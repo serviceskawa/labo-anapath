@@ -324,6 +324,7 @@
         var code = {!! json_encode($report -> code)!!}
         var ROUTEGETTEMPLATE = "{{ route('template.report-getTemplate') }}"
         var TOKENGETTEMPLATE = "{{ csrf_token() }}"
+
     </script>
     <script src="{{asset('viewjs/report/show.js')}}"></script>
 @endpush

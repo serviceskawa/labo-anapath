@@ -193,6 +193,7 @@ class SettingController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         // dd($request);
+
         $setting = $this->setting->find(1);
 
         if ($request->file('logo') ) {
