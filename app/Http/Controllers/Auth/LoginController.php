@@ -57,11 +57,20 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
+        //Check if account's user is active
+
+        if (!$user->is_active) {
+            // Déconnectez l'utilisateur
+            Auth::logout();
+
+            // Redirigez l'utilisateur vers la page de connexion avec un message d'erreur
+            return redirect()->route('login')->with('error', 'Votre compte est désactivé. Veuillez contacter l\'administrateur.');
+        }
+        
         //update attribute is_connect pour savoir qui est en ligne
         $user->fill([
             'is_connect' => 1,
         ])->save();
-        dd($request);
         return redirect()->route('login.confirm');
     }
 
@@ -79,8 +88,4 @@ class LoginController extends Controller
             return redirect()->route('login');
     }
 
-    public function login(Request $request)
-    {
-        dd($request);
-    }
 }

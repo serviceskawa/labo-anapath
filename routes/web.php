@@ -50,7 +50,6 @@ Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard
 
 Route::middleware(['web'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-    Route::post('/login', [LoginController::class, 'login'])->name('login');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -221,6 +220,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('role-edit/{id}', [UserController::class, 'edit'])->name('user.edit');
         Route::post('user-update', [UserController::class, 'update'])->name('user.update');
         Route::get('role-delete/{id}', [UserController::class, 'destroy'])->name('user.delete');
+        Route::get('update-status-active/{id}', [UserController::class, 'updateActiveStatus'])->name('user.statusActive');
     });
 
     // Profile
@@ -253,6 +253,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/setting-Update', [SettingController::class, 'invoice_update'])->name('invoice.setting.update');
         Route::get('/business', [InvoiceController::class, 'business'])->name('invoice.business');
         Route::get('/s', [InvoiceController::class, 'getInvoiceforDatatable'])->name('invoice.getTestOrdersforDatatable');
+        Route::get('/index', [InvoiceController::class, 'getInvoiceIndexForDatable'])->name('invoice.getInvoiceIndexforDatatable');
         // Route::post('/filter', [InvoiceController::class, 'filter'])->name('invoice.filter');
         // Route::get('/testchiffres', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('invoice.getInvoiceforDatatable');
     });

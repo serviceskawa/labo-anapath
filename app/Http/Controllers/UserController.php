@@ -16,12 +16,12 @@ class UserController extends Controller
     protected $user;
     public function __construct(Role $role, Setting $setting, User $user )
     {
-        $this->middleware('auth'); 
+        $this->middleware('auth');
         $this->role = $role;
         $this->setting = $setting;
         $this->user = $user;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -73,8 +73,8 @@ class UserController extends Controller
         // dd($request);
 
         if ($request->file('signature') ) {
-            $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();  
-            
+            $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();
+
             $path_signature = $request->file('signature')->storeAs('settings/app', $signature, 'public');
         }
 
@@ -87,7 +87,7 @@ class UserController extends Controller
                 "signature" => $request->file('signature') ? $path_signature:'',
             ]);
             $user->roles()->attach($request->roles);
-            
+
             $permsTab = [];
             foreach ($request->roles as $key => $role_id) {
                 $role = $this->role->findorfail($role_id);
@@ -97,7 +97,7 @@ class UserController extends Controller
 
             }
             $user->permissions()->attach($permsTab);
-    
+
             return redirect()->route('user.index')->with('success', " Utilisateur crée ! ");
         } catch (\Throwable $th) {
             return redirect()->route('user.index')->with('error', "Échec de l'enregistrement ! " .$th->getMessage());
@@ -145,8 +145,8 @@ class UserController extends Controller
         ]);
 
         if ($request->file('signature') ) {
-            $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();  
-            
+            $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();
+
             $path_signature = $request->file('signature')->storeAs('settings/app', $signature, 'public');
         }
 
@@ -196,5 +196,28 @@ class UserController extends Controller
         }
         $this->user->find($id)->delete();
         return redirect()->route('user.role-index')->with('success', "    Un utilisateur a été supprimé ! ");
+    }
+
+    public function updateActiveStatus($id)
+    {
+        $user = $this->user->find($id);
+        
+        $status ="";
+       try
+       {
+            if($user->is_active ==1){
+                $user->is_active = 0;
+                $user->save();
+                $status = "activé";
+            }else{
+                $user->is_active = 1;
+                $user->save();
+                $status = "désactivé";
+            }
+            // dd($user);
+            return back()->with('success','Le compte a été '.$status);
+       }catch (\Throwable $th) {
+        back()->with('error','Une erreur est subvenue'.$th);
+       }
     }
 }

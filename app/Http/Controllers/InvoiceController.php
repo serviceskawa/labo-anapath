@@ -13,6 +13,7 @@ use App\Models\TestOrder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables as FacadesDataTables;
 
 class InvoiceController extends Controller
 {
@@ -194,6 +195,107 @@ class InvoiceController extends Controller
             ->make(true);
     }
 
+    public function getInvoiceIndexforDatable(Request $request)
+    {
+        $data = $this->invoices->latest()->get();
+        return DataTables::of($data)->addIndexColumn()
+            ->editColumn('created_at', function ($data) {
+                return $data->date;
+            })
+            // ->setRowData([
+            //     'data-mytag' => function ($data) {
+            //         if ($data->is_urgent == 1) {
+            //             $result = $data->is_urgent;
+            //         } else {
+            //             $result = "";
+            //         }
+
+            //         return 'mytag=' . $result;
+            //     },
+            // ])
+            // ->setRowClass(function ($data) use ($request) {
+            //     if($data->is_urgent == 1){
+            //             if (!empty($data->report)) {
+            //                 if($data->report->is_deliver ==1){
+            //                     return 'table-success';
+            //                 }else {
+            //                     if($data->report->status == 1){
+            //                         return 'table-warning';
+            //                     }
+            //                 }
+
+            //             }
+            //                 return 'table-danger urgent';
+
+            //     }elseif (!empty($data->report)) {
+            //         if($data->report->is_deliver ==1){
+            //             return 'table-success';
+            //         }else {
+            //             if($data->report->status == 1){
+            //                 return 'table-warning';
+            //             }
+            //         }
+            //     }else {
+            //         return '';
+            //     }
+            // })
+            
+            ->addColumn('demande', function ($data) {
+               
+                return $data->test_order_id ? getTestOrderData($data->test_order_id)->code :'';
+            })
+            ->addColumn('patient', function ($data) {
+                return $data->test_order_id?
+                getTestOrderData($data->test_order_id)->patient->firstname.'
+                '.getTestOrderData($data->test_order_id)->patient->lastname :'';
+            })
+            ->addColumn('total', function ($data) {
+                return $data->subtotal;
+            })
+            ->addColumn('remise', function ($data) {
+                return $data->total;
+            })
+            
+            ->addColumn('status', function ($data) {
+                $badge  ='<span class="bg-'. ($data->paid != 1 ? 'danger' : 'success') .' badge float-end">'.($data->paid == 1 ? "Payé" : "En attente").' </span></td>';
+                return $badge;
+            })
+            
+            ->addColumn('action', function ($data) {
+                $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+                return $btnVoir;
+            })
+            ->filter(function ($query) use ($request) {
+               
+                if (!empty($request->get('cas_status'))) {
+                    $query->where('paid', $request->get('cas_status'));
+                }
+               
+                if(!empty($request->get('contenu')))
+                {
+                    $query->whereHas('order', function($query) use ($request){
+                        $query->where('code','like','%'.$request->get('contenu').'%');
+                    })
+                        ->orwhereHas('patient', function ($query) use ($request){
+                            $query->where('firstname','like', '%'.$request->get('contenu').'%')
+                            ->orwhere('lastname', 'like', '%'.$request->get('contenu').'%');
+                    });
+                }
+
+                if(!empty($request->get('dateBegin'))){
+                    //dd($request);
+                    $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
+                    $query->whereDate('created_at','>',$newDate);
+                }
+                if(!empty($request->get('dateEnd'))){
+                    //dd($request);
+                    $query->whereDate('created_at','<',$request->get('dateEnd'));
+                }
+            })
+            ->rawColumns(['demande', 'total', 'remise','patient','action'])
+            ->make(true);
+    
+    }
 
     public function business()
     {
@@ -369,4 +471,5 @@ class InvoiceController extends Controller
         $test = json_decode($response->getBody(), true);
         return response()->json(['status' => 200, 'type' => "cancel", 'response' => $test]);
     }
+    
 }
