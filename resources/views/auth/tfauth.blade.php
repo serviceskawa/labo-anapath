@@ -16,6 +16,9 @@
     <link href="{{ asset('/adminassets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('/adminassets/css/app.min.css') }}" rel="stylesheet" type="text/css" id="light-style" />
     <link href="{{ asset('/adminassets/css/app-dark.min.css') }}" rel="stylesheet" type="text/css" id="dark-style" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css"
+        integrity="sha512-6S2HWzVFxruDlZxI3sXOZZ4/eJ8AcxkQH1+JjSe/ONCEqR9L4Ysq5JdT5ipqtzU7WHalNwzwBv+iE51gNHJNqQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 </head>
 
@@ -43,10 +46,11 @@
                                 </h4>
                                 <p class="text-muted mb-4">Nous avons envoyé un code à 6 caractères à
                                     <strong>{{ $user->email }}</strong> . Le code expire sous peu, veuillez donc le
-                                    saisir rapidement.</p>
+                                    saisir rapidement.
+                                </p>
                             </div>
 
-                            <form id="codeForm" method="POST">
+                            <form id="codeForm" method="POST" autocomplete="off">
                                 @csrf
                                 <div class="mb-3">
                                     <input class="form-control" type="number" id="code" name="code"
@@ -90,25 +94,35 @@
 
 </html>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"
+    integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+@stack('extra-js')
 <script>
-    $('#codeForm').on('submit', function (e) {
+    toastr.options = {
+        "progressBar": true,
+        "timeOut": "7200",
+    };
+    $('#codeForm').on('submit', function(e) {
         e.preventDefault();
         let code = $('#code').val();
         $.ajax({
-            url: "{{route('login.postAuth')}}",
+            url: "{{ route('login.postAuth') }}",
             type: "POST",
             data: {
                 "_token": "{{ csrf_token() }}",
                 code: code,
             },
-            success: function (data) {
+            success: function(data) {
                 console.log(data);
-                if (data) {
-                    window.location.href = "{{url('/home')}}" ;
+                if (data == 200) {
+                    window.location.href = "{{ url('/home') }}";
+                } else {
+                    toastr.error("Le code saisi est incorecte", 'Code incorrecte');
                 }
             },
-            error: function (data) {
-                console.log(data)
+            error: function(data) {
+
             },
             // processData: false,
         });

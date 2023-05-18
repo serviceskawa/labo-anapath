@@ -40,13 +40,8 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
-        // $this->middleware('tfauth');
     }
 
-    public function tfauth()
-    {
-        $code = rand(100000,999999);
-    }
 
     /**
      * The user has been authenticated.
@@ -66,7 +61,7 @@ class LoginController extends Controller
             // Redirigez l'utilisateur vers la page de connexion avec un message d'erreur
             return redirect()->route('login')->with('error', 'Votre compte est désactivé. Veuillez contacter l\'administrateur.');
         }
-        
+
         //update attribute is_connect pour savoir qui est en ligne
         $user->fill([
             'is_connect' => 1,
