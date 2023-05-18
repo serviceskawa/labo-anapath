@@ -201,18 +201,22 @@ class UserController extends Controller
     public function updateActiveStatus($id)
     {
         $user = $this->user->find($id);
-        
+
         $status ="";
        try
        {
             if($user->is_active ==1){
                 $user->is_active = 0;
                 $user->save();
-                $status = "activé";
+                $status = "désactivé";
+                // Déconnectez l'utilisateur s'il est actuellement connecté
+                if (Auth::check() && Auth::id() === $user->id) {
+                    Auth::logout();
+                }
             }else{
                 $user->is_active = 1;
                 $user->save();
-                $status = "désactivé";
+                $status = "activé";
             }
             // dd($user);
             return back()->with('success','Le compte a été '.$status);
