@@ -20,3 +20,4 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/status/{code}',[ApiController::class, 'getCode']);
+Route::get('/codegByDB/{code}',[ApiController::class, 'getCodeDB']);
