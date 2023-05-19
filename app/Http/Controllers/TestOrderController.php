@@ -687,15 +687,7 @@ public function __construct(
                     return '';
                 }
             })
-            // ->addColumn('examen_file', function ($data) {
-            //     //change over
-            //     if (!empty($data->examen_file)) {
-            //         $btn = '<a href="' . Storage::url($data->examen_file) . '" class="btn btn-primary btn-sm" target="_blank"  rel="noopener noreferrer" type="button"><i class="mdi mdi-cloud-download"></i></a>';
-            //     } else {
-            //         $btn = 'Aucun fichier';
-            //     }
-            //     return $btn;
-            // })
+           
             ->addColumn('action', function ($data) {
                 $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
                 // $btnEdit = ' <a type="button" href="' . route('test_order.edit', $data->id) . '" class="btn btn-primary" title="Mettre à jour examen"><i class="mdi mdi-lead-pencil"></i></a>';
@@ -721,15 +713,7 @@ public function __construct(
                     }else {
                         $btnreport ="";
                     }
-                    // switch ($data->report->is_deliver) {
-                    //     //<a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-success" title="Cliquer pour marquer comme non livré"><i class="uil uil-envelope-upload"></i> Marquer comme Non Livrer</a>
-                    //     case 1:
-                    //         $btnreport = '';
-                    //         break;
-
-                    //     default:
-                    //         break;
-                    // }
+                   
                 } else {
                     $btnreport = "";
                 }
@@ -740,6 +724,34 @@ public function __construct(
                 // }
 
                 return $btnVoir .  $btnReport . $btnInvoice . $btnreport . $btnDelete;
+            })
+            ->addColumn('appel', function ($data) {
+                if (!empty($data->report)) {
+                    // $btn = $data->getReport($data->id);
+                    if ($data->report->appel ==2) {
+                        $btn = 'danger';
+                    }elseif ($data->report->appel ==1) {
+                        $btn = 'success';
+                    }else{
+                        $btn = 'warning';
+                    }
+
+                    // switch ($data->report->appel) {
+                    //     case 1:
+                    //         $btn = 'success';
+                    //         break;
+                    //     case 0:
+                    //         $btn = 'danger';
+
+                    //     default:
+                    //         $btn = 'warning';
+                    //         break;
+                    // }
+                } else {
+                    $btn = 'Non enregistré';
+                }
+                $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
+                return $span;
             })
             ->addColumn('patient', function ($data) {
                 return $data->patient->firstname . ' ' . $data->patient->lastname;
@@ -843,7 +855,7 @@ public function __construct(
                 }
 
             })
-            ->rawColumns(['action', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
+            ->rawColumns(['action','appel', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
             ->make(true);
     }
 

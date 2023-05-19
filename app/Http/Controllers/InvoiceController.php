@@ -197,7 +197,7 @@ class InvoiceController extends Controller
 
     public function getInvoiceIndexforDatable(Request $request)
     {
-        $data = $this->invoices->latest()->get();
+        $data = $this->invoices->latest();
         return DataTables::of($data)->addIndexColumn()
             ->editColumn('created_at', function ($data) {
                 return $data->date;
@@ -249,7 +249,11 @@ class InvoiceController extends Controller
             ->filter(function ($query) use ($request) {
 
                 if (!empty($request->get('cas_status'))) {
-                    $query->where('paid', $request->get('cas_status'));
+                    if (!$request->get('cas_status')) {
+                        $query->where('paid', 0);
+                    }else {
+                        $query->where('paid', $request->get('cas_status'));
+                    }
                 }
 
                 if(!empty($request->get('contenu')))

@@ -56,7 +56,7 @@ class ApiController extends Controller
         $report = Report::with(['patient'])->whereHas('order',function($query)use($codeGenerate){
             $query->where('code','like', '%'.$codeGenerate);
         })->first();
-        if($report){
+        if($report->status){
             return response()->json(['code'=>$report->order->code],200);
             // return response()->status(200);
             // return response()->setStatusCode(200) ;
