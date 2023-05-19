@@ -32,4 +32,9 @@ class Invoice extends Model
     {
         return $this->belongsTo(TestOrder::class, 'test_order_id');
     }
+
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class, 'patient_id');
+    }
 }

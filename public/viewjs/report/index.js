@@ -68,7 +68,10 @@ $(document).ready(function () {
         ajax: {
             url: ROUTEGETDATATABLE,
             data: function (d) {
-
+                d.statusquery = $('#statusquery').val()
+                d.contenu = $('#contenu').val()
+                d.dateBegin = $('#dateBegin').val()
+                d.dateEnd = $('#dateEnd').val()
             }
         },
         columns: [
@@ -103,6 +106,27 @@ $(document).ready(function () {
             [0, 'asc']
         ],
 
+    });
+     // Recherche selon les cas
+     $("#statusquery").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+    $('#contenu').on("input", function(){
+        table.draw();
+    });
+
+    $('#dateEnd').on('input', function() {
+        console.log($('#dateEnd').val());
+        table.draw();
+        //console.log(search.value);
+    });
+
+    $('#dateBegin').on('input', function() {
+        console.log($('#dateBegin').val());;
+        table.draw();
+        //console.log(search.value);
     });
 
 });

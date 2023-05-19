@@ -101,6 +101,70 @@ class ReportController extends Controller
             "description_supplementaire" => $request->description_supplementaire != "" ? $request->description_supplementaire : '',
         ])->save();
 
+        // if ($report->status==1) {
+        //     $client = new Client();
+        //     $accessToken = "421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk";
+
+        //     // Pour lancer un appel
+        //     $responsevocal = $client->request('POST', "https://staging.getourvoice.com/api/v1/calls", [
+        //         'headers' => [
+        //             'Authorization' => 'Bearer ' . $accessToken,
+        //             "Content-Type"=> "application/json",
+        //             "Accept"=> "application/json",
+        //         ],
+        //         'json' => [
+        //             'to' => [
+        //                 "22954325390"
+        //             ],
+        //             "audio_url"=> 'https://caap.bj/wp-content/uploads/2023/03/textToSpeech.mp3',
+        //             // "body"=> "TEST TEST",
+        //             // "sender_id"=> "d823ac53-658c-4790-af0c-adc009b9a830"
+        //         ]
+        //     ]);
+
+        //     $vocal = json_decode($responsevocal->getBody(), true);
+
+        //     //Récupérer tous les appels vocaux
+        //     $response = $client->request('GET', "https://staging.getourvoice.com/api/v1/calls", [
+        //         'headers' => [
+        //             'Authorization' => 'Bearer ' . $accessToken,
+        //             "Content-Type"=> "application/json",
+        //             "Accept"=> "application/json",
+        //         ],
+        //     ]);
+
+        //     $data = json_decode($response->getBody(), true);
+
+        //     $getV = [];
+        //     foreach ($data["data"] as $value) {
+        //         if ($value['id']=$vocal['data']['id']) {
+        //             $getV = $value;
+        //         }
+        //     }
+
+        //     // if ($getV['status']=="busy") {
+        //     //     // Pour envoyer un message
+        //     //      $sms = "Vos résultats d'examen médical sont maintenant disponibles. Veuillez nous contacter pour plus d'informations. Centre ADechina.
+        //     //     ";
+        //     //     $responsesms = $client->request('POST', "https://staging.getourvoice.com/api/v1/messages", [
+        //     //         'headers' => [
+        //     //             'Authorization' => 'Bearer ' . $accessToken,
+        //     //             "Content-Type"=> "application/json",
+        //     //             "Accept"=> "application/json",
+        //     //         ],
+        //     //         'json' => [
+        //     //             'to' => [
+        //     //                 "22963797131"
+        //     //             ],
+        //     //             //"audio_url"=> 'https://caap.bj/wp-content/uploads/2023/03/textToSpeech.mp3',
+        //     //             "body"=> $sms,
+        //     //             "sender_id"=> "d823ac53-658c-4790-af0c-adc009b9a830"
+        //     //         ]
+        //     //     ]);
+
+        //     // }
+        // }
+
         $log = new LogReport();
         $log->operation = "Mettre à jour ";
         $log->report_id = $request->report_id;
