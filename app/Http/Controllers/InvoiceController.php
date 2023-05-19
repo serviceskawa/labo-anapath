@@ -213,35 +213,14 @@ class InvoiceController extends Controller
             //         return 'mytag=' . $result;
             //     },
             // ])
-            // ->setRowClass(function ($data) use ($request) {
-            //     if($data->is_urgent == 1){
-            //             if (!empty($data->report)) {
-            //                 if($data->report->is_deliver ==1){
-            //                     return 'table-success';
-            //                 }else {
-            //                     if($data->report->status == 1){
-            //                         return 'table-warning';
-            //                     }
-            //                 }
+            ->setRowClass(function ($data) use ($request) {
+                if($data->paid == 1){
+                    return 'table-success';
+                }
+            })
 
-            //             }
-            //                 return 'table-danger urgent';
-
-            //     }elseif (!empty($data->report)) {
-            //         if($data->report->is_deliver ==1){
-            //             return 'table-success';
-            //         }else {
-            //             if($data->report->status == 1){
-            //                 return 'table-warning';
-            //             }
-            //         }
-            //     }else {
-            //         return '';
-            //     }
-            // })
-            
             ->addColumn('demande', function ($data) {
-               
+
                 return $data->test_order_id ? getTestOrderData($data->test_order_id)->code :'';
             })
             ->addColumn('patient', function ($data) {
@@ -255,22 +234,24 @@ class InvoiceController extends Controller
             ->addColumn('remise', function ($data) {
                 return $data->total;
             })
-            
+
             ->addColumn('status', function ($data) {
-                $badge  ='<span class="bg-'. ($data->paid != 1 ? 'danger' : 'success') .' badge float-end">'.($data->paid == 1 ? "Payé" : "En attente").' </span></td>';
+                $badge  =$data->paid == 1 ? "Payé" : "En attente";
                 return $badge;
             })
-            
+
             ->addColumn('action', function ($data) {
-                $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
-                return $btnVoir;
+                $btnVoir = '<a type="button" href="' . route('details_test_order.index', getTestOrderData($data->test_order_id)->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+                $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
+
+                return $btnVoir . $btnInvoice;
             })
             ->filter(function ($query) use ($request) {
-               
+
                 if (!empty($request->get('cas_status'))) {
                     $query->where('paid', $request->get('cas_status'));
                 }
-               
+
                 if(!empty($request->get('contenu')))
                 {
                     $query->whereHas('order', function($query) use ($request){
@@ -294,7 +275,7 @@ class InvoiceController extends Controller
             })
             ->rawColumns(['demande', 'total', 'remise','patient','action'])
             ->make(true);
-    
+
     }
 
     public function business()
@@ -471,5 +452,5 @@ class InvoiceController extends Controller
         $test = json_decode($response->getBody(), true);
         return response()->json(['status' => 200, 'type' => "cancel", 'response' => $test]);
     }
-    
+
 }

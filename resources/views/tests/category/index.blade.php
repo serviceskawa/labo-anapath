@@ -29,7 +29,6 @@
     @include('layouts.alerts')
 
 
-
     <div class="card mb-md-0 mb-3">
         <div class="card-body">
             <div class="card-widgets">
