@@ -31,8 +31,8 @@ class ApiController extends Controller
         }
     }
 
-    public function getCodeByDB($code){
-        
+    public function getCodeByDB(Request $request){
+        $code = $request->input('codeByDB');
         //recuppérer les deux premiers caractère de la chaine
         $beginCode = substr($code, 0,2);
         //récupérer les caractères à partir de la position 3
@@ -45,8 +45,8 @@ class ApiController extends Controller
         return $report;
     }
 
-    public function getCodeDB($code){
-        
+    public function getCodeDB(Request $request){
+        $code = $request->input('codeByDB');
          //recuppérer les deux premiers caractère de la chaine
          $beginCode = substr($code, 0,2);
          //récupérer les caractères à partir de la position 3
