@@ -25,9 +25,9 @@ class ApiController extends Controller
                 $signatory3 = getSignatory1($report->signatory3);
             }
            
-            return response()->json(['status'=>200,'data'=>$report,'signatory1'=>$signatory1,'signatory2'=>$signatory2,'signatory3'=>$signatory3]);
+            return response()->json(['status'=>200,'data'=>$report,'signatory1'=>$signatory1,'signatory2'=>$signatory2,'signatory3'=>$signatory3],200);
         }else{
-            return response()->json('error');
+            return response()->json(['status'=>'error'],500);
         }
     }
 
