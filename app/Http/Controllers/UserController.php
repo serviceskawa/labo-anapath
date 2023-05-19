@@ -195,7 +195,7 @@ class UserController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $this->user->find($id)->delete();
-        return redirect()->route('user.role-index')->with('success', "    Un utilisateur a été supprimé ! ");
+        return redirect()->route('user.index')->with('success', "Un utilisateur a été supprimé ! ");
     }
 
     public function updateActiveStatus($id)
