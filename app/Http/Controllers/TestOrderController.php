@@ -725,6 +725,34 @@ public function __construct(
 
                 return $btnVoir .  $btnReport . $btnInvoice . $btnreport . $btnDelete;
             })
+            ->addColumn('appel', function ($data) {
+                if (!empty($data->report)) {
+                    // $btn = $data->getReport($data->id);
+                    if ($data->report->appel ==2) {
+                        $btn = 'danger';
+                    }elseif ($data->report->appel ==1) {
+                        $btn = 'success';
+                    }else{
+                        $btn = 'warning';
+                    }
+
+                    // switch ($data->report->appel) {
+                    //     case 1:
+                    //         $btn = 'success';
+                    //         break;
+                    //     case 0:
+                    //         $btn = 'danger';
+
+                    //     default:
+                    //         $btn = 'warning';
+                    //         break;
+                    // }
+                } else {
+                    $btn = 'Non enregistré';
+                }
+                $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
+                return $span;
+            })
             ->addColumn('patient', function ($data) {
                 return $data->patient->firstname . ' ' . $data->patient->lastname;
             })
@@ -827,7 +855,7 @@ public function __construct(
                 }
 
             })
-            ->rawColumns(['action', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
+            ->rawColumns(['action','appel', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
             ->make(true);
     }
 
