@@ -57,9 +57,12 @@ class ApiController extends Controller
             $query->where('code','like', '%'.$codeGenerate);
         })->first();
         if($report){
-            return response()->json($report->order->code);
+            return response()->json(['code'=>$report->order->code],200);
+            // return response()->status(200);
+            // return response()->setStatusCode(200) ;
         }else{
-            return response()->json(false);
+            // return response()->status(500);
+            return response()->json(['status'=>'Non trouvé'],500);
         }
     }
 }
