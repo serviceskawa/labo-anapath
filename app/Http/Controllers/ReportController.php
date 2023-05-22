@@ -101,6 +101,7 @@ class ReportController extends Controller
             "description_supplementaire" => $request->description_supplementaire != "" ? $request->description_supplementaire : '',
         ])->save();
 
+<<<<<<< HEAD
         // if ($report->status==1) {
         //     $client = new Client();
         //     $accessToken = "421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk";
@@ -150,6 +151,57 @@ class ReportController extends Controller
         //         $report->save();
         //     }
         // }
+=======
+        if ($report->status==1) {
+            $client = new Client();
+            $accessToken = "421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk";
+
+            // Pour lancer un appel
+            $responsevocal = $client->request('POST', "https://staging.getourvoice.com/api/v1/calls", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    "Content-Type"=> "application/json",
+                    "Accept"=> "application/json",
+                ],
+                'json' => [
+                    'to' => [
+                        "22963797131"
+                    ],
+                    "audio_url"=> 'https://caap.bj/wp-content/uploads/2023/03/textToSpeech.mp3',
+                    // "body"=> "TEST TEST",
+                    // "sender_id"=> "d823ac53-658c-4790-af0c-adc009b9a830"
+                ]
+            ]);
+
+            $vocal = json_decode($responsevocal->getBody(), true);
+
+            //Récupérer tous les appels vocaux
+            $response = $client->request('GET', "https://staging.getourvoice.com/api/v1/calls", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    "Content-Type"=> "application/json",
+                    "Accept"=> "application/json",
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            $getV = [];
+            foreach ($data["data"] as $value) {
+                if ($value['id']=$vocal['data']['id']) {
+                    $getV = $value;
+                }
+            }
+
+            if ($getV['status']=="busy") {
+                $report->appel = 2;
+                $report->save();
+            }elseif ($getV['status']=="completed") {
+                $report->appel = 1;
+                $report->save();
+            }
+        }
+>>>>>>> effdb3a67d48b7884c1a9f9f6f2730457d18dc78
 
         $log = new LogReport();
         $log->operation = "Mettre à jour ";
@@ -232,7 +284,7 @@ class ReportController extends Controller
         $dataUri = $result->getDataUri();
 
         // $qrCodeDataUri = $qrCode->writeDataUri();
-       
+
 
         if ($report->signatory1 != null) {
             $signatory1 = $this->user->findorfail($report->signatory1);
@@ -256,7 +308,7 @@ class ReportController extends Controller
         date_default_timezone_set('Africa/Porto-Novo');
         //date_format($report->updated_at,"d/m/Y");
 
-        
+
         //dd('cc');
         $data = [
             'code' => $report->code,
@@ -267,7 +319,7 @@ class ReportController extends Controller
             'title' => $report->title,
             'content' => $report->description,
             'content_supplementaire' => $report->description_supplementaire != "" ? $report->description_supplementaire : '',
-            
+
             'signatory1' => $report->signatory1 != 0 ? $signatory1->lastname . ' ' . $signatory1->firstname : '',
             'signature1' => $report->signatory1 != 0  ? $signatory1->signature : '',
 
@@ -439,7 +491,7 @@ class ReportController extends Controller
             })
             ->filter(function ($query) use ($request) {
 
-               
+
                 if (!empty($request->get('statusquery'))) {
                     if ($request->get('statusquery') == 1) {
                         $query->where('status', 1);
@@ -472,11 +524,11 @@ class ReportController extends Controller
                 }
 
             })
-            
+
             ->make(true);
 
     }
 
-    
+
 
 }
