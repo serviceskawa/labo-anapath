@@ -143,7 +143,7 @@ class ReportController extends Controller
             }
 
             if ($getV['status']=="busy") {
-                $report->appel = 0;
+                $report->appel = 2;
                 $report->save();
             }elseif ($getV['status']=="completed") {
                 $report->appel = 1;
@@ -232,7 +232,7 @@ class ReportController extends Controller
         $dataUri = $result->getDataUri();
 
         // $qrCodeDataUri = $qrCode->writeDataUri();
-       
+
 
         if ($report->signatory1 != null) {
             $signatory1 = $this->user->findorfail($report->signatory1);
@@ -256,7 +256,7 @@ class ReportController extends Controller
         date_default_timezone_set('Africa/Porto-Novo');
         //date_format($report->updated_at,"d/m/Y");
 
-        
+
         //dd('cc');
         $data = [
             'code' => $report->code,
@@ -267,7 +267,7 @@ class ReportController extends Controller
             'title' => $report->title,
             'content' => $report->description,
             'content_supplementaire' => $report->description_supplementaire != "" ? $report->description_supplementaire : '',
-            
+
             'signatory1' => $report->signatory1 != 0 ? $signatory1->lastname . ' ' . $signatory1->firstname : '',
             'signature1' => $report->signatory1 != 0  ? $signatory1->signature : '',
 
@@ -439,7 +439,7 @@ class ReportController extends Controller
             })
             ->filter(function ($query) use ($request) {
 
-               
+
                 if (!empty($request->get('statusquery'))) {
                     if ($request->get('statusquery') == 1) {
                         $query->where('status', 1);
@@ -472,11 +472,11 @@ class ReportController extends Controller
                 }
 
             })
-            
+
             ->make(true);
 
     }
 
-    
+
 
 }
