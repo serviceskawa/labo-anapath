@@ -101,55 +101,55 @@ class ReportController extends Controller
             "description_supplementaire" => $request->description_supplementaire != "" ? $request->description_supplementaire : '',
         ])->save();
 
-        if ($report->status==1) {
-            $client = new Client();
-            $accessToken = "421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk";
+        // if ($report->status==1) {
+        //     $client = new Client();
+        //     $accessToken = "421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk";
 
-            // Pour lancer un appel
-            $responsevocal = $client->request('POST', "https://staging.getourvoice.com/api/v1/calls", [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $accessToken,
-                    "Content-Type"=> "application/json",
-                    "Accept"=> "application/json",
-                ],
-                'json' => [
-                    'to' => [
-                        "22963797131"
-                    ],
-                    "audio_url"=> 'https://caap.bj/wp-content/uploads/2023/03/textToSpeech.mp3',
-                    // "body"=> "TEST TEST",
-                    // "sender_id"=> "d823ac53-658c-4790-af0c-adc009b9a830"
-                ]
-            ]);
+        //     // Pour lancer un appel
+        //     $responsevocal = $client->request('POST', "https://staging.getourvoice.com/api/v1/calls", [
+        //         'headers' => [
+        //             'Authorization' => 'Bearer ' . $accessToken,
+        //             "Content-Type"=> "application/json",
+        //             "Accept"=> "application/json",
+        //         ],
+        //         'json' => [
+        //             'to' => [
+        //                 "22963797131"
+        //             ],
+        //             "audio_url"=> 'https://caap.bj/wp-content/uploads/2023/03/textToSpeech.mp3',
+        //             // "body"=> "TEST TEST",
+        //             // "sender_id"=> "d823ac53-658c-4790-af0c-adc009b9a830"
+        //         ]
+        //     ]);
 
-            $vocal = json_decode($responsevocal->getBody(), true);
+        //     $vocal = json_decode($responsevocal->getBody(), true);
 
-            //Récupérer tous les appels vocaux
-            $response = $client->request('GET', "https://staging.getourvoice.com/api/v1/calls", [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $accessToken,
-                    "Content-Type"=> "application/json",
-                    "Accept"=> "application/json",
-                ],
-            ]);
+        //     //Récupérer tous les appels vocaux
+        //     $response = $client->request('GET', "https://staging.getourvoice.com/api/v1/calls", [
+        //         'headers' => [
+        //             'Authorization' => 'Bearer ' . $accessToken,
+        //             "Content-Type"=> "application/json",
+        //             "Accept"=> "application/json",
+        //         ],
+        //     ]);
 
-            $data = json_decode($response->getBody(), true);
+        //     $data = json_decode($response->getBody(), true);
 
-            $getV = [];
-            foreach ($data["data"] as $value) {
-                if ($value['id']=$vocal['data']['id']) {
-                    $getV = $value;
-                }
-            }
+        //     $getV = [];
+        //     foreach ($data["data"] as $value) {
+        //         if ($value['id']=$vocal['data']['id']) {
+        //             $getV = $value;
+        //         }
+        //     }
 
-            if ($getV['status']=="busy") {
-                $report->appel = 0;
-                $report->save();
-            }elseif ($getV['status']=="completed") {
-                $report->appel = 1;
-                $report->save();
-            }
-        }
+        //     if ($getV['status']=="busy") {
+        //         $report->appel = 0;
+        //         $report->save();
+        //     }elseif ($getV['status']=="completed") {
+        //         $report->appel = 1;
+        //         $report->save();
+        //     }
+        // }
 
         $log = new LogReport();
         $log->operation = "Mettre à jour ";
