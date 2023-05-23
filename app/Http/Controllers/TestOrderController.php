@@ -232,7 +232,8 @@ public function __construct(
             'is_urgent' => $request->is_urgent,
             'examen_reference_select' => $request->examen_reference_select,
             'examen_reference_input' => $request->examen_reference_input,
-            'type_examen' => $request->type_examen
+            'type_examen' => $request->type_examen,
+            'option'=> $request->option,
         ];
 
         $contrat = $this->contrat->findOrFail($validatedData['contrat_id']);
@@ -566,6 +567,7 @@ public function __construct(
             'examen_reference_input' => 'nullable',
             'type_examen' => 'required|exists:type_orders,id',
             'attribuate_doctor_id' => 'required|exists:users,id',
+            'option' => 'nullable',
         ]);
 
         $contrat = $this->contrat->FindOrFail($data['contrat_id']);
@@ -618,6 +620,7 @@ public function __construct(
             $test_order->test_affiliate = $data['test_affiliate'] ? $data['test_affiliate'] : "";
             $test_order->type_order_id = $data['type_examen'];
             $test_order->attribuate_doctor_id = $data['attribuate_doctor_id'];
+            $test_order->option = $data['option'];
             $test_order->save();
 
             $invoice = $test_order->invoice()->first();

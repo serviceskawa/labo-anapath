@@ -33,7 +33,8 @@ class TestOrderRequest extends FormRequest
             'is_urgent' => 'nullable',
             'examen_reference_select' => 'nullable',
             'examen_reference_input' => 'nullable',
-            'type_examen' => ['required', 'exists:type_orders,id']
+            'type_examen' => ['required', 'exists:type_orders,id'],
+            'option' => 'nullable',
         ];
     }
 }

@@ -307,7 +307,16 @@ class ReportController extends Controller
             ])
             ->save();
 
-        $this->pdf($reportId);
+        // $this->pdf($reportId);
+
+        if ($report->patient->option ==1) {
+            $this->sendSms($report);
+        }
+        elseif ($report->patient->option==0) {
+            $this->callUser($report);
+        }
+
+
         // dd($report);
         //return redirect()->back()->with('success', "Effectué avec succès ! ");
     }
@@ -403,9 +412,10 @@ class ReportController extends Controller
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
                     $query->whereDate('created_at', '>', $newDate);
                 }
+
                 if (!empty($request->get('dateEnd'))) {
-                    //dd($request);
-                    $query->whereDate('created_at', '<', $request->get('dateEnd'));
+                    $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
+                    $query->whereDate('created_at', '<', $newDate);
                 }
             })
 
@@ -414,53 +424,84 @@ class ReportController extends Controller
 
     public function callUser($report)
     {
-            $client = new Client();
-            $accessToken = '421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk';
+        $client = new Client();
+        $accessToken = '421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk';
+        // $audio_url_disponible = '';
+        // $audio_url_non_disponible = '';
+        $to = '229'.$report->patient->telephone1;
+        if ($report->patient->langue === 'fon') {
+            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/05/E.-RESULTAT-DISPONIBLE.mp3';
+            $audio_url_non_disponible = 'https://caap.bj/wp-content/uploads/2023/05/RESULTAT-NON-DISPONIBLE-.mp3';
+        } elseif ($report->patient->langue === 'anglais') {
+            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/05/E.-RESULTAT-DISPONIBLE-2.mp3';
+            $audio_url_non_disponible = 'https://caap.bj/wp-content/uploads/2023/05/Result-not-available.mp3';
+        } else {
+            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/05/E.-RESULTAT-DISPONIBLE.mp3';
+            $audio_url_non_disponible = 'https://caap.bj/wp-content/uploads/2023/05/F.-RESULTAT-INDISPONIBLE.mp3';
+        }
 
+        // Pour lancer un appel
+        $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/call', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ],
+            'json' => [
+                'to' => [$to],
+                'audio_url' => 'https://caap.bj/wp-content/uploads/2023/03/textToSpeech.mp3',
+                // 'audio_url' => $audio_url_disponible,
+            ],
+        ]);
 
+        $vocal = json_decode($responsevocal->getBody(), true);
 
-            // Pour lancer un appel
-            $responsevocal = $client->request('POST', 'https://staging.getourvoice.com/api/v1/calls', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $accessToken,
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                ],
-                'json' => [
-                    'to' => [$report->patient->telephone1],
-                    'audio_url' => 'https://caap.bj/wp-content/uploads/2023/03/textToSpeech.mp3',
-                    // "body"=> "TEST TEST",
-                    // "sender_id"=> "d823ac53-658c-4790-af0c-adc009b9a830"
-                ],
-            ]);
+        // //Récupérer tous les appels vocaux
+        // $response = $client->request('GET', 'https://staging.getourvoice.com/api/v1/calls', [
+        //     'headers' => [
+        //         'Authorization' => 'Bearer ' . $accessToken,
+        //         'Content-Type' => 'application/json',
+        //         'Accept' => 'application/json',
+        //     ],
+        // ]);
 
-            $vocal = json_decode($responsevocal->getBody(), true);
+        // $data = json_decode($response->getBody(), true);
 
-            //Récupérer tous les appels vocaux
-            $response = $client->request('GET', 'https://staging.getourvoice.com/api/v1/calls', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $accessToken,
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                ],
-            ]);
+        // $getV = [];
+        // foreach ($data['data'] as $value) {
+        //     if ($value['id'] = $vocal['data']['id']) {
+        //         $getV = $value;
+        //     }
+        // }
 
-            $data = json_decode($response->getBody(), true);
+        // if ($getV['status'] == 'busy') {
+        //     $report->appel = 2;
+        //     $report->save();
+        // } elseif ($getV['status'] == 'completed') {
+        //     $report->appel = 1;
+        //     $report->save();
+        // }
+    }
 
-            $getV = [];
-            foreach ($data['data'] as $value) {
-                if ($value['id'] = $vocal['data']['id']) {
-                    $getV = $value;
-                }
-            }
+    public function sendSms($report)
+    {
+        $client = new Client();
+        $accessToken = '421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk';
+        $to = '229'.$report->patient->telephone1;
 
-            if ($getV['status'] == 'busy') {
-                $report->appel = 2;
-                $report->save();
-            } elseif ($getV['status'] == 'completed') {
-                $report->appel = 1;
-                $report->save();
-            }
-
+        // Pour lancer un appel
+        $responsevocal = $client->request('POST', 'https://staging.getourvoice.com/api/v1/messages', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ],
+            'json' => [
+                'to' => [$to],
+                'body' => 'Vos résultats sont disponible',
+                'sender_id'=> 'fbcad132-58ae-4e99-9862-635151083d4a',
+                // 'audio_url' => $audio_url_disponible,
+            ],
+        ]);
     }
 }

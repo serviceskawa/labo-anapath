@@ -56,7 +56,7 @@ function edit(id) {
         type: "GET",
         url: bases= baseUrl + "/getpatient/" + e_id,
         success: function(data) {
-
+            console.log(data);
             $('#id2').val(data.id);
             $('#code2').val(data.code);
             $('#genre2').val(data.genre).change();
@@ -66,6 +66,7 @@ function edit(id) {
             $('#year_or_month2').val(data.year_or_month);
             $('#profession2').val(data.profession);
             $('#adresse2').val(data.adresse);
+            $('#langue2').val(data.langue);
             $('#telephone1_2').val(data.telephone1);
             $('#telephone2_2').val(data.telephone2);
 
