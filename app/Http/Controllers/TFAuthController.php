@@ -23,11 +23,12 @@ class TFAuthController extends Controller
         $user = $this->userConnect;
         if ($user->is_active ==0) {
             return redirect()->route('login')->with('error', 'Votre compte est désactivé. Veuillez contacter l\'administrateur.');
+        }else {
+            $userEmail = $user->email;
+            $this->sendEmail($user);
+            $error = "";
+            return view('auth.tfauth', compact('user', 'error'));
         }
-        $userEmail = $user->email;
-        $this->sendEmail($user);
-        $error = "";
-        return view('auth.tfauth', compact('user', 'error'));
     }
 
     public function postAuth(Request $request)
