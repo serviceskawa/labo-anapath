@@ -118,6 +118,7 @@ $(document).ready(function () {
         let age = $('#age').val();
         let telephone1 = $('#telephone1').val();
         let genre = $('#genre').val();
+        let langue = $('#langue').val();
         // alert(firstname);
         $.ajax({
             url: ROUTESTOREPATIENT,
@@ -129,7 +130,8 @@ $(document).ready(function () {
                 firstname: firstname,
                 age: age,
                 telephone1: telephone1,
-                genre: genre
+                genre: genre,
+                langue: langue,
             },
             success: function (data) {
 
@@ -149,7 +151,7 @@ $(document).ready(function () {
 });
 
 $(document).ready(function() {
-    
+
 
     $('#type_examen').on('change', function(e) {
         var typeExamenOption = $('#type_examen option:selected').text();
@@ -162,7 +164,7 @@ $(document).ready(function() {
             $(".examenReferenceSelect").show();
             $(".examenReferenceInput").hide();
             $( "#examen_reference_select" ).select2({
-                ajax: { 
+                ajax: {
                 url: "{{route('test_order.get_all_test_order')}}",
                 dataType: 'json',
                 delay: 250,
@@ -179,12 +181,12 @@ $(document).ready(function() {
                 },
                 cache: true
                 }
-        
+
             });
         }else {
             $(".examenReferenceInput").hide();
             $(".examenReferenceSelect").hide();
         }
-       
+
     });
 });

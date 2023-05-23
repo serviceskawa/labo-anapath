@@ -73,6 +73,15 @@
                         <textarea type="text" name="adresse" class="form-control" required></textarea>
                     </div>
 
+                    <div class="mb-3">
+                        <label for="example-select" class="form-label">Langue parlée<span style="color:red;">*</span></label>
+                        <select class="form-select" id="langue" name="langue" required>
+                            <option value="">Sélectionner une langue</option>
+                            <option value="français">Français</option>
+                            <option value="fon">Fon</option>
+                            <option value="anglais">Anglais</option>
+                        </select>
+                    </div>
 
 
                 </div>

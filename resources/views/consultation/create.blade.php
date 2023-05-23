@@ -194,6 +194,7 @@
                 let age = $('#age').val();
                 let year_or_month = $('#year_or_month').val();
                 let telephone1 = $('#telephone1').val();
+                let langue = $('#langue').val();
                 let genre = $('#genre').val();
                 // alert(firstname);
                 $.ajax({
@@ -207,7 +208,8 @@
                         age: age,
                         year_or_month: year_or_month,
                         telephone1: telephone1,
-                        genre: genre
+                        genre: genre,
+                        langue: langue
                     },
                     success: function(data) {
 

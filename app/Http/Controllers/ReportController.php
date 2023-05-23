@@ -15,8 +15,6 @@ use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 use Spipu\Html2Pdf\Html2Pdf;
 
-
-
 // require _DIR_.'/vendor/autoload.php';
 use App\Models\SettingReportTemplate;
 
@@ -70,7 +68,6 @@ class ReportController extends Controller
         $doctors = $this->doctor->all();
         $user = Auth::user();
 
-
         return view('reports.index', compact('reports', 'doctors'));
     }
 
@@ -91,73 +88,27 @@ class ReportController extends Controller
         $user = Auth::user();
 
         $report = $this->report->findorfail($request->report_id);
-        $report->fill([
-            "description" => $request->content,
-            "signatory1" => $doctor_signataire1,
-            "signatory2" => $doctor_signataire2,
-            "signatory3" => $doctor_signataire3,
-            "status" => $request->status == "1" ? '1' : '0',
-            "title" => $request->title,
-            "description_supplementaire" => $request->description_supplementaire != "" ? $request->description_supplementaire : '',
-        ])->save();
-
-        if ($report->status==1) {
-            $client = new Client();
-            $accessToken = "421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk";
-
-            // Pour lancer un appel
-            $responsevocal = $client->request('POST', "https://staging.getourvoice.com/api/v1/calls", [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $accessToken,
-                    "Content-Type"=> "application/json",
-                    "Accept"=> "application/json",
-                ],
-                'json' => [
-                    'to' => [
-                        "22963797131"
-                    ],
-                    "audio_url"=> 'https://caap.bj/wp-content/uploads/2023/03/textToSpeech.mp3',
-                    // "body"=> "TEST TEST",
-                    // "sender_id"=> "d823ac53-658c-4790-af0c-adc009b9a830"
-                ]
-            ]);
-
-            $vocal = json_decode($responsevocal->getBody(), true);
-
-            //Récupérer tous les appels vocaux
-            $response = $client->request('GET', "https://staging.getourvoice.com/api/v1/calls", [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $accessToken,
-                    "Content-Type"=> "application/json",
-                    "Accept"=> "application/json",
-                ],
-            ]);
-
-            $data = json_decode($response->getBody(), true);
-
-            $getV = [];
-            foreach ($data["data"] as $value) {
-                if ($value['id']=$vocal['data']['id']) {
-                    $getV = $value;
-                }
-            }
-
-            if ($getV['status']=="busy") {
-                $report->appel = 2;
-                $report->save();
-            }elseif ($getV['status']=="completed") {
-                $report->appel = 1;
-                $report->save();
-            }
-        }
+        $report
+            ->fill([
+                'description' => $request->content,
+                'signatory1' => $doctor_signataire1,
+                'signatory2' => $doctor_signataire2,
+                'signatory3' => $doctor_signataire3,
+                'status' => $request->status == '1' ? '1' : '0',
+                'title' => $request->title,
+                'description_supplementaire' => $request->description_supplementaire != '' ? $request->description_supplementaire : '',
+            ])
+            ->save();
 
         $log = new LogReport();
-        $log->operation = "Mettre à jour ";
+        $log->operation = 'Mettre à jour ';
         $log->report_id = $request->report_id;
         $log->user_id = $user->id;
         $log->save();
 
-        return redirect()->back()->with('success', "   Examen mis à jour ! ");
+        return redirect()
+            ->back()
+            ->with('success', '   Examen mis à jour ! ');
     }
 
     /**
@@ -174,7 +125,10 @@ class ReportController extends Controller
         $report = $this->report->findorfail($id);
         $templates = $this->settingReportTemplate->all();
         $titles = $this->titleReport->all();
-        $logs = $this->logReport->where('report_id', 'like', $report->id)->latest()->get();
+        $logs = $this->logReport
+            ->where('report_id', 'like', $report->id)
+            ->latest()
+            ->get();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('reports.show', compact('report', 'setting', 'templates', 'titles', 'logs'));
@@ -216,23 +170,22 @@ class ReportController extends Controller
         //dd($report);
         $report = $this->report->find($id);
         $setting = $this->setting->find(1);
-        $text = $report->order?$report->order->code:'';
+        $text = $report->order ? $report->order->code : '';
         $user = Auth::user();
         $qrCode = new QrCode($text);
         $qrCode->setSize(300);
         $writer = new PngWriter();
         $result = $writer->write($qrCode);
-        $qrPng = $report->code .'_qrcode.png';
+        $qrPng = $report->code . '_qrcode.png';
 
         // Save it to a file {{ asset('storage/' . $signature1) }}
         // $result->saveToFile();
-        $result->saveToFile('storage/settings/app/'.$qrPng);
+        $result->saveToFile('storage/settings/app/' . $qrPng);
 
         // Generate a data URI to include image data inline (i.e. inside an <img> tag)
         $dataUri = $result->getDataUri();
 
         // $qrCodeDataUri = $qrCode->writeDataUri();
-
 
         if ($report->signatory1 != null) {
             $signatory1 = $this->user->findorfail($report->signatory1);
@@ -245,38 +198,36 @@ class ReportController extends Controller
         if ($report->signatory3 != null) {
             $signatory3 = $this->user->findorfail($report->signatory3);
         }
-        $year_month = "";
+        $year_month = '';
         if ($report->patient->year_or_month != 1) {
-            $year_month = "mois";
+            $year_month = 'mois';
         } else {
-            $year_month = "ans";
+            $year_month = 'ans';
         }
 
         setlocale(LC_TIME, 'fr_FR');
         date_default_timezone_set('Africa/Porto-Novo');
         //date_format($report->updated_at,"d/m/Y");
 
-
         //dd('cc');
         $data = [
             'code' => $report->code,
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
-            'prelevement_date' =>$report->order ?  date('d/m/Y', strtotime($report->order->prelevement_date)):'',
-            'test_affiliate' => $report->order ? $report->order->test_affiliate :'',
+            'prelevement_date' => $report->order ? date('d/m/Y', strtotime($report->order->prelevement_date)) : '',
+            'test_affiliate' => $report->order ? $report->order->test_affiliate : '',
             'qrcode' => $dataUri,
             'title' => $report->title,
             'content' => $report->description,
-            'content_supplementaire' => $report->description_supplementaire != "" ? $report->description_supplementaire : '',
+            'content_supplementaire' => $report->description_supplementaire != '' ? $report->description_supplementaire : '',
 
             'signatory1' => $report->signatory1 != 0 ? $signatory1->lastname . ' ' . $signatory1->firstname : '',
-            'signature1' => $report->signatory1 != 0  ? $signatory1->signature : '',
+            'signature1' => $report->signatory1 != 0 ? $signatory1->signature : '',
 
-
-            'signatory2' => $report->signatory2 != 0  ? $signatory2->lastname . ' ' . $signatory2->firstname : '',
-            'signature2' => $report->signatory2 != 0  ? $signatory2->signature : '',
+            'signatory2' => $report->signatory2 != 0 ? $signatory2->lastname . ' ' . $signatory2->firstname : '',
+            'signature2' => $report->signatory2 != 0 ? $signatory2->signature : '',
 
             'signatory3' => $report->signatory3 != 0 ? $signatory3->lastname . ' ' . $signatory3->firstname : '',
-            'signature3' => $report->signatory3  != 0 ? $signatory3->signature : '',
+            'signature3' => $report->signatory3 != 0 ? $signatory3->signature : '',
 
             'patient_firstname' => $report->patient->firstname,
             'patient_lastname' => $report->patient->lastname,
@@ -286,15 +237,15 @@ class ReportController extends Controller
             'footer' => $setting->footer,
             'hospital_name' => $report->order ? $report->order->hospital->name : '',
             'doctor_name' => $report->order ? $report->order->doctor->name : '',
-            'created_at' => date_format($report->created_at, "d/m/Y"),
-            'date' => date('d/m/Y')
+            'created_at' => date_format($report->created_at, 'd/m/Y'),
+            'date' => date('d/m/Y'),
         ];
 
         //dd($data);
 
         try {
             $log = new LogReport();
-            $log->operation = "Imprimer";
+            $log->operation = 'Imprimer';
             $log->report_id = $id;
             $log->user_id = $user->id;
             $log->save();
@@ -304,15 +255,7 @@ class ReportController extends Controller
             $html2pdf->pdf->SetDisplayMode('fullpage');
             $html2pdf->setTestTdInOnePage(false);
             // $html2pdf->setProtection(['copy', 'print'], 'user', 'password');
-            $html2pdf->__construct(
-                $orientation = 'P',
-                $format = 'A4',
-                $lang = 'fr',
-                $unicode = true,
-                $encoding = 'UTF-8',
-                $margins = array(8, 20, 8, 8),
-                $pdfa = false
-            );
+            $html2pdf->__construct($orientation = 'P', $format = 'A4', $lang = 'fr', $unicode = true, $encoding = 'UTF-8', $margins = [8, 20, 8, 8], $pdfa = false);
             $html2pdf->writeHTML($content);
             // Définir le mot de passe de protection
             //$password = '1234@2023';
@@ -339,7 +282,6 @@ class ReportController extends Controller
 
     public function getTemplate(Request $request)
     {
-
         $template = $this->settingReportTemplate->findorfail($request->id);
 
         return response()->json($template, 200);
@@ -354,12 +296,16 @@ class ReportController extends Controller
         $report = $this->report->findorfail($reportId);
 
         if (empty($report)) {
-            return redirect()->back()->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
+            return redirect()
+                ->back()
+                ->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
         }
 
-        $report->fill([
-            "is_deliver" => 1,
-        ])->save();
+        $report
+            ->fill([
+                'is_deliver' => 1,
+            ])
+            ->save();
 
         $this->pdf($reportId);
         // dd($report);
@@ -368,30 +314,26 @@ class ReportController extends Controller
 
     public function getReportsforDatatable(Request $request)
     {
-
         $data = $this->report->latest();
 
-
-        return DataTables::of($data)->addIndexColumn()
-            ->editColumn('code', function ($data){
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->editColumn('code', function ($data) {
                 //change over here
                 //return date('y/m/d',$data->created_at);
-                if($data->order)
-                {
+                if ($data->order) {
                     return $data->order->code;
-                }else{
+                } else {
                     return '';
                 }
             })
 
             ->addColumn('codepatient', function ($data) {
-
                 return $data->patient->code;
 
                 // return Invoice::whereMonth('updated_at', )->sum('total');
             })
             ->addColumn('patient', function ($data) {
-
                 return $data->patient->firstname . ' ' . $data->patient->lastname;
 
                 // return Invoice::whereMonth('updated_at', )->sum('total');
@@ -399,47 +341,41 @@ class ReportController extends Controller
             ->addColumn('telephone', function ($data) {
                 return $data->patient->telephone1;
             })
-            ->addColumn('created_at', function ($data){
-
-               return \Carbon\Carbon::parse($data->created_at)->format('d/m/Y');
+            ->addColumn('created_at', function ($data) {
+                return \Carbon\Carbon::parse($data->created_at)->format('d/m/Y');
             })
             ->addColumn('status', function ($data) {
-                if ($data->status==1) {
+                if ($data->status == 1) {
                     return 'Valider';
                 } else {
                     return 'Attente';
                 }
             })
-            ->addColumn('action', function ($data){
-                $btnVoir = '<a type="button" href="'. route('report.show', $data->id) .'"class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>';
+            ->addColumn('action', function ($data) {
+                $btnVoir = '<a type="button" href="' . route('report.show', $data->id) . '"class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>';
                 // $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
                 // $btnEdit = ' <a type="button" href="' . route('test_order.edit', $data->id) . '" class="btn btn-primary" title="Mettre à jour examen"><i class="mdi mdi-lead-pencil"></i></a>';
                 if ($data->order) {
-                    $btnReport = ' <a type="button" href="'.route('details_test_order.index', $data->order->id).'" class="btn btn-warning" title="Demande '.$data->order->code.'"><i class="uil-file-medical"></i> </a>';
+                    $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->order->id) . '" class="btn btn-warning" title="Demande ' . $data->order->code . '"><i class="uil-file-medical"></i> </a>';
                     // $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
                     // $btnreport = "";
-                }
-                 else {
+                } else {
                     $btnReport = ' ';
                 }
 
                 if ($data->status == 1) {
-                    if ($data->is_deliver==1) {
-                        $btnInvoice = ' <a type="button" href="'. route('report.updateDeliver', $data->id) .'" class="btn btn-success">Imprimer </a>';
+                    if ($data->is_deliver == 1) {
+                        $btnInvoice = ' <a type="button" href="' . route('report.updateDeliver', $data->id) . '" class="btn btn-success">Imprimer </a>';
                     } else {
-                        $btnInvoice = ' <a type="button" href="'. route('report.updateDeliver', $data->id) .'" class="btn btn-warning">Imprimer </a>';
+                        $btnInvoice = ' <a type="button" href="' . route('report.updateDeliver', $data->id) . '" class="btn btn-warning">Imprimer </a>';
                     }
-
-                }else{
-                    $btnInvoice='';
+                } else {
+                    $btnInvoice = '';
                 }
 
-
-                return $btnVoir .  $btnReport . $btnInvoice;
+                return $btnVoir . $btnReport . $btnInvoice;
             })
             ->filter(function ($query) use ($request) {
-
-
                 if (!empty($request->get('statusquery'))) {
                     if ($request->get('statusquery') == 1) {
                         $query->where('status', 1);
@@ -447,36 +383,84 @@ class ReportController extends Controller
                         $query->where('status', 0);
                     }
                 }
-                if(!empty($request->get('contenu')))
-                {
-                    $query->where('code','like','%'.$request->get('contenu').'%')
-                        ->orwhereHas('order', function($query) use ($request){
-                        $query->where('code', 'like', '%'.$request->get('contenu').'%');
-                            })
-                        ->orwhere('description', 'like', '%'.$request->get('contenu').'%')
-                        ->orwhereHas('patient', function ($query) use ($request){
-                        $query->where('firstname','like', '%'.$request->get('contenu').'%')
-                            ->orwhere('code','like', '%'.$request->get('contenu').'%')
-                            ->orwhere('lastname', 'like', '%'.$request->get('contenu').'%');
+                if (!empty($request->get('contenu'))) {
+                    $query
+                        ->where('code', 'like', '%' . $request->get('contenu') . '%')
+                        ->orwhereHas('order', function ($query) use ($request) {
+                            $query->where('code', 'like', '%' . $request->get('contenu') . '%');
+                        })
+                        ->orwhere('description', 'like', '%' . $request->get('contenu') . '%')
+                        ->orwhereHas('patient', function ($query) use ($request) {
+                            $query
+                                ->where('firstname', 'like', '%' . $request->get('contenu') . '%')
+                                ->orwhere('code', 'like', '%' . $request->get('contenu') . '%')
+                                ->orwhere('lastname', 'like', '%' . $request->get('contenu') . '%');
                         });
                 }
 
-                if(!empty($request->get('dateBegin'))){
+                if (!empty($request->get('dateBegin'))) {
                     //dd($request);
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
-                    $query->whereDate('created_at','>',$newDate);
+                    $query->whereDate('created_at', '>', $newDate);
                 }
-                if(!empty($request->get('dateEnd'))){
+                if (!empty($request->get('dateEnd'))) {
                     //dd($request);
-                    $query->whereDate('created_at','<',$request->get('dateEnd'));
+                    $query->whereDate('created_at', '<', $request->get('dateEnd'));
                 }
-
             })
 
             ->make(true);
-
     }
 
+    public function callUser($report)
+    {
+            $client = new Client();
+            $accessToken = '421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk';
 
 
+
+            // Pour lancer un appel
+            $responsevocal = $client->request('POST', 'https://staging.getourvoice.com/api/v1/calls', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+                'json' => [
+                    'to' => [$report->patient->telephone1],
+                    'audio_url' => 'https://caap.bj/wp-content/uploads/2023/03/textToSpeech.mp3',
+                    // "body"=> "TEST TEST",
+                    // "sender_id"=> "d823ac53-658c-4790-af0c-adc009b9a830"
+                ],
+            ]);
+
+            $vocal = json_decode($responsevocal->getBody(), true);
+
+            //Récupérer tous les appels vocaux
+            $response = $client->request('GET', 'https://staging.getourvoice.com/api/v1/calls', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            $getV = [];
+            foreach ($data['data'] as $value) {
+                if ($value['id'] = $vocal['data']['id']) {
+                    $getV = $value;
+                }
+            }
+
+            if ($getV['status'] == 'busy') {
+                $report->appel = 2;
+                $report->save();
+            } elseif ($getV['status'] == 'completed') {
+                $report->appel = 1;
+                $report->save();
+            }
+
+    }
 }

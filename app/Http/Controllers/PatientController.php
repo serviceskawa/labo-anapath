@@ -63,6 +63,7 @@ class PatientController extends Controller
             'genre' => $request->genre,
             'year_or_month' => $request->year_or_month,
             'age' => $request->age,
+            'langue' => $request->langue,
             'profession' => $request->profession,
             'birthday' => $request->birthday
         ];
@@ -90,6 +91,7 @@ class PatientController extends Controller
             'age' => $request->age,
             'year_or_month' => $request->year_or_month,
             'genre' => $request->genre,
+            'langue' => $request->langue,
         ];
 
         try {
@@ -140,6 +142,7 @@ class PatientController extends Controller
             'genre' => $request->genre,
             'year_or_month' => $request->year_or_month,
             'age' => $request->age,
+            'langue' =>$request->langue,
             'profession' => $request->profession,
             'birthday' => $request->birthday
         ];
@@ -158,6 +161,7 @@ class PatientController extends Controller
             $patient->age = $data['age'];
             $patient->year_or_month = $data['year_or_month'];
             $patient->profession = $data['profession'];
+            $patient->langue = $data['langue'];
 
             $patient->save();
 

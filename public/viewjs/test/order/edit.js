@@ -121,6 +121,7 @@ $(document).ready(function () {
         let year_or_month = $('#year_or_month').val();
         let telephone1 = $('#telephone1').val();
         let genre = $('#genre').val();
+        let langue = $('#langue').val();
         // alert(firstname);
         $.ajax({
             url: ROUTESTOREPATIENT,
@@ -133,7 +134,8 @@ $(document).ready(function () {
                 age: age,
                 year_or_month: year_or_month,
                 telephone1: telephone1,
-                genre: genre
+                genre: genre,
+                langue: langue
             },
             success: function (data) {
 
