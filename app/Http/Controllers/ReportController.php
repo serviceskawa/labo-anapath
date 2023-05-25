@@ -301,20 +301,30 @@ class ReportController extends Controller
                 ->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
         }
 
+        $beging = Carbon::createFromTime(8,0,0);
+        $end = Carbon::createFromTime(18,0,0);
+        $now = Carbon::now();
+
+        // dd($now);
+
         $report
             ->fill([
                 'is_deliver' => 1,
             ])
             ->save();
 
-        // $this->pdf($reportId);
+                // dd($report->order);
+            if ($report->order->option) {
+                $this->sendSms($report);
+            }
+            else{
+                if ($now>=$beging && $now<=$end) {
+                    dd('je peux envoyer');
+                    $this->callUser($report);
+                }
+            }
 
-        if ($report->patient->option ==1) {
-            $this->sendSms($report);
-        }
-        elseif ($report->patient->option==0) {
-            $this->callUser($report);
-        }
+            // $this->pdf($reportId);
 
 
         // dd($report);
@@ -441,7 +451,7 @@ class ReportController extends Controller
         }
 
         // Pour lancer un appel
-        $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/call', [
+        $responsevocal = $client->request('POST', 'https://staging.getourvoice.com/api/v1/calls', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
                 'Content-Type' => 'application/json',
@@ -449,38 +459,38 @@ class ReportController extends Controller
             ],
             'json' => [
                 'to' => [$to],
-                'audio_url' => 'https://caap.bj/wp-content/uploads/2023/03/textToSpeech.mp3',
-                // 'audio_url' => $audio_url_disponible,
+                // 'audio_url' => 'https://caap.bj/wp-content/uploads/2023/03/textToSpeech.mp3',
+                'audio_url' => $audio_url_disponible,
             ],
         ]);
 
         $vocal = json_decode($responsevocal->getBody(), true);
 
-        // //Récupérer tous les appels vocaux
-        // $response = $client->request('GET', 'https://staging.getourvoice.com/api/v1/calls', [
-        //     'headers' => [
-        //         'Authorization' => 'Bearer ' . $accessToken,
-        //         'Content-Type' => 'application/json',
-        //         'Accept' => 'application/json',
-        //     ],
-        // ]);
+        //Récupérer tous les appels vocaux
+        $response = $client->request('GET', 'https://staging.getourvoice.com/api/v1/calls', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ],
+        ]);
 
-        // $data = json_decode($response->getBody(), true);
+        $data = json_decode($response->getBody(), true);
 
-        // $getV = [];
-        // foreach ($data['data'] as $value) {
-        //     if ($value['id'] = $vocal['data']['id']) {
-        //         $getV = $value;
-        //     }
-        // }
+        $getV = [];
+        foreach ($data['data'] as $value) {
+            if ($value['id'] = $vocal['data']['id']) {
+                $getV = $value;
+            }
+        }
 
-        // if ($getV['status'] == 'busy') {
-        //     $report->appel = 2;
-        //     $report->save();
-        // } elseif ($getV['status'] == 'completed') {
-        //     $report->appel = 1;
-        //     $report->save();
-        // }
+        if ($getV['status'] == 'busy') {
+            $report->appel = 2;
+            $report->save();
+        } elseif ($getV['status'] == 'completed') {
+            $report->appel = 1;
+            $report->save();
+        }
     }
 
     public function sendSms($report)
@@ -488,6 +498,7 @@ class ReportController extends Controller
         $client = new Client();
         $accessToken = '421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk';
         $to = '229'.$report->patient->telephone1;
+        $body = 'Bonjour c\'est l cabinet medical Anathomie pathologique adechinan situé à fifadji vos résultats d\'analyse sont maintenant disponible vous pouvez venir les recupérer à tout moment pendant nos heures d\'ouvertures. Nous sommes ouvert du Lundi au vendredi de 08h à 17h Merci de votre confiance';
 
         // Pour lancer un appel
         $responsevocal = $client->request('POST', 'https://staging.getourvoice.com/api/v1/messages', [
@@ -498,8 +509,8 @@ class ReportController extends Controller
             ],
             'json' => [
                 'to' => [$to],
-                'body' => 'Vos résultats sont disponible',
-                'sender_id'=> 'fbcad132-58ae-4e99-9862-635151083d4a',
+                'body' => $body,
+                'sender_id'=> 'c7e219bb-aa98-49e4-a87d-71250babaf98',
                 // 'audio_url' => $audio_url_disponible,
             ],
         ]);

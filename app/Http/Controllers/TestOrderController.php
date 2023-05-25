@@ -233,7 +233,7 @@ public function __construct(
             'examen_reference_select' => $request->examen_reference_select,
             'examen_reference_input' => $request->examen_reference_input,
             'type_examen' => $request->type_examen,
-            'option'=> $request->option,
+            'option'=> $request->option?1:0,
         ];
 
         $contrat = $this->contrat->findOrFail($validatedData['contrat_id']);
@@ -269,6 +269,7 @@ public function __construct(
                 'is_urgent' => $request->has('is_urgent'),
                 'examen_file' => $examenFilePath,
                 'test_affiliate' => $testAffiliate,
+                'option' => $validatedData['option'],
                 'type_order_id' => $validatedData['type_examen']
             ]);
 
@@ -625,16 +626,20 @@ public function __construct(
 
             $invoice = $test_order->invoice()->first();
 
-            if ($invoice->paid !=1) {
-                $invoice->fill([
-                    "date" => date('Y-m-d'),
-                    "patient_id" => $test_order->patient_id,
-                    "client_name" => $test_order->patient->firstname . ' ' . $test_order->patient->lastname,
-                    "client_address" => $test_order->patient->adresse,
-               ])->save();
+            if ($invoice) {
+                if ($invoice->paid !=1) {
+                    $invoice->fill([
+                        "date" => date('Y-m-d'),
+                        "patient_id" => $test_order->patient_id,
+                        "client_name" => $test_order->patient->firstname . ' ' . $test_order->patient->lastname,
+                        "client_address" => $test_order->patient->adresse,
+                   ])->save();
+                }
+                return redirect()->route('invoice.show', [$invoice->id])->with('success', " Modification effectuée avec succès  ! ");
+            }else {
+                return back()->with('error',"La facture n'existe pas");
             }
 
-            return redirect()->route('invoice.show', [$invoice->id])->with('success', " Modification effectuée avec succès  ! ");
         } catch (\Throwable $ex) {
 
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
@@ -711,8 +716,10 @@ public function __construct(
 
                 if (!empty($data->report)) {
                     if ($data->report->status ==1) {
-                        // <button type="button" target="_blank" onclick="passwordTest('. $data->report->id.')" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </button>
-                        $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> <i class="uil-calling"></i> </a> ';
+                        // <button type="button" target="_blank" onclick="passwordTest('. $data->report->id.')" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </button>$data->option ?'<i class="uil-calling"></i>':'<i class="mdi mdi-message"></i> '
+                        $icon = $data->option ? '<i class="uil-message"></i>':'<i class="uil-calling"></i>';
+
+                        $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> '.$icon.'  </a> ';
                     }else {
                         $btnreport ="";
                     }
@@ -754,7 +761,9 @@ public function __construct(
                     $btn = 'Non enregistré';
                 }
                 $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
-                return $span;
+                if (!$data->option) {
+                    return $span;
+                }
             })
             ->addColumn('patient', function ($data) {
                 return $data->patient->firstname . ' ' . $data->patient->lastname;

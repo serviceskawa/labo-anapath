@@ -344,9 +344,9 @@
                                     <select class="form-select select2" data-toggle="select2" name="option" id="option"
                                     required>
                                     <option value="">Sélectionner une option d'envoie</option>
-                                    <option value="0">Appel</option>
-                                    <option value="1">SMS</option>
-                                   
+                                    <option {{ $test_order->option ? '' : 'selected' }} value="0">Appel</option>
+                                    <option {{ $test_order->option ? 'selected' : '' }} value="1">SMS</option>
+
                                 </select>
                             </div>
 
@@ -361,7 +361,7 @@
                                     {{ $test_order->is_urgent != 0 ? 'checked' : '' }} data-switch="success" />
                             @endif
                             <label for="switch3" data-on-label="Urgent" data-off-label="Normal"></label>
-                            
+
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">

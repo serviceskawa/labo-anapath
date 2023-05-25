@@ -15,6 +15,8 @@
     </style>
 @endsection
 
+
+
 @section('content')
     <div class="">
 
@@ -165,7 +167,7 @@
                                 data-switch="success" />
                             <label for="switch3" data-on-label="Urgent" data-off-label="Normal"></label>
                         </div>
-    
+
                         <div class="col-md-6">
                             {{-- <input type="checkbox" class="form-check-input" name="is_urgent" id=""> --}}
                             <label class="form-label">Option d'envoie des résultats</label><br>
@@ -174,7 +176,7 @@
                                 <option value="">Sélectionner une option d'envoie</option>
                                 <option value="0">Appel</option>
                                 <option value="1">SMS</option>
-                               
+
                             </select>
                         </div>
                     </div>
@@ -401,6 +403,7 @@
 
     </div>
 @endsection
+
 
 
 @push('extra-js')
