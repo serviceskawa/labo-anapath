@@ -202,11 +202,16 @@ class InvoiceController extends Controller
             ->editColumn('created_at', function ($data) {
                 return $data->date;
             })
-           
+
             ->setRowClass(function ($data) use ($request) {
                 if($data->paid == 1){
                     return 'table-success';
                 }
+            })
+
+            ->addColumn('code', function ($data) {
+
+                return $data->code;
             })
 
             ->addColumn('demande', function ($data) {
@@ -219,10 +224,10 @@ class InvoiceController extends Controller
                 '.getTestOrderData($data->test_order_id)->patient->lastname :'';
             })
             ->addColumn('total', function ($data) {
-                return $data->subtotal;
+                return $data->total;
             })
             ->addColumn('remise', function ($data) {
-                return $data->total;
+                return $data->discount?$data->discount:'0,0';
             })
 
             ->addColumn('status', function ($data) {

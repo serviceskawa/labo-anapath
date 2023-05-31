@@ -72,10 +72,11 @@
                         <tr>
                             {{-- <th>#</th> --}}
                             <th>Date</th>
+                            <th>Code de la facture</th>
                             <th>Demande</th>
                             <th>Patient</th>
                             <th>Total</th>
-                            <th>Remise</th>
+                            <th>Contrat</th>
                             <th>Statut</th>
                             <th>Actions</th>
 

@@ -451,7 +451,7 @@ class ReportController extends Controller
         }
 
         // Pour lancer un appel
-        $responsevocal = $client->request('POST', 'https://staging.getourvoice.com/api/v1/calls', [
+        $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/call', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
                 'Content-Type' => 'application/json',
@@ -467,7 +467,7 @@ class ReportController extends Controller
         $vocal = json_decode($responsevocal->getBody(), true);
 
         //Récupérer tous les appels vocaux
-        $response = $client->request('GET', 'https://staging.getourvoice.com/api/v1/calls', [
+        $response = $client->request('GET', 'https://api.getourvoice.com/v1/call', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
                 'Content-Type' => 'application/json',
@@ -501,7 +501,7 @@ class ReportController extends Controller
         $body = 'Bonjour c\'est l cabinet medical Anathomie pathologique adechinan situé à fifadji vos résultats d\'analyse sont maintenant disponible vous pouvez venir les recupérer à tout moment pendant nos heures d\'ouvertures. Nous sommes ouvert du Lundi au vendredi de 08h à 17h Merci de votre confiance';
 
         // Pour lancer un appel
-        $responsevocal = $client->request('POST', 'https://staging.getourvoice.com/api/v1/messages', [
+        $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/message', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
                 'Content-Type' => 'application/json',

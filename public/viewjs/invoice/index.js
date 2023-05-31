@@ -32,10 +32,14 @@ $(document).ready(function() {
             }
         },
         columns: [
-           
+
             {
                 data: 'created_at',
                 name: 'created_at'
+            },
+             {
+                data: 'code',
+                name: 'code',
             },
              {
                 data: 'demande',
