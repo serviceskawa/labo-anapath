@@ -214,8 +214,8 @@ class ReportController extends Controller
         if (!getOnlineUser()->can('edit-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        //dd($report);
         $report = $this->report->find($id);
+        // dd($report);
         $setting = $this->setting->find(1);
         $text = $report->order?$report->order->code:'';
         $user = Auth::user();
@@ -235,15 +235,15 @@ class ReportController extends Controller
         // $qrCodeDataUri = $qrCode->writeDataUri();
 
 
-        if ($report->signatory1 != null) {
+        if ($report->signatory1 != 0) {
             $signatory1 = $this->user->findorfail($report->signatory1);
         }
 
-        if ($report->signatory2 != null) {
+        if ($report->signatory2 != 0) {
             $signatory2 = $this->user->findorfail($report->signatory2);
         }
 
-        if ($report->signatory3 != null) {
+        if ($report->signatory3 != 0) {
             $signatory3 = $this->user->findorfail($report->signatory3);
         }
         $year_month = "";
@@ -258,7 +258,7 @@ class ReportController extends Controller
         //date_format($report->updated_at,"d/m/Y");
 
 
-        //dd('cc');
+        // dd('cc');
         $data = [
             'code' => $report->code,
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
