@@ -44,7 +44,7 @@
                                     <tr>
                                         <td>{{ $role->name }}</td>
                                         <td>{{ $role->slug }}</td>
-                                        <td>{{ $role->user->fullname() }}</td>
+                                        <td>{{ $role->user? $role->user->fullname():'' }}</td>
                                         <td>
                                             <a href="{{ route('user.role-show', $role->slug) }}"
                                                 class="btn btn-primary"><i class="mdi mdi-eye"></i></a>

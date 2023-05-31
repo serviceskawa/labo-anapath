@@ -205,14 +205,18 @@ class UserController extends Controller
         $status ="";
        try
        {
+           
             if($user->is_active ==1){
+                
                 $user->is_active = 0;
+                $user->two_factor_enabled = 0;
                 $user->save();
                 $status = "désactivé";
                 // Déconnectez l'utilisateur s'il est actuellement connecté
-                if (Auth::check() && Auth::id() === $user->id) {
-                    Auth::logout();
-                }
+                // if (Auth::check() && Auth::id() === $user->id) {
+                //     Auth::logout();
+                // }
+                
             }else{
                 $user->is_active = 1;
                 $user->save();

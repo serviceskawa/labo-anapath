@@ -36,7 +36,7 @@
                             </a>
                         </div>
 
-                        @include('layouts.alerts')
+                        <!--@include('layouts.alerts')-->
                         <div class="card-body p-4">
 
                             <form method="POST" action="{{ route('login') }}">
