@@ -202,17 +202,7 @@ class InvoiceController extends Controller
             ->editColumn('created_at', function ($data) {
                 return $data->date;
             })
-            // ->setRowData([
-            //     'data-mytag' => function ($data) {
-            //         if ($data->is_urgent == 1) {
-            //             $result = $data->is_urgent;
-            //         } else {
-            //             $result = "";
-            //         }
-
-            //         return 'mytag=' . $result;
-            //     },
-            // ])
+           
             ->setRowClass(function ($data) use ($request) {
                 if($data->paid == 1){
                     return 'table-success';

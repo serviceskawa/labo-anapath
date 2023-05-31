@@ -319,8 +319,8 @@ class ReportController extends Controller
             }
             else{
                 if ($now>=$beging && $now<=$end) {
-                    dd('je peux envoyer');
                     $this->callUser($report);
+                    dd('je peux envoyer');
                 }
             }
 
