@@ -316,17 +316,17 @@ class ReportController extends Controller
             ->save();
 
                 // dd($report->order);
-            if ($report->order->option) {
-                $this->sendSms($report);
-            }
-            else{
-                if ($now>=$beging && $now<=$end) {
-                    $this->callUser($report);
-                    dd('je peux envoyer');
-                }
-            }
+            // if ($report->order->option) {
+            //     $this->sendSms($report);
+            // }
+            // else{
+            //     if ($now>=$beging && $now<=$end) {
+            //         $this->callUser($report);
+            //         dd('je peux envoyer');
+            //     }
+            // }
 
-            // $this->pdf($reportId);
+            $this->pdf($reportId);
 
 
         // dd($report);
