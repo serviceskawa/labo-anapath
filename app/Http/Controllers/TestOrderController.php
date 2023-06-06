@@ -20,6 +20,7 @@ use App\Models\InvoiceDetail;
 use App\Models\DetailTestOrder;
 use App\Models\LogReport;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -646,6 +647,37 @@ public function __construct(
         }
     }
 
+    private function getStatusCalling($id)
+    {
+        $getV = [];
+        if ($id) {
+            $client = new Client();
+            $accessToken = '421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk';
+
+            //Récupérer tous les appels vocaux
+            $response = $client->request('GET', 'https://api.getourvoice.com/v1/calls', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+
+            foreach ($data['data'] as $value) {
+                if ($value['id'] = $id) {
+                    $getV = $value;
+                }
+            }
+            return $getV['status'];
+        } else {
+            return $getV;
+        }
+
+    }
+
     public function getTestOrdersforDatatable(Request $request)
     {
 
@@ -736,11 +768,12 @@ public function __construct(
                 return $btnVoir .  $btnReport . $btnInvoice . $btnreport . $btnDelete;
             })
             ->addColumn('appel', function ($data) {
-                if (!empty($data->report)) {
+                $status = $this->getStatusCalling($data->status_appel);
+                if (!empty($status)) {
                     // $btn = $data->getReport($data->id);
-                    if ($data->report->appel ==2) {
+                    if ($status =='busy') {
                         $btn = 'danger';
-                    }elseif ($data->report->appel ==1) {
+                    }elseif ($status =='completed') {
                         $btn = 'success';
                     }else{
                         $btn = 'warning';
@@ -760,7 +793,8 @@ public function __construct(
                 } else {
                     $btn = 'Non enregistré';
                 }
-                $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
+                // $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
+                $span = '<div class=" p-2 col-lg-2" >'.$btn.'</div>';
                 if (!$data->option) {
                     return $span;
                 }
