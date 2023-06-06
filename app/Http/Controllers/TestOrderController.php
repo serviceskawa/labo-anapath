@@ -773,7 +773,7 @@ public function __construct(
                     // $btn = $data->getReport($data->id);
                     if ($status =='busy') {
                         $btn = 'danger';
-                    }elseif ($status =='completed') {
+                    }elseif ($status =='completed'||$status =='answered') {
                         $btn = 'success';
                     }else{
                         $btn = 'warning';
@@ -792,6 +792,7 @@ public function __construct(
                     // }
                 } else {
                     $btn = 'Non enregistré';
+                    $status = 'null';
                 }
                 // $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
                 $span = '<div class=" p-2 col-lg-2" >'.$btn.'</div>';
