@@ -773,9 +773,9 @@ public function __construct(
                     // $btn = $data->getReport($data->id);
                     if ($status =='busy') {
                         $btn = 'danger';
-                    }elseif ($status =='completed'||$status =='answered') {
+                    }elseif ($status =='completed') {
                         $btn = 'success';
-                    }else{
+                    }elseif ($status =='ringing') {
                         $btn = 'warning';
                     }
 
@@ -794,8 +794,8 @@ public function __construct(
                     $btn = 'Non enregistré';
                     $status = 'null';
                 }
-                // $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
-                $span = '<div class=" p-2 col-lg-2" >'.$btn.'</div>';
+                $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
+                // $span = '<div class=" p-2 col-lg-2" >'.$status.'</div>';
                 if (!$data->option) {
                     return $span;
                 }
