@@ -129,6 +129,7 @@ Route::middleware(['auth','device'])->group(function () {
     Route::post('/test_order/updatetest',[TestOrderController::class, 'updateTest'])->name('test_order.updateTest');
     Route::post('/test_order/search',[TestOrderController::class, 'search'])->name('test_order.search');
     Route::get('/testOrders', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('test_order.getTestOrdersforDatatable');
+    Route::get('/testOrders/webhook', [TestOrderController::class, 'getStatus'])->name('test_order.getStatus');
 
 
 

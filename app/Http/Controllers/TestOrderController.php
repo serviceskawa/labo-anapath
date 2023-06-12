@@ -647,6 +647,11 @@ public function __construct(
         }
     }
 
+    public function getStatus()
+    {
+        dd('cc');
+    }
+
     private function getStatusCalling($id)
     {
         $getV = [];
@@ -769,24 +774,6 @@ public function __construct(
             })
             ->addColumn('appel', function ($data) {
                 $status = $this->getStatusCalling($data->status_appel);
-                // $btn = 'secondary';
-                // if (!empty($status)) {
-                //     // $btn = $data->getReport($data->id);
-                //     if ($status =='no-answer') {
-                //         $btn = 'danger';
-                //     }elseif ($status =='answered') {
-                //         $btn = 'success';
-                //     }elseif ($status =='ringing') {
-                //         $btn = 'warning';
-                //     }else {
-                //         $btn = 'secondary';
-                //     }
-                // } else {
-                //     $btn = '';
-                //     $status = 'null';
-                // }
-
-                // $span = '<div class=" p-2 col-lg-2" >'.$status.'</div>';
 
                 switch ($status) {
                     case 'no-answer':
@@ -796,7 +783,7 @@ public function __construct(
                         $btn = 'success';
                         break;
                     default:
-                        $btn = 'secondary';
+                        $btn = 'warning';
                         break;
                 }
                 $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
