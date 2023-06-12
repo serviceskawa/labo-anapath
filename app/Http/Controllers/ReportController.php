@@ -326,7 +326,7 @@ class ReportController extends Controller
                 }
             }
 
-            // $this->pdf($reportId);
+            $this->pdf($reportId);
 
 
         // dd($report);
@@ -442,13 +442,13 @@ class ReportController extends Controller
         // $audio_url_non_disponible = '';
         $to = '229'.$report->patient->telephone1;
         if ($report->patient->langue === 'fon') {
-            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/05/E.-RESULTAT-DISPONIBLE.mp3';
+            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/06/RESULTAT-DISPONIBLE-FON-.mp3';
             $audio_url_non_disponible = 'https://caap.bj/wp-content/uploads/2023/05/RESULTAT-NON-DISPONIBLE-.mp3';
         } elseif ($report->patient->langue === 'anglais') {
-            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/05/E.-RESULTAT-DISPONIBLE-2.mp3';
+            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/06/RESULTAT-DISPONIBLE-ANGLAIS.mp3';
             $audio_url_non_disponible = 'https://caap.bj/wp-content/uploads/2023/05/Result-not-available.mp3';
         } else {
-            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/05/E.-RESULTAT-DISPONIBLE.mp3';
+            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/06/RESULTAT-DISPONIBLE-FRANCAIS.mp3';
             $audio_url_non_disponible = 'https://caap.bj/wp-content/uploads/2023/05/F.-RESULTAT-INDISPONIBLE.mp3';
         }
 

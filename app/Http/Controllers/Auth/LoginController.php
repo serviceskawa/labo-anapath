@@ -57,10 +57,11 @@ class LoginController extends Controller
         if (!$user->is_active) {
             // Déconnectez l'utilisateur
             Auth::logout();
-
             // Redirigez l'utilisateur vers la page de connexion avec un message d'erreur
             return redirect()->route('login')->with('error', 'Votre compte est désactivé. Veuillez contacter l\'administrateur.');
         }
+        $user->lastlogindevice = hash('sha256', $request->header('User-Agent'));
+        $user->save();
 
         //update attribute is_connect pour savoir qui est en ligne
         $user->fill([

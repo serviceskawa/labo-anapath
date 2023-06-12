@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Carbon\Carbon;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class Authenticate extends Middleware
@@ -14,8 +15,14 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
-            return route('login');
+        $beging = Carbon::createFromTime(7,0,0);
+        $end = Carbon::createFromTime(18,0,0);
+        $now = Carbon::now();
+
+        if ($now<$beging || $now>$end) {
+            if (! $request->expectsJson()) {
+                return route('login');
+            }
         }
     }
 }

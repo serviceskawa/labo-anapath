@@ -58,6 +58,11 @@ class User extends Authenticatable
         $this->isconnect = $etat;
     }
 
+    public function setLastLoginDeviceAttribute($value)
+    {
+        $this->attributes['lastlogindevice'] = hash('sha256', $value);
+    }
+
     public function getGoogle2faSecretAttribute()
     {
         return $this->two_factor_secret;

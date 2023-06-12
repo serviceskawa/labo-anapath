@@ -568,7 +568,7 @@ public function __construct(
             'examen_reference_select' => 'nullable',
             'examen_reference_input' => 'nullable',
             'type_examen' => 'required|exists:type_orders,id',
-            'attribuate_doctor_id' => 'required|exists:users,id',
+            'attribuate_doctor_id' => 'nullable',
             'option' => 'nullable',
         ]);
 
@@ -771,9 +771,9 @@ public function __construct(
                 $status = $this->getStatusCalling($data->status_appel);
                 if (!empty($status)) {
                     // $btn = $data->getReport($data->id);
-                    if ($status =='busy') {
+                    if ($status =='no-answer') {
                         $btn = 'danger';
-                    }elseif ($status =='completed') {
+                    }elseif ($status =='answered') {
                         $btn = 'success';
                     }elseif ($status =='ringing') {
                         $btn = 'warning';
@@ -791,7 +791,7 @@ public function __construct(
                     //         break;
                     // }
                 } else {
-                    $btn = 'Non enregistré';
+                    $btn = 'secondary';
                     $status = 'null';
                 }
                 $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
