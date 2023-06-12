@@ -52,7 +52,7 @@ Route::middleware(['web'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
-Route::middleware(['auth','device'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::get('/confirm-login', [TFAuthController::class, 'show'])->name('login.confirm');
     Route::post('/confirm-login', [TFAuthController::class, 'postAuth'])->name('login.postAuth');
