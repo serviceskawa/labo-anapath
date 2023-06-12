@@ -769,33 +769,37 @@ public function __construct(
             })
             ->addColumn('appel', function ($data) {
                 $status = $this->getStatusCalling($data->status_appel);
-                if (!empty($status)) {
-                    // $btn = $data->getReport($data->id);
-                    if ($status =='no-answer') {
+                // $btn = 'secondary';
+                // if (!empty($status)) {
+                //     // $btn = $data->getReport($data->id);
+                //     if ($status =='no-answer') {
+                //         $btn = 'danger';
+                //     }elseif ($status =='answered') {
+                //         $btn = 'success';
+                //     }elseif ($status =='ringing') {
+                //         $btn = 'warning';
+                //     }else {
+                //         $btn = 'secondary';
+                //     }
+                // } else {
+                //     $btn = '';
+                //     $status = 'null';
+                // }
+
+                // $span = '<div class=" p-2 col-lg-2" >'.$status.'</div>';
+
+                switch ($status) {
+                    case 'no-answer':
                         $btn = 'danger';
-                    }elseif ($status =='answered') {
+                        break;
+                    case 'answered':
                         $btn = 'success';
-                    }elseif ($status =='ringing') {
-                        $btn = 'warning';
-                    }
-
-                    // switch ($data->report->appel) {
-                    //     case 1:
-                    //         $btn = 'success';
-                    //         break;
-                    //     case 0:
-                    //         $btn = 'danger';
-
-                    //     default:
-                    //         $btn = 'warning';
-                    //         break;
-                    // }
-                } else {
-                    $btn = 'secondary';
-                    $status = 'null';
+                        break;
+                    default:
+                        $btn = 'secondary';
+                        break;
                 }
                 $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
-                // $span = '<div class=" p-2 col-lg-2" >'.$status.'</div>';
                 if (!$data->option) {
                     return $span;
                 }
