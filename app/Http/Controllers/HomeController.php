@@ -123,7 +123,7 @@ class HomeController extends Controller
             $Appointments = $this->appointments->whereDate('date',$today)->get();
 
 
-            $loggedInUserIds = $this->users->where('is_connect',1)->get();
+            $loggedInUserIds = $this->users->where('is_connect',1)->whereDate('updated_at', '=', $now->toDateString())->get();
 
 
             // dd($loggedInUserIds);

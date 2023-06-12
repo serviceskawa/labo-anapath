@@ -20,6 +20,7 @@ use App\Models\InvoiceDetail;
 use App\Models\DetailTestOrder;
 use App\Models\LogReport;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -567,7 +568,7 @@ public function __construct(
             'examen_reference_select' => 'nullable',
             'examen_reference_input' => 'nullable',
             'type_examen' => 'required|exists:type_orders,id',
-            'attribuate_doctor_id' => 'required|exists:users,id',
+            'attribuate_doctor_id' => 'nullable',
             'option' => 'nullable',
         ]);
 
@@ -644,6 +645,37 @@ public function __construct(
 
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
+    }
+
+    private function getStatusCalling($id)
+    {
+        $getV = [];
+        if ($id) {
+            $client = new Client();
+            $accessToken = '421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk';
+
+            //Récupérer tous les appels vocaux
+            $response = $client->request('GET', 'https://api.getourvoice.com/v1/calls', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+
+            foreach ($data['data'] as $value) {
+                if ($value['id'] = $id) {
+                    $getV = $value;
+                }
+            }
+            return $getV['status'];
+        } else {
+            return $getV;
+        }
+
     }
 
     public function getTestOrdersforDatatable(Request $request)
@@ -736,29 +768,36 @@ public function __construct(
                 return $btnVoir .  $btnReport . $btnInvoice . $btnreport . $btnDelete;
             })
             ->addColumn('appel', function ($data) {
-                if (!empty($data->report)) {
-                    // $btn = $data->getReport($data->id);
-                    if ($data->report->appel ==2) {
+                $status = $this->getStatusCalling($data->status_appel);
+                // $btn = 'secondary';
+                // if (!empty($status)) {
+                //     // $btn = $data->getReport($data->id);
+                //     if ($status =='no-answer') {
+                //         $btn = 'danger';
+                //     }elseif ($status =='answered') {
+                //         $btn = 'success';
+                //     }elseif ($status =='ringing') {
+                //         $btn = 'warning';
+                //     }else {
+                //         $btn = 'secondary';
+                //     }
+                // } else {
+                //     $btn = '';
+                //     $status = 'null';
+                // }
+
+                // $span = '<div class=" p-2 col-lg-2" >'.$status.'</div>';
+
+                switch ($status) {
+                    case 'no-answer':
                         $btn = 'danger';
-                    }elseif ($data->report->appel ==1) {
+                        break;
+                    case 'answered':
                         $btn = 'success';
-                    }else{
-                        $btn = 'warning';
-                    }
-
-                    // switch ($data->report->appel) {
-                    //     case 1:
-                    //         $btn = 'success';
-                    //         break;
-                    //     case 0:
-                    //         $btn = 'danger';
-
-                    //     default:
-                    //         $btn = 'warning';
-                    //         break;
-                    // }
-                } else {
-                    $btn = 'Non enregistré';
+                        break;
+                    default:
+                        $btn = 'secondary';
+                        break;
                 }
                 $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
                 if (!$data->option) {

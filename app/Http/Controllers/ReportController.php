@@ -315,19 +315,17 @@ class ReportController extends Controller
             ])
             ->save();
 
-                // dd($report->order);
-            // if ($report->order->option) {
-            //     $this->sendSms($report);
-            // }
-            // else{
-            //     if ($now>=$beging && $now<=$end) {
-            //         $this->callUser($report);
-            //         dd('je peux envoyer');
-            //     }
-            // }
+            if ($report->order->option) {
+                $this->sendSms($report);
+            }
+            else{
+                if ($now>=$beging && $now<=$end) {
+                    $this->callUser($report);
+                    // dd('je peux envoyer');
+                }
+            }
 
             $this->pdf($reportId);
-
 
         // dd($report);
         //return redirect()->back()->with('success', "Effectué avec succès ! ");
@@ -442,18 +440,18 @@ class ReportController extends Controller
         // $audio_url_non_disponible = '';
         $to = '229'.$report->patient->telephone1;
         if ($report->patient->langue === 'fon') {
-            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/05/E.-RESULTAT-DISPONIBLE.mp3';
+            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/06/RESULTAT-DISPONIBLE-FON-VF.mp3';
             $audio_url_non_disponible = 'https://caap.bj/wp-content/uploads/2023/05/RESULTAT-NON-DISPONIBLE-.mp3';
         } elseif ($report->patient->langue === 'anglais') {
-            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/05/E.-RESULTAT-DISPONIBLE-2.mp3';
+            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/06/RESULTAT-DISPONIBLE-ANGLAIS-VF.mp3';
             $audio_url_non_disponible = 'https://caap.bj/wp-content/uploads/2023/05/Result-not-available.mp3';
         } else {
-            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/05/E.-RESULTAT-DISPONIBLE.mp3';
+            $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/06/RESULTAT-DISPONIBLE-FRANCAIS-VF.mp3';
             $audio_url_non_disponible = 'https://caap.bj/wp-content/uploads/2023/05/F.-RESULTAT-INDISPONIBLE.mp3';
         }
 
         // Pour lancer un appel
-        $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/call', [
+        $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/calls', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
                 'Content-Type' => 'application/json',
@@ -467,32 +465,36 @@ class ReportController extends Controller
         ]);
 
         $vocal = json_decode($responsevocal->getBody(), true);
+        $report->order->status_appel = $vocal['data']['id'];
+        $report->order->save();
+        // dd($report->order);
 
-        //Récupérer tous les appels vocaux
-        $response = $client->request('GET', 'https://api.getourvoice.com/v1/call', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $accessToken,
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-            ],
-        ]);
+        // //Récupérer tous les appels vocaux
+        // $response = $client->request('GET', 'https://api.getourvoice.com/v1/calls', [
+        //     'headers' => [
+        //         'Authorization' => 'Bearer ' . $accessToken,
+        //         'Content-Type' => 'application/json',
+        //         'Accept' => 'application/json',
+        //     ],
+        // ]);
 
-        $data = json_decode($response->getBody(), true);
+        // $data = json_decode($response->getBody(), true);
+        // dd($data);
+        // $getV = [];
+        // foreach ($data['data'] as $value) {
+        //     if ($value['id'] = $vocal['data']['id']) {
+        //         $getV = $value;
+        //     }
+        // }
+        // dd($getV);
 
-        $getV = [];
-        foreach ($data['data'] as $value) {
-            if ($value['id'] = $vocal['data']['id']) {
-                $getV = $value;
-            }
-        }
-
-        if ($getV['status'] == 'busy') {
-            $report->appel = 2;
-            $report->save();
-        } elseif ($getV['status'] == 'completed') {
-            $report->appel = 1;
-            $report->save();
-        }
+        // if ($getV['status'] == 'busy') {
+        //     $report->appel = 2;
+        //     $report->save();
+        // } elseif ($getV['status'] == 'completed') {
+        //     $report->appel = 1;
+        //     $report->save();
+        // }
     }
 
     public function sendSms($report)
@@ -503,7 +505,7 @@ class ReportController extends Controller
         $body = 'Bonjour c\'est l cabinet medical Anathomie pathologique adechinan situé à fifadji vos résultats d\'analyse sont maintenant disponible vous pouvez venir les recupérer à tout moment pendant nos heures d\'ouvertures. Nous sommes ouvert du Lundi au vendredi de 08h à 17h Merci de votre confiance';
 
         // Pour lancer un appel
-        $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/message', [
+        $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/messages', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
                 'Content-Type' => 'application/json',
