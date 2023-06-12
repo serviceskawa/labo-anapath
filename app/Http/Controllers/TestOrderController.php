@@ -649,7 +649,7 @@ public function __construct(
 
     public function getStatus()
     {
-        dd('cc');
+        
     }
 
     private function getStatusCalling($id)
