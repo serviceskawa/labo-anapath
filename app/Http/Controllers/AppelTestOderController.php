@@ -34,7 +34,9 @@ class AppelTestOderController extends Controller
         ]);
 
         $vocal = json_decode($responsevocal->getBody(), true);
-        dd($vocal);
+        $appelTestOder = AppelTestOder::create($vocal);
+
+        dd($appelTestOder);
 
     }
 

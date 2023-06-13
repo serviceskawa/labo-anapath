@@ -180,6 +180,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Mis à jour du statut livré
         Route::get('updateDeliver/{id}', [ReportController::class, 'updateDeliverStatus'])->name('report.updateDeliver');
+        Route::get('updateDeliver/{id}', [ReportController::class, 'callOrSendSms'])->name('report.callOrSendSms');
     });
 
     Route::prefix('settings')->group(function () {

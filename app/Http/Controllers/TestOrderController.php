@@ -649,7 +649,11 @@ public function __construct(
 
     public function getStatus(Request $request)
     {
+<<<<<<< HEAD
         dd($request);
+=======
+
+>>>>>>> e0b73cd3d941cdddadde27cd9d9de34b50c7b636
     }
 
     private function getStatusCalling($id)
@@ -756,9 +760,11 @@ public function __construct(
                         // <button type="button" target="_blank" onclick="passwordTest('. $data->report->id.')" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </button>$data->option ?'<i class="uil-calling"></i>':'<i class="mdi mdi-message"></i> '
                         $icon = $data->option ? '<i class="uil-message"></i>':'<i class="uil-calling"></i>';
 
-                        $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> '.$icon.'  </a> ';
+                        $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> </a> ';
+                        $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
                     }else {
                         $btnreport ="";
+                        $btncalling="";
                     }
 
                 } else {
