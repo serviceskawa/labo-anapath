@@ -133,6 +133,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::post('/testOrders/webhook', [AppelTestOder::class, 'store'])->name('test_order.getStatus');
+    Route::get('/testOrder/webhook', [AppelTestOder::class, 'index'])->name('webhook.index');
 
 
 
