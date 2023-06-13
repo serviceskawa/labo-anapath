@@ -649,11 +649,7 @@ public function __construct(
 
     public function getStatus(Request $request)
     {
-<<<<<<< HEAD
-        dd($request);
-=======
-
->>>>>>> e0b73cd3d941cdddadde27cd9d9de34b50c7b636
+        
     }
 
     private function getStatusCalling($id)
