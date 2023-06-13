@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppelTestOderController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
@@ -131,8 +132,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/test_order/search',[TestOrderController::class, 'search'])->name('test_order.search');
     Route::get('/testOrders', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('test_order.getTestOrdersforDatatable');
 
-    Route::post('/testOrders/webhook', [AppelTestOder::class, 'store'])->name('test_order.getStatus');
-    Route::get('/testOrder/webhook', [AppelTestOder::class, 'index'])->name('webhook.index');
+    Route::post('/testOrders/webhook', [AppelTestOderController::class, 'store'])->name('test_order.getStatus');
+    Route::get('/testOrder/webhook', [AppelTestOderController::class, 'index'])->name('webhook.index');
 
 
 
