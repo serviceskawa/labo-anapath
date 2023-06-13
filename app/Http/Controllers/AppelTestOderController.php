@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AppelTestOder;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class AppelTestOderController extends Controller
@@ -14,7 +15,27 @@ class AppelTestOderController extends Controller
      */
     public function index()
     {
-        //
+        $client = new Client();
+
+
+        // Pour lancer un appel
+        $responsevocal = $client->request('POST', 'https://gestion.caap.bj/api/testOrder/webhook', [
+            'headers' => [
+                'Authorization' => '',
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ],
+            'json' => [
+                    "type"=> "voice",
+                    "account_id"=> "12ert-1244-iuoi",
+                    "voice_id"=> "78yuio-uy7865-987uytr",
+                    "event"=> "voice.answered"
+            ],
+        ]);
+
+        $vocal = json_decode($responsevocal->getBody(), true);
+        dd($vocal);
+
     }
 
     /**
