@@ -73,6 +73,8 @@ class ApiController extends Controller
         $appelTestOder = AppelTestOder::create($request);
         if ($appelTestOder) {
             return response()->json(200);
+        }else{
+            return response()->json(500);
         }
     }
 }
