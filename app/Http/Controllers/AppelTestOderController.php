@@ -26,10 +26,10 @@ class AppelTestOderController extends Controller
                 'Accept' => 'application/json',
             ],
             'json' => [
-                    // "type"=> "voice",
-                    // "account_id"=> "12ert-1244-iuoi",
-                    // "voice_id"=> "78yuio-uy7865-987uytr",
-                    // "event"=> "voice.answered"
+                    "type"=> "voice",
+                    "account_id"=> "12ert-1244-iuoi",
+                    "voice_id"=> "78yuio-uy7865-987uytr",
+                    "event"=> "voice.answered"
             ],
         ]);
 

@@ -765,6 +765,7 @@ public function __construct(
 
                 } else {
                     $btnreport = "";
+                    $btncalling="";
                 }
                 // if ($data->report->is_deliver == 1) {
                 //     $btnreport = ' <a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-success" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
