@@ -332,6 +332,37 @@ class ReportController extends Controller
         // dd($report);
         //return redirect()->back()->with('success', "Effectué avec succès ! ");
     }
+    // Lancer un appel ou envoyer un sms
+    public function callOrSendSms($reportId)
+    {
+        if (!getOnlineUser()->can('edit-reports')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+        $report = $this->report->findorfail($reportId);
+
+        if (empty($report)) {
+            return redirect()
+                ->back()
+                ->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
+        }
+
+        $beging = Carbon::createFromTime(8,0,0);
+        $end = Carbon::createFromTime(18,0,0);
+        $now = Carbon::now();
+
+                // dd($report->order);
+            if ($report->order->option) {
+                $this->sendSms($report);
+            }
+            else{
+                if ($now>=$beging && $now<=$end) {
+                    $this->callUser($report);
+                    // dd('je peux envoyer');
+                }
+            }
+        // dd($report);
+        return redirect()->back()->with('success', "Effectué avec succès ! ");
+    }
 
     public function getReportsforDatatable(Request $request)
     {
