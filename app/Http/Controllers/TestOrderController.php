@@ -647,9 +647,9 @@ public function __construct(
         }
     }
 
-    public function getStatus()
+    public function getStatus(Request $request)
     {
-        
+        dd($request);
     }
 
     private function getStatusCalling($id)
