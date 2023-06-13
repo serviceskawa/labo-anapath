@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppelTestOder;
 use App\Models\Report;
 use Illuminate\Http\Request;
 
@@ -68,6 +69,10 @@ class ApiController extends Controller
 
     public function getStatus(Request $request)
     {
-        return response()->json($request);
+        // return response()->json($request);
+        $appelTestOder = AppelTestOder::create($request);
+        if ($appelTestOder) {
+            return response()->json(200);
+        }
     }
 }
