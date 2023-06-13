@@ -130,12 +130,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/test_order/updatetest',[TestOrderController::class, 'updateTest'])->name('test_order.updateTest');
     Route::post('/test_order/search',[TestOrderController::class, 'search'])->name('test_order.search');
     Route::get('/testOrders', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('test_order.getTestOrdersforDatatable');
-<<<<<<< HEAD
-    Route::post('/testOrders/webhook', [TestOrderController::class, 'getStatus'])->name('test_order.getStatus');
-=======
+
 
     Route::post('/testOrders/webhook', [AppelTestOder::class, 'store'])->name('test_order.getStatus');
->>>>>>> ca3428f5c39427aaf8886e7159a5c274b2258f89
 
 
 

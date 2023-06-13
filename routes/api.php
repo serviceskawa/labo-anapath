@@ -21,3 +21,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/status/{code}',[ApiController::class, 'getCode']);
 Route::get('',[ApiController::class, 'getCodeDB']);
+Route::post('/testOrder/webhook',[ApiController::class, 'getStatus']);
