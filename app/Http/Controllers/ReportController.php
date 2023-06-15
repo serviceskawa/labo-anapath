@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppelByReport;
 use App\Models\Report;
 
 //use App\Models\Contrat;
@@ -303,34 +304,12 @@ class ReportController extends Controller
                 ->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
         }
 
-        $beging = Carbon::createFromTime(8,0,0);
-        $end = Carbon::createFromTime(18,0,0);
-        $now = Carbon::now();
-
-        // dd($now);
-
         $report
             ->fill([
                 'is_deliver' => 1,
             ])
             ->save();
-
-                // dd($report->order);
-            if ($report->order->option) {
-                $this->sendSms($report);
-            }
-            else{
-                if ($now>=$beging && $now<=$end) {
-                    $this->callUser($report);
-                    // dd('je peux envoyer');
-                }
-            }
-
             // $this->pdf($reportId);
-
-
-        // dd($report);
-        //return redirect()->back()->with('success', "Effectué avec succès ! ");
     }
     // Lancer un appel ou envoyer un sms
     public function callOrSendSms($reportId)
@@ -500,6 +479,17 @@ class ReportController extends Controller
         $vocal = json_decode($responsevocal->getBody(), true);
         $report->order->status_appel = $vocal['data']['id'];
         $report->order->save();
+        $appel = AppelByReport::where('report_id',$report->id)->first();
+        if ($appel) {
+            $appel->update([
+                'appel_id'=>$vocal['data']['id'],
+            ]);
+        }else{
+            AppelByReport::create([
+                'report_id'=>$report->id,
+                'appel_id'=>$vocal['data']['id'],
+            ]);
+        }
         // dd($report->order);
 
         // //Récupérer tous les appels vocaux
