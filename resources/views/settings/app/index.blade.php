@@ -64,15 +64,36 @@
                         <form action="{{ route('settings.app-store') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="row mb-3">
-                                <label for="" class="form-label">Nom du site</label>
-                                <div class="col-lg-12">
-                                    <input type="text" name="titre" id="" class="form-control"
-                                        value="{{ $setting ? $setting->titre : '' }}">
+                                <div class="col-lg-4">
+                                    <label for="" class="form-label">Nom du site</label>
+                                    <div class="">
+                                        <input type="text" name="titre" id="" class="form-control"
+                                            value="{{ $setting ? $setting->titre : '' }}">
+                                    </div>
                                 </div>
+
+                                <div class="col-lg-4">
+                                    <label for="" class="form-label">Heure début</label>
+                                    <div class="">
+                                        <input type="text"name="begining_date" class="form-control"
+                                        value="{{ $setting ? $setting->begining_date : '' }}" data-toggle="input-mask" data-mask-format="00:00:00">
+                                        <span class="font-13 text-muted">e.g "HH:MM:SS"</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <label for="" class="form-label">Heure fin</label>
+                                    <div class="">
+                                        <input type="text" name="ending_date" class="form-control"
+                                        value="{{ $setting ? $setting->ending_date : '' }}" data-toggle="input-mask" data-mask-format="00:00:00">
+                                        <span class="font-13 text-muted">e.g "HH:MM:SS"</span>
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="row mb-3">
 
-                                
+
 
                                 <div class="col-lg-4">
 

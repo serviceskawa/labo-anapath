@@ -222,6 +222,8 @@ class SettingController extends Controller
 
             $setting->fill([
                 "titre" => $request->titre,
+                "begining_date" => $request->begining_date,
+                "ending_date" => $request->ending_date,
                 "logo" => $request->file('logo') ? $path_logo : $setting->logo,
                 "favicon" => $request->file('favicon') ? $path_favicon : $setting->favicon,
                 "logo_blanc" => $request->file('img3') ? $path_img3 : $setting->logo_blanc,
@@ -232,6 +234,8 @@ class SettingController extends Controller
         }else {
             $setting = $this->setting->create([
                 "titre" => $request->titre,
+                "begining_date" => $request->begining_date,
+                "ending_date" => $request->ending_date,
                 "logo" => $request->file('logo') ? $path_logo : "",
                 "favicon" => $request->file('favicon') ? $favicon : "",
                 "logo_blanc" => $request->file('img3') ? $path_img3 : "",
