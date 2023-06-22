@@ -72,15 +72,18 @@ class HomeController extends Controller
             //Mois courant
             $curmonth = now()->format('m'); // Récupérer le mois en cours sous forme de chiffre (ex : '01' pour janvier)
             $totalMonth = $this->invoices->whereMonth('updated_at', $curmonth)->where('paid','=',1)->sum('total');
+            $nototalMonth = $this->invoices->whereMonth('updated_at', $curmonth)->where('paid','=',0)->sum('total');
 
             //Mois précédent
             $now = Carbon::now();
             $lastMonth = $now->copy()->subMonth()->format('m');
             $totalLastMonth = $this->invoices->whereMonth('updated_at', $lastMonth)->where('paid','=',1)->sum('total');
+            $nototalLastMonth = $this->invoices->whereMonth('updated_at', $lastMonth)->where('paid','=',0)->sum('total');
 
             //Jour actuellement
             $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'
             $totalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->sum('total');
+            $nototalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',0)->sum('total');
 
 
 
@@ -130,7 +133,7 @@ class HomeController extends Controller
 
         // dd($sessions);
             return view('dashboard', compact('patients', 'contrats', 'tests', 'totalToday', 'totalMonth', 'totalLastMonth',
-            'testOrdersCount','noFinishTest', 'noFinishWeek','finishTest','Appointments', 'loggedInUserIds',
+            'testOrdersCount','noFinishTest', 'noFinishWeek','finishTest','Appointments', 'loggedInUserIds','nototalToday', 'nototalMonth', 'nototalLastMonth',
             'testOrdersToday','invoice'));
         }
 

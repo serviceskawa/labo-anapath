@@ -229,6 +229,7 @@ class SettingController extends Controller
                 "logo_blanc" => $request->file('img3') ? $path_img3 : $setting->logo_blanc,
                 "server_sms" => $request->server_sms,
                 "api_key_sms" => $request->api_key_sms,
+                "api_key_ourvoice" => $request->api_key_ourvoice,
             ])->save();
 
         }else {
@@ -241,6 +242,7 @@ class SettingController extends Controller
                 "logo_blanc" => $request->file('img3') ? $path_img3 : "",
                 "server_sms" => $request->server_sms,
                 "api_key_sms" => $request->api_key_sms,
+                "api_key_ourvoice" => $request->api_key_ourvoice,
             ]);
         }
 

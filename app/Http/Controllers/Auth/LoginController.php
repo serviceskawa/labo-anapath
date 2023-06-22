@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -60,6 +62,26 @@ class LoginController extends Controller
             // Redirigez l'utilisateur vers la page de connexion avec un message d'erreur
             return redirect()->route('login')->with('error', 'Votre compte est désactivé. Veuillez contacter l\'administrateur.');
         }
+        $roles = getRolesByUser($user->id);
+
+        $setting = Setting::find(1);
+        $now = Carbon::now();
+        $currentTimeFormatted = $now->format('H:i:s');
+
+        if ($currentTimeFormatted<$setting->begining_date || $currentTimeFormatted>$setting->ending_date) {
+            foreach ($roles as $key => $role) {
+                //Lorsque l'utilisateur n'a pas le role nécessaire.
+                if ($role->name != "accessHTime") {
+                    // Déconnectez l'utilisateur
+                    Auth::logout();
+                    // Redirigez l'utilisateur vers la page de connexion avec un message d'erreur
+                    return redirect()->route('login')->with('error', 'Vous n\'aviez plus access à la plateforme. Veuillez contacter l\'administrateur.');
+                }else{
+                    break;
+                }
+            }
+        }
+
         $user->lastlogindevice = hash('sha256', $request->header('User-Agent'));
         $user->save();
 

@@ -25,6 +25,7 @@ $(document).ready(function() {
             url: ROUTEGETDATATABLE,
             data: function(d) {
                 d.cas_status = $('#cas_status').val()
+                d.cas_status = $('#status_invoice').val()
                 d.contenu = $('#contenu').val()
                 d.dateBegin = $('#dateBegin').val()
                 d.dateEnd = $('#dateEnd').val()
@@ -57,6 +58,12 @@ $(document).ready(function() {
                 data: 'remise',
                 name: 'remise'
             },
+
+            {
+                data: 'type',
+                name: 'type'
+            },
+
             {
                 data: 'status',
                 name: 'status'
@@ -73,6 +80,12 @@ $(document).ready(function() {
 
      // Recherche selon les cas
      $("#cas_status").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+     // Recherche selon les cas
+     $("#status_invoice").on("change", function() {
         // alert(this.value)
         table.draw();
     });
