@@ -147,39 +147,37 @@
                                             <a href="{{ route('test_order.create') }}">Ajouter</a>
                                         </li>
                                     @endif
-                                    <li>
-                                        <a href="{{ route('signals.index') }}">Problèmes signalés</a>
-                                    </li>
+                                    
 
                                 </ul>
                             </div>
                         </li>
                     @endif
 
-                    @if (getOnlineUser()->can('view-test-orders'))
-                        <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" href="#sidebarEcommerce3" aria-expanded="false"
-                                aria-controls="sidebarEcommerce3" class="side-nav-link">
-                                <i class="uil-syringe"></i>
-                                <span> Rapporter une erreur</span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <div class="collapse" id="sidebarEcommerce3">
-                                <ul class="side-nav-second-level">
-                                    <li>
-                                        <a href="{{ route('probleme.report.index') }}">Historiques problèmes </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('categorie.erreur.index') }}">Catégories des problèmes</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{route('refund.request.index')}}">Demande remboursement</a>
-                                    </li>
+                    <!--@if (getOnlineUser()->can('view-test-orders'))-->
+                    <!--    <li class="side-nav-item">-->
+                    <!--        <a data-bs-toggle="collapse" href="#sidebarEcommerce3" aria-expanded="false"-->
+                    <!--            aria-controls="sidebarEcommerce3" class="side-nav-link">-->
+                    <!--            <i class="uil-syringe"></i>-->
+                    <!--            <span> Rapporter une erreur</span>-->
+                    <!--            <span class="menu-arrow"></span>-->
+                    <!--        </a>-->
+                    <!--        <div class="collapse" id="sidebarEcommerce3">-->
+                    <!--            <ul class="side-nav-second-level">-->
+                    <!--                <li>-->
+                    <!--                    <a href="{{ route('probleme.report.index') }}">Historiques problèmes </a>-->
+                    <!--                </li>-->
+                    <!--                <li>-->
+                    <!--                    <a href="{{ route('categorie.erreur.index') }}">Catégories des problèmes</a>-->
+                    <!--                </li>-->
+                    <!--                <li>-->
+                    <!--                    <a href="{{route('refund.request.index')}}">Demande remboursement</a>-->
+                    <!--                </li>-->
 
-                                </ul>
-                            </div>
-                        </li>
-                    @endif
+                    <!--            </ul>-->
+                    <!--        </div>-->
+                    <!--    </li>-->
+                    <!--@endif-->
 
                     {{-- @if (getOnlineUser()->can('view-test-orders'))
                         <li class="side-nav-item">

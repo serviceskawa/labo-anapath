@@ -44,4 +44,14 @@ class Report extends Model
     {
         return $this->belongsTo(Patient::class);
     }
+    
+    /**
+     * Get the appel that owns the Report
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function appel()
+    {
+        return $this->belongsTo(AppelByReport::class);
+    }
 }

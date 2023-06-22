@@ -23,9 +23,7 @@ function deleteModal(id) {
 $(document).ready(function() {
 
     var table = $('#datatable1').DataTable({
-        "order": [
-        [0, "desc"]
-        ],
+        
         "columnDefs": [{
             "targets": [0],
             "searchable": false
@@ -50,6 +48,7 @@ $(document).ready(function() {
             data: function(d) {
                 d.attribuate_doctor_id = $('#doctor_signataire').val()
                 d.cas_status = $('#cas_status').val()
+                d.appel = $('#appel').val()
                 d.contrat_id = $('#contrat_id').val()
                 d.exams_status = $('#exams_status').val()
                 d.type_examen = $('#type_examen').val()
@@ -153,6 +152,10 @@ $(document).ready(function() {
         // alert(this.value)
         table.draw();
     });
+    
+    // $("#appel").on("change", function() {
+    //     table.draw();
+    // })
 
     $('#contenu').on("input", function(){
         table.draw();
@@ -165,7 +168,7 @@ $(document).ready(function() {
     });
 
     $('#dateBegin').on('input', function() {
-        console.log($('#dateBegin').val());;
+        console.log($('#dateBegin').val());
         table.draw();
         //console.log(search.value);
     });

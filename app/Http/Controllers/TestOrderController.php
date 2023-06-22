@@ -784,21 +784,20 @@ public function __construct(
             })
             ->addColumn('appel', function ($data) {
                 
-                // $status = $this->getStatusCalling($data->status_appel);
+                $status = $this->getStatusCalling($data->report->id);
 
-                // switch ($status) {
-                //     case 'no-answer':
-                //         $btn = 'danger';
-                //         break;
-                //     case 'answered':
-                //         $btn = 'success';
-                //         break;
-                //     default:
-                //         $btn = 'warning';
-                //         break;
-                // }
+                switch ($status) {
+                    case 'voice.busy':
+                        $btn = 'danger';
+                        break;
+                    case 'voice.completed':
+                        $btn = 'success';
+                        break;
+                    default:
+                        $btn = 'warning';
+                        break;
+                }
                 
-                $btn = 'warning';
                 $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
                 if (!$data->option) {
                     return $span;
@@ -853,6 +852,17 @@ public function __construct(
                     $query->where('attribuate_doctor_id', $request->get('attribuate_doctor_id'));
                 }
                 if (!empty($request->get('cas_status'))) {
+                    $query->where('is_urgent', $request->get('cas_status'));
+                }
+                
+                if (!empty($request->get('appel'))) {
+                    $query->whereHas('report', function ($query) {
+                            $query->whereHas('appel',function($query) {
+                                $query->whereHas('appel_event', function($query) {
+                                    $query->where('event',$request->get('appel'));
+                                });
+                            });
+                        });
                     $query->where('is_urgent', $request->get('cas_status'));
                 }
                 if (!empty($request->get('contrat_id'))) {

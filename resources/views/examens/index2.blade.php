@@ -109,6 +109,7 @@
                                     </div>
 
                                 </div> <!-- end col -->
+                                
 
                                 <div class="col-lg-3">
 
@@ -147,19 +148,17 @@
                                     </div>
                                 </div> <!-- end col -->
 
-                                <div class="col-lg-3">
-
-                                    <div class="mb-3">
-                                        <label for="example-fileinput" class="form-label">Status appel</label>
-                                        <select name="status_appel" id="apel_status" class="form-control">
-                                            <option value="">Tous</option>
-                                            <option value="">Décroché</option>
-                                            <option value="">Manqué</option>
-                                            <option value="">Non émis</option>
-                                        </select>
-                                    </div>
-
-                                </div> <!-- end col -->
+                                <!--<div class="col-lg-3">-->
+                                <!--    <div class="mb-3">-->
+                                <!--        <label for="example-fileinput" class="form-label">Status appel</label>-->
+                                <!--        <select  id="appel" name="appel" class="form-control">-->
+                                <!--            <option value="">Tous</option>-->
+                                <!--            <option value="voicecompleted">Décroché</option>-->
+                                <!--            <option value="voicecancelled">Manqué</option>-->
+                                <!--            <option value="voicebusy">Racroché</option>-->
+                                <!--        </select>-->
+                                <!--    </div>-->
+                                <!--</div> <!-- end col -->-->
 
                             </div>
                         {{-- </form> --}}
