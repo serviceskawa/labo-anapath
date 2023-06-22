@@ -47,7 +47,7 @@ class AppointmentController extends Controller
 
         //charger le nom de l'application en fonction des données récupérées dans la table Setting
         config(['app.name' => $setting->titre]);
-        return view('Appointment.index', compact('patients', 'doctors'));
+        return view('appointment.index', compact('patients', 'doctors'));
     }
 
     public function getAppointments()

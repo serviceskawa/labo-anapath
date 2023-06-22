@@ -303,32 +303,14 @@ class ReportController extends Controller
                 ->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
         }
 
-        $beging = Carbon::createFromTime(8,0,0);
-        $end = Carbon::createFromTime(18,0,0);
-        $now = Carbon::now();
-
-        // dd($now);
-
+      
         $report
             ->fill([
                 'is_deliver' => 1,
             ])
             ->save();
 
-            if ($report->order->option) {
-                $this->sendSms($report);
-            }
-            else{
-                if ($now>=$beging && $now<=$end) {
-                    $this->callUser($report);
-                    // dd('je peux envoyer');
-                }
-            }
-
             $this->pdf($reportId);
-
-        // dd($report);
-        //return redirect()->back()->with('success', "Effectué avec succès ! ");
     }
     // Lancer un appel ou envoyer un sms
     public function callOrSendSms($reportId)
@@ -481,8 +463,8 @@ class ReportController extends Controller
             $audio_url_non_disponible = 'https://caap.bj/wp-content/uploads/2023/05/F.-RESULTAT-INDISPONIBLE.mp3';
         }
 
-        // Pour lancer un appel
-        $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/calls', [
+        // Pour lancer un appel 'https://staging.getourvoice.com/api/v1/calls'https://api.getourvoice.com/v1/calls
+        $responsevocal = $client->request('POST', 'https://staging.getourvoice.com/api/v1/calls', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
                 'Content-Type' => 'application/json',

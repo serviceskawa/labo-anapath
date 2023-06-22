@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppelTestOder;
 use App\Models\Report;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ApiController extends Controller
 {
@@ -68,6 +70,30 @@ class ApiController extends Controller
 
     public function getStatus(Request $request)
     {
-        return response()->json($request);
+        $data = $request->all();
+       
+        $appel = AppelTestOder::where('voice_id','like',$data['voice_id'])->first();
+        
+        if(!$appel)
+        {
+             AppelTestOder::create([
+            "type"=>$data['type'],
+            "account_id"=>$data['account_id'],
+            "voice_id"=>$data['voice_id'],
+            "event"=>$request->event,
+            ]);
+            Log::info('Nouvelle ligne');
+            return response()->json(['status'=>'Nouvelle ligne'],200);
+        }else {
+            $appel->update([
+                "type"=>$data['type'],
+                "account_id"=>$data['account_id'],
+                "voice_id"=>$data['voice_id'],
+                "event"=>$data['event']
+            ]);
+            Log::info('ligne modifié');
+            return response()->json(['status'=>'ligne modifié'],200);
+        }
+        
     }
 }

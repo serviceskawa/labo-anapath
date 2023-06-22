@@ -776,19 +776,22 @@ public function __construct(
                 return $btnVoir .  $btnReport . $btnInvoice . $btnreport . $btnDelete . $btncalling;
             })
             ->addColumn('appel', function ($data) {
-                $status = $this->getStatusCalling($data->status_appel);
+                
+                // $status = $this->getStatusCalling($data->status_appel);
 
-                switch ($status) {
-                    case 'no-answer':
-                        $btn = 'danger';
-                        break;
-                    case 'answered':
-                        $btn = 'success';
-                        break;
-                    default:
-                        $btn = 'warning';
-                        break;
-                }
+                // switch ($status) {
+                //     case 'no-answer':
+                //         $btn = 'danger';
+                //         break;
+                //     case 'answered':
+                //         $btn = 'success';
+                //         break;
+                //     default:
+                //         $btn = 'warning';
+                //         break;
+                // }
+                
+                $btn = 'warning';
                 $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
                 if (!$data->option) {
                     return $span;

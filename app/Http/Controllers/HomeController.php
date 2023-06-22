@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Models\UserRole;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -65,6 +66,9 @@ class HomeController extends Controller
         if (!getOnlineUser()->can('view-dashboard')) {
             return view('home');
         } else {
+            
+            Log::info('cc je teste le log pour voir');
+            
             $patients = $this->patients->all()->count();
             $contrats = $this->contrats->all()->count();
             $tests = $this->tests->all()->count();
