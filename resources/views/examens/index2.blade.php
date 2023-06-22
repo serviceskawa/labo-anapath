@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-               
+
 
             </div>
         </div>
@@ -17,12 +17,14 @@
                 <div class="page-title-right mr-3">
                     <a href="{{ route('test_order.create') }}"><button type="button" class="btn btn-primary">Ajouter une
                             nouvelle demande d'examen</button></a>
+                    <button data-bs-toggle="modal" data-bs-target="#standard-modal" type="button" class="btn btn-primary">Signaler un problème</button>
                 </div>
                 <h4 class="page-title">Demandes d'examen</h4>
             </div>
 
             <!----MODAL---->
             @include('layouts.alerts')
+            @include('examens.signals.create')
 
             <div class="card mb-md-0 mb-3">
                 <div class="card-body">
@@ -95,7 +97,7 @@
                                     </div>
 
                                 </div> <!-- end col -->
-                                
+
                                 <div class="col-lg-3">
 
                                     <div class="mb-3">
@@ -107,7 +109,7 @@
                                     </div>
 
                                 </div> <!-- end col -->
-                                
+
                                 <div class="col-lg-3">
 
                                     <div class="mb-3">
@@ -143,6 +145,20 @@
                                         <label for="example-fileinput" class="form-label">Date fin</label>
                                         <input type="date" name="dateEnd" id="dateEnd" class="form-control">
                                     </div>
+                                </div> <!-- end col -->
+
+                                <div class="col-lg-3">
+
+                                    <div class="mb-3">
+                                        <label for="example-fileinput" class="form-label">Status appel</label>
+                                        <select name="status_appel" id="apel_status" class="form-control">
+                                            <option value="">Tous</option>
+                                            <option value="">Décroché</option>
+                                            <option value="">Manqué</option>
+                                            <option value="">Non émis</option>
+                                        </select>
+                                    </div>
+
                                 </div> <!-- end col -->
 
                             </div>

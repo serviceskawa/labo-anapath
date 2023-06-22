@@ -230,6 +230,10 @@ class InvoiceController extends Controller
                 return $data->discount?$data->discount:'0,0';
             })
 
+            ->addColumn('type', function ($data) {
+                $badge  =$data->status_invoice == 1 ? "Avoir" : "Vente";
+                return $badge;
+            })
             ->addColumn('status', function ($data) {
                 $badge  =$data->paid == 1 ? "Payé" : "En attente";
                 return $badge;
@@ -248,6 +252,13 @@ class InvoiceController extends Controller
                         $query->where('paid', 0);
                     }else {
                         $query->where('paid', $request->get('cas_status'));
+                    }
+                }
+                if (!empty($request->get('status_invoice'))) {
+                    if (!$request->get('status_invoice')) {
+                        $query->where('status_invoice', 0);
+                    }else {
+                        $query->where('status_invoice', $request->get('cas_status'));
                     }
                 }
 
@@ -272,7 +283,7 @@ class InvoiceController extends Controller
                     $query->whereDate('created_at','<',$request->get('dateEnd'));
                 }
             })
-            ->rawColumns(['demande', 'total', 'remise','patient','action'])
+            ->rawColumns(['demande', 'total', 'remise','patient','type','action'])
             ->make(true);
 
     }

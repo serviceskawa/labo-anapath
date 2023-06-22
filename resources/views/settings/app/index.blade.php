@@ -52,11 +52,11 @@
                             Informations
                         </a>
                     </li>
-                    {{-- <li class="nav-item">
+                    <li class="nav-item">
                         <a href="#input-types-code" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
-                            Placeholder
+                            Api key
                         </a>
-                    </li> --}}
+                    </li>
                 </ul> <!-- end nav-->
 
                 <div class="tab-content">
@@ -64,15 +64,18 @@
                         <form action="{{ route('settings.app-store') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="row mb-3">
-                                <label for="" class="form-label">Nom du site</label>
                                 <div class="col-lg-12">
-                                    <input type="text" name="titre" id="" class="form-control"
-                                        value="{{ $setting ? $setting->titre : '' }}">
+                                    <label for="" class="form-label">Nom du site</label>
+                                    <div class="">
+                                        <input type="text" name="titre" id="" class="form-control"
+                                            value="{{ $setting ? $setting->titre : '' }}">
+                                    </div>
                                 </div>
+
                             </div>
                             <div class="row mb-3">
 
-                                
+
 
                                 <div class="col-lg-4">
 
@@ -110,7 +113,30 @@
 
                                 </div> <!-- end col -->
                             </div>
+
                             <div class="row mb-3">
+                                <span class="mb-3 header-title">Horaires de travail</span>
+                                <div class="col-lg-6">
+                                    <label for="" class="form-label">Heure début</label>
+                                    <div class="">
+                                        <input type="text"name="begining_date" class="form-control"
+                                        value="{{ $setting ? $setting->begining_date : '' }}" data-toggle="input-mask" data-mask-format="00:00:00">
+                                        <span class="font-13 text-muted">e.g "HH:MM:SS"</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <label for="" class="form-label">Heure fin</label>
+                                    <div class="">
+                                        <input type="text" name="ending_date" class="form-control"
+                                        value="{{ $setting ? $setting->ending_date : '' }}" data-toggle="input-mask" data-mask-format="00:00:00">
+                                        <span class="font-13 text-muted">e.g "HH:MM:SS"</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <span class="mb-3 header-title">Clés API</span>
                                 <div class="col-lg-6">
                                     <label for="" class="form-label">Server SMS</label>
 
@@ -123,7 +149,16 @@
                                     <input type="text" name="api_key_sms" id="" class="form-control"
                                         value="{{ $setting ? $setting->api_key_sms : '' }}">
                                 </div>
+
+                                <div class="col-lg-12 mt-3">
+                                    <label for="" class="form-label">Api Key Ourvoice</label>
+
+                                    <input type="text" name="api_key_ourvoice" id="" class="form-control"
+                                        value="{{ $setting ? $setting->api_key_ourvoice : '' }}">
+                                </div>
+
                             </div>
+
                             <div class="card-footer">
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-xs btn-success">Mettre à jour</button>
@@ -132,6 +167,27 @@
                         </form>
                         <!-- end row-->
                     </div> <!-- end preview-->
+
+
+                    {{-- <div class="tab-pane" id="input-types-code">
+                        <div class="card-body">
+                            <form action="{{route('report.footer-update')}}" method="post">
+                                @csrf
+                                <div class="row mb-3">
+                                    <label for="" class="form-label">Pied de page</label>
+                                    <div class="col-lg-12">
+                                        <textarea name="footer" id="footer" class="form-control" cols="30" rows="5">{{ $setting->footer ? $setting->footer : '' }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-xs btn-success">Mettre à jour</button>
+                                    </div>
+                                </div> <!-- end card-body -->
+                            </form>
+                        </div>
+                    </div> --}}
+
                     <div class="tab-pane" id="input-types-code">
                         <pre class="mb-0">
                                 <span class="html escape">

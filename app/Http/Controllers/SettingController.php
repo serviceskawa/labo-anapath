@@ -222,21 +222,27 @@ class SettingController extends Controller
 
             $setting->fill([
                 "titre" => $request->titre,
+                "begining_date" => $request->begining_date,
+                "ending_date" => $request->ending_date,
                 "logo" => $request->file('logo') ? $path_logo : $setting->logo,
                 "favicon" => $request->file('favicon') ? $path_favicon : $setting->favicon,
                 "logo_blanc" => $request->file('img3') ? $path_img3 : $setting->logo_blanc,
                 "server_sms" => $request->server_sms,
                 "api_key_sms" => $request->api_key_sms,
+                "api_key_ourvoice" => $request->api_key_ourvoice,
             ])->save();
 
         }else {
             $setting = $this->setting->create([
                 "titre" => $request->titre,
+                "begining_date" => $request->begining_date,
+                "ending_date" => $request->ending_date,
                 "logo" => $request->file('logo') ? $path_logo : "",
                 "favicon" => $request->file('favicon') ? $favicon : "",
                 "logo_blanc" => $request->file('img3') ? $path_img3 : "",
                 "server_sms" => $request->server_sms,
                 "api_key_sms" => $request->api_key_sms,
+                "api_key_ourvoice" => $request->api_key_ourvoice,
             ]);
         }
 

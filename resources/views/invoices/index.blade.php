@@ -52,6 +52,19 @@
                     </div> <!-- end col -->
 
                     <div class="col-lg-3">
+
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Type de facture</label>
+                            <select name="status_invoice" id="status_invoice" class="form-control">
+                                <option value="">Tous</option>
+                                <option value="0">Facture de vente</option>
+                                <option value="1">Facture d'avoir</option>
+                            </select>
+                        </div>
+
+                    </div> <!-- end col -->
+
+                    <div class="col-lg-3">
                         <div class="mb-3">
                             <label for="example-fileinput" class="form-label">Date Début</label>
                             <input type="date" name="dateBegin" id="dateBegin" class="form-control">
@@ -77,6 +90,7 @@
                             <th>Patient</th>
                             <th>Total</th>
                             <th>Contrat</th>
+                            <th>Type</th>
                             <th>Statut</th>
                             <th>Actions</th>
 

@@ -26,9 +26,15 @@ use App\Http\Controllers\DetailsContratController;
 use App\Http\Controllers\TypeConsultationController;
 use App\Http\Controllers\CategoryPrestationController;
 use App\Http\Controllers\LogReportController;
+use App\Http\Controllers\ProblemCategoryController;
+use App\Http\Controllers\ProblemeReportersController;
+use App\Http\Controllers\RefundRequestController;
 use App\Http\Controllers\SettingReportTemplateController;
+use App\Http\Controllers\SignalController;
 use App\Http\Controllers\TFAuthController;
 use App\Models\AppelTestOder;
+use App\Models\ProblemCategory;
+use Laravel\SerializableClosure\Serializers\Signed;
 
 /*
 |--------------------------------------------------------------------------
@@ -134,6 +140,37 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/testOrders/webhook', [AppelTestOderController::class, 'store'])->name('test_order.getStatus');
     Route::get('/testOrder/webhook', [AppelTestOderController::class, 'index'])->name('webhook.index');
+
+    Route::get('/signal',[SignalController::class, 'index'])->name('signals.index');
+    Route::post('/store-signal',[SignalController::class, 'store'])->name('signal.store');
+
+
+
+
+    //Rapporte d'erreur
+
+    //Catégories d'erreur
+    Route::get('/categorie-erreur',[ProblemCategoryController::class,'index'])->name('categorie.erreur.index');
+    Route::post('/categorie-erreur',[ProblemCategoryController::class, 'store'])->name('categorie.erreur.store');
+    Route::get('/getcategorie-erreur/{id}', [ProblemCategoryController::class, 'edit'])->name('categorie.erreur.edit');
+    Route::post('/categorie-erreur/update',[ProblemCategoryController::class, 'update'])->name('categorie.erreur.update');
+    Route::get('/categorie-erreur/delete/{id}', [ProblemCategoryController::class, 'destroy'])->name('categorie.erreur.destroy');
+
+    //Problèmes signalés
+    Route::get('/problemereport',[ProblemeReportersController::class,'index'])->name('probleme.report.index');
+    Route::post('/problemereport',[ProblemeReportersController::class, 'store'])->name('probleme.report.store');
+    Route::get('/getproblemereport/{id}', [ProblemeReportersController::class, 'edit'])->name('probleme.report.edit');
+    Route::post('/problemereport/update',[ProblemeReportersController::class, 'update'])->name('probleme.report.update');
+    Route::get('/problemereport/delete/{id}', [ProblemeReportersController::class, 'destroy'])->name('probleme.report.destroy');
+
+    //Demande de remboursement
+    Route::get('/refund-request',[RefundRequestController::class,'index'])->name('refund.request.index');
+    Route::post('/refund-request',[RefundRequestController::class, 'store'])->name('refund.request.store');
+    Route::get('/getrefund-request/{id}', [RefundRequestController::class, 'edit'])->name('refund.request.edit');
+    Route::post('/refund-request/update',[RefundRequestController::class, 'update'])->name('refund.request.update');
+    Route::post('/refund-request/updateStatus',[RefundRequestController::class, 'updateStatus'])->name('refund.request.updateStatus');
+    Route::get('/refund-request/delete/{id}', [RefundRequestController::class, 'destroy'])->name('refund.request.destroy');
+
 
 
     // Attribuer docteur signataire

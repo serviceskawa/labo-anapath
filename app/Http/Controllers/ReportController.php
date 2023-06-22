@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppelByReport;
 use App\Models\Report;
 
 //use App\Models\Contrat;
@@ -303,13 +304,12 @@ class ReportController extends Controller
                 ->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
         }
 
-      
+
         $report
             ->fill([
                 'is_deliver' => 1,
             ])
             ->save();
-
             $this->pdf($reportId);
     }
     // Lancer un appel ou envoyer un sms
@@ -480,6 +480,17 @@ class ReportController extends Controller
         $vocal = json_decode($responsevocal->getBody(), true);
         $report->order->status_appel = $vocal['data']['id'];
         $report->order->save();
+        $appel = AppelByReport::where('report_id',$report->id)->first();
+        if ($appel) {
+            $appel->update([
+                'appel_id'=>$vocal['data']['id'],
+            ]);
+        }else{
+            AppelByReport::create([
+                'report_id'=>$report->id,
+                'appel_id'=>$vocal['data']['id'],
+            ]);
+        }
         // dd($report->order);
 
         // //Récupérer tous les appels vocaux
