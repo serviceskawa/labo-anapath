@@ -17,7 +17,6 @@
                 <div class="page-title-right mr-3">
                     <a href="{{ route('test_order.create') }}"><button type="button" class="btn btn-primary">Ajouter une
                             nouvelle demande d'examen</button></a>
-                    <button data-bs-toggle="modal" data-bs-target="#standard-modal" type="button" class="btn btn-primary">Signaler un problème</button>
                 </div>
                 <h4 class="page-title">Demandes d'examen</h4>
             </div>
