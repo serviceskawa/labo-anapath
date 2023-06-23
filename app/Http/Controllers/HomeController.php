@@ -37,8 +37,7 @@ class HomeController extends Controller
      */
     public function __construct(Patient $patients, Setting $setting, Contrat $contrats, Test $tests, Invoice $invoices, TestOrder $testOrders, Report $reports, Appointment $appointments, User $users)
     {
-        $this->middleware('auth');
-        $this->middleware('tfauth');
+        $this->middleware(['auth','tfauth']);
 
         //constructeur de la class avec les attributs
 

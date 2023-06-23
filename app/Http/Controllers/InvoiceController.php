@@ -240,7 +240,12 @@ class InvoiceController extends Controller
             })
 
             ->addColumn('action', function ($data) {
-                $btnVoir = '<a type="button" href="' . route('details_test_order.index', getTestOrderData($data->test_order_id)->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+                if (getTestOrderData($data->test_order_id)) {
+                    $btnVoir = '<a type="button" href="' . route('details_test_order.index', getTestOrderData($data->test_order_id)->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+                } else {
+                    $btnVoir ='';
+                }
+
                 $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
 
                 return $btnVoir . $btnInvoice;

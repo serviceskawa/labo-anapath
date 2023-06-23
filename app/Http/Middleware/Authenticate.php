@@ -20,10 +20,10 @@ class Authenticate extends Middleware
         $now = Carbon::now();
         $currentTimeFormatted = $now->format('H:i:s');
 
-        if ($currentTimeFormatted<$setting->begining_date || $now>$setting->ending_date) {
+        // if ($currentTimeFormatted<$setting->begining_date || $now>$setting->ending_date) {
             if (! $request->expectsJson()) {
                 return route('login');
             }
-        }
+        // }
     }
 }

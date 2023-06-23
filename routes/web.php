@@ -53,8 +53,8 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware(['tfauth'])->name('home');
-Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->name('dashboard');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware(['tfauth']);
+// Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->name('dashboard');
 
 Route::middleware(['web'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -158,6 +158,7 @@ Route::middleware(['auth'])->group(function () {
 
     //Problèmes signalés
     Route::get('/problemereport',[ProblemeReportersController::class,'index'])->name('probleme.report.index');
+    Route::get('/problemereport/create',[ProblemeReportersController::class,'create'])->name('probleme.report.create');
     Route::post('/problemereport',[ProblemeReportersController::class, 'store'])->name('probleme.report.store');
     Route::get('/getproblemereport/{id}', [ProblemeReportersController::class, 'edit'])->name('probleme.report.edit');
     Route::post('/problemereport/update',[ProblemeReportersController::class, 'update'])->name('probleme.report.update');
@@ -165,6 +166,7 @@ Route::middleware(['auth'])->group(function () {
 
     //Demande de remboursement
     Route::get('/refund-request',[RefundRequestController::class,'index'])->name('refund.request.index');
+    Route::get('/refund-request/create',[RefundRequestController::class,'create'])->name('refund.request.create');
     Route::post('/refund-request',[RefundRequestController::class, 'store'])->name('refund.request.store');
     Route::get('/getrefund-request/{id}', [RefundRequestController::class, 'edit'])->name('refund.request.edit');
     Route::post('/refund-request/update',[RefundRequestController::class, 'update'])->name('refund.request.update');

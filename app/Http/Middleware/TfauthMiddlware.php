@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class TfauthMiddlware
 {
@@ -18,13 +19,18 @@ class TfauthMiddlware
 
     public function handle(Request $request, Closure $next)
     {
-        // dd($request);
-        $user = auth()->user(); // récupère l'utilisateur authentifié
+        // // dd($request);
+        // $user = auth()->user(); // récupère l'utilisateur authentifié
 
-        if ($user && $user->two_factor_enabled == 1) {
-            // dd($user);
-            return $next($request);
+        // if ($user && $user->two_factor_enabled == 1) {
+        //     // dd($user);
+        //     return $next($request);
+        // }
+        // return redirect()->route('login.confirm');
+
+        if (!Session::has('user_2fa')) {
+            return redirect()->route('login.confirm');
         }
-        return redirect()->route('login.confirm');
+        return $next($request);
     }
 }

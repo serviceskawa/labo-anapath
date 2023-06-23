@@ -6,6 +6,7 @@ use App\Mail\TFAuthNotification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 
 class TFAuthController extends Controller
 {
@@ -39,6 +40,7 @@ class TFAuthController extends Controller
             $user->two_factor_enabled = 1;
             $user->opt = NULL;
             $user->save();
+            Session::put('user_2fa', auth()->user()->id);
             return response()->json('200');
         } else {
             return response()->json(['error' => 'Le code saisi est incorrecte']);
@@ -130,32 +132,5 @@ class TFAuthController extends Controller
         // Retourne l'entier déchiffré.
         return intval($deciphered_message);
     }
-
-
-    // function caesar_cipher_int($number, $shift) {
-    //     $message = sprintf("%06d", $number);
-    //     $ciphered_message = "";
-    //     $length = strlen($message);
-    //     for ($i = 0; $i < $length; $i++) {
-    //       $char = ord($message[$i]);
-    //       $cipher_char = chr((($char - 48 + $shift) % 10) + 48);
-    //       $ciphered_message .= $cipher_char;
-    //     }
-    //     return intval($ciphered_message);
-    // }
-
-    // function caesar_decipher_int($ciphered_number, $shift) {
-    //     $ciphered_message = sprintf("%06d", $ciphered_number);
-    //     $deciphered_message = "";
-    //     $length = strlen($ciphered_message);
-    //     for ($i = 0; $i < $length; $i++) {
-    //       $char = ord($ciphered_message[$i]);
-    //       $decipher_char = chr(((($char - 48) - $shift + 10) % 10) + 48);
-    //       $deciphered_message .= $decipher_char;
-    //     }
-    //     return intval($deciphered_message);
-    // }
-
-
 
 }

@@ -724,6 +724,14 @@ if (!function_exists('getRolesByUser')) {
     }
 }
 
+if (!function_exists('formatMontant')) {
+    function formatMontant($montant) {
+        $formattedMontant = number_format($montant, 0, ',', ' ');
+        $formattedMontant .= ' F CFA';
+        return $formattedMontant;
+    }
+}
+
 if (!function_exists('getTotalByPatient')) {
     function getTotalByPatient($id)
     {

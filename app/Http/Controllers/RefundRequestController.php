@@ -12,11 +12,13 @@ class RefundRequestController extends Controller
 
     protected $setting;
     protected $refundRequest;
+    protected $testOrder;
 
-    public function __construct(Setting $setting, RefundRequest $refundRequest)
+    public function __construct(Setting $setting, RefundRequest $refundRequest, TestOrder $testOrder)
     {
         $this->setting = $setting;
         $this->refundRequest = $refundRequest;
+        $this->testOrder = $testOrder;
     }
 
     /**
@@ -28,8 +30,9 @@ class RefundRequestController extends Controller
     {
         $setting = $this->setting->find(1);
         $refundRequests = $this->refundRequest->latest()->get();
+        $testOrders = $this->testOrder->all();
 
-        return view('errors_reports.refund.index', compact('setting', 'refundRequests'));
+        return view('errors_reports.refund.index', compact('setting', 'refundRequests','testOrders'));
     }
 
     /**
@@ -39,7 +42,10 @@ class RefundRequestController extends Controller
      */
     public function create()
     {
-        //
+        $testOrders = $this->testOrder->all();
+        $setting = $this->setting->find(1);
+        config(['app.name' => $setting->titre]);
+        return view('errors_reports.refund.create', compact('testOrders'));
     }
 
     /**
@@ -51,21 +57,20 @@ class RefundRequestController extends Controller
     public function store(Request $request)
     {
         $data = $this->validate($request,[
-            'test_order_code'=>'required',
+            'test_orders_id'=>'required',
 
             'montant'=>'required',
 
             'description'=>'required',
         ]);
 
-        $test_order = TestOrder::where('code',$data['test_order_code'])->first();
         try {
             $this->refundRequest->create([
-                'test_order_id'=>$test_order->id,
+                'test_order_id'=>$data['test_orders_id'],
                 'montant'=>$data['montant'],
                 'description'=>$data['description'],
             ]);
-            return back()->with('success',"Catégrie enregistrée avec success");
+            return back()->with('success',"Demande enregistrée avec success");
         } catch (\Throwable $th) {
             return back()->with('error',"Un problème est suvenu lors de l'enrégistrement");
         }
@@ -104,7 +109,7 @@ class RefundRequestController extends Controller
     public function update(Request $request)
     {
         $data = $this->validate($request,[
-            'test_order_code'=>'required',
+            'test_orders_id'=>'required',
 
             'montant'=>'required',
 
@@ -112,11 +117,11 @@ class RefundRequestController extends Controller
 
             'id'=>'required',
         ]);
-        $test_order = TestOrder::where('code',$data['test_order_code'])->first();
+        // $test_order = TestOrder::where('code',$data['test_order_code'])->first();
         try {
             $refundRequest = $this->refundRequest->find($data['id']);
             $refundRequest->update([
-                'test_order_id'=>$test_order->id,
+                'test_order_id'=>$data['test_orders_id'],
                 'montant'=>$data['montant'],
                 'description'=>$data['description'],
             ]);

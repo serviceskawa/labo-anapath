@@ -156,30 +156,50 @@
                         </li>
                     @endif
 
-                    @if (getOnlineUser()->can('view-test-orders'))
                         <li class="side-nav-item">
                             <a data-bs-toggle="collapse" href="#sidebarEcommerce3" aria-expanded="false"
                                 aria-controls="sidebarEcommerce3" class="side-nav-link">
-                                <i class="uil-syringe"></i>
-                                <span> Rapporter une erreur</span>
+                                <i class="uil-question-circle"></i>
+                                <span> Signaler un problème</span>
                                 <span class="menu-arrow"></span>
                             </a>
                             <div class="collapse" id="sidebarEcommerce3">
                                 <ul class="side-nav-second-level">
                                     <li>
-                                        <a href="{{ route('probleme.report.index') }}">Historiques problèmes </a>
+                                        <a href="{{ route('probleme.report.index') }}">Historiques</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="{{ route('probleme.report.create') }}">Signaler</a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('categorie.erreur.index') }}">Catégories des problèmes</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{route('refund.request.index')}}">Demande remboursement</a>
+                                        <a href="{{ route('categorie.erreur.index') }}">Catégories</a>
                                     </li>
 
                                 </ul>
                             </div>
                         </li>
-                    @endif
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEcommerce5" aria-expanded="false"
+                                aria-controls="sidebarEcommerce5" class="side-nav-link">
+                                <i class="uil-balance-scale"></i>
+                                <span> Demande de remise</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce5">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{{route('refund.request.index')}}">Historiques</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="{{route('refund.request.create')}}">Ajouter</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </li>
 
                     {{-- @if (getOnlineUser()->can('view-test-orders'))
                         <li class="side-nav-item">
