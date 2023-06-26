@@ -40,7 +40,7 @@
                     //"targets": [0],
                     "render": function(data, type, row) {
                         if (test_order.status != 1) {
-                            if (row["status"] != 1) {
+                            if (row["status"] == 1) {
                                 return (
                                     '<button type="button" id="deleteBtn" class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i> </button>'
                                 );

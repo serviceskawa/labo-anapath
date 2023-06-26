@@ -205,10 +205,12 @@ class UserController extends Controller
         $status ="";
        try
        {
-           
+
             if($user->is_active ==1){
-                
+
                 $user->is_active = 0;
+                $user->is_connect = 0;
+            $user->two_factor_enabled =0;
                 $user->two_factor_enabled = 0;
                 $user->save();
                 $status = "désactivé";
@@ -216,7 +218,7 @@ class UserController extends Controller
                 // if (Auth::check() && Auth::id() === $user->id) {
                 //     Auth::logout();
                 // }
-                
+
             }else{
                 $user->is_active = 1;
                 $user->save();

@@ -307,19 +307,19 @@
                                         <h2 class="fw-normal mb-1">
                                             <span>{{ $totalToday }}F CFA</span>
                                         </h2>
-                                        <p class="mb-0 mb-2 text-danger" style="color: red">{{ $nototalToday }}F CFA</p>
+                                        <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($nototalToday) }}</p>
                                     </div>
                                     <div class="col-md-4">
                                         <p class="text-muted mb-0 mt-3">Ce Mois</p>
                                         <h2 class="fw-normal mb-1">
                                             <span>{{ $totalMonth }} F CFA</span>
                                         </h2>
-                                        <p class="mb-0 mb-2 text-danger" style="color: red">{{ $nototalMonth }} F CFA</p>
+                                        <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($nototalMonth) }}</p>
                                     </div>
                                     <div class="col-md-4">
                                         <p class="text-muted mb-0 mt-3">Mois précedent</p>
                                         <h2 class="fw-normal mb-1">
-                                            <span>{{ $totalLastMonth }} F CFA</span>
+                                            <span>{{ formatMontant($totalLastMonth) }}</span>
                                         </h2>
                                         <p class="mb-0 mb-2 text-danger" style="color: red">{{ $nototalLastMonth }} F CFA</p>
                                     </div>

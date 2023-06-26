@@ -51,7 +51,7 @@ class ProblemCategoryController extends Controller
     public function store(Request $request)
     {
         $data = $this->validate($request,[
-            'name'=>'required'
+            'name'=>'required|unique:problem_categories,name',
         ]);
 
         try {
@@ -95,7 +95,7 @@ class ProblemCategoryController extends Controller
     public function update(Request $request)
     {
         $data = $this->validate($request,[
-            'name'=>'required',
+            'name'=>'required|unique:problem_categories,name',
             'id'=>'required'
         ]);
         try {

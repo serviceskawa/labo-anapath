@@ -10,6 +10,12 @@
     </div>
 @endif
 
+@if ($message = Session::get('warning'))
+    <div class="alert alert-warning" role="alert">
+        <i class="dripicons-warning me-2"></i><strong>Attention!!</strong> {!! $message !!}
+    </div>
+@endif
+
 @if ($errors->any())
     <div class="alert alert-danger" role="alert">
         <i class="dripicons-wrong me-2"></i><strong>Erreur!!</strong>

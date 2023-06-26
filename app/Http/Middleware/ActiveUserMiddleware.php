@@ -2,12 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 
-class TfauthMiddlware
+class ActiveUserMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,20 +14,11 @@ class TfauthMiddlware
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-
     public function handle(Request $request, Closure $next)
     {
-        // // dd($request);
-        // $user = auth()->user(); // récupère l'utilisateur authentifié
-
-        // if ($user && $user->two_factor_enabled == 1) {
-        //     // dd($user);
-        //     return $next($request);
-        // }
-        // return redirect()->route('login.confirm');
-
-        if (!Session::has('user_2fa')) {
-            return redirect()->route('login.confirm');
+        // dd($request->user()->is_active);
+        if (!$request->user()->is_active) {
+            return redirect('login')->withErrors(['Votre compte est désactivé. Veuillez contacter l\'administrateur.']);
         }
         return $next($request);
     }

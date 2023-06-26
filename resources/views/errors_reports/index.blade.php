@@ -8,14 +8,15 @@
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Ajouter une nouvelle catégorie</button>
+                {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Signaler un problème</button> --}}
+                <a href="{{route('probleme.report.create')}}" type="button" class="btn btn-primary">Signaler un problème</a>
             </div>
-            <h4 class="page-title">Catégories de problèmes</h4>
+            <h4 class="page-title">Problèmes signalés</h4>
         </div>
 
         <!----MODAL---->
 
-        @include('errors_reports.create')
+        {{-- @include('errors_reports.create_modal') --}}
 
         @include('errors_reports.edit')
 
@@ -36,7 +37,7 @@
                 <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false" aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                 <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
             </div>
-            <h5 class="card-title mb-0">Liste des catégories de problèmes</h5>
+            <h5 class="card-title mb-0">Liste des problèmes signalés</h5>
 
             <div id="cardCollpase1" class="collapse pt-3 show">
 
