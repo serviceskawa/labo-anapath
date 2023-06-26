@@ -59,7 +59,68 @@ class LoginController extends Controller
 
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
+            $userConnect = Auth::user();
+            // dd($userConnect);
 
+            $user = User::find($userConnect->id);
+
+            /** Function authenticated */
+            //Récupérer les rôles de l'utilisateur qui se connecte
+            $roles = getRolesByUser($user->id);
+            $setting = Setting::find(1);
+                $now = Carbon::now();
+                //Récupérer l'heure actuelle
+                $currentTimeFormatted = $now->format('H:i:s');
+
+                $message = "";
+                if ($currentTimeFormatted<$setting->begining_date)
+                {
+                    $message = "Il n'est pas encore ". $setting->begining_date . ". Vous n'aviez pas accès à la plateforme";
+                }elseif($currentTimeFormatted>$setting->ending_date)
+                {
+                    $message = "Il est ". $setting->ending_date . "passé. Vous n'aviez plus accès à la plateforme";
+                }
+
+                //Vérifier si l'heure actuelle est dans l'intervalle des heures de travail définies
+                if ($currentTimeFormatted<$setting->begining_date || $currentTimeFormatted>$setting->ending_date) {
+                    $access = false;
+                    foreach ($roles as $key => $role) {
+                        //Lorsque l'utilisateur n'a pas le role nécessaire.
+                        if ($role->name == "accessHTime") {
+                            $access = true;
+                            break;
+                        }else{
+                            continue;
+                        }
+                    }
+
+                    if(!$access) {
+                        Auth::logout();
+                        // dd('here');
+                        // Redirigez l'utilisateur vers la page de connexion avec un message d'erreur
+                        // return back()->with('error', 'Vous n\'aviez plus access à la plateforme. Veuillez contacter l\'administrateur.');
+                        return redirect("login")->withErrors([$message]);
+                    }
+                }
+
+                //Check if account's user is active
+            if (!$user->is_active) {
+                // Déconnectez l'utilisateur
+                Auth::logout();
+                // Redirigez l'utilisateur vers la page de connexion avec un message d'erreur
+                return redirect()->route('login')->with('error', 'Votre compte est désactivé. Veuillez contacter l\'administrateur.');
+            }
+
+
+            $user->lastlogindevice = hash('sha256', $request->header('User-Agent'));
+            $user->save();
+            $user->fill([
+                'is_connect' => 1,
+            ])->save();
+
+
+
+            // $this->authenticated($request,$user);
             //update attribute is_connect pour savoir qui est en ligne
             return redirect()->route('login.confirm');
         }
@@ -79,40 +140,41 @@ class LoginController extends Controller
     {
 
         //Récupérer les rôles de l'utilisateur qui se connecte
-        // $roles = getRolesByUser($user->id);
-        // $setting = Setting::find(1);
-        //     $now = Carbon::now();
-        //     //Récupérer l'heure actuelle
-        //     $currentTimeFormatted = $now->format('H:i:s');
+        $roles = getRolesByUser($user->id);
+        $setting = Setting::find(1);
+            $now = Carbon::now();
+            //Récupérer l'heure actuelle
+            $currentTimeFormatted = $now->format('H:i:s');
 
-        //     //Vérifier si l'heure actuelle est dans l'intervalle des heures de travail définies
-        //     if ($currentTimeFormatted<$setting->begining_date || $currentTimeFormatted>$setting->ending_date) {
-        //         $access = false;
-        //         foreach ($roles as $key => $role) {
-        //             //Lorsque l'utilisateur n'a pas le role nécessaire.
-        //             if ($role->name == "accessHTime") {
-        //                 $access = true;
-        //                 break;
-        //             }else{
-        //                 continue;
-        //             }
-        //         }
+            //Vérifier si l'heure actuelle est dans l'intervalle des heures de travail définies
+            if ($currentTimeFormatted<$setting->begining_date || $currentTimeFormatted>$setting->ending_date) {
+                $access = false;
+                foreach ($roles as $key => $role) {
+                    //Lorsque l'utilisateur n'a pas le role nécessaire.
+                    if ($role->name == "accessHTime") {
+                        $access = true;
+                        break;
+                    }else{
+                        continue;
+                    }
+                }
 
-        //         if(!$access) {
-        //             Auth::logout();
-        //             // Redirigez l'utilisateur vers la page de connexion avec un message d'erreur
-        //             // return redirect()->route('login')->with('error', 'Vous n\'aviez plus access à la plateforme. Veuillez contacter l\'administrateur.');
-        //             return redirect('/login')->withErrors(['Vous n\'aviez plus access à la plateforme. Veuillez contacter l\'administrateur.']);
-        //         }
-        //     }
+                if(!$access) {
+                    Auth::logout();
+                    // dd('here');
+                    // Redirigez l'utilisateur vers la page de connexion avec un message d'erreur
+                    // return back()->with('error', 'Vous n\'aviez plus access à la plateforme. Veuillez contacter l\'administrateur.');
+                    return redirect("login")->withErrors(['Vous n\'aviez plus access à la plateforme. Veuillez contacter l\'administrateur.']);
+                }
+            }
 
-        //     //Check if account's user is active
-        // if (!$user->is_active) {
-        //     // Déconnectez l'utilisateur
-        //     Auth::logout();
-        //     // Redirigez l'utilisateur vers la page de connexion avec un message d'erreur
-        //     return redirect()->route('login')->with('error', 'Votre compte est désactivé. Veuillez contacter l\'administrateur.');
-        // }
+            //Check if account's user is active
+        if (!$user->is_active) {
+            // Déconnectez l'utilisateur
+            Auth::logout();
+            // Redirigez l'utilisateur vers la page de connexion avec un message d'erreur
+            return redirect()->route('login')->with('error', 'Votre compte est désactivé. Veuillez contacter l\'administrateur.');
+        }
 
 
         $user->lastlogindevice = hash('sha256', $request->header('User-Agent'));
@@ -131,6 +193,7 @@ class LoginController extends Controller
             $user->is_connect = 0;
             $user->two_factor_enabled =0;
             $user->save();
+            
             Auth::logout(); // déconnecte l'utilisateur
             $request->session()->invalidate();
             $request->session()->regenerateToken();

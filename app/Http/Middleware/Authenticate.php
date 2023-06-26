@@ -16,14 +16,8 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        $setting = Setting::find(1);
-        $now = Carbon::now();
-        $currentTimeFormatted = $now->format('H:i:s');
-
-        // if ($currentTimeFormatted<$setting->begining_date || $now>$setting->ending_date) {
-            if (! $request->expectsJson()) {
-                return route('login');
-            }
-        // }
+        if (! $request->expectsJson()) {
+            return route('login');
+        }
     }
 }

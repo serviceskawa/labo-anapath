@@ -406,7 +406,7 @@
             <div class="card-body">
 
                 <!-- Ajouter un examen | si le statut de la demande est 1 alors on peut plus ajouter de nouveau examen dans la demande-->
-                
+
                 @if ($test_order->invoice)
                     @if ($test_order->invoice->paid != 1)
                     <form method="POST" id="addDetailForm" autocomplete="off">
@@ -566,15 +566,20 @@
                     </table>
 
                     <div class="row mx-3 mt-2">
-                        @if ($test_order->status != 1)
+                        @if ($test_order->invoice)
+                            @if ($test_order->invoice->paid != 1)
+                            <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}"
+                                id="finalisationBtn" class="btn btn-info disabled w-full">ENREGISTRER</a>
+                            @else
+                                <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
+                                    class="btn btn-success w-full">CONSULTEZ LE
+                                    COMPTE RENDU</a>
+                            @endif
+                        @else
                             <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}"
                                 id="finalisationBtn" class="btn btn-info disabled w-full">ENREGISTRER</a>
                         @endif
-                        @if ($test_order->status == 1)
-                            <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
-                                class="btn btn-success w-full">CONSULTEZ LE
-                                COMPTE RENDU</a>
-                        @endif
+
                     </div>
                 </div>
 

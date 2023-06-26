@@ -27,7 +27,9 @@ class RedirectIfAuthenticated
                 if (!Session::has('user_2fa')) {
                     return redirect()->route('login.confirm');
                 }
-                // return redirect(RouteServiceProvider::HOME);
+                // else{
+                //     return redirect(RouteServiceProvider::HOME);
+                // }
             }
         }
 

@@ -147,9 +147,6 @@
                                             <a href="{{ route('test_order.create') }}">Ajouter</a>
                                         </li>
                                     @endif
-                                    <li>
-                                        <a href="{{ route('signals.index') }}">Problèmes signalés</a>
-                                    </li>
 
                                 </ul>
                             </div>

@@ -381,6 +381,7 @@ public function __construct(
                     $details->discount = $data['discount'];
                     $details->total = $data['total'];
                     $details->test_order_id = $data['test_order_id'];
+                    $details->status = 1;
                     $details->save();
                 });
 
@@ -472,7 +473,28 @@ public function __construct(
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $detail = $this->detailTestOrder->findorfail($request->id);
+        $test_order = $this->testOrder->findorfail($detail->test_order_id);
         $detail->delete();
+
+        $invoice = $this->invoice->where('test_order_id',$test_order->id)->first();
+
+        if ($invoice) {
+            $invoice->update([
+                "subtotal" => $test_order->subtotal,
+                "discount" => $test_order->discount,
+                "total" => $test_order->total,
+            ]);
+            $tests = $test_order->details()->get();
+
+            $details = $invoice->details()->get();
+
+            foreach ($details as $value) {
+                if ($value->test_id == $detail->test_id) {
+                    $value->delete();
+                }
+            }
+        }
+
         return response()->json(200);
 
         // return back()->with('success', "    Un élement a été supprimé ! ");
@@ -487,22 +509,32 @@ public function __construct(
         $settings = $this->setting->find(1);
         $user = Auth::user();
 
-        if ($test_order->status) {
+        // if ($test_order->status) {
 
-            return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
-        } else {
+        //     return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
+        // } else {
 
             // Génère un code unique
             $code_unique = generateCodeExamen();
 
             $test_order->fill(["status" => '1', "code" => $code_unique])->save();
 
-            $report = Report::create([
-                "code" => "CO" . $test_order->code,
-                "patient_id" => $test_order->patient_id,
-                "description" => $settings ? $settings->placeholder : '',
-                "test_order_id" => $test_order->id,
-            ]);
+            $reportTestOrder = $this->report->where('test_order_id',$test_order->id)->first();
+
+            if ($reportTestOrder) {
+                $reportTestOrder->fill([
+                    "code" => "CO" . $test_order->code,
+                    "patient_id" => $test_order->patient_id,
+                ]);
+            }else {
+                Report::create([
+                    "code" => "CO" . $test_order->code,
+                    "patient_id" => $test_order->patient_id,
+                    "description" => $settings ? $settings->placeholder : '',
+                    "test_order_id" => $test_order->id,
+                ]);
+            }
+
             $reportnow = Report::latest()->first();
 
             $log = new LogReport();
@@ -512,38 +544,69 @@ public function __construct(
             $log->save();
 
             $code_facture = generateCodeFacture();
+            $invoiceTestOrder = $this->invoice->where('test_order_id',$test_order->id)->first();
 
-            // Creation de la facture
-            $invoice = $this->invoice->create([
-                "test_order_id" => $test_order->id,
-                "date" => date('Y-m-d'),
-                "patient_id" => $test_order->patient_id,
-                "client_name" => $test_order->patient->firstname . ' ' . $test_order->patient->lastname,
-                "client_address" => $test_order->patient->adresse,
-                "subtotal" => $test_order->subtotal,
-                "discount" => $test_order->discount,
-                "total" => $test_order->total,
-                "code" => $code_facture,
-            ]);
-            // Recupération des details de la demande d'examen
-            $tests = $test_order->details()->get();
+            if ($invoiceTestOrder) {
+                $invoiceTestOrder->update([
+                    "patient_id" => $test_order->patient_id,
+                    "client_name" => $test_order->patient->firstname . ' ' . $test_order->patient->lastname,
+                    "client_address" => $test_order->patient->adresse,
+                    "subtotal" => $test_order->subtotal,
+                    "discount" => $test_order->discount,
+                    "total" => $test_order->total,
+                ]);
+                $tests = $test_order->details()->get();
 
-            if (!empty($invoice)) {
-                // Creation des details de la facture
                 foreach ($tests as $value) {
-                    $this->invoiceDetail->create([
-                        "invoice_id" => $invoice->id,
-                        "test_id" => $value->test_id,
-                        "test_name" => $value->test_name,
-                        "price" => $value->price,
-                        "discount" => $value->discount,
-                        "total" => $value->total,
-                    ]);
+                    if ($value->status ==1) {
+                        $this->invoiceDetail->create([
+                            "invoice_id" => $invoiceTestOrder->id,
+                            "test_id" => $value->test_id,
+                            "test_name" => $value->test_name,
+                            "price" => $value->price,
+                            "discount" => $value->discount,
+                            "total" => $value->total,
+                        ]);
+                        $value->status =0;
+                        $value->save();
+                    }
                 }
+
+                return redirect()->route('invoice.show', [$invoiceTestOrder->id])->with('success', " Opération effectuée avec succès  ! ");
+            }else {
+                // Creation de la facture
+                $invoice = $this->invoice->create([
+                    "test_order_id" => $test_order->id,
+                    "date" => date('Y-m-d'),
+                    "patient_id" => $test_order->patient_id,
+                    "client_name" => $test_order->patient->firstname . ' ' . $test_order->patient->lastname,
+                    "client_address" => $test_order->patient->adresse,
+                    "subtotal" => $test_order->subtotal,
+                    "discount" => $test_order->discount,
+                    "total" => $test_order->total,
+                    "code" => $code_facture,
+                ]);
+                // Recupération des details de la demande d'examen
+                $tests = $test_order->details()->get();
+
+                if (!empty($invoice)) {
+                    // Creation des details de la facture
+                    foreach ($tests as $value) {
+                        $this->invoiceDetail->create([
+                            "invoice_id" => $invoice->id,
+                            "test_id" => $value->test_id,
+                            "test_name" => $value->test_name,
+                            "price" => $value->price,
+                            "discount" => $value->discount,
+                            "total" => $value->total,
+                        ]);
+                    }
+                }
+
+                return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
             }
 
-            return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
-        }
+        // }
     }
 
     public function update(request $request, $id)
@@ -628,6 +691,14 @@ public function __construct(
             $test_order->save();
 
             $invoice = $test_order->invoice()->first();
+            $report = $test_order->report()->first();
+
+            if ($report) {
+                $report->fill([
+                    "code" => "CO" . $test_order->code,
+                    "patient_id" => $test_order->patient_id,
+                ]);
+            }
 
             if ($invoice) {
                 if ($invoice->paid !=1) {
@@ -638,9 +709,10 @@ public function __construct(
                         "client_address" => $test_order->patient->adresse,
                    ])->save();
                 }
-                return redirect()->route('invoice.show', [$invoice->id])->with('success', " Modification effectuée avec succès  ! ");
+                // return redirect()->route('invoice.show', [$invoice->id])->with('success', " Modification effectuée avec succès  ! ");
+                return back()->with('success', " Modification effectuée avec succès  ! ");
             }else {
-                return back()->with('error',"La facture n'existe pas");
+                return back()->with('warning',"La facture n'existe pas");
             }
 
         } catch (\Throwable $ex) {
