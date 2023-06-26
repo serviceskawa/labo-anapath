@@ -406,7 +406,9 @@
             <div class="card-body">
 
                 <!-- Ajouter un examen | si le statut de la demande est 1 alors on peut plus ajouter de nouveau examen dans la demande-->
-                @if ($test_order->status != 1)
+                
+                @if ($test_order->invoice)
+                    @if ($test_order->invoice->paid != 1)
                     <form method="POST" id="addDetailForm" autocomplete="off">
                         @csrf
                         <div class="row d-flex align-items-end">
@@ -459,6 +461,60 @@
                         </div>
 
                     </form>
+                    @endif
+                @else
+                <form method="POST" id="addDetailForm" autocomplete="off">
+                    @csrf
+                    <div class="row d-flex align-items-end">
+                        <div class="col-md-4 col-12">
+                            <input type="hidden" name="test_order_id" id="test_order_id"
+                                value="{{ $test_order->id }}" class="form-control">
+
+                            <div class="mb-3">
+                                <label for="example-select" class="form-label">Examen</label>
+                                <select class="form-select select2" data-toggle="select2" id="test_id"
+                                    name="test_id" required onchange="getTest()">
+                                    <option>Sélectionner l'examen</option>
+                                    @foreach ($tests as $test)
+                                        <option data-category_test_id="{{ $test->category_test_id }}"
+                                            value="{{ $test->id }}">{{ $test->name }}</option>
+                                    @endforeach
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-12">
+
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Prix</label>
+                                <input type="text" name="price" id="price" class="form-control" required
+                                    readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-12">
+                            <div class="mb-3">
+                                <label for="simpleinput" class="form-label">Remise</label>
+                                <input type="text" name="remise" id="remise" class="form-control" required
+                                    readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-12">
+                            <div class="mb-3">
+                                <label for="example-select" class="form-label">Total</label>
+
+                                <input type="text" name="total" id="total" class="form-control" required
+                                    readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-12">
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
                 @endif
 
                 <div id="cardCollpase1" class="show collapse pt-3">
