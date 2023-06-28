@@ -181,7 +181,7 @@
                             <a data-bs-toggle="collapse" href="#sidebarEcommerce5" aria-expanded="false"
                                 aria-controls="sidebarEcommerce5" class="side-nav-link">
                                 <i class="uil-balance-scale"></i>
-                                <span> Demande de remise</span>
+                                <span> Remboursement</span>
                                 <span class="menu-arrow"></span>
                             </a>
                             <div class="collapse" id="sidebarEcommerce5">
