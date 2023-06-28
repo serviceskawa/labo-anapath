@@ -372,6 +372,33 @@
                                     <thead>
                                         <tr>
                                             <th>Docteurs</th>
+                                            <th>Demandes Assignées</th>
+                                            <th>Demandes Traitées</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($doctorDatas as $doctorData)
+                                                <tr>
+                                                    <td>
+                                                        {{ $doctorData['doctor'] }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $doctorData['assigne'] }}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ $doctorData['traite'] }}
+                                                    </td>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div> <!-- end table-responsive-->
+
+                            {{-- <div class="table-responsive">
+                                <table table id="datatable1" class="table table-hover table-centered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Docteurs</th>
                                             <th>Payé Aujourd'hui</th>
                                             <th>Payé ce Mois</th>
                                             <th>Payé Mois passé</th>
@@ -397,7 +424,7 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                            </div> <!-- end table-responsive-->
+                            </div> <!-- end table-responsive--> --}}
 
                         </div>
                     </div>

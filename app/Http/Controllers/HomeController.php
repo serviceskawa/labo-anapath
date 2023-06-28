@@ -141,60 +141,96 @@ class HomeController extends Controller
 
             //Statistiques par médecin
 
-            $doctorDatas =[
-                // 'doctor' => '',
-                // 'totalDay' => 0,
-                // 'lastMonth' => 0,
-                // 'curmonth' => 0
-            ];
+            // $doctorDatas =[
+            //     // 'doctor' => '',
+            //     // 'totalDay' => 0,
+            //     // 'lastMonth' => 0,
+            //     // 'curmonth' => 0
+            // ];
+
+            // $doctorData =[
+            //     'doctor' => '',
+            //     'totalDay' => 0,
+            //     'lastMonth' => 0,
+            //     'curmonth' => 0
+            // ];
+
+            // foreach (getUsersByRole('docteur') as $doctor)
+            // {
+
+            //     $doctorData['id'] = $doctor->id;
+            //     $doctorData['doctor'] = $doctor->lastname .' '. $doctor->firstname;
+
+            //     foreach ($this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->get() as $invoice) {
+            //         if ($invoice->order->attribuateToDoctor) {
+            //             if ($invoice->order->attribuateToDoctor->id == $doctorData['id']) {
+            //                 $doctorData['totalDay'] += $invoice->total;
+            //             }
+            //         }
+            //     }
+
+            //     foreach ($this->invoices->whereDate('updated_at', $lastMonth)->where('paid','=',1)->get() as $invoice) {
+            //         if ($invoice->order->attribuateToDoctor) {
+            //             if ($invoice->order->attribuateToDoctor->id == $doctorData['id']) {
+            //                 $doctorData['lastMonth'] += $invoice->total;
+            //             }
+            //         }
+            //     }
+
+            //     foreach ($this->invoices->whereDate('updated_at', $curmonth)->where('paid','=',1)->get() as $invoice) {
+            //         if ($invoice->order->attribuateToDoctor) {
+            //             if ($invoice->order->attribuateToDoctor->id == $doctorData['id']) {
+            //                 $doctorData['curmonth'] += $invoice->total;
+            //             }
+            //         }
+            //     }
+
+            //     $doctorDatas [] = $doctorData;
+
+            //     $doctorData =[
+            //         'doctor' => '',
+            //         'totalDay' => 0,
+            //         'lastMonth' => 0,
+            //         'curmonth' => 0
+            //     ];
+
+            // }
+
+
+            $doctorDatas = [];
 
             $doctorData =[
                 'doctor' => '',
-                'totalDay' => 0,
-                'lastMonth' => 0,
-                'curmonth' => 0
+                'assigne' => 0,
+                'traite' => 0
             ];
 
             foreach (getUsersByRole('docteur') as $doctor)
             {
-
                 $doctorData['id'] = $doctor->id;
                 $doctorData['doctor'] = $doctor->lastname .' '. $doctor->firstname;
 
-                foreach ($this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->get() as $invoice) {
-                    if ($invoice->order->attribuateToDoctor) {
-                        if ($invoice->order->attribuateToDoctor->id == $doctorData['id']) {
-                            $doctorData['totalDay'] += $invoice->total;
-                        }
-                    }
+                foreach ($this->testOrders->where('attribuate_doctor_id',$doctorData['id'])->get() as $key) {
+                    $doctorData['assigne']++;
                 }
-
-                foreach ($this->invoices->whereDate('updated_at', $lastMonth)->where('paid','=',1)->get() as $invoice) {
-                    if ($invoice->order->attribuateToDoctor) {
-                        if ($invoice->order->attribuateToDoctor->id == $doctorData['id']) {
-                            $doctorData['lastMonth'] += $invoice->total;
-                        }
-                    }
+                $data = $this->testOrders->where('attribuate_doctor_id',$doctorData['id'])
+                            ->whereHas('report', function($query){
+                                $query->where('status',1);
+                            })
+                            ->get();
+                foreach ($data as $key) {
+                    $doctorData['assigne']++;
                 }
-
-                foreach ($this->invoices->whereDate('updated_at', $curmonth)->where('paid','=',1)->get() as $invoice) {
-                    if ($invoice->order->attribuateToDoctor) {
-                        if ($invoice->order->attribuateToDoctor->id == $doctorData['id']) {
-                            $doctorData['curmonth'] += $invoice->total;
-                        }
-                    }
-                }
-
                 $doctorDatas [] = $doctorData;
 
                 $doctorData =[
                     'doctor' => '',
-                    'totalDay' => 0,
-                    'lastMonth' => 0,
-                    'curmonth' => 0
+                    'assigne' => 0,
+                    'traite' => 0
                 ];
-
             }
+
+
 
             // dd($doctors);
 
