@@ -219,7 +219,7 @@ class HomeController extends Controller
                             })
                             ->get();
                 foreach ($data as $key) {
-                    $doctorData['assigne']++;
+                    $doctorData['traite']++;
                 }
                 $doctorDatas [] = $doctorData;
 
