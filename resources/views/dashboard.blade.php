@@ -372,7 +372,7 @@
                                     <thead>
                                         <tr>
                                             <th>Docteurs</th>
-                                            <th>Demandes Assignées</th>
+                                            <th>Demandes Affectées</th>
                                             <th>Demandes Traitées</th>
                                         </tr>
                                     </thead>
