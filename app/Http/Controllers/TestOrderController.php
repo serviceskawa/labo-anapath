@@ -866,7 +866,12 @@ public function __construct(
             })
             ->addColumn('appel', function ($data) {
                 
-                $status = $this->getStatusCalling($data->report->id);
+                if($data->report)
+                {
+                    $status = $this->getStatusCalling($data->report->id);
+                }else{
+                    $status = "";
+                }
 
                 switch ($status) {
                     case 'voice.busy':

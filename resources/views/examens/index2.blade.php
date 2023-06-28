@@ -157,7 +157,7 @@
                                 <!--            <option value="voicebusy">Racroché</option>-->
                                 <!--        </select>-->
                                 <!--    </div>-->
-                                <!--</div> <!-- end col -->-->
+                                <!--</div> <!-- end col -->
 
                             </div>
                         {{-- </form> --}}
