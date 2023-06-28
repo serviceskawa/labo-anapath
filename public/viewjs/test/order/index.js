@@ -56,6 +56,7 @@ $(document).ready(function() {
                 d.contenu = $('#contenu').val()
                 d.dateBegin = $('#dateBegin').val()
                 d.dateEnd = $('#dateEnd').val()
+                d.appel = $('#appel_status').val()
 
             }
         },
@@ -66,7 +67,7 @@ $(document).ready(function() {
             {
                 data: 'appel',
                 name: 'appel'
-            }, 
+            },
             {
                 data: 'created_at',
                 name: 'created_at'
@@ -106,7 +107,7 @@ $(document).ready(function() {
         order: [
             [0, 'asc']
         ],
-       
+
     });
 
     $.fn.dataTable.ext.search.push(
@@ -168,6 +169,11 @@ $(document).ready(function() {
         console.log($('#dateBegin').val());;
         table.draw();
         //console.log(search.value);
+    });
+
+    $('#appel_status').on('change',function() {
+        // alert(this.value);
+        table.draw();
     });
 });
 

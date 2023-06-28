@@ -44,4 +44,12 @@ class Report extends Model
     {
         return $this->belongsTo(Patient::class);
     }
+
+    public function appel()
+    {
+        return $this->hasOne(AppelByReport::class);
+        // $data = AppelByReport::where('report_id',$this->id)->first();
+
+        // return $data ? $data : '';
+    }
 }

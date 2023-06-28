@@ -37,19 +37,7 @@
 
                     <div id="cardCollpase1" class="show collapse pt-3">
 
-                        {{-- <form method="post" id="filter_form">
-                            @csrf --}}
                             <div class="row mb-3">
-
-                                    {{-- <div class="col-lg-3">
-
-                                <div class="mb-3">
-                                    <label for="example-fileinput" class="form-label">Date</label>
-                                    <input type="text" id="reportrange" class="form-control">
-                                </div>
-
-
-                            </div> <!-- end col --> --}}
 
                                 <div class="col-lg-3">
 
@@ -146,15 +134,30 @@
                                     </div>
                                 </div> <!-- end col -->
 
+                                {{-- <div class="col-lg-3">
+
+                                    <div class="mb-3">
+                                        <label for="example-fileinput" class="form-label">Status</label>
+                                        <select name="status" id="appel" class="form-control">
+                                            <option value="">Tous</option>
+                                            <option value="1">Valider</option>
+                                            <option value="0">En attente</option>
+                                            <option value="livrer">Livrer</option>
+                                            <option value="non_livrer">Non Livrer</option>
+                                        </select>
+                                    </div>
+
+                                </div> <!-- end col --> --}}
+
                                 <div class="col-lg-3">
 
                                     <div class="mb-3">
                                         <label for="example-fileinput" class="form-label">Status appel</label>
-                                        <select name="status_appel" id="apel_status" class="form-control">
+                                        <select name="status_appel" id="appel_status" class="form-control">
                                             <option value="">Tous</option>
-                                            <option value="">Décroché</option>
-                                            <option value="">Manqué</option>
-                                            <option value="">Non émis</option>
+                                            <option value="voice.completed">Décroché</option>
+                                            <option value="voice.cancelled">Manqué</option>
+                                            <option value="voice.busy">Racroché</option>
                                         </select>
                                     </div>
 

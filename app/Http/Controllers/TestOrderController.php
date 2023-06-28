@@ -926,7 +926,7 @@ public function __construct(
                 config(['app.name' => $setting->titre]);
                 return view('examens.datatables.attribuate', compact('order'));
             })
-            ->filter(function ($query) use ($request) {
+            ->filter(function ($query) use ($request,$data) {
 
                 if (!empty($request->get('attribuate_doctor_id'))) {
                     $query->where('attribuate_doctor_id', $request->get('attribuate_doctor_id'));
@@ -956,6 +956,18 @@ public function __construct(
                         // $query->where('status', $request->get('exams_status'));
                     }
                 }
+
+                if (!empty($request->get('appel'))) {
+
+                    $query->whereHas('report', function ($query) use($request){
+                            $query->whereHas('appel',function($query) use($request) {
+                                $query->whereHas('appel_event', function($query) use($request) {
+                                    $query->where('event',$request->get('appel'));
+                                });
+                            });
+                    });
+                }
+
                 if(!empty($request->get('contenu')))
                 {
                     $query->where('code','like','%'.$request->get('contenu').'%')

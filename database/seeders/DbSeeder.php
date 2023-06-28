@@ -3,8 +3,13 @@
 namespace Database\Seeders;
 
 use App\Models\CategoryTest;
+use App\Models\Details_Contrat;
+use App\Models\DetailTestOrder;
+use App\Models\Doctor;
+use App\Models\Hospital;
 use App\Models\Patient;
 use App\Models\Test;
+use App\Models\TestOrder;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -19,16 +24,16 @@ class DbSeeder extends Seeder
      */
     public function run()
     {
-        Patient::factory(100)->create();
+        Patient::factory(25)->create();
 
         // $faker = Faker::create();
-        
+
         // //CREATION UTILISATEUR
         // User::create([
         //     'name' => 'Administrateur',
         //     'email' => 'admin@admin.com',
         //     'password' => Hash::make('P@ssw0rd'),
-    
+
         // ]);
 
 
@@ -56,9 +61,21 @@ class DbSeeder extends Seeder
 
 
         //CREATION HOPITAL
-
+        // Hospital::factory(50)->create();
 
         //CREATION DOCTOR
+        // Doctor::factory(50)->create();
+
+        //CEATION TESTORDER
+        TestOrder::factory(100)->create();
+
+        //CREATION DETAIL TEST ORDER
+        DetailTestOrder::factory(10)->create();
+
+        //CREATION DETAILS CONTRAT
+        Details_Contrat::factory(5)->create();
+
+
 
         //CREATION CONTRAT
     }
