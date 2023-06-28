@@ -187,8 +187,13 @@ function edit(id){
                 status:status,
             },
             success: function (data) {
+                console.log(data);
                 toastr.success("Mis à jour avec succès", 'Ajout réussi');
-                location.reload();
+                if (data.data == 1) {
+                    window.location.href = baseUrl + "/invoices/show/"+data.invoice;
+                } else {
+                    location.reload();
+                }
 
             },
             error: function (error) {

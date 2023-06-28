@@ -41,7 +41,7 @@
                     <div class="form-group">
                     <label for="simpleinput" class="form-label">Description<span style="color:red;">*</span></label>
                     {{-- <textarea name="description" id="editor"  rows="10"></textarea> --}}
-                    <textarea name="description" id="" rows="6" class="form-control"></textarea>
+                    <textarea name="description" id="" rows="6" class="form-control" required></textarea>
                     </div>
                 </div>
         </div>

@@ -88,32 +88,43 @@
                     <h4 class="header-title mb-1">Demande d'Examens</h4>
 
                     <div class="row text-center mt-2">
+
                         <div class="col-md-3">
                             <h3 class="fw-normal mt-3">
                                 <span>{{ $testOrdersCount }}</span>
                             </h3>
-                            <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-warning"></i> Total
+                            <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-primary"></i> Total
                             </p>
                         </div>
-                        <div class="col-md-3">
+
+                        <div class="col-md-2">
                             <h3 class="fw-normal mt-3">
                                 <span>{{ $finishTest }}</span>
                             </h3>
                             <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-success"></i>
                                 Terminée</p>
                         </div>
-                        <div class="col-md-3">
+
+                        <div class="col-md-2">
+                            <h3 class="fw-normal mt-3">
+                                <span>{{ $noSaveTest }}</span>
+                            </h3>
+                            <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-warning"></i> Non enregistré</p>
+                        </div>
+
+                        <div class="col-md-2">
                             <h3 class="fw-normal mt-3">
                                 <span>{{ $noFinishTest }}</span>
                             </h3>
-                            <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-primary"></i> En
+                            <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-warning"></i> En
                                 attente</p>
                         </div>
+
                         <div class="col-md-3">
                             <h3 class="fw-normal mt-3">
                                 <span>{{ $noFinishWeek }}</span>
                             </h3>
-                            <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-primary"></i> En
+                            <p class="text-muted mb-0 mb-2"><i class="mdi mdi-checkbox-blank-circle text-warning"></i> En
                                 attente plus de 3 semaines</p>
                         </div>
 
@@ -300,12 +311,14 @@
                 <div class="collapse" id="todayTasks">
                     <div class="card">
                         <div class="card-body">
-                            <div class="chart-content-bg">
+
+                            <h4 class="header-title mb-3">Facture de vente</h4>
+                            <div class="chart-content-bg mb-3">
                                 <div class="row text-center">
                                     <div class="col-md-4">
                                         <p class="text-muted mb-0 mt-3">Aujourd'hui</p>
                                         <h2 class="fw-normal mb-1">
-                                            <span>{{ $totalToday }}F CFA</span>
+                                            <span>{{ formatMontant($totalToday) }}F CFA</span>
                                         </h2>
                                         <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($nototalToday) }}</p>
                                     </div>
@@ -325,6 +338,67 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <h4 class="header-title mb-3">Facture avoir</h4>
+                            <div class="chart-content-bg mb-3">
+                                <div class="row text-center">
+                                    <div class="col-md-4">
+                                        <p class="text-muted mb-0 mt-3">Aujourd'hui</p>
+                                        <h2 class="fw-normal mb-1">
+                                            <span>{{ formatMontant($annuletotalToday) }}F CFA</span>
+                                        </h2>
+                                        <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($noannuletotalToday) }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class="text-muted mb-0 mt-3">Ce Mois</p>
+                                        <h2 class="fw-normal mb-1">
+                                            <span>{{ formatMontant($annuletotalMonth) }} F CFA</span>
+                                        </h2>
+                                        <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($noannuletotalMonth) }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class="text-muted mb-0 mt-3">Mois précedent</p>
+                                        <h2 class="fw-normal mb-1">
+                                            <span>{{ formatMontant($annuletotalLastMonth) }}</span>
+                                        </h2>
+                                        <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($noannuletotalLastMonth) }} F CFA</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h4 class="header-title mb-3">Statistique par docteurs</h4>
+                            <div class="table-responsive">
+                                <table table id="datatable1" class="table table-hover table-centered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Docteurs</th>
+                                            <th>Payé Aujourd'hui</th>
+                                            <th>Payé ce Mois</th>
+                                            <th>Payé Mois passé</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($doctorDatas as $doctorData)
+                                                <tr>
+                                                    <td>
+                                                        {{ $doctorData['doctor'] }}
+                                                    </td>
+                                                    <td>
+                                                        {{ formatMontant($doctorData['totalDay']) }}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ formatMontant($doctorData['curmonth']) }}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ formatMontant($doctorData['lastMonth']) }}
+                                                    </td>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div> <!-- end table-responsive-->
+
                         </div>
                     </div>
                 </div> <!-- end .collapse-->

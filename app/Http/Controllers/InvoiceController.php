@@ -82,7 +82,8 @@ class InvoiceController extends Controller
         }
 
 
-        $invoiceExist = $testOrder->invoice()->first();
+        // $invoiceExist = $testOrder->invoice()->first();
+        $invoiceExist = $this->invoices->where('test_order_id',$testOrder->id)->where('status_invoice',0)->first();
 
         if (!empty($invoiceExist)) {
             return back()->with('error', "Il existe deja une facture pour cette demande. Veuillez réessayer! ");
@@ -203,11 +204,11 @@ class InvoiceController extends Controller
                 return $data->date;
             })
 
-            ->setRowClass(function ($data) use ($request) {
-                if($data->paid == 1){
-                    return 'table-success';
-                }
-            })
+            // ->setRowClass(function ($data) use ($request) {
+            //     if($data->paid == 1){
+            //         return 'table-success';
+            //     }
+            // })
 
             ->addColumn('code', function ($data) {
 
@@ -235,8 +236,18 @@ class InvoiceController extends Controller
                 return $badge;
             })
             ->addColumn('status', function ($data) {
-                $badge  =$data->paid == 1 ? "Payé" : "En attente";
-                return $badge;
+
+                    switch ($data->paid == 1) {
+                        case 1:
+                            $btn = '<span class="badge bg-success rounded-pill p-1"> Payé </span>';
+                            break;
+
+                        default:
+                            $btn = '<span class="badge bg-warning rounded-pill p-1"> En attente </span>';;
+                            break;
+                    }
+                return $btn;
+
             })
 
             ->addColumn('action', function ($data) {
@@ -263,7 +274,7 @@ class InvoiceController extends Controller
                     if (!$request->get('status_invoice')) {
                         $query->where('status_invoice', 0);
                     }else {
-                        $query->where('status_invoice', $request->get('cas_status'));
+                        $query->where('status_invoice', 1);
                     }
                 }
 
@@ -288,7 +299,7 @@ class InvoiceController extends Controller
                     $query->whereDate('created_at','<',$request->get('dateEnd'));
                 }
             })
-            ->rawColumns(['demande', 'total', 'remise','patient','type','action'])
+            ->rawColumns(['demande', 'total', 'remise','patient','type','status','action'])
             ->make(true);
 
     }

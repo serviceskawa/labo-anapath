@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNewColumnInvoiceTable extends Migration
+class AddNewInvoiceTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,11 +14,10 @@ class AddNewColumnInvoiceTable extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->boolean('status_invoice')->default(0);
-            $table->foreignId('reference_invoice')->nullable()
-                ->constrained('refund_requests')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            $table->foreignId('reference')->nullable()
+            ->constrained('invoices')
+            ->onUpdate('cascade')
+            ->onDelete('cascade');
         });
     }
 
