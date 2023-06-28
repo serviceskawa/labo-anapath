@@ -318,7 +318,7 @@
                                     <div class="col-md-4">
                                         <p class="text-muted mb-0 mt-3">Aujourd'hui</p>
                                         <h2 class="fw-normal mb-1">
-                                            <span>{{ formatMontant($totalToday) }}F CFA</span>
+                                            <span>{{ formatMontant($totalToday) }}</span>
                                         </h2>
                                         <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($nototalToday) }}</p>
                                     </div>
@@ -345,7 +345,7 @@
                                     <div class="col-md-4">
                                         <p class="text-muted mb-0 mt-3">Aujourd'hui</p>
                                         <h2 class="fw-normal mb-1">
-                                            <span>{{ formatMontant($annuletotalToday) }}F CFA</span>
+                                            <span>{{ formatMontant($annuletotalToday) }}</span>
                                         </h2>
                                         <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($noannuletotalToday) }}</p>
                                     </div>
