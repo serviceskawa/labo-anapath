@@ -23,7 +23,7 @@
 
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Description<span style="color:red;">*</span></label>
-                    <textarea name="description" id="description2" rows="6" class="form-control"></textarea>
+                    <textarea name="description" id="description2" rows="6" class="form-control" required></textarea>
                 </div>
 
 

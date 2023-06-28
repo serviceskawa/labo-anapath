@@ -206,9 +206,12 @@ class PatientController extends Controller
         $patient = $this->patients->find($id);
 
         $total = $this->invoices->where('patient_id','=',$id)->sum('total');
-        $nopaye = $this->invoices->where(['patient_id'=>$id,'paid'=>0])->sum('total');
+        
+        $nopaye = $this->invoices->where(['patient_id'=>$id,'paid'=>0])->where(['status_invoice'=>0])->sum('total');
 
-        $paye = $this->invoices->where(['patient_id'=>$id,'paid'=>1])->sum('total');
+        $annule = $this->invoices->where(['patient_id'=>$id,'paid'=>1])->where(['status_invoice'=>1])->sum('total');
+
+        $paye = $this->invoices->where(['patient_id'=>$id,'paid'=>1])->where(['status_invoice'=>0])->sum('total')-$annule;
 
         $testorders =$this->testOrders->where('patient_id','=',$id)->latest()->get();
 

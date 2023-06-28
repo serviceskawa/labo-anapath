@@ -74,19 +74,25 @@ class HomeController extends Controller
 
             //Mois courant
             $curmonth = now()->format('m'); // Récupérer le mois en cours sous forme de chiffre (ex : '01' pour janvier)
-            $totalMonth = $this->invoices->whereMonth('updated_at', $curmonth)->where('paid','=',1)->sum('total');
-            $nototalMonth = $this->invoices->whereMonth('updated_at', $curmonth)->where('paid','=',0)->sum('total');
+            $annuletotalMonth = $this->invoices->whereMonth('updated_at', $curmonth)->where('paid','=',1)->where(['status_invoice'=>1])->sum('total');
+            $totalMonth = $this->invoices->whereMonth('updated_at', $curmonth)->where('paid','=',1)->where(['status_invoice'=>0])->sum('total') - $annuletotalMonth;
+            $noannuletotalMonth = $this->invoices->whereMonth('updated_at', $curmonth)->where('paid','=',0)->where(['status_invoice'=>1])->sum('total');
+            $nototalMonth = $this->invoices->whereMonth('updated_at', $curmonth)->where('paid','=',0)->where(['status_invoice'=>0])->sum('total');
 
             //Mois précédent
             $now = Carbon::now();
             $lastMonth = $now->copy()->subMonth()->format('m');
-            $totalLastMonth = $this->invoices->whereMonth('updated_at', $lastMonth)->where('paid','=',1)->sum('total');
-            $nototalLastMonth = $this->invoices->whereMonth('updated_at', $lastMonth)->where('paid','=',0)->sum('total');
+            $annuletotalLastMonth = $this->invoices->whereMonth('updated_at', $lastMonth)->where('paid','=',1)->where(['status_invoice'=>1])->sum('total');
+            $totalLastMonth = $this->invoices->whereMonth('updated_at', $lastMonth)->where('paid','=',1)->where(['status_invoice'=>0])->sum('total') - $annuletotalLastMonth;
+            $noannuletotalLastMonth = $this->invoices->whereMonth('updated_at', $lastMonth)->where('paid','=',0)->where(['status_invoice'=>1])->sum('total');
+            $nototalLastMonth = $this->invoices->whereMonth('updated_at', $lastMonth)->where('paid','=',0)->where(['status_invoice'=>0])->sum('total');
 
             //Jour actuellement
             $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'
-            $totalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->sum('total');
-            $nototalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',0)->sum('total');
+            $annuletotalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->where(['status_invoice'=>1])->sum('total');
+            $totalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->where(['status_invoice'=>0])->sum('total') - $annuletotalToday;
+            $noannuletotalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',0)->where(['status_invoice'=>1])->sum('total');
+            $nototalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',0)->where(['status_invoice'=>0])->sum('total');
 
 
 
@@ -100,6 +106,7 @@ class HomeController extends Controller
             $noFinishTest = 0;
             $noFinishWeek = 0;
             $finishTest = 0;
+            $noSaveTest = 0;
             foreach ($testOrders as $testOrder) {
                 if ($testOrder->report !=null) {
 
@@ -109,6 +116,9 @@ class HomeController extends Controller
                     }else {
                         $finishTest++;
                     }
+                }else
+                {
+                    $noSaveTest++;
                 }
             }
             $weekTests = $this->testOrders->whereDate('created_at', '>', $threeWeeksAgo)->get();
@@ -132,12 +142,73 @@ class HomeController extends Controller
             $loggedInUserIds = $this->users->where('is_connect',1)->whereDate('updated_at', '=', $now->toDateString())->get();
 
 
+
+            //Statistiques par médecin
+
+            $doctorDatas =[
+                // 'doctor' => '',
+                // 'totalDay' => 0,
+                // 'lastMonth' => 0,
+                // 'curmonth' => 0
+            ];
+
+            $doctorData =[
+                'doctor' => '',
+                'totalDay' => 0,
+                'lastMonth' => 0,
+                'curmonth' => 0
+            ];
+
+            foreach (getUsersByRole('docteur') as $doctor)
+            {
+
+                $doctorData['id'] = $doctor->id;
+                $doctorData['doctor'] = $doctor->lastname .' '. $doctor->firstname;
+
+                foreach ($this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->get() as $invoice) {
+                    if ($invoice->order->attribuateToDoctor) {
+                        if ($invoice->order->attribuateToDoctor->id == $doctorData['id']) {
+                            $doctorData['totalDay'] += $invoice->total;
+                        }
+                    }
+                }
+
+                foreach ($this->invoices->whereDate('updated_at', $lastMonth)->where('paid','=',1)->get() as $invoice) {
+                    if ($invoice->order->attribuateToDoctor) {
+                        if ($invoice->order->attribuateToDoctor->id == $doctorData['id']) {
+                            $doctorData['lastMonth'] += $invoice->total;
+                        }
+                    }
+                }
+
+                foreach ($this->invoices->whereDate('updated_at', $curmonth)->where('paid','=',1)->get() as $invoice) {
+                    if ($invoice->order->attribuateToDoctor) {
+                        if ($invoice->order->attribuateToDoctor->id == $doctorData['id']) {
+                            $doctorData['curmonth'] += $invoice->total;
+                        }
+                    }
+                }
+
+                $doctorDatas [] = $doctorData;
+
+                $doctorData =[
+                    'doctor' => '',
+                    'totalDay' => 0,
+                    'lastMonth' => 0,
+                    'curmonth' => 0
+                ];
+
+            }
+
+            // dd($doctors);
+
             // dd($loggedInUserIds);
 
         // dd($sessions);
-            return view('dashboard', compact('patients', 'contrats', 'tests', 'totalToday', 'totalMonth', 'totalLastMonth',
-            'testOrdersCount','noFinishTest', 'noFinishWeek','finishTest','Appointments', 'loggedInUserIds','nototalToday', 'nototalMonth', 'nototalLastMonth',
-            'testOrdersToday','invoice'));
+            return view('dashboard', compact('patients', 'contrats', 'tests', 'totalToday', 'annuletotalToday','noannuletotalToday',
+            'totalMonth', 'annuletotalMonth', 'noannuletotalMonth','totalLastMonth', 'annuletotalLastMonth', 'noannuletotalLastMonth',
+            'testOrdersCount','noFinishTest', 'noSaveTest','noFinishWeek','finishTest','Appointments',
+            'loggedInUserIds','nototalToday', 'nototalMonth', 'nototalLastMonth', 'testOrdersToday','invoice','doctorDatas'));
         }
 
     }

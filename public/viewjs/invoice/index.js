@@ -25,7 +25,7 @@ $(document).ready(function() {
             url: ROUTEGETDATATABLE,
             data: function(d) {
                 d.cas_status = $('#cas_status').val()
-                d.cas_status = $('#status_invoice').val()
+                d.status_invoice = $('#status_invoice').val()
                 d.contenu = $('#contenu').val()
                 d.dateBegin = $('#dateBegin').val()
                 d.dateEnd = $('#dateEnd').val()

@@ -9,10 +9,8 @@ class AppelByReport extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    
     public function appel_event()
     {
         return $this->belongsTo(AppelTestOder::class, 'appel_id');
     }
-    
 }
