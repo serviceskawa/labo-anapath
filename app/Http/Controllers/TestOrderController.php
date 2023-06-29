@@ -728,38 +728,12 @@ public function __construct(
 
     private function getStatusCalling($id)
     {
-
         $data = AppelByReport::where('report_id',$id)->first();
+
         $appel = $data ? AppelTestOder::where('voice_id',$data->appel_id)->first() : '';
-        return $appel ? $appel->event : '';
 
-        // $getV = [];
-        // if ($id) {
-        //     $client = new Client();
-        //     $accessToken = '421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk';
-
-        //     //Récupérer tous les appels vocaux
-        //     $response = $client->request('GET', 'https://api.getourvoice.com/v1/calls', [
-        //         'headers' => [
-        //             'Authorization' => 'Bearer ' . $accessToken,
-        //             'Content-Type' => 'application/json',
-        //             'Accept' => 'application/json',
-        //         ],
-        //     ]);
-
-        //     $data = json_decode($response->getBody(), true);
-
-
-        //     foreach ($data['data'] as $value) {
-        //         if ($value['id'] = $id) {
-        //             $getV = $value;
-        //         }
-        //     }
-        //     return $getV['status'];
-        // } else {
-        //     return $getV;
-        // }
-
+        // return $appel ? $appel->event : '';
+        return $data ? ($appel ? $appel->event : 'no-answered'):'no-appel';
     }
 
     public function getTestOrdersforDatatable(Request $request)
@@ -865,13 +839,21 @@ public function __construct(
                 return $btnVoir .  $btnReport . $btnInvoice . $btnreport . $btnDelete . $btncalling;
             })
             ->addColumn('appel', function ($data) {
-                $status = $this->getStatusCalling($data->status_appel);
+                if($data->report)
+                {
+                    $status = $this->getStatusCalling($data->report->id);
+                }else{
+                    $status = "";
+                }
 
                 switch ($status) {
-                    case 'no-answer':
+                    case 'voice.busy':
                         $btn = 'danger';
                         break;
-                    case 'answered':
+                    case 'no-answered':
+                        $btn = 'danger';
+                        break;
+                    case 'voice.completed':
                         $btn = 'success';
                         break;
                     default:

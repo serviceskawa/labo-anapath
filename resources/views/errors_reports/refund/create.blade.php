@@ -3,6 +3,22 @@
 @section('title', 'Demande de remboursement')
 
 @section('content')
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box">
+            <h4 class="page-title">Ajouter une demande de remboursements</h4>
+        </div>
+
+        <!----MODAL---->
+
+        {{-- @include('errors_reports.refund.create_modal') --}}
+
+        @include('errors_reports.refund.edit')
+
+    </div>
+</div>
+
 <div class="">
 
     @include('layouts.alerts')
@@ -43,7 +59,7 @@
 
         <div class="modal-footer">
             <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-            <button type="submit" class="btn btn-primary">Signaler un problème</button>
+            <button type="submit" class="btn btn-primary">Demander un remboursement</button>
         </div>
 
 

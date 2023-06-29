@@ -46,9 +46,9 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Code examen</th>
+                            <th>Demande d'examen</th>
                             <th>Description</th>
-                            <th>Catégorie de problème</th>
+                            <th>Catégorie</th>
                             <th>Status</th>
                             @foreach (getRolesByUser(Auth::user()->id) as $role)
                                 {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
