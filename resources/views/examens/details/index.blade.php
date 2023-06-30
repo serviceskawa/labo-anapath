@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.css"
         integrity="sha512-In/+MILhf6UMDJU4ZhDL0R0fEpsp4D3Le23m6+ujDWXwl3whwpucJG1PEmI3B07nyJx+875ccs+yX2CqQJUxUw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Inclure les fichiers CSS de Dropzone.js via CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/dropzone.min.css" />
 @endsection
 
 @section('content')
@@ -306,8 +308,28 @@
 
                             <label class="form-label mt-3">Affecter à</label>
 
-                            @if ($test_order->invoice)
-                                @if ($test_order->invoice->paid != 1)
+                           @if (!empty($test_order->attribuate_doctor_id))
+                                @if ($test_order->invoice)
+                                    @if ($test_order->invoice->paid != 1)
+                                        <select name="attribuate_doctor_id" id="" class="form-control">
+                                            <option value="">Selectionnez un docteur</option>
+                                            @foreach (getUsersByRole('docteur') as $item)
+                                                <option value="{{ $item->id }}"
+                                                    {{ $test_order->attribuate_doctor_id == $item->id ? 'selected' : '' }}>
+                                                    {{ $item->lastname }} {{ $item->firstname }} </option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        @foreach (getUsersByRole('docteur') as $item)
+                                            @if ($test_order->attribuate_doctor_id == $item->id)
+                                                <input type="text" name="attribuate_doctor_id" id=""
+                                                    class="form-control" readonly
+                                                    value="{{ $item->lastname }} {{ $item->firstname }}">
+                                            @endif
+                                        @endforeach
+
+                                    @endif
+                                @else
                                     <select name="attribuate_doctor_id" id="" class="form-control">
                                         <option value="">Selectionnez un docteur</option>
                                         @foreach (getUsersByRole('docteur') as $item)
@@ -316,26 +338,17 @@
                                                 {{ $item->lastname }} {{ $item->firstname }} </option>
                                         @endforeach
                                     </select>
-                                @else
-                                    @foreach (getUsersByRole('docteur') as $item)
-                                        @if ($test_order->attribuate_doctor_id == $item->id)
-                                            <input type="text" name="attribuate_doctor_id" id=""
-                                                class="form-control" readonly
-                                                value="{{ $item->lastname }} {{ $item->firstname }}">
-                                        @endif
-                                    @endforeach
-
                                 @endif
-                            @else
-                                <select name="attribuate_doctor_id" id="" class="form-control">
-                                    <option value="">Selectionnez un docteur</option>
-                                    @foreach (getUsersByRole('docteur') as $item)
-                                        <option value="{{ $item->id }}"
-                                            {{ $test_order->attribuate_doctor_id == $item->id ? 'selected' : '' }}>
-                                            {{ $item->lastname }} {{ $item->firstname }} </option>
-                                    @endforeach
-                                </select>
-                            @endif
+                           @else
+                            <select name="attribuate_doctor_id" id="" class="form-control">
+                                <option value="">Selectionnez un docteur</option>
+                                @foreach (getUsersByRole('docteur') as $item)
+                                    <option value="{{ $item->id }}"
+                                        {{ $test_order->attribuate_doctor_id == $item->id ? 'selected' : '' }}>
+                                        {{ $item->lastname }} {{ $item->firstname }} </option>
+                                @endforeach
+                            </select>
+                           @endif
 
 
                             <div class="mt-3">
@@ -366,16 +379,17 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Pièce jointe</label>
-                                @if ($test_order->invoice)
                                     <input type="file" name="examen_file"
-                                        {{ $test_order->invoice->paid == 1 ? 'readonly' : '' }} id="example-fileinput"
-                                        class="form-control dropify"
+                                        id="example-fileinput"  class="form-control dropify"
                                         data-default-file="{{ $test_order ? Storage::url($test_order->examen_file) : '' }}">
-                                @else
-                                    <input type="file" name="examen_file" id="example-fileinput"
-                                        class="form-control dropify"
-                                        data-default-file="{{ $test_order ? Storage::url($test_order->examen_file) : '' }}">
-                                @endif
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="example-fileinput" class="form-label">Images</label>
+                                <div class="dropzone" id="image-dropzone"></div>
                             </div>
                         </div>
                     </div>
@@ -385,13 +399,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    @if ($test_order->invoice)
-                        @if ($test_order->invoice->paid != 1)
-                            <button type="submit" class="btn w-100 btn-warning">Mettre à jour</button>
-                        @endif
-                    @else
-                        <button type="submit" class="btn w-100 btn-warning">Mettre à jour</button>
-                    @endif
+                    <button type="submit" class="btn w-100 btn-warning">Mettre à jour</button>
                 </div>
 
             </form>
@@ -816,8 +824,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
         integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
     <script>
         var test_order = {!! json_encode($test_order) !!}
+        var test_order_code = {!! json_encode($test_order->code) !!}
         var invoiceTest = {!! json_encode($test_order->invoice) !!}
         var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 
@@ -835,6 +845,9 @@
         var TOKENSTOREHOSPITAL = "{{ csrf_token() }}"
         var ROUTESTOREDOCTOR = "{{ route('doctors.storeDoctor') }}"
         var TOKENSTOREDOCTOR = "{{ csrf_token() }}"
+        var ROUTEFILEUPLOAD = "{{ route('images.upload') }}"
+        var TOKENGETFILEUPDATE = $('meta[name="csrf-token"]').attr('content')
     </script>
     <script src="{{ asset('viewjs/test/order/detail.js') }}"></script>
+    <!-- Inclure les fichiers JavaScript de Dropzone.js via CDN -->
 @endpush

@@ -64,14 +64,17 @@
                                     {{-- <option value="">Sélectionner un titre</option> --}}
                                     @forelse ($titles as $title)
                                         @if ($report->title == '')
-                                            <option {{ $title->status != 0 ? 'selected' : '' }} style="font-weight:{{ $title->status !=0 ? 'bold':'' }}"
+                                            <option {{ $title->status != 0 ? 'selected' : '' }}
+                                                style="font-weight:{{ $title->status != 0 ? 'bold' : '' }}"
                                                 value="{{ $title->title }}">
                                                 {{ $title->title }}
                                             </option>
                                         @else
-                                            <option value="{{ $title->title }}" {{ $report->title == $title->title ? 'selected' : '' }}>
+                                            <option value="{{ $title->title }}"
+                                                {{ $report->title == $title->title ? 'selected' : '' }}>
 
-                                                <span style="font-weight:{{ $title->status !=0 ? 'bold':'' }} font-style:{{ $title->status !=0 ? 'italic':'' }}">
+                                                <span
+                                                    style="font-weight:{{ $title->status != 0 ? 'bold' : '' }} font-style:{{ $title->status != 0 ? 'italic' : '' }}">
                                                     {{ $title->title }}
                                                 </span>
                                             </option>
@@ -143,6 +146,41 @@
                                         style="height: 250px;">{{ $report->description_supplementaire }}</textarea>
 
                                 </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card mb-md-0 mb-3 mt-3">
+                        <h5 class="card-header">Images De l'examen</h5>
+                        <div class="card-body">
+
+                            <!-- The grid: four columns -->
+                            <div class="row">
+
+                                <div class="col-lg-12">
+
+                                            <!-- The expanding image container -->
+                                    <div class="container mb-3">
+                                        <!-- Close the image -->
+                                        <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+
+                                        <!-- Expanded image -->
+                                        <img id="expandedImg" style="width:50%">
+
+                                        <!-- Image text -->
+                                        <div id="imgtext"></div>
+                                    </div>
+
+                                    <div class="d-lg-flex d-none justify-content-center">
+                                        @foreach (explode('|', $report->order->files_name) as $file_name)
+
+                                            <img src="/storage/examen_images/{{$report->order->code}}/{{$file_name}}" onclick="myFunction(this)" class="img-fluid img-thumbnail p-2" style="max-width: 75px;" alt="{{$file_name}}">
+
+                                        @endforeach
+                                    </div>
+                                </div> <!-- end col -->
+
                             </div>
 
                         </div>
@@ -320,11 +358,11 @@
 
 @push('extra-js')
     <script>
-        const report = {!! json_encode($report)!!}
-        var code = {!! json_encode($report -> code)!!}
+        const report = {!! json_encode($report) !!}
+        var code = {!! json_encode($report->code) !!}
         var ROUTEGETTEMPLATE = "{{ route('template.report-getTemplate') }}"
         var TOKENGETTEMPLATE = "{{ csrf_token() }}"
-
     </script>
-    <script src="{{asset('viewjs/report/show.js')}}"></script>
+    <script src="{{ asset('viewjs/report/show.js') }}"></script>
+    <script src="{{ asset('viewjs/report/gallery.js') }}"></script>
 @endpush

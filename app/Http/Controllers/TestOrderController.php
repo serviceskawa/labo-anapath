@@ -25,6 +25,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Contracts\DataTable;
 
@@ -653,6 +654,7 @@ public function __construct(
 
             $data['doctor_id'] = $doctor->id;
         }
+
         if (is_string($data['hospital_id'])) {
             $hopital = $this->hospital->where('name', $data['hospital_id'])->first();
 
@@ -660,10 +662,12 @@ public function __construct(
         }
 
         $data['test_affiliate'] = "";
-        if (empty($request->examen_reference_select) && !empty($request->examen_reference_input)) {
+        if (empty($request->examen_reference_select) && !empty($request->examen_reference_input))
+        {
 
             $data['test_affiliate'] = $request->examen_reference_input;
-        } elseif (!empty($request->examen_reference_select) && empty($request->examen_reference_input)) {
+        } elseif (!empty($request->examen_reference_select) && empty($request->examen_reference_input))
+        {
             // Recherche l'existance du code selectionner
             $reference = $this->testOrder->findorfail((int) $request->examen_reference_select);
 
@@ -672,6 +676,21 @@ public function __construct(
                 $data['test_affiliate'] = $reference->code;
             }
         }
+
+        $directory = storage_path('app/public/examen_images/' . $testOrder->code);
+        $fileNames = [];
+
+        if (File::isDirectory($directory)) {
+            $files = File::files($directory);
+
+            foreach ($files as $file) {
+                $fileNames[] = $file->getFilename();
+            }
+        }
+
+        $fileNamesString = implode('|', $fileNames);
+
+
 
         try {
 
@@ -688,7 +707,10 @@ public function __construct(
             $test_order->type_order_id = $data['type_examen'];
             $test_order->attribuate_doctor_id = $data['attribuate_doctor_id'];
             $test_order->option = $data['option'];
+            $test_order->files_name = $fileNamesString;
             $test_order->save();
+
+            //dd($test_order);
 
             $invoice = $test_order->invoice()->first();
             $report = $test_order->report()->first();
@@ -720,6 +742,41 @@ public function __construct(
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }
+
+
+    //Télécharger les images pour les examens
+
+    public function upload(Request $request)
+    {
+         // Récupérer le code de la demande à partir des données de la requête
+        $examCode = $request->input('code');
+        $file = $request->file('image');
+        $fileName = time() . '_'. Str::uuid() .'_'.$request->file('image')->extension();;
+
+        // Créer le dossier pour le code de la demande s'il n'existe pas déjà
+        $directory = 'public/examen_images/' . $examCode;
+
+        if (!Storage::exists($directory)) {
+            Storage::makeDirectory($directory);
+        }
+
+        //Charger sauvegarder le fichier de l'image dans le dossier
+        $path = $file->storeAs($directory, $fileName);
+
+        return response()->json(['success' => true,'path'=>$path]);
+    }
+
+
+    public function getExamImages($examenCode)
+{
+    // Récupérez les noms des fichiers depuis la base de données
+    $testOrder = TestOrder::where('code', $examenCode)->first();
+    $fileNamesString = $testOrder->file_names;
+    $fileNames = explode('|', $fileNamesString);
+
+    // Retournez les noms des fichiers au format JSON
+    return response()->json(['file_names' => $fileNames]);
+}
 
     public function getStatus()
     {
