@@ -20,7 +20,7 @@ class TestOrderFactory extends Factory
     public function definition()
     {
         return [
-            'code' => $this->faker->unique()->numerify('23-####'),
+
         'patient_id' => function () {
             return Patient::inRandomOrder()->first()->id;
         },
@@ -34,11 +34,6 @@ class TestOrderFactory extends Factory
         'contrat_id' => function () {
             return Contrat::inRandomOrder()->first()->id;
         },
-        'archive' => $this->faker->boolean(20),
-        'subtotal' => $this->faker->randomFloat(2, 0, 1000),
-        'discount' => $this->faker->randomFloat(2, 0, 100),
-        'total' => $this->faker->randomFloat(2, 0, 1000),
-        'status' => $this->faker->boolean(50),
         'prelevement_date' => Carbon::now(),
 
         ];
