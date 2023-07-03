@@ -592,7 +592,7 @@ public function __construct(
                     foreach ($tests as $value) {
                         if ($value->status ==1) {
                             $this->invoiceDetail->create([
-                                "invoice_id" => $invoiceTestOrder->id,
+                                "invoice_id" => $$invoice->id,
                                 "test_id" => $value->test_id,
                                 "test_name" => $value->test_name,
                                 "price" => $value->price,
