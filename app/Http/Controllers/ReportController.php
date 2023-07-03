@@ -446,10 +446,9 @@ class ReportController extends Controller
 
     public function callUser($report)
     {
+        $setting = $this->setting->find(1);
         $client = new Client();
-        $accessToken = '421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk';
-        // $audio_url_disponible = '';
-        // $audio_url_non_disponible = '';
+        $accessToken = $setting->api_key_ourvoice;
         $to = '229'.$report->patient->telephone1;
         if ($report->patient->langue === 'fon') {
             $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/06/RESULTAT-DISPONIBLE-FON-VF.mp3';
@@ -522,8 +521,10 @@ class ReportController extends Controller
 
     public function sendSms($report)
     {
+        $setting = $this->setting->find(1);
         $client = new Client();
-        $accessToken = '421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk';
+        // $accessToken = '421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk';
+        $accessToken = $setting->api_key_ourvoice;
         $to = '229'.$report->patient->telephone1;
         $body = 'Bonjour c\'est l cabinet medical Anathomie pathologique adechinan situé à fifadji vos résultats d\'analyse sont maintenant disponible vous pouvez venir les recupérer à tout moment pendant nos heures d\'ouvertures. Nous sommes ouvert du Lundi au vendredi de 08h à 17h Merci de votre confiance';
 
