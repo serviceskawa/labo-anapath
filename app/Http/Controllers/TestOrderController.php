@@ -510,10 +510,7 @@ public function __construct(
         $settings = $this->setting->find(1);
         $user = Auth::user();
 
-        // if ($test_order->status) {
 
-        //     return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
-        // } else {
 
             // Génère un code unique
             $code_unique = generateCodeExamen();
@@ -593,14 +590,18 @@ public function __construct(
                 if (!empty($invoice)) {
                     // Creation des details de la facture
                     foreach ($tests as $value) {
-                        $this->invoiceDetail->create([
-                            "invoice_id" => $invoice->id,
-                            "test_id" => $value->test_id,
-                            "test_name" => $value->test_name,
-                            "price" => $value->price,
-                            "discount" => $value->discount,
-                            "total" => $value->total,
-                        ]);
+                        if ($value->status ==1) {
+                            $this->invoiceDetail->create([
+                                "invoice_id" => $invoiceTestOrder->id,
+                                "test_id" => $value->test_id,
+                                "test_name" => $value->test_name,
+                                "price" => $value->price,
+                                "discount" => $value->discount,
+                                "total" => $value->total,
+                            ]);
+                            $value->status =0;
+                            $value->save();
+                        }
                     }
                 }
 
