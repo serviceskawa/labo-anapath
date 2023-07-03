@@ -137,6 +137,8 @@ Route::middleware(['auth','access','active'])->group(function () {
     Route::post('/test_order/updatetest',[TestOrderController::class, 'updateTest'])->name('test_order.updateTest');
     Route::post('/test_order/search',[TestOrderController::class, 'search'])->name('test_order.search');
     Route::get('/testOrders', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('test_order.getTestOrdersforDatatable');
+    Route::post('/images/upload', [TestOrderController::class , 'upload'])->name('images.upload');
+    Route::get('/examen-images/{examenCode}', [TestOrderController::class , 'getExamImages'])->name('images.getExamImages');
 
     Route::post('/testOrders/webhook', [AppelTestOderController::class, 'store'])->name('test_order.getStatus');
     Route::get('/testOrder/webhook', [AppelTestOderController::class, 'index'])->name('webhook.index');

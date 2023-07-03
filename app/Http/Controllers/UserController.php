@@ -139,6 +139,7 @@ class UserController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $data = $this->validate($request, [
+            'id' => 'required',
             'firstname' => 'required',
             'lastname' => 'required',
             'email' => 'required',
@@ -153,11 +154,16 @@ class UserController extends Controller
         // dd($request->roles);
 
         try {
+
+
+            $user= $this->user->find($data['id']);
+
+
             $user = $this->user->updateorcreate(["id" =>$request->id],[
                 "email" =>$request->email,
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
-                "signature" => $request->file('signature') ? $path_signature:'',
+                "signature" => $request->file('signature') ? $path_signature: ($user->signature ? $user->signature:''),
             ]);
             $user->roles()->sync([]);
             $user->roles()->attach($request->roles);

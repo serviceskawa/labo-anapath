@@ -71,9 +71,10 @@ class ApiController extends Controller
     public function getStatus(Request $request)
     {
         $data = $request->all();
-       
+
+
         $appel = AppelTestOder::where('voice_id','like',$data['voice_id'])->first();
-        
+
         if(!$appel)
         {
              AppelTestOder::create([
@@ -82,7 +83,6 @@ class ApiController extends Controller
             "voice_id"=>$data['voice_id'],
             "event"=>$request->event,
             ]);
-            Log::info('Nouvelle ligne');
             return response()->json(['status'=>'Nouvelle ligne'],200);
         }else {
             $appel->update([
@@ -91,7 +91,6 @@ class ApiController extends Controller
                 "voice_id"=>$data['voice_id'],
                 "event"=>$data['event']
             ]);
-            Log::info('ligne modifié');
             return response()->json(['status'=>'ligne modifié'],200);
         }
         

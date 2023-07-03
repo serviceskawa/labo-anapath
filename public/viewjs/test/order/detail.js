@@ -1,10 +1,108 @@
 
         $('.dropify').dropify();
 
+        Dropzone.autoDiscover = false;
+
         $(document).ready(function() {
 
 
             console.log(invoiceTest)
+
+
+            $.ajax({
+                url: '/examen-images/' + test_order_code,
+                method: 'GET',
+                success: function(response) {
+                    var fileNames = response.file_names;
+
+                    if (fileNames && fileNames.length > 0) {
+                        var dropzone = $("#image-dropzone").dropzone({
+                            url: ROUTEFILEUPLOAD,
+                            headers: {
+                                'X-CSRF-TOKEN': TOKENGETFILEUPDATE
+                            },
+                            params: {
+                                code: test_order_code, // Valeur du paramètre exam_code à envoyer avec la requête
+                            },
+                            paramName: "image",
+                            thumbnailWidth: 300,
+                            thumbnailHeight: 300,
+                            maxFilesize: 2,
+                            acceptedFiles: ".jpg, .jpeg, .png",
+                            addRemoveLinks: true,
+                            dictRemoveFile: "Supprimer",
+                            success: function(file, response) {
+                                console.log(response);
+                            },
+                            removedfile: function(file) {
+                                var _ref;
+                                if ((_ref = file.previewElement) != null) {
+                                    _ref.parentNode.removeChild(file.previewElement);
+                                }
+                                console.log(file);
+                            },
+                            error: function(error) {
+                                console.log(error);
+                            }
+                        });
+
+                        dropzone.on('addedfile', function(file) {
+                            // Supprimez le fichier ajouté par défaut
+                            dropzone.removeFile(file);
+                        });
+
+                        for (var i = 0; i < fileNames.length; i++) {
+                            var fileName = fileNames[i];
+
+                            var imageUrl = '/storage/examen_images/' + test_order_code + '/' + fileName;
+
+                            dropzone.createThumbnailFromUrl(
+                                imageUrl,
+                                dropzone.options.thumbnailWidth,
+                                dropzone.options.thumbnailHeight,
+                                dropzone.options.thumbnailMethod,
+                                true,
+                                function(thumbnail) {
+                                    dropzone.emit('addedfile', thumbnail);
+                                    dropzone.emit('complete', thumbnail);
+                                }
+                            );
+                        }
+                    }else{
+                        $("#image-dropzone").dropzone({
+                            url: ROUTEFILEUPLOAD,
+                            headers: {
+                                'X-CSRF-TOKEN': TOKENGETFILEUPDATE
+                            },
+                            params: {
+                                code: test_order_code, // Valeur du paramètre exam_code à envoyer avec la requête
+                            },
+                            paramName: "image",
+                            maxFilesize: 2,
+                            acceptedFiles: ".jpg, .jpeg, .png",
+                            addRemoveLinks: true,
+                            dictRemoveFile: "Supprimer",
+                            success: function(file, response) {
+                                console.log(response);
+                            },
+                            removedfile: function(file) {
+                                var _ref;
+                                if ((_ref = file.previewElement) != null) {
+                                    _ref.parentNode.removeChild(file.previewElement);
+                                }
+                                console.log(file);
+                            },
+                            error: function(file) {
+                                console.log(file);
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+
 
             var dtDetailTable = $('.detail-list-table')
 

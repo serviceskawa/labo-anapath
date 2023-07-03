@@ -258,6 +258,48 @@
         </div>
 
 
+        {{-- Statistique par docteur --}}
+        <div class="row">
+            <div class="col-xl-12 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+
+                        <h4 class="header-title mb-3">Statistique par docteurs</h4>
+                        <div class="table-responsive">
+                            <table table id="datatable1" class="table table-hover table-centered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Docteurs</th>
+                                        <th>Demandes Affectées</th>
+                                        <th>Demandes Traitées</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($doctorDatas as $doctorData)
+                                            <tr>
+                                                <td>
+                                                    {{ $doctorData['doctor'] }}
+                                                </td>
+                                                <td>
+                                                    {{ $doctorData['assigne'] }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $doctorData['traite'] }}
+                                                </td>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div> <!-- end table-responsive-->
+
+                    </div>
+                    <!-- end card-body -->
+                </div>
+                <!-- end card-->
+            </div>
+            <!-- end col -->
+        </div>
+
         {{-- utilisateur connecté --}}
         <div class="row">
             <div class="col-xl-12 col-lg-6">
@@ -325,7 +367,7 @@
                                     <div class="col-md-4">
                                         <p class="text-muted mb-0 mt-3">Ce Mois</p>
                                         <h2 class="fw-normal mb-1">
-                                            <span>{{ $totalMonth }} F CFA</span>
+                                            <span>{{ formatMontant($totalMonth) }}</span>
                                         </h2>
                                         <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($nototalMonth) }}</p>
                                     </div>
@@ -334,7 +376,7 @@
                                         <h2 class="fw-normal mb-1">
                                             <span>{{ formatMontant($totalLastMonth) }}</span>
                                         </h2>
-                                        <p class="mb-0 mb-2 text-danger" style="color: red">{{ $nototalLastMonth }} F CFA</p>
+                                        <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($nototalLastMonth) }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -347,52 +389,56 @@
                                         <h2 class="fw-normal mb-1">
                                             <span>{{ formatMontant($annuletotalToday) }}</span>
                                         </h2>
-                                        <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($noannuletotalToday) }}</p>
+
                                     </div>
                                     <div class="col-md-4">
                                         <p class="text-muted mb-0 mt-3">Ce Mois</p>
                                         <h2 class="fw-normal mb-1">
-                                            <span>{{ formatMontant($annuletotalMonth) }} F CFA</span>
+                                            <span>{{ formatMontant($annuletotalMonth) }}</span>
                                         </h2>
-                                        <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($noannuletotalMonth) }}</p>
+
                                     </div>
                                     <div class="col-md-4">
                                         <p class="text-muted mb-0 mt-3">Mois précedent</p>
                                         <h2 class="fw-normal mb-1">
                                             <span>{{ formatMontant($annuletotalLastMonth) }}</span>
                                         </h2>
-                                        <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($noannuletotalLastMonth) }} F CFA</p>
+
                                     </div>
                                 </div>
                             </div>
 
-                            <!--<h4 class="header-title mb-3">Statistique par docteurs</h4>-->
-                            <!--<div class="table-responsive">-->
-                            <!--    <table table id="datatable1" class="table table-hover table-centered mb-0">-->
-                            <!--        <thead>-->
-                            <!--            <tr>-->
-                            <!--                <th>Docteurs</th>-->
-                            <!--                <th>Demandes Affectées</th>-->
-                            <!--                <th>Demandes Traitées</th>-->
-                            <!--            </tr>-->
-                            <!--        </thead>-->
-                            <!--        <tbody>-->
-                            <!--            @foreach ($doctorDatas as $doctorData)-->
-                            <!--                    <tr>-->
-                            <!--                        <td>-->
-                            <!--                            {{ $doctorData['doctor'] }}-->
-                            <!--                        </td>-->
-                            <!--                        <td>-->
-                            <!--                            {{ $doctorData['assigne'] }}-->
-                            <!--                        </td>-->
+                            {{-- <div class="table-responsive">
+                                <table table id="datatable1" class="table table-hover table-centered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Docteurs</th>
+                                            <th>Payé Aujourd'hui</th>
+                                            <th>Payé ce Mois</th>
+                                            <th>Payé Mois passé</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($doctorDatas as $doctorData)
+                                                <tr>
+                                                    <td>
+                                                        {{ $doctorData['doctor'] }}
+                                                    </td>
+                                                    <td>
+                                                        {{ formatMontant($doctorData['totalDay']) }}
+                                                    </td>
 
-                            <!--                        <td>-->
-                            <!--                            {{ $doctorData['traite'] }}-->
-                            <!--                        </td>-->
-                            <!--            @endforeach-->
-                            <!--        </tbody>-->
-                            <!--    </table>-->
-                            <!--</div> <!-- end table-responsive-->-->
+                                                    <td>
+                                                        {{ formatMontant($doctorData['curmonth']) }}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ formatMontant($doctorData['lastMonth']) }}
+                                                    </td>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div> <!-- end table-responsive--> --}}
 
                         </div>
                     </div>

@@ -76,7 +76,7 @@ class ProblemeReportersController extends Controller
                 'errorCategory_id'=>$data['errorCategory_id'],
                 'description'=>$data['description'],
             ]);
-            return back()->with('success',"Problème enregistrée avec success");
+            return redirect()->route('probleme.report.index')->with('success',"Problème enregistrée avec success");
         } catch (\Throwable $th) {
             return back()->with('error',"Un problème est suvenu lors de l'enrégistrement");
         }
