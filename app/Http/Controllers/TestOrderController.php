@@ -943,14 +943,14 @@ public function __construct(
                 }
                 
                 if (!empty($request->get('appel'))) {
-                    $query->whereHas('report', function ($query) {
-                            $query->whereHas('appel',function($query) {
-                                $query->whereHas('appel_event', function($query) {
+                    $query->whereHas('report', function ($query) use($request) {
+                            $query->whereHas('appel',function($query) use($request){
+                                $query->whereHas('appel_event', function($query) use($request){
                                     $query->where('event',$request->get('appel'));
                                 });
                             });
                         });
-                    $query->where('is_urgent', $request->get('cas_status'));
+                    // $query->where('is_urgent', $request->get('cas_status'));
                 }
                 if (!empty($request->get('contrat_id'))) {
                     $query->where('contrat_id', $request->get('contrat_id'));
@@ -985,7 +985,7 @@ public function __construct(
                             });
                     });
                 }
-
+                
                 if(!empty($request->get('contenu')))
                 {
                     $query->where('code','like','%'.$request->get('contenu').'%')

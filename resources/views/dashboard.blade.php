@@ -318,7 +318,7 @@
                                     <div class="col-md-4">
                                         <p class="text-muted mb-0 mt-3">Aujourd'hui</p>
                                         <h2 class="fw-normal mb-1">
-                                            <span>{{ formatMontant($totalToday) }}F CFA</span>
+                                            <span>{{ formatMontant($totalToday) }}</span>
                                         </h2>
                                         <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($nototalToday) }}</p>
                                     </div>
@@ -345,7 +345,7 @@
                                     <div class="col-md-4">
                                         <p class="text-muted mb-0 mt-3">Aujourd'hui</p>
                                         <h2 class="fw-normal mb-1">
-                                            <span>{{ formatMontant($annuletotalToday) }}F CFA</span>
+                                            <span>{{ formatMontant($annuletotalToday) }}</span>
                                         </h2>
                                         <p class="mb-0 mb-2 text-danger" style="color: red">{{ formatMontant($noannuletotalToday) }}</p>
                                     </div>
@@ -366,65 +366,33 @@
                                 </div>
                             </div>
 
-                            <h4 class="header-title mb-3">Statistique par docteurs</h4>
-                            <div class="table-responsive">
-                                <table table id="datatable1" class="table table-hover table-centered mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Docteurs</th>
-                                            <th>Demandes Affectées</th>
-                                            <th>Demandes Traitées</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($doctorDatas as $doctorData)
-                                                <tr>
-                                                    <td>
-                                                        {{ $doctorData['doctor'] }}
-                                                    </td>
-                                                    <td>
-                                                        {{ $doctorData['assigne'] }}
-                                                    </td>
+                            <!--<h4 class="header-title mb-3">Statistique par docteurs</h4>-->
+                            <!--<div class="table-responsive">-->
+                            <!--    <table table id="datatable1" class="table table-hover table-centered mb-0">-->
+                            <!--        <thead>-->
+                            <!--            <tr>-->
+                            <!--                <th>Docteurs</th>-->
+                            <!--                <th>Demandes Affectées</th>-->
+                            <!--                <th>Demandes Traitées</th>-->
+                            <!--            </tr>-->
+                            <!--        </thead>-->
+                            <!--        <tbody>-->
+                            <!--            @foreach ($doctorDatas as $doctorData)-->
+                            <!--                    <tr>-->
+                            <!--                        <td>-->
+                            <!--                            {{ $doctorData['doctor'] }}-->
+                            <!--                        </td>-->
+                            <!--                        <td>-->
+                            <!--                            {{ $doctorData['assigne'] }}-->
+                            <!--                        </td>-->
 
-                                                    <td>
-                                                        {{ $doctorData['traite'] }}
-                                                    </td>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div> <!-- end table-responsive-->
-
-                            {{-- <div class="table-responsive">
-                                <table table id="datatable1" class="table table-hover table-centered mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Docteurs</th>
-                                            <th>Payé Aujourd'hui</th>
-                                            <th>Payé ce Mois</th>
-                                            <th>Payé Mois passé</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($doctorDatas as $doctorData)
-                                                <tr>
-                                                    <td>
-                                                        {{ $doctorData['doctor'] }}
-                                                    </td>
-                                                    <td>
-                                                        {{ formatMontant($doctorData['totalDay']) }}
-                                                    </td>
-
-                                                    <td>
-                                                        {{ formatMontant($doctorData['curmonth']) }}
-                                                    </td>
-
-                                                    <td>
-                                                        {{ formatMontant($doctorData['lastMonth']) }}
-                                                    </td>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div> <!-- end table-responsive--> --}}
+                            <!--                        <td>-->
+                            <!--                            {{ $doctorData['traite'] }}-->
+                            <!--                        </td>-->
+                            <!--            @endforeach-->
+                            <!--        </tbody>-->
+                            <!--    </table>-->
+                            <!--</div> <!-- end table-responsive-->-->
 
                         </div>
                     </div>
