@@ -26,10 +26,10 @@ class AccessTimeMiddleware
         $message = "";
         if ($currentTimeFormatted<$setting->begining_date)
         {
-            $message = "Il n'est pas encore ". $setting->begining_date . ". Vous n'aviez pas accès à la plateforme";
+            $message = "Une erreur s'est produite lors de la connexion";
         }elseif($currentTimeFormatted>$setting->ending_date)
         {
-            $message = "Il est ". $setting->ending_date . "passé. Vous n'aviez plus accès à la plateforme";
+            $message = "Une erreur s'est produite lors de la connexion";
         }
 
         //Vérifier si l'heure actuelle est dans l'intervalle des heures de travail définies
