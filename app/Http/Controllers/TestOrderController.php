@@ -592,7 +592,7 @@ public function __construct(
                     foreach ($tests as $value) {
                         if ($value->status ==1) {
                             $this->invoiceDetail->create([
-                                "invoice_id" => $$invoice->id,
+                                "invoice_id" => $invoice->id,
                                 "test_id" => $value->test_id,
                                 "test_name" => $value->test_name,
                                 "price" => $value->price,
@@ -1042,11 +1042,11 @@ public function __construct(
                 if(!empty($request->get('dateBegin'))){
                     //dd($request);
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
-                    $query->whereDate('created_at','>',$newDate);
+                    $query->whereDate('created_at','>=',$newDate);
                 }
                 if(!empty($request->get('dateEnd'))){
                     //dd($request);
-                    $query->whereDate('created_at','<',$request->get('dateEnd'));
+                    $query->whereDate('created_at','<=',$request->get('dateEnd'));
                 }
 
             })
