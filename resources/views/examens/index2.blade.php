@@ -4,12 +4,12 @@
 
 @section('content')
     <div class="row">
-        <div class="col-12">
+        {{-- <div class="col-12">
             <div class="page-title-box">
 
 
             </div>
-        </div>
+        </div> --}}
 
         <div class="">
 
@@ -96,7 +96,7 @@
                                     </div>
 
                                 </div> <!-- end col -->
-                                
+
 
                                 <div class="col-lg-3">
 
@@ -181,7 +181,6 @@
                                     <th>Compte rendu</th>
                                     {{-- <th>Type examen</th> --}}
                                     <th>Urgent</th>
-
                                 </tr>
                             </thead>
 

@@ -70,8 +70,12 @@
                                 @else
                                     @foreach ($types_orders as $type)
                                         @if ($test_order->type_order_id == $type->id)
-                                            <input type="text" name="type_examen" class="form-control" readonly
+                                            {{-- <input type="text" name="type_examen" class="form-control" readonly
+                                                value="{{ $type->title }}"> --}}
+                                                <input type="text" name="type_examen" class="form-control" readonly
                                                 value="{{ $type->title }}">
+                                                <input type="text" name="type_examen_id" class="form-control" readonly
+                                                value="{{ $type->id }}" hidden>
                                         @endif
                                     @endforeach
 
@@ -111,8 +115,12 @@
                                 @else
                                     @foreach ($contrats as $contrat)
                                         @if ($test_order->contrat_id == $contrat->id)
-                                            <input type="text" name="contrat_id" id="contrat_id" class="form-control"
+                                            {{-- <input type="text" name="contrat_id" id="contrat_id" class="form-control"
+                                                readonly value="{{ $contrat->name }}"> --}}
+                                                <input type="text" id="contrat_id" class="form-control"
                                                 readonly value="{{ $contrat->name }}">
+                                                <input type="text" name="contrat_id" id="contrat_id" class="form-control"
+                                                readonly value="{{ $contrat->id }}" hidden>
                                         @endif
                                     @endforeach
 
@@ -130,8 +138,6 @@
                                     @endforelse
                                 </select>
                             @endif
-
-
                         </div>
                     </div>
                     <div class="col-md-12 my-3">
@@ -166,21 +172,24 @@
                                         @foreach ($patients as $patient)
                                             <option value="{{ $patient->id }}"
                                                 {{ $test_order->patient_id == $patient->id ? 'selected' : '' }}>
-                                                {{ $patient->code }} - {{ $patient->firstname }}
-                                                {{ $patient->lastname }}
+                                                {{ $patient->code }} - {{ $patient->firstname }} {{ $patient->lastname }}
                                             </option>
                                         @endforeach
                                     </select>
                                 @else
                                     @foreach ($patients as $patient)
                                         @if ($test_order->patient_id == $patient->id)
-                                            <input type="text" name="patient_id" id="patient_id" class="form-control"
+                                            {{-- <input type="text" name="patient_id" id="patient_id" class="form-control"
                                                 readonly
-                                                value="{{ $patient->code }} - {{ $patient->firstname }}
-                                    {{ $patient->lastname }}">
+                                                value="{{ $patient->code }} - {{ $patient->firstname }} {{ $patient->lastname }}"> --}}
+                                                <input type="text" name="patient_id" id="patient_id" class="form-control"
+                                                readonly
+                                                value="{{ $patient->code }} - {{ $patient->firstname }} {{ $patient->lastname }}">
+                                                <input type="text" name="patient_id" id="patient_id" class="form-control"
+                                                readonly
+                                                value="{{ $patient->id }}" hidden>
                                         @endif
                                     @endforeach
-
                                 @endif
                             @else
                                 <select class="form-select select2" data-toggle="select2" name="patient_id"
@@ -189,8 +198,7 @@
                                     @foreach ($patients as $patient)
                                         <option value="{{ $patient->id }}"
                                             {{ $test_order->patient_id == $patient->id ? 'selected' : '' }}>
-                                            {{ $patient->code }} - {{ $patient->firstname }}
-                                            {{ $patient->lastname }}
+                                            {{ $patient->code }} - {{ $patient->firstname }} {{ $patient->lastname }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -322,9 +330,17 @@
                                     @else
                                         @foreach (getUsersByRole('docteur') as $item)
                                             @if ($test_order->attribuate_doctor_id == $item->id)
-                                                <input type="text" name="attribuate_doctor_id" id=""
+                                                {{-- <input type="text" name="attribuate_doctor_id" id=""
+                                                    class="form-control" readonly
+                                                    value="{{ $item->lastname }} {{ $item->firstname }}"> --}}
+
+                                                    <input type="text" id=""
                                                     class="form-control" readonly
                                                     value="{{ $item->lastname }} {{ $item->firstname }}">
+
+                                                    <input type="text" name="attribuate_doctor_id" id=""
+                                                    class="form-control" readonly
+                                                    value="{{ $item->id }}" hidden>
                                             @endif
                                         @endforeach
 
@@ -376,32 +392,54 @@
                             <label for="switch3" data-on-label="Urgent" data-off-label="Normal"></label>
 
                         </div>
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Pièce jointe</label>
                                     <input type="file" name="examen_file"
                                         id="example-fileinput"  class="form-control dropify"
                                         data-default-file="{{ $test_order ? Storage::url($test_order->examen_file) : '' }}">
-
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 mt-2">
                             <div class="mb-3">
-                                <label for="example-fileinput" class="form-label">Images</label>
-                                <div class="dropzone" id="image-dropzone"></div>
+                                {{-- <label for="example-fileinput" class="form-label">Images</label> --}}
+                                {{-- <div class="dropzone" id="image-dropzone"></div> --}}
+                                {{-- <input type="file" name="files_name[]" multiple> --}}
+
+                                <label for="formFileMultiple" class="form-label">Ajouter l'image à la gallerie</label>
+                                <input class="form-control" type="file" name="files_name[]" id="formFileMultiple" multiple>
                             </div>
                         </div>
-                    </div>
 
+                        {{-- Resultats --}}
+                        @if ($test_order->files_name)
+                        <div class="col-md-6 mt-2">
+                            <div class="mb-3">
+                                {{-- <h4>Images</h4> --}}
+                                <label for="formFileMultiple" class="form-label">Gallerie</label>
+                                <div>
+                                    <?php $filenames = json_decode($test_order->files_name); ?>
+                                    @foreach ($filenames as $filename)
+                                        <a href="{{ asset('storage/' . $filename) }}" download>
+                                            {{-- <img src="{{ asset('storage/' . $filename) }}" alt="" width="80"> --}}
+                                            Image{{ $loop->iteration }}&nbsp;
+                                        </a>
+                                    @endforeach
+                                </div>
 
+                            </div>
+                        </div>
+                        @else
+
+                        @endif
 
                 </div>
 
                 <div class="modal-footer">
                     <button type="submit" class="btn w-100 btn-warning">Mettre à jour</button>
                 </div>
-
             </form>
         </div>
 
@@ -543,7 +581,6 @@
                                 @else
                                     <th>Actions</th>
                                 @endif --}}
-
                             </tr>
                         </thead>
 
@@ -568,7 +605,6 @@
                                 @else
                                     <td></td>
                                 @endif --}}
-
                             </tr>
                         </tfoot>
                     </table>

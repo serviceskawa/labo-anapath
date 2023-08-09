@@ -634,20 +634,28 @@ public function __construct(
             'is_urgent' => 'nullable',
             'examen_reference_select' => 'nullable',
             'examen_reference_input' => 'nullable',
-            'type_examen' => 'required|exists:type_orders,id',
+            // 'type_examen' => 'required|exists:type_orders,id',
+            'type_examen' => 'required',
             'attribuate_doctor_id' => 'nullable',
             'option' => 'nullable',
         ]);
 
-        $contrat = $this->contrat->FindOrFail($data['contrat_id']);
+        // dd($request->patient_id);
+        // $contrat = $this->contrat->FindOrFail($data['contrat_id']);
 
         $path_examen_file = "";
-
         if ($request->file('examen_file')) {
 
             $examen_file = time() . '_test_order_.' . $request->file('examen_file')->extension();
 
             $path_examen_file = $request->file('examen_file')->storeAs('tests/orders', $examen_file, 'public');
+        }
+
+        // Patient id
+        if (is_string($data['patient_id'])) {
+            $patient = $this->patient->where('id', $data['patient_id'])->first();
+
+            $data['patient_id'] = $patient->id;
         }
 
         if (is_string($data['doctor_id'])) {
@@ -678,37 +686,60 @@ public function __construct(
             }
         }
 
+
+
+
+
         $directory = storage_path('app/public/examen_images/' . $testOrder->code);
-        $fileNames = [];
+        // $fileNames = [];
 
-        if (File::isDirectory($directory)) {
-            $files = File::files($directory);
+        // if (File::isDirectory($directory)) {
+        //     $files = File::files($directory);
 
-            foreach ($files as $file) {
-                $fileNames[] = $file->getFilename();
-            }
+        //     foreach ($files as $file) {
+        //         $fileNames[] = $file->getFilename();
+        //     }
+        // }
+
+        // $fileNamesString = implode('|', $fileNames);
+
+        // dd($request->files_name);
+
+        $uploadedFiles = $request->file('files_name'); // Utilise directement la chaîne 'files_name' ici
+        $filenames = [];
+
+        foreach ($uploadedFiles as $file) {
+            $filename = $file->store('examen_images', 'public');
+            $filenames[] = $filename;
         }
 
-        $fileNamesString = implode('|', $fileNames);
 
+        // $images = $request->file('files_name');
+        // $files_name = [];
 
+        // foreach ($images as $image) {
+        //     $filename = $image->store('examen_images', 'public');
+        //     $files_name[] = $filename;
+        // }
+        // dd($request->attribuate_doctor_id);
 
         try {
-
             $test_order = $this->testOrder->find($id);
-            $test_order->contrat_id = $data['contrat_id']; // on peut modifier le contrat
-            $test_order->patient_id = $data['patient_id'];
-            $test_order->hospital_id = $data['hospital_id'];
+            $test_order->contrat_id = (int)$data['contrat_id']; // on peut modifier le contrat
+            $test_order->patient_id = (int)$data['patient_id'];
+            $test_order->hospital_id = (int)$data['hospital_id'];
             $test_order->prelevement_date = $data['prelevement_date'];
-            $test_order->doctor_id = $data['doctor_id'];
+            $test_order->doctor_id = (int)$data['doctor_id'];
             $test_order->reference_hopital = $data['reference_hopital'];
             $test_order->is_urgent = $request->is_urgent ? 1 : 0;
             $test_order->examen_file = $request->file('examen_file') ? $path_examen_file : "";
             $test_order->test_affiliate = $data['test_affiliate'] ? $data['test_affiliate'] : "";
-            $test_order->type_order_id = $data['type_examen'];
-            $test_order->attribuate_doctor_id = $data['attribuate_doctor_id'];
+            // $test_order->type_order_id = (int)$data['type_examen_id'];
+            $test_order->type_order_id = (int)$request->type_examen_id;
+            $test_order->attribuate_doctor_id = (int)$data['attribuate_doctor_id'];
             $test_order->option = $data['option'];
-            $test_order->files_name = $fileNamesString;
+            // $test_order->files_name = implode(',', $files_name);
+            $test_order->files_name = $filenames;
             $test_order->save();
 
             //dd($test_order);
@@ -769,7 +800,7 @@ public function __construct(
     }
 
 
-    public function getExamImages($examenCode)
+public function getExamImages($examenCode)
 {
     // Récupérez les noms des fichiers depuis la base de données
     $testOrder = TestOrder::where('code', $examenCode)->first();
@@ -782,7 +813,7 @@ public function __construct(
 
     public function getStatus()
     {
-        
+
     }
 
     private function getStatusCalling($id)
@@ -795,6 +826,8 @@ public function __construct(
         return $data ? ($appel ? $appel->event : 'no-answered'):'no-appel';
     }
 
+
+    // Debut
     public function getTestOrdersforDatatable(Request $request)
     {
 
@@ -919,7 +952,7 @@ public function __construct(
                         $btn = 'warning';
                         break;
                 }
-                
+
                 $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
                 if (!$data->option) {
                     return $span;
@@ -976,7 +1009,7 @@ public function __construct(
                 if (!empty($request->get('cas_status'))) {
                     $query->where('is_urgent', $request->get('cas_status'));
                 }
-                
+
                 if (!empty($request->get('appel'))) {
                     $query->whereHas('report', function ($query) use($request) {
                             $query->whereHas('appel',function($query) use($request){
@@ -1020,7 +1053,7 @@ public function __construct(
                             });
                     });
                 }
-                
+
                 if(!empty($request->get('contenu')))
                 {
                     $query->where('code','like','%'.$request->get('contenu').'%')
