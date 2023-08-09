@@ -449,10 +449,9 @@
                     <form action="{{ route('test_order.createimagegallerie',$test_order->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
-                        <label for="formFileMultiple" class="form-label">Ajouter l'image à la galerie</label>
                         <div class="row d-flex align-items-center">
                             <div class="col-md-11">
-                                <input class="form-control" type="file" name="files_name[]" id="formFileMultiple" multiple>
+                                <input class="form-control" type="file" name="files_name[]" id="formFileMultiple" multiple required>
                             </div>
                             <div class="col-md-1">
                                 <button type="submit" class="btn btn-success">Ajouter</button>
@@ -465,8 +464,6 @@
                         @if ($test_order->files_name)
                             <div class="col-md-6 mt-2">
                                 <div class="mb-3">
-                                    {{-- <h4>Images</h4> --}}
-                                    <label for="form" class="form-label">Galerie</label>
                                         <div>
                                             <?php $filenames = json_decode($test_order->files_name); ?>
                                             @foreach ($filenames as $index => $filename)
@@ -474,7 +471,7 @@
                                                 <div class="col">
                                                     Image{{ $loop->iteration }}&nbsp;
                                                     <a href="{{ asset('storage/' . $filename) }}" download>
-                                                        <button class="btn btn-sm btn-link simple-link-button"><u style="font-size: 15px;">Voir</u></button>
+                                                        <u style="font-size: 15px;">Voir</u>
                                                     </a>
                                                     <form class="d-inline-block" id="delete-form" action="{{ route('test_order.deleteimagegallerie',['index' => $index, 'test_order' => $test_order->id]) }}" method="POST">
                                                         @csrf
@@ -496,7 +493,7 @@
 
 
 
-
+        {{-- Card listes des prestations debut --}}
         <div class="card mb-md-0 mb-3">
             <div class="card-header">
                 Liste des examens demandés
@@ -512,6 +509,7 @@
                     <form method="POST" id="addDetailForm" autocomplete="off">
                         @csrf
                         <div class="row d-flex align-items-end">
+
                             <div class="col-md-4 col-12">
                                 <input type="hidden" name="test_order_id" id="test_order_id"
                                     value="{{ $test_order->id }}" class="form-control">
@@ -525,10 +523,10 @@
                                             <option data-category_test_id="{{ $test->category_test_id }}"
                                                 value="{{ $test->id }}">{{ $test->name }}</option>
                                         @endforeach
-
                                     </select>
                                 </div>
                             </div>
+
                             <div class="col-md-2 col-12">
 
                                 <div class="mb-3">
@@ -537,6 +535,7 @@
                                         readonly>
                                 </div>
                             </div>
+
                             <div class="col-md-2 col-12">
                                 <div class="mb-3">
                                     <label for="simpleinput" class="form-label">Remise</label>
@@ -544,6 +543,7 @@
                                         readonly>
                                 </div>
                             </div>
+
                             <div class="col-md-2 col-12">
                                 <div class="mb-3">
                                     <label for="example-select" class="form-label">Total</label>
@@ -559,7 +559,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </form>
                     @endif
                 @else
@@ -635,6 +634,7 @@
                                 @else
                                     <th>Actions</th>
                                 @endif --}}
+
                             </tr>
                         </thead>
 
@@ -659,6 +659,7 @@
                                 @else
                                     <td></td>
                                 @endif --}}
+
                             </tr>
                         </tfoot>
                     </table>
@@ -680,9 +681,9 @@
 
                     </div>
                 </div>
-
             </div>
         </div> <!-- end card-->
+
 
         {{-- Modal --}}
         {{-- <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel"
@@ -795,6 +796,8 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal --> --}}
+
+
         <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel"
             aria-hidden="true">
             <div class="modal-dialog" style="max-width: 100%; padding-left: 300px; margin-left:50px;">
@@ -894,9 +897,6 @@
                                         style="color:red;">*</span></label>
                                 <textarea type="text" name="adresse" class="form-control" required></textarea>
                             </div>
-
-
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
@@ -906,12 +906,10 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-
     </div>
 @endsection
 
 @push('extra-js')
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script>
@@ -940,18 +938,14 @@
     });
 </script>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
         integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
+
     <script>
         var test_order = {!! json_encode($test_order) !!}
         var test_order_code = {!! json_encode($test_order->code) !!}

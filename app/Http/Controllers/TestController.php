@@ -137,9 +137,7 @@ class TestController extends Controller
 
     public function getTestAndRemise(Request $request)
     {
-
         $data = $this->test->find($request->testId);
-
         $detail = Details_Contrat::where(['contrat_id' => $request->contratId, 'category_test_id' => $request->categoryTestId])->first();
         if($detail == null){
             $detail = 0;

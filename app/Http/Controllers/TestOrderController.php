@@ -634,15 +634,11 @@ public function __construct(
             'is_urgent' => 'nullable',
             'examen_reference_select' => 'nullable',
             'examen_reference_input' => 'nullable',
-            // 'type_examen' => 'required|exists:type_orders,id',
-
             'type_examen' => 'required',
             'attribuate_doctor_id' => 'nullable',
             'option' => 'nullable',
         ]);
 
-        // dd($request->patient_id);
-        // $contrat = $this->contrat->FindOrFail($data['contrat_id']);
 
         $path_examen_file = "";
         if ($request->file('examen_file')) {
@@ -687,24 +683,8 @@ public function __construct(
             }
         }
 
-
-
-
-
         $directory = storage_path('app/public/examen_images/' . $testOrder->code);
-        // $fileNames = [];
 
-        // if (File::isDirectory($directory)) {
-        //     $files = File::files($directory);
-
-        //     foreach ($files as $file) {
-        //         $fileNames[] = $file->getFilename();
-        //     }
-        // }
-
-        // $fileNamesString = implode('|', $fileNames);
-
-        // dd($request->files_name);
 
         $uploadedFiles = $request->file('files_name'); // Utilise directement la chaîne 'files_name' ici
         $filenames = [];
@@ -714,15 +694,6 @@ public function __construct(
             $filenames[] = $filename;
         }
 
-
-        // $images = $request->file('files_name');
-        // $files_name = [];
-
-        // foreach ($images as $image) {
-        //     $filename = $image->store('examen_images', 'public');
-        //     $files_name[] = $filename;
-        // }
-        // dd($request->attribuate_doctor_id);
 
         try {
             $test_order = $this->testOrder->find($id);
@@ -734,15 +705,11 @@ public function __construct(
             $test_order->reference_hopital = $data['reference_hopital'];
             $test_order->is_urgent = $request->is_urgent ? 1 : 0;
             $test_order->examen_file = $request->file('examen_file') ? $path_examen_file : "";
-            $test_order->test_affiliate = $data['test_affiliate'] ? $data['test_affiliate'] : "";
-            // $test_order->type_order_id = (int)$data['type_examen_id'];
+            $test_order->test_affiliate = $data['test_affiliate'] ? $data['test_affiliate'] : "";            // $test_order->type_order_id = (int)$data['type_examen_id'];
             $test_order->type_order_id = (int)$request->type_examen_id;
             $test_order->attribuate_doctor_id = (int)$data['attribuate_doctor_id'];
-            $test_order->option = $data['option'];
-            // $test_order->files_name = implode(',', $files_name);
+            $test_order->option = $data['option'];            // $test_order->files_name = implode(',', $files_name);
             $test_order->save();
-
-            //dd($test_order);
 
             $invoice = $test_order->invoice()->first();
             $report = $test_order->report()->first();
@@ -763,7 +730,7 @@ public function __construct(
                         "client_address" => $test_order->patient->adresse,
                    ])->save();
                 }
-                // return redirect()->route('invoice.show', [$invoice->id])->with('success', " Modification effectuée avec succès  ! ");
+
                 return back()->with('success', " Modification effectuée avec succès  ! ");
             }else {
                 return back()->with('warning',"La facture n'existe pas");
@@ -778,10 +745,9 @@ public function __construct(
 
 
     //Télécharger les images pour les examens
-
     public function upload(Request $request)
     {
-         // Récupérer le code de la demande à partir des données de la requête
+        // Récupérer le code de la demande à partir des données de la requête
         $examCode = $request->input('code');
         $file = $request->file('image');
         $fileName = time() . '_'. Str::uuid() .'_'.$request->file('image')->extension();;
