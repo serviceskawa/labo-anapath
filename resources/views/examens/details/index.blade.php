@@ -441,7 +441,7 @@
         <div class="card my-3">
             <div class="card mb-md-0 mb-3">
                 <div class="card-header">
-                    Gallerie des images
+                    Galerie des images
                 </div>
                 <h5 class="card-title mb-0"></h5>
 
@@ -449,7 +449,7 @@
                     <form action="{{ route('test_order.createimagegallerie',$test_order->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
-                        <label for="formFileMultiple" class="form-label">Ajouter l'image à la gallerie</label>
+                        <label for="formFileMultiple" class="form-label">Ajouter l'image à la galerie</label>
                         <div class="row d-flex align-items-center">
                             <div class="col-md-11">
                                 <input class="form-control" type="file" name="files_name[]" id="formFileMultiple" multiple>
@@ -466,7 +466,7 @@
                             <div class="col-md-6 mt-2">
                                 <div class="mb-3">
                                     {{-- <h4>Images</h4> --}}
-                                    <label for="form" class="form-label">Gallerie</label>
+                                    <label for="form" class="form-label">Galerie</label>
                                         <div>
                                             <?php $filenames = json_decode($test_order->files_name); ?>
                                             @foreach ($filenames as $index => $filename)
