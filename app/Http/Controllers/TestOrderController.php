@@ -635,6 +635,7 @@ public function __construct(
             'examen_reference_select' => 'nullable',
             'examen_reference_input' => 'nullable',
             // 'type_examen' => 'required|exists:type_orders,id',
+
             'type_examen' => 'required',
             'attribuate_doctor_id' => 'nullable',
             'option' => 'nullable',
@@ -739,7 +740,6 @@ public function __construct(
             $test_order->attribuate_doctor_id = (int)$data['attribuate_doctor_id'];
             $test_order->option = $data['option'];
             // $test_order->files_name = implode(',', $files_name);
-            $test_order->files_name = $filenames;
             $test_order->save();
 
             //dd($test_order);
@@ -1093,4 +1093,60 @@ public function getExamImages($examenCode)
         $testOrder->fill(["attribuate_doctor_id" => $doctorId])->save();
         return response()->json($doctorId, 200);
     }
+
+    public function deleteimagegallerie($index,$test_order)
+    {
+        $test_order = TestOrder::findOrFail($test_order); // Charger le modèle du test_order
+        $filenames = json_decode($test_order->files_name);
+        // dd($filenames);
+        if (isset($filenames[$index])) {
+            $filenameToDelete = $filenames[$index];
+
+            // Supprimer le fichier du stockage
+            Storage::disk('public')->delete($filenameToDelete);
+
+            // Supprimer le nom de fichier de la liste des fichiers
+            unset($filenames[$index]);
+
+            // Mettre à jour les noms de fichiers dans la base de données
+            $test_order->files_name = json_encode(array_values($filenames));
+            $test_order->save();
+
+            return redirect()->back()->with('success', 'Image deleted successfully.');
+        }
+        dd('ok');
+        return redirect()->back()->with('error', 'Image not found.');
+    }
+
+    public function createimagegallerie(Request $request,$test_order)
+    {
+        $request->validate([
+            'files_name' => 'required|array',
+            'files_name.*' => 'file|mimes:jpg,png',
+        ]);
+
+        $uploadedFiles = $request->file('files_name'); // Utilise directement la chaîne 'files_name' ici
+        $filenames = [];
+
+        foreach ($uploadedFiles as $file) {
+            $filename = $file->store('examen_images', 'public');
+            $filenames[] = $filename;
+        }
+
+        $test_order = TestOrder::findOrFail($test_order); // Charger le modèle du test_order
+
+        $test_order->update([
+            'files_name' => $filenames
+        ]);
+        $test_order->save();
+        return redirect()->back()->with('success', 'Image ajouter avec succes.');
+    }
 }
+
+
+
+
+
+
+
+

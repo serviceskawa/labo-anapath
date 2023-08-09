@@ -8,6 +8,20 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Inclure les fichiers CSS de Dropzone.js via CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/dropzone.min.css" />
+    <style>
+        .simple-button {
+            background-color: transparent;
+            border: none;
+            color: #dc3545; /* Couleur du texte pour les boutons de suppression */
+            cursor: pointer;
+        }
+        .simple-link-button {
+        background-color: transparent;
+        border: none;
+        color: #0d6efd; /* Couleur du texte pour les boutons de lien */
+        cursor: pointer;
+    }
+    </style>
 @endsection
 
 @section('content')
@@ -402,46 +416,86 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6 mt-2">
+                        {{-- <div class="col-md-6 mt-2">
                             <div class="mb-3">
-                                {{-- <label for="example-fileinput" class="form-label">Images</label> --}}
-                                {{-- <div class="dropzone" id="image-dropzone"></div> --}}
-                                {{-- <input type="file" name="files_name[]" multiple> --}}
+                                <label for="example-fileinput" class="form-label">Images</label>
+                                <div class="dropzone" id="image-dropzone"></div>
+                                <input type="file" name="files_name[]" multiple>
 
                                 <label for="formFileMultiple" class="form-label">Ajouter l'image à la gallerie</label>
                                 <input class="form-control" type="file" name="files_name[]" id="formFileMultiple" multiple>
                             </div>
-                        </div>
-
-                        {{-- Resultats --}}
-                        @if ($test_order->files_name)
-                        <div class="col-md-6 mt-2">
-                            <div class="mb-3">
-                                {{-- <h4>Images</h4> --}}
-                                <label for="formFileMultiple" class="form-label">Gallerie</label>
-                                <div>
-                                    <?php $filenames = json_decode($test_order->files_name); ?>
-                                    @foreach ($filenames as $filename)
-                                        <a href="{{ asset('storage/' . $filename) }}" download>
-                                            {{-- <img src="{{ asset('storage/' . $filename) }}" alt="" width="80"> --}}
-                                            Image{{ $loop->iteration }}&nbsp;
-                                        </a>
-                                    @endforeach
-                                </div>
-
-                            </div>
-                        </div>
-                        @else
-
-                        @endif
+                        </div> --}}
 
                 </div>
-
                 <div class="modal-footer">
                     <button type="submit" class="btn w-100 btn-warning">Mettre à jour</button>
                 </div>
             </form>
         </div>
+
+
+
+
+        {{-- Debut du code pour la GALLERIE --}}
+        <div class="card my-3">
+            <div class="card mb-md-0 mb-3">
+                <div class="card-header">
+                    Gallerie des images
+                </div>
+                <h5 class="card-title mb-0"></h5>
+
+                <div class="card-body">
+                    <form action="{{ route('test_order.createimagegallerie',$test_order->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <label for="formFileMultiple" class="form-label">Ajouter l'image à la gallerie</label>
+                        <div class="row d-flex align-items-center">
+                            <div class="col-md-11">
+                                <input class="form-control" type="file" name="files_name[]" id="formFileMultiple" multiple>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="submit" class="btn btn-success">Ajouter</button>
+                            </div>
+                        </div>
+
+                    </form>
+
+
+                        @if ($test_order->files_name)
+                            <div class="col-md-6 mt-2">
+                                <div class="mb-3">
+                                    {{-- <h4>Images</h4> --}}
+                                    <label for="form" class="form-label">Gallerie</label>
+                                        <div>
+                                            <?php $filenames = json_decode($test_order->files_name); ?>
+                                            @foreach ($filenames as $index => $filename)
+                                            <div class="row">
+                                                <div class="col">
+                                                    Image{{ $loop->iteration }}&nbsp;
+                                                    <a href="{{ asset('storage/' . $filename) }}" download>
+                                                        <button class="btn btn-sm btn-link simple-link-button"><u style="font-size: 15px;">Voir</u></button>
+                                                    </a>
+                                                    <form class="d-inline-block" id="delete-form" action="{{ route('test_order.deleteimagegallerie',['index' => $index, 'test_order' => $test_order->id]) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button class="simple-button" type="submit" data-confirm="Êtes-vous sûr de vouloir supprimer cette image?" class="btn btn-sm btn-danger"><u>Supprimer</u></button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+
+                            @endif
+                </div>
+            </div>
+        </div>
+
+
+
 
         <div class="card mb-md-0 mb-3">
             <div class="card-header">
@@ -857,6 +911,43 @@
 @endsection
 
 @push('extra-js')
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const deleteButtons = document.querySelectorAll("[data-confirm]");
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function(event) {
+                event.preventDefault();
+                const confirmMessage = this.getAttribute("data-confirm");
+                Swal.fire({
+                    title: 'Confirmation',
+                    text: confirmMessage,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Oui, supprimer!',
+                    cancelButtonText: 'Annuler' // Ici, nous changeons le texte du bouton "Cancel"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.closest("form").submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
         integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
