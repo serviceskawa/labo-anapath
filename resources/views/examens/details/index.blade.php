@@ -910,35 +910,7 @@
 @endsection
 
 @push('extra-js')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const deleteButtons = document.querySelectorAll("[data-confirm]");
-        deleteButtons.forEach(button => {
-            button.addEventListener("click", function(event) {
-                event.preventDefault();
-                const confirmMessage = this.getAttribute("data-confirm");
-                Swal.fire({
-                    title: 'Confirmation',
-                    text: confirmMessage,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Oui, supprimer!',
-                    cancelButtonText: 'Annuler' // Ici, nous changeons le texte du bouton "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        this.closest("form").submit();
-                    }
-                });
-            });
-        });
-    });
-</script>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
 
@@ -971,4 +943,34 @@
     </script>
     <script src="{{ asset('viewjs/test/order/detail.js') }}"></script>
     <!-- Inclure les fichiers JavaScript de Dropzone.js via CDN -->
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const deleteButtons = document.querySelectorAll("[data-confirm]");
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function(event) {
+                event.preventDefault();
+                const confirmMessage = this.getAttribute("data-confirm");
+                Swal.fire({
+                    title: 'Confirmation',
+                    text: confirmMessage,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Oui, supprimer!',
+                    cancelButtonText: 'Annuler' // Ici, nous changeons le texte du bouton "Cancel"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.closest("form").submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @endpush
