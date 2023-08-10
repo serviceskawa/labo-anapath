@@ -611,6 +611,7 @@ public function __construct(
         // }
     }
 
+    // code qui permet d'ajouter une piece a la demande d'examen
     public function update(request $request, $id)
     {
 
@@ -686,13 +687,14 @@ public function __construct(
         $directory = storage_path('app/public/examen_images/' . $testOrder->code);
 
 
-        $uploadedFiles = $request->file('files_name'); // Utilise directement la chaîne 'files_name' ici
-        $filenames = [];
 
-        foreach ($uploadedFiles as $file) {
-            $filename = $file->store('examen_images', 'public');
-            $filenames[] = $filename;
-        }
+        // $uploadedFiles = $request->file('files_name'); // Utilise directement la chaîne 'files_name' ici
+        // $filenames = [];
+
+        // foreach ($uploadedFiles as $file) {
+        //     $filename = $file->store('examen_images', 'public');
+        //     $filenames[] = $filename;
+        // }
 
 
         try {
@@ -1060,6 +1062,7 @@ public function getExamImages($examenCode)
         return response()->json($doctorId, 200);
     }
 
+
     public function deleteimagegallerie($index,$test_order)
     {
         $test_order = TestOrder::findOrFail($test_order); // Charger le modèle du test_order
@@ -1080,7 +1083,7 @@ public function getExamImages($examenCode)
 
             return redirect()->back()->with('success', 'Image deleted successfully.');
         }
-        dd('ok');
+
         return redirect()->back()->with('error', 'Image not found.');
     }
 

@@ -150,6 +150,11 @@ Route::middleware(['auth','access','active'])->group(function () {
     Route::get('/signal',[SignalController::class, 'index'])->name('signals.index');
     Route::post('/store-signal',[SignalController::class, 'store'])->name('signal.store');
 
+    // Cette la route associer aux fichiers pour la suppression des images
+    Route::delete('/testOrders/delete/image-gallerie/{index}/{test_order}', [TestOrderController::class, 'deleteimagegallerie'])->name('test_order.deleteimagegallerie');
+    // Cette la route associer aux fichiers creation
+    Route::put('/testOrders/create/image-gallerie/{test_order}', [TestOrderController::class, 'createimagegallerie'])->name('test_order.createimagegallerie');
+
 
 
 
