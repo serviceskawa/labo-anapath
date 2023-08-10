@@ -8,6 +8,20 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Inclure les fichiers CSS de Dropzone.js via CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/dropzone.min.css" />
+    <style>
+        .simple-button {
+            background-color: transparent;
+            border: none;
+            color: #dc3545; /* Couleur du texte pour les boutons de suppression */
+            cursor: pointer;
+        }
+        .simple-link-button {
+        background-color: transparent;
+        border: none;
+        color: #0d6efd; /* Couleur du texte pour les boutons de lien */
+        cursor: pointer;
+    }
+    </style>
 @endsection
 
 @section('content')
@@ -18,6 +32,7 @@
 
         {{-- @include('examens.details.create') --}}
 
+        {{-- Bloc pour modifier les demandes d'examan --}}
         <div class="card my-3">
             @if ($test_order->status == 1)
                 <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
@@ -70,8 +85,12 @@
                                 @else
                                     @foreach ($types_orders as $type)
                                         @if ($test_order->type_order_id == $type->id)
-                                            <input type="text" name="type_examen" class="form-control" readonly
+                                            {{-- <input type="text" name="type_examen" class="form-control" readonly
+                                                value="{{ $type->title }}"> --}}
+                                                <input type="text" name="type_examen" class="form-control" readonly
                                                 value="{{ $type->title }}">
+                                                <input type="text" name="type_examen_id" class="form-control" readonly
+                                                value="{{ $type->id }}" hidden>
                                         @endif
                                     @endforeach
 
@@ -111,8 +130,12 @@
                                 @else
                                     @foreach ($contrats as $contrat)
                                         @if ($test_order->contrat_id == $contrat->id)
-                                            <input type="text" name="contrat_id" id="contrat_id" class="form-control"
+                                            {{-- <input type="text" name="contrat_id" id="contrat_id" class="form-control"
+                                                readonly value="{{ $contrat->name }}"> --}}
+                                                <input type="text" id="contrat_id" class="form-control"
                                                 readonly value="{{ $contrat->name }}">
+                                                <input type="text" name="contrat_id" id="contrat_id" class="form-control"
+                                                readonly value="{{ $contrat->id }}" hidden>
                                         @endif
                                     @endforeach
 
@@ -130,8 +153,6 @@
                                     @endforelse
                                 </select>
                             @endif
-
-
                         </div>
                     </div>
                     <div class="col-md-12 my-3">
@@ -166,21 +187,24 @@
                                         @foreach ($patients as $patient)
                                             <option value="{{ $patient->id }}"
                                                 {{ $test_order->patient_id == $patient->id ? 'selected' : '' }}>
-                                                {{ $patient->code }} - {{ $patient->firstname }}
-                                                {{ $patient->lastname }}
+                                                {{ $patient->code }} - {{ $patient->firstname }} {{ $patient->lastname }}
                                             </option>
                                         @endforeach
                                     </select>
                                 @else
                                     @foreach ($patients as $patient)
                                         @if ($test_order->patient_id == $patient->id)
-                                            <input type="text" name="patient_id" id="patient_id" class="form-control"
+                                            {{-- <input type="text" name="patient_id" id="patient_id" class="form-control"
                                                 readonly
-                                                value="{{ $patient->code }} - {{ $patient->firstname }}
-                                    {{ $patient->lastname }}">
+                                                value="{{ $patient->code }} - {{ $patient->firstname }} {{ $patient->lastname }}"> --}}
+                                                <input type="text" name="patient_id" id="patient_id" class="form-control"
+                                                readonly
+                                                value="{{ $patient->code }} - {{ $patient->firstname }} {{ $patient->lastname }}">
+                                                <input type="text" name="patient_id" id="patient_id" class="form-control"
+                                                readonly
+                                                value="{{ $patient->id }}" hidden>
                                         @endif
                                     @endforeach
-
                                 @endif
                             @else
                                 <select class="form-select select2" data-toggle="select2" name="patient_id"
@@ -189,8 +213,7 @@
                                     @foreach ($patients as $patient)
                                         <option value="{{ $patient->id }}"
                                             {{ $test_order->patient_id == $patient->id ? 'selected' : '' }}>
-                                            {{ $patient->code }} - {{ $patient->firstname }}
-                                            {{ $patient->lastname }}
+                                            {{ $patient->code }} - {{ $patient->firstname }} {{ $patient->lastname }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -322,9 +345,17 @@
                                     @else
                                         @foreach (getUsersByRole('docteur') as $item)
                                             @if ($test_order->attribuate_doctor_id == $item->id)
-                                                <input type="text" name="attribuate_doctor_id" id=""
+                                                {{-- <input type="text" name="attribuate_doctor_id" id=""
+                                                    class="form-control" readonly
+                                                    value="{{ $item->lastname }} {{ $item->firstname }}"> --}}
+
+                                                    <input type="text" id=""
                                                     class="form-control" readonly
                                                     value="{{ $item->lastname }} {{ $item->firstname }}">
+
+                                                    <input type="text" name="attribuate_doctor_id" id=""
+                                                    class="form-control" readonly
+                                                    value="{{ $item->id }}" hidden>
                                             @endif
                                         @endforeach
 
@@ -376,35 +407,93 @@
                             <label for="switch3" data-on-label="Urgent" data-off-label="Normal"></label>
 
                         </div>
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Pièce jointe</label>
                                     <input type="file" name="examen_file"
                                         id="example-fileinput"  class="form-control dropify"
                                         data-default-file="{{ $test_order ? Storage::url($test_order->examen_file) : '' }}">
-
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6 mt-2">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Images</label>
                                 <div class="dropzone" id="image-dropzone"></div>
+                                <input type="file" name="files_name[]" multiple>
+
+                                <label for="formFileMultiple" class="form-label">Ajouter l'image à la gallerie</label>
+                                <input class="form-control" type="file" name="files_name[]" id="formFileMultiple" multiple>
                             </div>
-                        </div>
-                    </div>
-
-
+                        </div> --}}
 
                 </div>
-
                 <div class="modal-footer">
                     <button type="submit" class="btn w-100 btn-warning">Mettre à jour</button>
                 </div>
-
             </form>
         </div>
 
+
+
+        {{-- Debut du bloc qui permet d'afficher la zone d'insertion des images de la galerie --}}
+        <div class="card my-3">
+            <div class="card my-3">
+                <div class="card-header">
+                    Galerie des images
+                </div>
+                <h5 class="card-title mb-0"></h5>
+
+                <div class="card-body">
+                    <form action="{{ route('test_order.createimagegallerie',$test_order->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="row d-flex align-items-center">
+                            <div class="col-md-11">
+                                <input class="form-control" type="file" name="files_name[]" id="formFileMultiple" multiple required>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="submit" class="btn btn-success">Ajouter</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    @if(isset($test_order->files_name))
+                    <div class="col-md-6 mt-2">
+                        <div class="mb-3">
+                            <div>
+                                <?php $filenames = json_decode($test_order->files_name); ?>
+                                @forelse ($filenames as $index => $filename)
+                                    <div class="row">
+                                        <div class="col">
+                                            Image{{ $loop->iteration }}&nbsp;
+                                            <a href="{{ asset('storage/' . $filename) }}" download>
+                                                <u style="font-size: 15px;">Voir</u>
+                                            </a>
+                                            {{-- <img src="{{ asset('storage/examen_images' . $filename) }}" width="50"/> --}}
+
+                                            <form class="d-inline-block delete-form" action="{{ route('test_order.deleteimagegallerie',['index' => $index, 'test_order' => $test_order->id]) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="simple-button" type="submit" data-confirm="Êtes-vous sûr de vouloir supprimer cette image?" class="btn btn-sm btn-danger"><u>Supprimer</u></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <!-- Aucun fichier trouvé -->
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                </div>
+            </div>
+        </div>
+        {{-- Fin du bloc qui permet d'afficher la zone d'insertion des images de la galerie --}}
+
+
+        {{-- Debut du bloc pour faire les l'ajout des demandes  --}}
         <div class="card mb-md-0 mb-3">
             <div class="card-header">
                 Liste des examens demandés
@@ -850,4 +939,33 @@
     </script>
     <script src="{{ asset('viewjs/test/order/detail.js') }}"></script>
     <!-- Inclure les fichiers JavaScript de Dropzone.js via CDN -->
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const deleteButtons = document.querySelectorAll("[data-confirm]");
+            deleteButtons.forEach(button => {
+                button.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    const confirmMessage = this.getAttribute("data-confirm");
+                    Swal.fire({
+                        title: 'Confirmation',
+                        text: confirmMessage,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Oui, supprimer!',
+                        cancelButtonText: 'Annuler' // Ici, nous changeons le texte du bouton "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.closest("form").submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 @endpush
