@@ -576,7 +576,6 @@
                                         <option data-category_test_id="{{ $test->category_test_id }}"
                                             value="{{ $test->id }}">{{ $test->name }}</option>
                                     @endforeach
-
                                 </select>
                             </div>
                         </div>
@@ -610,7 +609,6 @@
                             </div>
                         </div>
                     </div>
-
                 </form>
                 @endif
 
@@ -794,7 +792,7 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal --> --}}
-        
+
         <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel"
             aria-hidden="true">
             <div class="modal-dialog" style="max-width: 100%; padding-left: 300px; margin-left:50px;">
