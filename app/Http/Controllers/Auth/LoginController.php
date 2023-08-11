@@ -57,6 +57,7 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
+            // dd(Carbon::now());
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $userConnect = Auth::user();
@@ -73,16 +74,18 @@ class LoginController extends Controller
                 $currentTimeFormatted = $now->format('H:i:s');
 
                 $message = "";
-                if ($currentTimeFormatted<$setting->begining_date)
-                {
-                    $message = "Il n'est pas encore ". $setting->begining_date . ". Vous n'aviez pas accès à la plateforme";
-                }elseif($currentTimeFormatted>$setting->ending_date)
-                {
-                    $message = "Il est ". $setting->ending_date . "passé. Vous n'aviez plus accès à la plateforme";
-                }
+                // if ($currentTimeFormatted<$setting->begining_date)
+                // {
+                //     $message = "Connexion impossible. Veuillez reessayer";
+                //     // $message = "Il n'est pas encore ". $setting->begining_date . ". Vous n'aviez pas accès à la plateforme";
+                // }elseif($currentTimeFormatted>$setting->ending_date)
+                // {
+                //     $message = "Connexion impossible. Veuillez reessayer";
+                //     // $message = "Il est ". $setting->ending_date . "passé. Vous n'aviez plus accès à la plateforme";
+                // }
 
                 //Vérifier si l'heure actuelle est dans l'intervalle des heures de travail définies
-                if ($currentTimeFormatted<$setting->begining_date || $currentTimeFormatted>$setting->ending_date) {
+                if ($currentTimeFormatted<$setting->begining_date && $currentTimeFormatted>$setting->ending_date) {
                     $access = false;
                     foreach ($roles as $key => $role) {
                         //Lorsque l'utilisateur n'a pas le role nécessaire.
@@ -101,6 +104,8 @@ class LoginController extends Controller
                         // return back()->with('error', 'Vous n\'aviez plus access à la plateforme. Veuillez contacter l\'administrateur.');
                         return redirect("login")->withErrors([$message]);
                     }
+                }else{
+                    $message = "Connexion impossible. Veuillez reessayer";
                 }
 
                 //Check if account's user is active
@@ -127,6 +132,11 @@ class LoginController extends Controller
 
         return redirect("login")->withErrors(['Oppes! Vous aviez entré des données invalides']);
     }
+
+
+
+
+
 
 
     /**
@@ -193,7 +203,7 @@ class LoginController extends Controller
             $user->is_connect = 0;
             $user->two_factor_enabled =0;
             $user->save();
-            
+
             Auth::logout(); // déconnecte l'utilisateur
             $request->session()->invalidate();
             $request->session()->regenerateToken();
