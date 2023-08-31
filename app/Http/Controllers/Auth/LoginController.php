@@ -203,8 +203,10 @@ class LoginController extends Controller
             $user->is_connect = 0;
             $user->two_factor_enabled =0;
             $user->save();
+// dd($request);
 
-            Auth::logout(); // déconnecte l'utilisateur
+
+           dd(Auth::logout()); // déconnecte l'utilisateur
             $request->session()->invalidate();
             $request->session()->regenerateToken();
             return redirect()->route('login');

@@ -1,3 +1,10 @@
+
+function afficherDetails(testOrderId) {
+    // Code pour afficher les détails en utilisant le testOrderId
+    console.log("Affichage des détails pour le testOrderId : " + testOrderId);
+    // Vous pouvez insérer ici le code pour afficher le modal ou effectuer toute autre action
+}
+
 /* DATATABLE */
 $(document).ready(function() {
     var table = $('#datatable1').DataTable({
@@ -105,4 +112,5 @@ $(document).ready(function() {
         table.draw();
         //console.log(search.value);
     });
+
 });

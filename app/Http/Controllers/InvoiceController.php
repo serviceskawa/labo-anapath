@@ -40,8 +40,11 @@ class InvoiceController extends Controller
     {
         $invoices = $this->invoices->latest()->get();
         $setting = $this->setting->find(1);
+        $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'
+        $annuletotalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->where(['status_invoice'=>1])->sum('total');
+        $totalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->where(['status_invoice'=>0])->sum('total') - $annuletotalToday;
         config(['app.name' => $setting->titre]);
-        return view('invoices.index', compact('invoices'));
+        return view('invoices.index', compact('invoices','totalToday'));
     }
 
     /**
@@ -212,7 +215,7 @@ class InvoiceController extends Controller
 
             ->addColumn('code', function ($data) {
 
-                return $data->code;
+                return $data->code_normalise?$data->code_normalise:'';
             })
 
             ->addColumn('demande', function ($data) {
@@ -252,7 +255,11 @@ class InvoiceController extends Controller
 
             ->addColumn('action', function ($data) {
                 if (getTestOrderData($data->test_order_id)) {
-                    $btnVoir = '<a type="button" href="' . route('details_test_order.index', getTestOrderData($data->test_order_id)->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+                    // $btnVoir = '<a type="button" href="' . route('details_test_order.index', getTestOrderData($data->test_order_id)->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+                    // $btnVoir = '<button type="button"  class="btn btn-primary invoice-btn" title="Voir les détails" data-test-order-id="' . $data->id . '"><i class="mdi mdi-eye"></i></button>';
+                    // $btnVoir = '<button type="button"  class="btn btn-primary" title="Voir les détails" onclick="alert('.getTestOrderData($data->test_order_id)->id .')"><i class="mdi mdi-eye"></i></button>';
+                    $testOrderId = getTestOrderData($data->test_order_id)->id;
+                    $btnVoir = '<button type="button" class="btn btn-primary" title="Voir les détails" onclick="afficherDetails(' . $testOrderId . ')"><i class="mdi mdi-eye"></i></button>';
                 } else {
                     $btnVoir ='';
                 }
@@ -386,7 +393,7 @@ class InvoiceController extends Controller
     }
 
     // Met à jour le statut paid pour le payement
-    public function updateStatus($id)
+    public function updateStatus(Request $request,$id)
     {
 
         $invoice = $this->invoices->findorfail($id);
@@ -404,8 +411,12 @@ class InvoiceController extends Controller
                     return response()->json(invoiceNormeTest($invoice->test_order_id));
                 }
             } else {
-                $invoice->fill(["paid" => '1'])->save();
-                return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
+                $invoice->fill([
+                    "paid" => '1',
+                    "code_normalise"=>$request->code
+                    ])->save();
+                return response()->json(['code'=> $request->code]);
+                // return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
             }
         }
     }

@@ -200,22 +200,41 @@
 
                     @endif
 
-                    <div class="d-print-none mt-4">
-                        <div class="text-end">
-                            <a href="{{ route('invoice.print', $invoice->id) }}" class="btn btn-primary"><i
+                    <div class="d-print-none text-end mt-4">
+                        <div class="text-end" style="float: right;">
+                                {{-- <a href="{{ route('invoice.print', $invoice->id) }}" class="btn btn-primary"><i
                                     class="mdi mdi-printer"></i> Imprimer
-                            </a>
+                                </a> --}}
                             @if ($invoice->paid != 1)
 
                                 @if ($settingInvoice != null)
                                     @if ($settingInvoice->status != 1)
-                                        <a href="{{ route('invoice.updateStatus', $invoice->id) }} "
-                                            class="btn btn-success"><i class="mdi mdi-cash"></i>
-                                            Payé</a>
+                                        @foreach (getRolesByUser(Auth::user()->id) as $role)
+                                            @if ($role->name == "Caissier")
+                                                   <div class="d-flex" style="width: 500px;">
+                                                        <input type="text" name="code" id="code" class="form-control" style="margin-right: 20px;">
+                                                       <div>
+                                                        <button type="button" onclick="updateStatus({{$invoice->id}})" class="btn btn-success" st><i class="mdi mdi-cash"></i>
+                                                            Marqué comme Payé</button>
+
+                                                       </div>
+                                                   </div>
+                                            @endif
+                                        @endforeach
                                     @else
-                                        <button type="button" onclick="invoicebtn()" class="btn btn-success"><i
-                                                class="mdi mdi-cash"></i>
-                                            Terminer la facture</button>
+                                        @foreach (getRolesByUser(Auth::user()->id) as $role)
+                                            @if ($role->name == "Caissier")
+                                            <div class="d-flex" style="width: 500px;">
+                                                <input type="text" name="code" id="code" class="form-control" style="margin-right: 20px;">
+                                               <div>
+                                                    <input type="text" name="code" id="code" class="">
+                                                    <button type="button" onclick="invoicebtn()" class="btn btn-success"><i
+                                                        class="mdi mdi-cash"></i>
+                                                    Terminer la facture</button>
+                                               </div>
+                                            </div>
+                                            @endif
+                                        @endforeach
                                     @endif
                                 @endif
                                 {{--  --}}
@@ -244,6 +263,7 @@
         var TOKENCANCELINVOICE = "{{ csrf_token() }}"
         var ROUTECONFIRMINVOICE = "{{ route('invoice.confirmInvoice') }}"
         var TOKENCONFIRMINVOICE = "{{ csrf_token() }}"
+        var ROUTEINVOICEINDEX = "{{ route('invoice.index') }}"
     </script>
 
     <script src="{{ asset('viewjs/invoice/show.js') }}"></script>

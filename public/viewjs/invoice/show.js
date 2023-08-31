@@ -100,3 +100,28 @@ function validPayment() {
         }
     })
 }
+
+function updateStatus(id) {
+    var code = $('#code').val();
+    if (code == "") {
+        toastr.error("Code normalisé requis",'Code normalisé');
+    }else
+    {
+        $.ajax({
+            url: baseUrl + "/invoices/updateStatus/" + invoice.id,
+            type: "GET",
+            data: {
+                code: code
+            },
+            success: function(response) {
+                // alert(response.code);
+                console.log(response);
+                window.location.href = ROUTEINVOICEINDEX;
+                // location.reload();
+            },
+            error: function(response) {
+                console.log('error', response);
+            }
+        })
+    }
+}
