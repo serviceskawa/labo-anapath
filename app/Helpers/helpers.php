@@ -546,12 +546,12 @@ if (!function_exists('invoiceNormeTest')) {
 
         $details = $testOrder->details()->get();
 
-        if ($details != null) {
+        if (!empty($details)) {
             foreach ($details as  $value) { {
                     $item['name'] = $value->test_name;
                     $item['price'] = $value->total;
                     $item['quantity'] = 1;
-                    $item['taxGroup'] = "A";
+                    $item['taxGroup'] = "B";
                     $items[] = $item;
                 }
             }
@@ -562,22 +562,56 @@ if (!function_exists('invoiceNormeTest')) {
         $settingInvoiceModel = new SettingInvoice();
         $settingInvoice = $settingInvoiceModel->find(1);
         $accessToken = $settingInvoice->token;
-        $ifu = "0".$settingInvoice->ifu;
-        return $ifu;
-        $response = $client->request(
-            'POST',
-            'https://developper.impots.bj/sygmef-emcf/api/invoice',
-            [
+        $ifu = $settingInvoice->ifu;
+        // $ifu = "0".$settingInvoice->ifu;
+        $response = $client->request('POST','https://developper.impots.bj/sygmef-emcf/api/invoice',
+        [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $accessToken,
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json'
                 ],
+                // 'json' => [
+                //     'ifu' => "0202367807403",
+                //     // 'type' => "FV",
+                //     // 'items' =>
+                //     //     [
+                //     //        [ "name"=>"Jus d'orange",
+                //     //         "price"=>1800,
+                //     //         "quantity"=>2,
+                //     //         "taxGroup"=>"A"]
+                //     //     ],
+                //     // "client" => [
+                //     //     "name" => "Ben",
+                //     //     "address" => 'abeezjn',
+                //     // ],
+                //     // "operator" => [
+                //     //     "id" => 1,
+                //     //     "name" => "Jean",
+                //     // ],
+                //     // "payment" => [
+                //     //     [
+                //     //         "name" => "ESPECES",
+                //     //         "amount" => 3600,
+                //     //         ]
+                //     //     ],
+                // ]
                 'json' => [
                     'ifu' => $ifu,
                     'type' => "FV",
                     'items' => $items,
+                    // 'items' => [
+                    //        [ "name"=>"Jus d'orange",
+                    //         "price"=>5000,
+                    //         "quantity"=>2,
+                    //         "taxGroup"=>"A"],
+                    //         [ "name"=>"Jus de mangue",
+                    //         "price"=>5000,
+                    //         "quantity"=>3,
+                    //         "taxGroup"=>"B"]
+                    // ],
                     "client" => [
+                        // "ifu"=>"0202367807403",
                         "name" => $invoice->client_name,
                         "address" => $invoice->client_address?$invoice->client_address:'a',
                     ],
@@ -585,16 +619,18 @@ if (!function_exists('invoiceNormeTest')) {
                         "id" => Auth::user()->id,
                         "name" => Auth::user()->lastname,
                     ],
+                    // "reference" => "TEST-QWMW-F22F-GOA5-45BB-S6PF",
+                    // "taxSpecific" => 230,
                     "payment" => [
                         [
                             "name" => $invoice->payment,
                             "amount" => $invoice->total,
-                        ]
-                    ],
+                            // "amount" => 3800,
+                            ]
+                        ],
                 ]
-            ]
-        );
-        $test = json_decode($response->getBody(), true);
+        ]);
+       $test = json_decode($response->getBody(), true);
 
         return ["id" => $id, "uid" => $test['uid']];
     }

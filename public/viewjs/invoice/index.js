@@ -46,10 +46,6 @@ $(document).ready(function() {
                 name: 'created_at'
             },
              {
-                data: 'code',
-                name: 'code',
-            },
-             {
                 data: 'demande',
                 name: 'demande',
             },
@@ -61,10 +57,16 @@ $(document).ready(function() {
                 data: 'total',
                 name: 'total'
             },
+
             {
-                data: 'remise',
-                name: 'remise'
+                data: 'code',
+                name: 'code',
             },
+
+            // {
+            //     data: 'remise',
+            //     name: 'remise'
+            // },
 
             {
                 data: 'type',

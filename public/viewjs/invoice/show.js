@@ -9,15 +9,19 @@ var code = new QRCode(document.getElementById("qrcode"), {
 
 function invoicebtn(id) {
     console.log(invoice);
-
+    var payment = $('#payment').val();
     $.ajax({
         url: baseUrl + "/invoices/updateStatus/" + invoice.id,
         type: "GET",
+        data: {
+            // code: code,
+            payment: payment,
+        },
 
         success: function(response) {
             console.log(response);
-            if (response) {
-                //console.log(response);
+            if (response.uid) {
+                console.log(response);
                 Swal.fire({
                     title: "Voulez-vous terminé la facture ?",
                     icon: "warning",

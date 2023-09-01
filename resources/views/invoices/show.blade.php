@@ -123,10 +123,12 @@
                     </div>
                     <!-- end row-->
 
+
                     @if ($settingInvoice != null)
                         @if ($settingInvoice->status == 1)
                             <div>
-                                <form id="addform" autocomplete="off">
+                            {{-- <div style="float: right"> --}}
+                                {{-- <form id="addform" autocomplete="off"> --}}
                                     @csrf
                                     <div class="row d-flex align-items-end">
                                         <div class="col-md-4 col-12">
@@ -164,16 +166,29 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2 col-12">
+                                        {{-- <div class="col-md-2 col-12">
                                             <div class="mb-3">
                                                 <button type="button" onclick="validPayment()"
                                                     class="btn btn-primary {{ $invoice->paid != 1 ? '' : 'disabled' }}">Valider
                                                     le type</button>
                                             </div>
+                                        </div> --}}
+                                        <div class="col-md-4 col-12">
+                                            @foreach (getRolesByUser(Auth::user()->id) as $role)
+                                                @if ($role->name == "Caissier")
+                                                {{-- <div class="d-flex" style="width: 500px;"> --}}
+                                                    {{-- <input type="text" name="code" id="code" class="form-control" style="margin-right: 20px;"> --}}
+                                                    {{-- <div> --}}
+                                                        <button type="button" onclick="invoicebtn()" class="btn btn-success mb-3"><i
+                                                            class="mdi mdi-cash"></i>
+                                                        Terminer la facture</button>
+                                                    {{-- </div> --}}
+                                                {{-- </div> --}}
+                                                @endif
+                                            @endforeach
                                         </div>
                                     </div>
-
-                                </form>
+                                    {{-- </form> --}}
                             </div>
                         @endif
 
@@ -200,11 +215,9 @@
 
                     @endif
 
-                    <div class="d-print-none text-end mt-4">
+                    {{-- <div class="d-print-none text-end mt-4">
                         <div class="text-end" style="float: right;">
-                                {{-- <a href="{{ route('invoice.print', $invoice->id) }}" class="btn btn-primary"><i
-                                    class="mdi mdi-printer"></i> Imprimer
-                                </a> --}}
+
                             @if ($invoice->paid != 1)
 
                                 @if ($settingInvoice != null)
@@ -212,7 +225,6 @@
                                         @foreach (getRolesByUser(Auth::user()->id) as $role)
                                             @if ($role->name == "Caissier")
                                                    <div class="d-flex" style="width: 500px;">
-                                                        <input type="text" name="code" id="code" class="form-control" style="margin-right: 20px;">
                                                        <div>
                                                         <button type="button" onclick="updateStatus({{$invoice->id}})" class="btn btn-success" st><i class="mdi mdi-cash"></i>
                                                             Marqué comme Payé</button>
@@ -224,25 +236,20 @@
                                     @else
                                         @foreach (getRolesByUser(Auth::user()->id) as $role)
                                             @if ($role->name == "Caissier")
-                                            <div class="d-flex" style="width: 500px;">
-                                                <input type="text" name="code" id="code" class="form-control" style="margin-right: 20px;">
-                                               <div>
-                                                    <input type="text" name="code" id="code" class="">
+
                                                     <button type="button" onclick="invoicebtn()" class="btn btn-success"><i
                                                         class="mdi mdi-cash"></i>
                                                     Terminer la facture</button>
-                                               </div>
-                                            </div>
+
                                             @endif
                                         @endforeach
                                     @endif
                                 @endif
-                                {{--  --}}
 
                             @endif
 
                         </div>
-                    </div>
+                    </div> --}}
                     <!-- end buttons -->
 
                 </div> <!-- end card-body-->

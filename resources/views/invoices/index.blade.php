@@ -100,12 +100,12 @@
                         <tr>
                             {{-- <th>#</th> --}}
                             <th>Date</th>
-                            <th>Code normalisé</th>
                             <th>Demande</th>
                             <th>Patient</th>
                             <th>Total</th>
-                            <th>Contrat</th>
-                            <th>Type</th>
+                            <th>Code normalisé</th>
+                            {{-- <th>Contrat</th> --}}
+                            <th>Mode de paiement</th>
                             <th>Statut</th>
                             <th>Actions</th>
 

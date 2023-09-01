@@ -213,11 +213,6 @@ class InvoiceController extends Controller
             //     }
             // })
 
-            ->addColumn('code', function ($data) {
-
-                return $data->code_normalise?$data->code_normalise:'';
-            })
-
             ->addColumn('demande', function ($data) {
 
                 return $data->test_order_id ? getTestOrderData($data->test_order_id)->code :'';
@@ -230,13 +225,47 @@ class InvoiceController extends Controller
             ->addColumn('total', function ($data) {
                 return $data->total;
             })
-            ->addColumn('remise', function ($data) {
-                return $data->discount?$data->discount:'0,0';
+            // ->addColumn('remise', function ($data) {
+            //     return $data->discount?$data->discount:'0,0';
+            // })
+
+            // ->addColumn('type', function ($data) {
+            //     $badge  =$data->status_invoice == 1 ? "Avoir" : "Vente";
+            //     return $badge;
+            // })
+            ->addColumn('code', function ($data) {
+
+                // $inputCode = '<input type="text" name="code" id="code" class="form-control" style="margin-right: 20px;"/>';
+                return $data->codeMecef?$data->codeMecef:'';
+                // return $inputCode;
+
+
             })
 
             ->addColumn('type', function ($data) {
-                $badge  =$data->status_invoice == 1 ? "Avoir" : "Vente";
-                return $badge;
+                $selector = '
+                    <div class="mb-3">
+                        <select class="form-select select2" data-toggle="select2" name="payment" value="'.$data->payment.'" id="payment" required>
+                            <option '.$data->payment.' == '.'ESPECES'.' ? '.'selected'.' : '.''.'
+                                value="ESPECES">ESPECES</option>
+                            <option '.$data->payment.' == '.'CHEQUES'.' ? '.'selected'.' : '.''.'
+                                value="CHEQUES">CHEQUES</option>
+                            <option '.$data->payment.' == '.'MOBILEMONEY'.' ? '.'selected'.' : '.''.'
+                                value="MOBILEMONEY">MOBILE MONEY</option>
+                            <option '.$data->payment.' == '.'CARTEBANCAIRE'.' ? '.'selected'.' : '.''.'
+                                value="CARTEBANCAIRE">CARTE BANQUAIRE</option>
+                            <option '.$data->payment.' == '.'VIREMENT'.' ? '.'selected'.' : '.''.'
+                                value="VIREMENT">VIREMENT</option>
+                            <option '.$data->payment.' == '.'CREDIT'.' ? '.'selected'.' : '.''.'
+                                value="CREDIT">CREDIT</option>
+                            <option '.$data->payment.' == '.'AUTRE'.' ? '.'selected'.' : '.''.'
+                            value="AUTRE">AUTRE</option>
+                        </select>
+                    </div>
+                ';
+
+                // return $selector;
+                return  $data->payment;
             })
             ->addColumn('status', function ($data) {
 
@@ -258,11 +287,12 @@ class InvoiceController extends Controller
                     // $btnVoir = '<a type="button" href="' . route('details_test_order.index', getTestOrderData($data->test_order_id)->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
                     // $btnVoir = '<button type="button"  class="btn btn-primary invoice-btn" title="Voir les détails" data-test-order-id="' . $data->id . '"><i class="mdi mdi-eye"></i></button>';
                     // $btnVoir = '<button type="button"  class="btn btn-primary" title="Voir les détails" onclick="alert('.getTestOrderData($data->test_order_id)->id .')"><i class="mdi mdi-eye"></i></button>';
-                    $testOrderId = getTestOrderData($data->test_order_id)->id;
-                    $btnVoir = '<button type="button" class="btn btn-primary" title="Voir les détails" onclick="afficherDetails(' . $testOrderId . ')"><i class="mdi mdi-eye"></i></button>';
+                    // $testOrderId = getTestOrderData($data->test_order_id)->id;
+                    // $btnVoir = '<button type="button" class="btn btn-primary" title="Voir les détails" onclick="afficherDetails(' . $testOrderId . ')"><i class="mdi mdi-eye"></i></button>';
                 } else {
                     $btnVoir ='';
                 }
+                $btnVoir ='';
 
                 $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
 
@@ -404,20 +434,28 @@ class InvoiceController extends Controller
             return redirect()->back()->with('success', "Cette facture a déjà été payé ! ");
         } else {
 
-
-            if ($settingInvoice->status == 1) {
-                if ($invoice->test_order_id != null) {
-                    // return response()->json('cool');
-                    return response()->json(invoiceNormeTest($invoice->test_order_id));
+            if ($invoice->test_order_id) {
+                if ($settingInvoice->status == 1) {
+                    $invoice->fill([
+                        'payment' => $request->payment
+                    ])->save();
+                    if ($invoice->test_order_id != null) {
+                        // return response()->json('cool');
+                        return response()->json(invoiceNormeTest($invoice->test_order_id));
+                        return response()->json('Pas une demande d\'examen');
+                    }
+                } else {
+                    $invoice->fill([
+                        "paid" => '1',
+                        "code_normalise"=>$request->code
+                        ])->save();
+                    return response()->json(['code'=> $request->code]);
+                    // return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
                 }
             } else {
-                $invoice->fill([
-                    "paid" => '1',
-                    "code_normalise"=>$request->code
-                    ])->save();
-                return response()->json(['code'=> $request->code]);
-                // return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
+                return response()->json('Pas une demande d\'examen');
             }
+
         }
     }
 
@@ -461,9 +499,10 @@ class InvoiceController extends Controller
                 "dategenerate" => $test['dateTime'],
                 "nim" => $test['nim'],
                 "qrcode" => $test['qrCode']
-            ])->save();
-        }
+                ])->save();
+            }
 
+            // return response()->json(['status' => 200, 'type' => "confirm",'response'=>$request->uid]);
         return response()->json(['status' => 200, 'type' => "confirm", "invoice" => $invoice]);
     }
 
