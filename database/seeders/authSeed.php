@@ -22,10 +22,10 @@ class authSeed extends Seeder
     public function run()
     {
 
-        $user = User::updateorcreate(["email" =>'bmac82745@gmail.com'],[
+        $user = User::updateorcreate(["email" =>'tigouncyrille20022@gmail.com'],[
             "firstname" => 'Admin',
             "lastname" => 'Admin',
-            "password" =>  Hash::make('password'),
+            "password" =>  Hash::make('tigouncyrille20022@gmail.com'),
         ]);
 
         $role = Role::updateOrCreate(

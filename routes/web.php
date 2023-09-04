@@ -18,6 +18,7 @@ use App\Http\Controllers\TestOrderController;
 use App\Http\Controllers\PrestationsOrderrController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrestationController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ConsultationController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\SettingReportTemplateController;
 use App\Http\Controllers\SignalController;
 use App\Http\Controllers\TFAuthController;
 use App\Models\AppelTestOder;
+use App\Models\Article;
 use App\Models\ProblemCategory;
 use Laravel\SerializableClosure\Serializers\Signed;
 
@@ -53,14 +55,14 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware(['tfauth','access','active']);
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware(['tfauth']);
 // Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->name('dashboard');
 
 Route::middleware(['web'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
-Route::middleware(['auth','access','active'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::get('/confirm-login', [TFAuthController::class, 'show'])->name('login.confirm');
     Route::post('/confirm-login', [TFAuthController::class, 'postAuth'])->name('login.postAuth');
@@ -365,4 +367,16 @@ Route::middleware(['auth','access','active'])->group(function () {
 
         Route::get('show_by_id/{id}', [PrestationController::class, 'show_by_id'])->name('prestation.showById');
     });
+
+
+
+    // Articles
+
+        Route::get('articles', [ArticleController::class, 'index'])->name('article.index');
+        Route::get('article-create', [ArticleController::class, 'create'])->name('article.create');
+        Route::get('article-edit/{article}', [ArticleController::class, 'edit'])->name('article.edit');
+        Route::put('article-update/{article}', [ArticleController::class, 'update'])->name('article.update');
+        Route::post('article-store', [ArticleController::class, 'store'])->name('article.store');
+        Route::get('article-delete/{article}', [ArticleController::class, 'delete'])->name('article.delete');
+
 });
