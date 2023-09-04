@@ -346,6 +346,30 @@
                     </li>
                     @endif
 
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false"
+                            aria-controls="sidebarEcommerce" class="side-nav-link">
+                            <i class="uil-files-landscapes"></i>
+                            <span> Fournisseurs </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+
+                        <div class="collapse" id="sidebarEcommerce">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href="{{ route('supplier.index') }}">Tous les fournisseurs</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('supplier.store') }}">Ajouter</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('supplier.categories.index') }}">Catégories</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </li>
+
                     @if (getOnlineUser()->can('edit-users'))
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarProjects2" aria-expanded="false"

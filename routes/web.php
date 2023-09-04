@@ -32,6 +32,8 @@ use App\Http\Controllers\ProblemeReportersController;
 use App\Http\Controllers\RefundRequestController;
 use App\Http\Controllers\SettingReportTemplateController;
 use App\Http\Controllers\SignalController;
+use App\Http\Controllers\SupplierCategorieController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TFAuthController;
 use App\Models\AppelTestOder;
 use App\Models\Article;
@@ -72,6 +74,22 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/categorytest/delete/{id}', [TestCategoryController::class, 'destroy']);
     Route::get('/getcategorytest/{id}', [TestCategoryController::class, 'edit']);
     Route::post('/examens/categories/update', [TestCategoryController::class, 'update'])->name('examens.categories.update');
+    //Fournisseur
+
+    Route::prefix('fournisseur')->group(function() {
+        Route::get('/',[SupplierController::class,'index'])->name('supplier.index');
+        Route::post('/',[SupplierController::class,'store'])->name('supplier.store');
+        Route::get('/delete/{id}', [SupplierController::class, 'destroy']);
+        Route::get('/get/{id}', [SupplierController::class, 'edit']);
+        Route::post('/update', [SupplierController::class, 'update'])->name('supplier.update');
+        
+        Route::get('/categories', [SupplierCategorieController::class, 'index'])->name('supplier.categories.index');
+        Route::post('/categories', [SupplierCategorieController::class, 'store'])->name('supplier.categories.store');
+        Route::get('/category/delete/{id}', [SupplierCategorieController::class, 'destroy']);
+        Route::get('/getcategory/{id}', [SupplierCategorieController::class, 'edit']);
+        Route::post('/categories/update', [SupplierCategorieController::class, 'update'])->name('supplier.categories.update');
+    });
+
 
     //EXAMEN
     Route::get('/examens/index', [TestController::class, 'index'])->name('examens.index');
@@ -305,6 +323,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/setting', [SettingController::class, 'invoice_index'])->name('invoice.setting.index');
         Route::post('/setting-Update', [SettingController::class, 'invoice_update'])->name('invoice.setting.update');
         Route::get('/business', [InvoiceController::class, 'business'])->name('invoice.business');
+        Route::post('/search-invoice', [InvoiceController::class, 'searchInvoice'])->name('invoice.business.search');
         Route::get('/s', [InvoiceController::class, 'getInvoiceforDatatable'])->name('invoice.getTestOrdersforDatatable');
         Route::get('/index', [InvoiceController::class, 'getInvoiceIndexForDatable'])->name('invoice.getInvoiceIndexforDatatable');
         // Route::post('/filter', [InvoiceController::class, 'filter'])->name('invoice.filter');

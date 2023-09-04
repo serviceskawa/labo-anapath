@@ -168,19 +168,23 @@ class InvoiceController extends Controller
                 // return $this->invoices->whereMonth('updated_at', )->sum('total');
             })
             ->addColumn('avoirs', function ($periode) {
-                return '';
+                $monthIndex = array_search($periode, ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']);
+
+                return $chiffre = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where('paid', '1')->where(['status_invoice'=>1])->sum('total');
             })
             ->addColumn('chiffres', function ($periode) {
 
                 $monthIndex = array_search($periode, ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']);
 
-                $chiffre = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where('paid', '1')->sum('total');
+                $chiffre = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where(['status_invoice'=>0])->where('paid', '1')->sum('total');
                 return $chiffre ? $chiffre : 'Néant';
             })
             ->addColumn('encaissements', function ($periode) {
                 $monthIndex = array_search($periode, ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']);
 
-                $resultat = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where('paid', '1')->sum('total');
+                $vente = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where(['status_invoice'=>0])->where('paid', '1')->sum('total');
+                $avoir = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where(['status_invoice'=>1])->where('paid', '1')->sum('total');
+                $resultat = $vente-$avoir;
                 return $resultat ? $resultat : 'Néant';
             })
             ->filter(function ($query) use ($request) {
@@ -357,6 +361,22 @@ class InvoiceController extends Controller
         $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'
         $totalToday = $this->invoices->whereDate('updated_at', $today)->where('paid', '=', 1)->sum('total');
         return view('invoices.business', compact('nowDay', 'totalMonth', 'totalLastMonth', 'totalToday'));
+    }
+
+    public function searchInvoice(Request $request)
+    {
+        $start = Carbon::createFromFormat('Y-m-d', $request->starting_date);
+        $end = Carbon::createFromFormat('Y-m-d', $request->ending_date);
+
+        $vente = $this->invoices->whereDate('updated_at','>=',$start)->whereDate('updated_at','<=',$end)->where(['status_invoice'=>0])->where('paid', '1')->sum('total');
+        $avoir = $this->invoices->whereDate('updated_at','>=',$start)->whereDate('updated_at','<=',$end)->where(['status_invoice'=>1])->where('paid', '1')->sum('total');
+        $total = $vente-$avoir;
+        $facture = $this->invoices->whereDate('updated_at','>=',$start)->whereDate('updated_at','<=',$end)->sum('total');
+
+
+        // $invoice = Invoice::where('paid',1)->where('updated_at','>=',$start)->where('updated_at','<=',$end)->get();
+        return response()->json(['ca'=>$vente,'avoir'=>$avoir,'facture'=>$facture,'encaissement'=>$total]);
+
     }
 
     function print($id)
