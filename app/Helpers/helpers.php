@@ -599,17 +599,20 @@ if (!function_exists('invoiceNormeTest')) {
                 'json' => [
                     'ifu' => $ifu,
                     'type' => "FV",
+                    // 'aib' => "B",
                     'items' => $items,
                     // 'items' => [
-                    //        [ "name"=>"Jus d'orange",
-                    //         "price"=>5000,
-                    //         "quantity"=>2,
-                    //         "taxGroup"=>"A"],
+                    //     //    [ "name"=>"Jus d'orange",
+                    //     //     "price"=>5000,
+                    //     //     "quantity"=>2,
+                    //     //     "taxGroup"=>"A"],
                     //         [ "name"=>"Jus de mangue",
                     //         "price"=>5000,
                     //         "quantity"=>3,
-                    //         "taxGroup"=>"B"]
+                    //         "taxGroup"=>"B",
+                    //         "taxSpecific" => 230]
                     // ],
+
                     "client" => [
                         // "ifu"=>"0202367807403",
                         "name" => $invoice->client_name,
@@ -625,7 +628,7 @@ if (!function_exists('invoiceNormeTest')) {
                         [
                             "name" => $invoice->payment,
                             "amount" => $invoice->total,
-                            // "amount" => 3800,
+                            // "amount" => 25000,
                             ]
                         ],
                 ]
