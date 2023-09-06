@@ -24,9 +24,9 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        if (!getOnlineUser()->can('view-articles')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('view-articles')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         
         $articles = $this->article->latest()->get();
 
@@ -54,9 +54,15 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        if (!getOnlineUser()->can('create-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
+        // if (!getOnlineUser()->can('create-articles')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+
+        if($request->quantity_in_stock < $request->minimum)
+        {
+            return back()->with('error', "Échec de l'enregistrement, la quantite en stock est inferieur a la quantite minimale ! ");
         }
+        
         $data = [
             'article_name' => $request->article_name,
             'description' => $request->description,
@@ -72,7 +78,7 @@ class ArticleController extends Controller
             return back()->with('success', " Opération effectuée avec succès  ! ");
 
         } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+            return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
 
@@ -95,14 +101,15 @@ class ArticleController extends Controller
      */
     public function edit($article)
     {
-         if (!getOnlineUser()->can('edit-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('edit-articles')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+
         $article = $this->article->find($article);
         try{
-            return view('articles.edit', compact('article'))->with('success', " Mise à jour effectuée avec succès  ! ");
+            return view('articles.edit', compact('article'));
         } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+            return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
 
@@ -113,35 +120,29 @@ class ArticleController extends Controller
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$article)
+    public function update(Request $request,Article $article)
     {
-        if (!getOnlineUser()->can('edit-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
+        // if (!getOnlineUser()->can('edit-articles')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+       
+        if($request->quantity_in_stock < $request->minimum)
+        {
+            return back()->with('error', "Échec de l'enregistrement, la quantite en stock est inferieur a la quantite minimale ! ");
         }
         
-        $data=[
-            'id' => $request->id,
-            'article_name' => $request->article_name,
-            'description' => $request->description,
-            'quantity_in_stock' => $request->quantity_in_stock,
-            'unit_of_measurement' => $request->unit_of_measurement,
-            'expiration_date' => $request->expiration_date,
-            'lot_number'=>$request->lot_number,
-            'minimum'=>$request->minimum,
-        ];
-
         try {
-            $article = $this->article->find($data['id']);
+                $article->update([
+                    'article_name' => $request->article_name,
+                    'description' => $request->description,
+                    'quantity_in_stock' => $request->quantity_in_stock,
+                    'unit_of_measurement' => $request->unit_of_measurement,
+                    'expiration_date' => $request->expiration_date,
+                    'lot_number' => $request->lot_number,
+                    'minimum' => $request->minimum,
+                ]);
 
-            $article->article_name = $data['article_name'];
-            $article->description = $data['description'];
-            $article->quantity_in_stock = $data['quantity_in_stock'];
-            $article->unit_of_measurement = $data['unit_of_measurement'];
-            $article->expiration_date = $data['expiration_date'];
-            $article->lot_number = $data['lot_number'];
-            $article->minimum = $data['minimum'];
-
-            $article->save();
+                $article->save();
             return back()->with('success', " Mise à jour effectuée avec succès  ! ");
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
@@ -156,9 +157,10 @@ class ArticleController extends Controller
      */
     public function delete($article)
     {
-        if (!getOnlineUser()->can('delete-articles')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('delete-articles')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+
         $article = $this->article->find($article)->delete();
 
         return back()->with('success', " Elément supprimé avec succès  ! ");

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateArticlesTable extends Migration
+class CreateMovementsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,14 @@ class CreateArticlesTable extends Migration
      */
     public function up()
     {
-        Schema::create('articles', function (Blueprint $table) {
+        Schema::create('movements', function (Blueprint $table) {
             $table->id();
-            $table->string('article_name');
+            $table->string('movement_type');
+            $table->date('date_mouvement');
+            $table->bigInteger('quantite_changed');
             $table->text('description');
-            $table->bigInteger('quantity_in_stock');
-            $table->text('unit_of_measurement');
-            $table->date('expiration_date');
-            $table->integer('lot_number');
-            $table->bigInteger('minimum');
+            $table->foreignId('article_id')->constrained('articles')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -34,6 +33,6 @@ class CreateArticlesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('articles');
+        Schema::dropIfExists('movements');
     }
 }

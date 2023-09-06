@@ -120,14 +120,7 @@
                     </li>
                     @endif
 
-                    @if (getOnlineUser()->can('view-contrats'))
-                    <li class="side-nav-item">
-                        <a href="{{ route('article.index') }}" class="side-nav-link">
-                            <i class="uil-pricetag-alt"></i>
-                            <span>Articles </span>
-                        </a>
-                    </li>
-                    @endif
+
 
                     @if (getOnlineUser()->can('view-contrats'))
                     <li class="side-nav-item">
@@ -335,6 +328,24 @@
                         </div>
                     </li> --}}
 
+                    {{-- @if (getOnlineUser()->can('view-contrats')) --}}
+                    <li class="side-nav-item">
+                        <a href="{{ route('article.index') }}" class="side-nav-link">
+                            <i class="uil-pricetag-alt"></i>
+                            <span>Articles </span>
+                        </a>
+                    </li>
+                    {{-- @endif --}}
+
+
+                    {{-- @if (getOnlineUser()->can('view-movement')) --}}
+                    <li class="side-nav-item">
+                        <a href="{{ route('movement.index') }}" class="side-nav-link">
+                            <i class="uil-arrow-break"></i>
+                            <span>Historique des stocks</span>
+                        </a>
+                    </li>
+                    {{-- @endif --}}
 
 
                     @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))

@@ -62,25 +62,32 @@
                         @foreach ($articles as $item)
                         <tr>
                             <td>{{ $item->article_name }}</td>
-                            <td>{{ $item->quantity_in_stock }}</td>
-                            <td>{{ $item->unit_of_measurement }}</td>
-                            <td>{{ $item->expiration_date }}</td>
-                            <td>{{ $item->lot_number }}</td>
-                            <td>
-                                <button type="button" data-bs-toggle="modal"
-                                    data-bs-target="#bs-example-modal-lg-show-{{ $item->id }}"
-                                    class="btn btn-primary"><i class="mdi mdi-eye"></i>
-                                </button>
-                                @include('articles.show',['item' => $item])
 
-                                <a class="btn btn-primary" href="{{ route('article.edit',$item->id)}}"><i
-                                        class="mdi mdi-lead-pencil"></i>
-                                </a>
+                            @if ($item->quantity_in_stock <= $item->minimum)
+                                <td style="background-color: red; color:red; font-weight :900;">{{
+                                    $item->quantity_in_stock }}</td>
+                                @else
+                                <td>{{ $item->quantity_in_stock }}</td>
+                                @endif
 
-                                <a class="btn btn-danger" href="{{ route('article.delete',$item->id) }}"><i
-                                        class="mdi mdi-trash-can-outline"></i>
-                                </a>
-                            </td>
+                                <td>{{ $item->unit_of_measurement }}</td>
+                                <td>{{ $item->expiration_date }}</td>
+                                <td>{{ $item->lot_number }}</td>
+                                <td>
+                                    <button type="button" data-bs-toggle="modal"
+                                        data-bs-target="#bs-example-modal-lg-show-{{ $item->id }}"
+                                        class="btn btn-primary"><i class="mdi mdi-eye"></i>
+                                    </button>
+                                    @include('articles.show',['item' => $item])
+
+                                    <a class="btn btn-primary" href="{{ route('article.edit',$item->id)}}"><i
+                                            class="mdi mdi-lead-pencil"></i>
+                                    </a>
+
+                                    <a class="btn btn-danger" href="{{ route('article.delete',$item->id) }}"><i
+                                            class="mdi mdi-trash-can-outline"></i>
+                                    </a>
+                                </td>
                         </tr>
                         @endforeach
                     </tbody>

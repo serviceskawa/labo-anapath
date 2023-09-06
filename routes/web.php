@@ -4,6 +4,7 @@ use App\Http\Controllers\AppelTestOderController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\MovementController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DoctorController;
@@ -37,6 +38,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TFAuthController;
 use App\Models\AppelTestOder;
 use App\Models\Article;
+use App\Models\Movement;
 use App\Models\ProblemCategory;
 use Laravel\SerializableClosure\Serializers\Signed;
 
@@ -390,12 +392,23 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Articles
-
+    // Route::prefix('articles')->group(function () {
         Route::get('articles', [ArticleController::class, 'index'])->name('article.index');
         Route::get('article-create', [ArticleController::class, 'create'])->name('article.create');
         Route::get('article-edit/{article}', [ArticleController::class, 'edit'])->name('article.edit');
         Route::put('article-update/{article}', [ArticleController::class, 'update'])->name('article.update');
         Route::post('article-store', [ArticleController::class, 'store'])->name('article.store');
         Route::get('article-delete/{article}', [ArticleController::class, 'delete'])->name('article.delete');
+    // });
 
+
+    // Movements
+    // Route::prefix('movements')->group(function () {
+        Route::get('movements', [MovementController::class, 'index'])->name('movement.index');
+        Route::get('movement-create', [MovementController::class, 'create'])->name('movement.create');
+        Route::get('movement-edit/{mouvement}', [MovementController::class, 'edit'])->name('movement.edit');
+        Route::put('movement-update/{mouvement}', [MovementController::class, 'update'])->name('movement.update');
+        Route::post('movement-store', [MovementController::class, 'store'])->name('movement.store');
+        Route::get('movement-delete/{mouvement}', [MovementController::class, 'delete'])->name('movement.delete');
+    // });
 });
