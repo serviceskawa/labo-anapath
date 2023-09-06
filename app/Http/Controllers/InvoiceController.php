@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cashbox;
+use App\Models\CashboxAdd;
 use App\Models\Consultation;
 use DataTables;
 use Illuminate\Support\Str;
@@ -12,6 +14,7 @@ use App\Models\SettingInvoice;
 use App\Models\TestOrder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables as FacadesDataTables;
 
@@ -457,18 +460,41 @@ class InvoiceController extends Controller
             if ($invoice->test_order_id) {
                 if ($settingInvoice->status == 1) {
                     $invoice->fill([
+                        "paid" => '1',
                         'payment' => $request->payment
                     ])->save();
+                    $cash = Cashbox::find(1);
+                    $cash->current_balance += $invoice->total;
+                    $cash->save();
+                    CashboxAdd::create([
+                        'cashbox_id' => 1,
+                        'date' => Carbon::now(),
+                        'amount' => $invoice->total,
+                        'invoice_id' => $invoice->id,
+                        'user_id' => Auth::user()->id
+                    ]);
                     if ($invoice->test_order_id != null) {
                         // return response()->json('cool');
+
                         return response()->json(invoiceNormeTest($invoice->test_order_id));
-                        return response()->json('Pas une demande d\'examen');
+                        // return response()->json('Pas une demande d\'examen');
                     }
                 } else {
                     $invoice->fill([
                         "paid" => '1',
                         "code_normalise"=>$request->code
                         ])->save();
+                    $cash = Cashbox::find(1);
+
+                    $cash->current_balance += $invoice->total;
+                    $cash->save();
+                    CashboxAdd::create([
+                        'cashbox_id' => 1,
+                        'date' => Carbon::now(),
+                        'amount' => $invoice->total,
+                        'invoice_id' => $invoice->id,
+                        'user_id' => Auth::user()->id
+                    ]);
                     return response()->json(['code'=> $request->code]);
                     // return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
                 }

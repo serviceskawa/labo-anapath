@@ -1,17 +1,4 @@
-
-$('.dropify').dropify();
-ClassicEditor
-    .create(document.querySelector('#editor'))
-    .catch(error => {
-        console.error(error);
-    });
-ClassicEditor
-    .create(document.querySelector('#editor2'))
-    .catch(error => {
-        console.error(error);
-    });
-
-    // SUPPRESSION
+// SUPPRESSION
 function deleteModal(id) {
 
     Swal.fire({
@@ -22,7 +9,7 @@ function deleteModal(id) {
         cancelButtonText: "Non !",
     }).then(function(result) {
         if (result.value) {
-            window.location.href = baseUrl + "/bank/delete/" + id;
+            window.location.href = baseUrl + "/fournisseur/delete/" + id;
             Swal.fire(
                 "Suppression !",
                 "En cours de traitement ...",
@@ -65,13 +52,16 @@ function edit(id) {
     // Populate Data in Edit Modal Form
     $.ajax({
         type: "GET",
-        url: baseUrl + "/bank/getBank/" + e_id,
+        url: baseUrl + "/fournisseur/get/" + e_id,
         success: function(data) {
 
-            $('#id2').val(data.id);
+            $('#id').val(data.id);
             $('#name2').val(data.name);
-            $('#account_number2').val(data.account_number);
-            $('#description2').val(data.description);
+            $('#supplier_category_id2').val(data.supplier_category_id).change();
+            $('#phone2').val(data.phone);
+            $('#address2').val(data.address);
+            $('#information2').val(data.information);
+            $('#email2').val(data.email);
 
             //
 

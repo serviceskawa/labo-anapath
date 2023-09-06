@@ -18,7 +18,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="simpleinput" class="form-label">Telephone</label>
+                        <label for="simpleinput" class="form-label">Téléphone</label>
                         <input type="tel" name="phone" class="form-control"
                             pattern="[0-9]{2}[0-9]{2}[0-9]{2}[0-9]{2}">
                         <small>Format: 97000000</small>

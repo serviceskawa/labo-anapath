@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SettingInvoiceRequest;
 use App\Http\Requests\TitleReportRequest;
+use App\Models\Bank;
 use App\Models\Setting;
 use App\Models\SettingInvoice;
 use App\Models\TitleReport;
@@ -14,13 +15,15 @@ class SettingController extends Controller
     protected $setting;
     protected $settingInvoice;
     protected $titleReport;
+    protected $banks;
 
-    public function __construct(Setting $setting, SettingInvoice $settingInvoice, TitleReport $titleReport)
+    public function __construct(Setting $setting, SettingInvoice $settingInvoice, TitleReport $titleReport, Bank $banks)
     {
         $this->middleware('auth');
          $this->setting = $setting;
          $this->settingInvoice = $settingInvoice;
          $this->titleReport = $titleReport;
+         $this->banks = $banks;
     }
 
     public function report_index()
@@ -182,9 +185,10 @@ class SettingController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $setting = $this->setting->find(1);
+        $banks = $this->banks->latest()->get();
         config(['app.name' => $setting->titre]);
         // dd($setting);
-        return view('settings.app.index' , compact('setting'));
+        return view('settings.app.index' , compact(['setting','banks']));
     }
 
     public function app_store(Request $request)

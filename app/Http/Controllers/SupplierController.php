@@ -28,9 +28,9 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        if (!getOnlineUser()->can('view-category-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('view-suppliers')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $suppliers = $this->suppliers->latest()->get();
         $categories = $this->categories->latest()->get();
         $setting = $this->setting->find(1);
@@ -39,15 +39,6 @@ class SupplierController extends Controller
         return view('suppliers.index',compact(['suppliers','categories']));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -57,7 +48,7 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!getOnlineUser()->can('create-doctors')) {
+        // if (!getOnlineUser()->can('create-suppliers')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
 
@@ -76,22 +67,11 @@ class SupplierController extends Controller
         // insérer les données dans la base de données
         try {
             Supplier::create($supplierData);
-            return back()->with('success', "Un médecin enregistré ! ");
+            return back()->with('success', "Un Fournisseur enregistré ! ");
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Supplier  $supplier
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Supplier $supplier)
-    {
-        //
     }
 
     /**
@@ -102,9 +82,9 @@ class SupplierController extends Controller
      */
     public function edit($id)
     {
-        if (!getOnlineUser()->can('edit-doctors')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('edit-suppliers')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $supplierData = $this->suppliers->find($id);
         return response()->json($supplierData);
     }
@@ -118,10 +98,10 @@ class SupplierController extends Controller
      */
     public function update(Request $request)
     {
-        // if (!getOnlineUser()->can('edit-doctors')) {
+        // if (!getOnlineUser()->can('edit-suppliers')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-        $doctorData=[
+        $supplierData=[
             'id' => $request->id,
             'name' => $request->name,
             'email' => $request->email,
@@ -135,16 +115,16 @@ class SupplierController extends Controller
 
         try {
 
-            $doctor = Supplier::find($doctorData['id']);
-            $doctor->name = $doctorData['name'];
-            $doctor->email = $doctorData['email'];
-            $doctor->phone = $doctorData['phone'];
-            $doctor->address = $doctorData['address'];
-            $doctor->information = $doctorData['information'];
-            $doctor->supplier_category_id = $doctorData['supplier_category_id'];
-            $doctor->save();
+            $supplier = Supplier::find($supplierData['id']);
+            $supplier->name = $supplierData['name'];
+            $supplier->email = $supplierData['email'];
+            $supplier->phone = $supplierData['phone'];
+            $supplier->address = $supplierData['address'];
+            $supplier->information = $supplierData['information'];
+            $supplier->supplier_category_id = $supplierData['supplier_category_id'];
+            $supplier->save();
 
-            return back()->with('success', "Les information d'un fournisseur a été mis à jour ! ");
+            return back()->with('success', "Les information d'un fournisseur ont été mis à jour ! ");
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
@@ -159,9 +139,9 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
-        if (!getOnlineUser()->can('delete-doctors')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('delete-suppliers')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $this->suppliers->find($id)->delete();
         return back()->with('success', "    Un élement a été supprimé ! ");
     }

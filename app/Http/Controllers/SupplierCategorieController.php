@@ -25,9 +25,9 @@ class SupplierCategorieController extends Controller
      */
     public function index()
     {
-        if (!getOnlineUser()->can('view-category-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('view-supplier-categories')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $supplierCategories = $this->categories->latest()->get();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
@@ -53,10 +53,9 @@ class SupplierCategorieController extends Controller
      */
     public function store(Request $request)
     {
-        if (!getOnlineUser()->can('create-category-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
-        // dd($request);
+        // if (!getOnlineUser()->can('create-supplier-categories')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $data= [
             'name' => $request->name,
             'description' => $request->description
@@ -90,9 +89,9 @@ class SupplierCategorieController extends Controller
      */
     public function edit($id)
     {
-        if (!getOnlineUser()->can('edit-category-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('edit-supplier-categories')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $data = $this->categories->find($id);
         return response()->json($data);
     }
@@ -106,9 +105,9 @@ class SupplierCategorieController extends Controller
      */
     public function update(Request $request)
     {
-        if (!getOnlineUser()->can('edit-category-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('edit-supplier-categories')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $data= [
             'id' => $request->id,
             'name' => $request->name,
@@ -136,9 +135,9 @@ class SupplierCategorieController extends Controller
      */
     public function destroy($id)
     {
-        if (!getOnlineUser()->can('delete-category-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('delete-supplier-categories')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $category = $this->categories->find($id)->delete();
 
         if ($category) {

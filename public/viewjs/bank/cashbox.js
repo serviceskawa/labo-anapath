@@ -1,20 +1,8 @@
 
-$('.dropify').dropify();
-ClassicEditor
-    .create(document.querySelector('#editor'))
-    .catch(error => {
-        console.error(error);
-    });
-ClassicEditor
-    .create(document.querySelector('#editor2'))
-    .catch(error => {
-        console.error(error);
-    });
+// SUPPRESSION
+function deleteModalVente(id) {
 
-    // SUPPRESSION
-function deleteModal(id) {
-
-    Swal.fire({
+Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
@@ -22,7 +10,7 @@ function deleteModal(id) {
         cancelButtonText: "Non !",
     }).then(function(result) {
         if (result.value) {
-            window.location.href = baseUrl + "/bank/delete/" + id;
+            window.location.href=baseUrl+"/cashbox/vente-delete/"+id;
             Swal.fire(
                 "Suppression !",
                 "En cours de traitement ...",
@@ -37,11 +25,12 @@ function deleteModal(id) {
 $(document).ready(function() {
 
     $('#datatable1').DataTable({
-        "order": [ ],
-        "columnDefs": [{
-            "targets": [0],
-            "searchable": true
-        }],
+        "order": [],
+        "columnDefs": [
+            {
+                "targets": [ 0 ],
+                "searchable": true
+            }],
         "language": {
             "lengthMenu": "Afficher _MENU_ enregistrements par page",
             "zeroRecords": "Aucun enregistrement disponible",
@@ -50,34 +39,41 @@ $(document).ready(function() {
             "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
             "sSearch": "Rechercher:",
             "paginate": {
-                "previous": "Précédent",
-                "next": "Suivant"
+            "previous": "Précédent",
+            "next": "Suivant"
             }
         },
     });
-});
+} );
 
 
 //EDITION
-function edit(id) {
+function editVente(id){
     var e_id = id;
+
 
     // Populate Data in Edit Modal Form
     $.ajax({
         type: "GET",
-        url: baseUrl + "/bank/getBank/" + e_id,
-        success: function(data) {
+        url: baseUrl+"/cashbox/getcashvente/" + e_id,
+        success: function (data) {
+            console.log(data);
 
-            $('#id2').val(data.id);
-            $('#name2').val(data.name);
-            $('#account_number2').val(data.account_number);
-            $('#description2').val(data.description);
+            $('#id2').val(data.data.id);
+            $('#bank_id2').val(data.data.bank_id);
+            $('#bank_name2').val(data.bank);
+            $('#invoice_id2').val(data.data.invoice_id);
+            $('#invoice_name2').val(data.invoice);
+            $('#cheque_number2').val(data.data.cheque_number);
+            $('#amount2').val(data.data.amount);
+            $('#date2').val(data.data.date);
+            $('#description2').val(data.data.description);
 
-            //
+            // $('#lignebudgetaire_id2').val(data.lignebudgetaire_id).change();
 
             $('#editModal').modal('show');
         },
-        error: function(data) {
+        error: function (data) {
             console.log('Error:', data);
         }
     });

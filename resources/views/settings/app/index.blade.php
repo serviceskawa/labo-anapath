@@ -54,7 +54,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="#input-types-code" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
-                            Api key
+                            Banque
                         </a>
                     </li>
                 </ul> <!-- end nav-->
@@ -168,32 +168,79 @@
                         <!-- end row-->
                     </div> <!-- end preview-->
 
+                    <div class="tab-pane" id="input-types-code">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right mr-3">
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#standard-modal">Ajouter une nouvelle banque</button>
+                                    </div>
+                                    <h4 class="page-title">Liste des banques</h4>
+                                </div>
 
-                    {{-- <div class="tab-pane" id="input-types-code">
-                        <div class="card-body">
-                            <form action="{{route('report.footer-update')}}" method="post">
-                                @csrf
-                                <div class="row mb-3">
-                                    <label for="" class="form-label">Pied de page</label>
-                                    <div class="col-lg-12">
-                                        <textarea name="footer" id="footer" class="form-control" cols="30" rows="5">{{ $setting->footer ? $setting->footer : '' }}</textarea>
+                                <!----MODAL---->
+
+                                @include('bank.create')
+
+                                @include('bank.edit')
+
+                            </div>
+                        </div>
+                        <div class="">
+
+                            <div class="card mb-md-0 mb-3">
+                                <div class="card-body">
+                                    <div class="card-widgets">
+                                        <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
+                                        <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false"
+                                            aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
+                                        <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                                    </div>
+                                    <h5 class="card-title mb-0">Liste des banques</h5>
+
+                                    <div id="cardCollpase1" class="collapse pt-3 show">
+
+
+                                        <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nom</th>
+                                                    <th>Numéro de compte</th>
+                                                    <th>Description</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+
+
+                                            <tbody>
+
+                                                @foreach ($banks as $item)
+                                                    <tr>
+                                                        <td>{{ $item->name }}</td>
+                                                        <td>{{ $item->account_number }}</td>
+                                                        <td>{{ $item->description}}</td>
+                                                        <td>
+                                                            <button type="button" onclick="edit({{$item->id}})" class="btn btn-primary">
+                                                                <i class="mdi mdi-lead-pencil"></i>
+                                                            </button>
+                                                            <button type="button" onclick="deleteModal({{$item->id}})" class="btn btn-danger">
+                                                                <i class="mdi mdi-trash-can-outline"></i>
+                                                            </button>
+                                                        </td>
+
+                                                    </tr>
+                                                @endforeach
+
+                                            </tbody>
+                                        </table>
+
                                     </div>
                                 </div>
-                                <div class="card-footer">
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-xs btn-success">Mettre à jour</button>
-                                    </div>
-                                </div> <!-- end card-body -->
-                            </form>
+                            </div> <!-- end card-->
+
+
                         </div>
-                    </div> --}}
-
-                    <div class="tab-pane" id="input-types-code">
-                        <pre class="mb-0">
-                                <span class="html escape">
-
-                                </span>
-                            </pre> <!-- end highlight-->
                     </div>
                 </div> <!-- end tab-content-->
             </div>
@@ -205,6 +252,10 @@
 
 
 @push('extra-js')
+
+<script>
+    var baseUrl = "{{ url('/') }}";
+</script>
 <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
