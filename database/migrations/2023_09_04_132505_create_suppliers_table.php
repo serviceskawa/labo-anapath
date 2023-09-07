@@ -20,10 +20,6 @@ class CreateSuppliersTable extends Migration
             $table->string('phone');
             $table->string('email');
             $table->text('information');
-            $table->foreignId('supplier_category_id')->nullable()
-                ->constrained('supplier_categories')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
             $table->timestamps();
         });
     }

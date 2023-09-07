@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Examens')
+@section('title', 'Fournisseurs')
 
 @section('content')
     <div class="row">
@@ -60,7 +60,7 @@
                                 <tr>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->email }}</td>
-                                    <td>{{ $item->categorie->name }}</td>
+                                    <td>{{ $item->categorie?$item->categorie->name:'' }}</td>
                                     <td>
                                         <button type="button" onclick="edit({{$item->id}})" class="btn btn-primary">
                                             <i class="mdi mdi-lead-pencil"></i>

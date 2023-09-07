@@ -142,7 +142,12 @@ class SupplierController extends Controller
         // if (!getOnlineUser()->can('delete-suppliers')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-        $this->suppliers->find($id)->delete();
-        return back()->with('success', "    Un élement a été supprimé ! ");
+
+        try {
+            $this->suppliers->find($id)->delete();
+            return back()->with('success', "    Un élement a été supprimé ! ");
+        } catch(\Throwable $ex){
+            return back()->with('error', "Impossible de supprimer cet élément !  Celui-ci est lié à d'autres éléments. Pour effectuer cette suppression, vous devez d'abord supprimer ou mettre à jour les éléments liés dans d'autres tables.");
+        }
     }
 }

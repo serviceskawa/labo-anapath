@@ -15,10 +15,6 @@ class CreateCashboxTicketDetailsTable extends Migration
     {
         Schema::create('cashbox_ticket_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cashbox_ticket_id')->nullable()
-                ->constrained('cashboxes')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
             $table->string('item_name')->nullable();
             $table->integer('item_id')->nullable();
             $table->integer('quantity')->nullable();

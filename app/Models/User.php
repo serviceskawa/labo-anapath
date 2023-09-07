@@ -51,6 +51,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function movements()
+    {
+        return $this->hasMany(Movement::class);
+    }
+
     /**
      * Set attribute $isconnect value
      */

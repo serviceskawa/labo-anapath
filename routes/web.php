@@ -4,6 +4,7 @@ use App\Http\Controllers\AppelTestOderController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\MovementController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DoctorController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\TestOrderController;
 use App\Http\Controllers\PrestationsOrderrController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrestationController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BankController;
@@ -38,6 +40,8 @@ use App\Http\Controllers\SupplierCategorieController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TFAuthController;
 use App\Models\AppelTestOder;
+use App\Models\Article;
+use App\Models\Movement;
 use App\Models\ProblemCategory;
 use Laravel\SerializableClosure\Serializers\Signed;
 
@@ -58,14 +62,14 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware(['tfauth','access','active']);
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware(['tfauth']);
 // Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->name('dashboard');
 
 Route::middleware(['web'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
-Route::middleware(['auth','access','active'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::get('/confirm-login', [TFAuthController::class, 'show'])->name('login.confirm');
     Route::post('/confirm-login', [TFAuthController::class, 'postAuth'])->name('login.postAuth');
@@ -327,6 +331,7 @@ Route::middleware(['auth','access','active'])->group(function () {
         Route::post('/search-invoice', [InvoiceController::class, 'searchInvoice'])->name('invoice.business.search');
         Route::get('/s', [InvoiceController::class, 'getInvoiceforDatatable'])->name('invoice.getTestOrdersforDatatable');
         Route::get('/index', [InvoiceController::class, 'getInvoiceIndexForDatable'])->name('invoice.getInvoiceIndexforDatatable');
+        Route::get('/checkCode', [InvoiceController::class, 'checkCode']);
         // Route::post('/filter', [InvoiceController::class, 'filter'])->name('invoice.filter');
         // Route::get('/testchiffres', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('invoice.getInvoiceforDatatable');
     });
@@ -407,10 +412,39 @@ Route::middleware(['auth','access','active'])->group(function () {
         Route::post('/depense',[CashboxController::class,'store'])->name('cashbox.depense.store');
         Route::get('tickets',[CashboxTicketController::class, 'index'])->name('cashbox.ticket.index');
         Route::post('tickets',[CashboxTicketController::class, 'store'])->name('cashbox.ticket.store');
+        Route::post('tickets-update',[CashboxTicketController::class, 'update'])->name('cashbox.ticket.update');
+        Route::get('/ticket-detail/{id}', [CashboxTicketController::class ,'detail_index'])->name('cashbox.ticket.details.index');
         Route::post('ticket-detail',[CashboxTicketController::class, 'detail_store'])->name('cashbox.ticket_detail.store');
         Route::get('/ticket-delete/{id}',[CashboxTicketController::class,'destroy']);
         Route::get('/ticket-detail-delete/{id}',[CashboxTicketController::class,'detail_destroy']);
         Route::post('/ticket-update-status',[CashboxTicketController::class, 'updateStatus'])->name('cashbox.ticket.updateStatus');
+        Route::get('/ticket-status-update',[CashboxTicketController::class, 'updateTicketStatus'])->name('cashbox.ticket.status.update');
+        Route::post('/ticket-update-total',[CashboxTicketController::class, 'updateTotal'])->name('cashbox.ticket.updateTotal');
+
+        Route::get('ticket/getdetail/{id}',[CashboxTicketController::class, 'getTicketDetail'])->name('cashbox.ticket.getTicketDetail');
     });
 
 });
+
+
+    // Articles
+    // Route::prefix('articles')->group(function () {
+        Route::get('articles', [ArticleController::class, 'index'])->name('article.index');
+        Route::get('article-create', [ArticleController::class, 'create'])->name('article.create');
+        Route::get('article-edit/{article}', [ArticleController::class, 'edit'])->name('article.edit');
+        Route::put('article-update/{article}', [ArticleController::class, 'update'])->name('article.update');
+        Route::post('article-store', [ArticleController::class, 'store'])->name('article.store');
+        Route::get('article-delete/{article}', [ArticleController::class, 'delete'])->name('article.delete');
+        Route::get('/getArticle',[ArticleController::class, 'getArticle']);
+    // });
+
+
+    // Movements
+    // Route::prefix('movements')->group(function () {
+        Route::get('movements', [MovementController::class, 'index'])->name('movement.index');
+        Route::get('movement-create', [MovementController::class, 'create'])->name('movement.create');
+        Route::get('movement-edit/{mouvement}', [MovementController::class, 'edit'])->name('movement.edit');
+        Route::put('movement-update/{mouvement}', [MovementController::class, 'update'])->name('movement.update');
+        Route::post('movement-store', [MovementController::class, 'store'])->name('movement.store');
+        Route::get('movement-delete/{mouvement}', [MovementController::class, 'delete'])->name('movement.delete');
+    // });

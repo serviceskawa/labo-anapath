@@ -243,7 +243,7 @@ class InvoiceController extends Controller
             ->addColumn('code', function ($data) {
 
                 // $inputCode = '<input type="text" name="code" id="code" class="form-control" style="margin-right: 20px;"/>';
-                return $data->codeMecef?$data->codeMecef:'';
+                return $data->codeMecef?$data->codeMecef:$data->code_normalise;
                 // return $inputCode;
 
 
@@ -482,7 +482,8 @@ class InvoiceController extends Controller
                 } else {
                     $invoice->fill([
                         "paid" => '1',
-                        "code_normalise"=>$request->code
+                        'payment' => $request->payment,
+                        "code_normalise" => $request->code
                         ])->save();
                     $cash = Cashbox::find(1);
 
@@ -503,6 +504,17 @@ class InvoiceController extends Controller
             }
 
         }
+    }
+
+    public function checkCode(Request $request)
+    {
+        $invoice = $this->invoices->where('code_normalise','=',$request->code)->orwhere('codeMecef','=',$request->code)->first();
+        if (!empty($invoice)) {
+            return response()->json(['code'=>1]);
+        } else {
+            return response()->json(['code'=>0]);
+        }
+
     }
 
     public function updatePayment(Request $request)

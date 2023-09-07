@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Fournisseur | categorie')
+@section('title', 'Caisse de dépense')
 
 @section('content')
 
@@ -44,7 +44,7 @@
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
 
-                    <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                    <table id="datatable1" class="table dt-responsive nowrap w-100">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -52,10 +52,10 @@
                                 <th>Montant</th>
                                 <th>Banque</th>
                                 <th>Numéro de chèque</th>
-                                <th>Facture concernée</th>
+                                {{-- <th>Facture concernée</th> --}}
                                 <th>Utilisateur</th>
-                                <th>Description</th>
-                                <th>Actions</th>
+                                {{-- <th>Description</th> --}}
+                                {{-- <th>Actions</th> --}}
 
                             </tr>
                         </thead>
@@ -65,19 +65,19 @@
                         <tbody>
 
                             @foreach ($cashadds as $key => $item)
-                                <tr>
+                                <tr class="{{ $item->bank ? '': 'table-danger' }}">
                                     <td>{{ $key++ }}</td>
                                     <td>{{ $item->date }}</td>
                                     <td>{{ $item->amount }}</td>
-                                    <td>{{ $item->bank->name }}</td>
+                                    <td>{{ $item->bank ? $item->bank->name :'' }}</td>
                                     <td>{{ $item->cheque_number }}</td>
-                                    <td>{{ $item->invoice ? ($item->invoice->order? $item->invoice->order->code:''):'' }}</td>
+                                    {{-- <td>{{ $item->invoice ? ($item->invoice->order? $item->invoice->order->code:''):'' }}</td> --}}
                                     <td>{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
-                                    <td>{{ $item->description }}</td>
-                                    <td>
+                                    {{-- <td>{{ $item->description }}</td> --}}
+                                    {{-- <td>
                                         <button type="button" onclick="editVente({{$item->id}})" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
                                         <button type="button" onclick="deleteModalVente({{$item->id}})" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
-                                    </td>
+                                    </td> --}}
 
                                 </tr>
                             @endforeach

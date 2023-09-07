@@ -105,7 +105,7 @@
                             <th>Total</th>
                             <th>Code normalisé</th>
                             {{-- <th>Contrat</th> --}}
-                            <th>Mode de paiement</th>
+                            <th>Type de paiement</th>
                             <th>Statut</th>
                             <th>Actions</th>
 

@@ -25,21 +25,15 @@
 
                     @csrf
                     <div class="row d-flex align-items-end">
-                        <div class="col-md-3 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Type de caisse<span
                                         style="color:red;">*</span></label>
-                                <select class="form-select select2" data-toggle="select2" id="" name="cashbox_id"
-                                    required>
-                                    <option value="">Sélectionne une caisse</option>
-                                    <option value="1">Caisse de vente</option>
-                                    <option value="2">Caisse de dépense</option>
-
-                                </select>
+                                <input type="text" value="Caisse de dépense" class="form-control" readonly>
                             </div>
                         </div>
 
-                        <div class="col-md-3 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Fournisseur<span
                                         style="color:red;">*</span></label>
@@ -56,15 +50,6 @@
                         </div>
 
                         <div class="col-md-3 col-12">
-                            <div class="mb-3">
-                                <label for="example-select" class="form-label">Description<span
-                                        style="color:red;">*</span></label>
-                                        <input type="text" class="form-control" name="description">
-                                {{-- <textarea class="form-control" name="description" id="" cols="30" rows="5"></textarea> --}}
-                            </div>
-                        </div>
-
-                        <div class="col-md-2 col-12">
                             <div class="mb-3">
                                 <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
                             </div>
@@ -87,20 +72,11 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                {{-- <th>Patient</th> --}}
-                                <th>Détails</th>
+                                <th>Code</th>
                                 <th>Montant</th>
                                 <th>Fournisseur</th>
                                 <th>Description</th>
                                 <th>Status</th>
-                                @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                    {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
-
-                                    @if ($role->name == "rootuser")
-                                        <th>Traité</th>
-                                        @break
-                                    @endif
-                                @endforeach
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -110,36 +86,8 @@
                             @foreach ($tickets as $key=>$ticket)
                                 <tr>
                                     <td>{{ ++$key }}</td>
-                                    <td>
+                                    <td>{{ $ticket->code ? $ticket->code : '' }}</td>
 
-                                        @if ($ticket->details)
-                                            <span style="display: none;">{{ $i = 0 }}</span>
-                                            @foreach ($ticket->details as $detail)
-                                                <div class="col-lg-12 mb-2">
-                                                    <span style="display: none;">{{ $i++ }}</span>
-                                                    <span>
-                                                        @if ($ticket->status =="en attente")
-                                                                <button type="button"
-                                                                    onclick="deleteTicketDetail({{ $detail->id }})"
-                                                                    title="Supprimer" style="border:none;"
-                                                                    class="btn-danger rounded-circle"><i
-                                                                        class="mdi mdi-minus"></i> </button>
-                                                        @endif
-                                                        <span class="m-2">{{ $detail->item_name }}</span>
-                                                    </span>
-                                                </div>
-                                            @endforeach
-                                        @endif
-                                        @if ($ticket->status =="en attente")
-                                               <div class="text-end">
-                                                <button type="button" class="btn btn-primary rounded-circle" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#standard-modal-{{$ticket->id}}"  style="border:none;"
-                                                    title="Prestation"><i class="mdi mdi-plus" style="font-size: 10px;"></i></button>
-                                                </div>
-                                                    @include('cashbox.ticket.edit',[
-                                                        'ticket' => $ticket,
-                                                        ])
-                                        @endif
-                                    </td>
                                     <td>
                                         {{ $ticket->amount? $ticket->amount : 0 }}
                                     </td>
@@ -158,31 +106,30 @@
                                         <span class="badge bg-danger">Refusée</span>
                                         @endif
                                     </td>
-                                    {{-- <td>
-                                        {{ $ticket->status }}
-                                    </td> --}}
-
-                                    @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                        @if ($role->name == "rootuser")
-                                            <td >
-                                                <select class="form-select " id="example-select" onchange="updateStatus({{$ticket->id}})">
-                                                    <option {{ $ticket->status == "en attente" ? 'selected':'' }} value="en attente">En attente</option>
-                                                    <option {{ $ticket->status == "approuve" ? 'selected':'' }}  value="approuve">Acceptée</option>
-                                                    <option {{ $ticket->status == "rejete" ? 'selected':'' }} value="rejete">Refusée</option>
-                                                </select>
-
-                                            </td>
-                                            @break
-                                        @endif
-                                    @endforeach
 
                                     <td>
+                                        <a type="button" href="{{ route('cashbox.ticket.details.index',$ticket->id) }}"
+                                            class="btn btn-primary"><i class="mdi mdi-eye"></i>
+                                        </a>
+
                                         @if ($ticket->status == "en attente")
+                                            @foreach (getRolesByUser(Auth::user()->id) as $role)
+                                                @if ($role->name == "rootuser")
+                                                    <a type="button" href="{{ route('cashbox.ticket.status.update',['id'=>$ticket->id,'status'=>"approuve"]) }}"
+                                                        class="btn btn-success"><i class="mdi mdi-lead-pencil"></i>
+                                                    </a>
+                                                    <a type="button" href="{{ route('cashbox.ticket.status.update',['id'=>$ticket->id,'status'=>"rejete"]) }}"
+                                                        class="btn btn-warning"><i class="mdi mdi-lead-pencil"></i>
+                                                    </a>
+                                                    @break
+                                                @endif
+                                            @endforeach
+
                                             <button type="submit" onclick="deleteTicket({{ $ticket->id }})"
                                                 class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i>
                                             </button>
-
                                         @endif
+
                                     </td>
                                 </tr>
                             @endforeach

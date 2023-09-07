@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Fournisseur | categorie')
+@section('title', 'Caisse de vente')
 
 @section('content')
 
@@ -48,12 +48,9 @@
                             <th>#</th>
                             <th>Date</th>
                             <th>Montant</th>
-                            <th>Banque</th>
-                            <th>Numéro de chèque</th>
-                            <th>Facture concernée</th>
+                            <th>Facture</th>
+                            <th>Type de payement</th>
                             <th>Utilisateur</th>
-                            <th>Description</th>
-                            <th>Actions</th>
 
                         </tr>
                     </thead>
@@ -67,16 +64,20 @@
                             <td>{{ $key++ }}</td>
                             <td>{{ $item->date }}</td>
                             <td>{{ $item->amount }}</td>
-                            <td>{{ $item->bank ? $item->bank->name:'' }}</td>
-                            <td>{{ $item->cheque_number }}</td>
-                            <td>{{ $item->invoice->order->code }}</td>
-                            <td>{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
-                            <td>{{ $item->description }}</td>
                             <td>
-                                <button type="button" onclick="editVente({{$item->id}})" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
-                                <button type="button" onclick="deleteModalVente({{$item->id}})" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
+                                {{ $item->invoice->order->code }} <br>
+                                <small class="text-muted">Du {{ date('d-m-y', strtotime($item->invoice->created_at)) }}</small>
                             </td>
 
+                            <td>
+                                {{ $item->invoice->payment == "MOBILEMONEY" ? 'MOBILE MONEY': ($item->invoice->payment == "CARTEBANCAIRE" ? "CARTE BANQUAIRE" :$item->invoice->payment)}}
+                            </td>
+
+                            <td>{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
+                            {{-- <td>
+                                <button type="button" onclick="editVente({{$item->id}})" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
+                                <button type="button" onclick="deleteModalVente({{$item->id}})" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
+                            </td> --}}
                         </tr>
                         @endforeach
 

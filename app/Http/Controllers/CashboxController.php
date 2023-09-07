@@ -94,7 +94,8 @@ class CashboxController extends Controller
                 'cheque_number' => $cashboxAddData['cheque_number'],
                 'date' => $cashboxAddData['date'],
                 'cashbox_id' => $cashboxAddData['cashbox_id'],
-                'description' => $cashboxAddData['description']
+                'description' => $cashboxAddData['description'],
+                'user_id' => $cashboxAddData['user_id']
             ]);
 
             $cash = $this->cash->find(2);
@@ -188,9 +189,13 @@ class CashboxController extends Controller
         // }
         $add = $this->cashadd->find($id);
         $cash = $this->cash->find($add->cashbox_id);
-        $cash->current_balance -= $add->amount;
-        $cash->save();
-        $this->cashadd->find($id)->delete();
-        return back()->with('success', "Un élement a été supprimé ! ");
+        try {
+            $this->cashadd->find($id)->delete();
+            $cash->current_balance -= $add->amount;
+            $cash->save();
+            return back()->with('success', "    Un élement a été supprimé ! ");
+        } catch(\Throwable $ex){
+            return back()->with('error', "Impossible de supprimer cet élément !  Celui-ci est lié à d'autres éléments. Pour effectuer cette suppression, vous devez d'abord supprimer ou mettre à jour les éléments liés dans d'autres tables.");
+        }
     }
 }
