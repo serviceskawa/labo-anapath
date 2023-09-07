@@ -19,4 +19,9 @@ class CashboxTicket extends Model
     {
         return $this->hasMany(CashboxTicketDetail::class,'cashbox_ticket_id');
     }
+
+    public function expensive()
+    {
+        return $this->hasMany(Expense::class);
+    }
 }

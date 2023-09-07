@@ -9,4 +9,8 @@ class Cashbox extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public function daily(){
+        return $this->hasMany(CashboxDaily::class);
+    }
 }

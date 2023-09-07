@@ -32,7 +32,7 @@
 
                     <div class="mb-3">
                         <label for="simpleinput" class="form-label">Montant</label>
-                        <input type="tel" name="amount" id="amount" class="form-control">
+                        <input type="number" name="amount" id="amount" class="form-control">
                     </div>
 
                     <div class="row">

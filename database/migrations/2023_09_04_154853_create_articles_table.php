@@ -17,11 +17,12 @@ class CreateArticlesTable extends Migration
             $table->id();
             $table->string('article_name');
             $table->text('description');
+            $table->bigInteger('prix')->default(0);
             $table->bigInteger('quantity_in_stock');
-            $table->text('unit_of_measurement');
-            $table->date('expiration_date');
-            $table->integer('lot_number');
-            $table->bigInteger('minimum');
+            $table->date('expiration_date')->nullable();
+            $table->integer('lot_number')->nullable();
+            $table->bigInteger('minimum')->default(1);
+            $table->foreignId('unit_measurement_id')->constrained('unit_Measurements')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });

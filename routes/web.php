@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AppelTestOderController;
+use App\Http\Controllers\ExpenseCategorieController;
+use App\Http\Controllers\CashboxDailyController;
+use App\Http\Controllers\ExpenseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
@@ -39,10 +42,14 @@ use App\Http\Controllers\SignalController;
 use App\Http\Controllers\SupplierCategorieController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TFAuthController;
+use App\Http\Controllers\UnitMeasurementController;
 use App\Models\AppelTestOder;
 use App\Models\Article;
+use App\Models\CashboxDaily;
+use App\Models\ExpenseCategorie;
 use App\Models\Movement;
 use App\Models\ProblemCategory;
+use App\Models\UnitMeasurement;
 use Laravel\SerializableClosure\Serializers\Signed;
 
 /*
@@ -428,7 +435,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('ticket/getdetail/{id}',[CashboxTicketController::class, 'getTicketDetail'])->name('cashbox.ticket.getTicketDetail');
     });
 
-});
+
 
 
     // Articles
@@ -452,3 +459,52 @@ Route::middleware(['auth'])->group(function () {
         Route::post('movement-store', [MovementController::class, 'store'])->name('movement.store');
         Route::get('movement-delete/{mouvement}', [MovementController::class, 'delete'])->name('movement.delete');
     // });
+
+
+
+
+    // UnitMeasurement
+    // Route::prefix('unit_measurements')->group(function () {
+        Route::get('unit_measurements', [UnitMeasurementController::class, 'index'])->name('unit.index');
+        Route::get('unit_measurement-create', [UnitMeasurementController::class, 'create'])->name('unit.create');
+        Route::get('unit_measurement-edit/{unitMeasurement}', [UnitMeasurementController::class, 'edit'])->name('unit.edit');
+        Route::put('unit_measurement-update/{unitMeasurement}', [UnitMeasurementController::class, 'update'])->name('unit.update');
+        Route::post('unit_measurement-store', [UnitMeasurementController::class, 'store'])->name('unit.store');
+        Route::get('unit_measurement-delete/{unitMeasurement}', [UnitMeasurementController::class, 'delete'])->name('unit.delete');
+    // });
+
+
+
+    // Expense Categorie
+    // Route::prefix('expense_categories')->group(function () {
+        Route::get('expense_categories', [ExpenseCategorieController::class, 'index'])->name('expense.index');
+        Route::get('expense_categorie-create', [ExpenseCategorieController::class, 'create'])->name('expense.create');
+        Route::get('expense_categorie-edit/{expenseCategorie}', [ExpenseCategorieController::class, 'edit'])->name('expense.edit');
+        Route::put('expense_categorie-update/{expenseCategorie}', [ExpenseCategorieController::class, 'update'])->name('expense.update');
+        Route::post('expense_categorie-store', [ExpenseCategorieController::class, 'store'])->name('expense.store');
+        Route::get('expense_categorie-delete/{expenseCategorie}', [ExpenseCategorieController::class, 'delete'])->name('expense.delete');
+    // });
+
+
+    // Expense Expense
+    // Route::prefix('expenses')->group(function () {
+        Route::get('expense', [ExpenseController::class, 'index'])->name('all_expense.index');
+        Route::get('expense-create', [ExpenseController::class, 'create'])->name('all_expense.create');
+        Route::get('expense-edit/{expense}', [ExpenseController::class, 'edit'])->name('all_expense.edit');
+        Route::put('expense-update/{expense}', [ExpenseController::class, 'update'])->name('all_expense.update');
+        Route::post('expense-store', [ExpenseController::class, 'store'])->name('all_expense.store');
+        Route::get('expense-delete/{expense}', [ExpenseController::class, 'delete'])->name('all_expense.delete');
+    // });
+
+
+
+     // Expense CashboxDaily
+    // Route::prefix('expenses')->group(function () {
+        Route::get('cashbox-daily', [CashboxDailyController::class, 'index'])->name('daily.index');
+        Route::get('cashbox-daily-create', [CashboxDailyController::class, 'create'])->name('daily.create');
+        Route::get('cashbox-daily-edit/{cashboxDaily}', [CashboxDailyController::class, 'edit'])->name('daily.edit');
+        Route::put('cashbox-daily-update/{cashboxDaily}', [CashboxDailyController::class, 'update'])->name('daily.update');
+        Route::post('cashbox-daily-store', [CashboxDailyController::class, 'store'])->name('daily.store');
+        Route::get('cashbox-daily-delete/{cashboxDaily}', [CashboxDailyController::class, 'delete'])->name('daily.delete');
+    // });
+});

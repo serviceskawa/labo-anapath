@@ -14,7 +14,6 @@ class RemoveCascadeConstraintFromCashboxTicketDetails extends Migration
     public function up()
     {
         Schema::table('cashbox_ticket_details', function (Blueprint $table) {
-            $table->dropForeign(['cashbox_ticket_id']);
             $table->foreignId('cashbox_ticket_id')->nullable()
                 ->constrained('cashbox_tickets')
                 ->onUpdate('cascade')

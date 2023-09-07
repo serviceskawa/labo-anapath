@@ -328,14 +328,75 @@
                         </div>
                     </li> --}}
 
-                    {{-- @if (getOnlineUser()->can('view-contrats')) --}}
+
+                    {{-- Articles --}}
+                    @if (getOnlineUser()->can('view-articles'))
                     <li class="side-nav-item">
-                        <a href="{{ route('article.index') }}" class="side-nav-link">
-                            <i class="uil-pricetag-alt"></i>
-                            <span>Articles </span>
+                        <a data-bs-toggle="collapse" href="#sidebarForms-articles" aria-expanded="false"
+                            aria-controls="sidebarForms" class="side-nav-link">
+                            <i class="uil-shop"></i>
+                            <span>Articles</span>
+                            <span class="menu-arrow"></span>
                         </a>
+                        <div class="collapse" id="sidebarForms-articles">
+                            <ul class="side-nav-second-level">
+                                {{-- @if (getOnlineUser()->can('view-contrats')) --}}
+                                <li class="side-nav-item">
+                                    <a href="{{ route('article.index') }}" class="side-nav-link">
+                                        <i class="uil-shopping-trolley"></i>
+                                        <span>Tous les articles</span>
+                                    </a>
+                                </li>
+                                {{-- @endif --}}
+
+                                {{-- @if (getOnlineUser()->can('view-unit_Measurements')) --}}
+                                <li class="side-nav-item">
+                                    <a href="{{ route('unit.index') }}" class="side-nav-link">
+                                        <i class="uil-dashboard"></i>
+                                        <span>Unité de mesure</span>
+                                    </a>
+                                </li>
+                                {{-- @endif --}}
+                            </ul>
+                        </div>
+                    </li>
+                    @endif
+
+
+
+                    {{-- Dépenses --}}
+                    {{-- @if (getOnlineUser()->can('view-depenses')) --}}
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarForms-expense" aria-expanded="false"
+                            aria-controls="sidebarForms" class="side-nav-link">
+                            <i class="uil-moneybag-alt"></i>
+                            <span>Dépenses</span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarForms-expense">
+                            <ul class="side-nav-second-level">
+                                {{-- @if (getOnlineUser()->can('view-contrats')) --}}
+                                <li class="side-nav-item">
+                                    <a href="{{ route('all_expense.index') }}" class="side-nav-link">
+                                        <i class="uil-money-stack"></i>
+                                        <span>Toutes les dépenses</span>
+                                    </a>
+                                </li>
+                                {{-- @endif --}}
+
+                                {{-- @if (getOnlineUser()->can('view-expense_categories')) --}}
+                                <li class="side-nav-item">
+                                    <a href="{{ route('expense.index') }}" class="side-nav-link">
+                                        <i class="uil-pricetag-alt"></i>
+                                        <span>Catégories</span>
+                                    </a>
+                                </li>
+                                {{-- @endif --}}
+                            </ul>
+                        </div>
                     </li>
                     {{-- @endif --}}
+
 
 
                     {{-- @if (getOnlineUser()->can('view-movement')) --}}
@@ -356,49 +417,53 @@
                     </li>
                     @endif
 
-                        <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" href="#sidebarEcommerce8" aria-expanded="false"
-                                aria-controls="sidebarEcommerce8" class="side-nav-link">
-                                <i class="uil-files-landscapes"></i>
-                                <span> Fournisseurs </span>
-                                <span class="menu-arrow"></span>
-                            </a>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarEcommerce8" aria-expanded="false"
+                            aria-controls="sidebarEcommerce8" class="side-nav-link">
+                            <i class="uil-files-landscapes"></i>
+                            <span> Fournisseurs </span>
+                            <span class="menu-arrow"></span>
+                        </a>
 
-                            <div class="collapse" id="sidebarEcommerce8">
-                                <ul class="side-nav-second-level">
-                                        <li>
-                                            <a href="{{ route('supplier.index') }}">Tous les fournisseurs</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('supplier.categories.index') }}">Catégories</a>
-                                        </li>
-                                </ul>
-                            </div>
-                        </li>
+                        <div class="collapse" id="sidebarEcommerce8">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href="{{ route('supplier.index') }}">Tous les fournisseurs</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('supplier.categories.index') }}">Catégories</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
 
-                        <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" href="#sidebarEcommerce9" aria-expanded="false"
-                                aria-controls="sidebarEcommerce9" class="side-nav-link">
-                                <i class="uil-files-landscapes"></i>
-                                <span> Caisse </span>
-                                <span class="menu-arrow"></span>
-                            </a>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarEcommerce9" aria-expanded="false"
+                            aria-controls="sidebarEcommerce9" class="side-nav-link">
+                            <i class="uil-files-landscapes"></i>
+                            <span> Caisse </span>
+                            <span class="menu-arrow"></span>
+                        </a>
 
-                            <div class="collapse" id="sidebarEcommerce9">
-                                <ul class="side-nav-second-level">
-                                        <li>
-                                            <a href="{{ route('cashbox.vente.index') }}">Caisse de vente</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('cashbox.depense.index') }}">Caisse de dépense</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('cashbox.ticket.index') }}">Bon de caisse</a>
-                                        </li>
+                        <div class="collapse" id="sidebarEcommerce9">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href="{{ route('cashbox.vente.index') }}">Caisse de vente</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('cashbox.depense.index') }}">Caisse de dépense</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('cashbox.ticket.index') }}">Bon de caisse</a>
+                                </li>
 
-                                </ul>
-                            </div>
-                        </li>
+                                <li>
+                                    <a href="{{ route('daily.index') }}">Ouverture et fermeture</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </li>
 
                     @if (getOnlineUser()->can('edit-users'))
                     <li class="side-nav-item">

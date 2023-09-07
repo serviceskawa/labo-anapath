@@ -63,14 +63,16 @@ class MovementController extends Controller
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
 
+        // dd($request->ma_variable);
+
         try {
                 $a = Article::find($request->article_id);
 
-                if ($request->movement_type == 'ajouter') {
+                if ($request->ma_variable == 'augmenter') {
                 $a->update([
                     'quantity_in_stock' => $request->quantite_changed + $a->quantity_in_stock,
                 ]);
-                }elseif($request->movement_type == 'diminuer')
+                }elseif($request->ma_variable == 'diminuer')
                     {
                         if($a->quantity_in_stock < $request->quantite_changed)
                         {
@@ -83,10 +85,10 @@ class MovementController extends Controller
                     }
 
                     Movement::create([
-                        'movement_type' => $request->movement_type,
+                        'movement_type' => $request->ma_variable,
                         'date_mouvement' => Carbon::now()->format('d/m/y'),
                         'quantite_changed' => $request->quantite_changed,
-                        'description' => $request->description,
+                        'description' => $request->description ? $request->description : '',
                         'article_id' => $request->article_id,
                         'user_id' => Auth::user()->id
                     ]);

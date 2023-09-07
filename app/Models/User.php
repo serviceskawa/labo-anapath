@@ -56,6 +56,11 @@ class User extends Authenticatable
         return $this->hasMany(Movement::class);
     }
 
+    public function expensive()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
     /**
      * Set attribute $isconnect value
      */

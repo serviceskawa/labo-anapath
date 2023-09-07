@@ -18,7 +18,7 @@
                             <select class="form-select" name="genre" id="bank_id2">
                                 <option value="">Sélectionner une banque</option>
                                 @foreach ( $banks as $bank )
-                                    <option value="{{$bank->id}}">{{ $bank->name }}</option>
+                                <option value="{{$bank->id}}">{{ $bank->name }}</option>
                                 @endforeach
 
                             </select>
@@ -33,9 +33,9 @@
 
                     <div class="mb-3">
                         <label for="simpleinput" class="form-label">Montant</label>
-                        <input type="tel" name="amount" id="amount2" class="form-control">
+                        <input type="number" name="amount" id="amount2" class="form-control">
                     </div>
-                    
+
                     <div class="row">
                         <div class="mb-3 col-lg-6">
                             <label for="example-date" class="form-label">Date</label>
