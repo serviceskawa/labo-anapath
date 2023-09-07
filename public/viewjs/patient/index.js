@@ -20,6 +20,96 @@ function deleteModal(id) {
 }
 
 
+// SUPPRESSION
+function deleteModalUnit(id) {
+
+    Swal.fire({
+        title: "Voulez-vous supprimer l'élément ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Oui ",
+        cancelButtonText: "Non !",
+    }).then(function(result) {
+        if (result.value) {
+            window.location.href = baseUrl + "/unit_measurement-delete/" + id;
+            Swal.fire(
+                "Suppression !",
+                "En cours de traitement ...",
+                "success"
+            )
+        }
+    });
+}
+
+
+
+// SUPPRESSION
+function deleteModalArticle(id) {
+
+    Swal.fire({
+        title: "Voulez-vous supprimer l'élément ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Oui ",
+        cancelButtonText: "Non !",
+    }).then(function(result) {
+        if (result.value) {
+            window.location.href = baseUrl + "/article-delete/" + id;
+            Swal.fire(
+                "Suppression !",
+                "En cours de traitement ...",
+                "success"
+            )
+        }
+    });
+}
+
+
+// SUPPRESSION
+function deleteModalExpense(id) {
+
+    Swal.fire({
+        title: "Voulez-vous supprimer l'élément ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Oui ",
+        cancelButtonText: "Non !",
+    }).then(function(result) {
+        if (result.value) {
+            window.location.href = baseUrl + "/expense_categorie-delete/" + id;
+            Swal.fire(
+                "Suppression !",
+                "En cours de traitement ...",
+                "success"
+            )
+        }
+    });
+}
+
+
+
+// SUPPRESSION
+function deleteModalEx(id) {
+
+    Swal.fire({
+        title: "Voulez-vous supprimer l'élément ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Oui ",
+        cancelButtonText: "Non !",
+    }).then(function(result) {
+        if (result.value) {
+            window.location.href = baseUrl + "/expense_categorie-delete/" + id;
+            Swal.fire(
+                "Suppression !",
+                "En cours de traitement ...",
+                "success"
+            )
+        }
+    });
+}
+
+
 /* DATATABLE */
 $(document).ready(function() {
 
@@ -54,7 +144,7 @@ function edit(id) {
     // Populate Data in Edit Modal Form
     $.ajax({
         type: "GET",
-        url: bases= baseUrl + "/getpatient/" + e_id,
+        url: bases = baseUrl + "/getpatient/" + e_id,
         success: function(data) {
             console.log(data);
             $('#id2').val(data.id);

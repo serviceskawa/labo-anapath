@@ -4,79 +4,49 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myLargeModalLabel">Les details sur l'article</h4>
+                <h4 class="modal-title" id="myLargeModalLabel">Détail</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body">
 
-                <div class="row">
-                    <div class="mb-3 col-lg-12">
-                        <label for="" style="font-weight: 900;">Nom de l'article</label>
-                        <div>
-                            {{ $item->article_name}}
-                        </div>
-                    </div>
+
+                {{-- Debut --}}
+                <div id="cardCollpase1" class="collapse pt-3 show">
+
+
+                    <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>Quantité</th>
+                                <th>Date</th>
+                                <th>Quantité</th>
+                                <th>Fait par</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach ($movs as $mov)
+                            @if($mov->article_id == $item->id)
+
+                            <tr>
+                                <td>{{ $mov->movement_type }}</td>
+                                <td>{{ $mov->quantite_changed }}</td>
+                                <td>{{ $mov->date_mouvement }}</td>
+                                <td>{{ $mov->quantite_changed }}</td>
+                                <td>{{ $mov->user->firstname }} {{ $mov->user->firstname }}</td>
+                                <td>{{ $mov->description }}</td>
+                            </tr>
+
+                            @endif
+                            @endforeach
+
+                        </tbody>
+                    </table>
                 </div>
-
-
-                <div class="row">
-                    <div class="mb-3 col-lg-12">
-                        <label for="" style="font-weight: 900;">Description</label>
-                        <div>
-                            {{ $item->description}}
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                    <div class="mb-3 col-lg-12">
-                        <label for="" style="font-weight: 900;">Quantite de en stock</label>
-                        <div>
-                            {{ $item->quantity_in_stock}}
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                    <div class="mb-3 col-lg-12">
-                        <label for="" style="font-weight: 900;">Unite de mesure</label>
-                        <div>
-                            {{ $item->unit_of_measurement}}
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                    <div class="mb-3 col-lg-12">
-                        <label for="" style="font-weight: 900;">Date d'expiration</label>
-                        <div>
-                            {{ $item->expiration_date}}
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                    <div class="mb-3 col-lg-12">
-                        <label for="" style="font-weight: 900;">Numero du lot</label>
-                        <div>
-                            {{ $item->lot_number}}
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                    <div class="mb-3 col-lg-12">
-                        <label for="" style="font-weight: 900;">Seuil minimum</label>
-                        <div>
-                            {{ $item->minimum}}
-                        </div>
-                    </div>
-                </div>
+                {{-- Fin --}}
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

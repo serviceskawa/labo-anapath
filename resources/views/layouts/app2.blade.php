@@ -328,14 +328,75 @@
                         </div>
                     </li> --}}
 
-                    {{-- @if (getOnlineUser()->can('view-contrats')) --}}
+
+                    {{-- Articles --}}
+                    @if (getOnlineUser()->can('view-articles'))
                     <li class="side-nav-item">
-                        <a href="{{ route('article.index') }}" class="side-nav-link">
-                            <i class="uil-pricetag-alt"></i>
-                            <span>Articles </span>
+                        <a data-bs-toggle="collapse" href="#sidebarForms-articles" aria-expanded="false"
+                            aria-controls="sidebarForms" class="side-nav-link">
+                            <i class="uil-shop"></i>
+                            <span>Articles</span>
+                            <span class="menu-arrow"></span>
                         </a>
+                        <div class="collapse" id="sidebarForms-articles">
+                            <ul class="side-nav-second-level">
+                                {{-- @if (getOnlineUser()->can('view-contrats')) --}}
+                                <li class="side-nav-item">
+                                    <a href="{{ route('article.index') }}" class="side-nav-link">
+                                        <i class="uil-shopping-trolley"></i>
+                                        <span>Tous les articles</span>
+                                    </a>
+                                </li>
+                                {{-- @endif --}}
+
+                                {{-- @if (getOnlineUser()->can('view-unit_Measurements')) --}}
+                                <li class="side-nav-item">
+                                    <a href="{{ route('unit.index') }}" class="side-nav-link">
+                                        <i class="uil-dashboard"></i>
+                                        <span>Unité de mesure</span>
+                                    </a>
+                                </li>
+                                {{-- @endif --}}
+                            </ul>
+                        </div>
+                    </li>
+                    @endif
+
+
+
+                    {{-- Dépenses --}}
+                    {{-- @if (getOnlineUser()->can('view-depenses')) --}}
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarForms-expense" aria-expanded="false"
+                            aria-controls="sidebarForms" class="side-nav-link">
+                            <i class="uil-moneybag-alt"></i>
+                            <span>Dépenses</span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarForms-expense">
+                            <ul class="side-nav-second-level">
+                                {{-- @if (getOnlineUser()->can('view-contrats')) --}}
+                                <li class="side-nav-item">
+                                    <a href="{{ route('all_expense.index') }}" class="side-nav-link">
+                                        <i class="uil-money-stack"></i>
+                                        <span>Toutes les dépenses</span>
+                                    </a>
+                                </li>
+                                {{-- @endif --}}
+
+                                {{-- @if (getOnlineUser()->can('view-expense_categories')) --}}
+                                <li class="side-nav-item">
+                                    <a href="{{ route('expense.index') }}" class="side-nav-link">
+                                        <i class="uil-pricetag-alt"></i>
+                                        <span>Catégories</span>
+                                    </a>
+                                </li>
+                                {{-- @endif --}}
+                            </ul>
+                        </div>
                     </li>
                     {{-- @endif --}}
+
 
 
                     {{-- @if (getOnlineUser()->can('view-movement')) --}}

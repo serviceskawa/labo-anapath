@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Movement;
 use App\Models\Setting;
+use App\Models\UnitMeasurement;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
@@ -29,11 +31,12 @@ class ArticleController extends Controller
         // }
         
         $articles = $this->article->latest()->get();
-
+        $units = UnitMeasurement::latest()->get();
+        $movs = Movement::latest()->get();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
-        return view('articles.index',compact(['articles']));
+        return view('articles.index',compact(['articles','units','movs']));
     }
 
     /**
@@ -67,14 +70,25 @@ class ArticleController extends Controller
             'article_name' => $request->article_name,
             'description' => $request->description,
             'quantity_in_stock' => $request->quantity_in_stock,
-            'unit_of_measurement' => $request->unit_of_measurement,
+            'unit_measurement_id' => $request->unit_measurement_id,
             'expiration_date' => $request->expiration_date,
             'lot_number'=>$request->lot_number,
             'minimum'=>$request->minimum,
+            'prix'=>$request->prix,
         ];
-
+     
         try {
-            $this->article->create($data);
+                Article::create([
+                    'article_name' => $request->article_name,
+                    'description' => $request->description,
+                    'quantity_in_stock' => $request->quantity_in_stock,
+                    'unit_measurement_id' => $request->unit_measurement_id,
+                    'expiration_date' => $request->expiration_date,
+                    'lot_number'=>$request->lot_number,
+                    'minimum'=>$request->minimum,
+                    'prix'=>$request->prix,
+                ]);
+                
             return back()->with('success', " Opération effectuée avec succès  ! ");
 
         } catch(\Throwable $ex){
@@ -136,10 +150,11 @@ class ArticleController extends Controller
                     'article_name' => $request->article_name,
                     'description' => $request->description,
                     'quantity_in_stock' => $request->quantity_in_stock,
-                    'unit_of_measurement' => $request->unit_of_measurement,
+                    'unit_measurement_id' => $request->unit_measurement_id,
                     'expiration_date' => $request->expiration_date,
                     'lot_number' => $request->lot_number,
                     'minimum' => $request->minimum,
+                    'prix'=>$request->prix,
                 ]);
 
                 $article->save();
