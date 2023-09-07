@@ -43,7 +43,6 @@ class TestController extends Controller
         config(['app.name' => $setting->titre]);
 
         return view('tests.index',compact(['tests','categories']));
-
     }
 
     /**

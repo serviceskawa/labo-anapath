@@ -32,6 +32,7 @@
 
         {{-- @include('examens.details.create') --}}
 
+        {{-- Bloc pour modifier les demandes d'examan --}}
         <div class="card my-3">
             @if ($test_order->status == 1)
                 <a href="{{ route('report.show', empty($test_order->report->id) ? '' : $test_order->report->id) }}"
@@ -436,7 +437,6 @@
 
 
 
-
         {{-- Debut du code pour la GALLERIE --}}
         <div class="card my-3">
             <div class="card mb-md-0 mb-3">
@@ -461,42 +461,41 @@
 
                     </form>
 
+                    @if(isset($test_order->files_name))
+                    <div class="col-md-6 mt-2">
+                        <div class="mb-3">
+                            <div>
+                                <?php $filenames = json_decode($test_order->files_name); ?>
+                                @forelse ($filenames as $index => $filename)
+                                    <div class="row">
+                                        <div class="col">
+                                            Image{{ $loop->iteration }}&nbsp;
+                                            <a href="{{ asset('storage/' . $filename) }}" download>
+                                                <u style="font-size: 15px;">Voir</u>
+                                            </a>
+                                            {{-- <img src="{{ asset('storage/examen_images' . $filename) }}" width="50"/> --}}
 
-                        @if ($test_order->files_name)
-                            <div class="col-md-6 mt-2">
-                                <div class="mb-3">
-                                    {{-- <h4>Images</h4> --}}
-                                    <label for="form" class="form-label">Gallerie</label>
-                                        <div>
-                                            <?php $filenames = json_decode($test_order->files_name); ?>
-                                            @foreach ($filenames as $index => $filename)
-                                            <div class="row">
-                                                <div class="col">
-                                                    Image{{ $loop->iteration }}&nbsp;
-                                                    <a href="{{ asset('storage/' . $filename) }}" download>
-                                                        <button class="btn btn-sm btn-link simple-link-button"><u style="font-size: 15px;">Voir</u></button>
-                                                    </a>
-                                                    <form class="d-inline-block" id="delete-form" action="{{ route('test_order.deleteimagegallerie',['index' => $index, 'test_order' => $test_order->id]) }}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="simple-button" type="submit" data-confirm="Êtes-vous sûr de vouloir supprimer cette image?" class="btn btn-sm btn-danger"><u>Supprimer</u></button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                            @endforeach
+                                            <form class="d-inline-block delete-form" action="{{ route('test_order.deleteimagegallerie',['index' => $index, 'test_order' => $test_order->id]) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="simple-button" type="submit" data-confirm="Êtes-vous sûr de vouloir supprimer cette image?" class="btn btn-sm btn-danger"><u>Supprimer</u></button>
+                                            </form>
                                         </div>
                                     </div>
-                                </div>
-                            @else
-
-                            @endif
+                                @empty
+                                    <!-- Aucun fichier trouvé -->
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+                @endif
                 </div>
             </div>
         </div>
+        {{-- Fin du bloc qui permet d'afficher la zone d'insertion des images de la galerie --}}
 
 
-
-
+        {{-- Debut du bloc pour faire les l'ajout des demandes  --}}
         <div class="card mb-md-0 mb-3">
             <div class="card-header">
                 Liste des examens demandés
@@ -579,7 +578,6 @@
                                         <option data-category_test_id="{{ $test->category_test_id }}"
                                             value="{{ $test->id }}">{{ $test->name }}</option>
                                     @endforeach
-
                                 </select>
                             </div>
                         </div>
@@ -613,7 +611,6 @@
                             </div>
                         </div>
                     </div>
-
                 </form>
                 @endif
 
@@ -795,6 +792,7 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal --> --}}
+
         <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel"
             aria-hidden="true">
             <div class="modal-dialog" style="max-width: 100%; padding-left: 300px; margin-left:50px;">
@@ -977,4 +975,33 @@
     </script>
     <script src="{{ asset('viewjs/test/order/detail.js') }}"></script>
     <!-- Inclure les fichiers JavaScript de Dropzone.js via CDN -->
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const deleteButtons = document.querySelectorAll("[data-confirm]");
+            deleteButtons.forEach(button => {
+                button.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    const confirmMessage = this.getAttribute("data-confirm");
+                    Swal.fire({
+                        title: 'Confirmation',
+                        text: confirmMessage,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Oui, supprimer!',
+                        cancelButtonText: 'Annuler' // Ici, nous changeons le texte du bouton "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.closest("form").submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 @endpush

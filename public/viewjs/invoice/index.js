@@ -1,3 +1,10 @@
+
+function afficherDetails(testOrderId) {
+    // Code pour afficher les détails en utilisant le testOrderId
+    console.log("Affichage des détails pour le testOrderId : " + testOrderId);
+    // Vous pouvez insérer ici le code pour afficher le modal ou effectuer toute autre action
+}
+
 /* DATATABLE */
 $(document).ready(function() {
     var table = $('#datatable1').DataTable({
@@ -39,10 +46,6 @@ $(document).ready(function() {
                 name: 'created_at'
             },
              {
-                data: 'code',
-                name: 'code',
-            },
-             {
                 data: 'demande',
                 name: 'demande',
             },
@@ -54,10 +57,16 @@ $(document).ready(function() {
                 data: 'total',
                 name: 'total'
             },
+
             {
-                data: 'remise',
-                name: 'remise'
+                data: 'code',
+                name: 'code',
             },
+
+            // {
+            //     data: 'remise',
+            //     name: 'remise'
+            // },
 
             {
                 data: 'type',
@@ -105,4 +114,5 @@ $(document).ready(function() {
         table.draw();
         //console.log(search.value);
     });
+
 });

@@ -4,6 +4,7 @@ use App\Http\Controllers\AppelTestOderController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\MovementController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DoctorController;
@@ -18,8 +19,12 @@ use App\Http\Controllers\TestOrderController;
 use App\Http\Controllers\PrestationsOrderrController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrestationController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BankController;
+use App\Http\Controllers\CashboxController;
+use App\Http\Controllers\CashboxTicketController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\TestCategoryController;
 use App\Http\Controllers\DetailsContratController;
@@ -31,8 +36,12 @@ use App\Http\Controllers\ProblemeReportersController;
 use App\Http\Controllers\RefundRequestController;
 use App\Http\Controllers\SettingReportTemplateController;
 use App\Http\Controllers\SignalController;
+use App\Http\Controllers\SupplierCategorieController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TFAuthController;
 use App\Models\AppelTestOder;
+use App\Models\Article;
+use App\Models\Movement;
 use App\Models\ProblemCategory;
 use Laravel\SerializableClosure\Serializers\Signed;
 
@@ -53,14 +62,14 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware(['tfauth','access','active']);
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware(['tfauth']);
 // Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->name('dashboard');
 
 Route::middleware(['web'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
-Route::middleware(['auth','access','active'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::get('/confirm-login', [TFAuthController::class, 'show'])->name('login.confirm');
     Route::post('/confirm-login', [TFAuthController::class, 'postAuth'])->name('login.postAuth');
@@ -70,6 +79,22 @@ Route::middleware(['auth','access','active'])->group(function () {
     Route::get('/categorytest/delete/{id}', [TestCategoryController::class, 'destroy']);
     Route::get('/getcategorytest/{id}', [TestCategoryController::class, 'edit']);
     Route::post('/examens/categories/update', [TestCategoryController::class, 'update'])->name('examens.categories.update');
+    //Fournisseur
+
+    Route::prefix('fournisseur')->group(function() {
+        Route::get('/',[SupplierController::class,'index'])->name('supplier.index');
+        Route::post('/',[SupplierController::class,'store'])->name('supplier.store');
+        Route::get('/delete/{id}', [SupplierController::class, 'destroy']);
+        Route::get('/get/{id}', [SupplierController::class, 'edit']);
+        Route::post('/update', [SupplierController::class, 'update'])->name('supplier.update');
+
+        Route::get('/categories', [SupplierCategorieController::class, 'index'])->name('supplier.categories.index');
+        Route::post('/categories', [SupplierCategorieController::class, 'store'])->name('supplier.categories.store');
+        Route::get('/category/delete/{id}', [SupplierCategorieController::class, 'destroy']);
+        Route::get('/getcategory/{id}', [SupplierCategorieController::class, 'edit']);
+        Route::post('/categories/update', [SupplierCategorieController::class, 'update'])->name('supplier.categories.update');
+    });
+
 
     //EXAMEN
     Route::get('/examens/index', [TestController::class, 'index'])->name('examens.index');
@@ -149,6 +174,11 @@ Route::middleware(['auth','access','active'])->group(function () {
 
     Route::get('/signal',[SignalController::class, 'index'])->name('signals.index');
     Route::post('/store-signal',[SignalController::class, 'store'])->name('signal.store');
+
+    // Cette la route associer aux fichiers pour la suppression des images
+    Route::delete('/testOrders/delete/image-gallerie/{index}/{test_order}', [TestOrderController::class, 'deleteimagegallerie'])->name('test_order.deleteimagegallerie');
+    // Cette la route associer aux fichiers creation
+    Route::put('/testOrders/create/image-gallerie/{test_order}', [TestOrderController::class, 'createimagegallerie'])->name('test_order.createimagegallerie');
 
 
 
@@ -302,8 +332,10 @@ Route::middleware(['auth','access','active'])->group(function () {
         Route::get('/setting', [SettingController::class, 'invoice_index'])->name('invoice.setting.index');
         Route::post('/setting-Update', [SettingController::class, 'invoice_update'])->name('invoice.setting.update');
         Route::get('/business', [InvoiceController::class, 'business'])->name('invoice.business');
+        Route::post('/search-invoice', [InvoiceController::class, 'searchInvoice'])->name('invoice.business.search');
         Route::get('/s', [InvoiceController::class, 'getInvoiceforDatatable'])->name('invoice.getTestOrdersforDatatable');
         Route::get('/index', [InvoiceController::class, 'getInvoiceIndexForDatable'])->name('invoice.getInvoiceIndexforDatatable');
+        Route::get('/checkCode', [InvoiceController::class, 'checkCode']);
         // Route::post('/filter', [InvoiceController::class, 'filter'])->name('invoice.filter');
         // Route::get('/testchiffres', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('invoice.getInvoiceforDatatable');
     });
@@ -353,6 +385,7 @@ Route::middleware(['auth','access','active'])->group(function () {
         Route::get('edit/{id}', [CategoryPrestationController::class, 'edit'])->name('categoryPrestation.edit');
         Route::get('delete/{id}', [CategoryPrestationController::class, 'destroy'])->name('categoryPrestation.delete');
     });
+
     Route::prefix('prestations')->group(function () {
         Route::get('', [PrestationController::class, 'index'])->name('prestation.index');
         Route::get('create', [PrestationController::class, 'create'])->name('prestation.create');
@@ -364,4 +397,58 @@ Route::middleware(['auth','access','active'])->group(function () {
 
         Route::get('show_by_id/{id}', [PrestationController::class, 'show_by_id'])->name('prestation.showById');
     });
+
+    //Banque et caisse
+    Route::prefix('bank')->group(function() {
+        Route::get('/', [BankController::class ,'index'])->name('bank.index');
+        Route::post('/',[BankController::class,'store'])->name('bank.store');
+        Route::get('/getBank/{id}',[BankController::class,'edit']);
+        Route::post('/update',[BankController::class, 'update'])->name('bank.update');
+        Route::get('/delete/{id}',[BankController::class,'destroy']);
+    });
+
+    Route::prefix('cashbox')->group(function() {
+        Route::get('/vente', [CashboxController::class ,'index'])->name('cashbox.vente.index');
+        Route::get('/depense', [CashboxController::class ,'index_depense'])->name('cashbox.depense.index');
+        Route::get('/getcashvente/{id}',[CashboxController::class,'edit']);
+        Route::post('/vente-update',[CashboxController::class, 'update'])->name('cashbox.vente.update');
+        Route::get('/vente-delete/{id}',[CashboxController::class,'destroy']);
+        Route::post('/depense',[CashboxController::class,'store'])->name('cashbox.depense.store');
+        Route::get('tickets',[CashboxTicketController::class, 'index'])->name('cashbox.ticket.index');
+        Route::post('tickets',[CashboxTicketController::class, 'store'])->name('cashbox.ticket.store');
+        Route::post('tickets-update',[CashboxTicketController::class, 'update'])->name('cashbox.ticket.update');
+        Route::get('/ticket-detail/{id}', [CashboxTicketController::class ,'detail_index'])->name('cashbox.ticket.details.index');
+        Route::post('ticket-detail',[CashboxTicketController::class, 'detail_store'])->name('cashbox.ticket_detail.store');
+        Route::get('/ticket-delete/{id}',[CashboxTicketController::class,'destroy']);
+        Route::get('/ticket-detail-delete/{id}',[CashboxTicketController::class,'detail_destroy']);
+        Route::post('/ticket-update-status',[CashboxTicketController::class, 'updateStatus'])->name('cashbox.ticket.updateStatus');
+        Route::get('/ticket-status-update',[CashboxTicketController::class, 'updateTicketStatus'])->name('cashbox.ticket.status.update');
+        Route::post('/ticket-update-total',[CashboxTicketController::class, 'updateTotal'])->name('cashbox.ticket.updateTotal');
+
+        Route::get('ticket/getdetail/{id}',[CashboxTicketController::class, 'getTicketDetail'])->name('cashbox.ticket.getTicketDetail');
+    });
+
 });
+
+
+    // Articles
+    // Route::prefix('articles')->group(function () {
+        Route::get('articles', [ArticleController::class, 'index'])->name('article.index');
+        Route::get('article-create', [ArticleController::class, 'create'])->name('article.create');
+        Route::get('article-edit/{article}', [ArticleController::class, 'edit'])->name('article.edit');
+        Route::put('article-update/{article}', [ArticleController::class, 'update'])->name('article.update');
+        Route::post('article-store', [ArticleController::class, 'store'])->name('article.store');
+        Route::get('article-delete/{article}', [ArticleController::class, 'delete'])->name('article.delete');
+        Route::get('/getArticle',[ArticleController::class, 'getArticle']);
+    // });
+
+
+    // Movements
+    // Route::prefix('movements')->group(function () {
+        Route::get('movements', [MovementController::class, 'index'])->name('movement.index');
+        Route::get('movement-create', [MovementController::class, 'create'])->name('movement.create');
+        Route::get('movement-edit/{mouvement}', [MovementController::class, 'edit'])->name('movement.edit');
+        Route::put('movement-update/{mouvement}', [MovementController::class, 'update'])->name('movement.update');
+        Route::post('movement-store', [MovementController::class, 'store'])->name('movement.store');
+        Route::get('movement-delete/{mouvement}', [MovementController::class, 'delete'])->name('movement.delete');
+    // });

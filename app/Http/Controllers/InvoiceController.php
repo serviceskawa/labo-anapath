@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cashbox;
+use App\Models\CashboxAdd;
 use App\Models\Consultation;
 use DataTables;
 use Illuminate\Support\Str;
@@ -12,6 +14,7 @@ use App\Models\SettingInvoice;
 use App\Models\TestOrder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables as FacadesDataTables;
 
@@ -40,8 +43,11 @@ class InvoiceController extends Controller
     {
         $invoices = $this->invoices->latest()->get();
         $setting = $this->setting->find(1);
+        $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'
+        $annuletotalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->where(['status_invoice'=>1])->sum('total');
+        $totalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->where(['status_invoice'=>0])->sum('total') - $annuletotalToday;
         config(['app.name' => $setting->titre]);
-        return view('invoices.index', compact('invoices'));
+        return view('invoices.index', compact('invoices','totalToday'));
     }
 
     /**
@@ -165,19 +171,23 @@ class InvoiceController extends Controller
                 // return $this->invoices->whereMonth('updated_at', )->sum('total');
             })
             ->addColumn('avoirs', function ($periode) {
-                return '';
+                $monthIndex = array_search($periode, ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']);
+
+                return $chiffre = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where('paid', '1')->where(['status_invoice'=>1])->sum('total');
             })
             ->addColumn('chiffres', function ($periode) {
 
                 $monthIndex = array_search($periode, ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']);
 
-                $chiffre = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where('paid', '1')->sum('total');
+                $chiffre = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where(['status_invoice'=>0])->where('paid', '1')->sum('total');
                 return $chiffre ? $chiffre : 'Néant';
             })
             ->addColumn('encaissements', function ($periode) {
                 $monthIndex = array_search($periode, ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']);
 
-                $resultat = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where('paid', '1')->sum('total');
+                $vente = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where(['status_invoice'=>0])->where('paid', '1')->sum('total');
+                $avoir = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where(['status_invoice'=>1])->where('paid', '1')->sum('total');
+                $resultat = $vente-$avoir;
                 return $resultat ? $resultat : 'Néant';
             })
             ->filter(function ($query) use ($request) {
@@ -210,11 +220,6 @@ class InvoiceController extends Controller
             //     }
             // })
 
-            ->addColumn('code', function ($data) {
-
-                return $data->code;
-            })
-
             ->addColumn('demande', function ($data) {
 
                 return $data->test_order_id ? getTestOrderData($data->test_order_id)->code :'';
@@ -227,13 +232,47 @@ class InvoiceController extends Controller
             ->addColumn('total', function ($data) {
                 return $data->total;
             })
-            ->addColumn('remise', function ($data) {
-                return $data->discount?$data->discount:'0,0';
+            // ->addColumn('remise', function ($data) {
+            //     return $data->discount?$data->discount:'0,0';
+            // })
+
+            // ->addColumn('type', function ($data) {
+            //     $badge  =$data->status_invoice == 1 ? "Avoir" : "Vente";
+            //     return $badge;
+            // })
+            ->addColumn('code', function ($data) {
+
+                // $inputCode = '<input type="text" name="code" id="code" class="form-control" style="margin-right: 20px;"/>';
+                return $data->codeMecef?$data->codeMecef:$data->code_normalise;
+                // return $inputCode;
+
+
             })
 
             ->addColumn('type', function ($data) {
-                $badge  =$data->status_invoice == 1 ? "Avoir" : "Vente";
-                return $badge;
+                $selector = '
+                    <div class="mb-3">
+                        <select class="form-select select2" data-toggle="select2" name="payment" value="'.$data->payment.'" id="payment" required>
+                            <option '.$data->payment.' == '.'ESPECES'.' ? '.'selected'.' : '.''.'
+                                value="ESPECES">ESPECES</option>
+                            <option '.$data->payment.' == '.'CHEQUES'.' ? '.'selected'.' : '.''.'
+                                value="CHEQUES">CHEQUES</option>
+                            <option '.$data->payment.' == '.'MOBILEMONEY'.' ? '.'selected'.' : '.''.'
+                                value="MOBILEMONEY">MOBILE MONEY</option>
+                            <option '.$data->payment.' == '.'CARTEBANCAIRE'.' ? '.'selected'.' : '.''.'
+                                value="CARTEBANCAIRE">CARTE BANQUAIRE</option>
+                            <option '.$data->payment.' == '.'VIREMENT'.' ? '.'selected'.' : '.''.'
+                                value="VIREMENT">VIREMENT</option>
+                            <option '.$data->payment.' == '.'CREDIT'.' ? '.'selected'.' : '.''.'
+                                value="CREDIT">CREDIT</option>
+                            <option '.$data->payment.' == '.'AUTRE'.' ? '.'selected'.' : '.''.'
+                            value="AUTRE">AUTRE</option>
+                        </select>
+                    </div>
+                ';
+
+                // return $selector;
+                return  $data->payment;
             })
             ->addColumn('status', function ($data) {
 
@@ -252,10 +291,15 @@ class InvoiceController extends Controller
 
             ->addColumn('action', function ($data) {
                 if (getTestOrderData($data->test_order_id)) {
-                    $btnVoir = '<a type="button" href="' . route('details_test_order.index', getTestOrderData($data->test_order_id)->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+                    // $btnVoir = '<a type="button" href="' . route('details_test_order.index', getTestOrderData($data->test_order_id)->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+                    // $btnVoir = '<button type="button"  class="btn btn-primary invoice-btn" title="Voir les détails" data-test-order-id="' . $data->id . '"><i class="mdi mdi-eye"></i></button>';
+                    // $btnVoir = '<button type="button"  class="btn btn-primary" title="Voir les détails" onclick="alert('.getTestOrderData($data->test_order_id)->id .')"><i class="mdi mdi-eye"></i></button>';
+                    // $testOrderId = getTestOrderData($data->test_order_id)->id;
+                    // $btnVoir = '<button type="button" class="btn btn-primary" title="Voir les détails" onclick="afficherDetails(' . $testOrderId . ')"><i class="mdi mdi-eye"></i></button>';
                 } else {
                     $btnVoir ='';
                 }
+                $btnVoir ='';
 
                 $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
 
@@ -322,6 +366,22 @@ class InvoiceController extends Controller
         return view('invoices.business', compact('nowDay', 'totalMonth', 'totalLastMonth', 'totalToday'));
     }
 
+    public function searchInvoice(Request $request)
+    {
+        $start = Carbon::createFromFormat('Y-m-d', $request->starting_date);
+        $end = Carbon::createFromFormat('Y-m-d', $request->ending_date);
+
+        $vente = $this->invoices->whereDate('updated_at','>=',$start)->whereDate('updated_at','<=',$end)->where(['status_invoice'=>0])->where('paid', '1')->sum('total');
+        $avoir = $this->invoices->whereDate('updated_at','>=',$start)->whereDate('updated_at','<=',$end)->where(['status_invoice'=>1])->where('paid', '1')->sum('total');
+        $total = $vente-$avoir;
+        $facture = $this->invoices->whereDate('updated_at','>=',$start)->whereDate('updated_at','<=',$end)->sum('total');
+
+
+        // $invoice = Invoice::where('paid',1)->where('updated_at','>=',$start)->where('updated_at','<=',$end)->get();
+        return response()->json(['ca'=>$vente,'avoir'=>$avoir,'facture'=>$facture,'encaissement'=>$total]);
+
+    }
+
     function print($id)
     {
         $invoice = $this->invoices->findorfail($id);
@@ -386,7 +446,7 @@ class InvoiceController extends Controller
     }
 
     // Met à jour le statut paid pour le payement
-    public function updateStatus($id)
+    public function updateStatus(Request $request,$id)
     {
 
         $invoice = $this->invoices->findorfail($id);
@@ -397,17 +457,64 @@ class InvoiceController extends Controller
             return redirect()->back()->with('success', "Cette facture a déjà été payé ! ");
         } else {
 
+            if ($invoice->test_order_id) {
+                if ($settingInvoice->status == 1) {
+                    $invoice->fill([
+                        "paid" => '1',
+                        'payment' => $request->payment
+                    ])->save();
+                    $cash = Cashbox::find(1);
+                    $cash->current_balance += $invoice->total;
+                    $cash->save();
+                    CashboxAdd::create([
+                        'cashbox_id' => 1,
+                        'date' => Carbon::now(),
+                        'amount' => $invoice->total,
+                        'invoice_id' => $invoice->id,
+                        'user_id' => Auth::user()->id
+                    ]);
+                    if ($invoice->test_order_id != null) {
+                        // return response()->json('cool');
 
-            if ($settingInvoice->status == 1) {
-                if ($invoice->test_order_id != null) {
-                    // return response()->json('cool');
-                    return response()->json(invoiceNormeTest($invoice->test_order_id));
+                        return response()->json(invoiceNormeTest($invoice->test_order_id));
+                        // return response()->json('Pas une demande d\'examen');
+                    }
+                } else {
+                    $invoice->fill([
+                        "paid" => '1',
+                        'payment' => $request->payment,
+                        "code_normalise" => $request->code
+                        ])->save();
+                    $cash = Cashbox::find(1);
+
+                    $cash->current_balance += $invoice->total;
+                    $cash->save();
+                    CashboxAdd::create([
+                        'cashbox_id' => 1,
+                        'date' => Carbon::now(),
+                        'amount' => $invoice->total,
+                        'invoice_id' => $invoice->id,
+                        'user_id' => Auth::user()->id
+                    ]);
+                    return response()->json(['code'=> $request->code]);
+                    // return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
                 }
             } else {
-                $invoice->fill(["paid" => '1'])->save();
-                return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
+                return response()->json('Pas une demande d\'examen');
             }
+
         }
+    }
+
+    public function checkCode(Request $request)
+    {
+        $invoice = $this->invoices->where('code_normalise','=',$request->code)->orwhere('codeMecef','=',$request->code)->first();
+        if (!empty($invoice)) {
+            return response()->json(['code'=>1]);
+        } else {
+            return response()->json(['code'=>0]);
+        }
+
     }
 
     public function updatePayment(Request $request)
@@ -450,9 +557,10 @@ class InvoiceController extends Controller
                 "dategenerate" => $test['dateTime'],
                 "nim" => $test['nim'],
                 "qrcode" => $test['qrCode']
-            ])->save();
-        }
+                ])->save();
+            }
 
+            // return response()->json(['status' => 200, 'type' => "confirm",'response'=>$request->uid]);
         return response()->json(['status' => 200, 'type' => "confirm", "invoice" => $invoice]);
     }
 

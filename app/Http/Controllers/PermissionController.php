@@ -19,13 +19,13 @@ class PermissionController extends Controller
 
     public function __construct(Permission $permissions, Ressource $ressources, Operation $operations, Setting $setting)
     {
-        $this->middleware('auth'); 
+        $this->middleware('auth');
         $this->permissions = $permissions;
         $this->ressources = $ressources;
         $this->operations = $operations;
         $this->setting = $setting;
     }
-    
+
     public function create()
     {
         if (!getOnlineUser()->can('view-permissions')) {
@@ -54,7 +54,7 @@ class PermissionController extends Controller
             'operation_id' => $op->id,
             'ressource_id' => $ress->id,
         ];
-       
+
         try {
             $this->permissions->create($permissionData);
             return back()->with('success', "Une permission a été enregistrée ! ");

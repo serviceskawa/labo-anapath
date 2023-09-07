@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\CashboxTicket;
 use App\Models\Role;
 use App\Models\Doctor;
 use App\Models\Patient;
@@ -488,6 +489,35 @@ if (!function_exists('generateCodeExamen')) {
         return now()->year % 100 . "-$code";
     }
 }
+
+// generate code cashbox ticket
+if (!function_exists('generateCodeTicket')) {
+    function generateCodeTicket()
+    {
+        //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
+        $lastTestOrder = CashboxTicket::whereYear('created_at', '=', now()->year)
+            ->whereNotNull('code')
+            ->orderByRaw('RIGHT(code, 4) DESC')
+            ->first();
+
+        // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
+        if (!$lastTestOrder || $lastTestOrder->created_at->year != now()->year) {
+            $code = "0001";
+        }
+        // Sinon, incrémente le dernier code de 1
+        else {
+            // Récupère les quatre derniers caractères du code
+            $lastCode = substr($lastTestOrder->code, -4);
+
+            // Convertit la chaîne en entier et l'incrémente de 1
+            $code = intval($lastCode) + 1;
+            $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+        }
+
+        // Ajoute les deux derniers chiffres de l'année au début du code
+        return "BC".now()->year % 100 . "-$code";
+    }
+}
 // generate code facture
 if (!function_exists('generateCodeFacture')) {
     function generateCodeFacture()
@@ -546,12 +576,12 @@ if (!function_exists('invoiceNormeTest')) {
 
         $details = $testOrder->details()->get();
 
-        if ($details != null) {
+        if (!empty($details)) {
             foreach ($details as  $value) { {
                     $item['name'] = $value->test_name;
                     $item['price'] = $value->total;
                     $item['quantity'] = 1;
-                    $item['taxGroup'] = "A";
+                    $item['taxGroup'] = "B";
                     $items[] = $item;
                 }
             }
@@ -562,22 +592,59 @@ if (!function_exists('invoiceNormeTest')) {
         $settingInvoiceModel = new SettingInvoice();
         $settingInvoice = $settingInvoiceModel->find(1);
         $accessToken = $settingInvoice->token;
-        $ifu = "0".$settingInvoice->ifu;
-        return $ifu;
-        $response = $client->request(
-            'POST',
-            'https://developper.impots.bj/sygmef-emcf/api/invoice',
-            [
+        $ifu = $settingInvoice->ifu;
+        // $ifu = "0".$settingInvoice->ifu;
+        $response = $client->request('POST','https://developper.impots.bj/sygmef-emcf/api/invoice',
+        [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $accessToken,
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json'
                 ],
+                // 'json' => [
+                //     'ifu' => "0202367807403",
+                //     // 'type' => "FV",
+                //     // 'items' =>
+                //     //     [
+                //     //        [ "name"=>"Jus d'orange",
+                //     //         "price"=>1800,
+                //     //         "quantity"=>2,
+                //     //         "taxGroup"=>"A"]
+                //     //     ],
+                //     // "client" => [
+                //     //     "name" => "Ben",
+                //     //     "address" => 'abeezjn',
+                //     // ],
+                //     // "operator" => [
+                //     //     "id" => 1,
+                //     //     "name" => "Jean",
+                //     // ],
+                //     // "payment" => [
+                //     //     [
+                //     //         "name" => "ESPECES",
+                //     //         "amount" => 3600,
+                //     //         ]
+                //     //     ],
+                // ]
                 'json' => [
                     'ifu' => $ifu,
                     'type' => "FV",
+                    // 'aib' => "B",
                     'items' => $items,
+                    // 'items' => [
+                    //     //    [ "name"=>"Jus d'orange",
+                    //     //     "price"=>5000,
+                    //     //     "quantity"=>2,
+                    //     //     "taxGroup"=>"A"],
+                    //         [ "name"=>"Jus de mangue",
+                    //         "price"=>5000,
+                    //         "quantity"=>3,
+                    //         "taxGroup"=>"B",
+                    //         "taxSpecific" => 230]
+                    // ],
+
                     "client" => [
+                        // "ifu"=>"0202367807403",
                         "name" => $invoice->client_name,
                         "address" => $invoice->client_address?$invoice->client_address:'a',
                     ],
@@ -585,16 +652,18 @@ if (!function_exists('invoiceNormeTest')) {
                         "id" => Auth::user()->id,
                         "name" => Auth::user()->lastname,
                     ],
+                    // "reference" => "TEST-QWMW-F22F-GOA5-45BB-S6PF",
+                    // "taxSpecific" => 230,
                     "payment" => [
                         [
                             "name" => $invoice->payment,
                             "amount" => $invoice->total,
-                        ]
-                    ],
+                            // "amount" => 25000,
+                            ]
+                        ],
                 ]
-            ]
-        );
-        $test = json_decode($response->getBody(), true);
+        ]);
+       $test = json_decode($response->getBody(), true);
 
         return ["id" => $id, "uid" => $test['uid']];
     }

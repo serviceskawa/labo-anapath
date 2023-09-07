@@ -479,6 +479,7 @@ class ReportController extends Controller
         $vocal = json_decode($responsevocal->getBody(), true);
         $report->order->status_appel = $vocal['data']['id'];
         $report->order->save();
+
         $appel = AppelByReport::where('report_id',$report->id)->first();
         if ($appel) {
             $appel->update([
@@ -490,6 +491,7 @@ class ReportController extends Controller
                 'appel_id'=>$vocal['data']['id'],
             ]);
         }
+        
         // dd($report->order);
 
         // //Récupérer tous les appels vocaux
