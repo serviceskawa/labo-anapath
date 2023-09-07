@@ -11,4 +11,10 @@ class ExpenseCategorie extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+
+    public function expensive()
+    {
+        return $this->hasMany(Expense::class);
+    }
 }

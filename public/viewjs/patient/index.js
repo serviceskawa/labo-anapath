@@ -99,7 +99,7 @@ function deleteModalEx(id) {
         cancelButtonText: "Non !",
     }).then(function(result) {
         if (result.value) {
-            window.location.href = baseUrl + "/expense_categorie-delete/" + id;
+            window.location.href = baseUrl + "/expense-delete/" + id;
             Swal.fire(
                 "Suppression !",
                 "En cours de traitement ...",

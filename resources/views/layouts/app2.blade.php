@@ -408,7 +408,6 @@
                     </li>
                     {{-- @endif --}}
 
-
                     @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
                     <li class="side-nav-item">
                         <a href="{{ route('settings.app-index') }}" class="side-nav-link">
@@ -419,23 +418,47 @@
                     @endif
 
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false"
-                            aria-controls="sidebarEcommerce" class="side-nav-link">
+                        <a data-bs-toggle="collapse" href="#sidebarEcommerce8" aria-expanded="false"
+                            aria-controls="sidebarEcommerce8" class="side-nav-link">
                             <i class="uil-files-landscapes"></i>
                             <span> Fournisseurs </span>
                             <span class="menu-arrow"></span>
                         </a>
 
-                        <div class="collapse" id="sidebarEcommerce">
+                        <div class="collapse" id="sidebarEcommerce8">
                             <ul class="side-nav-second-level">
                                 <li>
                                     <a href="{{ route('supplier.index') }}">Tous les fournisseurs</a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('supplier.store') }}">Ajouter</a>
+                                    <a href="{{ route('supplier.categories.index') }}">Catégories</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarEcommerce9" aria-expanded="false"
+                            aria-controls="sidebarEcommerce9" class="side-nav-link">
+                            <i class="uil-files-landscapes"></i>
+                            <span> Caisse </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+
+                        <div class="collapse" id="sidebarEcommerce9">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href="{{ route('cashbox.vente.index') }}">Caisse de vente</a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('supplier.categories.index') }}">Catégories</a>
+                                    <a href="{{ route('cashbox.depense.index') }}">Caisse de dépense</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('cashbox.ticket.index') }}">Bon de caisse</a>
+                                </li>
+
+                                <li>
+                                    <a href="{{ route('daily.index') }}">Ouverture et fermeture</a>
                                 </li>
 
                             </ul>
@@ -628,6 +651,7 @@
 
     <script src="{{ asset('/adminassets/js/pages/demo.datatable-init.js') }}"></script>
     <script src="{{ asset('/adminassets/js/sweetalert2/sweetalert2.min.js') }}"></script>
+
 
     {{-- toastr --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"

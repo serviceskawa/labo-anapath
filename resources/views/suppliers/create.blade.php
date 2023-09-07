@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Ajouter un nouveau médecin</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Ajouter un nouveau fournisseur</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <form action="{{ route('supplier.store') }}" method="POST" autocomplete="off">
@@ -12,16 +12,14 @@
 
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
                     <div class="mb-3">
-                        <label for="simpleinput" class="form-label">Nom & Prénom<span
+                        <label for="simpleinput" class="form-label">Nom<span
                                 style="color:red;">*</span></label>
                         <input type="text" name="name" class="form-control" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="simpleinput" class="form-label">Telephone</label>
-                        <input type="tel" name="phone" class="form-control"
-                            pattern="[0-9]{2}[0-9]{2}[0-9]{2}[0-9]{2}">
-                        <small>Format: 97000000</small>
+                        <label for="simpleinput" class="form-label">Téléphone<span style="color:red;">*</span></label>
+                        <input type="tel" name="phone" class="form-control" required>
                     </div>
 
 
@@ -36,7 +34,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="simpleinput" class="form-label">Catégorie fournisseur</label>
+                        <label for="simpleinput" class="form-label">Catégorie fournisseur<span style="color:red;">*</span></label>
                         <select class="form-select" id="supplier_category_id" name="supplier_category_id" required>
                             <option value="">Sélectionner une catégorie</option>
                             @foreach ($categories as $categorie)
@@ -45,8 +43,8 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="simpleinput" class="form-label">Contact information<span style="color:red;">*</span></label>
-                        <textarea name="information" id="information" class="form-control" required cols="30" rows="5"></textarea>
+                        <label for="simpleinput" class="form-label">Note</label>
+                        <textarea name="information" id="information" class="form-control" cols="30" rows="5"></textarea>
                     </div>
 
                 </div>

@@ -570,6 +570,7 @@ public function __construct(
                     }
                 }
 
+
                 return redirect()->route('invoice.show', [$invoiceTestOrder->id])->with('success', " Opération effectuée avec succès  ! ");
             }else {
                 // Creation de la facture
@@ -586,22 +587,21 @@ public function __construct(
                 ]);
                 // Recupération des details de la demande d'examen
                 $tests = $test_order->details()->get();
-
-                if (!empty($invoice)) {
-                    // Creation des details de la facture
-                    foreach ($tests as $value) {
-                        if ($value->status ==1) {
-                            $this->invoiceDetail->create([
-                                "invoice_id" => $invoice->id,
-                                "test_id" => $value->test_id,
-                                "test_name" => $value->test_name,
-                                "price" => $value->price,
-                                "discount" => $value->discount,
-                                "total" => $value->total,
-                            ]);
-                            $value->status =0;
-                            $value->save();
-                        }
+                $items = [];
+                // Creation des details de la facture
+                foreach ($tests as $value) {
+                    if ($value->status ==1) {
+                        $detailInvoice = $this->invoiceDetail->create([
+                            "invoice_id" => $invoice->id,
+                            "test_id" => $value->test_id,
+                            "test_name" => $value->test_name,
+                            "price" => $value->price,
+                            "discount" => $value->discount,
+                            "total" => $value->total,
+                        ]);
+                        $value->status =0;
+                        $value->save();
+                        $items[]=$detailInvoice;
                     }
                 }
 
@@ -1059,9 +1059,6 @@ public function __construct(
         $testOrder->fill(["attribuate_doctor_id" => $doctorId])->save();
         return response()->json($doctorId, 200);
     }
-
-
-
 
 
     public function deleteimagegallerie($index,$test_order)

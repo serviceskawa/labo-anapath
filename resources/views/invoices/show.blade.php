@@ -80,6 +80,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+
                                         @foreach ($invoice->details as $key => $item)
                                             <tr>
                                                 <td>{{ $key + 1 }} </td>
@@ -92,8 +93,6 @@
                                                 <td class="text-end">{{ $item->total }}</td>
                                             </tr>
                                         @endforeach
-
-
                                     </tbody>
                                 </table>
                             </div> <!-- end table-responsive-->
@@ -124,18 +123,14 @@
                     <!-- end row-->
 
 
-                    @if ($settingInvoice != null)
-                        @if ($settingInvoice->status == 1)
+                    @if ($settingInvoice != null && $invoice->paid !=1)
                             <div>
-                            {{-- <div style="float: right"> --}}
-                                {{-- <form id="addform" autocomplete="off"> --}}
-                                    @csrf
                                     <div class="row d-flex align-items-end">
                                         <div class="col-md-4 col-12">
 
                                             <div class="mb-3">
                                                 <label for="exampleFormControlInput1" class="form-label">Type de
-                                                    payement</label>
+                                                    paiement</label>
                                                 <select class="form-select select2" data-toggle="select2" name="payment"
                                                     value="{{ $invoice->payment }}" id="payment" required>
                                                     <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
@@ -159,41 +154,28 @@
 
                                         <div class="col-md-4 col-12">
                                             <div class="mb-3">
-                                                <label class="form-label">Payé</label>
-                                                <input type="text" class="form-control" id="invoice_total"
+                                                <label class="form-label">Code de la facture normalisée</label>
+                                                {{-- <input type="text" class="form-control" id="invoice_total"
                                                     value="{{ number_format(abs($invoice->total), 0, ',', ' ') }}"
-                                                    readonly>
+                                                    readonly> --}}
+                                                <input type="text" name="code" placeholder="Code MECeF/DGI" minlength="24" maxlength="24" id="code" class="form-control">
                                             </div>
                                         </div>
 
-                                        {{-- <div class="col-md-2 col-12">
-                                            <div class="mb-3">
-                                                <button type="button" onclick="validPayment()"
-                                                    class="btn btn-primary {{ $invoice->paid != 1 ? '' : 'disabled' }}">Valider
-                                                    le type</button>
-                                            </div>
-                                        </div> --}}
                                         <div class="col-md-4 col-12">
                                             @foreach (getRolesByUser(Auth::user()->id) as $role)
                                                 @if ($role->name == "Caissier")
-                                                {{-- <div class="d-flex" style="width: 500px;"> --}}
-                                                    {{-- <input type="text" name="code" id="code" class="form-control" style="margin-right: 20px;"> --}}
-                                                    {{-- <div> --}}
-                                                        <button type="button" onclick="invoicebtn()" class="btn btn-success mb-3"><i
+                                                        <button type="button" onclick="updateStatus()" class="btn btn-success mb-3"><i
                                                             class="mdi mdi-cash"></i>
                                                         Terminer la facture</button>
-                                                    {{-- </div> --}}
-                                                {{-- </div> --}}
                                                 @endif
                                             @endforeach
                                         </div>
                                     </div>
-                                    {{-- </form> --}}
                             </div>
-                        @endif
 
 
-                        @if ($invoice->paid == 1 && $settingInvoice->status == 1)
+                        {{-- @if ($invoice->paid == 1 && $settingInvoice->status == 1)
                             <div class="row"
                                 style="border: ridge;border-radius: 5px;border-color: rgb(119, 147, 234);padding: 5px;">
 
@@ -211,7 +193,7 @@
                                         {{ $invoice->dategenerate }} </div>
                                 </div>
                             </div>
-                        @endif
+                        @endif --}}
 
                     @endif
 
@@ -251,6 +233,7 @@
                         </div>
                     </div> --}}
                     <!-- end buttons -->
+
 
                 </div> <!-- end card-body-->
             </div> <!-- end card -->

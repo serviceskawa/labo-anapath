@@ -24,6 +24,7 @@ class CreateExpensesTable extends Migration
             $table->integer('paid')->default(0); // Champ payé (0 ou 1, par défaut 0)
             // Clés étrangères
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('cashbox_ticket_id')->references('id')->on('cashbox_tickets');
             $table->foreign('expense_categorie_id')->references('id')->on('expense_categories');
             $table->softDeletes();
             $table->timestamps();

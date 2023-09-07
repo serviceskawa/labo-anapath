@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CashboxTicket;
 use App\Models\Expense;
+use App\Models\ExpenseCategorie;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ExpenseController extends Controller
 {
@@ -27,11 +30,13 @@ class ExpenseController extends Controller
         // }
         
         $expenses = $this->expense->latest()->get();
+        $expenses_categorie = ExpenseCategorie::latest()->get();
+        $cash_ticket = CashboxTicket::latest()->get();
 
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
-        return view('expenses.index',compact(['expenses']));   
+        return view('expenses.index',compact(['expenses','expenses_categorie','cash_ticket']));   
     }
 
     /**
@@ -52,7 +57,32 @@ class ExpenseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // if (!getOnlineUser()->can('create-expenses')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+        
+                if ($request->hasFile('receipt')) 
+                {
+                    $path = $request->file('receipt')->store('preuves', 'public');
+                } else {
+                    $path = null;
+                }
+
+        try {
+                Expense::create([
+                    'amount' => $request->amount,
+                    'user_id' => Auth::user()->id,
+                    'description' => $request->description,
+                    'expense_categorie_id' => $request->expense_categorie_id,
+                    'cashbox_ticket_id' => $request->cashbox_ticket_id,
+                    'paid' => $request->paid,
+                    'receipt' => $path
+                ]);
+
+                return back()->with('success', " Opération effectuée avec succès  ! ");
+            } catch(\Throwable $ex){
+                return back()->with('error', "Échec de l'enregistrement ! ");
+            }
     }
 
     /**
@@ -86,7 +116,34 @@ class ExpenseController extends Controller
      */
     public function update(Request $request, Expense $expense)
     {
-        //
+        // if (!getOnlineUser()->can('edit-expense_categories')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+
+try {
+                if ($request->hasFile('receipt')) 
+                {
+                    $path = $request->file('receipt')->store('preuves', 'public');
+                } else {
+                    $path = null;
+                }
+
+                $expense->update([
+                    'amount' => $request->amount,
+                    'user_id' => Auth::user()->id,
+                    'description' => $request->description,
+                    'expense_categorie_id' => $request->expense_categorie_id,
+                    'cashbox_ticket_id' => $request->cashbox_ticket_id,
+                    'paid' => $request->paid,
+                    'receipt' => $path
+                ]);
+
+                $expense->save();
+
+                return back()->with('success', " Mise à jour effectuée avec succès  ! ");
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }
     }
 
     /**

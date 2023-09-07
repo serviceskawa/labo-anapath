@@ -29,7 +29,7 @@ class ArticleController extends Controller
         // if (!getOnlineUser()->can('view-articles')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-        
+
         $articles = $this->article->latest()->get();
         $units = UnitMeasurement::latest()->get();
         $movs = Movement::latest()->get();
@@ -65,7 +65,7 @@ class ArticleController extends Controller
         {
             return back()->with('error', "Échec de l'enregistrement, la quantite en stock est inferieur a la quantite minimale ! ");
         }
-        
+
         $data = [
             'article_name' => $request->article_name,
             'description' => $request->description,
@@ -139,12 +139,12 @@ class ArticleController extends Controller
         // if (!getOnlineUser()->can('edit-articles')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-       
+
         if($request->quantity_in_stock < $request->minimum)
         {
             return back()->with('error', "Échec de l'enregistrement, la quantite en stock est inferieur a la quantite minimale ! ");
         }
-        
+
         try {
                 $article->update([
                     'article_name' => $request->article_name,
@@ -179,6 +179,15 @@ class ArticleController extends Controller
         $article = $this->article->find($article)->delete();
 
         return back()->with('success', " Elément supprimé avec succès  ! ");
+    }
+
+    public function getArticle(Request $request)
+    {
+        $articles = $this->article->where('article_name','like','%'.$request->term.'%')->get();
+        $result = $articles->map(function ($article) {
+            return $article->article_name;
+        });
+        return response()->json($result);
     }
 }
 

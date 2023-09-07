@@ -12,7 +12,8 @@
             </div>
             <h4 class="page-title">Dépenses</h4>
         </div>
-        @include('expenses.create')
+        @include('expenses.create',['expenses' => $expenses,'expenses_categorie' => $expenses_categorie,'cash_ticket' =>
+        $cash_ticket])
     </div>
 </div>
 
@@ -40,44 +41,54 @@
                 <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Nom</th>
-                            <th>Description</th>
+                            <th>Montant</th>
+                            <th>Utilisateur</th>
+                            <th>Catégorie</th>
+                            <th>Ticket</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
 
 
-                    {{-- <tbody>
+                    <tbody>
                         @foreach ($expenses as $item)
                         <tr>
-                            <td><input type="checkbox" name="" id=""></td>
                             <td>{{ $item->amount }}</td>
-                            <td>{{ $item->amount }}</td>
-                            <td>{{ $item->amount }}</td>
-                            <td>{{ $item->amount }}</td>
-                            <td>{{ $item->amount }}</td>
+                            <td>{{ $item->user->firstname }}</td>
+                            <td>{{ $item->expensecategorie->name }}</td>
+                            <td>{{ $item->cashticket->code }}</td>
+
+                            @if ($item->paid==1)
+                            <td><span class="badge bg-success">Payé</span></td>
+                            @elseif($item->paid==0)
+                            <td><span class="badge bg-info">Non payé</span></td>
+                            @endif
 
                             <td>
+                                <a class="btn btn-primary" href="#" data-bs-toggle="modal"
+                                    data-bs-target="#bs-example-modal-lg-show-{{ $item->id }}"><i class="uil-eye"></i>
+                                </a>
+                                @include('expenses.show',['item' => $item])
+
                                 <a class="btn btn-primary" href="#" data-bs-toggle="modal"
                                     data-bs-target="#bs-example-modal-lg-edit-{{ $item->id }}"><i
                                         class="mdi mdi-lead-pencil"></i>
                                 </a>
                                 @include('expenses.edit',['item' => $item])
+
                                 <button type="button" onclick="deleteModalEx({{ $item->id }})" class="btn btn-danger"><i
                                         class="mdi mdi-trash-can-outline"></i> </button>
                             </td>
                         </tr>
                         @endforeach
 
-                    </tbody> --}}
+                    </tbody>
                 </table>
 
             </div>
         </div>
     </div> <!-- end card-->
-
-
 </div>
 @endsection
 

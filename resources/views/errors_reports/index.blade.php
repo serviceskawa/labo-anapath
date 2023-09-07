@@ -51,7 +51,6 @@
                             <th>Catégorie</th>
                             <th>Status</th>
                             @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
 
                                 @if ($role->name == "rootuser")
                                     <th>Traité</th>

@@ -25,9 +25,9 @@ class SupplierCategorieController extends Controller
      */
     public function index()
     {
-        if (!getOnlineUser()->can('view-category-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('view-supplier-categories')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $supplierCategories = $this->categories->latest()->get();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
@@ -53,10 +53,9 @@ class SupplierCategorieController extends Controller
      */
     public function store(Request $request)
     {
-        if (!getOnlineUser()->can('create-category-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
-        // dd($request);
+        // if (!getOnlineUser()->can('create-supplier-categories')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $data= [
             'name' => $request->name,
             'description' => $request->description
@@ -90,9 +89,9 @@ class SupplierCategorieController extends Controller
      */
     public function edit($id)
     {
-        if (!getOnlineUser()->can('edit-category-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('edit-supplier-categories')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $data = $this->categories->find($id);
         return response()->json($data);
     }
@@ -106,9 +105,9 @@ class SupplierCategorieController extends Controller
      */
     public function update(Request $request)
     {
-        if (!getOnlineUser()->can('edit-category-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('edit-supplier-categories')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $data= [
             'id' => $request->id,
             'name' => $request->name,
@@ -136,15 +135,15 @@ class SupplierCategorieController extends Controller
      */
     public function destroy($id)
     {
-        if (!getOnlineUser()->can('delete-category-tests')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
-        $category = $this->categories->find($id)->delete();
-
-        if ($category) {
+        // if (!getOnlineUser()->can('delete-supplier-categories')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+        try {
+            $this->categories->find($id)->delete();
             return back()->with('success', "    Un élement a été supprimé ! ");
-        } else {
-            return back()->with('error', "    Element utilisé ailleurs ! ");
+        } catch(\Throwable $ex){
+            return back()->with('error', "Impossible de supprimer cet élément !  Celui-ci est lié à d'autres éléments. Pour effectuer cette suppression, vous devez d'abord supprimer ou mettre à jour les éléments liés dans d'autres tables.");
         }
+
     }
 }

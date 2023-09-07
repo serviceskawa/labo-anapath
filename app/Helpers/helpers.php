@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\CashboxTicket;
 use App\Models\Role;
 use App\Models\Doctor;
 use App\Models\Patient;
@@ -486,6 +487,35 @@ if (!function_exists('generateCodeExamen')) {
 
         // Ajoute les deux derniers chiffres de l'année au début du code
         return now()->year % 100 . "-$code";
+    }
+}
+
+// generate code cashbox ticket
+if (!function_exists('generateCodeTicket')) {
+    function generateCodeTicket()
+    {
+        //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
+        $lastTestOrder = CashboxTicket::whereYear('created_at', '=', now()->year)
+            ->whereNotNull('code')
+            ->orderByRaw('RIGHT(code, 4) DESC')
+            ->first();
+
+        // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
+        if (!$lastTestOrder || $lastTestOrder->created_at->year != now()->year) {
+            $code = "0001";
+        }
+        // Sinon, incrémente le dernier code de 1
+        else {
+            // Récupère les quatre derniers caractères du code
+            $lastCode = substr($lastTestOrder->code, -4);
+
+            // Convertit la chaîne en entier et l'incrémente de 1
+            $code = intval($lastCode) + 1;
+            $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+        }
+
+        // Ajoute les deux derniers chiffres de l'année au début du code
+        return "BC".now()->year % 100 . "-$code";
     }
 }
 // generate code facture

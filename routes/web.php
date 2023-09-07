@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppelTestOderController;
 use App\Http\Controllers\ExpenseCategorieController;
+use App\Http\Controllers\CashboxDailyController;
 use App\Http\Controllers\ExpenseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,9 @@ use App\Http\Controllers\PrestationController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BankController;
+use App\Http\Controllers\CashboxController;
+use App\Http\Controllers\CashboxTicketController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\TestCategoryController;
 use App\Http\Controllers\DetailsContratController;
@@ -41,6 +45,7 @@ use App\Http\Controllers\TFAuthController;
 use App\Http\Controllers\UnitMeasurementController;
 use App\Models\AppelTestOder;
 use App\Models\Article;
+use App\Models\CashboxDaily;
 use App\Models\ExpenseCategorie;
 use App\Models\Movement;
 use App\Models\ProblemCategory;
@@ -89,7 +94,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/delete/{id}', [SupplierController::class, 'destroy']);
         Route::get('/get/{id}', [SupplierController::class, 'edit']);
         Route::post('/update', [SupplierController::class, 'update'])->name('supplier.update');
-        
+
         Route::get('/categories', [SupplierCategorieController::class, 'index'])->name('supplier.categories.index');
         Route::post('/categories', [SupplierCategorieController::class, 'store'])->name('supplier.categories.store');
         Route::get('/category/delete/{id}', [SupplierCategorieController::class, 'destroy']);
@@ -333,6 +338,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/search-invoice', [InvoiceController::class, 'searchInvoice'])->name('invoice.business.search');
         Route::get('/s', [InvoiceController::class, 'getInvoiceforDatatable'])->name('invoice.getTestOrdersforDatatable');
         Route::get('/index', [InvoiceController::class, 'getInvoiceIndexForDatable'])->name('invoice.getInvoiceIndexforDatatable');
+        Route::get('/checkCode', [InvoiceController::class, 'checkCode']);
         // Route::post('/filter', [InvoiceController::class, 'filter'])->name('invoice.filter');
         // Route::get('/testchiffres', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('invoice.getInvoiceforDatatable');
     });
@@ -382,6 +388,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('edit/{id}', [CategoryPrestationController::class, 'edit'])->name('categoryPrestation.edit');
         Route::get('delete/{id}', [CategoryPrestationController::class, 'destroy'])->name('categoryPrestation.delete');
     });
+
     Route::prefix('prestations')->group(function () {
         Route::get('', [PrestationController::class, 'index'])->name('prestation.index');
         Route::get('create', [PrestationController::class, 'create'])->name('prestation.create');
@@ -394,6 +401,37 @@ Route::middleware(['auth'])->group(function () {
         Route::get('show_by_id/{id}', [PrestationController::class, 'show_by_id'])->name('prestation.showById');
     });
 
+    //Banque et caisse
+    Route::prefix('bank')->group(function() {
+        Route::get('/', [BankController::class ,'index'])->name('bank.index');
+        Route::post('/',[BankController::class,'store'])->name('bank.store');
+        Route::get('/getBank/{id}',[BankController::class,'edit']);
+        Route::post('/update',[BankController::class, 'update'])->name('bank.update');
+        Route::get('/delete/{id}',[BankController::class,'destroy']);
+    });
+
+    Route::prefix('cashbox')->group(function() {
+        Route::get('/vente', [CashboxController::class ,'index'])->name('cashbox.vente.index');
+        Route::get('/depense', [CashboxController::class ,'index_depense'])->name('cashbox.depense.index');
+        Route::get('/getcashvente/{id}',[CashboxController::class,'edit']);
+        Route::post('/vente-update',[CashboxController::class, 'update'])->name('cashbox.vente.update');
+        Route::get('/vente-delete/{id}',[CashboxController::class,'destroy']);
+        Route::post('/depense',[CashboxController::class,'store'])->name('cashbox.depense.store');
+        Route::get('tickets',[CashboxTicketController::class, 'index'])->name('cashbox.ticket.index');
+        Route::post('tickets',[CashboxTicketController::class, 'store'])->name('cashbox.ticket.store');
+        Route::post('tickets-update',[CashboxTicketController::class, 'update'])->name('cashbox.ticket.update');
+        Route::get('/ticket-detail/{id}', [CashboxTicketController::class ,'detail_index'])->name('cashbox.ticket.details.index');
+        Route::post('ticket-detail',[CashboxTicketController::class, 'detail_store'])->name('cashbox.ticket_detail.store');
+        Route::get('/ticket-delete/{id}',[CashboxTicketController::class,'destroy']);
+        Route::get('/ticket-detail-delete/{id}',[CashboxTicketController::class,'detail_destroy']);
+        Route::post('/ticket-update-status',[CashboxTicketController::class, 'updateStatus'])->name('cashbox.ticket.updateStatus');
+        Route::get('/ticket-status-update',[CashboxTicketController::class, 'updateTicketStatus'])->name('cashbox.ticket.status.update');
+        Route::post('/ticket-update-total',[CashboxTicketController::class, 'updateTotal'])->name('cashbox.ticket.updateTotal');
+
+        Route::get('ticket/getdetail/{id}',[CashboxTicketController::class, 'getTicketDetail'])->name('cashbox.ticket.getTicketDetail');
+    });
+
+
 
 
     // Articles
@@ -404,6 +442,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('article-update/{article}', [ArticleController::class, 'update'])->name('article.update');
         Route::post('article-store', [ArticleController::class, 'store'])->name('article.store');
         Route::get('article-delete/{article}', [ArticleController::class, 'delete'])->name('article.delete');
+        Route::get('/getArticle',[ArticleController::class, 'getArticle']);
     // });
 
 
@@ -416,6 +455,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('movement-store', [MovementController::class, 'store'])->name('movement.store');
         Route::get('movement-delete/{mouvement}', [MovementController::class, 'delete'])->name('movement.delete');
     // });
+
 
 
 
@@ -450,5 +490,17 @@ Route::middleware(['auth'])->group(function () {
         Route::put('expense-update/{expense}', [ExpenseController::class, 'update'])->name('all_expense.update');
         Route::post('expense-store', [ExpenseController::class, 'store'])->name('all_expense.store');
         Route::get('expense-delete/{expense}', [ExpenseController::class, 'delete'])->name('all_expense.delete');
+    // });
+
+
+
+     // Expense CashboxDaily
+    // Route::prefix('expenses')->group(function () {
+        Route::get('cashbox-daily', [CashboxDailyController::class, 'index'])->name('daily.index');
+        Route::get('cashbox-daily-create', [CashboxDailyController::class, 'create'])->name('daily.create');
+        Route::get('cashbox-daily-edit/{cashboxDaily}', [CashboxDailyController::class, 'edit'])->name('daily.edit');
+        Route::put('cashbox-daily-update/{cashboxDaily}', [CashboxDailyController::class, 'update'])->name('daily.update');
+        Route::post('cashbox-daily-store', [CashboxDailyController::class, 'store'])->name('daily.store');
+        Route::get('cashbox-daily-delete/{cashboxDaily}', [CashboxDailyController::class, 'delete'])->name('daily.delete');
     // });
 });
