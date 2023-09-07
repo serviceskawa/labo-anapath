@@ -635,12 +635,10 @@ public function __construct(
             'is_urgent' => 'nullable',
             'examen_reference_select' => 'nullable',
             'examen_reference_input' => 'nullable',
-
             'type_examen' => 'required',
             'attribuate_doctor_id' => 'nullable',
             'option' => 'nullable',
         ]);
-
 
 
         $path_examen_file = "";
@@ -685,10 +683,6 @@ public function __construct(
                 $data['test_affiliate'] = $reference->code;
             }
         }
-
-
-
-
 
         $directory = storage_path('app/public/examen_images/' . $testOrder->code);
         // $fileNames = [];
@@ -770,10 +764,9 @@ public function __construct(
 
 
     //Télécharger les images pour les examens
-
     public function upload(Request $request)
     {
-         // Récupérer le code de la demande à partir des données de la requête
+        // Récupérer le code de la demande à partir des données de la requête
         $examCode = $request->input('code');
         $file = $request->file('image');
         $fileName = time() . '_'. Str::uuid() .'_'.$request->file('image')->extension();;

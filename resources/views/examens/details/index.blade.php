@@ -458,7 +458,6 @@
                                 <button type="submit" class="btn btn-success">Ajouter</button>
                             </div>
                         </div>
-
                     </form>
 
                     @if(isset($test_order->files_name))
@@ -632,6 +631,7 @@
                                 @else
                                     <th>Actions</th>
                                 @endif --}}
+
                             </tr>
                         </thead>
 
@@ -656,6 +656,7 @@
                                 @else
                                     <td></td>
                                 @endif --}}
+
                             </tr>
                         </tfoot>
                     </table>
@@ -909,43 +910,6 @@
 @endsection
 
 @push('extra-js')
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const deleteButtons = document.querySelectorAll("[data-confirm]");
-        deleteButtons.forEach(button => {
-            button.addEventListener("click", function(event) {
-                event.preventDefault();
-                const confirmMessage = this.getAttribute("data-confirm");
-                Swal.fire({
-                    title: 'Confirmation',
-                    text: confirmMessage,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Oui, supprimer!',
-                    cancelButtonText: 'Annuler' // Ici, nous changeons le texte du bouton "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        this.closest("form").submit();
-                    }
-                });
-            });
-        });
-    });
-</script>
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
-
-
-
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
         integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
