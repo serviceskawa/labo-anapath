@@ -75,7 +75,7 @@
 
                         <div class="col-md-2 col-12">
                             <div class="">
-                                <button type="submit" class="btn btn-primary" id="add_detail">Rechercher</button>
+                                <button type="submit" class="btn btn-primary" id="add_detail">Afficher</button>
                             </div>
                         </div>
                     </div>

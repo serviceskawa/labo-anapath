@@ -265,7 +265,7 @@
                                 </li>
                                 @if (getOnlineUser()->can('view-setting-invoice'))
                                 <li>
-                                    <a href="{{ route('invoice.business') }}">Chiffre d'affaires</a>
+                                    <a href="{{ route('invoice.business') }}">Rapports</a>
                                 </li>
                                 @endif
                                 @if (getOnlineUser()->can('view-setting-invoice'))
