@@ -1,0 +1,262 @@
+// SUPPRESSION
+function deleteTicket(id) {
+    Swal.fire({
+            title: "Voulez-vous supprimer l'élément ?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Oui ",
+            cancelButtonText: "Non !",
+        }).then(function(result) {
+            if (result.value) {
+                window.location.href=baseUrl+"/cashbox/ticket-delete/"+id;
+                Swal.fire(
+                    "Suppression !",
+                    "En cours de traitement ...",
+                    "success"
+                )
+            }
+    });
+}
+
+function deleteTicketDetail(id) {
+    Swal.fire({
+            title: "Voulez-vous supprimer l'élément ?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Oui ",
+            cancelButtonText: "Non !",
+        }).then(function(result) {
+            if (result.value) {
+                window.location.href=baseUrl+"/cashbox/ticket-detail-delete/"+id;
+                Swal.fire(
+                    "Suppression !",
+                    "En cours de traitement ...",
+                    "success"
+                )
+            }
+    });
+}
+
+function updateStatus(id)
+{
+        var status = $('#example-select').val();
+        var e_id = id;
+        console.log(e_id,status);
+
+        $.ajax({
+        url: ROUTEUPDATESTATUSTICKET,
+        type: "POST",
+        data: {
+            "_token": TOKENUPDATESTATUSTICKET,
+            id: e_id,
+            status:status,
+        },
+        success: function (data) {
+            console.log(data)
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    })
+
+}
+
+$(document).ready(function() {
+
+
+
+    $('#quantity').on("input", function(){
+        var price = $('#unit_price').val();
+        var quantity = $('#quantity').val();
+        $('#total').val(price*quantity)
+    });
+
+
+    var dt_basic = $('#datatable1').DataTable({
+        ajax: {
+            url: ROUTEGETDETAIL,
+            dataSrc: ''
+        },
+
+        columns: [
+            // columns according to JSON
+            {
+                data: 'id'
+            },
+            {
+                data: 'article_name'
+            },
+            {
+                data: 'unit_price'
+            },
+            {
+                data: 'quantity'
+            },
+            {
+                data: 'line_amount'
+            },
+            {
+                data: null
+            }
+        ],
+        columnDefs: [{
+            "targets": -1,
+            "render": function(data, type, row) {
+
+                return (
+                    '<button type="button" id="deleteBtn" class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i> </button>'
+                );
+                return "";
+            }
+
+        }],
+
+        footerCallback: function(row, data, start, end, display) {
+            var api = this.api();
+
+            // Remove the formatting to get integer data for summation
+            var intVal = function(i) {
+                return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i ===
+                    'number' ? i : 0;
+            };
+
+            // Total over all pages
+            total = api
+                .column(4)
+                .data()
+                .reduce(function(a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+            //
+            quantity = api
+                .column(3)
+                .data()
+                .reduce(function(a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+
+            unit_price = api
+                .column(2)
+                .data()
+                .reduce(function(a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+
+            // Update footer
+            $(api.column(4).footer()).html(total);
+            $(api.column(3).footer()).html(quantity);
+            $(api.column(2).footer()).html(unit_price);
+
+            sendTotal(expense.id, total);
+
+            var numRows = api.rows().count();
+            if (numRows > 0) {
+                var element = document.getElementById('finalisationBtn');
+                if (element) {
+                    element.classList.remove("disabled");
+                }
+            }
+        },
+
+    });
+
+    if (expense.paid !=0) {
+        dt_basic.column(5).visible( false );
+    }
+
+    $('.detail-list-table tbody').on('click', '#deleteBtn', function() {
+        var data = dt_basic.row($(this).parents('tr')).data();
+        var id = $(this).data('id');
+        console.log(data)
+        Swal.fire({
+            title: "Voulez-vous supprimer l'élément ?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Oui ",
+            cancelButtonText: "Non !",
+        }).then(function(result) {
+            if (result.value) {
+                $.ajax({
+                    url: baseUrl +"/expense-detail-delete/"+data.id,
+                    success: function(response) {
+
+                        console.log(response);
+                        Swal.fire(
+                            "Suppression !",
+                            "En cours de traitement ...",
+                            "success"
+                        )
+                        dt_basic.ajax.reload()
+                    },
+                    error: function(response) {
+                        console.log(response);
+                        dt_basic.ajax.reload()
+
+                    },
+                });
+
+            }
+        });
+    });
+
+    function sendTotal(expense_id, amount) {
+        console.log(expense_id, unit_price, quantity);
+
+        $.ajax({
+            url: ROUTEUPDATETOTALEXPENSE,
+            type: "POST",
+            data: {
+                "_token": TOKENUPDATETOTALEXPENSE,
+                expense_id: expense_id,
+                amount: amount
+            },
+            success: function(response) {
+                console.log(response)
+
+            },
+            error: function(response) {
+                console.log(response)
+            },
+        });
+    };
+
+})
+
+$('#addDetailForm').on('submit', function(e) {
+    e.preventDefault();
+    let expense_id = expense.id;
+    // console.log(cashbox_ticket_id);
+    let article_name = $('#article-name').val();
+    let price = $('#unit_price').val();
+    let quantity = $('#quantity').val();
+    let total = $('#total').val();
+
+    $.ajax({
+        url: ROUTESTOREDETAILEXPENSE,
+        type: "POST",
+        data: {
+            "_token": TOKENSTOREDETAILEXPENSE,
+            expense_id: expense_id,
+            article_name: article_name,
+            unit_price: price,
+            quantity: quantity,
+            total: total
+
+        },
+        success: function(response) {
+            $('#addDetailForm').trigger("reset")
+            console.log(response);
+            if (response) {
+                toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+            }
+            $('#datatable1').DataTable().ajax.reload();
+            // $('#addDetailForm').trigger("reset")
+            // updateSubTotal();
+        },
+        error: function(response) {
+            console.log(response)
+        },
+    });
+
+});
+

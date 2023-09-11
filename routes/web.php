@@ -94,7 +94,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/delete/{id}', [SupplierController::class, 'destroy']);
         Route::get('/get/{id}', [SupplierController::class, 'edit']);
         Route::post('/update', [SupplierController::class, 'update'])->name('supplier.update');
-
+        Route::get('/getSupplier', [SupplierController::class, 'getSupplier']);
         Route::get('/categories', [SupplierCategorieController::class, 'index'])->name('supplier.categories.index');
         Route::post('/categories', [SupplierCategorieController::class, 'store'])->name('supplier.categories.store');
         Route::get('/category/delete/{id}', [SupplierCategorieController::class, 'destroy']);
@@ -489,11 +489,16 @@ Route::middleware(['auth'])->group(function () {
     // Expense Expense
     // Route::prefix('expenses')->group(function () {
         Route::get('expense', [ExpenseController::class, 'index'])->name('all_expense.index');
+        Route::get('/expense-detail/{id}', [ExpenseController::class ,'detail_index'])->name('expense.details.index');
         Route::get('expense-create', [ExpenseController::class, 'create'])->name('all_expense.create');
         Route::get('expense-edit/{expense}', [ExpenseController::class, 'edit'])->name('all_expense.edit');
-        Route::put('expense-update/{expense}', [ExpenseController::class, 'update'])->name('all_expense.update');
+        Route::post('expense-update', [ExpenseController::class, 'update'])->name('all_expense.update');
+        Route::get('expense/getExpenseDetail/{id}', [ExpenseController::class, 'getExpenceDetail'])->name('expense.getDetail');
+        Route::post('/expense-update-total',[ExpenseController::class, 'updateTotal'])->name('expense.updateTotal');
         Route::post('expense-store', [ExpenseController::class, 'store'])->name('all_expense.store');
+        Route::post('expense-detail',[ExpenseController::class, 'detail_store'])->name('expense.detail.store');
         Route::get('expense-delete/{expense}', [ExpenseController::class, 'delete'])->name('all_expense.delete');
+        Route::get('/expense-detail-delete/{id}',[ExpenseController::class,'detail_destroy']);
     // });
 
 

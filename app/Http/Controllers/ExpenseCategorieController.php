@@ -24,13 +24,13 @@ class ExpenseCategorieController extends Controller
      // if (!getOnlineUser()->can('view-expense_categories')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-        
+
         $expenseCategories = $this->expenseCategorie->latest()->get();
 
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
-        return view('expenses_categorie.index',compact(['expenseCategories']));   
+        return view('expenses_categorie.index',compact(['expenseCategories']));
     }
 
     /**
@@ -56,10 +56,10 @@ class ExpenseCategorieController extends Controller
         // }
 
         try {
-                    ExpenseCategorie::create([
-                        'name' => $request->name,
-                        'description' => $request->description,
-                    ]);
+                ExpenseCategorie::create([
+                    'name' => $request->name,
+                    'description' => $request->description,
+                ]);
 
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
@@ -101,7 +101,7 @@ class ExpenseCategorieController extends Controller
         // if (!getOnlineUser()->can('edit-expense_categories')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-       
+
         try {
                 $expenseCategorie->update([
                     'name' => $request->name,

@@ -45,7 +45,7 @@
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
                     <input type="hidden" class="form-control" readonly name="ticket_id" value="{{$ticket->id}}">
                     <div class="row d-flex align-items-end">
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Type de caisse<span
                                         style="color:red;">*</span></label>
@@ -53,7 +53,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Fournisseur<span
                                         style="color:red;">*</span></label>
@@ -66,6 +66,15 @@
                                         Ajouter un fournisseur
                                     @endforelse
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="example-fileinput" class="form-label">Pièce jointe</label>
+                                    <input type="file" name="ticket_file"
+                                        id="example-fileinput"  class="form-control dropify"
+                                        data-default-file="{{$ticket ? Storage::url($ticket->ticket_file) : ''}}"> <!-- $test_order ? Storage::url($test_order->examen_file) : ''!-->
+
                             </div>
                         </div>
                             <label for="example-select" class="form-label">Description article
@@ -164,11 +173,11 @@
                         </tfoot>
                     </table>
 
-                    <div class="row mx-3 mt-2">
+                    {{-- <div class="row mx-3 mt-2">
                         @if ($ticket->status == "en attente")
                             <a type="submit" href="#" id="finalisationBtn" class="btn btn-info disabled w-full">ENREGISTRER</a>
                         @endif
-                    </div>
+                    </div> --}}
                 </div>
 
             </div>

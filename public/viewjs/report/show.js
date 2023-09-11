@@ -308,7 +308,9 @@ const ck_options2 = {
 };
 
 CKEDITOR.ClassicEditor.create(document.getElementById("editor"), ck_options);
+CKEDITOR.ClassicEditor.create(document.getElementById("editor_micro"), ck_options);
 CKEDITOR.ClassicEditor.create(document.getElementById("editor2"), ck_options);
+CKEDITOR.ClassicEditor.create(document.getElementById("editor_micro2"), ck_options);
 var checkbox = document.getElementById("switch3");
 var textField = document.getElementById("show-field");
 
@@ -414,6 +416,67 @@ $(document).ready(function () {
         })
     });
 
+    $('#template_micro').on('change', function (e) {
+        var template_id = $('#template_micro').val();
+        $.ajax({
+            url: ROUTEGETTEMPLATE,
+            type: "POST",
+            data: {
+                "_token": TOKENGETTEMPLATE,
+                id: template_id,
+            },
+            success: function (data) {
+                console.log(data);
+                // $('#page_id').val()
+                if (data) {
+                    console.log($('#editor_micro').val());
+                    $('#editor_micro').val(data.content + $('#editor_micro').val());
+                    console.log($('#editor_micro').val());
+
+                    CKEDITOR.ClassicEditor
+                        .create(document.querySelector('#editor_micro'), ck_options)
+                        .then(editor => { })
+                        .catch(error => {
+                            console.error(error);
+                        });
+
+                    editorTest = document.querySelectorAll('.ck-editor__editable');
+                    editorTest[1].ckeditorInstance
+                        .destroy()
+                    // document.querySelectorAll('.ck-editor__editable')
+
+                } else {
+                    $('#editor').val("Texte");
+
+                    ClassicEditor
+                        .create(document.querySelector('#editor_micro'))
+                        .then(editor => { })
+                        .catch(error => {
+                            console.error(error);
+                        });
+
+                    document.querySelectorAll('.ck-editor__editable').ckeditorInstance
+                        .destroy()
+
+                }
+
+            },
+            error: function (error) {
+                $('#editor').val(report.description);
+
+                ClassicEditor
+                    .create(document.querySelector('#editor'))
+                    .then(editor => { })
+                    .catch(error => {
+                        console.error(error);
+                    });
+
+                document.querySelectorAll('.ck-editor__editable').ckeditorInstance
+                    .destroy()
+
+            }
+        })
+    });
 
 
     $('#template_supplementaire').on('change', function (e) {
@@ -444,7 +507,7 @@ $(document).ready(function () {
 
                     editorTest = document.querySelectorAll('.ck-editor__editable');
 
-                    editorTest[1].ckeditorInstance
+                    editorTest[2].ckeditorInstance
                         .destroy()
 
                 } else {
@@ -468,6 +531,70 @@ $(document).ready(function () {
 
                 ClassicEditor
                     .create(document.querySelector('#editor'))
+                    .then(editor => { })
+                    .catch(error => {
+                        console.error(error);
+                    });
+
+                document.querySelectorAll('.ck-editor__editable').ckeditorInstance
+                    .destroy()
+
+            }
+        })
+    });
+
+    $('#template_supplementaire_micro').on('change', function (e) {
+        var template_id = $('#template_supplementaire_micro').val();
+
+        $.ajax({
+            url: ROUTEGETTEMPLATE,
+            type: "POST",
+            data: {
+                "_token": TOKENGETTEMPLATE,
+                id: template_id,
+            },
+            success: function (data) {
+                console.log(data);
+                // $('#page_id').val()
+                if (data) {
+                    console.log($('#editor_micro2').val());
+                    $('#editor_micro2').val(data.content + $('#editor_micro2').val());
+                    console.log($('#editor_micro2').val());
+
+                    CKEDITOR.ClassicEditor
+                        .create(document.querySelector('#editor_micro2'), ck_options2)
+                        .then(editor => { })
+                        .catch(error => {
+                            console.error(error);
+                        });
+
+
+                    editorTest = document.querySelectorAll('.ck-editor__editable');
+
+                    editorTest[3].ckeditorInstance
+                        .destroy()
+
+                } else {
+                    $('#editor_micro2').val("Texte");
+
+                    ClassicEditor
+                        .create(document.querySelector('#editor_micro2'))
+                        .then(editor => { })
+                        .catch(error => {
+                            console.error(error);
+                        });
+
+                    document.querySelectorAll('.ck-editor__editable').ckeditorInstance
+                        .destroy()
+
+                }
+
+            },
+            error: function (error) {
+                $('#editor_micro2').val(report.description);
+
+                ClassicEditor
+                    .create(document.querySelector('#editor_micro2'))
                     .then(editor => { })
                     .catch(error => {
                         console.error(error);

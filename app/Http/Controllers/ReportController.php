@@ -92,12 +92,14 @@ class ReportController extends Controller
         $report
             ->fill([
                 'description' => $request->content,
+                'description_micro' => $request->content_micro,
                 'signatory1' => $doctor_signataire1,
                 'signatory2' => $doctor_signataire2,
                 'signatory3' => $doctor_signataire3,
                 'status' => $request->status == '1' ? '1' : '0',
                 'title' => $request->title,
                 'description_supplementaire' => $request->description_supplementaire != '' ? $request->description_supplementaire : '',
+                'description_supplementaire_micro' => $request->description_supplementaire_micro != '' ? $request->description_supplementaire_micro : '',
             ])
             ->save();
 
@@ -221,7 +223,9 @@ class ReportController extends Controller
             'qrcode' => $dataUri,
             'title' => $report->title,
             'content' => $report->description,
+            'content_micro' => $report->description_micro,
             'content_supplementaire' => $report->description_supplementaire != '' ? $report->description_supplementaire : '',
+            'content_supplementaire_micro' => $report->description_supplementaire_micro != '' ? $report->description_supplementaire_micro : '',
 
             'signatory1' => $report->signatory1 != 0 ? $signatory1->lastname . ' ' . $signatory1->firstname : '',
             'signature1' => $report->signatory1 != 0 ? $signatory1->signature : '',
@@ -491,7 +495,7 @@ class ReportController extends Controller
                 'appel_id'=>$vocal['data']['id'],
             ]);
         }
-        
+
         // dd($report->order);
 
         // //Récupérer tous les appels vocaux

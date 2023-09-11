@@ -342,8 +342,7 @@
                             <ul class="side-nav-second-level">
                                 {{-- @if (getOnlineUser()->can('view-contrats')) --}}
                                 <li class="side-nav-item">
-                                    <a href="{{ route('article.index') }}" class="side-nav-link">
-                                        <i class="uil-shopping-trolley"></i>
+                                    <a href="{{ route('article.index') }}">
                                         <span>Tous les articles</span>
                                     </a>
                                 </li>
@@ -351,8 +350,7 @@
 
                                 {{-- @if (getOnlineUser()->can('view-unit_Measurements')) --}}
                                 <li class="side-nav-item">
-                                    <a href="{{ route('unit.index') }}" class="side-nav-link">
-                                        <i class="uil-dashboard"></i>
+                                    <a href="{{ route('unit.index') }}" >
                                         <span>Unité de mesure</span>
                                     </a>
                                 </li>
@@ -377,8 +375,7 @@
                             <ul class="side-nav-second-level">
                                 {{-- @if (getOnlineUser()->can('view-contrats')) --}}
                                 <li class="side-nav-item">
-                                    <a href="{{ route('all_expense.index') }}" class="side-nav-link">
-                                        <i class="uil-money-stack"></i>
+                                    <a href="{{ route('all_expense.index') }}">
                                         <span>Toutes les dépenses</span>
                                     </a>
                                 </li>
@@ -386,8 +383,7 @@
 
                                 {{-- @if (getOnlineUser()->can('view-expense_categories')) --}}
                                 <li class="side-nav-item">
-                                    <a href="{{ route('expense.index') }}" class="side-nav-link">
-                                        <i class="uil-pricetag-alt"></i>
+                                    <a href="{{ route('expense.index') }}">
                                         <span>Catégories</span>
                                     </a>
                                 </li>

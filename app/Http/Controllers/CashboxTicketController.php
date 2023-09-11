@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\Cashbox;
 use App\Models\CashboxAdd;
 use App\Models\CashboxTicket;
 use App\Models\CashboxTicketDetail;
+use App\Models\Expense;
+use App\Models\Movement;
 use App\Models\Setting;
 use App\Models\Supplier;
 use Carbon\Carbon;
@@ -18,12 +21,14 @@ class CashboxTicketController extends Controller
     protected $setting;
     protected $tickets;
     protected $suppliers;
+    protected $article;
     protected $cashboxTicketDetail;
 
-    public function __construct(Setting $setting, CashboxTicket $tickets, Supplier $suppliers, CashboxTicketDetail $cashboxTicketDetail)
+    public function __construct(Setting $setting, CashboxTicket $tickets, Supplier $suppliers, CashboxTicketDetail $cashboxTicketDetail, Article $article)
     {
         $this->setting = $setting;
         $this->tickets = $tickets;
+        $this->article = $article;
         $this->suppliers = $suppliers;
         $this->cashboxTicketDetail = $cashboxTicketDetail;
     }
@@ -60,10 +65,21 @@ class CashboxTicketController extends Controller
         // }
         $data = [
             'cashbos_id' => $request->cashbos_id,
-            'supplier_id' => $request->supplier_id,
+            'supplier' => $request->supplier,
+            'supplier_id' => null,
             'description' => $request->description
         ];
         $code = generateCodeTicket();
+        $supplier = $this->suppliers->where('name','like',$data['supplier'])->first();
+        if (!empty($supplier)) {
+            $data['supplier_id'] = $supplier->id;
+        } else {
+           $supplierCreate = $this->suppliers->create([
+            'name' => $data['supplier']
+           ]);
+           $data['supplier_id'] = $supplierCreate->id;
+        }
+
 
         try {
 
@@ -107,6 +123,12 @@ class CashboxTicketController extends Controller
             'description' => $request->description
         ];
 
+        $examenFilePath = "";
+        if ($request->hasFile('ticket_file')) {
+            $examenFile = $request->file('ticket_file');
+            $examenFilePath = $examenFile->store('/tickets', 'public');
+        }
+
         try {
 
             // $cashboxAdd = CashboxAdd::find($cashboxAddData['id']);
@@ -114,8 +136,10 @@ class CashboxTicketController extends Controller
             $ticket->update([
                 'cashbox_id' => 2,
                 'supplier_id' => $data['supplier_id'],
-                'description' => $data['description']
+                'description' => $data['description'],
+                'ticket_file' => $examenFilePath
             ]);
+
             // return back()->with('success', "Bon de caisse enregistré ");
             return back()->with('success',"Mis à jour effectué");
 
@@ -211,16 +235,45 @@ class CashboxTicketController extends Controller
         'status' => $status
        ])->save();
        if ($status == "approuve") {
-        $cash = Cashbox::find(2);
-        $cash->current_balance -= $ticket->amount;
-        $cash->save();
+            $cash = Cashbox::find(2);
+            $cash->current_balance -= $ticket->amount;
+            $cash->save();
 
-        CashboxAdd::create([
-            'cashbox_id' => 2,
-            'date' => Carbon::now(),
-            'amount' => $ticket->amount,
-            'user_id' => Auth::user()->id
-        ]);
+            $expense = Expense::create([
+                'amount' => $ticket->amount,
+                'user_id' => Auth::user()->id,
+                'supplier_id' =>  $ticket->supplier->id,
+                'user_id' => Auth::user()->id,
+                'cashbox_ticket_id' => $ticket->id,
+                'paid' => 1,
+                'receipt' => $ticket->ticket_file
+            ]);
+
+            CashboxAdd::create([
+                'cashbox_id' => 2,
+                'date' => Carbon::now(),
+                'amount' => $ticket->amount,
+                'user_id' => Auth::user()->id
+            ]);
+
+            $details = $ticket->details()->get();
+            foreach ($details as $key => $detail) {
+                $article = $this->article->where('article_name',$detail->article)->first();
+                if (!empty($article)) {
+                    $article->quantity_in_stock += $detail->quantity;
+                    $article->save();
+                    Movement::create([
+                        'movement_type' => 'augmenter',
+                        'date_mouvement' => Carbon::now()->format('d/m/y'),
+                        'quantite_changed' => $detail->quantity,
+                        'description' => '',
+                        'article_id' => $article->id,
+                        'user_id' => Auth::user()->id
+                    ]);
+
+                }
+            }
+
        }
        return back()->with('success',"Bon de caisse ".$status." avec succès");
     }
