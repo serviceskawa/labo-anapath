@@ -429,7 +429,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/ticket-delete/{id}',[CashboxTicketController::class,'destroy']);
         Route::get('/ticket-detail-delete/{id}',[CashboxTicketController::class,'detail_destroy']);
         Route::post('/ticket-update-status',[CashboxTicketController::class, 'updateStatus'])->name('cashbox.ticket.updateStatus');
-        Route::get('/ticket-status-update',[CashboxTicketController::class, 'updateTicketStatus'])->name('cashbox.ticket.status.update');
+        Route::post('/ticket-status-update',[CashboxTicketController::class, 'updateTicketStatus'])->name('cashbox.ticket.status.update');
         Route::post('/ticket-update-total',[CashboxTicketController::class, 'updateTotal'])->name('cashbox.ticket.updateTotal');
 
         Route::get('ticket/getdetail/{id}',[CashboxTicketController::class, 'getTicketDetail'])->name('cashbox.ticket.getTicketDetail');

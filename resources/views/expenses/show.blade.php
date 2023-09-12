@@ -31,14 +31,17 @@
 
 
         {{-- @include('examens.details.create') --}}
+        <div class="page-title-right">
+            <h4 class="mt-3">Détails de la dépense</h4>
+        </div>
 
         {{-- Bloc pour modifier les demandes d'examan --}}
-        <div class="card my-3">
+        <form action="{{route('all_expense.update')}}" method="post" autocomplete="off"
+            enctype="multipart/form-data">
+            <div class="card my-3">
 
 
             {{-- Fusion de read et updaye --}}
-            <form action="{{route('all_expense.update')}}" method="post" autocomplete="off"
-                enctype="multipart/form-data">
                 <div class="card-body">
 
                     @csrf
@@ -79,15 +82,15 @@
                     </div>
 
                     <div class="row d-flex align-items-end">
-                        {{-- <div class="col-md-4 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Montant<span
                                         style="color:red;">*</span></label>
-                                <input type="number" name="amount" value="{{  old('amount') ? old('amount') : $expense->amount}}" class="form-control" required>
+                                <input type="number" name="amount" id="amount" value="{{  old('amount') ? old('amount') : $expense->amount}}" readonly class="form-control" required>
                             </div>
-                        </div> --}}
+                        </div>
 
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Pièce jointe<span
                                         style="color:red;">*</span></label>
@@ -95,7 +98,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="mb-3">
                                 <select class="form-select" id="" name="paid" required>
                                     <option value="">Selectionner le statut de la caisse</option>
@@ -109,10 +112,7 @@
                     </div>
                     <textarea name="description" class="form-control mb-3" id=""  {{$expense->paid != 0 ? 'readonly':''}}  rows="5"> {{$expense->description}} </textarea>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" {{$expense->paid != 0 ? 'disabled':''}} class="btn w-100 btn-warning">Mettre à jour</button>
-                </div>
-            </form>
+
         </div>
 
 
@@ -139,14 +139,14 @@
 
                                 <div class="mb-3">
                                     <label for="simpleinput" class="form-label">Prix</label>
-                                    <input type="number" name="unit_price" id="unit_price" class="form-control" required
+                                    <input type="number" name="unit_price" id="unit_price" class="form-control"
                                         >
                                 </div>
                             </div>
                             <div class="col-md-2 col-12">
                                 <div class="mb-3">
                                     <label for="simpleinput" class="form-label">Quantité</label>
-                                    <input type="number" name="quantity" id="quantity" class="form-control" required
+                                    <input type="number" name="quantity" id="quantity" class="form-control"
                                         >
                                 </div>
                             </div>
@@ -154,14 +154,14 @@
                                 <div class="mb-3">
                                     <label for="example-select" class="form-label">Total</label>
 
-                                    <input type="number" name="line_amount" id="total" class="form-control" required
+                                    <input type="number" name="line_amount" id="total" class="form-control"
                                         readonly>
                                 </div>
                             </div>
 
                             <div class="col-md-2 col-12">
                                 <div class="mb-3">
-                                    <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
+                                    <button type="button" class="btn btn-primary" id="add_detail">Ajouter</button>
                                 </div>
                             </div>
                         </div>
@@ -201,9 +201,13 @@
                         </tfoot>
                     </table>
                 </div>
+                <div class="modal-footer">
+                    <button type="submit" {{$expense->paid != 0 ? 'disabled':''}} class="btn w-100 btn-success">Soumettre</button>
+                </div>
 
             </div>
         </div> <!-- end card-->
+    </form>
 
 
     </div>

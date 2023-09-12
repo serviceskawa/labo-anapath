@@ -211,7 +211,8 @@ $(document).ready(function() {
                 amount: amount
             },
             success: function(response) {
-                console.log(response)
+                console.log('cc',response)
+                $('#amount').val(response.amount)
 
             },
             error: function(response) {
@@ -222,7 +223,8 @@ $(document).ready(function() {
 
 })
 
-$('#addDetailForm').on('submit', function(e) {
+// $('#addDetailForm').on('submit', function(e) {
+$('#add_detail').on('click', function(e) {
     e.preventDefault();
     let expense_id = expense.id;
     // console.log(cashbox_ticket_id);
@@ -230,6 +232,13 @@ $('#addDetailForm').on('submit', function(e) {
     let price = $('#unit_price').val();
     let quantity = $('#quantity').val();
     let total = $('#total').val();
+    if (article_name == "") {
+        toastr.error("Ajouter un article",'Article')
+    }else if (price == "") {
+        toastr.error("Le prix de l'artile est requis",'Prix article')
+    }else if (quantity == "") {
+        toastr.error("La quantité de l'article",'Quantité article')
+    }else{
 
     $.ajax({
         url: ROUTESTOREDETAILEXPENSE,
@@ -257,6 +266,7 @@ $('#addDetailForm').on('submit', function(e) {
             console.log(response)
         },
     });
+    }
 
 });
 

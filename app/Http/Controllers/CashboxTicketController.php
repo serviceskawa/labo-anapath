@@ -7,7 +7,9 @@ use App\Models\Cashbox;
 use App\Models\CashboxAdd;
 use App\Models\CashboxTicket;
 use App\Models\CashboxTicketDetail;
+use App\Models\ExpenceDetail;
 use App\Models\Expense;
+use App\Models\ExpenseCategorie;
 use App\Models\Movement;
 use App\Models\Setting;
 use App\Models\Supplier;
@@ -41,9 +43,10 @@ class CashboxTicketController extends Controller
 
         $tickets = $this->tickets->latest()->get();
         $suppliers = $this->suppliers->latest()->get();
+        $expenses_categorie = ExpenseCategorie::latest()->get();
         $setting = $this->setting->find(1);
         config(['app.name'=>$setting->titre]);
-        return view('cashbox.ticket.index',compact(['tickets','suppliers']));
+        return view('cashbox.ticket.index',compact(['tickets','suppliers','expenses_categorie']));
     }
     public function detail_index($id)
     {
@@ -53,9 +56,10 @@ class CashboxTicketController extends Controller
 
         $ticket = $this->tickets->find($id);
         $suppliers = $this->suppliers->latest()->get();
+        $expenses_categorie = ExpenseCategorie::latest()->get();
         $setting = $this->setting->find(1);
         config(['app.name'=>$setting->titre]);
-        return view('cashbox.ticket.details.index',compact(['ticket','suppliers']));
+        return view('cashbox.ticket.details.index',compact(['ticket','suppliers','expenses_categorie']));
     }
 
     public function store(Request $request)
@@ -67,6 +71,7 @@ class CashboxTicketController extends Controller
             'cashbos_id' => $request->cashbos_id,
             'supplier' => $request->supplier,
             'supplier_id' => null,
+            'expense_category_id' => $request->expense_categorie_id,
             'description' => $request->description
         ];
         $code = generateCodeTicket();
@@ -88,6 +93,7 @@ class CashboxTicketController extends Controller
                 'code' => $code,
                 'cashbox_id' => 2,
                 'supplier_id' => $data['supplier_id'],
+                'expense_category_id' => $data['expense_category_id'],
                 'description' => $data['description']
             ]);
             // return back()->with('success', "Bon de caisse enregistré ");
@@ -120,6 +126,7 @@ class CashboxTicketController extends Controller
         $data = [
             'id' => $request->ticket_id,
             'supplier_id' => $request->supplier_id,
+            'expense_category_id' => $request->expense_categorie_id,
             'description' => $request->description
         ];
 
@@ -136,17 +143,19 @@ class CashboxTicketController extends Controller
             $ticket->update([
                 'cashbox_id' => 2,
                 'supplier_id' => $data['supplier_id'],
+                'expense_category_id' => $data['expense_category_id'],
                 'description' => $data['description'],
                 'ticket_file' => $examenFilePath
             ]);
 
             // return back()->with('success', "Bon de caisse enregistré ");
-            return back()->with('success',"Mis à jour effectué");
+            return redirect()->route('cashbox.ticket.index')->with('success',"Mis à jour effectué");
 
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
         }
     }
+
 
     public function detail_store(Request $request)
     {
@@ -229,11 +238,13 @@ class CashboxTicketController extends Controller
 
     public function updateTicketStatus(Request $request)
     {
+
        $ticket = $this->tickets->find($request->input('id'));
        $status = $request->input('status');
        $ticket->fill([
         'status' => $status
        ])->save();
+
        if ($status == "approuve") {
             $cash = Cashbox::find(2);
             $cash->current_balance -= $ticket->amount;
@@ -244,6 +255,7 @@ class CashboxTicketController extends Controller
                 'user_id' => Auth::user()->id,
                 'supplier_id' =>  $ticket->supplier->id,
                 'user_id' => Auth::user()->id,
+                'expense_categorie_id' => $ticket->expense_category_id,
                 'cashbox_ticket_id' => $ticket->id,
                 'paid' => 1,
                 'receipt' => $ticket->ticket_file
@@ -258,8 +270,21 @@ class CashboxTicketController extends Controller
 
             $details = $ticket->details()->get();
             foreach ($details as $key => $detail) {
-                $article = $this->article->where('article_name',$detail->article)->first();
-                if (!empty($article)) {
+                $article = $this->article->where('article_name',$detail->item_name)->first();
+                DB::transaction(function () use ($detail, $article, $expense) {
+                    $details = new ExpenceDetail();
+                    $details->expense_id = $expense->id;
+                    $details->article_name = $detail->item_name;
+                    $details->article_id = $article ? $article->id:null;
+                    $details->unit_price = $detail->unit_price;
+                    $details->quantity = $detail->quantity;
+                    $details->line_amount = $detail->unit_price*$detail->quantity;
+                    $details->save();
+                });
+                $expense->amount += $detail->quantity;
+                $expense->save();
+
+                if ($article) {
                     $article->quantity_in_stock += $detail->quantity;
                     $article->save();
                     Movement::create([
@@ -275,6 +300,8 @@ class CashboxTicketController extends Controller
             }
 
        }
-       return back()->with('success',"Bon de caisse ".$status." avec succès");
+       return response()->json(['status'=>$status,'code'=>254],200);
+    //    return back()->with('success',"Bon de caisse ".$status." avec succès");
     }
+
 }

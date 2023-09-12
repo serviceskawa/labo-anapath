@@ -244,7 +244,6 @@ class ExpenseController extends Controller
 
 
                 $expense->update([
-                    'amount' => $request->amount,
                     'user_id' => Auth::user()->id,
                     'description' => $request->description,
                     'expense_categorie_id' => $request->expense_categorie_id,
@@ -269,7 +268,7 @@ class ExpenseController extends Controller
                     ]);
                     $details = $expense->details()->get();
                     foreach ($details as $key => $detail) {
-                        $article = $this->article->where('article_name',$detail->article)->first();
+                        $article = $this->article->where('article_name',$detail->item_name)->first();
                         if (!empty($article)) {
                             $article->quantity_in_stock += $detail->quantity;
                             $article->save();
@@ -286,7 +285,7 @@ class ExpenseController extends Controller
                     }
                 }
 
-                return back()->with('success', " Mise à jour effectuée avec succès  ! ");
+                return redirect()->with('success', " Mise à jour effectuée avec succès  ! ");
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
         }

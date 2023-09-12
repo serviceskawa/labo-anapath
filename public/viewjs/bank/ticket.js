@@ -37,29 +37,31 @@ function deleteTicketDetail(id) {
     });
 }
 
-function updateStatus(id)
-{
-        var status = $('#example-select').val();
-        var e_id = id;
-        console.log(e_id,status);
+// function updateStatus(id)
+// {
+//         var status = $('#example-select').val();
+//         var e_id = id;
+//         console.log(e_id,status);
 
-        $.ajax({
-        url: ROUTEUPDATESTATUSTICKET,
-        type: "POST",
-        data: {
-            "_token": TOKENUPDATESTATUSTICKET,
-            id: e_id,
-            status:status,
-        },
-        success: function (data) {
-            console.log(data)
-        },
-        error: function (error) {
-            console.log(error);
-        }
-    })
+//         $.ajax({
+//         url: ROUTEUPDATESTATUSTICKET,
+//         type: "POST",
+//         data: {
+//             "_token": TOKENUPDATESTATUSTICKET,
+//             id: e_id,
+//             status:status,
+//         },
+//         success: function (data) {
+//             console.log(data);
+//             toastr.success("Mis à jour avec succès", 'Ajout réussi');
+//             // location.reload();
+//         },
+//         error: function (error) {
+//             console.log(error);
+//         }
+//     })
 
-}
+// }
 
 $(document).ready(function() {
 
@@ -222,7 +224,8 @@ $(document).ready(function() {
 
 })
 
-$('#addDetailForm').on('submit', function(e) {
+// $('#addDetailForm').on('submit', function(e) {
+$('#add_detail').on('click', function(e) {
     e.preventDefault();
     let cashbox_ticket_id = ticket.id;
     // console.log(cashbox_ticket_id);
@@ -230,6 +233,13 @@ $('#addDetailForm').on('submit', function(e) {
     let price = $('#unit_price').val();
     let quantity = $('#quantity').val();
     let total = $('#total').val();
+    if (item_name == "") {
+        toastr.error("Ajouter un article",'Article')
+    }else if (price == "") {
+        toastr.error("Le prix de l'artile est requis",'Prix article')
+    }else if (quantity == "") {
+        toastr.error("La quantité de l'article",'Quantité article')
+    }else{
 
     $.ajax({
         url: ROUTESTOREDETAILTICKET,
@@ -257,6 +267,7 @@ $('#addDetailForm').on('submit', function(e) {
             console.log(response)
         },
     });
+    }
 
 });
 

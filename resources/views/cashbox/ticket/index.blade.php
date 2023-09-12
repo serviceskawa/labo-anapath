@@ -25,7 +25,7 @@
 
                     @csrf
                     <div class="row d-flex align-items-end">
-                        <div class="col-md-4 col-12">
+                        <div class="col-md-3 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Type de caisse<span
                                         style="color:red;">*</span></label>
@@ -33,7 +33,24 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4 col-12">
+                        <div class="col-md-3 col-12">
+                            <div class="mb-3">
+                                <label for="example-select" class="form-label">Catégorie de dépense<span
+                                        style="color:red;">*</span></label>
+                                <select class="form-select select2" data-toggle="select2" required id="expense_categorie_id" name="expense_categorie_id"
+                                        required>
+                                        <option value="">Sélectionner une catégorie</option>
+                                        @forelse ($expenses_categorie as $expense_categorie)
+                                            <option value="{{ $expense_categorie->id }}">{{ $expense_categorie->name }}</option>
+                                        @empty
+                                            Ajouter une catégorie
+                                        @endforelse
+                                    </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-3 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Fournisseur<span
                                         style="color:red;">*</span></label>
@@ -52,7 +69,7 @@
 
                         <div class="col-md-3 col-12">
                             <div class="mb-3">
-                                <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
+                                <button type="submit" class="btn btn-primary" id="add">Ajouter</button>
                             </div>
                         </div>
                     </div>
@@ -78,6 +95,14 @@
                                 <th>Fournisseur</th>
                                 <th>Description</th>
                                 <th>Status</th>
+                                @foreach (getRolesByUser(Auth::user()->id) as $role)
+                                    {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
+
+                                    @if ($role->name == "rootuser")
+                                        <th>Traitement</th>
+                                        @break
+                                    @endif
+                                @endforeach
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -102,18 +127,39 @@
                                         @if ($ticket->status=="en attente")
                                         <span class="badge bg-warning">En attente</span>
                                         @elseif ($ticket->status=="approuve")
-                                        <span class="badge bg-success">Acceptée</span>
+                                        <span class="badge bg-success">Approuvé</span>
                                         @else
-                                        <span class="badge bg-danger">Refusée</span>
+                                        <span class="badge bg-danger">Décliné</span>
                                         @endif
                                     </td>
+                                    @foreach (getRolesByUser(Auth::user()->id) as $role)
+                                        {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
+
+                                        @if ($role->name == "rootuser")
+                                            <td >
+
+                                                <select class="form-select " id="example-select" onchange="updateStatusTicket({{$ticket->id}})">
+                                                    <option {{ $ticket->status == 'en attente' ? 'selected':'' }} value='en attente'>En attente</option>
+                                                    <option {{ $ticket->status == 'approuve' ? 'selected':'' }}  value='approuve'>Approuvée</option>
+                                                    <option {{ $ticket->status == 'rejete' ? 'selected':'' }} value='rejete'>Décliné</option>
+                                                </select>
+
+                                            </td>
+                                            @break
+                                        @endif
+                                    @endforeach
 
                                     <td>
+                                        <a class="btn btn-primary" href="#" data-bs-toggle="modal"
+                                        data-bs-target="#bs-example-modal-lg-edit-{{ $ticket->id }}"><i
+                                        class="mdi mdi-eye"></i>
+                                        </a>
+                                        @include('cashbox.ticket.edit',['item' => $ticket])
                                         <a type="button" href="{{ route('cashbox.ticket.details.index',$ticket->id) }}"
-                                            class="btn btn-primary"><i class="mdi mdi-eye"></i>
+                                            class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i>
                                         </a>
 
-                                        @if ($ticket->status == "en attente")
+                                        {{-- @if ($ticket->status == "en attente")
                                             @foreach (getRolesByUser(Auth::user()->id) as $role)
                                                 @if ($role->name == "rootuser")
                                                     <a type="button" href="{{ route('cashbox.ticket.status.update',['id'=>$ticket->id,'status'=>"approuve"]) }}"
@@ -129,7 +175,7 @@
                                             <button type="submit" onclick="deleteTicket({{ $ticket->id }})"
                                                 class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i>
                                             </button>
-                                        @endif
+                                        @endif --}}
 
                                     </td>
                                 </tr>
@@ -150,23 +196,51 @@
 
     <script>
         $(function() {
-    $("#supplier").autocomplete({
-        source: function(request, response) {
-        // Faites une requête Ajax pour récupérer les noms des articles depuis la base de données
-        $.ajax({
-            url: "/fournisseur/getSupplier",
-            dataType: "json",
-            data: {
-            term: request.term // Terme saisi par l'utilisateur
-            },
-            success: function(data) {
-                response(data); // Affichez les suggestions d'articles à l'utilisateur
-            }
+            $("#supplier").autocomplete({
+                source: function(request, response) {
+                // Faites une requête Ajax pour récupérer les noms des articles depuis la base de données
+                $.ajax({
+                    url: "/fournisseur/getSupplier",
+                    dataType: "json",
+                    data: {
+                    term: request.term // Terme saisi par l'utilisateur
+                    },
+                    success: function(data) {
+                        response(data); // Affichez les suggestions d'articles à l'utilisateur
+                    }
+                });
+                },
+                minLength: 2 // Nombre de caractères avant de déclencher l'autocomplétion
+            });
         });
-        },
-        minLength: 2 // Nombre de caractères avant de déclencher l'autocomplétion
-    });
-    });
+        function updateStatusTicket(id)
+        {
+            var status = $('#example-select').val();
+            var e_id = id;
+            console.log(e_id,status);
+
+           if (status != 'en attente') {
+                $.ajax({
+                    url: "{{ route('cashbox.ticket.status.update') }}",
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        id: e_id,
+                        status:status,
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        toastr.success("Mis à jour du ticket", 'Ajout réussi');
+                        // location.reload();
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                })
+           }
+
+        }
+
     </script>
     <!-- Inclure jQuery -->
 

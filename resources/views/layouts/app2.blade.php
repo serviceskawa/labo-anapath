@@ -328,9 +328,18 @@
                         </div>
                     </li> --}}
 
+                    @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
+                    <li class="side-nav-item">
+                        <a href="{{ route('settings.app-index') }}" class="side-nav-link">
+                            <i class="uil-document-layout-right"></i>
+                            <span>Paramètres Systeme </span>
+                        </a>
+                    </li>
+                    @endif
+
 
                     {{-- Articles --}}
-                    @if (getOnlineUser()->can('view-articles'))
+                    {{-- @if (getOnlineUser()->can('view-articles')) --}}
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarForms-articles" aria-expanded="false"
                             aria-controls="sidebarForms" class="side-nav-link">
@@ -355,10 +364,18 @@
                                     </a>
                                 </li>
                                 {{-- @endif --}}
+                                 {{-- @if (getOnlineUser()->can('view-movement')) --}}
+                                <li class="side-nav-item">
+                                    <a href="{{ route('movement.index') }}">
+                                        {{-- <i class="uil-arrow-break"></i> --}}
+                                        <span>Historique des stocks</span>
+                                    </a>
+                                </li>
+                                {{-- @endif --}}
                             </ul>
                         </div>
                     </li>
-                    @endif
+                    {{-- @endif --}}
 
 
 
@@ -367,7 +384,7 @@
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarForms-expense" aria-expanded="false"
                             aria-controls="sidebarForms" class="side-nav-link">
-                            <i class="uil-moneybag-alt"></i>
+                            <i class="uil-balance-scale"></i>
                             <span>Dépenses</span>
                             <span class="menu-arrow"></span>
                         </a>
@@ -393,50 +410,10 @@
                     </li>
                     {{-- @endif --}}
 
-
-
-                    {{-- @if (getOnlineUser()->can('view-movement')) --}}
-                    <li class="side-nav-item">
-                        <a href="{{ route('movement.index') }}" class="side-nav-link">
-                            <i class="uil-arrow-break"></i>
-                            <span>Historique des stocks</span>
-                        </a>
-                    </li>
-                    {{-- @endif --}}
-
-                    @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
-                    <li class="side-nav-item">
-                        <a href="{{ route('settings.app-index') }}" class="side-nav-link">
-                            <i class="uil-document-layout-right"></i>
-                            <span>Paramètres Systeme </span>
-                        </a>
-                    </li>
-                    @endif
-
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerce8" aria-expanded="false"
-                            aria-controls="sidebarEcommerce8" class="side-nav-link">
-                            <i class="uil-files-landscapes"></i>
-                            <span> Fournisseurs </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-
-                        <div class="collapse" id="sidebarEcommerce8">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href="{{ route('supplier.index') }}">Tous les fournisseurs</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('supplier.categories.index') }}">Catégories</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarEcommerce9" aria-expanded="false"
                             aria-controls="sidebarEcommerce9" class="side-nav-link">
-                            <i class="uil-files-landscapes"></i>
+                            <i class="uil-balance-scale"></i>
                             <span> Caisse </span>
                             <span class="menu-arrow"></span>
                         </a>
@@ -460,6 +437,29 @@
                             </ul>
                         </div>
                     </li>
+
+
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarEcommerce8" aria-expanded="false"
+                            aria-controls="sidebarEcommerce8" class="side-nav-link">
+                            <i class="uil-files-landscapes"></i>
+                            <span> Fournisseurs </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+
+                        <div class="collapse" id="sidebarEcommerce8">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href="{{ route('supplier.index') }}">Tous les fournisseurs</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('supplier.categories.index') }}">Catégories</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+
 
                     @if (getOnlineUser()->can('edit-users'))
                     <li class="side-nav-item">

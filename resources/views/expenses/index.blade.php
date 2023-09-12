@@ -57,7 +57,7 @@
 
                     <div class="col-md-3 col-12">
                         <div class="mb-3">
-                            <button type="submit" class="btn btn-primary" id="add_detail">Ajouter</button>
+                            <button type="submit" class="btn btn-primary" id="add_expense">Ajouter</button>
                         </div>
                     </div>
                 </div>
@@ -109,8 +109,8 @@
                                 {{-- <a class="btn btn-primary" href="#" data-bs-toggle="modal"
                                     data-bs-target="#bs-example-modal-lg-edit-{{ $item->id }}"><i
                                         class="mdi mdi-lead-pencil"></i>
-                                </a> --}}
-                                {{-- @include('expenses.edit',['item' => $item]) --}}
+                                </a>
+                                @include('expenses.edit',['item' => $item]) --}}
 
                                 {{-- <button type="button" onclick="deleteModalEx({{ $item->id }})" class="btn btn-danger"><i
                                         class="mdi mdi-trash-can-outline"></i> </button> --}}

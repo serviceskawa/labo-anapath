@@ -15,6 +15,11 @@ class CashboxTicket extends Model
         return $this->belongsTo(Supplier::class,'supplier_id');
     }
 
+    public function categorie()
+    {
+        return $this->belongsTo(ExpenseCategorie::class,'expense_category_id');
+    }
+
     public function details()
     {
         return $this->hasMany(CashboxTicketDetail::class,'cashbox_ticket_id');

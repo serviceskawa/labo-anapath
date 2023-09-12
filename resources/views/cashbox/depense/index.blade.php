@@ -18,7 +18,7 @@
 
             @include('cashbox.depense.create')
 
-            @include('cashbox.depense.edit')
+            {{-- @include('cashbox.depense.edit') --}}
 
         </div>
     </div>
@@ -50,10 +50,11 @@
                                 <th>#</th>
                                 <th>Date</th>
                                 <th>Montant</th>
-                                <th>Banque</th>
-                                <th>Numéro de chèque</th>
+                                {{-- <th>Banque</th>
+                                <th>Numéro de chèque</th> --}}
                                 {{-- <th>Facture concernée</th> --}}
                                 <th>Utilisateur</th>
+                                <th>Action</th>
                                 {{-- <th>Description</th> --}}
                                 {{-- <th>Actions</th> --}}
 
@@ -66,13 +67,20 @@
 
                             @foreach ($cashadds as $key => $item)
                                 <tr class="{{ $item->bank ? '': 'table-danger' }}">
-                                    <td>{{ $key++ }}</td>
+                                    <td>{{ ++$key }}</td>
                                     <td>{{ $item->date }}</td>
-                                    <td>{{ $item->amount }}</td>
-                                    <td>{{ $item->bank ? $item->bank->name :'' }}</td>
-                                    <td>{{ $item->cheque_number }}</td>
+                                    <td>{{  $item->bank ? $item->amount:'-'.$item->amount }}</td>
+                                    {{-- <td>{{ $item->bank ? $item->bank->name :'Néant' }}</td>
+                                    <td>{{ $item->cheque_number ? $item->cheque_number : 'Néant' }}</td> --}}
                                     {{-- <td>{{ $item->invoice ? ($item->invoice->order? $item->invoice->order->code:''):'' }}</td> --}}
                                     <td>{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
+                                    <td>
+                                        <a class="btn btn-primary" href="#" data-bs-toggle="modal"
+                                        data-bs-target="#bs-example-modal-lg-edit-{{ $item->id }}"><i
+                                        class="mdi mdi-eye"></i>
+                                        </a>
+                                        @include('cashbox.depense.edit_depense',['item' => $item])
+                                    </td>
                                     {{-- <td>{{ $item->description }}</td> --}}
                                     {{-- <td>
                                         <button type="button" onclick="editVente({{$item->id}})" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>

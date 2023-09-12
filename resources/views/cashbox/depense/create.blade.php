@@ -43,7 +43,7 @@
 
                         <div class="mb-3 col-lg-6">
                             <label for="simpleinput" class="form-label">Attachement</label>
-                            <input type="file" id="example-fileinput" class="form-control">
+                            <input type="file" id="example-fileinput" class="form-control" name="depense_file">
                         </div>
                     </div>
 

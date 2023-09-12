@@ -98,6 +98,7 @@ date_default_timezone_set('Europe/Paris');
     {{-- <br> --}}
     {{-- <div class="border_t"></div> --}}
     {!! $content !!}
+    {!! $content_micro !!}
 
     {{-- <br><br><br> --}}
 
@@ -109,6 +110,7 @@ date_default_timezone_set('Europe/Paris');
 
         </h3>
         {!! $content_supplementaire !!}
+        {!! $content_supplementaire_micro !!}
     @endif
 
     <div style="">
