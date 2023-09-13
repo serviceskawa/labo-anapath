@@ -33,6 +33,7 @@ use App\Http\Controllers\TestCategoryController;
 use App\Http\Controllers\DetailsContratController;
 use App\Http\Controllers\TypeConsultationController;
 use App\Http\Controllers\CategoryPrestationController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\LogReportController;
 use App\Http\Controllers\ProblemCategoryController;
 use App\Http\Controllers\ProblemeReportersController;
@@ -136,6 +137,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/doctors/delete/{id}', [DoctorController::class, 'destroy']);
     Route::get('/getdoctor/{id}', [DoctorController::class, 'edit']);
     Route::post('/doctors/update', [DoctorController::class, 'update'])->name('doctors.update');
+
+
+    //CLIENTS
+    Route::get('/clients/index', [ClientController::class, 'index'])->name('clients.index');
+    Route::post('/clients/index', [ClientController::class, 'store'])->name('clients.store');
+    Route::get('/clients/delete/{id}', [ClientController::class, 'destroy']);
+    Route::get('/getclient/{id}', [ClientController::class, 'edit']);
+    Route::post('/clients/update', [ClientController::class, 'update'])->name('clients.update');
+    // Route::post('/clients/storeDoctor', [ClientController::class, 'storeDoctor'])->name('clients.storeDoctor'); //Enregistrement docteur depuis select2
 
     //CONTRATS
     Route::get('/contrats/index', [ContratController::class, 'index'])->name('contrats.index');

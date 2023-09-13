@@ -337,7 +337,6 @@
                     </li>
                     @endif
 
-
                     {{-- Articles --}}
                     {{-- @if (getOnlineUser()->can('view-articles')) --}}
                     <li class="side-nav-item">
@@ -377,8 +376,6 @@
                         </div>
                     </li>
                     {{-- @endif --}}
-
-
 
                     {{-- Dépenses --}}
                     {{-- @if (getOnlineUser()->can('view-depenses')) --}}
@@ -459,6 +456,15 @@
                             </ul>
                         </div>
                     </li>
+
+                    {{-- @if (getOnlineUser()->can('view-clients')) --}}
+                    <li class="side-nav-item">
+                        <a href="{{ route('clients.index') }}" class="side-nav-link">
+                            <i class="uil-users-alt"></i>
+                            <span> Clients </span>
+                        </a>
+                    </li>
+                    {{-- @endif --}}
 
 
 
