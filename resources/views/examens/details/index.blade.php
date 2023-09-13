@@ -72,7 +72,7 @@
                             @if ($test_order->invoice)
                                 @if ($test_order->invoice->paid != 1)
                                     <select class="form-select select2" data-toggle="select2" required id="type_examen"
-                                        name="type_examen">
+                                        name="type_examen_id">
                                         <option>Sélectionner le type d'examen</option>
                                         @forelse ($types_orders as $type)
                                             <option {{ $test_order->type_order_id == $type->id ? 'selected' : '' }}
@@ -97,7 +97,7 @@
                                 @endif
                             @else
                                 <select class="form-select select2" data-toggle="select2" required id="type_examen"
-                                    name="type_examen">
+                                    name="type_examen_id">
                                     <option>Sélectionner le type d'examen</option>
                                     @forelse ($types_orders as $type)
                                         <option {{ $test_order->type_order_id == $type->id ? 'selected' : '' }}

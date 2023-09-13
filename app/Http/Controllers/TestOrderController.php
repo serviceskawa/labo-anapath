@@ -542,71 +542,117 @@ public function __construct(
             $log->save();
 
             $code_facture = generateCodeFacture();
-            $invoiceTestOrder = $this->invoice->where('test_order_id',$test_order->id)->first();
 
-            if ($invoiceTestOrder) {
-                $invoiceTestOrder->update([
-                    "patient_id" => $test_order->patient_id,
-                    "client_name" => $test_order->patient->firstname . ' ' . $test_order->patient->lastname,
-                    "client_address" => $test_order->patient->adresse,
-                    "subtotal" => $test_order->subtotal,
-                    "discount" => $test_order->discount,
-                    "total" => $test_order->total,
-                ]);
-                $tests = $test_order->details()->get();
+            // Si la demande est sur un contrat individuel
+            if ($test_order->contrat->invoice_unique !=0) {
+                $invoiceTestOrder = $this->invoice->where('test_order_id',$test_order->id)->first();
 
-                foreach ($tests as $value) {
-                    if ($value->status ==1) {
-                        $this->invoiceDetail->create([
-                            "invoice_id" => $invoiceTestOrder->id,
-                            "test_id" => $value->test_id,
-                            "test_name" => $value->test_name,
-                            "price" => $value->price,
-                            "discount" => $value->discount,
-                            "total" => $value->total,
-                        ]);
-                        $value->status =0;
-                        $value->save();
+                if ($invoiceTestOrder) {
+                    $invoiceTestOrder->update([
+                        "patient_id" => $test_order->patient_id,
+                        "client_name" => $test_order->patient->firstname . ' ' . $test_order->patient->lastname,
+                        "client_address" => $test_order->patient->adresse,
+                        "subtotal" => $test_order->subtotal,
+                        "discount" => $test_order->discount,
+                        "total" => $test_order->total,
+                    ]);
+                    $tests = $test_order->details()->get();
+
+                    foreach ($tests as $value) {
+                        if ($value->status ==1) {
+                            $this->invoiceDetail->create([
+                                "invoice_id" => $invoiceTestOrder->id,
+                                "test_id" => $value->test_id,
+                                "test_name" => $value->test_name,
+                                "price" => $value->price,
+                                "discount" => $value->discount,
+                                "total" => $value->total,
+                            ]);
+                            $value->status =0;
+                            $value->save();
+                        }
                     }
-                }
 
 
-                return redirect()->route('invoice.show', [$invoiceTestOrder->id])->with('success', " Opération effectuée avec succès  ! ");
-            }else {
-                // Creation de la facture
-                $invoice = $this->invoice->create([
-                    "test_order_id" => $test_order->id,
-                    "date" => date('Y-m-d'),
-                    "patient_id" => $test_order->patient_id,
-                    "client_name" => $test_order->patient->firstname . ' ' . $test_order->patient->lastname,
-                    "client_address" => $test_order->patient->adresse,
-                    "subtotal" => $test_order->subtotal,
-                    "discount" => $test_order->discount,
-                    "total" => $test_order->total,
-                    "code" => $code_facture,
-                ]);
-                // Recupération des details de la demande d'examen
-                $tests = $test_order->details()->get();
-                $items = [];
-                // Creation des details de la facture
-                foreach ($tests as $value) {
-                    if ($value->status ==1) {
-                        $detailInvoice = $this->invoiceDetail->create([
-                            "invoice_id" => $invoice->id,
-                            "test_id" => $value->test_id,
-                            "test_name" => $value->test_name,
-                            "price" => $value->price,
-                            "discount" => $value->discount,
-                            "total" => $value->total,
-                        ]);
-                        $value->status =0;
-                        $value->save();
-                        $items[]=$detailInvoice;
+                    return redirect()->route('invoice.show', [$invoiceTestOrder->id])->with('success', " Opération effectuée avec succès  ! ");
+                }else {
+                    // Creation de la facture
+                    $invoice = $this->invoice->create([
+                        "test_order_id" => $test_order->id,
+                        "date" => date('Y-m-d'),
+                        "patient_id" => $test_order->patient_id,
+                        "client_name" => $test_order->patient->firstname . ' ' . $test_order->patient->lastname,
+                        "client_address" => $test_order->patient->adresse,
+                        "subtotal" => $test_order->subtotal,
+                        "discount" => $test_order->discount,
+                        "total" => $test_order->total,
+                        "code" => $code_facture,
+                    ]);
+                    // Recupération des details de la demande d'examen
+                    $tests = $test_order->details()->get();
+                    $items = [];
+                    // Creation des details de la facture
+                    foreach ($tests as $value) {
+                        if ($value->status ==1) {
+                            $detailInvoice = $this->invoiceDetail->create([
+                                "invoice_id" => $invoice->id,
+                                "test_id" => $value->test_id,
+                                "test_name" => $value->test_name,
+                                "price" => $value->price,
+                                "discount" => $value->discount,
+                                "total" => $value->total,
+                            ]);
+                            $value->status =0;
+                            $value->save();
+                            $items[]=$detailInvoice;
+                        }
                     }
-                }
 
-                return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
+                    return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
+                }
+            } else {
+                //si la demande est sur un contrat à facturation groupée
+                //Recherché la facture de ce contrat
+                $invoiceTestOrder = $this->invoice->where('contrat_id',$test_order->contrat->id)->first();
+                if ($invoiceTestOrder) {
+                    if ($invoiceTestOrder->paid !=1) {
+                        $invoiceTestOrder->update([
+                            // "patient_id" => $test_order->patient_id,
+                            "client_name" => $test_order->contrat->client->name,
+                            "client_address" => $test_order->contrat->client->adress,
+                            "subtotal" => $invoiceTestOrder->subtotal+$test_order->subtotal,
+                            "discount" => $invoiceTestOrder->discount + $test_order->discount,
+                            "total" => $invoiceTestOrder->total + $test_order->total,
+                        ]);
+                        $tests = $test_order->details()->get();
+
+                        foreach ($tests as $value) {
+                            if ($value->status ==1) {
+                                $this->invoiceDetail->create([
+                                    "invoice_id" => $invoiceTestOrder->id,
+                                    "test_id" => $value->test_id,
+                                    "test_name" => $value->test_name,
+                                    "price" => $value->price,
+                                    "discount" => $value->discount,
+                                    "total" => $value->total,
+                                ]);
+                                $value->status =0;
+                                $value->save();
+                            }
+                        }
+                    } else {
+                        return back()->with('error', "Le contrat de cette demande a déjà été cloturé ");
+                    }
+
+                    return redirect()->route('invoice.show', [$invoiceTestOrder->id])->with('success', " Opération effectuée avec succès  ! ");
+                }else {
+                    // dd('facture existe pas');
+                    return back()->with('error', " Aucune facture n'est associé à se contrat ! ");
+                }
             }
+
+
+
 
         // }
     }
@@ -635,7 +681,7 @@ public function __construct(
             'is_urgent' => 'nullable',
             'examen_reference_select' => 'nullable',
             'examen_reference_input' => 'nullable',
-            'type_examen' => 'required',
+            'type_examen_id' => 'required',
             'attribuate_doctor_id' => 'nullable',
             'option' => 'nullable',
         ]);
@@ -699,13 +745,13 @@ public function __construct(
 
         // dd($request->files_name);
 
-        $uploadedFiles = $request->file('files_name'); // Utilise directement la chaîne 'files_name' ici
-        $filenames = [];
+        // $uploadedFiles = $request->file('files_name'); // Utilise directement la chaîne 'files_name' ici
+        // $filenames = [];
 
-        foreach ($uploadedFiles as $file) {
-            $filename = $file->store('examen_images', 'public');
-            $filenames[] = $filename;
-        }
+        // foreach ($uploadedFiles as $file) {
+        //     $filename = $file->store('examen_images', 'public');
+        //     $filenames[] = $filename;
+        // }
 
         // foreach ($images as $image) {
         //     $filename = $image->store('examen_images', 'public');

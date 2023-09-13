@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ContratDetailRequest;
 use App\Http\Requests\ContratRequest;
 use App\Models\CategoryTest;
+use App\Models\Client;
 use App\Models\Contrat;
 use App\Models\Details_Contrat;
+use App\Models\Invoice;
 use App\Models\Setting;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,15 +20,19 @@ class ContratController extends Controller
 
     protected $contrat;
     protected $setting;
+    protected $invoices;
     protected $categoryTest;
     protected $detailsContrat;
+    protected $clients;
 
 
-    public function __construct(Contrat $contrat, Setting $setting, CategoryTest $categoryTest, Details_Contrat $detailsContrat)
+    public function __construct(Contrat $contrat, Setting $setting, CategoryTest $categoryTest, Details_Contrat $detailsContrat, Client $clients, Invoice $invoice)
     {
 
         $this->contrat = $contrat;
+        $this->clients = $clients;
         $this->setting = $setting;
+        $this->invoices = $invoice;
         $this->categoryTest = $categoryTest;
         $this->detailsContrat = $detailsContrat;
     }
@@ -42,11 +49,12 @@ class ContratController extends Controller
 
         //récupération des contrats avec les détails
         $contrats = $this->contrat->getWithDetail();
+        $clients = $this->clients->latest()->get();
 
         $setting = $this->setting->find(1);
 
         config(['app.name' => $setting->titre]);
-        return view('contrats.index', compact(['contrats']));
+        return view('contrats.index', compact(['contrats','clients']));
     }
 
     public function details_index($id)
@@ -93,16 +101,28 @@ class ContratController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
+
         $data =[
             'name' => $request->name,
             'type' => $request->type,
             'description' => $request->description,
             'nbr_tests' => $request->nbr_examen,
+            'invoice_unique' => $request->invoice_unique?0:1,
+            'client_id' => $request->client_id,
             'status' => 'INACTIF',
         ];
 
         try {
             $contrat = $this->contrat->create($data);
+            if ($contrat->invoice_unique==0) {
+                $code_facture = generateCodeFacture();
+                 $invoice = $this->invoices->create([
+                    "date" => Carbon::now(),
+                    "contrat_id" => $contrat->id,
+                    "client_name" => $contrat->client->name,
+                    "code" => $code_facture
+                ]);
+            }
 
             return redirect()->route('contrat_details.index', $contrat->id)->with('success', "Contrat enregistré avec succès ! ");
         } catch (\Throwable $ex) {

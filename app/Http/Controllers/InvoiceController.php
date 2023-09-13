@@ -457,7 +457,7 @@ class InvoiceController extends Controller
             return redirect()->back()->with('success', "Cette facture a déjà été payé ! ");
         } else {
 
-            if ($invoice->test_order_id) {
+            // if ($invoice->test_order_id) {
                 if ($settingInvoice->status == 1) {
                     $invoice->fill([
                         "paid" => '1',
@@ -473,6 +473,10 @@ class InvoiceController extends Controller
                         'invoice_id' => $invoice->id,
                         'user_id' => Auth::user()->id
                     ]);
+                    if ($invoice->contrat->invoice_unique ==0) {
+                        $invoice->contrat->is_close = 1;
+                        $invoice->contrat->save();
+                    }
                     if ($invoice->test_order_id != null) {
                         // return response()->json('cool');
 
@@ -496,12 +500,16 @@ class InvoiceController extends Controller
                         'invoice_id' => $invoice->id,
                         'user_id' => Auth::user()->id
                     ]);
+                    if ($invoice->contrat->invoice_unique ==0) {
+                        $invoice->contrat->is_close = 1;
+                        $invoice->contrat->save();
+                    }
                     return response()->json(['code'=> $request->code]);
                     // return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
                 }
-            } else {
-                return response()->json('Pas une demande d\'examen');
-            }
+            // } else {
+            //     return response()->json('Pas une demande d\'examen');
+            // }
 
         }
     }

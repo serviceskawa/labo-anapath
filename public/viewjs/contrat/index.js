@@ -9,7 +9,7 @@ function deleteModal(id) {
         cancelButtonText: "Non !",
     }).then(function(result) {
         if (result.value) {
-            window.location.href = "{{ url('contrats/delete') }}" + "/" + id;
+            window.location.href = baseUrl + "/contrats/delete/" + id;
             Swal.fire(
                 "Suppression !",
                 "En cours de traitement ...",
@@ -18,6 +18,17 @@ function deleteModal(id) {
         }
     });
 }
+
+var checkbox = document.getElementById("switch3");
+var textField = document.getElementById("show-client");
+
+checkbox.addEventListener('change', function () {
+    if (checkbox.checked) {
+        textField.style.display = 'block';
+    } else {
+        textField.style.display = 'none';
+    }
+});
 
 function closeModal(id) {
 
@@ -70,6 +81,8 @@ $(document).ready(function() {
 //EDITION
 function edit(id) {
     var e_id = id;
+    var checkbox = document.getElementById("switch4");
+    var textField = document.getElementById("show-client1");
     // var baseUrl = "{{ url('/') }}";
 
     // Populate Data in Edit Modal Form
@@ -84,6 +97,12 @@ function edit(id) {
             $('#status2').val(data.status).change();
             $('#description2').val(data.description);
             $('#nbr_examen').val(data.nbr_tests);
+            if (data.invoice_unique == 0) {
+                checkbox.checked = true
+                textField.style.display = 'block';
+                $('#client_id1').val(data.client_id).change()
+
+            }
 
             $('#editModal').modal('show');
         },
