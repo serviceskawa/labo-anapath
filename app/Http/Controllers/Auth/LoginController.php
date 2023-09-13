@@ -202,11 +202,7 @@ class LoginController extends Controller
             $user = (new User)->findorfail($userConnect->id);
             $user->is_connect = 0;
             $user->two_factor_enabled =0;
-            $user->save();
-// dd($request);
-
-
-           dd(Auth::logout()); // déconnecte l'utilisateur
+            $user->save(); // déconnecte l'utilisateur
             $request->session()->invalidate();
             $request->session()->regenerateToken();
             return redirect()->route('login');

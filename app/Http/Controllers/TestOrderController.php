@@ -954,7 +954,7 @@ public function getExamImages($examenCode)
                     return Str::limit($detail->test_name, 30, '...');
                     // return '<strong>' . $detail->order->type->title . '</strong>: ' . Str::limit($detail->test_name, 30, '...');
                 })->implode('<br>');
-                return '<strong>' . $testOrder->type->title . '</strong>: ' . $a;
+                return '<strong>' . $testOrder->type_order_id != 0 ? ($testOrder->type?$testOrder->type->title :''):'' . '</strong>: ' . $a;
             })
             ->addColumn('rendu', function ($data) {
                 if (!empty($data->report)) {
@@ -975,7 +975,7 @@ public function getExamImages($examenCode)
                 return $span;
             })
             ->addColumn('type', function ($data) {
-                return $data->type->title;
+                return $data->type_order_id !=0 ? $data->type->title :'';
             })
             ->addColumn('urgence', function ($data) {
                 return $data->is_urgent;
