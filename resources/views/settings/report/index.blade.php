@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'REPORTS SETTINGS')
+@section('title', 'Paramètre du système')
 
 @section('css')
     <link href="{{ asset('/adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />

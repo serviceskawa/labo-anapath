@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Mettre à jour un examen')
+@section('title', 'Examen')
 @section('css')
 
     <style>
@@ -186,7 +186,7 @@
 
                         </div>
 
-                        
+
                     </div>
 
                     <div class="col-md-4">
@@ -197,7 +197,7 @@
                             <option value="">Sélectionner une option d'envoie</option>
                             <option value="0">Appel</option>
                             <option value="1">SMS</option>
-                           
+
                         </select>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Créer un facture')
+@section('title', 'Factures')
 
 @section('content')
 <div class="">

@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Details bon de caisse')
+@section('title', 'Caisse')
 
 @section('css')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.css"

@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Dépenses|Ouverture et fermeture')
+@section('title', 'Caisse')
 
 @section('content')
 <div class="row">

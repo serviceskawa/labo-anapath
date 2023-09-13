@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Details Facture')
+@section('title', 'Factures')
 @section('content')
     <!-- start page title -->
     <div class="row">
