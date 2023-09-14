@@ -495,12 +495,16 @@ Route::middleware(['auth'])->group(function () {
 
 
      // Expense CashboxDaily
-    // Route::prefix('expenses')->group(function () {
+    // Route::prefix('cashbox_dailies')->group(function () {
         Route::get('cashbox-daily', [CashboxDailyController::class, 'index'])->name('daily.index');
         Route::get('cashbox-daily-create', [CashboxDailyController::class, 'create'])->name('daily.create');
         Route::get('cashbox-daily-edit/{cashboxDaily}', [CashboxDailyController::class, 'edit'])->name('daily.edit');
-        Route::put('cashbox-daily-update/{cashboxDaily}', [CashboxDailyController::class, 'update'])->name('daily.update');
+        Route::put('cashbox-daily-update', [CashboxDailyController::class, 'update'])->name('daily.update');
         Route::post('cashbox-daily-store', [CashboxDailyController::class, 'store'])->name('daily.store');
         Route::get('cashbox-daily-delete/{cashboxDaily}', [CashboxDailyController::class, 'delete'])->name('daily.delete');
-    // });
+        
+        // Route vers 
+            Route::get('cashbox-daily-fermeture/{cashboxDaily}', [CashboxDailyController::class, 'detail_fermeture_caisse'])->name('daily.fermeture');
+        // 
+        // });
 });

@@ -330,16 +330,25 @@
 
 
                     {{-- Articles --}}
-                    @if (getOnlineUser()->can('view-articles'))
+                    {{-- @if (getOnlineUser()->can('view-articles')) --}}
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarForms-articles" aria-expanded="false"
                             aria-controls="sidebarForms" class="side-nav-link">
                             <i class="uil-shop"></i>
-                            <span>Articles</span>
+                            <span>Stocks</span>
                             <span class="menu-arrow"></span>
                         </a>
                         <div class="collapse" id="sidebarForms-articles">
                             <ul class="side-nav-second-level">
+                                {{-- @if (getOnlineUser()->can('view-contrats')) --}}
+                                <li class="side-nav-item">
+                                    <a href="{{ route('movement.index') }}" class="side-nav-link">
+                                        <i class="uil-arrow-break"></i>
+                                        <span>Historique des stocks</span>
+                                    </a>
+                                </li>
+                                {{-- @endif --}}
+
                                 {{-- @if (getOnlineUser()->can('view-contrats')) --}}
                                 <li class="side-nav-item">
                                     <a href="{{ route('article.index') }}" class="side-nav-link">
@@ -357,10 +366,11 @@
                                     </a>
                                 </li>
                                 {{-- @endif --}}
+
                             </ul>
                         </div>
                     </li>
-                    @endif
+                    {{-- @endif --}}
 
 
 
@@ -398,15 +408,6 @@
                     {{-- @endif --}}
 
 
-
-                    {{-- @if (getOnlineUser()->can('view-movement')) --}}
-                    <li class="side-nav-item">
-                        <a href="{{ route('movement.index') }}" class="side-nav-link">
-                            <i class="uil-arrow-break"></i>
-                            <span>Historique des stocks</span>
-                        </a>
-                    </li>
-                    {{-- @endif --}}
 
                     @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
                     <li class="side-nav-item">
@@ -648,7 +649,7 @@
     <script src="{{ asset('/adminassets/js/vendor/buttons.print.min.js') }}"></script>
     <script src="{{ asset('/adminassets/js/vendor/dataTables.keyTable.min.js') }}"></script>
     <script src="{{ asset('/adminassets/js/vendor/dataTables.select.min.js') }}"></script>
-
+    <script src="{{ asset('/adminassets/js/demo.form-wizard.js') }}"></script>
     <script src="{{ asset('/adminassets/js/pages/demo.datatable-init.js') }}"></script>
     <script src="{{ asset('/adminassets/js/sweetalert2/sweetalert2.min.js') }}"></script>
 

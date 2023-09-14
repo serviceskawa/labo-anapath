@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\CashboxTicket;
 use App\Models\Expense;
 use App\Models\ExpenseCategorie;
 use App\Models\Setting;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,7 +48,12 @@ class ExpenseController extends Controller
      */
     public function create()
     {
-        //
+        $expenses_categories = ExpenseCategorie::latest()->get();
+        $cash_tickets = CashboxTicket::latest()->get();
+        $articles = Article::latest()->get();
+        $suppliers = Supplier::latest()->get();
+
+        return view('expenses.create',compact(['expenses_categories','cash_tickets','articles','suppliers']));
     }
 
     /**
@@ -68,15 +75,21 @@ class ExpenseController extends Controller
                     $path = null;
                 }
 
+                $search_article = Article::find($request->item_id)->first();
+
         try {
                 Expense::create([
-                    'amount' => $request->amount,
+                    'total_amount' => $request->total_amount,
                     'user_id' => Auth::user()->id,
-                    'description' => $request->description,
+                    'unit_price' => $request->unit_price,
                     'expense_categorie_id' => $request->expense_categorie_id,
                     'cashbox_ticket_id' => $request->cashbox_ticket_id,
                     'paid' => $request->paid,
-                    'receipt' => $path
+                    'receipt' => $path,
+                    'supplier_id' => $request->supplier_id,
+                    'item_id' => $request->item_id,
+                    'item_name' => $search_article->article_name,
+                    'quantity' => $request->quantity,
                 ]);
 
                 return back()->with('success', " Opération effectuée avec succès  ! ");

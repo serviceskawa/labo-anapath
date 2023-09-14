@@ -25,4 +25,14 @@ class Expense extends Model
     {
         return $this->belongsTo(User::class,'user_id');
     }
+
+    public function article()
+    {
+        return $this->belongsTo(Article::class,'item_id');
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class,'supplier_id');
+    }
 }

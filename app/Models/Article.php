@@ -21,4 +21,9 @@ class Article extends Model
     {
         return $this->belongsTo(UnitMeasurement::class,'id');
     }
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
 }

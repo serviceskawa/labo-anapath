@@ -7,13 +7,13 @@
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#bs-example-modal-lg-create">Ajouter une dépense</button>
+                <a href="{{ route('all_expense.create') }}" class="btn btn-primary">Ajouter une nouvelle dépense</a>
             </div>
             <h4 class="page-title">Dépenses</h4>
         </div>
-        @include('expenses.create',['expenses' => $expenses,'expenses_categorie' => $expenses_categorie,'cash_ticket' =>
-        $cash_ticket])
+        {{-- @include('expenses.create',['expenses' => $expenses,'expenses_categorie' =>
+        $expenses_categorie,'cash_ticket' =>
+        $cash_ticket]) --}}
     </div>
 </div>
 
@@ -41,7 +41,7 @@
                 <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
-                            <th>Montant</th>
+                            <th>Total</th>
                             <th>Utilisateur</th>
                             <th>Catégorie</th>
                             <th>Ticket</th>
