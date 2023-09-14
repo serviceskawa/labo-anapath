@@ -135,6 +135,8 @@ class InvoiceController extends Controller
      */
     public function show(Request $request, $id)
     {
+        $cashbox = Cashbox::find(2);
+        // dd($cashbox);
         $invoice = $this->invoices->findorfail($id);
         $settingInvoice = $this->settingInvoice->find(1);
         $setting = $this->setting->find(1);
@@ -143,7 +145,7 @@ class InvoiceController extends Controller
         }
 
         config(['app.name' => $setting->titre]);
-        return view('invoices.show', compact('invoice', 'setting', 'settingInvoice'));
+        return view('invoices.show', compact('cashbox','invoice', 'setting', 'settingInvoice'));
     }
 
     public function getInvoiceforDatatable(Request $request)

@@ -15,4 +15,8 @@ class CashboxDaily extends Model
     public function cashbox(){
         return $this->belongsTo(Cashbox::class,'cashbox_id');
     }
+
+    public function user(){
+        return $this->belongsTo(User::class,'user_id');
+    }
 }

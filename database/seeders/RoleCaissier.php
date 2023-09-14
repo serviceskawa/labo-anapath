@@ -18,7 +18,7 @@ class RoleCaissier extends Seeder
     {
         $roleDB = Role::updateOrCreate(
             ['name' => 'Caissier', 'slug' => 'caissier'],
-            ['created_by' => 5, 'description' =>'utilisateur avec le role caissier']
+            ['created_by' => 1, 'description' =>'utilisateur avec le role caissier']
         );
         $permission = [
             "titre" => 'view pay_button',

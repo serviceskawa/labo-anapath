@@ -58,7 +58,7 @@ class SupplierCategorieController extends Controller
         // }
         $data= [
             'name' => $request->name,
-            'description' => $request->description
+            'description' => $request->description ? $request->description : ''
         ];
 
         try {

@@ -7,6 +7,7 @@ use App\Http\Requests\StoreCashboxRequest;
 use App\Http\Requests\UpdateCashboxRequest;
 use App\Models\Bank;
 use App\Models\CashboxAdd;
+use App\Models\CashboxDaily;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,9 +42,28 @@ class CashboxController extends Controller
         $cashadds = $this->cashadd->where('cashbox_id',2)->latest()->get();
         $totalToday = $this->cash->find(2)->current_balance;
         $banks = $this->banks->all();
+        $cashboxDailys = CashboxDaily::latest()->get();
+        $cashboxs = Cashbox::find(2);
+        $cashboxtest = Cashbox::find(2);
+
+
+        // Point en temps reel sur le cashboxadd
+        $entree = CashboxAdd::where('cashbox_id', 2)
+        ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+        ->sum('amount');
+
+        // $sortie = CashboxAdd::where('cashbox_id', 1)
+        // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+        // ->sum('amount');
+        $sortie = 0;
+        // Total des entrees et sorties de la journee
+        $total = $entree + $sortie;
+        // dd($sortie);
+
+        // dd($cashboxtest);
         $setting = $this->setting->find(1);
         config(['app.name'=>$setting->titre]);
-        return view('cashbox.vente.index',compact(['cashadds','totalToday','banks']));
+        return view('cashbox.vente.index',compact(['sortie','entree','cashadds','totalToday','banks','cashboxDailys','cashboxs','cashboxtest']));
     }
 
     public function index_depense()
@@ -51,13 +71,27 @@ class CashboxController extends Controller
          // if (!getOnlineUser()->can('view-cashboxs')) {
         //     return back()->with('error',"Vous n\'êtes pas autorisé");
         // }
+                // Point en temps reel sur le cashboxadd
+        $sortie = CashboxAdd::where('cashbox_id', 1)
+        ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+        ->sum('amount');
+
+        // $sortie = CashboxAdd::where('cashbox_id', 1)
+        // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+        // ->sum('amount');
+        $entree = 0;
+        // Total des entrees et sorties de la journee
+        $total = $entree + $sortie;
+        // dd($sortie);
 
         $cashadds = $this->cashadd->where('cashbox_id',1)->latest()->get();
+
         $totalToday = $this->cash->find(1)->current_balance;
+
         $banks = $this->banks->all();
         $setting = $this->setting->find(1);
         config(['app.name'=>$setting->titre]);
-        return view('cashbox.depense.index',compact(['cashadds','totalToday','banks']));
+        return view('cashbox.depense.index',compact(['sortie','entree','cashadds','totalToday','banks']));
     }
 
     /**

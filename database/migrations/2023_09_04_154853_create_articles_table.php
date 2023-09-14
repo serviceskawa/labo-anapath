@@ -22,7 +22,8 @@ class CreateArticlesTable extends Migration
             $table->date('expiration_date')->nullable();
             $table->integer('lot_number')->nullable();
             $table->bigInteger('minimum')->default(1);
-            $table->foreignId('unit_measurement_id')->constrained('unit_Measurements')->onDelete('cascade');
+            $table->unsignedBigInteger('unit_measurement_id');
+            $table->foreign('unit_measurement_id')->references('id')->on('unit_Measurements')->onUpdate('cascade')->onDelete('restrict');
             $table->softDeletes();
             $table->timestamps();
         });

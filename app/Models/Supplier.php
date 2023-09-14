@@ -14,4 +14,9 @@ class Supplier extends Model
     {
         return $this->belongsTo(SupplierCategorie::class, 'supplier_category_id');
     }
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
 }

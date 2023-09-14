@@ -358,7 +358,18 @@
                                 {{-- @endif --}}
                                 {{-- @if (getOnlineUser()->can('view-contrats')) --}}
                                 <li class="side-nav-item">
+
+                                    <a href="{{ route('movement.index') }}">
+                                        {{-- <i class="uil-arrow-break"></i> --}}
+                                        <span>Historique des stocks</span>
+                                    </a>
+                                </li>
+                                {{-- @endif --}}
+
+                                {{-- @if (getOnlineUser()->can('view-contrats')) --}}
+                                <li class="side-nav-item">
                                     <a href="{{ route('article.index') }}">
+                                        {{-- <i class="uil-shopping-trolley"></i> --}}
                                         <span>Tous les articles</span>
                                     </a>
                                 </li>
@@ -366,7 +377,7 @@
 
                                 {{-- @if (getOnlineUser()->can('view-unit_Measurements')) --}}
                                 <li class="side-nav-item">
-                                    <a href="{{ route('unit.index') }}" >
+                                    <a href="{{ route('unit.index') }}">
                                         <span>Unité de mesure</span>
                                     </a>
                                 </li>
@@ -408,6 +419,18 @@
                     </li>
                     {{-- @endif --}}
 
+
+
+
+                    @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
+                    <li class="side-nav-item">
+                        <a href="{{ route('settings.app-index') }}" class="side-nav-link">
+                            <i class="uil-document-layout-right"></i>
+                            <span>Paramètres Systeme </span>
+                        </a>
+                    </li>
+                    @endif
+
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarEcommerce9" aria-expanded="false"
                             aria-controls="sidebarEcommerce9" class="side-nav-link">
@@ -434,7 +457,6 @@
 
                             </ul>
                         </div>
-                    </li>
 
 
                     <li class="side-nav-item">
@@ -651,7 +673,7 @@
     <script src="{{ asset('/adminassets/js/vendor/buttons.print.min.js') }}"></script>
     <script src="{{ asset('/adminassets/js/vendor/dataTables.keyTable.min.js') }}"></script>
     <script src="{{ asset('/adminassets/js/vendor/dataTables.select.min.js') }}"></script>
-
+    <script src="{{ asset('/adminassets/js/demo.form-wizard.js') }}"></script>
     <script src="{{ asset('/adminassets/js/pages/demo.datatable-init.js') }}"></script>
     <script src="{{ asset('/adminassets/js/sweetalert2/sweetalert2.min.js') }}"></script>
 

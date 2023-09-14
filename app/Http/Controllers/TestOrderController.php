@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TestOrderRequest;
 use App\Models\AppelByReport;
 use App\Models\AppelTestOder;
+use App\Models\Cashbox;
 use DataTables;
 use App\Models\Test;
 use App\Models\Doctor;
@@ -209,6 +210,7 @@ public function __construct(
         if (!getOnlineUser()->can('create-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+        $cashbox = Cashbox::find(2);
         $patients = $this->patient->all();
         $doctors = $this->doctor->all();
         $hopitals = $this->hospital->all();
@@ -216,7 +218,7 @@ public function __construct(
         $types_orders = $this->typeOrder->all();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        return view('examens.create', compact(['patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
+        return view('examens.create', compact(['cashbox','patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
     }
 
     public function store(TestOrderRequest $request)
@@ -1201,11 +1203,3 @@ public function getExamImages($examenCode)
         return redirect()->back()->with('success', 'Image ajouter avec succes.');
     }
 }
-
-
-
-
-
-
-
-

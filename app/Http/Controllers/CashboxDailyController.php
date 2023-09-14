@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cashbox;
+use App\Models\CashboxAdd;
 use App\Models\CashboxDaily;
+use App\Models\Invoice;
 use App\Models\Setting;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Stmt\TryCatch;
 
 class CashboxDailyController extends Controller
 {
@@ -27,13 +32,14 @@ class CashboxDailyController extends Controller
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
         
-        $cashboxDailys = $this->cashboxDaily->latest()->get();
-        $cashboxs = Cashbox::latest()->first();
+        $cashboxDailys = CashboxDaily::latest()->get();
+
+        $cashboxs = Cashbox::find(2);
+        $cashboxtest = Cashbox::find(2);
 
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-
-        return view('cashbox_daily.index',compact(['cashboxDailys','cashboxs']));   
+        return view('cashbox_daily.index',compact('cashboxDailys','cashboxs','cashboxtest'));   
     }
 
     /**
@@ -59,11 +65,42 @@ class CashboxDailyController extends Controller
         // }
 
         try {
+            // dd('ok');
+            $sf = Cashbox::find(2);
+            if($sf->current_balance==0 || $sf->current_balance==null)
+            {
+                $new_current_balance = 0.0;
+            }else{ 
+            $new_current_balance = $sf->current_balance - $request->solde_ouverture;
+            }
+
+            $sf->update([
+                'opening_balance' => $request->solde_ouverture,
+                'current_balance' => $new_current_balance,
+                'statut' => 1
+            ]);
+
                 CashboxDaily::create([
-                    'opening_balance' => $request->solde,
-                    'close_balance' => 0,
+                    'opening_balance' => $request->solde_ouverture,
+                    'close_balance' => 0.0,
                     'cashbox_id' => $request->typecaisse,
-                    'status' => $request->status,
+                    'status' => 1,
+                    'cash_calculated' => null,
+                    'cash_confirmation' => null,
+                    'cash_ecart' => null,
+                    'mobile_money_calculated' => null,
+                    'mobile_money_confirmation' => null,
+                    'mobile_money_ecart' => null,
+                    'cheque_calculated' => null,
+                    'cheque_confirmation' => null,
+                    'cheque_ecart' => null,
+                    'virement_calculated' => null,
+                    'virement_confirmation' => null,
+                    'virement_ecart' => null,
+                    'total_calculated' => null,
+                    'total_confirmation' => null,
+                    'total_ecart' => null,
+                    'user_id' => auth()->user()->id,
                 ]);
 
                 return back()->with('success', " Opération effectuée avec succès  ! ");
@@ -94,6 +131,58 @@ class CashboxDailyController extends Controller
         //
     }
 
+
+    public function detail_fermeture_caisse()
+    {
+        // mobile money
+        $mobilemoneysum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $query->where('payment', '=', "MOBILEMONEY");
+        })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+          ->sum('amount');
+
+        $mobilemoneycount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $query->where('payment', '=', "MOBILEMONEY");
+        })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+          ->count();
+
+        // Cheques
+        $chequessum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $query->where('payment', '=', "CHEQUES");
+        })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+          ->sum('amount');
+
+        $chequescount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $query->where('payment', '=', "CHEQUES");
+        })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+          ->count();
+
+        // Especes
+        $especessum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $query->where('payment', '=', "ESPECES");
+        })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+          ->sum('amount');
+
+        $especescount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $query->where('payment', '=', "ESPECES");
+        })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+          ->count();
+
+
+        // Virement
+        $virementsum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $query->where('payment', '=', "VIREMENT");
+        })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+          ->sum('amount');
+
+        $virementcount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $query->where('payment', '=', "VIREMENT");
+        })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+          ->count();
+
+        $open_cash = CashboxDaily::latest()->first();
+        return view('cashbox_daily.fermeture',compact('open_cash','mobilemoneysum','mobilemoneycount','virementsum','virementcount','especescount','especessum','chequescount','chequessum'));
+    }
+    
     /**
      * Update the specified resource in storage.
      *
@@ -103,15 +192,45 @@ class CashboxDailyController extends Controller
      */
     public function update(Request $request, CashboxDaily $cashboxDaily)
     {
+        // dd($request);
         try {
-        $sf = Cashbox::find(1);
-        // dd($sf->current_balance);
-            $cashboxDaily->update([
-                    'close_balance' => $sf->current_balance,
+        $sf = CashboxDaily::latest()->first();
+            
+        // $serach
+            $sf->update([
+                    'close_balance' => $request->close_balance,
                     'status' => $request->status,
+                    'cash_calculated' => $request->cash_calculated,
+                    'cash_confirmation' => $request->cash_confirmation,
+                    'cash_ecart' => $request->cash_ecart,
+                    'mobile_money_calculated' => $request->mobile_money_calculated,
+                    'mobile_money_confirmation' => $request->mobile_money_confirmation,
+                    'mobile_money_ecart' => $request->mobile_money_ecart,
+                    'cheque_calculated' => $request->cheque_calculated,
+                    'cheque_confirmation' => $request->cheque_confirmation,
+                    'cheque_ecart' => $request->cheque_ecart,
+                    'virement_calculated' => $request->virement_calculated,
+                    'virement_confirmation' => $request->virement_confirmation,
+                    'virement_ecart' => $request->virement_ecart,
+                    'total_calculated' => $request->total_calculated,
+                    'total_confirmation' => $request->total_confirmation_point,
+                    'total_ecart' => $request->total_ecart_point ? $request->total_ecart_point : 0.0,
+                    'user_id' => auth()->user()->id,
                 ]);
 
-                return back()->with('success', " Opération effectuée avec succès  ! ");
+            // $cashb = Cashbox::where('id', 2)->get();
+
+            $lastvalCashbox = Cashbox::find(2);
+            // dd($lastvalCashbox);
+                $result = $lastvalCashbox->current_balance + $lastvalCashbox->opening_balance;
+                // dd($result);
+            $lastvalCashbox->update([
+                    'current_balance' => $result,
+                    'opening_balance' => 0,
+                    'statut' => 0,
+            ]);
+
+                return redirect(route('daily.index'))->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
                 return back()->with('error', "Échec de l'enregistrement ! ");
             }
