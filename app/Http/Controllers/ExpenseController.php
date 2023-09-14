@@ -256,12 +256,12 @@ class ExpenseController extends Controller
                 $expense->save();
 
                 if ($expense->paid=1) {
-                    $cash = Cashbox::find(2);
+                    $cash = Cashbox::find(1);
                     $cash->current_balance -= $expense->amount;
                     $cash->save();
 
                     CashboxAdd::create([
-                        'cashbox_id' => 2,
+                        'cashbox_id' => 1,
                         'date' => Carbon::now(),
                         'amount' => $expense->amount,
                         'user_id' => Auth::user()->id

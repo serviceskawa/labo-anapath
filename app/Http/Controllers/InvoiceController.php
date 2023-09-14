@@ -463,11 +463,11 @@ class InvoiceController extends Controller
                         "paid" => '1',
                         'payment' => $request->payment
                     ])->save();
-                    $cash = Cashbox::find(1);
+                    $cash = Cashbox::find(2);
                     $cash->current_balance += $invoice->total;
                     $cash->save();
                     CashboxAdd::create([
-                        'cashbox_id' => 1,
+                        'cashbox_id' => 2,
                         'date' => Carbon::now(),
                         'amount' => $invoice->total,
                         'invoice_id' => $invoice->id,
@@ -489,12 +489,12 @@ class InvoiceController extends Controller
                         'payment' => $request->payment,
                         "code_normalise" => $request->code
                         ])->save();
-                    $cash = Cashbox::find(1);
+                    $cash = Cashbox::find(2);
 
                     $cash->current_balance += $invoice->total;
                     $cash->save();
                     CashboxAdd::create([
-                        'cashbox_id' => 1,
+                        'cashbox_id' => 2,
                         'date' => Carbon::now(),
                         'amount' => $invoice->total,
                         'invoice_id' => $invoice->id,

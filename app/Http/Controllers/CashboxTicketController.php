@@ -91,7 +91,7 @@ class CashboxTicketController extends Controller
             // $cashboxAdd = CashboxAdd::find($cashboxAddData['id']);
             $ticket = $this->tickets->create([
                 'code' => $code,
-                'cashbox_id' => 2,
+                'cashbox_id' => 1,
                 'supplier_id' => $data['supplier_id'],
                 'expense_category_id' => $data['expense_category_id'],
                 'description' => $data['description']
@@ -141,7 +141,7 @@ class CashboxTicketController extends Controller
             // $cashboxAdd = CashboxAdd::find($cashboxAddData['id']);
             $ticket = $this->tickets->find($data['id']);
             $ticket->update([
-                'cashbox_id' => 2,
+                'cashbox_id' => 1,
                 'supplier_id' => $data['supplier_id'],
                 'expense_category_id' => $data['expense_category_id'],
                 'description' => $data['description'],
@@ -246,7 +246,7 @@ class CashboxTicketController extends Controller
        ])->save();
 
        if ($status == "approuve") {
-            $cash = Cashbox::find(2);
+            $cash = Cashbox::find(1);
             $cash->current_balance -= $ticket->amount;
             $cash->save();
 
@@ -262,7 +262,7 @@ class CashboxTicketController extends Controller
             ]);
 
             CashboxAdd::create([
-                'cashbox_id' => 2,
+                'cashbox_id' => 1,
                 'date' => Carbon::now(),
                 'amount' => $ticket->amount,
                 'user_id' => Auth::user()->id

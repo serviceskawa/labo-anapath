@@ -20,7 +20,7 @@
                     {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#bs-example-modal-lg-create">Augmenter ou diminuer le stock</button> --}}
                 </div>
-                <h4 class="page-title">Opérations</h4>
+                <h4 class="page-title">Gestion des stocks</h4>
             </div>
             @include('movements.create',['articles' => $articles])
         </div>
@@ -39,7 +39,7 @@
                     <div class="row d-flex">
 
                         <div class="mb-3 col-lg-4">
-                            <label for="example-select" class="form-label">Choisissez l'article<span
+                            <label for="example-select" class="form-label">Article<span
                                     style="color:red;">*</span></label>
                             <select class="form-select" id="langue" name="article_id" required>
                                 <option value="">Sélectionner l'article</option>
@@ -54,7 +54,7 @@
                         <div class="mb-3 col-lg-4">
                             <label for="simpleinput" class="form-label">Quantité<span
                                     style="color:red;">*</span></label>
-                            <input type="number" name="quantite_changed" class="form-control" required>
+                            <input type="number" name="quantite_changed" placeholder="XX" class="form-control" required>
                         </div>
 
                         {{-- <input type="hidden" name="ma_variable" value=""> --}}
@@ -62,10 +62,10 @@
                         <div class="mb-3 col-lg-4">
                             <div class="mt-3">
                                 <button type="submit" class="btn btn-primary" data-ma-variable="augmenter"
-                                    onclick="updateHiddenField(this)">Entrée</button>
+                                    onclick="updateHiddenField(this)">Entrer</button>
 
                                 <button type="submit" class="btn btn-danger" data-ma-variable="diminuer"
-                                    onclick="updateHiddenField(this)">sortie</button>
+                                    onclick="updateHiddenField(this)">Sortir</button>
                             </div>
                         </div>
 
@@ -89,14 +89,16 @@
                     {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#bs-example-modal-lg-create">Augmenter ou diminuer le stock</button> --}}
                 </div>
-                <h4 class="page-title">Historique de stock</h4>
+                {{-- <h4 class="page-title">Historique des stocks</h4> --}}
             </div>
             @include('movements.create',['articles' => $articles])
         </div>
     </div>
 
     <div class="card mb-md-0 mb-3">
+        {{-- <h5 class="card-title mb-0">Historique</h5> --}}
         <div class="card-body">
+            <h5 class="card-title mb-0">Historique des stocks</h5>
             <div class="card-widgets">
                 <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
                 <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false"
@@ -113,7 +115,7 @@
                             <th>Action</th>
                             <th>Date</th>
                             <th>Quantité</th>
-                            <th>Fais par</th>
+                            <th>Utilisateur</th>
                             {{-- <th>Description</th> --}}
                         </tr>
                     </thead>
@@ -121,7 +123,7 @@
                         @foreach($movements as $movement)
                         <tr>
                             <td>{{ $movement->article->article_name }}</td>
-                            <td>{{ $movement->movement_type }}</td>
+                            <td>{{ $movement->movement_type = 'augmenter' ? 'Entrer' : 'Sortir'  }}</td>
                             <td>{{ $movement->date_mouvement }}</td>
                             <td>{{ $movement->quantite_changed }}</td>
                             <td>{{ $movement->user->firstname.' '.$movement->user->lastname }}</td>

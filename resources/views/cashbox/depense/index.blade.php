@@ -8,8 +8,16 @@
         <div class="col-12">
             <div class="page-title-box">
                 <div class="page-title-right mr-3">
+                    @foreach (getRolesByUser(Auth::user()->id) as $role)
+                    {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
+
+                    @if ($role->name == "rootuser")
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#standard-modal">Approvissier la caisse</button>
+                    data-bs-target="#standard-modal">Approvissier la caisse</button>
+                        @break
+                    @endif
+                @endforeach
+
                 </div>
                 <h4 class="page-title">Caisse de dépense</h4>
             </div>

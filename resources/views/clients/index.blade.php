@@ -48,7 +48,7 @@
                             <th>#</th>
                             <th>Nom</th>
                             <th>Téléphone</th>
-                            <th>Address</th>
+                            <th>Adresse</th>
                             <th>Numéro IFU</th>
                             <th>Actions</th>
                         </tr>

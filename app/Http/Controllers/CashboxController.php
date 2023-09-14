@@ -38,8 +38,8 @@ class CashboxController extends Controller
         //     return back()->with('error',"Vous n\'êtes pas autorisé");
         // }
 
-        $cashadds = $this->cashadd->where('cashbox_id',1)->latest()->get();
-        $totalToday = $this->cash->find(1)->current_balance;
+        $cashadds = $this->cashadd->where('cashbox_id',2)->latest()->get();
+        $totalToday = $this->cash->find(2)->current_balance;
         $banks = $this->banks->all();
         $setting = $this->setting->find(1);
         config(['app.name'=>$setting->titre]);
@@ -52,8 +52,8 @@ class CashboxController extends Controller
         //     return back()->with('error',"Vous n\'êtes pas autorisé");
         // }
 
-        $cashadds = $this->cashadd->where('cashbox_id',2)->latest()->get();
-        $totalToday = $this->cash->find(2)->current_balance;
+        $cashadds = $this->cashadd->where('cashbox_id',1)->latest()->get();
+        $totalToday = $this->cash->find(1)->current_balance;
         $banks = $this->banks->all();
         $setting = $this->setting->find(1);
         config(['app.name'=>$setting->titre]);
@@ -75,7 +75,7 @@ class CashboxController extends Controller
         $cashboxAddData = [
             'bank_id' => $request->bank_id,
             'cheque_number' => $request->cheque_number,
-            'cashbox_id' => 2,
+            'cashbox_id' => 1,
             'amount' => $request->amount,
             'date' => $request->date,
             'user_id' => Auth::user()->id,

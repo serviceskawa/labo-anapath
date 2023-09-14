@@ -18,7 +18,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="simpleinput" class="form-label">Addresse</label>
+                    <label for="simpleinput" class="form-label">Adresse</label>
                     <input type="text" name="adress" id=adress class="form-control">
                 </div>
 

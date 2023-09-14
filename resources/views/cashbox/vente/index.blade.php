@@ -65,7 +65,7 @@
                             <td>{{ $item->date }}</td>
                             <td>{{ $item->amount }}</td>
                             <td>
-                                {{ $item->invoice->order->code }} <br>
+                                {{ $item->invoice->order ? $item->invoice->order->code:$item->invoice->code }} <br>
                                 <small class="text-muted">Du {{ date('d-m-y', strtotime($item->invoice->created_at)) }}</small>
                             </td>
 
