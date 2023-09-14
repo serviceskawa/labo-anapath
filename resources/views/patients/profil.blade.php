@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Profil')
+@section('title', 'Patient')
 
 @section('content')
 @include('layouts.alerts')

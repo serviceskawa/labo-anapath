@@ -265,7 +265,7 @@
                                 </li>
                                 @if (getOnlineUser()->can('view-setting-invoice'))
                                 <li>
-                                    <a href="{{ route('invoice.business') }}">Chiffre d'affaires</a>
+                                    <a href="{{ route('invoice.business') }}">Rapports</a>
                                 </li>
                                 @endif
                                 @if (getOnlineUser()->can('view-setting-invoice'))
@@ -328,6 +328,14 @@
                         </div>
                     </li> --}}
 
+                    @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
+                    <li class="side-nav-item">
+                        <a href="{{ route('settings.app-index') }}" class="side-nav-link">
+                            <i class="uil-document-layout-right"></i>
+                            <span>Paramètres Systeme </span>
+                        </a>
+                    </li>
+                    @endif
 
                     {{-- Articles --}}
                     {{-- @if (getOnlineUser()->can('view-articles')) --}}
@@ -340,10 +348,19 @@
                         </a>
                         <div class="collapse" id="sidebarForms-articles">
                             <ul class="side-nav-second-level">
+                                {{-- @if (getOnlineUser()->can('view-movement')) --}}
+                                <li class="side-nav-item">
+                                    <a href="{{ route('movement.index') }}">
+                                        {{-- <i class="uil-arrow-break"></i> --}}
+                                        <span>Gestion des stocks</span>
+                                    </a>
+                                </li>
+                                {{-- @endif --}}
                                 {{-- @if (getOnlineUser()->can('view-contrats')) --}}
                                 <li class="side-nav-item">
-                                    <a href="{{ route('movement.index') }}" class="side-nav-link">
-                                        <i class="uil-arrow-break"></i>
+
+                                    <a href="{{ route('movement.index') }}">
+                                        {{-- <i class="uil-arrow-break"></i> --}}
                                         <span>Historique des stocks</span>
                                     </a>
                                 </li>
@@ -351,8 +368,8 @@
 
                                 {{-- @if (getOnlineUser()->can('view-contrats')) --}}
                                 <li class="side-nav-item">
-                                    <a href="{{ route('article.index') }}" class="side-nav-link">
-                                        <i class="uil-shopping-trolley"></i>
+                                    <a href="{{ route('article.index') }}">
+                                        {{-- <i class="uil-shopping-trolley"></i> --}}
                                         <span>Tous les articles</span>
                                     </a>
                                 </li>
@@ -360,8 +377,7 @@
 
                                 {{-- @if (getOnlineUser()->can('view-unit_Measurements')) --}}
                                 <li class="side-nav-item">
-                                    <a href="{{ route('unit.index') }}" class="side-nav-link">
-                                        <i class="uil-dashboard"></i>
+                                    <a href="{{ route('unit.index') }}">
                                         <span>Unité de mesure</span>
                                     </a>
                                 </li>
@@ -372,14 +388,12 @@
                     </li>
                     {{-- @endif --}}
 
-
-
                     {{-- Dépenses --}}
                     {{-- @if (getOnlineUser()->can('view-depenses')) --}}
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarForms-expense" aria-expanded="false"
                             aria-controls="sidebarForms" class="side-nav-link">
-                            <i class="uil-moneybag-alt"></i>
+                            <i class="uil-balance-scale"></i>
                             <span>Dépenses</span>
                             <span class="menu-arrow"></span>
                         </a>
@@ -387,8 +401,7 @@
                             <ul class="side-nav-second-level">
                                 {{-- @if (getOnlineUser()->can('view-contrats')) --}}
                                 <li class="side-nav-item">
-                                    <a href="{{ route('all_expense.index') }}" class="side-nav-link">
-                                        <i class="uil-money-stack"></i>
+                                    <a href="{{ route('all_expense.index') }}">
                                         <span>Toutes les dépenses</span>
                                     </a>
                                 </li>
@@ -396,8 +409,7 @@
 
                                 {{-- @if (getOnlineUser()->can('view-expense_categories')) --}}
                                 <li class="side-nav-item">
-                                    <a href="{{ route('expense.index') }}" class="side-nav-link">
-                                        <i class="uil-pricetag-alt"></i>
+                                    <a href="{{ route('expense.index') }}">
                                         <span>Catégories</span>
                                     </a>
                                 </li>
@@ -406,6 +418,7 @@
                         </div>
                     </li>
                     {{-- @endif --}}
+
 
 
 
@@ -419,29 +432,9 @@
                     @endif
 
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerce8" aria-expanded="false"
-                            aria-controls="sidebarEcommerce8" class="side-nav-link">
-                            <i class="uil-files-landscapes"></i>
-                            <span> Fournisseurs </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-
-                        <div class="collapse" id="sidebarEcommerce8">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href="{{ route('supplier.index') }}">Tous les fournisseurs</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('supplier.categories.index') }}">Catégories</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarEcommerce9" aria-expanded="false"
                             aria-controls="sidebarEcommerce9" class="side-nav-link">
-                            <i class="uil-files-landscapes"></i>
+                            <i class="uil-balance-scale"></i>
                             <span> Caisse </span>
                             <span class="menu-arrow"></span>
                         </a>
@@ -464,7 +457,38 @@
 
                             </ul>
                         </div>
+
+
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarEcommerce8" aria-expanded="false"
+                            aria-controls="sidebarEcommerce8" class="side-nav-link">
+                            <i class="uil-files-landscapes"></i>
+                            <span> Fournisseurs </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+
+                        <div class="collapse" id="sidebarEcommerce8">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href="{{ route('supplier.index') }}">Tous les fournisseurs</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('supplier.categories.index') }}">Catégories</a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
+
+                    {{-- @if (getOnlineUser()->can('view-clients')) --}}
+                    <li class="side-nav-item">
+                        <a href="{{ route('clients.index') }}" class="side-nav-link">
+                            <i class="uil-users-alt"></i>
+                            <span> Clients </span>
+                        </a>
+                    </li>
+                    {{-- @endif --}}
+
+
 
                     @if (getOnlineUser()->can('edit-users'))
                     <li class="side-nav-item">

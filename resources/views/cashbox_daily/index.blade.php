@@ -4,7 +4,6 @@
 
 @section('content')
 
-
 {{-- <div class="row">
     <div class="col-12">
         <div class="page-title-box">
@@ -74,13 +73,11 @@
 </div> --}}
 
 
-
 {{-- Debut Ouverture et fermeture de la caisse --}}
 <div class="row">
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                @if ($cashboxs->current_balance!=null)
                 @if ($cashboxtest->statut==0)
 
                 <button type="button" class="btn btn-success" data-bs-toggle="modal"
@@ -91,8 +88,6 @@
 
                 <a href="{{ route('daily.fermeture',$cashboxtest->id) }}" class="btn btn-danger">Fermer la caisse</a>
                 @endif
-                @endif
-
             </div>
             <h4 class="page-title">Ouverture et fermeture (Caisse de vente)</h4>
         </div>
@@ -139,30 +134,12 @@
                             @elseif(($item->status==0))
                             <td>{{ $item->updated_at }}</td>
                             @endif
-                            {{-- <td>{{ App\Models\User::find($item->user_id)->firstname }}</td> --}}
-                            <td>{{ $item->user->firstname }}</td>
+                            <td>{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
                             <td>{{ $item->total_ecart }}</td>
                         </tr>
-
-                        {{-- @if ($item->status==1)
-                        <tr>
-                            <td>
-                                <form action="{{route('daily.update',$item->id)}}" method="POST" class="d-flex">
-                                    @csrf
-                                    @method('PUT')
-                                    <input type="text" name="status" value="0" hidden>
-                                    <button class="btn btn-danger" type="submit">Fermer la caisse</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @else
-
-                        @endif --}}
-
                         @endforeach
                     </tbody>
                 </table>
-
             </div>
         </div>
     </div> <!-- end card-->

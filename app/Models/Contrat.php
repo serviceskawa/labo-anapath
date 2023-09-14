@@ -61,4 +61,9 @@ class Contrat extends Model
     {
         return $this->with(['orders', 'detail'])->get();
     }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class,'client_id');
+    }
 }

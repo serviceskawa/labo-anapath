@@ -72,7 +72,7 @@
                             @if ($test_order->invoice)
                                 @if ($test_order->invoice->paid != 1)
                                     <select class="form-select select2" data-toggle="select2" required id="type_examen"
-                                        name="type_examen">
+                                        name="type_examen_id">
                                         <option>Sélectionner le type d'examen</option>
                                         @forelse ($types_orders as $type)
                                             <option {{ $test_order->type_order_id == $type->id ? 'selected' : '' }}
@@ -97,7 +97,7 @@
                                 @endif
                             @else
                                 <select class="form-select select2" data-toggle="select2" required id="type_examen"
-                                    name="type_examen">
+                                    name="type_examen_id">
                                     <option>Sélectionner le type d'examen</option>
                                     @forelse ($types_orders as $type)
                                         <option {{ $test_order->type_order_id == $type->id ? 'selected' : '' }}
@@ -437,11 +437,11 @@
 
 
 
-        {{-- Debut du bloc qui permet d'afficher la zone d'insertion des images de la galerie --}}
+        {{-- Debut du code pour la GALLERIE --}}
         <div class="card my-3">
-            <div class="card my-3">
+            <div class="card mb-md-0 mb-3">
                 <div class="card-header">
-                    Galerie des images
+                    Gallerie des images
                 </div>
                 <h5 class="card-title mb-0"></h5>
 
@@ -449,9 +449,10 @@
                     <form action="{{ route('test_order.createimagegallerie',$test_order->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
+                        <label for="formFileMultiple" class="form-label">Ajouter l'image à la gallerie</label>
                         <div class="row d-flex align-items-center">
                             <div class="col-md-11">
-                                <input class="form-control" type="file" name="files_name[]" id="formFileMultiple" multiple required>
+                                <input class="form-control" type="file" name="files_name[]" id="formFileMultiple" multiple>
                             </div>
                             <div class="col-md-1">
                                 <button type="submit" class="btn btn-success">Ajouter</button>

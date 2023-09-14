@@ -32,26 +32,14 @@ class CashboxDailyController extends Controller
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
         
-        // $cashboxDailys = $this->cashboxDaily->latest()->get();
         $cashboxDailys = CashboxDaily::latest()->get();
+
         $cashboxs = Cashbox::find(2);
         $cashboxtest = Cashbox::find(2);
-        // $entre =// Utilisez la méthode sum pour obtenir la somme des valeurs
-        // $entree = CashboxAdd::where('cashbox_id', 2)
-        // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-        // ->sum('amount');
 
-        // $sortie = CashboxAdd::where('cashbox_id', 1)
-        // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-        // ->sum('amount');
-
-        // // Total des entrees et sorties de la journee
-        // $total = $entree + $sortie;
-        // // dd($sortie);
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-
-        return view('cashbox_daily.index',compact(['cashboxDailys','cashboxs','cashboxtest']));   
+        return view('cashbox_daily.index',compact('cashboxDailys','cashboxs','cashboxtest'));   
     }
 
     /**
@@ -79,8 +67,13 @@ class CashboxDailyController extends Controller
         try {
             // dd('ok');
             $sf = Cashbox::find(2);
+            if($sf->current_balance==0 || $sf->current_balance==null)
+            {
+                $new_current_balance = 0.0;
+            }else{ 
             $new_current_balance = $sf->current_balance - $request->solde_ouverture;
-            // dd($result);
+            }
+
             $sf->update([
                 'opening_balance' => $request->solde_ouverture,
                 'current_balance' => $new_current_balance,
@@ -142,23 +135,23 @@ class CashboxDailyController extends Controller
     public function detail_fermeture_caisse()
     {
         // mobile money
-        $mobilemoneysum = CashboxAdd::where('cashbox_id', 1)->whereHas('invoice', function ($query) {
+        $mobilemoneysum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
             $query->where('payment', '=', "MOBILEMONEY");
         })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
           ->sum('amount');
 
-        $mobilemoneycount = CashboxAdd::where('cashbox_id', 1)->whereHas('invoice', function ($query) {
+        $mobilemoneycount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
             $query->where('payment', '=', "MOBILEMONEY");
         })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
           ->count();
 
         // Cheques
-        $chequessum = CashboxAdd::where('cashbox_id', 1)->whereHas('invoice', function ($query) {
+        $chequessum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
             $query->where('payment', '=', "CHEQUES");
         })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
           ->sum('amount');
 
-        $chequescount = CashboxAdd::where('cashbox_id', 1)->whereHas('invoice', function ($query) {
+        $chequescount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
             $query->where('payment', '=', "CHEQUES");
         })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
           ->count();

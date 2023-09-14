@@ -150,4 +150,14 @@ class SupplierController extends Controller
             return back()->with('error', "Impossible de supprimer cet élément !  Celui-ci est lié à d'autres éléments. Pour effectuer cette suppression, vous devez d'abord supprimer ou mettre à jour les éléments liés dans d'autres tables.");
         }
     }
+
+    public function getSupplier(Request $request)
+    {
+        $supplier = $this->suppliers->where('name','like','%'.$request->term.'%')->get();
+        $result = $supplier->map(function ($supplier) {
+            return $supplier->name;
+        });
+        return response()->json($result);
+        // return response()->json(['name'=>$result,'id'=>$supplier->id?$supplier->id:'']);
+    }
 }

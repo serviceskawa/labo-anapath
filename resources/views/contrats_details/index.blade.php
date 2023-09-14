@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Details contrat')
+@section('title', 'Contrat')
 
 @section('content')
 
@@ -97,7 +97,7 @@
 
 
 @push('extra-js')
-   
+
     <script>
         var baseUrl = "{{ url('/') }}";
     </script>

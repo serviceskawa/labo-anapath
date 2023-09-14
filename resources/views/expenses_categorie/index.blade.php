@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Catégorie de dépense')
+@section('title', 'Dépenses')
 
 @section('content')
 <div class="row">
@@ -50,9 +50,10 @@
 
                     <tbody>
 
-                        @foreach ($expenseCategories as $item)
+                        @foreach ($expenseCategories as $key => $item)
                         <tr>
-                            <td><input type="checkbox" name="" id=""></td>
+                            {{-- <td><input type="checkbox" name="" id=""></td> --}}
+                            <td>{{ ++$key }}</td>
                             <td>{{ $item->name }}</td>
                             @if ($item->description)
                             <td>{{ $item->description }}</td>

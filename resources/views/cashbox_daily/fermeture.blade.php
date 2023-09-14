@@ -34,14 +34,14 @@
                                     <li class="nav-item">
                                         <a href="#account-2" data-bs-toggle="tab" data-toggle="tab"
                                             class="nav-link rounded-0 pt-2 pb-2">
-                                            <i class="mdi mdi-account-circle me-1"></i>
+                                            <i class="uil-money-stack me-1"></i>
                                             <span class="d-none d-sm-inline">Comptage</span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="#profile-tab-2" data-bs-toggle="tab" data-toggle="tab"
                                             class="nav-link rounded-0 pt-2 pb-2">
-                                            <i class="mdi mdi-face-profile me-1"></i>
+                                            <i class="uil-lock-access me-1"></i>
                                             <span class="d-none d-sm-inline">Mise en coffre</span>
                                         </a>
                                     </li>
@@ -186,6 +186,14 @@
 
                                             </div>
                                         </div>
+                                        <ul class="list-inline mb-0 wizard">
+                                            {{-- <li class="previous list-inline-item">
+                                                <a href="#" class="btn btn-info">Previous</a>
+                                            </li> --}}
+                                            <li class="next list-inline-item float-end">
+                                                <a href="#" class="btn btn-info">Suivant</a>
+                                            </li>
+                                        </ul>
                                     </div>
 
 
@@ -376,11 +384,19 @@
                                             </div>
 
                                             <div class="col-12">
-                                                <button type="submit" class="btn btn-danger float-end">
+                                                <button type="submit" class="btn btn-success float-end">
                                                     Confirmer et fermer la caisse
                                                 </button>
                                             </div>
                                         </div>
+                                        <ul class="list-inline mb-0 wizard">
+                                            <li class="previous list-inline-item">
+                                                <a href="#" class="btn btn-info">Précédent</a>
+                                            </li>
+                                            {{-- <li class="next list-inline-item float-end">
+                                                <a href="#" class="btn btn-info">Suivant</a>
+                                            </li> --}}
+                                        </ul>
                                     </div>
                                 </div>
                             </div>

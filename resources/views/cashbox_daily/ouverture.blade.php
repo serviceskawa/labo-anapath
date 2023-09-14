@@ -3,7 +3,9 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myLargeModalLabel">Ouverture de la caisse</h4>
+                <h4 class="modal-title" id="myLargeModalLabel">Ouverture de la caisse de vente : {{
+                    now()->format('d/m/Y')
+                    }}</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body">
@@ -18,9 +20,7 @@
 
                         <div class="col-md-12 py-4">
                             <p class="text-center">
-                                Indiquez votre solde d'ouverture pour la caisse pour le compte du {{
-                                now()->format('d/m/Y')
-                                }}
+                                Veuillez entrer le montant du fond de caisse.
                             </p>
                         </div>
 
@@ -29,9 +29,9 @@
                             <input type="text" name="statut" value="1" hidden>
                             <input type="text" name="typecaisse" value="2" hidden>
                             <button class="btn btn-success">
-                                <span style="font-size: 20px;">Especes</span>
+                                <span style="font-size: 20px;">Espèces</span>
                             </button>
-                            <input type="number" placeholder="0.0 fcfa" name="solde_ouverture" value=""
+                            <input type="number" placeholder="0.0 Francs CFA" name="solde_ouverture" value=""
                                 class="form-control">
 
                         </div>

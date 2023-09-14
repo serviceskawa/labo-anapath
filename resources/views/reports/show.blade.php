@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Details')
+@section('title', 'Reports')
 
 @section('css')
 
@@ -91,25 +91,53 @@
                         <h5 class="card-header">Contenu de base</h5>
                         <div class="card-body">
 
-                            <div class="row">
-                                <div class="mb-3">
-                                    <label for="simpleinput" class="form-label">Template</label>
-                                    <select class="form-select" id="template" name="template">
-                                        <option value="">Sélectionner un template</option>
-                                        @forelse ($templates as $template)
-                                            <option value="{{ $template->id }}">{{ $template->title }} </option>
-                                        @empty
-                                        @endforelse
-                                    </select>
+                            <div>
+                                <h4>Macro</h4>
+                                <div class="row">
+                                    <div class="mb-3">
+                                        <label for="simpleinput" class="form-label">Template</label>
+                                        <select class="form-select select2" data-toggle="select2" id="template" name="template">
+                                            <option value="">Sélectionner un template</option>
+                                            @forelse ($templates as $template)
+                                                <option value="{{ $template->id }}">{{ $template->title }} </option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="mb-3">
+                                        <label for="simpleinput" class="form-label">Récapitulatifs<span
+                                                style="color:red;">*</span></label>
+                                        <textarea name="content" id="editor" class="form-control mb-3" cols="30" rows="50" style="height: 500px;">{{ $report->description }}</textarea>
+
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="mb-3">
-                                    <label for="simpleinput" class="form-label">Récapitulatifs<span
-                                            style="color:red;">*</span></label>
-                                    <textarea name="content" id="editor" class="form-control mb-3" cols="30" rows="50" style="height: 500px;">{{ $report->description }}</textarea>
+                            <div>
+                                <h4>Micro</h4>
+                                <div class="row">
+                                    <div class="mb-3">
+                                        <label for="simpleinput" class="form-label">Template</label>
+                                        <select class="form-select select2" data-toggle="select2" id="template_micro" name="template">
+                                            <option value="">Sélectionner un template</option>
+                                            @forelse ($templates as $template)
+                                                <option value="{{ $template->id }}">{{ $template->title }} </option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                    </div>
+                                </div>
 
+                                <div class="row">
+                                    <div class="mb-3">
+                                        <label for="simpleinput" class="form-label">Récapitulatifs<span
+                                                style="color:red;">*</span></label>
+                                        <textarea name="content_micro" id="editor_micro" class="form-control mb-3" cols="30" rows="50" style="height: 500px;">{{ $report->description_micro }}</textarea>
+
+                                    </div>
                                 </div>
                             </div>
 
@@ -121,30 +149,62 @@
                         <h5 class="card-header">Contenu complémentaire</h5>
                         <div class="card-body">
 
-                            <div class="row">
-                                <div class="mb-3">
-                                    <label for="simpleinput" class="form-label">Template</label>
-                                    <select class="form-select" id="template_supplementaire" name="">
-                                        <option value="">Sélectionner un template</option>
-                                        @forelse ($templates as $template)
-                                            <option value="{{ $template->id }}">{{ $template->title }} </option>
-                                        @empty
-                                        @endforelse
-                                    </select>
+                            <div>
+                                <div class="row">
+                                    <div class="mb-3">
+                                        <label for="simpleinput" class="form-label">Template</label>
+                                        <select class="form-select" id="template_supplementaire" name="">
+                                            <option value="">Sélectionner un template</option>
+                                            @forelse ($templates as $template)
+                                                <option value="{{ $template->id }}">{{ $template->title }} </option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="mb-3 supplementaireid">
+                                        <label for="simpleinput" class="form-label">Récapitulatifs<span
+                                                style="color:red;">*</span></label>
+                                        {{-- <div id="snow-editor" style="height: 300px;">
+                                            {{ $report->description_supplementaire }}
+                                        </div> --}}
+                                        {{-- <textarea id="simplemde1">{{ $report->description_supplementaire }}</textarea> --}}
+                                        <textarea name="description_supplementaire" id="editor2" class="form-control mb-3" cols="15" rows="10"
+                                            style="height: 250px;">{{ $report->description_supplementaire }}</textarea>
+
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="mb-3 supplementaireid">
-                                    <label for="simpleinput" class="form-label">Récapitulatifs<span
-                                            style="color:red;">*</span></label>
-                                    {{-- <div id="snow-editor" style="height: 300px;">
-                                        {{ $report->description_supplementaire }}
-                                    </div> --}}
-                                    {{-- <textarea id="simplemde1">{{ $report->description_supplementaire }}</textarea> --}}
-                                    <textarea name="description_supplementaire" id="editor2" class="form-control mb-3" cols="15" rows="10"
-                                        style="height: 250px;">{{ $report->description_supplementaire }}</textarea>
+                            <div>
+                                <h4>Micro</h4>
+                                <div class="row">
+                                    <div class="mb-3">
+                                        <label for="simpleinput" class="form-label">Template</label>
+                                        <select class="form-select" id="template_supplementaire_micro" name="">
+                                            <option value="">Sélectionner un template</option>
+                                            @forelse ($templates as $template)
+                                                <option value="{{ $template->id }}">{{ $template->title }} </option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                    </div>
+                                </div>
 
+                                <div class="row">
+                                    <div class="mb-3 supplementaireid">
+                                        <label for="simpleinput" class="form-label">Récapitulatifs<span
+                                                style="color:red;">*</span></label>
+                                        {{-- <div id="snow-editor" style="height: 300px;">
+                                            {{ $report->description_supplementaire }}
+                                        </div> --}}
+                                        {{-- <textarea id="simplemde1">{{ $report->description_supplementaire }}</textarea> --}}
+                                        <textarea name="description_supplementaire_micro" id="editor_micro2" class="form-control mb-3" cols="15" rows="10"
+                                            style="height: 250px;">{{ $report->description_supplementaire_micro }}</textarea>
+
+                                    </div>
                                 </div>
                             </div>
 

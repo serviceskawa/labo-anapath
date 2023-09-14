@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Demande de remboursement')
+@section('title', 'Remboursement')
 
 @section('content')
 

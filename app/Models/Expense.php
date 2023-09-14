@@ -35,4 +35,11 @@ class Expense extends Model
     {
         return $this->belongsTo(Supplier::class,'supplier_id');
     }
+
+
+    public function details()
+    {
+        return $this->hasMany(ExpenceDetail::class,'expense_id');
+    }
 }
+

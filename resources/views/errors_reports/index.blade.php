@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Problème')
+@section('title', 'Signaler un problème')
 
 @section('content')
 

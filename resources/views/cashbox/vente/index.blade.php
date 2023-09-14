@@ -16,12 +16,16 @@
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                <a href="javascript:void(0);" class="btn btn-success mb-4">Solde actuel : {{ $totalToday }}</a>
+                <a href="{{ route('daily.index') }}" class="btn btn-primary mb-4">Ouverture/Fermeture</a>
             </div>
-            <h4 class="page-title">Caisse de vente</h4>
+            <h4 class="page-title">Caisse de vente
+                @if($cashboxs->statut==0)
+                <span style="color: red;">[Fermée]</span>
+                @else
+                <span style="color: green;">[Ouvert]</span>
+                @endif
+            </h4>
         </div>
-
-        <!----MODAL---->
 
         {{-- @include('suppliers.category.create') --}}
 
@@ -42,11 +46,12 @@
                 <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
             </div>
 
-            <a href="javascript:void(0);" class="btn btn-success mb-4">Entrer : {{ $entree }}</a>
+            <a href="javascript:void(0);" class="btn btn-success mb-4">Solde actuel : {{ $totalToday }}</a>
+            {{-- <a href="javascript:void(0);" class="btn btn-success mb-4">Entrer : {{ $entree }}</a>
 
             <a href="javascript:void(0);" class="btn btn-danger mb-4">Sortie : {{ $sortie }}</a>
             <a href="javascript:void(0);" class="btn mb-4"> du {{ now()->format('d/m/y')
-                }}</a>
+                }}</a> --}}
 
             <h5 class="card-title mb-2">Historique des opérations </h5>
             <div id="cardCollpase1" class="collapse pt-3 show">
@@ -74,10 +79,11 @@
                             <td>{{ $item->date }}</td>
                             <td>{{ $item->amount }}</td>
                             <td>
-                                {{-- {{ $item->invoice->order->code }} <br> --}}
-                                {{-- <small class="text-muted">Du {{ date('d-m-y',
-                                    strtotime($item->invoice->created_at))
-                                    }}</small> --}}
+
+                                {{ $item->invoice->order ? $item->invoice->order->code:$item->invoice->code }} <br>
+                                <small class="text-muted">Du {{ date('d-m-y', strtotime($item->invoice->created_at))
+                                    }}</small>
+
                             </td>
 
                             <td>

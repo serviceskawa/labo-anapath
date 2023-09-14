@@ -27,6 +27,42 @@
 
     <div class="card mb-md-0 mb-3">
         <div class="card-body">
+            <form method="POST" action={{ route('all_expense.store') }} autocomplete="off">
+
+                @csrf
+                <div class="row d-flex align-items-end">
+                    <div class="col-md-4 col-12">
+                        <div class="mb-3">
+                            <label for="example-select" class="form-label">Catégorie de dépense<span
+                                    style="color:red;">*</span></label>
+                            <select class="form-select select2" data-toggle="select2" required id="expense_categorie_id" name="expense_categorie_id"
+                                    required>
+                                    <option value="">Sélectionner une catégorie</option>
+                                    @forelse ($expenses_categorie as $expense_categorie)
+                                        <option value="{{ $expense_categorie->id }}">{{ $expense_categorie->name }}</option>
+                                    @empty
+                                        Ajouter une catégorie
+                                    @endforelse
+                                </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-12">
+                        <div class="mb-3">
+                            <label for="example-select" class="form-label">Fournisseur<span
+                                    style="color:red;">*</span></label>
+                                    <input type="text" id="supplier" class="form-control" name="supplier">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-12">
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary" id="add_expense">Ajouter</button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
             <div class="card-widgets">
                 <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
                 <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false"
@@ -57,7 +93,7 @@
                             <td>{{ $item->amount }}</td>
                             <td>{{ $item->user->firstname }}</td>
                             <td>{{ $item->expensecategorie->name }}</td>
-                            <td>{{ $item->cashticket->code }}</td>
+                            <td>{{ $item->cashticket ? $item->cashticket->code : '' }}</td>
 
                             @if ($item->paid==1)
                             <td><span class="badge bg-success">Payé</span></td>
@@ -66,19 +102,18 @@
                             @endif
 
                             <td>
-                                <a class="btn btn-primary" href="#" data-bs-toggle="modal"
-                                    data-bs-target="#bs-example-modal-lg-show-{{ $item->id }}"><i class="uil-eye"></i>
+                                <a class="btn btn-primary" href="{{route('expense.details.index',$item->id)}}" ><i class="uil-eye"></i>
                                 </a>
-                                @include('expenses.show',['item' => $item])
+                                {{-- @include('expenses.show',['item' => $item]) --}}
 
-                                <a class="btn btn-primary" href="#" data-bs-toggle="modal"
+                                {{-- <a class="btn btn-primary" href="#" data-bs-toggle="modal"
                                     data-bs-target="#bs-example-modal-lg-edit-{{ $item->id }}"><i
                                         class="mdi mdi-lead-pencil"></i>
                                 </a>
-                                @include('expenses.edit',['item' => $item])
+                                @include('expenses.edit',['item' => $item]) --}}
 
-                                <button type="button" onclick="deleteModalEx({{ $item->id }})" class="btn btn-danger"><i
-                                        class="mdi mdi-trash-can-outline"></i> </button>
+                                {{-- <button type="button" onclick="deleteModalEx({{ $item->id }})" class="btn btn-danger"><i
+                                        class="mdi mdi-trash-can-outline"></i> </button> --}}
                             </td>
                         </tr>
                         @endforeach
@@ -94,8 +129,39 @@
 
 
 @push('extra-js')
-<script>
+
+    <script>
+        $(function() {
+    $("#supplier").autocomplete({
+        source: function(request, response) {
+        // Faites une requête Ajax pour récupérer les noms des articles depuis la base de données
+        $.ajax({
+            url: "/fournisseur/getSupplier",
+            dataType: "json",
+            data: {
+            term: request.term // Terme saisi par l'utilisateur
+            },
+            success: function(data) {
+                response(data); // Affichez les suggestions d'articles à l'utilisateur
+            }
+        });
+        },
+        minLength: 2 // Nombre de caractères avant de déclencher l'autocomplétion
+    });
+    });
+    </script>
+    <!-- Inclure jQuery -->
+
+
+    <script>
     var baseUrl = "{{url('/')}}"
-</script>
-<script src="{{asset('viewjs/patient/index.js')}}"></script>
+    </script>
+    <script src="{{asset('viewjs/patient/index.js')}}"></script>
+
+    <script src="{{asset('viewjs/bank/ticket.js')}}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Inclure jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 @endpush

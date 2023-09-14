@@ -41,11 +41,29 @@
                     </div>
 
                     <input type="hidden" id="id2" name="id">
-                    <div class="mb-3">
-                        <label for="simpleinput" class="form-label">Nombre d'examens<span
-                                style="color:red;">*</span></label>
-                        <input type="number" min="-1" name="nbr_examen" value="-1" class="form-control" id="nbr_examen"
-                            required>
+                        <div class="mb-3">
+                            <label for="simpleinput" class="form-label">Nombre d'examens<span
+                                    style="color:red;">*</span></label>
+                            <input type="number" min="-1" name="nbr_examen" value="-1" class="form-control" id="" required>
+                            <small>-1 pour un nombre illimité</small>
+                        </div>
+
+                    <div class="row">
+                        <div class="mb-3 col-12 col-lg-4">
+                            <label class="form-label mt-3">Facturation groupée</label> <br>
+                                <input type="checkbox" id="switch4" class="form-control"
+                                    name="invoice_unique" data-switch="success" />
+                            <label for="switch3" data-on-label="oui" data-off-label="non"></label>
+                        </div>
+                        <div class="mt-3 col-12 col-lg-8" id="show-client1" style="display: none">
+                            <label for="example-select" class="form-label">Client</label>
+                            <select class="form-select" id="client_id1" name="client_id">
+                                <option value="">Sélectionner le client du contrat</option>
+                                @foreach ($clients as $client)
+                                    <option value="{{$client->id}}">{{ $client->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="simpleinput" class="form-label">Description<span style="color:red;">*</span></label>

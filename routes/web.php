@@ -33,6 +33,7 @@ use App\Http\Controllers\TestCategoryController;
 use App\Http\Controllers\DetailsContratController;
 use App\Http\Controllers\TypeConsultationController;
 use App\Http\Controllers\CategoryPrestationController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\LogReportController;
 use App\Http\Controllers\ProblemCategoryController;
 use App\Http\Controllers\ProblemeReportersController;
@@ -94,7 +95,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/delete/{id}', [SupplierController::class, 'destroy']);
         Route::get('/get/{id}', [SupplierController::class, 'edit']);
         Route::post('/update', [SupplierController::class, 'update'])->name('supplier.update');
-
+        Route::get('/getSupplier', [SupplierController::class, 'getSupplier']);
         Route::get('/categories', [SupplierCategorieController::class, 'index'])->name('supplier.categories.index');
         Route::post('/categories', [SupplierCategorieController::class, 'store'])->name('supplier.categories.store');
         Route::get('/category/delete/{id}', [SupplierCategorieController::class, 'destroy']);
@@ -137,6 +138,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/getdoctor/{id}', [DoctorController::class, 'edit']);
     Route::post('/doctors/update', [DoctorController::class, 'update'])->name('doctors.update');
 
+
+    //CLIENTS
+    Route::get('/clients/index', [ClientController::class, 'index'])->name('clients.index');
+    Route::post('/clients/index', [ClientController::class, 'store'])->name('clients.store');
+    Route::get('/clients/delete/{id}', [ClientController::class, 'destroy']);
+    Route::get('/getclient/{id}', [ClientController::class, 'edit']);
+    Route::post('/clients/update', [ClientController::class, 'update'])->name('clients.update');
+    // Route::post('/clients/storeDoctor', [ClientController::class, 'storeDoctor'])->name('clients.storeDoctor'); //Enregistrement docteur depuis select2
+
     //CONTRATS
     Route::get('/contrats/index', [ContratController::class, 'index'])->name('contrats.index');
     Route::post('/contrats/index', [ContratController::class, 'store'])->name('contrats.store');
@@ -169,6 +179,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/test_order/updatetest',[TestOrderController::class, 'updateTest'])->name('test_order.updateTest');
     Route::post('/test_order/search',[TestOrderController::class, 'search'])->name('test_order.search');
     Route::get('/testOrders', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('test_order.getTestOrdersforDatatable');
+    // Cette la route associer aux fichier a supprimer
+    Route::delete('/testOrders/delete/image-gallerie/{index}/{test_order}', [TestOrderController::class, 'deleteimagegallerie'])->name('test_order.deleteimagegallerie');
+    Route::put('/testOrders/create/image-gallerie/{test_order}', [TestOrderController::class, 'createimagegallerie'])->name('test_order.createimagegallerie');
+
     Route::post('/images/upload', [TestOrderController::class , 'upload'])->name('images.upload');
     Route::get('/examen-images/{examenCode}', [TestOrderController::class , 'getExamImages'])->name('images.getExamImages');
 
@@ -425,7 +439,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/ticket-delete/{id}',[CashboxTicketController::class,'destroy']);
         Route::get('/ticket-detail-delete/{id}',[CashboxTicketController::class,'detail_destroy']);
         Route::post('/ticket-update-status',[CashboxTicketController::class, 'updateStatus'])->name('cashbox.ticket.updateStatus');
-        Route::get('/ticket-status-update',[CashboxTicketController::class, 'updateTicketStatus'])->name('cashbox.ticket.status.update');
+        Route::post('/ticket-status-update',[CashboxTicketController::class, 'updateTicketStatus'])->name('cashbox.ticket.status.update');
         Route::post('/ticket-update-total',[CashboxTicketController::class, 'updateTotal'])->name('cashbox.ticket.updateTotal');
 
         Route::get('ticket/getdetail/{id}',[CashboxTicketController::class, 'getTicketDetail'])->name('cashbox.ticket.getTicketDetail');
@@ -485,11 +499,16 @@ Route::middleware(['auth'])->group(function () {
     // Expense Expense
     // Route::prefix('expenses')->group(function () {
         Route::get('expense', [ExpenseController::class, 'index'])->name('all_expense.index');
+        Route::get('/expense-detail/{id}', [ExpenseController::class ,'detail_index'])->name('expense.details.index');
         Route::get('expense-create', [ExpenseController::class, 'create'])->name('all_expense.create');
         Route::get('expense-edit/{expense}', [ExpenseController::class, 'edit'])->name('all_expense.edit');
-        Route::put('expense-update/{expense}', [ExpenseController::class, 'update'])->name('all_expense.update');
+        Route::post('expense-update', [ExpenseController::class, 'update'])->name('all_expense.update');
+        Route::get('expense/getExpenseDetail/{id}', [ExpenseController::class, 'getExpenceDetail'])->name('expense.getDetail');
+        Route::post('/expense-update-total',[ExpenseController::class, 'updateTotal'])->name('expense.updateTotal');
         Route::post('expense-store', [ExpenseController::class, 'store'])->name('all_expense.store');
+        Route::post('expense-detail',[ExpenseController::class, 'detail_store'])->name('expense.detail.store');
         Route::get('expense-delete/{expense}', [ExpenseController::class, 'delete'])->name('all_expense.delete');
+        Route::get('/expense-detail-delete/{id}',[ExpenseController::class,'detail_destroy']);
     // });
 
 
@@ -502,9 +521,5 @@ Route::middleware(['auth'])->group(function () {
         Route::put('cashbox-daily-update', [CashboxDailyController::class, 'update'])->name('daily.update');
         Route::post('cashbox-daily-store', [CashboxDailyController::class, 'store'])->name('daily.store');
         Route::get('cashbox-daily-delete/{cashboxDaily}', [CashboxDailyController::class, 'delete'])->name('daily.delete');
-        
-        // Route vers 
-            Route::get('cashbox-daily-fermeture/{cashboxDaily}', [CashboxDailyController::class, 'detail_fermeture_caisse'])->name('daily.fermeture');
-        // 
-        // });
+        Route::get('cashbox-daily-fermeture/{cashboxDaily}', [CashboxDailyController::class, 'detail_fermeture_caisse'])->name('daily.fermeture');
 });
