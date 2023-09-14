@@ -48,7 +48,8 @@ class ContratController extends Controller
         }
 
         //récupération des contrats avec les détails
-        $contrats = $this->contrat->getWithDetail();
+        // $contrats = $this->contrat->getWithDetail();
+        $contrats = $this->contrat->latest()->get();
         $clients = $this->clients->latest()->get();
 
         $setting = $this->setting->find(1);

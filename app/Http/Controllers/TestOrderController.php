@@ -477,24 +477,52 @@ public function __construct(
         $test_order = $this->testOrder->findorfail($detail->test_order_id);
         $detail->delete();
 
-        $invoice = $this->invoice->where('test_order_id',$test_order->id)->first();
+        if ($test_order->contrat->invoice_unique !=0)
+        {
+            $invoice = $this->invoice->where('test_order_id',$test_order->id)->first();
 
-        if ($invoice) {
-            $invoice->update([
-                "subtotal" => $test_order->subtotal,
-                "discount" => $test_order->discount,
-                "total" => $test_order->total,
-            ]);
-            $tests = $test_order->details()->get();
+            if ($invoice) {
+                $invoice->update([
+                    "subtotal" => $test_order->subtotal,
+                    "discount" => $test_order->discount,
+                    "total" => $test_order->total,
+                ]);
+                $tests = $test_order->details()->get();
 
-            $details = $invoice->details()->get();
+                $details = $invoice->details()->get();
 
-            foreach ($details as $value) {
-                if ($value->test_id == $detail->test_id) {
-                    $value->delete();
+                foreach ($details as $value) {
+                    if ($value->test_id == $detail->test_id) {
+                        $value->delete();
+                    }
                 }
             }
+        }else {
+
+            $invoice = $this->invoice->where('contrat_id',$test_order->contrat->id)->first();
+            if ($invoice) {
+                $invoice->update([
+                    "subtotal" =>  $invoice->subtotal - $detail->price,
+                    "discount" => $invoice->discount - $detail->discount,
+                    "total" => $invoice->total - $detail->total,
+                ]);
+                $tests = $test_order->details()->get();
+
+                $details = $invoice->details()->get();
+
+                foreach ($invoice->contrat->orders()->get as $key => $order) {
+                    if ($order->id == $detail->test_order_id) {
+                        foreach ($details as $value) {
+                            if ($value->test_id == $detail->test_id) {
+                                $value->delete();
+                            }
+                        }
+                    }
+                }
+            }
+
         }
+
 
         return response()->json(200);
 

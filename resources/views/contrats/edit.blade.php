@@ -53,7 +53,7 @@
                             <label class="form-label mt-3">Facturation groupée</label> <br>
                                 <input type="checkbox" id="switch4" class="form-control"
                                     name="invoice_unique" data-switch="success" />
-                            <label for="switch3" data-on-label="oui" data-off-label="non"></label>
+                            <label for="switch4" data-on-label="oui" data-off-label="non"></label>
                         </div>
                         <div class="mt-3 col-12 col-lg-8" id="show-client1" style="display: none">
                             <label for="example-select" class="form-label">Client</label>

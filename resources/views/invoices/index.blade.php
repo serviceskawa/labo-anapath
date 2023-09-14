@@ -5,21 +5,18 @@
 @section('css')
 
     <!-- Inclure Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
     <!-- Inclure Bootstrap JS et les dépendances Popper.js et jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> --}}
 @endsection
 
 @section('content')
 
 <div class="">
 
-    <div>
-
-    </div>
     <div class="page-title-box">
         <div class="page-title-right mr-3">
             <a href="{{ route('invoice.create') }}"><button type="button" class="btn btn-primary">Ajouter une
@@ -39,8 +36,10 @@
                     aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                 <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
             </div>
-                <a href="javascript:void(0);" class="btn btn-success mb-4">Total encaissé : {{ $totalToday }}</a>
-            <h5 class="card-title mb-0">Liste des Factures </h5>
+
+            <a href="javascript:void(0);" class="btn btn-success mb-4">Total encaissé : {{ $totalToday }}</a>
+
+            <h5 class="card-title mb-0">Liste des factures </h5>
 
             <div id="cardCollpase1" class="collapse pt-3 show">
 
@@ -93,6 +92,7 @@
                         </div>
                     </div> <!-- end col -->
                 </div>
+
 
 
                 <table id="datatable1" class="table dt-responsive nowrap w-100">

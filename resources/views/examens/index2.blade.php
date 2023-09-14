@@ -3,7 +3,7 @@
 @section('title', 'Examens2')
 
 @section('content')
-    <div class="row">
+    {{-- <div class="row"> --}}
         {{-- <div class="col-12">
             <div class="page-title-box">
 
@@ -33,136 +33,140 @@
                             aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                         <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                     </div>
+                    
                     <h5 class="card-title mb-0">Liste des demandes d'examen </h5>
 
                     <div id="cardCollpase1" class="show collapse pt-3">
 
-                            <div class="row mb-3">
+                        <div class="row mb-3">
 
-                                <div class="col-lg-3">
+                            <div class="col-lg-3">
 
-                                    <div class="mb-3">
-                                        <label for="example-fileinput" class="form-label">Contrat</label>
-                                        <select name="contrat_id" id="contrat_id" class="form-control">
-                                            <option value="">Tous les contrats</option>
-                                            @forelse ($contrats as $contrat)
-                                                <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
-                                            @empty
-                                            @endforelse
-                                        </select>
-                                    </div>
+                                <div class="mb-3">
+                                    <label for="example-fileinput" class="form-label">Contrat</label>
+                                    <select name="contrat_id" id="contrat_id" class="form-control">
+                                        <option value="">Tous les contrats</option>
+                                        @forelse ($contrats as $contrat)
+                                            <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                </div>
 
-                                </div> <!-- end col -->
+                            </div> <!-- end col -->
 
-                                <div class="col-lg-3">
+                            <div class="col-lg-3">
 
-                                    <div class="mb-3">
-                                        <label for="example-fileinput" class="form-label">Status</label>
-                                        <select name="status" id="exams_status" class="form-control">
-                                            <option value="">Tous</option>
-                                            <option value="1">Valider</option>
-                                            <option value="0">En attente</option>
-                                            <option value="livrer">Livrer</option>
-                                            <option value="non_livrer">Non Livrer</option>
-                                        </select>
-                                    </div>
+                                <div class="mb-3">
+                                    <label for="example-fileinput" class="form-label">Status</label>
+                                    <select name="status" id="exams_status" class="form-control">
+                                        <option value="">Tous</option>
+                                        <option value="1">Valider</option>
+                                        <option value="0">En attente</option>
+                                        <option value="livrer">Livrer</option>
+                                        <option value="non_livrer">Non Livrer</option>
+                                    </select>
+                                </div>
 
-                                </div> <!-- end col -->
+                            </div> <!-- end col -->
 
-                                <div class="col-lg-3">
+                            <div class="col-lg-3">
 
-                                    <div class="mb-3">
-                                        <label for="example-fileinput" class="form-label">Type d'examen</label>
-                                        <select name="type_examen" id="type_examen" class="form-control">
-                                            <option value="">Tous</option>
-                                            @forelse ($types_orders as $type)
-                                                <option value="{{ $type->id }}">{{ $type->title }}</option>
-                                            @empty
-                                                Ajouter un Type d'examen
-                                            @endforelse
-                                        </select>
-                                    </div>
+                                <div class="mb-3">
+                                    <label for="example-fileinput" class="form-label">Type d'examen</label>
+                                    <select name="type_examen" id="type_examen" class="form-control">
+                                        <option value="">Tous</option>
+                                        @forelse ($types_orders as $type)
+                                            <option value="{{ $type->id }}">{{ $type->title }}</option>
+                                        @empty
+                                            Ajouter un Type d'examen
+                                        @endforelse
+                                    </select>
+                                </div>
 
-                                </div> <!-- end col -->
+                            </div> <!-- end col -->
 
-                                <div class="col-lg-3">
+                            <div class="col-lg-3">
 
-                                    <div class="mb-3">
-                                        <label for="example-fileinput" class="form-label">Urgent</label>
-                                        <select name="cas_status" id="cas_status" class="form-control">
-                                            <option value="">Tous</option>
-                                            <option value="1">Urgent</option>
-                                        </select>
-                                    </div>
+                                <div class="mb-3">
+                                    <label for="example-fileinput" class="form-label">Urgent</label>
+                                    <select name="cas_status" id="cas_status" class="form-control">
+                                        <option value="">Tous</option>
+                                        <option value="1">Urgent</option>
+                                    </select>
+                                </div>
 
-                                </div> <!-- end col -->
+                            </div> <!-- end col -->
 
 
-                                <div class="col-lg-3">
+                            <div class="col-lg-3">
 
-                                    <div class="mb-3">
-                                        <label for="example-fileinput" class="form-label">Docteur</label>
-                                        <select name="" id="doctor_signataire" class="form-control">
-                                            <option value="">Tous</option>
-                                            @foreach (getUsersByRole('docteur') as $item)
-                                                <option value="{{ $item->id }}">
-                                                    {{ $item->lastname }} {{ $item->firstname }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                <div class="mb-3">
+                                    <label for="example-fileinput" class="form-label">Docteur</label>
+                                    <select name="" id="doctor_signataire" class="form-control">
+                                        <option value="">Tous</option>
+                                        @foreach (getUsersByRole('docteur') as $item)
+                                            <option value="{{ $item->id }}">
+                                                {{ $item->lastname }} {{ $item->firstname }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-                                </div> <!-- end col -->
+                            </div> <!-- end col -->
 
-                                <div class="col-lg-3">
-                                    <div class="mb-3">
-                                        <label for="example-fileinput" class="form-label">Rechercher</label>
-                                        <input type="text" name="contenu" id="contenu" class="form-control">
-                                    </div>
-                                </div> <!-- end col -->
+                            <div class="col-lg-3">
+                                <div class="mb-3">
+                                    <label for="example-fileinput" class="form-label">Rechercher</label>
+                                    <input type="text" name="contenu" id="contenu" class="form-control">
+                                </div>
+                            </div> <!-- end col -->
 
-                                <div class="col-lg-3">
-                                    <div class="mb-3">
-                                        <label for="example-fileinput" class="form-label">Date Début</label>
-                                        <input type="date" name="dateBegin" id="dateBegin" class="form-control">
-                                    </div>
-                                </div> <!-- end col -->
+                            <div class="col-lg-3">
+                                <div class="mb-3">
+                                    <label for="example-fileinput" class="form-label">Date Début</label>
+                                    <input type="date" name="dateBegin" id="dateBegin" class="form-control">
+                                </div>
+                            </div> <!-- end col -->
 
-                                <div class="col-lg-3">
-                                    <div class="mb-3">
-                                        <label for="example-fileinput" class="form-label">Date fin</label>
-                                        <input type="date" name="dateEnd" id="dateEnd" class="form-control">
-                                    </div>
-                                </div> <!-- end col -->
+                            <div class="col-lg-3">
+                                <div class="mb-3">
+                                    <label for="example-fileinput" class="form-label">Date fin</label>
+                                    <input type="date" name="dateEnd" id="dateEnd" class="form-control">
+                                </div>
+                            </div> <!-- end col -->
 
-                                <div class="col-lg-3">
+                            <div class="col-lg-3">
 
-                                    <div class="mb-3">
-                                        <label for="example-fileinput" class="form-label">Status appel</label>
-                                        <select name="status_appel" id="appel_status" class="form-control">
-                                            <option value="">Tous</option>
-                                            <option value="voice.completed">Décroché</option>
-                                            <option value="voice.cancelled">Manqué</option>
-                                            <option value="voice.busy">Racroché</option>
-                                        </select>
-                                    </div>
+                                <div class="mb-3">
+                                    <label for="example-fileinput" class="form-label">Status appel</label>
+                                    <select name="status_appel" id="appel_status" class="form-control">
+                                        <option value="">Tous</option>
+                                        <option value="voice.completed">Décroché</option>
+                                        <option value="voice.cancelled">Manqué</option>
+                                        <option value="voice.busy">Racroché</option>
+                                    </select>
+                                </div>
 
-                                </div> <!-- end col -->
+                            </div> <!-- end col -->
 
-                            </div>
+                        </div>
                         {{-- </form> --}}
 
-                       <div class="row mb-3">
-                            <div class="col-lg-2 p-1 alert alert-success rounded-pill" style="margin-right: 5px; text-align:center;">
-                                Livrer : {{$finishTest}}
+                        <div class="row mb-3">
+                            <div class="col-lg-2 p-1 alert alert-success rounded-pill"
+                                style="margin-right: 5px; text-align:center;">
+                                Livrer : {{ $finishTest }}
                             </div>
-                            <div class="col-lg-2 p-1 alert alert-warning rounded-pill" style="margin-right: 5px; text-align:center;">
-                                Valider : {{$noFinishTest}}
+                            <div class="col-lg-2 p-1 alert alert-warning rounded-pill"
+                                style="margin-right: 5px; text-align:center;">
+                                Valider : {{ $noFinishTest }}
                             </div>
-                            <div class="col-lg-2 p-1 ml-3 alert alert-danger rounded-pill" style="margin-right: 5px; text-align:center;">
-                                Cas urgent : {{$is_urgent}}
+                            <div class="col-lg-2 p-1 ml-3 alert alert-danger rounded-pill"
+                                style="margin-right: 5px; text-align:center;">
+                                Cas urgent : {{ $is_urgent }}
                             </div>
-                       </div>
+                        </div>
 
                         <table id="datatable1" class="dt-responsive nowrap w-100 table">
                             <thead>
@@ -194,11 +198,10 @@
     @endsection
 
     @push('extra-js')
-
         <script>
-            var baseUrl = "{{url('/')}}"
+            var baseUrl = "{{ url('/') }}"
             var ROUTETESTORDERDATATABLE = "{{ route('test_order.getTestOrdersforDatatable') }}"
             var URLupdateAttribuate = "{{ url('attribuateDoctor') }}" + '/' + doctor_id + '/' + order_id
         </script>
-        <script src="{{asset('viewjs/test/order/index.js')}}"></script>
+        <script src="{{ asset('viewjs/test/order/index.js') }}"></script>
     @endpush

@@ -21,12 +21,33 @@ function deleteModal(id) {
 
 var checkbox = document.getElementById("switch3");
 var textField = document.getElementById("show-client");
+var selectElement = document.getElementById("client_id");
 
 checkbox.addEventListener('change', function () {
     if (checkbox.checked) {
         textField.style.display = 'block';
+        // Ajouter l'attribut "required" au champ de sélection
+        selectElement.setAttribute("required", "required");
     } else {
         textField.style.display = 'none';
+        // Supprimer l'attribut "required" du champ de sélection
+        selectElement.removeAttribute("required");
+    }
+});
+
+var checkbox1 = document.getElementById("switch4");
+var textField1 = document.getElementById("show-client1");
+var selectElement1 = document.getElementById("client_id1");
+
+checkbox1.addEventListener('change', function () {
+    if (checkbox1.checked) {
+        textField1.style.display = 'block';
+        // Ajouter l'attribut "required" au champ de sélection
+        selectElement1.setAttribute("required", "required");
+    } else {
+        textField1.style.display = 'none';
+        // Supprimer l'attribut "required" du champ de sélection
+        selectElement1.removeAttribute("required");
     }
 });
 
@@ -81,8 +102,8 @@ $(document).ready(function() {
 //EDITION
 function edit(id) {
     var e_id = id;
-    var checkbox = document.getElementById("switch4");
-    var textField = document.getElementById("show-client1");
+    var checkbox2 = document.getElementById("switch4");
+    var textField2 = document.getElementById("show-client1");
     // var baseUrl = "{{ url('/') }}";
 
     // Populate Data in Edit Modal Form
@@ -97,11 +118,11 @@ function edit(id) {
             $('#status2').val(data.status).change();
             $('#description2').val(data.description);
             $('#nbr_examen').val(data.nbr_tests);
-            if (data.invoice_unique == 0) {
-                checkbox.checked = true
-                textField.style.display = 'block';
-                $('#client_id1').val(data.client_id).change()
 
+            if (data.invoice_unique == 0) {
+                checkbox2.checked = true
+                textField2.style.display = 'block';
+                $('#client_id1').val(data.client_id).change()
             }
 
             $('#editModal').modal('show');
