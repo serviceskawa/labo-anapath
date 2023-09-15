@@ -132,7 +132,7 @@ class CashboxController extends Controller
                 'user_id' => $cashboxAddData['user_id']
             ]);
 
-            $cash = $this->cash->find(2);
+            $cash = $this->cash->find(1);
             $cash->current_balance += $cashboxAddData['amount'];
             $cash->save();
             return back()->with('success', "Les informations de la caisse de vente ont été mis à jour ! ");

@@ -31,7 +31,7 @@ class CashboxDailyController extends Controller
         // if (!getOnlineUser()->can('view-expenses')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-        
+
         $cashboxDailys = CashboxDaily::latest()->get();
 
         $cashboxs = Cashbox::find(2);
@@ -39,7 +39,7 @@ class CashboxDailyController extends Controller
 
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        return view('cashbox_daily.index',compact('cashboxDailys','cashboxs','cashboxtest'));   
+        return view('cashbox_daily.index',compact('cashboxDailys','cashboxs','cashboxtest'));
     }
 
     /**
@@ -70,7 +70,7 @@ class CashboxDailyController extends Controller
             if($sf->current_balance==0 || $sf->current_balance==null)
             {
                 $new_current_balance = 0.0;
-            }else{ 
+            }else{
             $new_current_balance = $sf->current_balance - $request->solde_ouverture;
             }
 
@@ -80,28 +80,33 @@ class CashboxDailyController extends Controller
                 'statut' => 1
             ]);
 
-                CashboxDaily::create([
-                    'opening_balance' => $request->solde_ouverture,
-                    'close_balance' => 0.0,
-                    'cashbox_id' => $request->typecaisse,
-                    'status' => 1,
-                    'cash_calculated' => null,
-                    'cash_confirmation' => null,
-                    'cash_ecart' => null,
-                    'mobile_money_calculated' => null,
-                    'mobile_money_confirmation' => null,
-                    'mobile_money_ecart' => null,
-                    'cheque_calculated' => null,
-                    'cheque_confirmation' => null,
-                    'cheque_ecart' => null,
-                    'virement_calculated' => null,
-                    'virement_confirmation' => null,
-                    'virement_ecart' => null,
-                    'total_calculated' => null,
-                    'total_confirmation' => null,
-                    'total_ecart' => null,
-                    'user_id' => auth()->user()->id,
-                ]);
+
+                try {
+                    $cash = CashboxDaily::create([
+                        'opening_balance' => $request->solde_ouverture,
+                        'close_balance' => 0.0,
+                        'cashbox_id' => $request->typecaisse,
+                        'status' => 1,
+                        'cash_calculated' => null,
+                        'cash_confirmation' => null,
+                        'cash_ecart' => null,
+                        'mobile_money_calculated' => null,
+                        'mobile_money_confirmation' => null,
+                        'mobile_money_ecart' => null,
+                        'cheque_calculated' => null,
+                        'cheque_confirmation' => null,
+                        'cheque_ecart' => null,
+                        'virement_calculated' => null,
+                        'virement_confirmation' => null,
+                        'virement_ecart' => null,
+                        'total_calculated' => null,
+                        'total_confirmation' => null,
+                        'total_ecart' => null,
+                        'user_id' => auth()->user()->id,
+                    ]);
+                } catch (\Throwable $th) {
+                    dd($th);
+                }
 
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
@@ -182,7 +187,7 @@ class CashboxDailyController extends Controller
         $open_cash = CashboxDaily::latest()->first();
         return view('cashbox_daily.fermeture',compact('open_cash','mobilemoneysum','mobilemoneycount','virementsum','virementcount','especescount','especessum','chequescount','chequessum'));
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -195,7 +200,7 @@ class CashboxDailyController extends Controller
         // dd($request);
         try {
         $sf = CashboxDaily::latest()->first();
-            
+
         // $serach
             $sf->update([
                     'close_balance' => $request->close_balance,

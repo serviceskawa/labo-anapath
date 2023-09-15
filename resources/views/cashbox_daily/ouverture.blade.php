@@ -28,11 +28,11 @@
 
                             <input type="text" name="statut" value="1" hidden>
                             <input type="text" name="typecaisse" value="2" hidden>
-                            <button class="btn btn-success">
+                            <a href="#" class="btn btn-success">
                                 <span style="font-size: 20px;">Espèces</span>
-                            </button>
+                            </a>
                             <input type="number" placeholder="0.0 Francs CFA" name="solde_ouverture" value=""
-                                class="form-control">
+                                class="form-control" required>
 
                         </div>
                     </div>
