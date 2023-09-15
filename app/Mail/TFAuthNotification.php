@@ -31,7 +31,7 @@ class TFAuthNotification extends Mailable
      */
     public function build()
     {
-        $this->from("bmac82745@gmail.com", "LaboCaap") // L'expéditeur
+        $this->from("admin@caap.bj", "LaboCaap") // L'expéditeur
         ->subject('Connection Confirmation de code')
         ->view('emails.tfauth_notification')
         ->with('user', $this->user);
