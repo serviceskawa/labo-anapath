@@ -143,6 +143,59 @@ class CashboxController extends Controller
 
     }
 
+    public function store_bank(Request $request)
+    {
+        // if (!getOnlineUser()->can('create-cashboxs')) {
+        //     return back()->with('error',"vous n'êtes pas autorisé");
+        // }
+
+        $examenFilePath = "";
+        if ($request->hasFile('bank_file')) {
+            $examenFile = $request->file('bank_file');
+            $examenFilePath = $examenFile->store('/tickets', 'public');
+        }
+
+        $cashboxAddData = [
+            'bank_id' => $request->bank_id,
+            'cashbox_id' => 2,
+            'amount' => $request->amount,
+            'attachement' => $examenFilePath,
+            'date' => $request->date,
+            'description' => $request->description ? $request->description : '',
+            'user_id' => Auth::user()->id
+        ];
+
+        try {
+            $cash = $this->cash->find(2);
+
+            if ($cash->current_balance>$cashboxAddData['amount']) {
+                // $cashboxAdd = CashboxAdd::find($cashboxAddData['id']);
+                $cashboxAdd = $this->cashadd->create([
+                    'amount' => $cashboxAddData['amount'],
+                    'bank_id' => $cashboxAddData['bank_id'],
+                    'date' => $cashboxAddData['date'],
+                    'attachement' => $cashboxAddData['attachement'],
+                    'description' => $cashboxAddData['description'],
+                    'cashbox_id' => $cashboxAddData['cashbox_id'],
+                    'user_id' => $cashboxAddData['user_id']
+                ]);
+
+
+                $cash->current_balance -= $cashboxAddData['amount'];
+                $cash->save();
+                return back()->with('success', "Les informations de la caisse de vente ont été mis à jour ! ");
+            } else {
+                # code...
+                return back()->with('error', "Le montant du dépôt ne peut pas être supérieur au montant de la caisse");
+            }
+
+
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }
+
+    }
+
     /**
      * Display the specified resource.
      *

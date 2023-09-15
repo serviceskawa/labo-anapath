@@ -426,6 +426,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('cashbox')->group(function() {
         Route::get('/vente', [CashboxController::class ,'index'])->name('cashbox.vente.index');
+        Route::post('/store-bank',[CashboxController::class,'store_bank'])->name('cashbox.vente.store.bank');
         Route::get('/depense', [CashboxController::class ,'index_depense'])->name('cashbox.depense.index');
         Route::get('/getcashvente/{id}',[CashboxController::class,'edit']);
         Route::post('/vente-update',[CashboxController::class, 'update'])->name('cashbox.vente.update');
