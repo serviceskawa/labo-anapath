@@ -1,43 +1,66 @@
-<div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<!-- Large modal -->
+<div class="modal fade" id="bs-example-show-{{$item->id}}" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Demander un remboursement</h4>
+                <h4 class="modal-title" id="myLargeModalLabel">Détail</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
-        <form action="{{ route('refund.request.store') }}" method="POST" autocomplete="off">
-            @csrf
             <div class="modal-body">
+                <h4>Motif : {{ $item->note }}</h4>
+                <h4>Montant : {{ $item->montant }}</h4>
+                <h4>Dernière mis à jour : {{ $item->date }}</h4>
+                <h4>Facture : {{ $item->invoice ? $item->invoice->code : '' }}</h4>
+                <h4>Pièce jointe :
+                    @if ($item->attachment)
+                    <a href="{{ asset('storage/' . $item->attachment) }}" download>
+                        <u style="font-size: 15px;">Voir</u>
+                    </a>
+                    @endif
+                </h4>
 
-                <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
-                <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Demande d'examen<span style="color:red;">*</span></label>
-                    <select class="form-select select" data-toggle="select" name="test_orders_id"
-                        id="test_orders_id" required>
-                        <option>Sélectionner une demande d'examen</option>
-                        @foreach ($testOrders as $testOrder)
-                        <option value="{{ $testOrder->id }}">{{ $testOrder->code }}</option>
-                        @endforeach
-                    </select>
+                <div id="cardCollpase1" class="collapse pt-3 show">
+
+
+                    <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                {{-- <th>Code examen</th> --}}
+                                <th>Demande de rembousement</th>
+                                <th>Utilisateur</th>
+                                <th>Operation</th>
+                                <th>Dernière mis à jour</th>
+
+                            </tr>
+                        </thead>
+
+
+                        <tbody>
+
+                            @foreach ($item->logRefund as $key => $item)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    {{-- <td>{{ $item->order->code }}</td> --}}
+                                    <td>{{ $item->refund->id }}</td>
+                                    <td>{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
+                                    <td>{{ $item->operation }}</td>
+                                    <td>
+                                        {{ date_format($item->updated_at, 'd/m/y') }}
+                                    </td>
+                                </tr>
+                            @endforeach
+
+
+
+
+                        </tbody>
+                    </table>
+
                 </div>
-
-                <div class="mb-3">
-                    <label for="simpleinput" class="form-label">Montant<span style="color:red;">*</span></label>
-                    <input type="number" name="montant" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="simpleinput" class="form-label">Description<span style="color:red;">*</span></label>
-                    <textarea name="description" id="" rows="6" class="form-control"></textarea>
-                </div>
-
 
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-primary">Demander un remboursement</button>
-            </div>
-        </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

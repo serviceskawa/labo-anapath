@@ -350,6 +350,14 @@ class InvoiceController extends Controller
 
     }
 
+
+    public function getInvoice($id)
+    {
+        $invoice = $this->invoices->find($id);
+        return response()->json($invoice);
+    }
+
+
     public function business()
     {
         //Mois courant

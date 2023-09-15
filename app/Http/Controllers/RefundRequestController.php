@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\RefundReason;
 use App\Models\RefundRequest;
+use App\Models\RefundRequestLog;
 use App\Models\Setting;
 use App\Models\TestOrder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RefundRequestController extends Controller
 {
@@ -15,14 +18,18 @@ class RefundRequestController extends Controller
     protected $setting;
     protected $refundRequest;
     protected $invoices;
+    protected $categories;
     protected $testOrder;
+    protected $log;
 
-    public function __construct(Setting $setting, RefundRequest $refundRequest, TestOrder $testOrder, Invoice $invoices)
+    public function __construct(Setting $setting, RefundRequest $refundRequest, RefundReason $categories,TestOrder $testOrder, Invoice $invoices, RefundRequestLog $log)
     {
         $this->setting = $setting;
         $this->refundRequest = $refundRequest;
         $this->testOrder = $testOrder;
+        $this->categories = $categories;
         $this->invoices = $invoices;
+        $this->log = $log;
     }
 
     /**
@@ -34,9 +41,21 @@ class RefundRequestController extends Controller
     {
         $setting = $this->setting->find(1);
         $refundRequests = $this->refundRequest->latest()->get();
+        $categories = $this->categories->all();
+        $invoices = $this->invoices->all();
+        $testOrders = $this->testOrder->all();
+        $logs = $this->log->all();
+
+        return view('errors_reports.refund.index', compact('setting', 'refundRequests','testOrders','invoices','categories','logs'));
+    }
+
+    public function index_categorie()
+    {
+        $setting = $this->setting->find(1);
+        $categories = $this->categories->latest()->get();
         $testOrders = $this->testOrder->all();
 
-        return view('errors_reports.refund.index', compact('setting', 'refundRequests','testOrders'));
+        return view('errors_reports.refund.categorie.index', compact('setting', 'categories'));
     }
 
     /**
@@ -47,9 +66,11 @@ class RefundRequestController extends Controller
     public function create()
     {
         $testOrders = $this->testOrder->all();
+        $categories = $this->categories->all();
+        $invoices = $this->invoices->all();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        return view('errors_reports.refund.create', compact('testOrders'));
+        return view('errors_reports.refund.create', compact('testOrders','invoices','categories'));
     }
 
     /**
@@ -61,39 +82,61 @@ class RefundRequestController extends Controller
     public function store(Request $request)
     {
         $data = $this->validate($request,[
-            'test_orders_id'=>'required',
+            'invoice_id'=>'required',
+            'refund_reason_id'=>'required',
 
             'montant'=>'required',
 
-            'description'=>'required',
+            'attachement'=>'required',
+            'note'=>'nullable',
         ]);
+        $invoice = $this->invoices->find($data['invoice_id']);
 
-        $test_order = $this->testOrder->FindOrFail($data['test_orders_id']);
-
-        if (empty($test_order)) {
-            return back()->with('error', "Cette demande d'examen n'existe pas. Veuillez réessayer! ");
-        }
-        $invoiceExist = $test_order->invoice()->first();
-
-        if (empty($invoiceExist)) {
-            return back()->with('error', "Il n'existe pas une facture pour cette demande. Veuillez réessayer! ");
-        }
-
-        if ($data['montant'] > $invoiceExist->total) {
+        if ($data['montant'] > $invoice->total) {
             return back()->with('error', "Le montant demandé est supérieur au total enregistré sur la facture. Veuillez réessayer! ");
+        }
+        $examenFilePath = "";
+        if ($request->hasFile('attachement')) {
+            $examenFile = $request->file('attachement');
+            $examenFilePath = $examenFile->store('/tickets', 'public');
         }
 
 
         try {
-            $this->refundRequest->create([
-                'test_order_id'=>$data['test_orders_id'],
+            $refund = $this->refundRequest->create([
+                'invoice_id'=>$data['invoice_id'],
+                'refund_reason_id'=>$data['refund_reason_id'],
                 'montant'=>$data['montant'],
-                'description'=>$data['description'],
+                'attachment' => $examenFilePath,
+                'note'=>$data['note'],
+            ]);
+            RefundRequestLog::create([
+                'refund_request_id'=> $refund->id,
+                'user_id' => Auth::user()->id,
+                'operation'=> 'En attente'
             ]);
 
             return redirect()->route('refund.request.index')->with('success',"Demande enregistrée avec success");
         } catch (\Throwable $th) {
-            return redirect()->route('refund.request.index')->with('error',"Un problème est suvenu lors de l'enrégistrement");
+            return redirect()->route('refund.request.index')->with('error',"Un problème est suvenu lors de l'enrégistrement".$th->getMessage());
+        }
+    }
+
+    public function store_categorie(Request $request)
+    {
+        $data = [
+            'description' => $request->description
+        ];
+
+
+        try {
+            $this->categories->create([
+                'description' => $data['description']
+            ]);
+
+            return redirect()->route('refund.request.categorie.index')->with('success',"Raison enregistrée avec success");
+        } catch (\Throwable $th) {
+            return redirect()->route('refund.request.categorie.index')->with('error',"Un problème est suvenu lors de l'enrégistrement".$th->getMessage());
         }
     }
 
@@ -117,7 +160,12 @@ class RefundRequestController extends Controller
     public function edit($id)
     {
         $refundRequest = $this->refundRequest->find($id);
-        return response()->json(['data'=>$refundRequest,'code'=>$refundRequest->order->code]);
+        return response()->json(['data'=>$refundRequest]);
+    }
+    public function edit_categorie($id)
+    {
+        $categorie = $this->categories->find($id);
+        return response()->json($categorie);
     }
 
     /**
@@ -130,36 +178,57 @@ class RefundRequestController extends Controller
     public function update(Request $request)
     {
         $data = $this->validate($request,[
-            'test_orders_id'=>'required',
+            'id' => 'required',
+            'invoice_id'=>'required',
+            'refund_reason_id'=>'required',
 
             'montant'=>'required',
 
-            'description'=>'required',
-
-            'id'=>'required',
+            'attachement'=>'required',
+            'note'=>'nullable',
         ]);
+        $invoice = $this->invoices->find($data['invoice_id']);
 
-        $test_order = $this->testOrder->FindOrFail($data['test_orders_id']);
-
-        if (empty($test_order)) {
-            return redirect()->route('refund.request.index')->with('error', "Cette demande d'examen n'existe pas. Veuillez réessayer! ");
+        if ($data['montant'] > $invoice->total) {
+            return back()->with('error', "Le montant demandé est supérieur au total enregistré sur la facture. Veuillez réessayer! ");
         }
-        $invoiceExist = $test_order->invoice()->first();
-
-        if (empty($invoiceExist)) {
-            return redirect()->route('refund.request.index')->with('error', "Il n'existe pas une facture pour cette demande. Veuillez réessayer! ");
+        $examenFilePath = "";
+        if ($request->hasFile('attachement')) {
+            $examenFile = $request->file('attachement');
+            $examenFilePath = $examenFile->store('/tickets', 'public');
         }
 
         try {
+
             $refundRequest = $this->refundRequest->find($data['id']);
             $refundRequest->update([
-                'test_order_id'=>$data['test_orders_id'],
-                'montant'=>$data['montant'],
-                'description'=>$data['description'],
+                'invoice_id'=>$data['invoice_id'] ? $data['invoice_id'] : $refundRequest->invoice_id,
+                'refund_reason_id'=>$data['refund_reason_id'] ? $data['refund_reason_id'] : $refundRequest->refund_reason_id,
+                'montant'=>$data['montant'] ? $data['montant'] : $refundRequest->montant,
+                'attachment' => $examenFilePath ? $examenFilePath : $refundRequest->attachment,
+                'note'=>$data['note'] ? $data['note'] : $refundRequest->note,
             ]);
             return redirect()->route('refund.request.index')->with('success',"Mis à jour éffectué avec success");
         } catch (\Throwable $th) {
-            return redirect()->route('refund.request.index')->with('error',"Erreur d'enrégistrement");
+            return redirect()->route('refund.request.index')->with('error',"Erreur d'enrégistrement".$th->getMessage());
+        }
+    }
+
+    public function update_categorie(Request $request)
+    {
+        $data = $this->validate($request,[
+            'description'=>'nullable',
+
+            'id'=>'required',
+        ]);
+        try {
+            $categorie = $this->categories->find($data['id']);
+            $categorie->update([
+                'description'=>$data['description'],
+            ]);
+            return redirect()->route('refund.request.categorie.index')->with('success',"Mis à jour éffectué avec success");
+        } catch (\Throwable $th) {
+            return redirect()->route('refund.request.categorie.index')->with('error',"Erreur d'enrégistrement");
         }
     }
 
@@ -174,28 +243,51 @@ class RefundRequestController extends Controller
             $refundRequest->update([
                 'status'=>$data['status']
             ]);
-            $invoiceExist = $this->invoices->where('test_order_id',$refundRequest->order->id)->where('status_invoice',0)->first();
+            RefundRequestLog::create([
+                'refund_request_id'=> $refundRequest->id,
+                'user_id' => Auth::user()->id,
+                'operation'=> $data['status']
+            ]);
 
             $code_facture = generateCodeFacture();
             $invoice = "";
-
-            if (intval($data['status']) == 1) {
-                // $invoice = $invoiceExist;
-                    $invoice = $this->invoices->create([
-                        "test_order_id" => $refundRequest->order->id,
-                        "date" => Carbon::now()->format('Y-m-d'),
-                        "patient_id" => $refundRequest->order->patient_id,
-                        "subtotal" => $refundRequest->montant,
-                        "discount" => 0,
-                        "total" => $refundRequest->montant,
-                        'status_invoice' => 1,
-                        'reference' => $invoiceExist->id,
-                        "code" => $code_facture
+            if (!$refundRequest->attachment) {
+                return response()->json(['data'=>"Aucune pièce jointe n'a été ajouté",'status'=>500]);
+            } else {
+                if ($data['status'] == "Aprouvé") {
+                    // $invoice = $invoiceExist;
+                        $invoice = $this->invoices->create([
+                            "date" => Carbon::now()->format('Y-m-d'),
+                            "client_name" => $refundRequest->invoice->client_name,
+                            "subtotal" => $refundRequest->montant,
+                            "discount" => 0,
+                            "total" => $refundRequest->montant,
+                            'status_invoice' => 1,
+                            'reference' => $refundRequest->invoice->id,
+                            "code" => $code_facture
+                        ]);
+                        $refundRequest->update([
+                            'status'=>'Clôturé'
+                        ]);
+                        RefundRequestLog::create([
+                            'refund_request_id'=> $refundRequest->id,
+                            'user_id' => Auth::user()->id,
+                            'operation'=> 'Clôturé'
+                        ]);
+                        return response()->json(['invoice'=>$invoice->id,'status'=>200,'data'=>1]);
+                }else {
+                    $refundRequest->update([
+                        'status'=>'Clôturé'
                     ]);
+                    RefundRequestLog::create([
+                        'refund_request_id'=> $refundRequest->id,
+                        'user_id' => Auth::user()->id,
+                        'operation'=> 'Clôturé'
+                    ]);
+                    return response()->json(['data'=>"La demande est rejeté",'status'=>500]);
+                }
             }
 
-
-            return response()->json(['data'=>intval($data['status']),'invoice'=>$invoice->id,200]);
         } catch (\Throwable $th) {
             return response()->json($th,500);
         }
@@ -210,6 +302,13 @@ class RefundRequestController extends Controller
     public function destroy($id)
     {
         $refundRequest = $this->refundRequest->find($id);
+        $refundRequest->delete();
+        return back()->with('success',"Suppression éffectuée avec success");
+    }
+
+    public function destroy_categorie($id)
+    {
+        $refundRequest = $this->categories->find($id);
         $refundRequest->delete();
         return back()->with('success',"Suppression éffectuée avec success");
     }

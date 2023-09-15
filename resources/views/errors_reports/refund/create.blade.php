@@ -11,11 +11,6 @@
         </div>
 
         <!----MODAL---->
-
-        {{-- @include('errors_reports.refund.create_modal') --}}
-
-        @include('errors_reports.refund.edit')
-
     </div>
 </div>
 
@@ -32,27 +27,43 @@
                 <div class="row mb-3">
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
 
-                    <div class="col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">Demande d'examen<span
+                    <div class="col-md-6 mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Facture<span
                                 style="color:red;">*</span></label>
-                        <select class="form-select select2" data-toggle="select2" name="test_orders_id"
-                            id="test_orders_id" required>
-                            <option>Sélectionner une demande d'examen</option>
-                            @foreach ($testOrders as $testOrder)
-                            <option value="{{ $testOrder->id }}">{{ $testOrder->code }}</option>
+                        <select class="form-select select2" data-toggle="select2" name="invoice_id"
+                            id="invoice_id" required>
+                            <option>Sélectionner une facture</option>
+                            @foreach ($invoices as $invoice)
+                                <option value="{{ $invoice->id }}">{{$invoice->code}} ({{ $invoice->order ? $invoice->order->code : ($invoice->contrat ? 'Contrat: '.$invoice->contrat->name : $invoice->code) }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Raison de la demande<span
+                            style="color:red;">*</span></label>
+                        <select class="form-select select2" data-toggle="select2" name="refund_reason_id"
+                            id="refund_reason_id" required>
+                            <option>Sélectionner une raison</option>
+                            @foreach ($categories as $categorie)
+                                <option value="{{ $categorie->id }}">{{ $categorie->description }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-6">
                         <label for="simpleinput" class="form-label">Montant<span style="color:red;">*</span></label>
-                        <input type="number" name="montant" class="form-control" required>
+                        <input type="number" name="montant" id="montant" readonly class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="exampleFormControlInput1" class="form-label">Pièce jointe<span
+                                style="color:red;">*</span></label>
+                        <input type="file" id="example-fileinput" required name="attachement" class="form-control">
+
                     </div>
                 </div>
                 <div class="mb-3">
                     <div class="form-group">
-                    <label for="simpleinput" class="form-label">Description<span style="color:red;">*</span></label>
-                    {{-- <textarea name="description" id="editor"  rows="10"></textarea> --}}
-                    <textarea name="description" id="" rows="6" class="form-control" required></textarea>
+                    <label for="simpleinput" class="form-label">Description</label>
+                    <textarea name="note" id="" rows="6" class="form-control"></textarea>
                     </div>
                 </div>
         </div>
@@ -80,4 +91,20 @@
                 console.error(error);
             });
 </script> --}}
+<script>
+    $('#invoice_id').on('change', function(){
+        $.ajax({
+                type: "GET",
+                url: "/invoices/getInvoice/" + this.value,
+
+                success: function(data) {
+                    console.log(data);
+                    $('#montant').val(data.total)
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                }
+            });
+    })
+</script>
 @endpush

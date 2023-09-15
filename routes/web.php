@@ -225,6 +225,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/refund-request/update',[RefundRequestController::class, 'update'])->name('refund.request.update');
     Route::post('/refund-request/updateStatus',[RefundRequestController::class, 'updateStatus'])->name('refund.request.updateStatus');
     Route::get('/refund-request/delete/{id}', [RefundRequestController::class, 'destroy'])->name('refund.request.destroy');
+    //Categorie
+    Route::get('/refund-request-categorie',[RefundRequestController::class,'index_categorie'])->name('refund.request.categorie.index');
+    Route::post('/refund-request-categorie',[RefundRequestController::class,'store_categorie'])->name('refund.request.categorie.store');
+    Route::get('/refund-request-categorie/{id}',[RefundRequestController::class,'edit_categorie']);
+    Route::post('/refund-request-categorie/update',[RefundRequestController::class,'update_categorie'])->name('refund.request.categorie.update');
+    Route::get('/refund-request-categorie/delete/{id}',[RefundRequestController::class,'destroy_categorie'])->name('refund.request.categorie.destroy');
 
 
 
@@ -353,6 +359,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/s', [InvoiceController::class, 'getInvoiceforDatatable'])->name('invoice.getTestOrdersforDatatable');
         Route::get('/index', [InvoiceController::class, 'getInvoiceIndexForDatable'])->name('invoice.getInvoiceIndexforDatatable');
         Route::get('/checkCode', [InvoiceController::class, 'checkCode']);
+        Route::get('/getInvoice/{id}', [InvoiceController::class, 'getInvoice']);
         // Route::post('/filter', [InvoiceController::class, 'filter'])->name('invoice.filter');
         // Route::get('/testchiffres', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('invoice.getInvoiceforDatatable');
     });

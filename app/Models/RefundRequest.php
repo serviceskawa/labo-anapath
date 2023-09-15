@@ -13,4 +13,13 @@ class RefundRequest extends Model
     {
         return $this->belongsTo(TestOrder::class,'test_order_id');
     }
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class,'invoice_id');
+    }
+
+    public function logRefund()
+    {
+        return $this->hasMany(RefundRequestLog::class,'refund_request_id');
+    }
 }
