@@ -33,9 +33,9 @@
 
                 <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
 
-                <div class="row d-flex">
+                <div class="row d-flex align-items-center justify-content-lg-between">
 
-                    <div class="mb-3 col-lg-4">
+                    <div class="col-5">
                         <label for="example-select" class="form-label">Article<span style="color:red;">*</span></label>
                         <select class="form-select" id="langue" name="article_id" required>
                             <option value="">Sélectionner l'article</option>
@@ -47,33 +47,21 @@
                         </select>
                     </div>
 
-                    {{-- <div class="mb-3 col-lg-3">
-                        <label for="example-select" class="form-label">Actions<span style="color:red;">*</span></label>
-                        <select class="form-select" id="langue" name="movement_type" required>
-                            <option value="">Sélectionner l'action</option>
-                            <option value="ajouter">Ajouter</option>
-                            <option value="diminuer">Diminuer</option>
-                        </select>
-                    </div> --}}
-                    <div class="mb-3 col-lg-6">
+                    <div class="col-5">
                         <label for="simpleinput" class="form-label">Quantité<span style="color:red;">*</span></label>
                         <input type="number" name="quantite_changed" placeholder="XX" class="form-control" required>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="mb-3 col-lg-12">
-                        <label for="simpleinput" class="form-label">Description</label>
-                        <textarea type="text" name="description" class="form-control" rows="4"></textarea>
+                    <div class="col-2">
+                        <label class="form-label">&nbsp;</label>
+                        <input type="hidden" name="ma_variable" value="">
+                        <div class="">
+                        <button type="submit" class="btn btn-primary" data-ma-variable="augmenter"
+                            onclick="updateHiddenField(this)">Entrer</button>
+                        <button type="submit" class="btn btn-danger" data-ma-variable="diminuer"
+                            onclick="updateHiddenField(this)">sortir</button>
+                        </div>
                     </div>
-                </div>
-
-                <input type="hidden" name="ma_variable" value="">
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" data-ma-variable="augmenter"
-                        onclick="updateHiddenField(this)">Entrée</button>
-                    <button type="submit" class="btn btn-danger" data-ma-variable="diminuer"
-                        onclick="updateHiddenField(this)">sortie</button>
                 </div>
             </form>
         </div>
@@ -82,14 +70,14 @@
 
 
 
-{{-- <div class="">
+<div class="">
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
                 <div class="page-title-right mr-3">
 
                 </div>
-                {{-- <h4 class="page-title">Historique des stocks</h4> --}}
+                <h4 class="page-title">Historique des stocks</h4>
             </div>
             @include('movements.create',['articles' => $articles])
         </div>
@@ -135,30 +123,26 @@
             </div>
         </div>
     </div>
-</div> --}}
+</div>
 
 
 
-{{-- Debut du code --}}
 
-<div class="row">
+
+{{-- <div class="row">
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#bs-example-modal-lg-create">Ajouter une dépense</button> --}}
+
             </div>
             <h4 class="page-title">Historiques complet des stocks</h4>
         </div>
-        {{-- @include('expenses.create',['expenses' => $expenses,'expenses_categorie' =>
-        $expenses_categorie,'cash_ticket' =>
-        $cash_ticket]) --}}
+
     </div>
 </div>
 
 
 <div class="">
-
     <div class="card mb-md-0 mb-3">
         <div class="card-body">
             <div class="card-widgets">
@@ -206,10 +190,9 @@
                 </table>
             </div>
         </div>
-    </div> <!-- end card-->
-</div>
+    </div>
+</div> --}}
 
-{{-- Fin --}}
 
 
 @endsection
