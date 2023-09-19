@@ -102,7 +102,7 @@
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control"
                                                             id="mobile_money_confirmation"
-                                                            name="mobile_money_confirmation" value="">
+                                                            name="mobile_money_confirmation" value="" required>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control"
@@ -127,8 +127,8 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control"
-                                                            id="cheque_confirmation" name="cheque_confirmation"
-                                                            value="">
+                                                            id="cheque_confirmation" name="cheque_confirmation" value=""
+                                                            required>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control" id="cheque_ecart"
@@ -153,7 +153,7 @@
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control"
                                                             id="virement_confirmation" name="virement_confirmation"
-                                                            value="">
+                                                            value="" required>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control" id="virement_ecart"
@@ -176,7 +176,7 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control" id="cash_confirmation"
-                                                            name="cash_confirmation" value="">
+                                                            required name="cash_confirmation" value="">
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control" id="cash_ecart"
@@ -253,7 +253,7 @@
                                                     <div class="col-md-2">
                                                         <input type="number" class="form-control"
                                                             id="cash_confirmation_point" name="cash_confirmation_point"
-                                                            value="" readonly>
+                                                            required value="" readonly>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <input type="number" class="form-control" id="cash_ecart_point"
@@ -278,7 +278,7 @@
                                                     </div>
                                                     <div class="col-md-2">
                                                         <input type="number" class="form-control"
-                                                            id="mobile_money_confirmation_point"
+                                                            id="mobile_money_confirmation_point" required
                                                             name="mobile_money_confirmation_point" value="" readonly>
                                                     </div>
                                                     <div class="col-md-2">
@@ -304,7 +304,7 @@
                                                     </div>
                                                     <div class="col-md-2">
                                                         <input type="number" class="form-control"
-                                                            id="cheque_confirmation_point"
+                                                            id="cheque_confirmation_point" required
                                                             name="cheque_confirmation_point" value="" readonly>
                                                     </div>
                                                     <div class="col-md-2">
@@ -331,7 +331,7 @@
                                                     </div>
                                                     <div class="col-md-2">
                                                         <input type="number" class="form-control"
-                                                            id="virement_confirmation_point"
+                                                            id="virement_confirmation_point" required
                                                             name="virement_confirmation_point" value="" readonly>
                                                     </div>
                                                     <div class="col-md-2">
@@ -362,7 +362,7 @@
                                                     <div class="col-md-2">
                                                         <input type="number"
                                                             class="form-control total-confirmation-point"
-                                                            id="total_confirmation_point"
+                                                            id="total_confirmation_point" required
                                                             name="total_confirmation_point" value="" readonly>
                                                     </div>
                                                     <div class="col-md-2">
@@ -568,14 +568,16 @@
         let totalCalculated = cashCalculated + mobileMoneyCalculated + chequeCalculated + virementCalculated;
         let totalConfirmation = cashConfirmation + mobileMoneyConfirmation + chequeConfirmation + virementConfirmation;
         // const totalEcart = cashEcart + mobileMoneyEcart + chequeEcart + virementEcart;
-        let totalEcart = totalCalculated - totalConfirmation;
+        let totalEcart = totalConfirmation - totalCalculated;
 
         // let s = totalCalculated - totalEcart;
         // Mettez à jour les champs de total
         document.querySelector("#total_calculated").value = totalCalculated;
         let op = parseFloat($('#open_cash').val());
         let cal = totalCalculated + op;
-        let t =  cal - totalEcart;
+        // let t =  cal - totalEcart;
+        // nouveau code
+        let t = op + totalConfirmation;
         document.querySelector("#close_balance").value = t;
         // console.log();
     }
@@ -599,7 +601,7 @@
 
     
     // Fonction pour calculer et mettre à jour la différence (écart) entre les champs calculés et confirmés
-    function updateEcart(calculatedInputName, confirmationInputName, ecartInputName) {
+    function updateEcart(confirmationInputName, calculatedInputName, ecartInputName) {
         // Sélectionnez les éléments input
         let calculatedInput = document.querySelector(`input[name="${calculatedInputName}"]`);
         let confirmationInput = document.querySelector(`input[name="${confirmationInputName}"]`);
@@ -612,7 +614,7 @@
             let confirmationValue = parseFloat(confirmationInput.value) || 0;
 
             // Calculez la différence
-            let difference = calculatedValue - confirmationValue;
+            let difference =  confirmationValue - calculatedValue;
 
             // Mettez le résultat dans le champ ecartInput
             ecartInput.value = difference;
@@ -645,6 +647,7 @@
         let chequeEcartPointInput = document.querySelector(`input[name="cheque_ecart_point"]`);
         let virementEcartPointInput = document.querySelector(`input[name="virement_ecart_point"]`);
 
+
         // Calculez la somme totale des champs de point
         let totalEcart = parseFloat(cashEcartPointInput.value) +
             parseFloat(mobileMoneyEcartPointInput.value) +
@@ -654,13 +657,15 @@
         // Sélectionnez le champ de point total et mettez à jour sa valeur
         let totalEcartInput = document.querySelector(`input[name="total_ecart_point"]`);
         totalEcartInput.value = totalEcart;
+
+
     }
 
     // Appelez la fonction pour chaque paire de champs d'écart et de point
-    updateEcart('cash_calculated', 'cash_confirmation', 'cash_ecart');
-    updateEcart('mobile_money_calculated', 'mobile_money_confirmation', 'mobile_money_ecart');
-    updateEcart('cheque_calculated', 'cheque_confirmation', 'cheque_ecart');
-    updateEcart('virement_calculated', 'virement_confirmation', 'virement_ecart');
+    updateEcart('cash_confirmation', 'cash_calculated','cash_ecart');
+    updateEcart('mobile_money_confirmation', 'mobile_money_calculated' ,'mobile_money_ecart');
+    updateEcart('cheque_confirmation', 'cheque_calculated','cheque_ecart');
+    updateEcart('virement_confirmation', 'virement_calculated', 'virement_ecart');
 </script>
 
 <script>

@@ -112,10 +112,10 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Solde d'ouverture</th>
-                            <th>Solde de fermeture</th>
                             <th>Date d'ouverture</th>
+                            <th>Solde d'ouverture</th>
                             <th>Date de fermeture</th>
+                            <th>Solde de fermeture</th>
                             <th>Utilisateur</th>
                             <th>Ecart</th>
                         </tr>
@@ -126,14 +126,14 @@
                         @foreach ($cashboxDailys as $item)
                         <tr>
                             <td>{{ $item->id }}</td>
-                            <td>{{ $item->opening_balance }}</td>
-                            <td>{{ $item->close_balance }}</td>
                             <td>{{ $item->created_at }}</td>
+                            <td>{{ $item->opening_balance }}</td>
                             @if ($item->status==1)
                             <td>Non disponible</td>
                             @elseif(($item->status==0))
                             <td>{{ $item->updated_at }}</td>
                             @endif
+                            <td>{{ $item->close_balance }}</td>
                             <td>{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
                             <td>{{ $item->total_ecart }}</td>
                         </tr>
