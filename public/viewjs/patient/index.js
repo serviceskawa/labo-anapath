@@ -21,6 +21,49 @@ function deleteModal(id) {
 
 
 // SUPPRESSION
+function deleteModalEmployee(id) {
+
+    Swal.fire({
+        title: "Voulez-vous supprimer l'élément ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Oui ",
+        cancelButtonText: "Non !",
+    }).then(function(result) {
+        if (result.value) {
+            window.location.href = baseUrl + "/employee-delete/" + id;
+            Swal.fire(
+                "Suppression !",
+                "En cours de traitement ...",
+                "success"
+            )
+        }
+    });
+}
+
+
+// SUPPRESSION
+function deleteModalEmployeeContrat(id) {
+
+    Swal.fire({
+        title: "Voulez-vous supprimer l'élément ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Oui ",
+        cancelButtonText: "Non !",
+    }).then(function(result) {
+        if (result.value) {
+            window.location.href = baseUrl + "/employee_contrat-delete/" + id;
+            Swal.fire(
+                "Suppression !",
+                "En cours de traitement ...",
+                "success"
+            )
+        }
+    });
+}
+
+// SUPPRESSION
 function deleteModalUnit(id) {
 
     Swal.fire({

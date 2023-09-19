@@ -4,10 +4,12 @@ use App\Http\Controllers\AppelTestOderController;
 use App\Http\Controllers\ExpenseCategorieController;
 use App\Http\Controllers\CashboxDailyController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\EmployeeContratController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\MovementController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DoctorController;
@@ -530,4 +532,27 @@ Route::middleware(['auth'])->group(function () {
         Route::post('cashbox-daily-store', [CashboxDailyController::class, 'store'])->name('daily.store');
         Route::get('cashbox-daily-delete/{cashboxDaily}', [CashboxDailyController::class, 'delete'])->name('daily.delete');
         Route::get('cashbox-daily-fermeture/{cashboxDaily}', [CashboxDailyController::class, 'detail_fermeture_caisse'])->name('daily.fermeture');
+
+
+
+        // Employees
+    // Route::prefix('employees')->group(function () {
+        Route::get('employees', [EmployeeController::class, 'index'])->name('employee.index');
+        Route::get('employee-create', [EmployeeController::class, 'create'])->name('employee.create');
+        Route::get('employee-edit/{employee}', [EmployeeController::class, 'edit'])->name('employee.edit');
+        Route::put('employee-update/{employee}', [EmployeeController::class, 'update'])->name('employee.update');
+        Route::post('employee-store', [EmployeeController::class, 'store'])->name('employee.store');
+        Route::get('employee-delete/{employee}', [EmployeeController::class, 'delete'])->name('employee.delete');
+    // });
+
+
+// Route::prefix('employee_contrats')->group(function () {
+        Route::get('employee_contrats', [EmployeeContratController::class, 'index'])->name('employee.contrat.index');
+        Route::get('employee_contrat-create', [EmployeeContratController::class, 'create'])->name('employee.contrat.create');
+        Route::get('employee_contrat-edit/{employeeContrat}', [EmployeeContratController::class, 'edit'])->name('employee.contrat.edit');
+        Route::put('employee_contrat-update/{employeeContrat}', [EmployeeContratController::class, 'update'])->name('employee.contrat.update');
+        Route::post('employee_contrat-store', [EmployeeContratController::class, 'store'])->name('employee.contrat.store');
+        Route::get('employee_contrat-delete/{employeeContrat}', [EmployeeContratController::class, 'delete'])->name('employee.contrat.delete');
+    // });
+    
 });

@@ -1,0 +1,127 @@
+<div class="modal fade" id="bs-example-modal-lg-edit-{{ $item->id }}" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myLargeModalLabel">Modifier cet employé</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('employee.update', $item->id) }}" method="POST" autocomplete="on"
+                    enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="modal-body">
+
+                        <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Nom<span style="color:red;">*</span></label>
+                                <input type="text"
+                                    value="{{ old('first_name') ? old('first_name') : $item->first_name }}"
+                                    name="first_name" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Prénoms<span
+                                        style="color:red;">*</span></label>
+                                <input type="text" value="{{ old('last_name') ? old('last_name') : $item->last_name }}"
+                                    name="last_name" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Date de naissance<span
+                                        style="color:red;">*</span></label>
+                                <input type="date"
+                                    value="{{ old('date_of_birth') ? old('date_of_birth') : $item->date_of_birth }}"
+                                    name="date_of_birth" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Lieu de naissance<span
+                                        style="color:red;">*</span></label>
+                                <input type="text"
+                                    value="{{ old('place_of_birth') ? old('place_of_birth') : $item->place_of_birth }}"
+                                    name="place_of_birth" class="form-control" required />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Sexe<span
+                                        style="color:red;">*</span></label>
+                                <select class="form-select mb-3" name="gender" required>
+                                    <option>Selectionner le sexe</option>
+                                    <option value="masculin" {{$item->gender="masculin" ? 'selected' : ''}}>Masculin
+                                    </option>
+                                    <option value="feminin" {{$item->gender="feminin" ? 'selected' : ''}}>Feminin
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Nationalité<span
+                                        style="color:red;">*</span></label>
+                                <input type="text"
+                                    value="{{ old('nationality') ? old('nationality') : $item->nationality }}"
+                                    name="nationality" class="form-control" required />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Numéro CNSS<span
+                                        style="color:red;">*</span></label>
+                                <input type="text"
+                                    value="{{ old('cnss_number') ? old('cnss_number') : $item->cnss_number }}"
+                                    name="cnss_number" class="form-control" required />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Adresse<span
+                                        style="color:red;">*</span></label>
+                                <input type="text" name="address"
+                                    value="{{ old('address') ? old('address') : $item->address }}" class="form-control"
+                                    required />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Ville<span
+                                        style="color:red;">*</span></label>
+                                <input type="text" name="city" value="{{ old('city') ? old('city') : $item->city }}"
+                                    class="form-control" required />
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Photo de l'employé</label>
+                                <input type="file" name="photo_url" class="form-control" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Ajouter une nouvelle catégorie</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
