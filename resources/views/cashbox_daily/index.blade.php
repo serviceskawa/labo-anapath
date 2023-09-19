@@ -118,6 +118,7 @@
                             <th>Solde de fermeture</th>
                             <th>Utilisateur</th>
                             <th>Ecart</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
 
@@ -136,6 +137,12 @@
                             <td>{{ $item->close_balance }}</td>
                             <td>{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
                             <td>{{ $item->total_ecart }}</td>
+                            <td>
+                                @include('cashbox_daily.details',['item' => $item])
+                                <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#bs-example-modal-lg-show-{{ $item->id }}"
+                                    class="btn btn-primary"><i class="mdi mdi-eye"></i> </button>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
