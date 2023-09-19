@@ -167,6 +167,7 @@ Route::middleware(['auth'])->group(function () {
 
     //TEST_ORDER
     Route::get('/test_order/index', [TestOrderController::class, 'index2'])->name('test_order.index');
+    Route::get('/test_order/envents', [TestOrderController::class, 'getEvent']);
     Route::post('/test_order/store', [TestOrderController::class, 'store'])->name('test_order.store');
     Route::get('/test_order/create', [TestOrderController::class, 'create'])->name('test_order.create');
     Route::get('/test_order/delete/{id}', [TestOrderController::class, 'destroy']);
