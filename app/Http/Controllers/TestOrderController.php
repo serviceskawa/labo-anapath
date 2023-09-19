@@ -84,6 +84,8 @@ public function __construct(
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+        
+        // https://api.getourvoice.com/v1/calls?page=1&limit=10&filter[direction]=outgoing&time_from=2023-09-17&time_to=2023-09-20 
 
         // Récupération des données nécessaires
         $examens = $this->testOrder->with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
@@ -97,6 +99,71 @@ public function __construct(
 
         // Affichage de la vue
         return view('examens.index', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
+    }
+    
+    public function getEvent()
+    {
+        $setting = $this->setting->find(1);
+        $client = new Client();
+        $accessToken = $setting->api_key_ourvoice;
+       
+        $responsevocal = $client->request('GET', 'https://api.getourvoice.com/v1/calls?page=1&limit=10&filter[direction]=outgoing&time_from=2023-09-15&time_to=2023-09-20 ', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ],
+            'json' => [
+                
+            ],
+        ]);
+        $responsevocal1 = $client->request('GET', 'https://api.getourvoice.com/v1/calls?page=2&limit=10&filter[direction]=outgoing&time_from=2023-09-15&time_to=2023-09-20 ', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ],
+            'json' => [
+                
+            ],
+        ]);
+        $responsevocal2 = $client->request('GET', 'https://api.getourvoice.com/v1/calls?page=3&limit=10&filter[direction]=outgoing&time_from=2023-09-15&time_to=2023-09-20 ', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ],
+            'json' => [
+                
+            ],
+        ]);
+        $responsevocal3 = $client->request('GET', 'https://api.getourvoice.com/v1/calls?page=4&limit=10&filter[direction]=outgoing&time_from=2023-09-15&time_to=2023-09-20 ', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ],
+            'json' => [
+                
+            ],
+        ]);
+        $responsevocal4 = $client->request('GET', 'https://api.getourvoice.com/v1/calls?page=5&limit=10&filter[direction]=outgoing&time_from=2023-09-15&time_to=2023-09-20 ', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ],
+            'json' => [
+                
+            ],
+        ]);
+
+        $vocal = json_decode($responsevocal->getBody(), true);
+        $vocal1 = json_decode($responsevocal1->getBody(), true);
+        $vocal2 = json_decode($responsevocal2->getBody(), true);
+        $vocal3 = json_decode($responsevocal3->getBody(), true);
+        $vocal4 = json_decode($responsevocal4->getBody(), true);
+        dd($vocal['data'],$vocal1['data'],$vocal2['data'],$vocal3['data'],$vocal4['data']);
     }
 
     // Utilise yanjra pour le tableau

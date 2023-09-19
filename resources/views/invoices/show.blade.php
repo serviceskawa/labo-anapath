@@ -165,12 +165,22 @@
                                                     </div>
                                                 </div>
 
+                                                <!-- Verification caisse ferme ou non -->
                                                 <div class="col-md-4 col-12">
-
-                                                    <button type="button" onclick="updateStatus()"
-                                                        class="btn btn-success mb-3"><i class="mdi mdi-cash"></i>
-                                                        Terminer la facture</button>
-
+                                                    @if ($cashbox->statut==0)
+                                                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                                        <strong>Caisse fermée - </strong> Veuillez ouvrir la caisse avant de procéder à
+                                                        l'encaissement.
+                                                    </div>
+                                                        @else
+                                                        @foreach (getRolesByUser(Auth::user()->id) as $role)
+                                                            @if ($role->name == "Caissier")
+                                                            <button type="button" onclick="updateStatus()" class="btn btn-success mb-3"><i
+                                                                    class="mdi mdi-cash"></i>
+                                                                Terminer la facture</button>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -221,13 +231,22 @@
                                                         minlength="24" maxlength="24" id="code" class="form-control">
                                                 </div>
                                             </div>
-
+                                                <!-- Verifiaction caisse ferme ou non -->
                                             <div class="col-md-4 col-12">
-
-                                                <button type="button" onclick="updateStatus()"
-                                                    class="btn btn-success mb-3"><i class="mdi mdi-cash"></i>
-                                                    Terminer la facture</button>
-
+                                                @if ($cashbox->statut==0)
+                                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                                    <strong>Caisse fermée - </strong> Veuillez ouvrir la caisse avant de procéder à
+                                                    l'encaissement.
+                                                </div>
+                                                    @else
+                                                    @foreach (getRolesByUser(Auth::user()->id) as $role)
+                                                        @if ($role->name == "Caissier")
+                                                        <button type="button" onclick="updateStatus()" class="btn btn-success mb-3"><i
+                                                                class="mdi mdi-cash"></i>
+                                                            Terminer la facture</button>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -237,65 +256,6 @@
                     @endif
 
 
-
-
-                @if ($settingInvoice != null && $invoice->paid !=1)
-                <div>
-                    <div class="row d-flex align-items-end">
-                        <div class="col-md-4 col-12">
-
-                            <div class="mb-3">
-                                <label for="exampleFormControlInput1" class="form-label">Type de
-                                    paiement</label>
-                                <select class="form-select select2" data-toggle="select2" name="payment"
-                                    value="{{ $invoice->payment }}" id="payment" required>
-                                    <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
-                                        value="ESPECES">ESPECES</option>
-                                    <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
-                                        value="CHEQUES">CHEQUES</option>
-                                    <option {{ $invoice->payment == 'MOBILEMONEY' ? 'selected' : '' }}
-                                        value="MOBILEMONEY">MOBILE MONEY</option>
-                                    <option {{ $invoice->payment == 'CARTEBANCAIRE' ? 'selected' : '' }}
-                                        value="CARTEBANCAIRE">CARTE BANQUAIRE</option>
-                                    <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
-                                        value="VIREMENT">VIREMENT</option>
-                                    <option {{ $invoice->payment == 'CREDIT' ? 'selected' : '' }}
-                                        value="CREDIT">CREDIT</option>
-                                    <option {{ $invoice->payment == 'AUTRE' ? 'selected' : '' }}
-                                        value="AUTRE">AUTRE</option>
-
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 col-12">
-                            <div class="mb-3">
-                                <label class="form-label">Code de la facture normalisée</label>
-                                {{-- <input type="text" class="form-control" id="invoice_total"
-                                    value="{{ number_format(abs($invoice->total), 0, ',', ' ') }}" readonly> --}}
-                                <input type="text" name="code" placeholder="Code MECeF/DGI" minlength="24"
-                                    maxlength="24" id="code" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 col-12">
-                            @if ($cashbox->statut==0)
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>Caisse fermée - </strong> Veuillez ouvrir la caisse avant de procéder à
-                                l'encaissement.
-                            </div>
-                            @else
-                            @foreach (getRolesByUser(Auth::user()->id) as $role)
-                            @if ($role->name == "Caissier")
-                            <button type="button" onclick="updateStatus()" class="btn btn-success mb-3"><i
-                                    class="mdi mdi-cash"></i>
-                                Terminer la facture</button>
-                            @endif
-                            @endforeach
-                            @endif
-                        </div>
-                    </div>
-                </div>
 
 
                 {{-- @if ($invoice->paid == 1 && $settingInvoice->status == 1)
@@ -318,7 +278,7 @@
                 </div>
                 @endif --}}
 
-                @endif
+                
 
                 {{-- <div class="d-print-none text-end mt-4">
                     <div class="text-end" style="float: right;">
@@ -352,7 +312,7 @@
                         @endif
                         @endif
 
-                        @endif
+                    
 
                     </div>
                 </div> --}}

@@ -467,7 +467,7 @@ class ReportController extends Controller
         }
 
         // Pour lancer un appel 'https://staging.getourvoice.com/api/v1/calls'https://api.getourvoice.com/v1/calls
-        $responsevocal = $client->request('POST', 'https://staging.getourvoice.com/api/v1/calls', [
+        $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/calls', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
                 'Content-Type' => 'application/json',
