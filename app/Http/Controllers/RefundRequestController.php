@@ -87,9 +87,11 @@ class RefundRequestController extends Controller
 
             'montant'=>'required',
 
-            'attachement'=>'required',
             'note'=>'nullable',
         ]);
+
+        $code_facture_avoir = generateCodeFactureAvoir();
+
         $invoice = $this->invoices->find($data['invoice_id']);
 
         if ($data['montant'] > $invoice->total) {
@@ -109,6 +111,7 @@ class RefundRequestController extends Controller
                 'montant'=>$data['montant'],
                 'attachment' => $examenFilePath,
                 'note'=>$data['note'],
+                'code' => $code_facture_avoir
             ]);
             RefundRequestLog::create([
                 'refund_request_id'=> $refund->id,
@@ -162,6 +165,7 @@ class RefundRequestController extends Controller
         $refundRequest = $this->refundRequest->find($id);
         return response()->json(['data'=>$refundRequest]);
     }
+
     public function edit_categorie($id)
     {
         $categorie = $this->categories->find($id);
@@ -179,18 +183,18 @@ class RefundRequestController extends Controller
     {
         $data = $this->validate($request,[
             'id' => 'required',
-            'invoice_id'=>'required',
-            'refund_reason_id'=>'required',
 
             'montant'=>'required',
 
-            'attachement'=>'required',
+            'attachement'=>'nullable',
             'note'=>'nullable',
         ]);
-        $invoice = $this->invoices->find($data['invoice_id']);
+        if ($request->invoice_id) {
+            $invoice = $this->invoices->find($request->invoice_id);
 
-        if ($data['montant'] > $invoice->total) {
-            return back()->with('error', "Le montant demandé est supérieur au total enregistré sur la facture. Veuillez réessayer! ");
+            if ($data['montant'] > $invoice->total) {
+                return back()->with('error', "Le montant demandé est supérieur au total enregistré sur la facture. Veuillez réessayer! ");
+            }
         }
         $examenFilePath = "";
         if ($request->hasFile('attachement')) {
@@ -202,12 +206,22 @@ class RefundRequestController extends Controller
 
             $refundRequest = $this->refundRequest->find($data['id']);
             $refundRequest->update([
-                'invoice_id'=>$data['invoice_id'] ? $data['invoice_id'] : $refundRequest->invoice_id,
-                'refund_reason_id'=>$data['refund_reason_id'] ? $data['refund_reason_id'] : $refundRequest->refund_reason_id,
+                'invoice_id'=>$request->invoice_id ? $request->invoice_id : $refundRequest->invoice_id,
+                'refund_reason_id'=>$request->refund_reason_id ? $request->refund_reason_id : $refundRequest->refund_reason_id,
                 'montant'=>$data['montant'] ? $data['montant'] : $refundRequest->montant,
                 'attachment' => $examenFilePath ? $examenFilePath : $refundRequest->attachment,
                 'note'=>$data['note'] ? $data['note'] : $refundRequest->note,
             ]);
+            if ($refundRequest->status == 'Aprouvé' && $refundRequest->attachment) {
+                $refundRequest->update([
+                    'status'=>'Clôturé'
+                ]);
+                RefundRequestLog::create([
+                    'refund_request_id'=> $refundRequest->id,
+                    'user_id' => Auth::user()->id,
+                    'operation'=> 'Clôturé'
+                ]);
+            }
             return redirect()->route('refund.request.index')->with('success',"Mis à jour éffectué avec success");
         } catch (\Throwable $th) {
             return redirect()->route('refund.request.index')->with('error',"Erreur d'enrégistrement".$th->getMessage());
@@ -239,10 +253,14 @@ class RefundRequestController extends Controller
             'id'=>'required',
         ]);
         try {
+            //Récupérer la demande remboursement et faire la mis à jour du status
             $refundRequest = $this->refundRequest->find($data['id']);
+
             $refundRequest->update([
                 'status'=>$data['status']
             ]);
+
+            //Faire l'enrégistrement dans la table log
             RefundRequestLog::create([
                 'refund_request_id'=> $refundRequest->id,
                 'user_id' => Auth::user()->id,
@@ -251,31 +269,35 @@ class RefundRequestController extends Controller
 
             $code_facture = generateCodeFacture();
             $invoice = "";
-            if (!$refundRequest->attachment) {
-                return response()->json(['data'=>"Aucune pièce jointe n'a été ajouté",'status'=>500]);
-            } else {
-                if ($data['status'] == "Aprouvé") {
-                    // $invoice = $invoiceExist;
-                        $invoice = $this->invoices->create([
-                            "date" => Carbon::now()->format('Y-m-d'),
-                            "client_name" => $refundRequest->invoice->client_name,
-                            "subtotal" => $refundRequest->montant,
-                            "discount" => 0,
-                            "total" => $refundRequest->montant,
-                            'status_invoice' => 1,
-                            'reference' => $refundRequest->invoice->id,
-                            "code" => $code_facture
-                        ]);
-                        $refundRequest->update([
-                            'status'=>'Clôturé'
-                        ]);
-                        RefundRequestLog::create([
-                            'refund_request_id'=> $refundRequest->id,
-                            'user_id' => Auth::user()->id,
-                            'operation'=> 'Clôturé'
-                        ]);
-                        return response()->json(['invoice'=>$invoice->id,'status'=>200,'data'=>1]);
-                }else {
+            //si le status envoyé est égal à Approuvé on crée une facture pour cette demande remboursement avec comme référence la facture de vente
+            if ($data['status'] == "Aprouvé") {
+
+                $invoice = $this->invoices->create([
+                    "date" => Carbon::now()->format('Y-m-d'),
+                    "client_name" => $refundRequest->invoice->client_name,
+                    "client_address" => $refundRequest->invoice->client_address,
+                    "subtotal" => $refundRequest->montant,
+                    "discount" => 0,
+                    "total" => $refundRequest->montant,
+                    'status_invoice' => 1,
+                    'reference' => $refundRequest->invoice->id,
+                    "code" => $code_facture
+                ]);
+                //Si une pièce jointe est fournie on côture la demande
+                if ($refundRequest->attachment) {
+                    $refundRequest->update([
+                        'status'=>'Clôturé'
+                    ]);
+                    RefundRequestLog::create([
+                        'refund_request_id'=> $refundRequest->id,
+                        'user_id' => Auth::user()->id,
+                        'operation'=> 'Clôturé'
+                    ]);
+                }
+                return response()->json(['invoice'=>$invoice->id,'status'=>200,'data'=>1]);
+            }else {
+                //Si le status envoyé n'est pas approuvé ou En attente on clôture la facture
+                if ($data['status'] != "En attente") {
                     $refundRequest->update([
                         'status'=>'Clôturé'
                     ]);

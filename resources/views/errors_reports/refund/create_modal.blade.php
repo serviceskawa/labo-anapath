@@ -10,7 +10,7 @@
             <div class="modal-body">
                 <h4>Motif : {{ $item->note }}</h4>
                 <h4>Montant : {{ $item->montant }}</h4>
-                <h4>Dernière mis à jour : {{ $item->date }}</h4>
+                <h4>Dernière mis à jour :  {{ date_format($item->updated_at, 'd/m/y h:m:s') }}</h4>
                 <h4>Facture : {{ $item->invoice ? $item->invoice->code : '' }}</h4>
                 <h4>Pièce jointe :
                     @if ($item->attachment)
@@ -27,7 +27,6 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                {{-- <th>Code examen</th> --}}
                                 <th>Demande de rembousement</th>
                                 <th>Utilisateur</th>
                                 <th>Operation</th>
@@ -42,12 +41,12 @@
                             @foreach ($item->logRefund as $key => $item)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    {{-- <td>{{ $item->order->code }}</td> --}}
-                                    <td>{{ $item->refund->id }}</td>
+                                    <td>{{ $item->refund->code }}</td>
                                     <td>{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
                                     <td>{{ $item->operation }}</td>
                                     <td>
-                                        {{ date_format($item->updated_at, 'd/m/y') }}
+                                        {{-- {{$item->updated_at}} --}}
+                                        {{ date_format($item->updated_at, 'd/m/y h:m:s') }}
                                     </td>
                                 </tr>
                             @endforeach

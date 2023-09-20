@@ -9,6 +9,7 @@ use App\Models\TestOrder;
 use Illuminate\Support\Str;
 use App\Models\Consultation;
 use App\Models\Invoice;
+use App\Models\RefundRequest;
 use App\Models\Report;
 use App\Models\SettingInvoice;
 use App\Models\TypeConsultation;
@@ -547,6 +548,49 @@ if (!function_exists('generateCodeFacture')) {
     }
 }
 
+// generate code facture
+if (!function_exists('generateCodeFactureAvoir')) {
+    function generateCodeFactureAvoir()
+    {
+        //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
+        $invoice = RefundRequest::whereYear('created_at', '=', now()->year)
+            ->whereNotNull('code')
+            ->orderByRaw('RIGHT(code, 4) DESC')
+            ->first();
+
+        // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
+        if (!$invoice || $invoice->created_at->year != now()->year) {
+            $code = "0001";
+        }
+        // Sinon, incrémente le dernier code de 1
+        else {
+            // Récupère les quatre derniers caractères du code
+            $lastCode = substr($invoice->code, -4);
+
+            // Convertit la chaîne en entier et l'incrémente de 1
+            $code = intval($lastCode) + 1;
+            $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+        }
+
+        // Ajoute les deux derniers chiffres de l'année au début du code
+        return "FAV" . now()->year % 100 . "$code";
+    }
+}
+
+function tronquerChaine($chaine) {
+    if (strlen($chaine) > 50) {
+        // Si la chaîne est plus longue que 100 caractères, on la tronque et on ajoute les trois points de suspension
+        $chaine_tronquee = substr($chaine, 0, 50) . '...';
+        return $chaine_tronquee;
+    } else {
+        // Sinon, on retourne la chaîne telle quelle
+        return $chaine;
+    }
+}
+
+
+
+
 // recupère les informations d'une demande d'examen
 if (!function_exists('getTestOrderData')) {
     function getTestOrderData(int $testOrderId = null)
@@ -601,31 +645,6 @@ if (!function_exists('invoiceNormeTest')) {
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json'
                 ],
-                // 'json' => [
-                //     'ifu' => "0202367807403",
-                //     // 'type' => "FV",
-                //     // 'items' =>
-                //     //     [
-                //     //        [ "name"=>"Jus d'orange",
-                //     //         "price"=>1800,
-                //     //         "quantity"=>2,
-                //     //         "taxGroup"=>"A"]
-                //     //     ],
-                //     // "client" => [
-                //     //     "name" => "Ben",
-                //     //     "address" => 'abeezjn',
-                //     // ],
-                //     // "operator" => [
-                //     //     "id" => 1,
-                //     //     "name" => "Jean",
-                //     // ],
-                //     // "payment" => [
-                //     //     [
-                //     //         "name" => "ESPECES",
-                //     //         "amount" => 3600,
-                //     //         ]
-                //     //     ],
-                // ]
                 'json' => [
                     'ifu' => $ifu,
                     'type' => "FV",

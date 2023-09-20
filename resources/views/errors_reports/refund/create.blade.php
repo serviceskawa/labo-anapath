@@ -27,18 +27,7 @@
                 <div class="row mb-3">
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
 
-                    <div class="col-md-6 mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Facture<span
-                                style="color:red;">*</span></label>
-                        <select class="form-select select2" data-toggle="select2" name="invoice_id"
-                            id="invoice_id" required>
-                            <option>Sélectionner une facture</option>
-                            @foreach ($invoices as $invoice)
-                                <option value="{{ $invoice->id }}">{{$invoice->code}} ({{ $invoice->order ? $invoice->order->code : ($invoice->contrat ? 'Contrat: '.$invoice->contrat->name : $invoice->code) }})</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label for="exampleFormControlInput1" class="form-label">Raison de la demande<span
                             style="color:red;">*</span></label>
                         <select class="form-select select2" data-toggle="select2" name="refund_reason_id"
@@ -49,21 +38,36 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <label for="simpleinput" class="form-label">Montant<span style="color:red;">*</span></label>
-                        <input type="number" name="montant" id="montant" readonly class="form-control" required>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Facture<span
+                                style="color:red;">*</span></label>
+                        <select class="form-select select2" data-toggle="select2" name="invoice_id"
+                            id="invoice_id" required>
+                            <option>Sélectionner une facture</option>
+                            @foreach ($invoices as $invoice)
+                                <option value="{{ $invoice->id }}">{{$invoice->code}} ({{ $invoice->order ? $invoice->order->code : ($invoice->contrat ? 'Contrat: '.$invoice->contrat->name : $invoice->code) }})</option>
+                            @endforeach
+                        </select>
                     </div>
-                    <div class="col-md-6">
+
+                    <div class="col-md-4">
+                        <label for="simpleinput" class="form-label">Montant<span style="color:red;">*</span></label>
+                        <input type="number" name="montant" id="montant" class="form-control" required>
+                    </div>
+
+                    {{-- <div class="col-md-6">
                         <label for="exampleFormControlInput1" class="form-label">Pièce jointe<span
                                 style="color:red;">*</span></label>
                         <input type="file" id="example-fileinput" required name="attachement" class="form-control">
 
-                    </div>
+                    </div> --}}
+
                 </div>
                 <div class="mb-3">
                     <div class="form-group">
                     <label for="simpleinput" class="form-label">Description</label>
-                    <textarea name="note" id="" rows="6" class="form-control"></textarea>
+                    <textarea name="note" id="description" rows="6" class="form-control"></textarea>
                     </div>
                 </div>
         </div>
@@ -93,18 +97,44 @@
 </script> --}}
 <script>
     $('#invoice_id').on('change', function(){
+        var note = "Une demande de remboursement pour la facture "
         $.ajax({
                 type: "GET",
                 url: "/invoices/getInvoice/" + this.value,
 
                 success: function(data) {
-                    console.log(data);
                     $('#montant').val(data.total)
+                    $('#description').val(note+data.code)
                 },
                 error: function(data) {
                     console.log('Error:', data);
                 }
             });
+    })
+    $('#montant').on('input', function() {
+        var notePlus = "pour un motant de "
+        var descript = $('#description').val()
+        var id = $('#invoice_id').val()
+            if (id !="Sélectionner une facture") {
+                $.ajax({
+                    type: "GET",
+                    url: "/invoices/getInvoice/" + id,
+
+                    success: function(data) {
+                        if ($('#montant').val() > data.total) {
+                            toastr.error("Le montant saisi est supérieur total de la facture", 'Montant saisi');
+                        }else{
+                            // $('#description').val(descript+' '+$('#montant').val())
+                        }
+
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                    }
+                });
+            }else{
+                toastr.error("Veillez sellectionné une facture", 'Facture');
+            }
     })
 </script>
 @endpush

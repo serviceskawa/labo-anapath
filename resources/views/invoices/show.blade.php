@@ -7,7 +7,7 @@
     <div class="col-12">
         <div class="page-title-box">
 
-                <h4 class="page-title">Reçu de paiement {{ $invoice->order ? 'de ' . $invoice->order->code : '' }}</h4>
+                <h4 class="page-title">{{$invoice->status_invoice !=1 ?'Reçu de paiement':'Facture d\'avoir'}} {{ $invoice->order ? 'de ' . $invoice->order->code : '' }}</h4>
             </div>
         </div>
     </div>
@@ -25,7 +25,7 @@
                         <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt="" height="18">
                     </div>
                     <div class="float-end">
-                        <h4 class="m-0 d-print-none">Reçu de paiement</h4>
+                        <h4 class="m-0 d-print-none">{{$invoice->status_invoice !=1 ?'Reçu de paiement':'Facture d\'avoir'}}</h4>
                     </div>
                 </div>
 
@@ -53,12 +53,18 @@
                                     </span>
                                 </p>
                                 <p class="font-13"><strong>Code: </strong> <span
-                                        class="float-end">{{ $invoice->code }}</span>
+                                        class="float-end">{{ $invoice->status_invoice !=1 ? $invoice->code : $refund->code }}</span>
                                 </p>
                                 {{-- @if ($invoice->order != null) --}}
-                                <p class="font-13"><strong>Contrat: </strong> <span
-                                        class="float-end">{{ $invoice->contrat ? $invoice->contrat->name : ($invoice->order->contrat ? $invoice->order->contrat->name : '') }}</span>
+                               @if ($invoice->status_invoice!=1)
+                                    <p class="font-13"><strong>Contrat: </strong> <span
+                                        class="float-end">{{ $invoice->contrat ? $invoice->contrat->name : ($invoice->order ? ($invoice->order->contrat ? $invoice->order->contrat->name : ''):'') }}</span>
                                 </p>
+                                @else
+                                    <p class="font-13"><strong>Référence: </strong> <span
+                                        class="float-end">{{ $refund->invoice ? $refund->invoice->code : '' }}</span>
+                                    </p>
+                               @endif
                                 {{-- @endif --}}
                             </div>
                         </div><!-- end col -->
@@ -278,7 +284,7 @@
                 </div>
                 @endif --}}
 
-                
+
 
                 {{-- <div class="d-print-none text-end mt-4">
                     <div class="text-end" style="float: right;">
@@ -312,7 +318,7 @@
                         @endif
                         @endif
 
-                    
+
 
                     </div>
                 </div> --}}

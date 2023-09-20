@@ -9,6 +9,7 @@ use DataTables;
 use Illuminate\Support\Str;
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
+use App\Models\RefundRequest;
 use App\Models\Setting;
 use App\Models\SettingInvoice;
 use App\Models\TestOrder;
@@ -138,6 +139,11 @@ class InvoiceController extends Controller
         $cashbox = Cashbox::find(2);
         // dd($cashbox);
         $invoice = $this->invoices->findorfail($id);
+        $refund = null;
+        if ($invoice->status_invoice==1) {
+            $refund = RefundRequest::where('invoice_id',$invoice->reference)->first();
+        }
+
         $settingInvoice = $this->settingInvoice->find(1);
         $setting = $this->setting->find(1);
         if (empty($invoice)) {
@@ -145,7 +151,7 @@ class InvoiceController extends Controller
         }
 
         config(['app.name' => $setting->titre]);
-        return view('invoices.show', compact('cashbox','invoice', 'setting', 'settingInvoice'));
+        return view('invoices.show', compact('cashbox','invoice', 'setting', 'settingInvoice','refund'));
     }
 
     public function getInvoiceforDatatable(Request $request)
@@ -216,20 +222,37 @@ class InvoiceController extends Controller
                 return $data->date;
             })
 
-            // ->setRowClass(function ($data) use ($request) {
-            //     if($data->paid == 1){
-            //         return 'table-success';
-            //     }
-            // })
+            ->setRowClass(function ($data) use ($request) {
+                if($data->status_invoice == 1){
+                    return 'table-warning';
+                }
+            })
 
             ->addColumn('demande', function ($data) {
 
-                return $data->test_order_id ? getTestOrderData($data->test_order_id)->code :'';
+                $code = 0;
+                if ($data->test_order_id) {
+                    $code = getTestOrderData($data->test_order_id)->code;
+                }else{
+                    $code = $data->code;
+                }
+                return $code;
+
+                // return $data->test_order_id ? getTestOrderData($data->test_order_id)->code :'';
             })
             ->addColumn('patient', function ($data) {
-                return $data->test_order_id?
-                getTestOrderData($data->test_order_id)->patient->firstname.'
-                '.getTestOrderData($data->test_order_id)->patient->lastname :'';
+
+                $patient = "";
+                if ($data->test_order_id) {
+                    $patient = getTestOrderData($data->test_order_id)->patient->firstname.' '.getTestOrderData($data->test_order_id)->patient->lastname;
+                }else{
+                    $patient = $data->client_name;
+                }
+                return $patient;
+
+                // return $data->test_order_id?
+                // getTestOrderData($data->test_order_id)->patient->firstname.'
+                // '.getTestOrderData($data->test_order_id)->patient->lastname :'';
             })
             ->addColumn('total', function ($data) {
                 return $data->total;
@@ -501,23 +524,42 @@ class InvoiceController extends Controller
                         'payment' => $request->payment,
                         "code_normalise" => $request->code
                         ])->save();
-                    $cash = Cashbox::find(2);
+                    if ($invoice->status_invoice !=1) {
 
-                    $cash->current_balance += $invoice->total;
-                    $cash->save();
-                    CashboxAdd::create([
-                        'cashbox_id' => 2,
-                        'date' => Carbon::now(),
-                        'amount' => $invoice->total,
-                        'invoice_id' => $invoice->id,
-                        'user_id' => Auth::user()->id
-                    ]);
+                        $cash = Cashbox::find(2);
+                        $cash->current_balance += $invoice->total;
+                        $cash->save();
+                        CashboxAdd::create([
+                            'cashbox_id' => 2,
+                            'date' => Carbon::now(),
+                            'amount' => $invoice->total,
+                            'invoice_id' => $invoice->id,
+                            'user_id' => Auth::user()->id
+                        ]);
+                    } else {
+                        // $refund = null;
+                        // if ($invoice->status_invoice==1) {
+                        //     $refund = RefundRequest::where('invoice_id',$invoice->reference)->first();
+                        // }
+                        $cash = Cashbox::find(1);
+                        $cash->current_balance -= $invoice->total;
+                        $cash->save();
+                        CashboxAdd::create([
+                            'cashbox_id' => 1,
+                            'date' => Carbon::now(),
+                            'amount' => $invoice->total,
+                            // 'attachement' => $refund->attachment,
+                            'user_id' => Auth::user()->id
+                        ]);
+                    }
+
                     if ($invoice->contrat) {
                         if ($invoice->contrat->invoice_unique ==0) {
                             $invoice->contrat->is_close = 1;
                             $invoice->contrat->save();
                         }
                     }
+
                     return response()->json(['code'=> $request->code]);
                     // return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
                 }

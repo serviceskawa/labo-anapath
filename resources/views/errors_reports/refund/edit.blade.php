@@ -2,10 +2,10 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Demander un remboursement</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Metre à jour un remboursement</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
-        <form action="{{ route('refund.request.update') }}" method="POST" autocomplete="off">
+        <form action="{{ route('refund.request.update') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
             @csrf
             <div class="modal-body">
 
@@ -36,13 +36,13 @@
 
                 <div class="mb-3">
                     <label for="simpleinput" class="form-label">Montant<span style="color:red;">*</span></label>
-                    <input type="number" name="montant" id="montant2" readonly class="form-control">
+                    <input type="number" name="montant" id="montant2" class="form-control">
                 </div>
 
                 <div class="mb-3">
                     <label for="exampleFormControlInput1" class="form-label">Pièce jointe<span
                             style="color:red;">*</span></label>
-                    <input type="file" id="example-fileinput" required name="attachement" id="attachment" class="form-control">
+                    <input type="file" id="example-fileinput" name="attachement" id="attachment" class="form-control">
 
                 </div>
 
@@ -55,7 +55,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-primary">Demander un remboursement</button>
+                <button type="submit" class="btn btn-primary">Mettre à jour</button>
             </div>
         </form>
         </div><!-- /.modal-content -->

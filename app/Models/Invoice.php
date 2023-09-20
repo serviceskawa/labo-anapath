@@ -42,4 +42,5 @@ class Invoice extends Model
     {
         return $this->belongsTo(Contrat::class, 'contrat_id');
     }
+
 }
