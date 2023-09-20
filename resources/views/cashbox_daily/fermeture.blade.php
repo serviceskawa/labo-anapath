@@ -85,6 +85,30 @@
                                                     </div>
                                                 </div>
 
+
+                                                <div class="row mb-3">
+                                                    <div class="col-md-2">
+                                                        <label class="form-label" for="userName1">ESPECES</label>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <input type="number" class="form-control" id="cash_count"
+                                                            name="cash_count" value="{{$especescount}}" readonly>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <input type="number" class="form-control" id="cash_calculated"
+                                                            name="cash_calculated" value="{{$especessum}}" readonly>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <input type="number" class="form-control" id="cash_confirmation"
+                                                            required name="cash_confirmation" value="">
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <input type="number" class="form-control" id="cash_ecart"
+                                                            name="cash_ecart" value="" readonly>
+                                                    </div>
+                                                </div>
+
+
                                                 <div class="row mb-3">
                                                     <div class="col-md-2">
                                                         <label class="form-label" for="userName1">MOBILE MONEY</label>
@@ -162,27 +186,7 @@
                                                 </div>
 
 
-                                                <div class="row mb-3">
-                                                    <div class="col-md-2">
-                                                        <label class="form-label" for="userName1">ESPECES</label>
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <input type="number" class="form-control" id="cash_count"
-                                                            name="cash_count" value="{{$especescount}}" readonly>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <input type="number" class="form-control" id="cash_calculated"
-                                                            name="cash_calculated" value="{{$especessum}}" readonly>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <input type="number" class="form-control" id="cash_confirmation"
-                                                            required name="cash_confirmation" value="">
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <input type="number" class="form-control" id="cash_ecart"
-                                                            name="cash_ecart" value="" readonly>
-                                                    </div>
-                                                </div>
+
 
                                             </div>
                                         </div>
@@ -375,7 +379,7 @@
                                             </div>
                                             <div class="col-12">
                                                 <div class="col-md-4">
-                                                    Montant de clôture
+                                                    Solde de fermeture
                                                 </div>
                                                 <div class="col-md-4">
                                                     <input type="number" class="form-control close-balance"
@@ -383,7 +387,16 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-12">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <label class="form-label"
+                                                        style="font-weight: 900;">Commentaire</label>
+                                                    <textarea class="form-control" rows="6" name="description"
+                                                        placeholder="Laissez une description"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 mt-4">
                                                 <button type="submit" class="btn btn-success float-end">
                                                     Confirmer et fermer la caisse
                                                 </button>
@@ -573,12 +586,12 @@
         // let s = totalCalculated - totalEcart;
         // Mettez à jour les champs de total
         document.querySelector("#total_calculated").value = totalCalculated;
-        let op = parseFloat($('#open_cash').val());
-        let cal = totalCalculated + op;
+        let open_money = parseFloat($('#open_cash').val());
+        let cal = totalCalculated + open_money;
         // let t =  cal - totalEcart;
         // nouveau code
-        let t = op + totalConfirmation;
-        document.querySelector("#close_balance").value = t;
+        let total_money = open_money + totalConfirmation;
+        document.querySelector("#close_balance").value = total_money;
         // console.log();
     }
 
@@ -647,17 +660,34 @@
         let chequeEcartPointInput = document.querySelector(`input[name="cheque_ecart_point"]`);
         let virementEcartPointInput = document.querySelector(`input[name="virement_ecart_point"]`);
 
+        let totalConfirmationPointInput = document.getElementById('total_confirmation_point');
+        let totalCalculatedField = document.getElementById('total_calculated');
+        let totalCalculatedValue = parseFloat(totalCalculatedField.value) || 0;
 
         // Calculez la somme totale des champs de point
-        let totalEcart = parseFloat(cashEcartPointInput.value) +
-            parseFloat(mobileMoneyEcartPointInput.value) +
-            parseFloat(chequeEcartPointInput.value) +
-            parseFloat(virementEcartPointInput.value);
+        // let totalEcart = parseFloat(cashEcartPointInput.value) +
+        //     parseFloat(mobileMoneyEcartPointInput.value) +
+        //     parseFloat(chequeEcartPointInput.value) +
+        //     parseFloat(virementEcartPointInput.value);
+
+        // let totalEcart = parseFloat(cashEcartPointInput.value) +
+        // parseFloat(mobileMoneyEcartPointInput.value) +
+        // parseFloat(chequeEcartPointInput.value) +
+        // parseFloat(virementEcartPointInput.value);
 
         // Sélectionnez le champ de point total et mettez à jour sa valeur
         let totalEcartInput = document.querySelector(`input[name="total_ecart_point"]`);
-        totalEcartInput.value = totalEcart;
+        // totalEcartInput.value = totalEcart;
+        totalEcartInput.value = parseFloat(totalConfirmationPointInput.value) - totalCalculatedValue;
 
+
+        // Total ecart
+        // let total_calculer = parseFloat(document.querySelector("#total_calculated").value) || 0.0;
+        // let total_confirmer = parseFloat(document.querySelector("#total_confirmation").value) || 0.0;
+        // let total_e = total_confirmer - total_calculer;
+        // totalEcartInput.value = total_e;
+
+        // console.log(total_e);
 
     }
 
@@ -666,6 +696,7 @@
     updateEcart('mobile_money_confirmation', 'mobile_money_calculated' ,'mobile_money_ecart');
     updateEcart('cheque_confirmation', 'cheque_calculated','cheque_ecart');
     updateEcart('virement_confirmation', 'virement_calculated', 'virement_ecart');
+    
 </script>
 
 <script>
