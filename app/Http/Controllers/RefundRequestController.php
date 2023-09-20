@@ -42,7 +42,7 @@ class RefundRequestController extends Controller
         $setting = $this->setting->find(1);
         $refundRequests = $this->refundRequest->latest()->get();
         $categories = $this->categories->all();
-        $invoices = $this->invoices->all();
+        $invoices = $this->invoices->where('paid',1)->get();
         $testOrders = $this->testOrder->all();
         $logs = $this->log->all();
 
@@ -67,7 +67,7 @@ class RefundRequestController extends Controller
     {
         $testOrders = $this->testOrder->all();
         $categories = $this->categories->all();
-        $invoices = $this->invoices->all();
+        $invoices = $this->invoices->where('paid',1)->get();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('errors_reports.refund.create', compact('testOrders','invoices','categories'));
