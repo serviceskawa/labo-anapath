@@ -35,9 +35,9 @@ class CashboxController extends Controller
      */
     public function index()
     {
-        // if (!getOnlineUser()->can('view-cashboxs')) {
-        //     return back()->with('error',"Vous n\'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('view-cashboxes')) {
+            return back()->with('error',"Vous n\'êtes pas autorisé");
+        }
 
         $cashadds = $this->cashadd->where('cashbox_id',2)->latest()->get();
         $totalToday = $this->cash->find(2)->current_balance;
@@ -68,9 +68,9 @@ class CashboxController extends Controller
 
     public function index_depense()
     {
-         // if (!getOnlineUser()->can('view-cashboxs')) {
-        //     return back()->with('error',"Vous n\'êtes pas autorisé");
-        // }
+         if (!getOnlineUser()->can('view-cashboxes')) {
+            return back()->with('error',"Vous n\'êtes pas autorisé");
+        }
                 // Point en temps reel sur le cashboxadd
         $sortie = CashboxAdd::where('cashbox_id', 1)
         ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
@@ -102,9 +102,9 @@ class CashboxController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!getOnlineUser()->can('create-cashboxs')) {
-        //     return back()->with('error',"vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('create-cashboxes')) {
+            return back()->with('error',"vous n'êtes pas autorisé");
+        }
 
         $cashboxAddData = [
             'bank_id' => $request->bank_id,
@@ -145,9 +145,9 @@ class CashboxController extends Controller
 
     public function store_bank(Request $request)
     {
-        // if (!getOnlineUser()->can('create-cashboxs')) {
-        //     return back()->with('error',"vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('banks')) {
+            return back()->with('error',"vous n'êtes pas autorisé");
+        }
 
         $examenFilePath = "";
         if ($request->hasFile('bank_file')) {
@@ -215,9 +215,9 @@ class CashboxController extends Controller
      */
     public function edit($id)
     {
-        // if (!getOnlineUser()->can('edit-cashboxes')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('edit-cashboxes')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
 
         $cashData = $this->cashadd->find($id);
         $invoice = $cashData->invoice ? ($cashData->invoice->order ? $cashData->invoice->order->code:''):'';
@@ -234,6 +234,10 @@ class CashboxController extends Controller
      */
     public function update(Request $request)
     {
+        if (!getOnlineUser()->can('edit-cashboxes')) {
+            return back()->with('error',"Vous n\'êtes pas autorisé");
+        }
+
         $cashboxAddData = [
             'id' => $request->id,
             'bank_id' => $request->bank_id,
@@ -271,9 +275,9 @@ class CashboxController extends Controller
      */
     public function destroy($id)
     {
-        // if (!getOnlineUser()->can('delete-banks')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('delete-cashboxes')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $add = $this->cashadd->find($id);
         $cash = $this->cash->find($add->cashbox_id);
         try {

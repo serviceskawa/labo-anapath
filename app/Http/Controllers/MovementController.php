@@ -28,10 +28,10 @@ class MovementController extends Controller
      */
     public function index()
     {
-        // if (!getOnlineUser()->can('view-movements')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
-        
+        if (!getOnlineUser()->can('view-movements')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
         $movements = $this->movement->latest()->get();
         $articles = $this->article->latest()->get();
 
@@ -48,7 +48,7 @@ class MovementController extends Controller
      */
     public function create()
     {
-        
+
     }
 
     /**
@@ -59,9 +59,9 @@ class MovementController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!getOnlineUser()->can('create-movements')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('create-movements')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
 
         // dd($request->ma_variable);
 
@@ -78,7 +78,7 @@ class MovementController extends Controller
                         {
                             return back()->with('error', "Échec de l'enregistrement, la quantite en stock est inferieur a la quantite a diminuer ! ");
                         }
-                        
+
                         $a->update([
                             'quantity_in_stock' => $a->quantity_in_stock - $request->quantite_changed,
                         ]);

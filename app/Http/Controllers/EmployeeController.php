@@ -21,6 +21,9 @@ class EmployeeController extends Controller
      */
     public function index()
     {
+        if (!getOnlineUser()->can('view-employees')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $employees = Employee::latest()->get();
         return view('employees.index', compact('employees'));
     }
@@ -43,6 +46,10 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
+        if (!getOnlineUser()->can('create-employees')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
         $this->validate($request,[
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
@@ -62,7 +69,7 @@ class EmployeeController extends Controller
             $imagePath = null;
         }
 
-        
+
         try {
 
             $employee = new Employee();
@@ -79,9 +86,9 @@ class EmployeeController extends Controller
                 $employee->photo_url = $imagePath;
 
             $employee->save();
-         
 
-        
+
+
 
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
@@ -120,6 +127,9 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
+        if (!getOnlineUser()->can('edit-employees')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $this->validate($request,[
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
@@ -139,7 +149,7 @@ class EmployeeController extends Controller
             $imagePath = $employee->photo_url;
         }
 
-        
+
         try {
 
                 $employee->first_name = $request->first_name;
@@ -169,9 +179,9 @@ class EmployeeController extends Controller
      */
     public function delete(Employee $employee)
     {
-        // if (!getOnlineUser()->can('delete-emloyees')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('delete-emloyees')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
 
         $employee->delete();
 

@@ -37,9 +37,9 @@ class CashboxTicketController extends Controller
 
     public function index()
     {
-        // if (!getOnlineUser()->can('view-cashboxs')) {
-        //     return back()->with('error',"Vous n\'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('view-cashbox-tickets')) {
+            return back()->with('error',"Vous n\'êtes pas autorisé");
+        }
 
         $tickets = $this->tickets->latest()->get();
         $suppliers = $this->suppliers->latest()->get();
@@ -50,9 +50,9 @@ class CashboxTicketController extends Controller
     }
     public function detail_index($id)
     {
-        // if (!getOnlineUser()->can('view-cashboxs')) {
-        //     return back()->with('error',"Vous n\'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('view-cashbox-ticket-details')) {
+            return back()->with('error',"Vous n\'êtes pas autorisé");
+        }
 
         $ticket = $this->tickets->find($id);
         $suppliers = $this->suppliers->latest()->get();
@@ -64,9 +64,9 @@ class CashboxTicketController extends Controller
 
     public function store(Request $request)
     {
-        // if (!getOnlineUser()->can('view-cashboxs')) {
-        //     return back()->with('error',"Vous n\'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('create-cashbox-tickets')) {
+            return back()->with('error',"Vous n\'êtes pas autorisé");
+        }
         $data = [
             'cashbos_id' => $request->cashbos_id,
             'supplier' => $request->supplier,
@@ -120,9 +120,9 @@ class CashboxTicketController extends Controller
 
     public function update(Request $request)
     {
-        // if (!getOnlineUser()->can('view-cashboxs')) {
-        //     return back()->with('error',"Vous n\'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('edit-cashbox-tickets')) {
+            return back()->with('error',"Vous n\'êtes pas autorisé");
+        }
         $data = [
             'id' => $request->ticket_id,
             'supplier_id' => $request->supplier_id,
@@ -206,9 +206,9 @@ class CashboxTicketController extends Controller
 
     public function destroy($id)
     {
-        // if (!getOnlineUser()->can('delete-banks')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('delete-cashbox-tickets')) {
+            return back()->with('error',"Vous n\'êtes pas autorisé");
+        }
         try {
             $this->tickets->find($id)->delete();
             return back()->with('success', "    Un élement a été supprimé ! ");
@@ -219,9 +219,9 @@ class CashboxTicketController extends Controller
 
     public function detail_destroy($id)
     {
-        // if (!getOnlineUser()->can('delete-banks')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('delete-cashbox-ticket-details')) {
+            return back()->with('error',"Vous n\'êtes pas autorisé");
+        }
         $detail = $this->cashboxTicketDetail->find($id);
         $ticket = $this->tickets->find($detail->cashbox_ticket_id);
         $ticket->amount -= $detail->line_amount;
