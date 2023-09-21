@@ -42,7 +42,7 @@ class RefundRequestController extends Controller
         $setting = $this->setting->find(1);
         $refundRequests = $this->refundRequest->latest()->get();
         $categories = $this->categories->all();
-        $invoices = $this->invoices->where('paid',1)->get();
+        $invoices = $this->invoices->where('paid',1)->where('status_invoice',0)->get();
         $testOrders = $this->testOrder->all();
         $logs = $this->log->all();
 
@@ -67,7 +67,7 @@ class RefundRequestController extends Controller
     {
         $testOrders = $this->testOrder->all();
         $categories = $this->categories->all();
-        $invoices = $this->invoices->where('paid',1)->get();
+        $invoices = $this->invoices->where('paid',1)->where('status_invoice',0)->get();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('errors_reports.refund.create', compact('testOrders','invoices','categories'));
@@ -82,7 +82,7 @@ class RefundRequestController extends Controller
     public function store(Request $request)
     {
         $data = $this->validate($request,[
-            'invoice_id'=>'required',
+            'invoice_id'=>'required|unique:refund_requests,invoice_id',
             'refund_reason_id'=>'required',
 
             'montant'=>'required',
@@ -212,15 +212,22 @@ class RefundRequestController extends Controller
                 'attachment' => $examenFilePath ? $examenFilePath : $refundRequest->attachment,
                 'note'=>$data['note'] ? $data['note'] : $refundRequest->note,
             ]);
+            $invoice_avoir = $this->invoices->where('reference',$refundRequest->invoice_id)->first();
             if ($refundRequest->status == 'Aprouvé' && $refundRequest->attachment) {
-                $refundRequest->update([
-                    'status'=>'Clôturé'
-                ]);
-                RefundRequestLog::create([
-                    'refund_request_id'=> $refundRequest->id,
-                    'user_id' => Auth::user()->id,
-                    'operation'=> 'Clôturé'
-                ]);
+                if ($invoice_avoir->paid == 1) {
+                    # code...
+                    $refundRequest->update([
+                        'status'=>'Clôturé'
+                    ]);
+                    RefundRequestLog::create([
+                        'refund_request_id'=> $refundRequest->id,
+                        'user_id' => Auth::user()->id,
+                        'operation'=> 'Clôturé'
+                    ]);
+                }else{
+                    return redirect()->route('refund.request.index')->with('error',"La facture d'avoir n'a pas été marquée comme payée.");
+                }
+
             }
             return redirect()->route('refund.request.index')->with('success',"Mis à jour éffectué avec success");
         } catch (\Throwable $th) {
@@ -284,7 +291,8 @@ class RefundRequestController extends Controller
                     "code" => $code_facture
                 ]);
                 //Si une pièce jointe est fournie on côture la demande
-                if ($refundRequest->attachment) {
+                if ($refundRequest->attachment && $invoice->paid ==1) {
+
                     $refundRequest->update([
                         'status'=>'Clôturé'
                     ]);

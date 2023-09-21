@@ -573,7 +573,7 @@ if (!function_exists('generateCodeFactureAvoir')) {
         }
 
         // Ajoute les deux derniers chiffres de l'année au début du code
-        return "FAV" . now()->year % 100 . "$code";
+        return "DER" . now()->year % 100 . "$code";
     }
 }
 

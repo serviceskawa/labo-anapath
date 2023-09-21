@@ -2,7 +2,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Metre à jour un remboursement</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Mettre à jour un remboursement</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
         <form action="{{ route('refund.request.update') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
@@ -12,11 +12,11 @@
                 <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
                 <input type="hidden"  name="id" id="id2" class="form-control" required>
                 <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Facture<span
+                    <label for="exampleFormControlInput1" class="form-label">Facture de référence<span
                         style="color:red;">*</span></label>
                 <select class="form-select select2" name="invoice_id"
                     id="invoice_id2" required>
-                    <option>Sélectionner une facture</option>
+                    <option>Sélectionner la facture</option>
                     @foreach ($invoices as $invoice)
                         <option value="{{ $invoice->id }}">{{$invoice->code}} ({{ $invoice->order ? $invoice->order->code : $invoice->code }})</option>
                     @endforeach
@@ -40,9 +40,10 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Pièce jointe<span
+                    <label for="exampleFormControlInput1" class="form-label">Pièce jointe (PDF)<span
                             style="color:red;">*</span></label>
-                    <input type="file" id="example-fileinput" name="attachement" id="attachment" class="form-control">
+                    <input type="file" id="example-fileinput"  name="attachement" id="attachment" class="form-control" accept=".pdf">
+                    <small style="color:red;">Veuillez joindre la facture d'avoir déchargée, signée et datée par le demandeur de remboursement.</small>
 
                 </div>
 
@@ -54,7 +55,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
                 <button type="submit" class="btn btn-primary">Mettre à jour</button>
             </div>
         </form>

@@ -1,16 +1,17 @@
 @extends('layouts.app2')
 
-@section('title', 'Remboursement')
+@section('title', 'Remboursements')
 
 @section('content')
 
 <div class="row">
     <div class="col-12">
         <div class="page-title-box">
+            <div class="page-title-right mr-3 mb-1">
+                <a href="{{ route('refund.request.index') }}" type="button" class="btn btn-primary"> <i class="dripicons-reply"></i> Retour</a>
+            </div>
             <h4 class="page-title">Ajouter une demande de remboursements</h4>
         </div>
-
-        <!----MODAL---->
     </div>
 </div>
 
@@ -22,7 +23,7 @@
 
         <div class="card-body">
 
-            <form action="{{route('refund.request.store')}} " method="post" autocomplete="off" enctype="multipart/form-data">
+            <form action="{{route('refund.request.store')}} " method="post" id="addRefundRequest" autocomplete="off" enctype="multipart/form-data">
                 @csrf
                 <div class="row mb-3">
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
@@ -31,7 +32,7 @@
                         <label for="exampleFormControlInput1" class="form-label">Raison de la demande<span
                             style="color:red;">*</span></label>
                         <select class="form-select select2" data-toggle="select2" name="refund_reason_id"
-                            id="refund_reason_id" required>
+                            id="refund_reason_id">
                             <option>Sélectionner une raison</option>
                             @foreach ($categories as $categorie)
                                 <option value="{{ $categorie->id }}">{{ $categorie->description }}</option>
@@ -40,11 +41,11 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Facture<span
+                        <label for="exampleFormControlInput1" class="form-label">Facture de référence<span
                                 style="color:red;">*</span></label>
                         <select class="form-select select2" data-toggle="select2" name="invoice_id"
-                            id="invoice_id" required>
-                            <option>Sélectionner une facture</option>
+                            id="invoice_id">
+                            <option>Sélectionner la facture</option>
                             @foreach ($invoices as $invoice)
                                 <option value="{{ $invoice->id }}">{{$invoice->code}} ({{ $invoice->order ? $invoice->order->code : ($invoice->contrat ? 'Contrat: '.$invoice->contrat->name : $invoice->code) }})</option>
                             @endforeach
@@ -56,12 +57,6 @@
                         <input type="number" name="montant" id="montant" class="form-control" required>
                     </div>
 
-                    {{-- <div class="col-md-6">
-                        <label for="exampleFormControlInput1" class="form-label">Pièce jointe<span
-                                style="color:red;">*</span></label>
-                        <input type="file" id="example-fileinput" required name="attachement" class="form-control">
-
-                    </div> --}}
 
                 </div>
                 <div class="mb-3">
@@ -73,8 +68,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-            <button type="submit" class="btn btn-primary">Demander un remboursement</button>
+            <button type="reset" id="resetbutton" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" id="submitbutton" class="btn btn-primary">Demander un remboursement</button>
         </div>
 
 
@@ -96,6 +91,22 @@
             });
 </script> --}}
 <script>
+
+$(document).ready(function() {
+    $('#submitbutton').on('click', function(e) {
+        var reason = $('#refund_reason_id').val()
+        var invoice = $('#invoice_id').val()
+        if (reason =='Sélectionner une raison') {
+            toastr.error("Sélectionner une raison", 'Raison');
+            event.preventDefault(); // Empêche la soumission du formulaire
+        }
+        if (invoice =='Sélectionner la facture') {
+            toastr.error("Sélectionner la facture de référence", 'Facture');
+            event.preventDefault(); // Empêche la soumission du formulaire
+        }
+    });
+})
+
     $('#invoice_id').on('change', function(){
         var note = "Une demande de remboursement pour la facture "
         $.ajax({

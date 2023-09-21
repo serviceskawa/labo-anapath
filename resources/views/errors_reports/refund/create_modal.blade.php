@@ -4,22 +4,36 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myLargeModalLabel">Détail</h4>
+                <h4 class="modal-title" id="myLargeModalLabel">
+                    Demande {{ $item->code }}
+                    @if ($item->status == 'En attente')
+                    <span style="color: rgba(231, 217, 30, 0.992);" class="text-">[En attente]</span>
+                    @elseif($item->status == 'Aprouvé')
+                    <span style="color: green;">[Aprouvée]</span>
+                    @elseif($item->status == 'Clôturé')
+                    <span style="color: black;">[Clôturée]</span>
+                    @elseif($item->status == 'Rejeté')
+                    <span style="color: red;">[Rejetée]</span>
+                    @endif
+                </h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body">
-                <h4>Motif : {{ $item->note }}</h4>
-                <h4>Montant : {{ $item->montant }}</h4>
-                <h4>Dernière mis à jour :  {{ date_format($item->updated_at, 'd/m/y h:m:s') }}</h4>
-                <h4>Facture : {{ $item->invoice ? $item->invoice->code : '' }}</h4>
-                <h4>Pièce jointe :
-                    @if ($item->attachment)
-                    <a href="{{ asset('storage/' . $item->attachment) }}" download>
-                        <u style="font-size: 15px;">Voir</u>
-                    </a>
-                    @endif
-                </h4>
-
+                <div class="d-flex" ><h4 style="margin-right: 10px">Description :</h4> <span style="margin-top: 10px" >{{" ".$item->note }}</span> </div>
+                <div class="d-flex" ><h4 style="margin-right: 10px">Raison :</h4> <span style="margin-top: 10px" >{{" ".$item->reason->description }}</span> </div>
+                <div class="d-flex" ><h4 style="margin-right: 10px">Montant :</h4> <span style="margin-top: 10px" >{{" ".$item->montant }}</span> </div>
+                <div class="d-flex" ><h4 style="margin-right: 10px">Facture référence :</h4> <span style="margin-top: 10px" >{{" ".$item->invoice ? $item->invoice->code : '' }}</span> </div>
+                <div class="d-flex" >
+                    <h4 style="margin-right: 10px">Pièce jointe :</h4>
+                    <span style="margin-top: 10px" >
+                        @if ($item->attachment)
+                            <a href="{{ asset('storage/' . $item->attachment) }}" download>
+                                <u style="font-size: 15px;">Voir</u>
+                            </a>
+                        @endif
+                    </span>
+                </div>
+                <h5 class="card-title mb-0 mt-3">Historique des mises à jour</h5>
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
 
@@ -30,7 +44,7 @@
                                 <th>Demande de rembousement</th>
                                 <th>Utilisateur</th>
                                 <th>Operation</th>
-                                <th>Dernière mis à jour</th>
+                                <th>Date</th>
 
                             </tr>
                         </thead>

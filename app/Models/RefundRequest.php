@@ -22,4 +22,9 @@ class RefundRequest extends Model
     {
         return $this->hasMany(RefundRequestLog::class,'refund_request_id');
     }
+
+    public function reason()
+    {
+        return $this->belongsTo(RefundReason::class, 'refund_reason_id');
+    }
 }

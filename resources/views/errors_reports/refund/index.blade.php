@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Remboursement')
+@section('title', 'Remboursements')
 
 @section('content')
 
@@ -48,11 +48,11 @@
                                     <th>#</th>
                                     {{-- <th>Code examen</th> --}}
                                     <th>Montant</th>
-                                    <th>Motif</th>
+                                    <th>Raison</th>
                                     <th>Status</th>
                                     <th>Facture</th>
-                                    <th>Dernière mis à jour</th>
-                                    <th>Pièce jointe</th>
+                                    <th>Dernière actualisation</th>
+                                    <th>PDF</th>
                                     @foreach (getRolesByUser(Auth::user()->id) as $role)
                                         {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
                                         @if ($role->name == 'rootuser')
@@ -73,7 +73,7 @@
                                         <td>{{ $key + 1 }}</td>
                                         {{-- <td>{{ $item->order->code }}</td> --}}
                                         <td>{{ $item->montant }}</td>
-                                        <td>{{ tronquerChaine($item->note) }}</td>
+                                        <td>{{ tronquerChaine($item->reason->description) }}</td>
                                         <td>
                                             @if ($item->status == 'En attente')
                                                 <span class="badge bg-warning">En attente</span>
@@ -87,7 +87,7 @@
                                         </td>
                                         <td>{{ $item->invoice ? $item->invoice->code : '' }}</td>
                                         <td>
-                                            {{ date_format($item->updated_at, 'd/m/y') }}
+                                            {{ date_format($item->updated_at, 'd/m/y h:m:s') }}
                                         </td>
                                         <td>
                                             @if ($item->attachment)
@@ -103,7 +103,7 @@
                                                 <td>
 
                                                    @if ($item->status  == 'En attente' || $item->status =='Aprouvé' || $item->status == 'Rejeté')
-                                                    <select class="form-select " id="example-select"
+                                                    <select class="form-select " id="refund_status"
                                                             onchange="updateStatusRefund({{ $item->id }})">
                                                             <option {{ $item->status == 'En attente' ? 'selected' : '' }}
                                                                 value="En attente">En
@@ -156,7 +156,7 @@
                             aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                         <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                     </div>
-                    <h5 class="card-title mb-0">Historiques des demandes de remboursements</h5>
+                    <h5 class="card-title mb-0">Historique des demandes de remboursements</h5>
                     <div id="cardCollpase1" class="collapse pt-3 show">
 
 
@@ -208,7 +208,7 @@
     <script>
         //UPDATE STATUS
         function updateStatusRefund(id) {
-            var status = $('#example-select').val();
+            var status = $('#refund_status').val();
             var e_id = id;
             console.log(e_id, status);
 
