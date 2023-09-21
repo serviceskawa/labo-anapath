@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\MovementController;
+use App\Http\Controllers\EmployeeTimeoffController;
+use App\Http\Controllers\EmployeePayrollController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
@@ -49,6 +51,7 @@ use App\Http\Controllers\UnitMeasurementController;
 use App\Models\AppelTestOder;
 use App\Models\Article;
 use App\Models\CashboxDaily;
+use App\Models\EmployeeTimeoff;
 use App\Models\ExpenseCategorie;
 use App\Models\Movement;
 use App\Models\ProblemCategory;
@@ -554,6 +557,30 @@ Route::middleware(['auth'])->group(function () {
         Route::put('employee_contrat-update/{employeeContrat}', [EmployeeContratController::class, 'update'])->name('employee.contrat.update');
         Route::post('employee_contrat-store', [EmployeeContratController::class, 'store'])->name('employee.contrat.store');
         Route::get('employee_contrat-delete/{employeeContrat}', [EmployeeContratController::class, 'delete'])->name('employee.contrat.delete');
+    // });
+
+
+
+    // Route::prefix('employee_payrolls')->group(function () {
+        Route::get('contrat-payrolls', [EmployeePayrollController::class, 'index'])->name('employee.payroll.index');
+        Route::get('contrat-payroll-create', [EmployeePayrollController::class, 'create'])->name('employee.payroll.create');
+        Route::get('contrat-payroll-edit/{employeePayroll}', [EmployeePayrollController::class, 'edit'])->name('employee.payroll.edit');
+        Route::put('contrat-payroll-update/{employeePayroll}', [EmployeePayrollController::class, 'update'])->name('employee.payroll.update');
+        Route::post('contrat-payroll-store', [EmployeePayrollController::class, 'store'])->name('employee.payroll.store');
+        Route::get('contrat-payroll-delete/{employeePayroll}', [EmployeePayrollController::class, 'delete'])->name('employee.payroll.delete');
+    // });
+
+
+
+
+
+    // Route::prefix('employee_timeoffs')->group(function () {
+        Route::get('employee-timeoffs', [EmployeeTimeoffController::class, 'index'])->name('employee.timeoff.index');
+        Route::get('employee-timeoff-create', [EmployeeTimeoffController::class, 'create'])->name('employee.timeoff.create');
+        Route::get('employee-timeoff-edit/{employeeTimeoff}', [EmployeeTimeoffController::class, 'edit'])->name('employee.timeoff.edit');
+        Route::put('employee-timeoff-update/{employeeTimeoff}', [EmployeeTimeoffController::class, 'update'])->name('employee.timeoff.update');
+        Route::post('employee-timeoff-store', [EmployeeTimeoffController::class, 'store'])->name('employee.timeoff.store');
+        Route::get('employee-timeoff-delete/{employeeTimeoff}', [EmployeeTimeoffController::class, 'delete'])->name('employee.timeoff.delete');
     // });
     
 });

@@ -592,6 +592,18 @@
                                     <a href="{{ route('employee.contrat.index') }}">Tous les contrats</a>
                                 </li>
                                 @endif
+
+                                @if (getOnlineUser()->can('view-users'))
+                                <li>
+                                    <a href="{{ route('employee.payroll.index') }}">Tous les contrats de paie</a>
+                                </li>
+                                @endif
+
+                                @if (getOnlineUser()->can('view-users'))
+                                <li>
+                                    <a href="{{ route('employee.timeoff.index') }}">Tous les congé</a>
+                                </li>
+                                @endif
                             </ul>
                         </div>
                     </li>

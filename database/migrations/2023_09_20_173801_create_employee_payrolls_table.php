@@ -16,9 +16,9 @@ class CreateEmployeePayrollsTable extends Migration
         Schema::create('employee_payrolls', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('contrat_employee_id');
-            $table->decimal('monthly_gross_salary', 10, 2);
-            $table->decimal('hourly_gross_rate', 10, 2);
-            $table->decimal('transport_allowance', 10, 2);
+            $table->double('monthly_gross_salary', 10, 2);
+            $table->double('hourly_gross_rate', 10, 2);
+            $table->double('transport_allowance', 10, 2);
             $table->string('iban');
             $table->string('bic');
 

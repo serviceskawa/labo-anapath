@@ -6,21 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class EmployeeContrat extends Model
+class EmployeeTimeoff extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $guarded = [];
 
-    
+    protected $guarded = [];
     public function employee()
     {
         return $this->belongsTo(Employee::class);
     }
-
-        public function employee_payroll()
-    {
-        return $this->hasMany(EmployeePayroll::class,'contrat_employee_id');
-    }
-
-
 }

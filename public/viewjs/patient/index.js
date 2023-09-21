@@ -42,6 +42,51 @@ function deleteModalEmployee(id) {
 }
 
 
+
+// SUPPRESSION
+function deleteModalTimeoff(id) {
+
+    Swal.fire({
+        title: "Voulez-vous supprimer l'élément ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Oui ",
+        cancelButtonText: "Non !",
+    }).then(function(result) {
+        if (result.value) {
+            window.location.href = baseUrl + "/employee-timeoff-delete/" + id;
+            Swal.fire(
+                "Suppression !",
+                "En cours de traitement ...",
+                "success"
+            )
+        }
+    });
+}
+
+
+// SUPPRESSION
+function deleteModalPayroll(id) {
+
+    Swal.fire({
+        title: "Voulez-vous supprimer l'élément ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Oui ",
+        cancelButtonText: "Non !",
+    }).then(function(result) {
+        if (result.value) {
+            window.location.href = baseUrl + "/contrat-payroll-delete/" + id;
+            Swal.fire(
+                "Suppression !",
+                "En cours de traitement ...",
+                "success"
+            )
+        }
+    });
+}
+
+
 // SUPPRESSION
 function deleteModalEmployeeContrat(id) {
 
