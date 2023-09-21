@@ -558,5 +558,6 @@ Route::middleware(['auth'])->group(function () {
     // });
 
     Route::get('/chat-bot',[HomeController::class, 'chat'])->name('chat.bot');
+    Route::POST('/chat-bot',[HomeController::class, 'getMessage'])->name('chat.getMessage');
 
 });

@@ -537,6 +537,13 @@
                     </li>
                     @endif
 
+                    <li class="side-nav-item">
+                        <a href="{{ route('chat.bot')}}" class="side-nav-link">
+                            <i class="uil-comments-alt"></i>
+                            <span> Chat </span>
+                        </a>
+                    </li>
+
 
 
 
