@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChatBotEvent;
 use App\Models\Appointment;
 use App\Models\Consultation;
 use App\Models\Contrat;
@@ -16,6 +17,8 @@ use App\Models\TestOrder;
 use App\Models\User;
 use App\Models\UserRole;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 
@@ -65,9 +68,9 @@ class HomeController extends Controller
         if (!getOnlineUser()->can('view-dashboard')) {
             return view('home');
         } else {
-            
+
             Log::info('cc je teste le log pour voir');
-            
+
             $patients = $this->patients->all()->count();
             $contrats = $this->contrats->all()->count();
             $tests = $this->tests->all()->count();
@@ -295,5 +298,17 @@ class HomeController extends Controller
         return view('dashboard', compact('patients', 'contrats', 'tests', 'totalToday', 'totalMonth',
         'testOrdersCount','noFinishTest','finishTest','Appointments', 'loggedInUserIds',
         'testOrdersToday','invoice'));
+    }
+    public function chat()
+    {
+       $users = User::all();
+        return view('chat.index',compact('users'));
+    }
+
+    public function getMessage(Request $request)
+    {
+        $sender_id = Auth::user()->id;
+        $recever_id = $request->recever_id;
+        return response()->json(['sender'=>$sender_id,'recever'=>$recever_id]);
     }
 }
