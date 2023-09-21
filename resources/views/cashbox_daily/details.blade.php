@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title" id="myLargeModalLabel"><span style="font-weight: 900">ID {{ $item->id }}</span>
+                <div class="modal-title" id="myLargeModalLabel"><span>ID {{ $item->id }}</span>
                     : {{ $item->created_at
                     }} - {{ $item->updated_at }}</div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
@@ -11,7 +11,7 @@
             <div class="modal-body">
 
                 <div class="row">
-                    <div class="col-lg-12 w-100">
+                    <div class="">
                         <div class="card">
                             <div class="card-body">
                                 {{-- <h4 class="header-title mb-3">Recaputilatif</h4> --}}
