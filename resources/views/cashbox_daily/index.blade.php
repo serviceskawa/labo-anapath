@@ -42,6 +42,7 @@
                 <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
+                            <th>Actions</th>
                             <th>ID</th>
                             <th>Date d'ouverture</th>
                             <th>Solde d'ouverture</th>
@@ -49,13 +50,21 @@
                             <th>Solde de fermeture</th>
                             <th>Utilisateur</th>
                             <th>Ecart</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         @foreach ($cashboxDailys as $item)
                         <tr class="{{ $item->total_ecart < 0 ? 'table-danger' : 'table-white' }}">
+                            <td>
+                                @include('cashbox_daily.details',['item' => $item])
+                                {{-- <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#full-width-modal-show-{{ $item->id }}" class="btn btn-primary"><i
+                                        class="mdi mdi-eye"></i> </button> --}}
+                                <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#bs-example-modal-lg-show-{{ $item->id }}"
+                                    class="btn btn-primary"><i class="mdi mdi-eye"></i> </button>
+                            </td>
                             <td>{{ $item->id }}</td>
                             <td>{{ $item->created_at }}</td>
                             <td>{{ $item->opening_balance }}</td>
@@ -67,15 +76,7 @@
                             <td>{{ $item->close_balance }}</td>
                             <td>{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
                             <td>{{ $item->total_ecart }}</td>
-                            <td>
-                                @include('cashbox_daily.details',['item' => $item])
-                                {{-- <button type="button" data-bs-toggle="modal"
-                                    data-bs-target="#full-width-modal-show-{{ $item->id }}" class="btn btn-primary"><i
-                                        class="mdi mdi-eye"></i> </button> --}}
-                                <button type="button" data-bs-toggle="modal"
-                                    data-bs-target="#bs-example-modal-lg-show-{{ $item->id }}"
-                                    class="btn btn-primary"><i class="mdi mdi-eye"></i> </button>
-                            </td>
+
                         </tr>
                         @endforeach
                     </tbody>

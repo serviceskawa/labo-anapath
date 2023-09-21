@@ -24,7 +24,7 @@ function deleteModal(id) {
 $(document).ready(function() {
 
     $('#datatable1').DataTable({
-        "order": [ ],
+        "order": [],
         "columnDefs": [{
             "targets": [0],
             "searchable": true
@@ -48,20 +48,15 @@ $(document).ready(function() {
 //EDITION
 function edit(id) {
     var e_id = id;
-
     // Populate Data in Edit Modal Form
     $.ajax({
         type: "GET",
         url: baseUrl + "/gettest/" + e_id,
         success: function(data) {
-
             $('#id2').val(data.id);
             $('#price2').val(data.price);
             $('#category_test_id2').val(data.category_test_id).change();
             $('#name2').val(data.name);
-
-            //
-
             $('#editModal').modal('show');
         },
         error: function(data) {

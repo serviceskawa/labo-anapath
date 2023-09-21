@@ -101,6 +101,7 @@
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control" id="cash_confirmation"
                                                             required name="cash_confirmation" value="">
+                                                        {{-- <div id="error-message" style="color: red;"></div> --}}
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control" id="cash_ecart"
@@ -127,6 +128,7 @@
                                                         <input type="number" class="form-control"
                                                             id="mobile_money_confirmation"
                                                             name="mobile_money_confirmation" value="" required>
+                                                        {{-- <div id="error-message" style="color: red;"></div> --}}
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control"
@@ -153,6 +155,7 @@
                                                         <input type="number" class="form-control"
                                                             id="cheque_confirmation" name="cheque_confirmation" value=""
                                                             required>
+                                                        {{-- <div id="error-message" style="color: red;"></div> --}}
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control" id="cheque_ecart"
@@ -178,6 +181,7 @@
                                                         <input type="number" class="form-control"
                                                             id="virement_confirmation" name="virement_confirmation"
                                                             value="" required>
+                                                        {{-- <div id="error-message" style="color: red;"></div> --}}
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control" id="virement_ecart"
@@ -194,8 +198,10 @@
                                             {{-- <li class="previous list-inline-item">
                                                 <a href="#" class="btn btn-info">Previous</a>
                                             </li> --}}
+                                            <div id="error-message" style="color: red;"></div>
                                             <li class="next list-inline-item float-end">
-                                                <a href="#" class="btn btn-info">Suivant</a>
+                                                <a href="#" class="btn btn-info" id="suivantBtn"
+                                                    style="display: none;">Suivant</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -205,7 +211,7 @@
 
                                     {{-- Panel 2 pour le point general --}}
                                     <div class="tab-pane" id="profile-tab-2">
-                                        <div class="row">
+                                        <div class="row d-none" id="payment-details">
                                             <div class="col-12">
                                                 <div class="row mb-3">
                                                     <div class="col-md-2">
@@ -427,6 +433,72 @@
 
 {{-- total panel 2 ecart --}}
 <script>
+    let cashConfirmationInpu = document.getElementById("cash_confirmation");
+let mobileMoneyConfirmationInpu = document.getElementById("mobile_money_confirmation");
+let chequeConfirmationInpu = document.getElementById("cheque_confirmation");
+let virementConfirmationInpu = document.getElementById("virement_confirmation");
+let errorMessage = document.getElementById("error-message");
+let suivantBtn = document.getElementById("suivantBtn");
+// Récupérez l'élément du bloc de code que vous souhaitez afficher/masquer
+let paymentDetails = document.getElementById("payment-details");
+// Fonction pour vérifier si tous les champs sont remplis
+function checkFields() {
+let cashValue = cashConfirmationInpu.value.trim();
+let mobileMoneyValue = mobileMoneyConfirmationInpu.value.trim();
+let chequeValue = chequeConfirmationInpu.value.trim();
+let virementValue = virementConfirmationInpu.value.trim();
+
+if (cashValue === "" || mobileMoneyValue === "" || chequeValue === "" || virementValue === "") {
+suivantBtn.style.display = "none"; // Cacher le bouton "Suivant"
+errorMessage.textContent = "Tous les champs sont requis.";
+paymentDetails.classList.add("d-none");
+} else {
+suivantBtn.style.display = "block"; // Afficher le bouton "Suivant"
+errorMessage.textContent = "";
+paymentDetails.classList.remove("d-none");
+}
+}
+
+// Ajouter un gestionnaire d'événements "input" à tous les champs
+cashConfirmationInpu.addEventListener("input", checkFields);
+mobileMoneyConfirmationInpu.addEventListener("input", checkFields);
+chequeConfirmationInpu.addEventListener("input", checkFields);
+virementConfirmationInpu.addEventListener("input", checkFields);
+
+// Appelez checkFields pour vérifier l'état initial
+checkFields();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Sélectionnez les champs d'entrée
     let cashEcartInput = document.getElementById('cash_ecart');
     let mobileMoneyEcartInput = document.getElementById('mobile_money_ecart');
@@ -690,15 +762,12 @@
         // console.log(total_e);
 
     }
-
     // Appelez la fonction pour chaque paire de champs d'écart et de point
     updateEcart('cash_confirmation', 'cash_calculated','cash_ecart');
     updateEcart('mobile_money_confirmation', 'mobile_money_calculated' ,'mobile_money_ecart');
     updateEcart('cheque_confirmation', 'cheque_calculated','cheque_ecart');
     updateEcart('virement_confirmation', 'virement_calculated', 'virement_ecart');
-    
 </script>
-
 <script>
     var baseUrl = "{{url('/')}}"
 </script>

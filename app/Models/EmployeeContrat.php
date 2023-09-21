@@ -16,4 +16,9 @@ class EmployeeContrat extends Model
     {
         return $this->belongsTo(Employee::class);
     }
+
+        public function employee_payroll()
+    {
+        return $this->hasMany(EmployeePayroll::class,'contrat_employee_id');
+    }
 }
