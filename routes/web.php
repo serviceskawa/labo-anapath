@@ -36,6 +36,7 @@ use App\Http\Controllers\DetailsContratController;
 use App\Http\Controllers\TypeConsultationController;
 use App\Http\Controllers\CategoryPrestationController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogReportController;
 use App\Http\Controllers\ProblemCategoryController;
 use App\Http\Controllers\ProblemeReportersController;
@@ -555,5 +556,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('employee_contrat-store', [EmployeeContratController::class, 'store'])->name('employee.contrat.store');
         Route::get('employee_contrat-delete/{employeeContrat}', [EmployeeContratController::class, 'delete'])->name('employee.contrat.delete');
     // });
-    
+
+    Route::get('/chat-bot',[HomeController::class, 'chat'])->name('chat.bot');
+
 });
