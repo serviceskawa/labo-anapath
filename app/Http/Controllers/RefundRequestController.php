@@ -44,7 +44,7 @@ class RefundRequestController extends Controller
         $categories = $this->categories->all();
         $invoices = $this->invoices->where('paid',1)->where('status_invoice',0)->get();
         $testOrders = $this->testOrder->all();
-        $logs = $this->log->all();
+        $logs = $this->log->latest()->get();
 
         return view('errors_reports.refund.index', compact('setting', 'refundRequests','testOrders','invoices','categories','logs'));
     }
