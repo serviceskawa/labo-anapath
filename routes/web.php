@@ -559,5 +559,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/chat-bot',[HomeController::class, 'chat'])->name('chat.bot');
     Route::POST('/chat-bot',[HomeController::class, 'getMessage'])->name('chat.getMessage');
+    Route::post('/send-chat-bot',[HomeController::class, 'sendMessage'])->name('chat.sendMessage');
+    Route::POST('/check-chat-bot',[HomeController::class, 'checkMessage'])->name('chat.checkMessage');
 
 });

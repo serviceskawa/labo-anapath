@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\ChatBotEvent;
 use App\Models\Appointment;
+use App\Models\chat;
 use App\Models\Consultation;
 use App\Models\Contrat;
 use App\Models\Invoice;
@@ -309,6 +310,64 @@ class HomeController extends Controller
     {
         $sender_id = Auth::user()->id;
         $recever_id = $request->recever_id;
-        return response()->json(['sender'=>$sender_id,'recever'=>$recever_id]);
+        $sender = User::find($sender_id);
+        $receve = User::find($recever_id);
+
+        // Récupérez les messages pour affichage
+        $message_count = Chat::where(function ($query) use ($sender_id, $recever_id) {
+            $query->where('sender_id', $sender_id)->where('receve_id', $recever_id);
+        })->orWhere(function ($query) use ($sender_id, $recever_id) {
+            $query->where('sender_id', $recever_id)->where('receve_id', $sender_id);
+        })->orderBy('created_at', 'asc')->count();
+
+        $messages = Chat::where(function ($query) use ($sender_id, $recever_id) {
+            $query->where('sender_id', $sender_id)->where('receve_id', $recever_id);
+        })->orWhere(function ($query) use ($sender_id, $recever_id) {
+            $query->where('sender_id', $recever_id)->where('receve_id', $sender_id);
+        })->orderBy('created_at', 'asc')->get();
+
+        if ( $message_count) {
+            return response()->json(['message'=>'old','content_message'=>$messages,'user_connect'=>$sender_id,'sender'=>$sender,'receve'=>$receve]);
+        }else{
+            chat::create([
+                'sender_id'=> $sender_id,
+                'receve_id' => $recever_id,
+                'status' =>0
+            ]);
+            return response()->json(['message'=>'new','sender'=>$sender,'receve'=>$receve]);
+        }
+    }
+
+    public function sendMessage(Request $request)
+    {
+        $sender_id = Auth::user()->id;
+        $recever_id = $request->receve_id;
+        $message = $request->message;
+        $chat = chat::create([
+            'sender_id'=> $sender_id,
+            'receve_id' => $recever_id,
+            'message' => $message,
+            'status' =>1
+        ]);
+        return response()->json(['id'=>$chat->id]);
+
+    }
+    public function checkMessage(Request $request)
+    {
+        $message = $request->message;
+        $recever_id = $request->receve_id;
+        $sender_id = Auth::user()->id;
+
+        $messageNew = chat::where('message',$message)->where(function ($query) use ($sender_id, $recever_id) {
+            $query->where('sender_id', $sender_id)->where('receve_id', $recever_id);
+        })->orWhere(function ($query) use ($sender_id, $recever_id) {
+            $query->where('sender_id', $recever_id)->where('receve_id', $sender_id);
+        })->orderBy('created_at', 'asc')->first();
+
+        // Récupérez les nouveaux messages depuis la base de données en fonction de $lastMessageId
+        $newMessages = Chat::where('id', '>', $messageNew->id)->orderBy('created_at', 'asc')->get();
+
+        // Retournez les nouveaux messages au format JSON
+        return response()->json(['messages' => $newMessages,'receve_id'=>$request->receve_id]);
     }
 }
