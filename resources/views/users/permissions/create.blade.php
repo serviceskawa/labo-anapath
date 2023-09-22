@@ -1,12 +1,12 @@
 @extends('layouts.app2')
 
-@section('title', 'Permissions')
+@section('title', 'Utilisateurs')
 
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h4 class="page-title">Ajouter une nouvelle permission</h4>
+                <h4 class="page-title">Permissions</h4>
             </div>
         </div>
     </div>
@@ -19,16 +19,20 @@
 
                 <form action="{{ route('user.permission-store') }}" method="post" autocomplete="off">
                     @csrf
+
+                    <h5 class="card-title mb-0">Ajouter une nouvelle permission</h5>
+                    <div id="cardCollpase1" class="collapse pt-3 show">
+
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="exampleFormControlInput1" class="form-label">Titre</label>
+                                <label for="exampleFormControlInput1" class="form-label">Nom</label>
                                 <input type="text" class="form-control" name="titre">
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="exampleFormControlInput1" class="form-label">Ressources</label>
+                                <label for="exampleFormControlInput1" class="form-label">Ressource</label>
                                 <select name="ressource" class="form-select select2" data-toggle="select2">
                                     @forelse ($ressources as $ressource)
                                         <option value="{{ $ressource->id }}"> {{ $ressource->titre }} </option>
@@ -40,7 +44,7 @@
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="exampleFormControlInput1" class="form-label">Operations</label>
+                                <label for="exampleFormControlInput1" class="form-label">Opération</label>
                                 <select name="operation" class="form-select select2" data-toggle="select2">
                                     @forelse ($operations as $operation)
                                         <option value="{{ $operation->id }}"> {{ $operation->operation }} </option>
@@ -57,7 +61,7 @@
 
             <div class="modal-footer">
                 <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-primary">Creer</button>
+                <button type="submit" class="btn btn-primary">Ajouter une nouvelle permission</button>
             </div>
 
 
@@ -72,7 +76,7 @@
                         aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                     <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                 </div>
-                <h5 class="card-title mb-0">Liste des Permissions</h5>
+                <h5 class="card-title mb-0">Liste des permissions</h5>
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
@@ -80,7 +84,7 @@
                     <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                         <thead>
                             <tr>
-                                <th>Titre</th>
+                                <th>Nom</th>
                                 <th>Slug</th>
                                 <th>Date</th>
                                 <th>Actions</th>

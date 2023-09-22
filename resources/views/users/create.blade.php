@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Create')
+@section('title', 'Utilisateurs')
 
 @section('css')
 <link href="{{ asset('/adminassets/css/vendor/quill.core.css') }}" rel="stylesheet" type="text/css" />
@@ -24,7 +24,7 @@
                 <div class="page-title-right mr-3 mb-1">
                     <a href="{{ route('user.index') }}" type="button" class="btn btn-primary"> <i class="dripicons-reply"></i> Retour</a>
                 </div>
-                <h4 class="page-title">Creer un nouvel utilisateur</h4>
+                <h4 class="page-title">Utilisateur</h4>
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@
 
         <div class="card my-3">
             <div class="card-header">
-                Creer une nouvel utilisateur
+                Ajouter un nouvel utilisateur
             </div>
             <div class="card-body">
 
@@ -84,7 +84,7 @@
 
             <div class="modal-footer">
                 <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-primary">Creer</button>
+                <button type="submit" class="btn btn-primary">Ajouter un nouvel utilisateur</button>
             </div>
 
 

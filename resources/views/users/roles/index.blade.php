@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Rôles')
+@section('title', 'Utilisateurs')
 
 @section('content')
     <div class="row">
@@ -9,7 +9,7 @@
                 <div class="page-title-right mr-3">
                     <a type="btn" href="{{ route('user.role-create') }} " class="btn btn-primary">Ajouter un nouveau rôle</a>
                 </div>
-                <h4 class="page-title">Roles</h4>
+                <h4 class="page-title">Rôles</h4>
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
                         <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                             <thead>
                                 <tr>
-                                    <th>Titre</th>
+                                    <th>Nom</th>
                                     <th>Slug</th>
                                     <th>Créé par</th>
                                     <th>Actions</th>

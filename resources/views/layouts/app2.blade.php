@@ -69,32 +69,6 @@
                         </a>
                     </li>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     {{-- Examens --}}
                     <li class="side-nav-title side-nav-item">EXAMENS</li>
                     @if (getOnlineUser()->can('view-tests'))

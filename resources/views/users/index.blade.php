@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Users')
+@section('title', 'Utilisateurs')
 
 @section('content')
     <div class="row">
@@ -27,7 +27,7 @@
                         aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                     <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                 </div>
-                <h5 class="card-title mb-0">Liste des Utilisateurs</h5>
+                <h5 class="card-title mb-0">Liste des utilisateurs</h5>
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
@@ -38,7 +38,7 @@
                             <tr>
                                 <th>Nom</th>
                                 <th>Email</th>
-                                <th>Roles</th>
+                                <th>Rôles</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
