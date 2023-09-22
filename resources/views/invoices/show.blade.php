@@ -213,15 +213,15 @@
                                                             value="CHEQUES">CHEQUES</option>
                                                         <option {{ $invoice->payment == 'MOBILEMONEY' ? 'selected' : '' }}
                                                             value="MOBILEMONEY">MOBILE MONEY</option>
-                                                        <option
+                                                        {{-- <option
                                                             {{ $invoice->payment == 'CARTEBANCAIRE' ? 'selected' : '' }}
-                                                            value="CARTEBANCAIRE">CARTE BANQUAIRE</option>
+                                                            value="CARTEBANCAIRE">CARTE BANQUAIRE</option> --}}
                                                         <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
                                                             value="VIREMENT">VIREMENT</option>
-                                                        <option {{ $invoice->payment == 'CREDIT' ? 'selected' : '' }}
+                                                        {{-- <option {{ $invoice->payment == 'CREDIT' ? 'selected' : '' }}
                                                             value="CREDIT">CREDIT</option>
                                                         <option {{ $invoice->payment == 'AUTRE' ? 'selected' : '' }}
-                                                            value="AUTRE">AUTRE</option>
+                                                            value="AUTRE">AUTRE</option> --}}
 
                                                     </select>
                                                 </div>

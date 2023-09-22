@@ -18,6 +18,16 @@
 @endsection
 
 @section('content')
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="page-title-right mr-3 mb-1">
+                    <a href="{{ route('user.index') }}" type="button" class="btn btn-primary"> <i class="dripicons-reply"></i> Retour</a>
+                </div>
+                <h4 class="page-title">Creer un nouvel utilisateur</h4>
+            </div>
+        </div>
+    </div>
     <div class="">
 
         @include('layouts.alerts')

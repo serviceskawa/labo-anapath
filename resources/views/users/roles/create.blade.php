@@ -3,10 +3,20 @@
 @section('title', 'Roles create')
 
 @section('content')
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="page-title-right mr-3">
+                    <a href="{{ route('user.role-index') }}" type="button" class="btn btn-primary"> <i class="dripicons-reply"></i> Retour</a>
+                </div>
+                <h4 class="page-title">Ajouter un nouveau rôle</h4>
+            </div>
+        </div>
+    </div>
     <div class="">
 
         @include('layouts.alerts')
-        <div class="card my-3">
+        <div class="card my-2">
             <div class="card-header">
 
             </div>

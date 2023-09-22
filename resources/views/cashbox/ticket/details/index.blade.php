@@ -29,10 +29,20 @@
 
         @include('layouts.alerts')
 
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right mr-3 mb-1">
+                        <a href="{{ route('cashbox.ticket.index') }}" type="button" class="btn btn-primary"> <i class="dripicons-reply"></i> Retour</a>
+                    </div>
+                    <h4 class="page-title">Bon de caisse : <strong>{{ $ticket->code }}</strong></h4>
+                </div>
+            </div>
+        </div>
 
         {{-- @include('examens.details.create') --}}
         <div class="page-title-right">
-            <h4 class="mt-3">Bon de caisse : <strong>{{ $ticket->code }}</strong></h4>
+
         </div>
 
         {{-- Bloc pour modifier les demandes d'examan --}}
