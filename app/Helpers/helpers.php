@@ -548,6 +548,16 @@ if (!function_exists('generateCodeFacture')) {
     }
 }
 
+if(!function_exists('getFirstLetterUpper')){
+    function getFirstLetterUpper($str) {
+        if (!empty($str)) {
+            return strtoupper(substr($str, 0, 1));
+        } else {
+            return $str; // Gérer le cas d'une chaîne vide si nécessaire
+        }
+    }
+}
+
 // generate code facture
 if (!function_exists('generateCodeFactureAvoir')) {
     function generateCodeFactureAvoir()
