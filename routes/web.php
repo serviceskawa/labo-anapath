@@ -542,6 +542,7 @@ Route::middleware(['auth'])->group(function () {
         // Employees
     // Route::prefix('employees')->group(function () {
         Route::get('employees', [EmployeeController::class, 'index'])->name('employee.index');
+        Route::get('employee/details/{employee}', [EmployeeController::class, 'details'])->name('employee.detail');
         Route::get('employee-create', [EmployeeController::class, 'create'])->name('employee.create');
         Route::get('employee-edit/{employee}', [EmployeeController::class, 'edit'])->name('employee.edit');
         Route::put('employee-update/{employee}', [EmployeeController::class, 'update'])->name('employee.update');

@@ -7,10 +7,21 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box">
+            <div class="page-title-right mr-3 mb-1">
+                <a href="{{ route('daily.index') }}" type="button" class="btn btn-primary"> <i class="dripicons-reply"></i> Retour</a>
+            </div>
+            <h4 class="page-title">Opération de fermeture de la caisse</h4>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box">
             {{-- <div class="page-title-right mr-3">
                 <a href="#" class="btn btn-danger">Fermer la caisse</a>
             </div> --}}
-            <h4 class="page-title">Opération de fermeture de la caisse</h4>
+
         </div>
     </div>
 </div>
@@ -504,7 +515,7 @@ checkFields();
     let mobileMoneyEcartInput = document.getElementById('mobile_money_ecart');
     let chequeEcartInput = document.getElementById('cheque_ecart');
     let virementEcartInput = document.getElementById('virement_ecart');
-    
+
     // Sélectionnez les champs de point correspondants
     let cashEcartPointInput = document.getElementById('cash_ecart_point');
     let mobileMoneyEcartPointInput = document.getElementById('mobile_money_ecart_point');
@@ -512,7 +523,7 @@ checkFields();
     let virementEcartPointInput = document.getElementById('virement_ecart_point');
     let totalEcartPointInput = document.getElementById('total_ecart_point');
 
-    // close balance 
+    // close balance
 
 
 
@@ -521,7 +532,7 @@ checkFields();
     mobileMoneyEcartInput.addEventListener('input', updateEcartPoint);
     chequeEcartInput.addEventListener('input', updateEcartPoint);
     virementEcartInput.addEventListener('input', updateEcartPoint);
-    
+
 
     // Fonction pour mettre à jour les champs de point en fonction des valeurs d'écart
     function updateEcartPoint() {
@@ -532,16 +543,16 @@ checkFields();
 
         // Calculez les valeurs de point en fonction des valeurs d'écart
         let totalEcartPoint = cashEcartValue + mobileMoneyEcartValue + chequeEcartValue + virementEcartValue;
-    
+
         // Mettez à jour les champs de point avec les valeurs calculées
         cashEcartPointInput.value = cashEcartValue;
         mobileMoneyEcartPointInput.value = mobileMoneyEcartValue;
         chequeEcartPointInput.value = chequeEcartValue;
         virementEcartPointInput.value = virementEcartValue;
-        
+
         // Mettez à jour le champ de point total avec la somme totale des valeurs de point
         let totalPoint = cashEcartValue + mobileMoneyEcartValue + chequeEcartValue + virementEcartValue;
-        
+
         totalEcartPointInput.value = totalPoint;
         // if (totalEcartPointInput.value === 0) {
         // // Empêcher la soumission du formulaire
@@ -549,7 +560,7 @@ checkFields();
         // }
         // balanceCloseInput.value = totalSoldeInput.value - totalPoint.value;
     }
-    
+
     // Appelez la fonction initiale pour calculer les valeurs au chargement de la page
     updateEcartPoint();
 
@@ -586,7 +597,7 @@ checkFields();
     let mobileMoneyConfirmationInput = document.getElementById('mobile_money_confirmation');
     let chequeConfirmationInput = document.getElementById('cheque_confirmation');
     let virementConfirmationInput = document.getElementById('virement_confirmation');
-    
+
     // Sélectionnez les champs de point correspondants
     let cashConfirmationPointInput = document.getElementById('cash_confirmation_point');
     let mobileMoneyConfirmationPointInput = document.getElementById('mobile_money_confirmation_point');
@@ -600,7 +611,7 @@ checkFields();
     mobileMoneyConfirmationInput.addEventListener('input', updateConfirmationPoint);
     chequeConfirmationInput.addEventListener('input', updateConfirmationPoint);
     virementConfirmationInput.addEventListener('input', updateConfirmationPoint);
-    
+
     // Fonction pour mettre à jour les champs de point en fonction des valeurs de confirmation
     function updateConfirmationPoint() {
     let cashConfirmationValue = parseFloat(cashConfirmationInput.value) || 0;
@@ -613,19 +624,19 @@ checkFields();
     // Calculez les valeurs de point en fonction des valeurs de confirmation
     let totalConfirmationPoint = cashConfirmationValue + mobileMoneyConfirmationValue + chequeConfirmationValue +
     virementConfirmationValue;
-    
+
     // Mettez à jour les champs de point avec les valeurs calculées
     cashConfirmationPointInput.value = cashConfirmationValue;
     mobileMoneyConfirmationPointInput.value = mobileMoneyConfirmationValue;
     chequeConfirmationPointInput.value = chequeConfirmationValue;
     virementConfirmationPointInput.value = virementConfirmationValue;
-    
+
     // Mettez à jour le champ de point total avec la somme totale des valeurs de point
     let totalPoint = cashConfirmationValue + mobileMoneyConfirmationValue + chequeConfirmationValue +
     virementConfirmationValue;
     totalConfirmationPointInput.value = totalPoint;
     }
-    
+
     // Appelez la fonction initiale pour calculer les valeurs au chargement de la page
     updateConfirmationPoint();
 
@@ -684,7 +695,7 @@ checkFields();
 
 
 
-    
+
     // Fonction pour calculer et mettre à jour la différence (écart) entre les champs calculés et confirmés
     function updateEcart(confirmationInputName, calculatedInputName, ecartInputName) {
         // Sélectionnez les éléments input
@@ -767,7 +778,7 @@ checkFields();
     updateEcart('mobile_money_confirmation', 'mobile_money_calculated' ,'mobile_money_ecart');
     updateEcart('cheque_confirmation', 'cheque_calculated','cheque_ecart');
     updateEcart('virement_confirmation', 'virement_calculated', 'virement_ecart');
-    
+
 </script>
 <script>
     var baseUrl = "{{url('/')}}"

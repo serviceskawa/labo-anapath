@@ -9,13 +9,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Employee extends Model
 {
     use HasFactory, SoftDeletes;
-
     protected $guarded = [];
     public function employee_contrat()
     {
         return $this->hasMany(EmployeeContrat::class,'employee_id');
     }
-
 
     public function employee_timeoff()
     {

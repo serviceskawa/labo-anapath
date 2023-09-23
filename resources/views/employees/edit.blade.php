@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myLargeModalLabel">Modifier cet employé</h4>
+                <h4 class="modal-title" id="myLargeModalLabel">Informations personnelles</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body">
@@ -31,6 +31,27 @@
                                         style="color:red;">*</span></label>
                                 <input type="text" value="{{ old('last_name') ? old('last_name') : $item->last_name }}"
                                     name="last_name" class="form-control" required>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Email<span
+                                        style="color:red;">*</span></label>
+                                <input type="email" value="{{ old('email') ? old('email') : $item->email }}"
+                                    name="email" class="form-control" required>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Téléphone<span
+                                        style="color:red;">*</span></label>
+                                <input type="text" value="{{ old('telephone') ? old('telephone') : $item->telephone }}"
+                                    name="telephone" class="form-control" required>
                             </div>
                         </div>
 

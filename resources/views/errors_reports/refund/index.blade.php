@@ -46,20 +46,11 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    {{-- <th>Code examen</th> --}}
+                                    <th>Code</th>
+                                    <th>Objet</th>
                                     <th>Montant</th>
-                                    <th>Raison</th>
-                                    <th>Status</th>
-                                    <th>Facture</th>
                                     <th>Dernière actualisation</th>
-                                    <th>PDF</th>
-                                    @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                        {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
-                                        @if ($role->name == 'rootuser')
-                                            <th>Traité</th>
-                                            @break
-                                        @endif
-                                    @endforeach
+                                    <th>Statut</th>
                                     <th>Action</th>
 
                                 </tr>
@@ -71,9 +62,14 @@
                                 @foreach ($refundRequests as $key => $item)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
-                                        {{-- <td>{{ $item->order->code }}</td> --}}
+                                        <td>{{ $item->code }}</td>
+                                        <td>{{ $item->reason ? tronquerChaine($item->reason->description) : '' }}</td>
                                         <td>{{ $item->montant }}</td>
-                                        <td>{{ tronquerChaine($item->reason->description) }}</td>
+
+                                        <td>
+                                            {{ date_format($item->updated_at, 'd/m/y h:m:s') }}
+                                        </td>
+
                                         <td>
                                             @if ($item->status == 'En attente')
                                                 <span class="badge bg-warning">En attente</span>
@@ -85,54 +81,46 @@
                                                 <span class="badge bg-secondary">Clôturée</span>
                                             @endif
                                         </td>
-                                        <td>{{ $item->invoice ? $item->invoice->code : '' }}</td>
+
                                         <td>
-                                            {{ date_format($item->updated_at, 'd/m/y h:m:s') }}
-                                        </td>
-                                        <td>
-                                            @if ($item->attachment)
-                                                <a href="{{ asset('storage/' . $item->attachment) }}" download>
-                                                    <u style="font-size: 15px;">Voir</u>
-                                                </a>
-                                            @endif
-                                        </td>
-                                        @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                            {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    @foreach (getRolesByUser(Auth::user()->id) as $role)
+                                                        @if ($role->name == 'rootuser')
+                                                            @if ($item->status  == 'En attente' || $item->status =='Aprouvé' || $item->status == 'Rejeté')
+                                                                <select class="form-select " id="refund_status"
+                                                                        onchange="updateStatusRefund({{ $item->id }})">
+                                                                        <option {{ $item->status == 'En attente' ? 'selected' : '' }}
+                                                                            value="En attente">En
+                                                                            attente</option>
+                                                                        <option {{ $item->status == 'Approuvé' ? 'selected' : '' }}
+                                                                            value="Aprouvé">Acceptée
+                                                                        </option>
+                                                                        <option {{ $item->status == 'Rejeté' ? 'selected' : '' }}
+                                                                            value="Rejeté">Refusée
+                                                                        </option>
 
-                                            @if ($role->name == 'rootuser')
-                                                <td>
+                                                                    </select>
+                                                            @endif
 
-                                                   @if ($item->status  == 'En attente' || $item->status =='Aprouvé' || $item->status == 'Rejeté')
-                                                    <select class="form-select " id="refund_status"
-                                                            onchange="updateStatusRefund({{ $item->id }})">
-                                                            <option {{ $item->status == 'En attente' ? 'selected' : '' }}
-                                                                value="En attente">En
-                                                                attente</option>
-                                                            <option {{ $item->status == 'Approuvé' ? 'selected' : '' }}
-                                                                value="Aprouvé">Acceptée
-                                                            </option>
-                                                            <option {{ $item->status == 'Rejeté' ? 'selected' : '' }}
-                                                                value="Rejeté">Refusée
-                                                            </option>
+                                                            @break
+                                                        @endif
+                                                    @endforeach
+                                                </div>
 
-                                                        </select>
-                                                   @endif
+                                                <div class="col-6">
+                                                    <a class="btn btn-primary" href="#" data-bs-toggle="modal"
+                                                        data-bs-target="#bs-example-show-{{ $item->id }}"><i
+                                                            class="mdi mdi-eye"></i>
+                                                    </a>
+                                                    @include('errors_reports.refund.create_modal', ['refund' => $item])
 
-                                                </td>
-                                                @break
-                                            @endif
-                                        @endforeach
-                                        <td>
-                                            <a class="btn btn-primary" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#bs-example-show-{{ $item->id }}"><i
-                                                    class="mdi mdi-eye"></i>
-                                            </a>
-                                            @include('errors_reports.refund.create_modal', ['refund' => $item])
-
-                                            @if ($item->status == 'En attente' || $item->status == 'Aprouvé')
-                                                <a type="button" onclick="edit({{ $item->id }})"
-                                                    class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </a>
-                                            @endif
+                                                    @if ($item->status == 'En attente' || $item->status == 'Aprouvé')
+                                                        <a type="button" onclick="edit({{ $item->id }})"
+                                                            class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </a>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </td>
 
 

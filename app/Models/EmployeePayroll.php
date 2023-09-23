@@ -11,8 +11,13 @@ class EmployeePayroll extends Model
     use HasFactory, SoftDeletes;
     protected $guarded = [];
 
+    // public function employee_contrat()
+    // {
+    //     return $this->belongsTo(EmployeeContrat::class);
+    // }
+
     public function employee_contrat()
     {
-        return $this->belongsTo(EmployeeContrat::class);
+        return $this->belongsTo(EmployeeContrat::class,'employee_contrat_id');
     }
 }

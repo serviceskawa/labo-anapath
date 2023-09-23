@@ -20,7 +20,7 @@
             </div>
             <div class="modal-body">
                 <div class="d-flex" ><h4 style="margin-right: 10px">Description :</h4> <span style="margin-top: 10px" >{{" ".$item->note }}</span> </div>
-                <div class="d-flex" ><h4 style="margin-right: 10px">Raison :</h4> <span style="margin-top: 10px" >{{" ".$item->reason->description }}</span> </div>
+                <div class="d-flex" ><h4 style="margin-right: 10px">Raison :</h4> <span style="margin-top: 10px" >{{ $item->reason ? $item->reason->description : '' }}</span> </div>
                 <div class="d-flex" ><h4 style="margin-right: 10px">Montant :</h4> <span style="margin-top: 10px" >{{" ".$item->montant }}</span> </div>
                 <div class="d-flex" ><h4 style="margin-right: 10px">Facture référence :</h4> <span style="margin-top: 10px" >{{" ".$item->invoice ? $item->invoice->code : '' }}</span> </div>
                 <div class="d-flex" >

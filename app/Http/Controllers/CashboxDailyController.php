@@ -28,9 +28,9 @@ class CashboxDailyController extends Controller
      */
     public function index()
     {
-        // if (!getOnlineUser()->can('view-expenses')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('view-cashbox-dailies')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
 
         $cashboxDailys = CashboxDaily::latest()->get();
 
@@ -60,9 +60,9 @@ class CashboxDailyController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!getOnlineUser()->can('create-expenses')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('create-cashbox-dailies')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
 
         try {
             // dd('ok');
@@ -197,6 +197,9 @@ class CashboxDailyController extends Controller
      */
     public function update(Request $request, CashboxDaily $cashboxDaily)
     {
+        if (!getOnlineUser()->can('edit-cashbox-dailies')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         // dd($request);
         try {
         $sf = CashboxDaily::latest()->first();

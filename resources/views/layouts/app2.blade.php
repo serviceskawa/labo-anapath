@@ -69,32 +69,6 @@
                         </a>
                     </li>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     {{-- Examens --}}
                     <li class="side-nav-title side-nav-item">EXAMENS</li>
                     @if (getOnlineUser()->can('view-tests'))
@@ -233,6 +207,7 @@
 
                     {{-- Finances --}}
                     <li class="side-nav-title side-nav-item">COMPTABILITÉS</li>
+                    {{-- Facture --}}
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false"
                             aria-controls="sidebarProjects" class="side-nav-link">
@@ -261,6 +236,9 @@
                             </ul>
                         </div>
                     </li>
+
+                    {{-- Caisses --}}
+                    @if (getOnlineUser()->can('view-cashboxes'))
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarEcommerce9" aria-expanded="false"
                             aria-controls="sidebarEcommerce9" class="side-nav-link">
@@ -270,23 +248,36 @@
                         </a>
                         <div class="collapse" id="sidebarEcommerce9">
                             <ul class="side-nav-second-level">
+                                @if (getOnlineUser()->can('view-cashbox-adds'))
                                 <li>
                                     <a href="{{ route('cashbox.vente.index') }}">Caisse de vente</a>
                                 </li>
+                                @endif
+
+                                @if (getOnlineUser()->can('view-cashbox-adds'))
                                 <li>
                                     <a href="{{ route('cashbox.depense.index') }}">Caisse de dépense</a>
                                 </li>
+                                @endif
+
+                                @if (getOnlineUser()->can('view-cashbox-tickets'))
                                 <li>
                                     <a href="{{ route('cashbox.ticket.index') }}">Bon de caisse</a>
                                 </li>
+                                @endif
 
+                                @if (getOnlineUser()->can('view-cashbox-dailies'))
                                 <li>
                                     <a href="{{ route('daily.index') }}">Ouverture et fermeture</a>
                                 </li>
+                                @endif
 
                             </ul>
                         </div>
                     </li>
+                    @endif
+
+                    {{-- Contrats --}}
                     @if (getOnlineUser()->can('view-contrats'))
                     <li class="side-nav-item">
                         <a href="{{ route('contrats.index') }}" class="side-nav-link">
@@ -295,8 +286,9 @@
                         </a>
                     </li>
                     @endif
+
                     {{-- Dépenses --}}
-                    {{-- @if (getOnlineUser()->can('view-depenses')) --}}
+                    @if (getOnlineUser()->can('view-expenses'))
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarForms-expense" aria-expanded="false"
                             aria-controls="sidebarForms" class="side-nav-link">
@@ -306,27 +298,23 @@
                         </a>
                         <div class="collapse" id="sidebarForms-expense">
                             <ul class="side-nav-second-level">
-                                {{-- @if (getOnlineUser()->can('view-contrats')) --}}
                                 <li class="side-nav-item">
                                     <a href="{{ route('all_expense.index') }}">
                                         <span>Toutes les dépenses</span>
                                     </a>
                                 </li>
-                                {{-- @endif --}}
-
-                                {{-- @if (getOnlineUser()->can('view-expense_categories')) --}}
                                 <li class="side-nav-item">
                                     <a href="{{ route('expense.index') }}">
                                         <span>Catégories</span>
                                     </a>
                                 </li>
-                                {{-- @endif --}}
                             </ul>
                         </div>
                     </li>
-                    {{-- @endif --}}
+                    @endif
+
                     {{-- Articles --}}
-                    {{-- @if (getOnlineUser()->can('view-articles')) --}}
+                    @if (getOnlineUser()->can('view-articles'))
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarForms-articles" aria-expanded="false"
                             aria-controls="sidebarForms" class="side-nav-link">
@@ -336,34 +324,31 @@
                         </a>
                         <div class="collapse" id="sidebarForms-articles">
                             <ul class="side-nav-second-level">
-                                {{-- @if (getOnlineUser()->can('view-contrats')) --}}
+                                @if (getOnlineUser()->can('view-movements'))
                                 <li class="side-nav-item">
                                     <a href="{{ route('movement.index') }}">
-                                        {{-- <i class="uil-arrow-break"></i> --}}
                                         <span>Historique des stocks</span>
                                     </a>
                                 </li>
-                                {{-- @endif --}}
-                                {{-- @if (getOnlineUser()->can('view-contrats')) --}}
+                                @endif
                                 <li class="side-nav-item">
                                     <a href="{{ route('article.index') }}">
-                                        {{-- <i class="uil-shopping-trolley"></i> --}}
                                         <span>Tous les articles</span>
                                     </a>
                                 </li>
-                                {{-- @endif --}}
-                                {{-- @if (getOnlineUser()->can('view-unit_Measurements')) --}}
                                 <li class="side-nav-item">
                                     <a href="{{ route('unit.index') }}">
                                         <span>Unité de mesure</span>
                                     </a>
                                 </li>
-                                {{-- @endif --}}
 
                             </ul>
                         </div>
                     </li>
-                    {{-- @endif --}}
+                    @endif
+
+                    {{-- Fournisseurs --}}
+                    @if (getOnlineUser()->can('view-suppliers'))
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarEcommerce8" aria-expanded="false"
                             aria-controls="sidebarEcommerce8" class="side-nav-link">
@@ -382,6 +367,10 @@
                             </ul>
                         </div>
                     </li>
+                    @endif
+
+                    {{-- Remboursements --}}
+                    @if (getOnlineUser()->can('view-refund-requests'))
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarEcommerce5" aria-expanded="false"
                             aria-controls="sidebarEcommerce5" class="side-nav-link">
@@ -402,14 +391,16 @@
                             </ul>
                         </div>
                     </li>
-                    {{-- @if (getOnlineUser()->can('view-clients')) --}}
+                    @endif
+
+                    @if (getOnlineUser()->can('view-clients'))
                     <li class="side-nav-item">
                         <a href="{{ route('clients.index') }}" class="side-nav-link">
                             <i class="uil-users-alt"></i>
                             <span>Clients Professionnels</span>
                         </a>
                     </li>
-                    {{-- @endif --}}
+                    @endif
 
 
 

@@ -16,13 +16,9 @@
     </div>
 </div>
 
-
 <div class="">
 
-
     @include('layouts.alerts')
-
-
 
     <div class="card mb-md-0 mb-3">
         <div class="card-body">
@@ -42,10 +38,7 @@
                         <tr>
                             <th>#</th>
                             <th>Nom & Prénoms</th>
-                            <th>Sexe</th>
-                            <th>Adresse</th>
-                            <th>Numero CSS</th>
-                            <th>Nationalite</th>
+                            <th>Contacts</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -58,21 +51,21 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->first_name }} {{ $item->last_name }}</td>
 
-                            <td>{{ $item->gender }}</td>
-                            <td>{{ $item->address }}</td>
-                            <td>{{ $item->cnss_number }}</td>
-                            <td>{{ $item->nationality }}</td>
                             <td>
-                                @include('employees.show',['item' => $item])
-                                <button type="button" data-bs-toggle="modal"
-                                    data-bs-target="#bs-example-modal-lg-show-{{ $item->id }}"
-                                    class="btn btn-primary"><i class="mdi mdi-eye"></i> </button>
+                                <p>
+                                    {{ $item->telephone }}
+                                </p>
+                                <p>
+                                    {{ $item->email }}
+                                </p>
+                            </td>
 
-                                @include('employees.edit',['item' => $item])
-                                <button type="button" data-bs-toggle="modal"
-                                    data-bs-target="#bs-example-modal-lg-edit-{{ $item->id }}" class="btn btn-info"><i
-                                        class="mdi mdi-lead-pencil"></i>
-                                </button>
+                            <td>
+                                {{-- <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#bs-example-modal-lg-show-{{ $item->id }}"
+                                    class="btn btn-primary"><i class="mdi mdi-eye"></i></button> --}}
+                                <a href="{{ route('employee.detail', $item->id) }}" class="btn btn-primary"><i
+                                        class="mdi mdi-eye"></i></a>
 
                                 <button type="button" onclick="deleteModalEmployee({{ $item->id }})"
                                     class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>

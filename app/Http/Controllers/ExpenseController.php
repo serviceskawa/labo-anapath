@@ -40,9 +40,9 @@ class ExpenseController extends Controller
      */
     public function index()
     {
-        // if (!getOnlineUser()->can('view-expenses')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('view-expenses')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
 
         $expenses = $this->expense->latest()->get();
         $expenses_categorie = ExpenseCategorie::latest()->get();
@@ -56,9 +56,9 @@ class ExpenseController extends Controller
 
     public function detail_index($id)
     {
-        // if (!getOnlineUser()->can('view-cashboxs')) {
-        //     return back()->with('error',"Vous n\'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('view-expence-details')) {
+            return back()->with('error',"Vous n\'êtes pas autorisé");
+        }
 
         $expense = $this->expense->find($id);
         $suppliers = $this->supplier->latest()->get();
@@ -91,9 +91,9 @@ class ExpenseController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!getOnlineUser()->can('create-expenses')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('create-expenses')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
 
                 if ($request->hasFile('receipt'))
                 {
@@ -149,9 +149,9 @@ class ExpenseController extends Controller
 
     public function detail_store(Request $request)
     {
-        // if (!getOnlineUser()->can('view-cashboxs')) {
-        //     return back()->with('error',"Vous n\'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('create-expence-details')) {
+            return back()->with('error',"Vous n\'êtes pas autorisé");
+        }
         $data = [
             'expense_id' => $request->expense_id,
             'article_name' => $request->article_name,

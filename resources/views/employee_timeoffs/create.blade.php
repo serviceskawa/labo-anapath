@@ -1,6 +1,6 @@
 <!-- Large modal -->
-<div class="modal fade" id="bs-example-modal-lg-create" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="bs-example-modal-lg-timeoffs-create" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -15,29 +15,16 @@
 
                         <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
 
-                        <div class="row">
-                            <div class="mb-3 col-lg-12">
-                                <label for="example-select" class="form-label">Nom de l'employé<span
-                                        style="color:red;">*</span></label>
-                                <select class="form-select form-control" name="employee_id">
-                                    <option>Selectionner un employé</option>
-                                    @foreach ($employees as $emp)
-                                    <option value="{{ $emp->id }}">{{ $emp->fisrt_name }} {{ $emp->last_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+                        <input type="hidden" name="employee_id" value="{{ $employee->id }}">
 
                         <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Type de congé<span
                                         style="color:red;">*</span></label>
                                 <input type="text" name="timeoff_type" class="form-control" required>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Date de début<span
                                         style="color:red;">*</span></label>
                                 <input type="date" name="start_date" class="form-control" required>
@@ -45,15 +32,13 @@
                         </div>
 
                         <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Date de fin<span
                                         style="color:red;">*</span></label>
                                 <input type="date" name="end_date" class="form-control" required />
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">status<span
                                         style="color:red;">*</span></label>
                                 <select name="status" class="form-select form-control" required>
@@ -68,7 +53,7 @@
                             <div class="mb-3 col-lg-12">
                                 <label for="simpleinput" class="form-label">Message<span
                                         style="color:red;">*</span></label>
-                                <input type="text" name="message" class="form-control" required />
+                                <textarea type="text" name="message" class="form-control" required></textarea>
                             </div>
                         </div>
 

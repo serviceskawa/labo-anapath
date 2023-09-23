@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\EmployeeContrat;
+use App\Models\EmployeePayroll;
+use App\Models\EmployeeTimeoff;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
@@ -21,6 +24,9 @@ class EmployeeController extends Controller
      */
     public function index()
     {
+        if (!getOnlineUser()->can('view-employees')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $employees = Employee::latest()->get();
         return view('employees.index', compact('employees'));
     }
@@ -43,45 +49,50 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'gender' => 'required|string|max:10',
-            'date_of_birth' => 'required|date',
-            'place_of_birth' => 'required|string|max:100',
-            'nationality' => 'required|string|max:50',
-            'cnss_number' => 'required|string|max:20',
-            'address' => 'required|string|max:255',
-            'city' => 'required|string|max:50',
-            'photo_url' => 'nullable|image|max:2046',
-        ]);
-
-        if ($request->hasFile('photo_url')) {
-            $imagePath = $request->file('photo_url')->store('images','public');
-        }else{
-            $imagePath = null;
+        if (!getOnlineUser()->can('create-employees')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        
+        $this->validate($request,[
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email' => 'required|string|max:50',
+            'telephone' => 'required|string',
+            // 'place_of_birth' => 'required|string|max:100',
+            // 'nationality' => 'required|string|max:50',
+            // 'cnss_number' => 'required|string|max:20',
+            // 'address' => 'required|string|max:255',
+            // 'city' => 'required|string|max:50',
+            // 'photo_url' => 'nullable|image|max:2046',
+        ]);
+
+        // if ($request->hasFile('photo_url')) {
+        //     $imagePath = $request->file('photo_url')->store('images','public');
+        // }else{
+        //     $imagePath = null;
+        // }
+
+
         try {
 
             $employee = new Employee();
 
                 $employee->first_name = $request->first_name;
                 $employee->last_name = $request->last_name;
-                $employee->gender = $request->gender;
-                $employee->date_of_birth = $request->date_of_birth;
-                $employee->place_of_birth = $request->place_of_birth;
-                $employee->nationality = $request->nationality;
-                $employee->cnss_number = $request->cnss_number;
-                $employee->address = $request->address;
-                $employee->city = $request->city;
-                $employee->photo_url = $imagePath;
+                $employee->email = $request->email;
+                $employee->telephone = $request->telephone;
 
-            $employee->save();
-         
 
-        
+                $employee->gender = null;
+                $employee->date_of_birth = null;
+                $employee->place_of_birth = null;
+                $employee->nationality = null;
+                $employee->cnss_number = null;
+                $employee->address = null;
+                $employee->city = null;
+                $employee->photo_url = null;
+                // $employee->photo_url = $imagePath;
+                $employee->save();
 
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
@@ -106,9 +117,23 @@ class EmployeeController extends Controller
      * @param  \App\Models\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function edit(Employee $employee)
+    public function details(Employee $employee)
     {
-        //
+        if (!getOnlineUser()->can('edit-employees')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
+        try {
+
+            $employees = Employee::latest()->get();
+            $conges = EmployeeTimeoff::latest()->get();
+            $paies = EmployeePayroll::latest()->get();
+            // dd($conges);
+            return view('employees.detail', compact('paies','employee','employees','conges'))->with('success', " Opération effectuée avec succès  ! ");
+            // return back()->with('success', " Opération effectuée avec succès  ! ");
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! ");
+        }
     }
 
     /**
@@ -120,10 +145,13 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
+        if (!getOnlineUser()->can('edit-employees')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $this->validate($request,[
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
-            'gender' => 'required|string|max:10',
+            'gender' => 'required|string',
             'date_of_birth' => 'required|date',
             'place_of_birth' => 'required|string|max:100',
             'nationality' => 'required|string|max:50',
@@ -139,7 +167,7 @@ class EmployeeController extends Controller
             $imagePath = $employee->photo_url;
         }
 
-        
+
         try {
 
                 $employee->first_name = $request->first_name;
@@ -169,9 +197,9 @@ class EmployeeController extends Controller
      */
     public function delete(Employee $employee)
     {
-        // if (!getOnlineUser()->can('delete-emloyees')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('delete-emloyees')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
 
         $employee->delete();
 

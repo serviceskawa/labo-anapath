@@ -7,7 +7,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box">
-            <h4 class="page-title">Siignaler un problème</h4>
+            <h4 class="page-title">Signaler un problème</h4>
         </div>
 
 
@@ -22,7 +22,8 @@
 
         <div class="card-body">
 
-            <form action="{{route('probleme.report.store')}} " method="post" autocomplete="off" enctype="multipart/form-data">
+            <form action="{{route('probleme.report.store')}} " method="post" autocomplete="off"
+                enctype="multipart/form-data">
                 @csrf
                 <div class="row mb-3">
                     <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
@@ -39,20 +40,21 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label for="simpleinput" class="form-label">Catégorie de problème<span style="color:red;">*</span></label>
+                        <label for="simpleinput" class="form-label">Catégorie de problème<span
+                                style="color:red;">*</span></label>
                         <select name="errorCategory_id" id="errorCategory_id" class="form-control" required>
                             <option value="">Toutes les catégories</option>
                             @foreach ($problemCategories as $item)
-                                <option value="{{$item->id}}">{{$item->name}}</option>
+                            <option value="{{$item->id}}">{{$item->name}}</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
                 <div class="mb-3">
                     <div class="form-group">
-                    <label for="simpleinput" class="form-label">Description<span style="color:red;">*</span></label>
-                    {{-- <textarea name="description" id="editor"  rows="10"></textarea> --}}
-                    <textarea name="description" id="" rows="6" class="form-control" required></textarea>
+                        <label for="simpleinput" class="form-label">Description<span style="color:red;">*</span></label>
+                        {{-- <textarea name="description" id="editor" rows="10"></textarea> --}}
+                        <textarea name="description" id="" rows="6" class="form-control" required></textarea>
                     </div>
                 </div>
         </div>
@@ -73,8 +75,8 @@
 
 @push('extra-js')
 <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
-    <script>
-        ClassicEditor
+<script>
+    ClassicEditor
             .create(document.querySelector('#editor'))
             .catch(error => {
                 console.error(error);

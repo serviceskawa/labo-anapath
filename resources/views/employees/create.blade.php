@@ -32,6 +32,21 @@
 
                         <div class="row">
                             <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Email<span
+                                        style="color:red;">*</span></label>
+                                <input type="email" name="email" class="form-control" required />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Téléphone<span
+                                        style="color:red;">*</span></label>
+                                <input type="text" name="telephone" class="form-control" required />
+                            </div>
+                        </div>
+                        {{-- <div class="row">
+                            <div class="mb-3 col-lg-12">
                                 <label for="simpleinput" class="form-label">Date de naissance<span
                                         style="color:red;">*</span></label>
                                 <input type="date" name="date_of_birth" class="form-control" required>
@@ -44,9 +59,9 @@
                                         style="color:red;">*</span></label>
                                 <input type="text" name="place_of_birth" class="form-control" required />
                             </div>
-                        </div>
+                        </div> --}}
 
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="mb-3 col-lg-12">
                                 <label for="simpleinput" class="form-label">Sexe<span
                                         style="color:red;">*</span></label>
@@ -56,25 +71,25 @@
                                     <option value="feminin">Feminin</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
 
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="mb-3 col-lg-12">
                                 <label for="simpleinput" class="form-label">Nationalité<span
                                         style="color:red;">*</span></label>
                                 <input type="text" name="nationality" class="form-control" required />
                             </div>
-                        </div>
+                        </div> --}}
 
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="mb-3 col-lg-12">
                                 <label for="simpleinput" class="form-label">Numéro CNSS<span
                                         style="color:red;">*</span></label>
                                 <input type="text" name="cnss_number" class="form-control" required />
                             </div>
-                        </div>
+                        </div> --}}
 
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="mb-3 col-lg-12">
                                 <label for="simpleinput" class="form-label">Adresse<span
                                         style="color:red;">*</span></label>
@@ -88,15 +103,15 @@
                                         style="color:red;">*</span></label>
                                 <input type="text" name="city" class="form-control" required />
                             </div>
-                        </div>
+                        </div> --}}
 
 
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="mb-3 col-lg-12">
                                 <label for="simpleinput" class="form-label">Photo de l'employé</label>
                                 <input type="file" name="photo_url" class="form-control" />
                             </div>
-                        </div>
+                        </div> --}}
 
                     </div>
                     <div class="modal-footer">

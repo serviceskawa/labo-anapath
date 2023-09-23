@@ -15,15 +15,13 @@ class CreateEmployeePayrollsTable extends Migration
     {
         Schema::create('employee_payrolls', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('contrat_employee_id');
-            $table->double('monthly_gross_salary', 10, 2);
-            $table->double('hourly_gross_rate', 10, 2);
-            $table->double('transport_allowance', 10, 2);
-            $table->string('iban');
-            $table->string('bic');
-
-            // Clé étrangère vers la table "employee_contrat"
-            $table->foreign('contrat_employee_id')
+            $table->unsignedBigInteger('employee_contrat_id');
+            $table->double('monthly_gross_salary', 10, 2)->nullable();
+            $table->double('hourly_gross_rate', 10, 2)->nullable();
+            $table->double('transport_allowance', 10, 2)->nullable();
+            $table->string('iban')->nullable();
+            $table->string('bic')->nullable();
+            $table->foreign('employee_contrat_id')
                 ->references('id')
                 ->on('employee_contrats')
                 ->onDelete('cascade');

@@ -16,33 +16,18 @@
                     <div class="modal-body">
 
                         <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
+                        <input type="hidden" name="employee_id" value="{{ $employee->id }}">
 
                         <div class="row">
-                            <div class="mb-3 col-lg-12">
-                                <label for="example-select" class="form-label">Nom de l'employé<span
-                                        style="color:red;">*</span></label>
-                                <select class="form-select form-control" name="employee_id">
-                                    <option>Selectionner un employé</option>
-                                    @foreach ($employees as $emp)
-                                    <option value="{{ $emp->id }}" {{ $emp->id==$item->employee_id ? 'selected' :
-                                        ''}}>{{ $emp->fisrt_name }} {{ $emp->last_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Type de congé<span
                                         style="color:red;">*</span></label>
                                 <input type="text"
                                     value="{{ old('timeoff_type') ? old('timeoff_type') : $item->timeoff_type }}"
                                     name="timeoff_type" class="form-control" required>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Date de début<span
                                         style="color:red;">*</span></label>
                                 <input type="date"
@@ -52,16 +37,14 @@
                         </div>
 
                         <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Date de fin<span
                                         style="color:red;">*</span></label>
                                 <input type="date" value="{{ old('end_date') ? old('end_date') : $item->end_date }}"
                                     name="end_date" class="form-control" required />
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Status<span
                                         style="color:red;">*</span></label>
                                 <select name="status" class="form-select form-control" required>
@@ -78,8 +61,8 @@
                             <div class="mb-3 col-lg-12">
                                 <label for="simpleinput" class="form-label">Message<span
                                         style="color:red;">*</span></label>
-                                <input type="text" value="{{ old('message') ? old('message') : $item->message }}"
-                                    name="message" class="form-control" required />
+                                <textarea rows="3" type="text" name="message" class="form-control"
+                                    required>{{ old('message') ? old('message') : $item->message }}</textarea>
                             </div>
                         </div>
 

@@ -140,20 +140,22 @@
                                                             required>
                                                             <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
                                                                 value="ESPECES">ESPECES</option>
-                                                            <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
-                                                                value="CHEQUES">CHEQUES</option>
                                                             <option
                                                                 {{ $invoice->payment == 'MOBILEMONEY' ? 'selected' : '' }}
                                                                 value="MOBILEMONEY">MOBILE MONEY</option>
-                                                            <option
-                                                                {{ $invoice->payment == 'CARTEBANCAIRE' ? 'selected' : '' }}
-                                                                value="CARTEBANCAIRE">CARTE BANQUAIRE</option>
+
+                                                            <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
+                                                                value="CHEQUES">CHEQUES</option>
+                                                            
                                                             <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
                                                                 value="VIREMENT">VIREMENT</option>
+                                                            {{-- <option
+                                                                {{ $invoice->payment == 'CARTEBANCAIRE' ? 'selected' : '' }}
+                                                                value="CARTEBANCAIRE">CARTE BANQUAIRE</option> 
                                                             <option {{ $invoice->payment == 'CREDIT' ? 'selected' : '' }}
                                                                 value="CREDIT">CREDIT</option>
                                                             <option {{ $invoice->payment == 'AUTRE' ? 'selected' : '' }}
-                                                                value="AUTRE">AUTRE</option>
+                                                                value="AUTRE">AUTRE</option> --}}
 
                                                         </select>
                                                     </div>
@@ -208,21 +210,16 @@
                                                     <select class="form-select select2" data-toggle="select2" name="payment"
                                                         value="{{ $invoice->payment }}" id="payment" required>
                                                         <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
-                                                            value="ESPECES">ESPECES</option>
-                                                        <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
-                                                            value="CHEQUES">CHEQUES</option>
-                                                        <option {{ $invoice->payment == 'MOBILEMONEY' ? 'selected' : '' }}
-                                                            value="MOBILEMONEY">MOBILE MONEY</option>
-                                                        <option
-                                                            {{ $invoice->payment == 'CARTEBANCAIRE' ? 'selected' : '' }}
-                                                            value="CARTEBANCAIRE">CARTE BANQUAIRE</option>
-                                                        <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
-                                                            value="VIREMENT">VIREMENT</option>
-                                                        <option {{ $invoice->payment == 'CREDIT' ? 'selected' : '' }}
-                                                            value="CREDIT">CREDIT</option>
-                                                        <option {{ $invoice->payment == 'AUTRE' ? 'selected' : '' }}
-                                                            value="AUTRE">AUTRE</option>
+                                                                value="ESPECES">ESPECES</option>
+                                                            <option
+                                                                {{ $invoice->payment == 'MOBILEMONEY' ? 'selected' : '' }}
+                                                                value="MOBILEMONEY">MOBILE MONEY</option>
 
+                                                            <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
+                                                                value="CHEQUES">CHEQUES</option>
+                                                            
+                                                            <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
+                                                                value="VIREMENT">VIREMENT</option>
                                                     </select>
                                                 </div>
                                             </div>

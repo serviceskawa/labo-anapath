@@ -26,9 +26,9 @@ class ClientController extends Controller
      */
     public function index()
     {
-        // if (!getOnlineUser()->can('view-clients')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('view-clients')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
 
         //récupérer les données de la table doctor dans l'ordre croissant des noms
         $clients = $this->client->latest()->get();
@@ -47,9 +47,9 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        // if (!getOnlineUser()->can('create-clients')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('create-clients')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
 
 
         // Récupérer les données saisir par l'utilisateur et qui respectent les conditions
@@ -88,9 +88,9 @@ class ClientController extends Controller
 
     public function update(Request $request)
     {
-        // if (!getOnlineUser()->can('edit-clients')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('edit-clients')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $clientData = [
             'id' => $request->id,
             'name' => $request->name,
@@ -124,9 +124,9 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        // if (!getOnlineUser()->can('delete-clients')) {
-        //     return back()->with('error', "Vous n'êtes pas autorisé");
-        // }
+        if (!getOnlineUser()->can('delete-clients')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $this->client->find($id)->delete();
         return back()->with('success', "    Un élement a été supprimé ! ");
     }

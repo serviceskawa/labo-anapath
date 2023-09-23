@@ -17,12 +17,12 @@ class CreateEmployeeContratsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('employee_id');
             $table->string('contract_type');
-            $table->integer('weekly_work_hours');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->date('probation_end_date');
-            $table->string('termination_reason');
-            $table->integer('working_days_per_week');
+            $table->integer('weekly_work_hours')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->date('probation_end_date')->nullable();
+            $table->string('termination_reason')->nullable();
+            $table->integer('working_days_per_week')->nullable();
             $table->foreign('employee_id')
                 ->references('id')
                 ->on('employees')

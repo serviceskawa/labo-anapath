@@ -39,18 +39,24 @@ class RefundRequestController extends Controller
      */
     public function index()
     {
+        if (!getOnlineUser()->can('view-refund-requests')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $setting = $this->setting->find(1);
         $refundRequests = $this->refundRequest->latest()->get();
         $categories = $this->categories->all();
         $invoices = $this->invoices->where('paid',1)->where('status_invoice',0)->get();
         $testOrders = $this->testOrder->all();
-        $logs = $this->log->all();
+        $logs = $this->log->latest()->get();
 
         return view('errors_reports.refund.index', compact('setting', 'refundRequests','testOrders','invoices','categories','logs'));
     }
 
     public function index_categorie()
     {
+        if (!getOnlineUser()->can('view-refund-requests')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $setting = $this->setting->find(1);
         $categories = $this->categories->latest()->get();
         $testOrders = $this->testOrder->all();
@@ -81,6 +87,9 @@ class RefundRequestController extends Controller
      */
     public function store(Request $request)
     {
+        if (!getOnlineUser()->can('create-refund-requests')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = $this->validate($request,[
             'invoice_id'=>'required|unique:refund_requests,invoice_id',
             'refund_reason_id'=>'required',
@@ -127,6 +136,9 @@ class RefundRequestController extends Controller
 
     public function store_categorie(Request $request)
     {
+        if (!getOnlineUser()->can('view-refund-requests')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = [
             'description' => $request->description
         ];
@@ -181,6 +193,9 @@ class RefundRequestController extends Controller
      */
     public function update(Request $request)
     {
+        if (!getOnlineUser()->can('edit-refund-requests')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $data = $this->validate($request,[
             'id' => 'required',
 
@@ -331,6 +346,9 @@ class RefundRequestController extends Controller
      */
     public function destroy($id)
     {
+        if (!getOnlineUser()->can('delete-refund-requests')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
         $refundRequest = $this->refundRequest->find($id);
         $refundRequest->delete();
         return back()->with('success',"Suppression éffectuée avec success");
