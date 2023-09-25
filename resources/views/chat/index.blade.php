@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Discussion')
+@section('title', 'Chat')
 
 @section('content')
     @include('layouts.alerts')
@@ -20,6 +20,11 @@
     <div class="row">
         <!-- start chat users-->
         <div class="col-xxl-3 col-xl-6 order-xl-1">
+            <button class="btn btn-success mb-3" style="padding-left: 20px; padding-right:20px; margin-left:50px" href="#" data-bs-toggle="modal" data-bs-target="#new-chat">
+                <span>Nouveau message</span>
+                <i class="mdi mdi-pencil"></i>
+            </button>
+            @include('chat.new_chat')
             <div class="card">
                 <div class="card-body p-0">
 
@@ -31,23 +36,36 @@
                                 <div class="col">
                                     <h5>Utilisateurs</h5>
                                     <div data-simplebar="" style="max-height: 550px">
-                                        @foreach ($users as $user)
+                                        @foreach ($usersWithMessage as $user)
                                             <a type="button" onclick="openMessage({{ $user->id }})" class="text-body">
                                                 <div class="d-flex align-items-start mt-1 p-2">
                                                     <div class="avatar-sm" style="margin-right: 10px">
-                                                        <span class="avatar-title bg-success rounded">
-                                                            xs
+                                                        <span class="avatar-title bg-success rounded-circle me-2" style="padding: 20px" >
+                                                            {{getNameInitials($user->firstname." ".$user->lastname)}}
                                                         </span>
                                                     </div>
                                                     <div class="w-100 overflow-hidden">
                                                         <h5 class="mt-0 mb-0 font-14">
-                                                            <span class="float-end text-muted font-12">4:30am</span>
+                                                            <span class="float-end text-muted font-12">
+                                                                {{ getMessageUnreadSender(Auth::user()->id,$user->id) ?
+                                                                    date_format(getMessageUnreadSender(Auth::user()->id,$user->id)->created_at, 'h:m')
+                                                                     :'' }}
+                                                            </span>
                                                             {{ $user->firstname }} {{ $user->lastname }}
                                                         </h5>
                                                         <p class="mt-1 mb-0 text-muted font-14">
-                                                            <span class="w-25 float-end text-end"><span
-                                                                    class="badge badge-danger-lighten">3</span></span>
-                                                            <span class="w-75">How are you today?</span>
+                                                            <span class="w-25 float-end text-end">
+                                                                @if (getUnreadMessageBySenderCount(Auth::user()->id,$user->id) !=0)
+                                                                    <span class="badge badge-danger-lighten">
+                                                                        {{ getUnreadMessageBySenderCount(Auth::user()->id,$user->id) !=0 ?
+                                                                            getUnreadMessageBySenderCount(Auth::user()->id,$user->id) :'' }}
+                                                                    </span>
+                                                                @endif
+                                                            </span>
+                                                            <span class="w-75">
+                                                                {{ getMessageUnreadBySender(Auth::user()->id,$user->id) ?
+                                                                    tronquerChaine(getMessageUnreadBySender(Auth::user()->id,$user->id),20) :'' }}
+                                                            </span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -66,91 +84,60 @@
         </div>
         <!-- end chat users-->
 
-        {{-- <!-- chat area -->
-        <div class="col-xxl-6 col-xl-12 order-xl-2">
-            <div class="card" id="card_discussion" style="display: none">
-                <div class="card-body">
-
-                    <div>
-                        <div>
-                            <h4 class="text-center" id="chat_new">Nouvelle discussion</h4>
-                        </div>
-                        <ul class="conversation-list" style="display: none" id="chat_old" data-simplebar=""
-                            style="max-height: 537px">
-
-                        </ul>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="mt-2 bg-light p-3 rounded">
-                                <form class="needs-validation" novalidate="" name="chat-form" id="chat-form">
-                                    <div class="row">
-                                        <div class="col mb-2 mb-sm-0">
-                                            <input type="text" id="message" class="form-control border-0"
-                                                placeholder="Enter your text" required="">
-                                            <input type="hidden" name="receve_id" id="receve_id">
-                                            <div class="invalid-feedback">
-                                                Please enter your messsage
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-auto">
-                                            <div class="btn-group">
-                                                <a href="#" class="btn btn-light"><i
-                                                        class="uil uil-paperclip"></i></a>
-                                                <a href="#" class="btn btn-light"> <i class='uil uil-smile'></i>
-                                                </a>
-                                                <div class="d-grid">
-                                                    <button type="button" id="chat-button"
-                                                        class="btn btn-success chat-send"><i
-                                                            class='uil uil-message'></i></button>
-                                                </div>
-                                            </div>
-                                        </div> <!-- end col -->
-                                    </div> <!-- end row-->
-                                </form>
-                            </div>
-                        </div> <!-- end col-->
-                    </div><!-- end row -->
-                </div> <!-- end card-body -->
-            </div> <!-- end card -->
-        </div>
-        <!-- end chat area--> --}}
-
         <!-- chat area -->
-        <div class="col-xxl-6 col-xl-12 order-xl-2">
+        <div class="col-xxl-9 col-xl-12 order-xl-2">
+            <div class="card" id="discussion_is_empty">
+                <div class="card-body" style="max-height: 550px" data-simplebar="">
+                    <div class="text-center mt-5 mb-5">
+                        <img src="{{asset('adminassets/images/Capture.PNG')}}" alt="" srcset=""><br>
+                        <span>Selectionner une discussion sur côté gauche</span>
+                    </div>
+                </div> <!-- end card-body -->
+
+            </div> <!-- end card -->
             <div class="card" id="card_discussion" style="display: none">
+                <div class="conversation-actions" id="context-menu">
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <a class="dropdown-item" href="#">Copy Message</a>
+                        <a class="dropdown-item" href="#">Edit</a>
+                        <a class="dropdown-item" href="#">Delete</a>
+                    </div>
+                </div>
                 <div class="card-body" style="max-height: 550px" data-simplebar="">
                     <div>
-                        <h4 class="text-center" id="chat_new">Nouvelle discussion</h4>
+                        <h4 class="">
+                            <span id="chat_new">
+                                hi
+                            </span>
+                        </h4>
                     </div>
                     <ul class="conversation-list" style="display: none" id="chat_old">
+
                     </ul>
 
-
                 </div> <!-- end card-body -->
+
                 <div class="row">
                     <div class="col">
                         <div class="p-3 rounded">
-                            <form class="needs-validation" novalidate="" name="chat-form" id="chat-form">
+
                                 <div class="row">
                                     <div class="col mb-2 mb-sm-0">
-                                        <input type="text" class="form-control border-0 bg-light " placeholder="Enter your text" required="">
+                                        <input type="text" class="form-control border-0 bg-light" id="message" placeholder="Envoyer un message" required="">
+                                        <input type="hidden" class="form-control border-0 bg-light" id="receve_id">
                                         <div class="invalid-feedback">
-                                            Please enter your messsage
+                                            Envoyer un message
                                         </div>
                                     </div>
                                     <div class="col-sm-auto">
                                         <div class="btn-group">
-                                            {{-- <a href="#" class="btn btn-light"><i class="uil uil-paperclip"></i></a>
-                                            <a href="#" class="btn btn-light"> <i class='uil uil-smile'></i> </a> --}}
+
                                             <div class="d-grid">
-                                                <button type="submit" class="btn btn-success chat-send"><i class='uil uil-message'></i></button>
+                                                <button type="button" id="chat-button" class="btn btn-success chat-send"><i class='uil uil-message'></i></button>
                                             </div>
                                         </div>
                                     </div> <!-- end col -->
                                 </div> <!-- end row-->
-                            </form>
                         </div>
                     </div> <!-- end col-->
                 </div>
@@ -159,7 +146,7 @@
         </div>
         <!-- end chat area-->
 
-        <!-- start user detail -->
+        {{-- <!-- start user detail -->
             <div class="col-xxl-3 col-xl-6 order-xl-1 order-xxl-2" id="receve_info" style="display: none">
                 <div class="card">
                     <div class="card-body">
@@ -167,7 +154,7 @@
 
                         <div class="mt-3 text-center">
                             <div class="avatar-sm" style="margin-left: 90px">
-                                <span class="avatar-title bg-success rounded">
+                                <span id="initial_user" class="avatar-title bg-success rounded">
                                     xs
                                 </span>
                             </div>
@@ -188,7 +175,7 @@
                     </div> <!-- end card-body -->
                 </div> <!-- end card-->
             </div> <!-- end col -->
-        <!-- end user detail -->
+        <!-- end user detail --> --}}
     </div> <!-- end row-->
 @endsection
 
@@ -286,10 +273,10 @@
             var e_id = id;
             console.log(id, e_id);
             var card_discussion = document.getElementById('card_discussion');
+            var discussion_is_empty = document.getElementById('discussion_is_empty');
             var chat_old = document.getElementById('chat_old');
             var chat_new = document.getElementById('chat_new');
-            var receve_info = document.getElementById('receve_info');
-            console.log(card_discussion, chat_new, chat_old, receve_info);
+            console.log(card_discussion, discussion_is_empty, chat_old);
 
             // Populate Data in Edit Modal Form
             $.ajax({
@@ -301,31 +288,21 @@
                 },
                 success: function(data) {
                     console.log(data);
+                    chat_new.textContent = data.receve.firstname+' '+data.receve.lastname
                     $('#receve_id').val(e_id);
                     if (card_discussion.style.display == 'none') {
+                        discussion_is_empty.style.display = 'none'
                         card_discussion.style.display = 'block'
                     }
 
                     if (data.message == 'new') {
                         chat_old.style.display = 'none'
-                        chat_new.style.display = 'block'
-                        receve_info.style.display = 'block'
-                        $('#receve_name').val(data.receve.firstname+' '+data.receve.lastname)
-                        $('#receve_email').val(data.receve.email)
-                        // $('#receve_phone').val(data.receve.phone)
 
                     } else {
-                        chat_new.style.display = 'none'
                         chat_old.style.display = 'block'
                         chat_old.style.display = 'max-height: 537px'
-                        receve_info.style.display = 'block'
-                        var receve_name = document.getElementById('receve_name');
-                        var receve_email = document.getElementById('receve_email');
-                        receve_name.textContent = data.receve.firstname+' '+data.receve.lastname
-                        receve_email.textContent = data.receve.email
 
                         if (data.content_message.length ==1) {
-                            chat_new.style.display = 'block'
                         }
 
                         if (data.content_message && data.content_message.length > 0) {
@@ -338,16 +315,18 @@
                                     var newLi = "";
                                     console.log(e_id);
                                     if (data.user_connect != message.sender_id) {
-                                        newLi = $('<li class="clearfix">')
+                                        newLi = $('<li class="clearfix" id="line_message">')
                                     } else {
-                                        newLi = $('<li class="clearfix odd">')
+                                        newLi = $('<li class="clearfix odd" id="line_message">')
                                     }
                                     newLi.html(`
                                     <!-- Utilisateur -->
                                     <div class="chat-avatar">
                                         <div class="avatar-xs" style="margin-right: 10px">
                                             <span class="avatar-title bg-success rounded">
-                                                xs
+
+                                                ${data.user_connect != message.sender_id ? getNameInitials(data.receve.firstname+' '+data.receve.lastname) : getNameInitials(data.sender.firstname+' '+data.sender.lastname)}
+
                                             </span>
                                         </div>
                                         <i>${formatTime(message.created_at)}</i>
@@ -355,19 +334,11 @@
                                     <!-- Message -->
                                     <div class="conversation-text">
                                         <div class="ctext-wrap">
-                                            <i>Me</i>
+                                            <i></i>
                                             <p>${message.message}</p>
                                         </div>
                                     </div>
-                                    <!-- Menu contextuel -->
-                                    <div class="conversation-actions dropdown">
-                                        <button class="btn btn-sm btn-link" data-bs-toggle="dropdown" aria-expanded="false"><i class='uil uil-ellipsis-v'></i></button>
-                                        <div class="dropdown-menu dropdown-menu-end">
-                                            <a class="dropdown-item" href="#">Copy Message</a>
-                                            <a class="dropdown-item" href="#">Edit</a>
-                                            <a class="dropdown-item" href="#">Delete</a>
-                                        </div>
-                                    </div>
+
                                     `);
                                     chatOld.append(newLi);
                                 }
@@ -383,8 +354,24 @@
             });
         }
 
+        function getNameInitials(fullName) {
+            var initials = "";
+            var nameParts = fullName.split(" ");
+
+            for (var i = 0; i < nameParts.length; i++) {
+                var namePart = nameParts[i].trim();
+                if (namePart.length > 0) {
+                    initials += namePart[0].toUpperCase();
+                }
+            }
+
+            return initials;
+        }
+
+
         $('#chat-button').on('click', function() {
             var message = $('#message').val()
+            $(('#message')).val('')
             var receve_id = $('#receve_id').val()
             $.ajax({
                 url: ROUTESENDMESSAGE,
@@ -392,20 +379,22 @@
                 data: {
                     "_token": TOKENSENDMESSAGE,
                     message: message,
+                    old:1,
                     receve_id: receve_id
                 },
                 success: function(response) {
+                    console.log(response);
                     // Réinitialisez le formulaire
                     $('#chat-form').trigger("reset");
 
                     // Ajoutez une nouvelle ligne li à la liste de conversation  <i>${response.sender_name}</i>
-                    var newLi = $('<li class="clearfix odd">');
+                    var newLi = $('<li class="clearfix odd" id="line_message">');
                     newLi.html(`
                 <!-- Utilisateur -->
                 <div class="chat-avatar">
                     <div class="avatar-xs" style="margin-right: 10px">
-                        <span class="avatar-title bg-success rounded">
-                            xs
+                        <span class="avatar-title bg-success rounded-circle">
+                            ${getNameInitials(response.receve.firstname+' '+response.receve.lastname)}
                         </span>
                     </div>
                     <i>10:00</i>
@@ -413,19 +402,11 @@
                 <!-- Message -->
                 <div class="conversation-text">
                     <div class="ctext-wrap">
-                        <i>Me</i>
+                        <i></i>
                         <p id="content">${message}</p>
                     </div>
                 </div>
-                <!-- Menu contextuel -->
-                <div class="conversation-actions dropdown">
-                    <button class="btn btn-sm btn-link" data-bs-toggle="dropdown" aria-expanded="false"><i class='uil uil-ellipsis-v'></i></button>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <a class="dropdown-item" href="#">Copy Message</a>
-                        <a class="dropdown-item" href="#">Edit</a>
-                        <a class="dropdown-item" href="#">Delete</a>
-                    </div>
-                </div>
+
             `);
 
                     // Ajoutez le nouveau li à la liste de conversation
@@ -437,7 +418,19 @@
             });
         })
 
+        var element = document.getElementById('line_message'); // Remplacez 'votreElement' par l'ID de votre balise HTML cible.
 
+
+        element.addEventListener('contextmenu', function(e) {
+            console.log('cc');
+            e.preventDefault(); // Empêche l'affichage du menu contextuel par défaut du navigateur.
+
+            // Affichez votre menu contextuel personnalisé à la position du clic droit.
+            var contextMenu = document.getElementById('context-menu');
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
+        });
 
     </script>
 @endpush
