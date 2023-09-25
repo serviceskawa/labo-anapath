@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\TryCatch;
 
@@ -103,6 +104,7 @@ class CashboxDailyController extends Controller
                         'total_confirmation' => null,
                         'total_ecart' => null,
                         'user_id' => auth()->user()->id,
+                        'code' => generateCodeOpeningCashbox()
                     ]);
                 } catch (\Throwable $th) {
                     dd($th);
@@ -139,37 +141,47 @@ class CashboxDailyController extends Controller
 
     public function detail_fermeture_caisse()
     {
+
+        $closecashbox = CashboxDaily::where('status',1)->whereRaw('Date(updated_at) = ?', [now()->toDateString()])->orderBy('updated_at','desc')->first();
+        // dd($closecashbox);
+
         // mobile money
         $mobilemoneysum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
             $query->where('payment', '=', "MOBILEMONEY");
         })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+          ->where('updated_at','>', $closecashbox->updated_at)
           ->sum('amount');
 
         $mobilemoneycount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
             $query->where('payment', '=', "MOBILEMONEY");
         })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+        ->where('updated_at','>', $closecashbox->updated_at)
           ->count();
 
         // Cheques
         $chequessum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
             $query->where('payment', '=', "CHEQUES");
         })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+        ->where('updated_at','>', $closecashbox->updated_at)
           ->sum('amount');
 
         $chequescount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
             $query->where('payment', '=', "CHEQUES");
         })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+        ->where('updated_at','>', $closecashbox->updated_at)
           ->count();
 
         // Especes
         $especessum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
             $query->where('payment', '=', "ESPECES");
         })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+        ->where('updated_at','>', $closecashbox->updated_at)
           ->sum('amount');
 
         $especescount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
             $query->where('payment', '=', "ESPECES");
         })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+        ->where('updated_at','>', $closecashbox->updated_at)
           ->count();
 
 
@@ -177,11 +189,13 @@ class CashboxDailyController extends Controller
         $virementsum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
             $query->where('payment', '=', "VIREMENT");
         })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+        ->where('updated_at','>', $closecashbox->updated_at)
           ->sum('amount');
 
         $virementcount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
             $query->where('payment', '=', "VIREMENT");
         })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+        ->where('updated_at','>', $closecashbox->updated_at)
           ->count();
 
         $open_cash = CashboxDaily::latest()->first();
@@ -204,6 +218,10 @@ class CashboxDailyController extends Controller
         try {
         $sf = CashboxDaily::latest()->first();
 
+        if ($sf->user_id != Auth::user()->id) {
+            return back()->with('error', "Vous n'êtes pas autorisé à fermer la caisse");
+        }
+
         // $serach
             $sf->update([
                     'close_balance' => $request->close_balance,
@@ -224,7 +242,7 @@ class CashboxDailyController extends Controller
                     'total_confirmation' => $request->total_confirmation_point ? $request->total_confirmation_point : 0.0,
                     'total_ecart' => $request->total_ecart_point ? $request->total_ecart_point : 0.0,
                     'user_id' => auth()->user()->id,
-                ]);
+            ]);
 
             // $cashb = Cashbox::where('id', 2)->get();
 
