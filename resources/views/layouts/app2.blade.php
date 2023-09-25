@@ -536,6 +536,7 @@
                     <li class="side-nav-item">
                         <a href="{{ route('chat.bot')}}" class="side-nav-link">
                             <i class="uil-comments-alt"></i>
+                            <span class="badge bg-warning float-end">{{ getUnreadMessageCount(Auth::user()->id) ? getUnreadMessageCount(Auth::user()->id) :'' }}</span>
                             <span> Chat </span>
                         </a>
                     </li>
