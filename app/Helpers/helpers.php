@@ -602,7 +602,7 @@ if (!function_exists('getMessageUnreadBySender')) {
             $query->where('sender_id', $userId)->where('receve_id', $senderID);
         })->orderBy('created_at', 'desc')
         ->first();
-        return $lastMessage->sender_id == $userId ? 'vous :'.$lastMessage->message: $lastMessage->message;
+        return $lastMessage->sender_id == $userId ? 'Vous: '.$lastMessage->message: $lastMessage->message;
     }
 }
 

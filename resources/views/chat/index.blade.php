@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Chat')
+@section('title', 'Messages')
 
 @section('content')
     @include('layouts.alerts')
@@ -9,21 +9,23 @@
         <div class="col-12">
             <div class="page-title-box">
                 <div class="page-title-right">
-                    Text
+                    
                 </div>
-                <h4 class="page-title">Chat</h4>
+                <h4 class="page-title">Messages</h4>
             </div>
         </div>
     </div>
     <!-- end page title -->
 
-    <div class="row">
+    <div class="row" style="margin-left:1px;">
         <!-- start chat users-->
         <div class="col-xxl-3 col-xl-6 order-xl-1">
-            <button class="btn btn-success mb-3" style="padding-left: 20px; padding-right:20px; margin-left:50px" href="#" data-bs-toggle="modal" data-bs-target="#new-chat">
+            <div class="row">
+            <button class="btn btn-primary mb-3 col-12" href="#" data-bs-toggle="modal" data-bs-target="#new-chat">
                 <span>Nouveau message</span>
                 <i class="mdi mdi-pencil"></i>
             </button>
+            
             @include('chat.new_chat')
             <div class="card">
                 <div class="card-body p-0">
@@ -34,21 +36,21 @@
                             <!-- users -->
                             <div class="row">
                                 <div class="col">
-                                    <h5>Utilisateurs</h5>
+                                    <h4>Discussions</h4>
                                     <div data-simplebar="" style="max-height: 550px">
                                         @foreach ($usersWithMessage as $user)
                                             <a type="button" onclick="openMessage({{ $user->id }})" class="text-body">
                                                 <div class="d-flex align-items-start mt-1 p-2">
                                                     <div class="avatar-sm" style="margin-right: 10px">
-                                                        <span class="avatar-title bg-success rounded-circle me-2" style="padding: 20px" >
-                                                            {{getNameInitials($user->firstname." ".$user->lastname)}}
+                                                        <span class="avatar-title bg-primary rounded-circle me-2" style="padding: 20px" >
+                                                            {{getNameInitials($user->firstname." ".$user->lastname." ")}} 
                                                         </span>
                                                     </div>
                                                     <div class="w-100 overflow-hidden">
                                                         <h5 class="mt-0 mb-0 font-14">
                                                             <span class="float-end text-muted font-12">
                                                                 {{ getMessageUnreadSender(Auth::user()->id,$user->id) ?
-                                                                    date_format(getMessageUnreadSender(Auth::user()->id,$user->id)->created_at, 'h:m')
+                                                                    " ".date_format(getMessageUnreadSender(Auth::user()->id,$user->id)->created_at, 'H:i')
                                                                      :'' }}
                                                             </span>
                                                             {{ $user->firstname }} {{ $user->lastname }}
@@ -64,7 +66,7 @@
                                                             </span>
                                                             <span class="w-75">
                                                                 {{ getMessageUnreadBySender(Auth::user()->id,$user->id) ?
-                                                                    tronquerChaine(getMessageUnreadBySender(Auth::user()->id,$user->id),20) :'' }}
+                                                                    tronquerChaine(getMessageUnreadBySender(Auth::user()->id,$user->id),40) :'' }}
                                                             </span>
                                                         </p>
                                                     </div>
@@ -81,6 +83,7 @@
                     </div> <!-- end tab content-->
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
+            </div>
         </div>
         <!-- end chat users-->
 
@@ -90,7 +93,7 @@
                 <div class="card-body" style="max-height: 550px" data-simplebar="">
                     <div class="text-center mt-5 mb-5">
                         <img src="{{asset('adminassets/images/Capture.PNG')}}" alt="" srcset=""><br>
-                        <span>Selectionner une discussion sur côté gauche</span>
+                        <span>Sélectionnez une discussion sur le côté gauche.</span>
                     </div>
                 </div> <!-- end card-body -->
 
@@ -154,7 +157,7 @@
 
                         <div class="mt-3 text-center">
                             <div class="avatar-sm" style="margin-left: 90px">
-                                <span id="initial_user" class="avatar-title bg-success rounded">
+                                <span id="initial_user" class="avatar-title bg-primary rounded">
                                     xs
                                 </span>
                             </div>
@@ -234,7 +237,7 @@
                                     <!-- Utilisateur -->
                                     <div class="chat-avatar">
                                         <div class="avatar-xs" style="margin-right: 10px">
-                                            <span class="avatar-title bg-success rounded">
+                                            <span class="avatar-title bg-primary rounded">
                                                 xs
                                             </span>
                                         </div>
@@ -323,7 +326,7 @@
                                     <!-- Utilisateur -->
                                     <div class="chat-avatar">
                                         <div class="avatar-xs" style="margin-right: 10px">
-                                            <span class="avatar-title bg-success rounded">
+                                            <span class="avatar-title bg-primary rounded">
 
                                                 ${data.user_connect != message.sender_id ? getNameInitials(data.receve.firstname+' '+data.receve.lastname) : getNameInitials(data.sender.firstname+' '+data.sender.lastname)}
 
@@ -393,7 +396,7 @@
                 <!-- Utilisateur -->
                 <div class="chat-avatar">
                     <div class="avatar-xs" style="margin-right: 10px">
-                        <span class="avatar-title bg-success rounded-circle">
+                        <span class="avatar-title bg-primary rounded-circle">
                             ${getNameInitials(response.receve.firstname+' '+response.receve.lastname)}
                         </span>
                     </div>
