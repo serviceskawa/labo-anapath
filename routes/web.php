@@ -25,6 +25,7 @@ use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\TestOrderController;
 use App\Http\Controllers\PrestationsOrderrController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\DocumentationCategorieController;
 use App\Http\Controllers\PrestationController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AppointmentController;
@@ -54,6 +55,7 @@ use App\Models\AppelTestOder;
 use App\Models\Article;
 use App\Models\CashboxDaily;
 use App\Models\Document;
+use App\Models\DocumentationCategorie;
 use App\Models\EmployeeTimeoff;
 use App\Models\ExpenseCategorie;
 use App\Models\Movement;
@@ -603,4 +605,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/store-document',[EmployeeDocumentController::class, 'store'])->name('document.store');
     Route::get('/delete-document/{employeeDocument}',[EmployeeDocumentController::class, 'delete'])->name('document.delete');
 
+
+    // Documentation categorie
+        // Route::prefix('documentation_categories')->group(function () {
+        Route::get('categorie-documentations', [DocumentationCategorieController::class, 'index'])->name('doc.categorie.index');
+        Route::get('categorie-documentation-create', [DocumentationCategorieController::class, 'create'])->name('doc.categorie.create');
+        Route::get('categorie-documentation-edit/{employeeTimeoff}', [DocumentationCategorieController::class, 'edit'])->name('doc.categorie.edit');
+        Route::put('categorie-documentation-update/{employeeTimeoff}', [DocumentationCategorieController::class, 'update'])->name('doc.categorie.update');
+        Route::post('categorie-documentation-store', [DocumentationCategorieController::class, 'store'])->name('doc.categorie.store');
+        Route::get('categorie-documentation-delete/{employeeTimeoff}', [DocumentationCategorieController::class, 'delete'])->name('doc.categorie.delete');
+    // });
 });

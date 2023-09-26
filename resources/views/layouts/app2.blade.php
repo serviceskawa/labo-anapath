@@ -592,7 +592,7 @@
 
 
 
-                    {{-- Equpes --}}
+                    {{-- Equipes --}}
                     <li class="side-nav-title side-nav-item">EQUIPES</li>
                     @if (getOnlineUser()->can('edit-users'))
                     <li class="side-nav-item">
@@ -609,7 +609,7 @@
                                     <a href="{{ route('employee.index') }}">Tous les employés</a>
                                 </li>
                                 @endif
-                                @if (getOnlineUser()->can('view-users'))
+                                {{-- @if (getOnlineUser()->can('view-users'))
                                 <li>
                                     <a href="{{ route('employee.contrat.index') }}">Tous les contrats</a>
                                 </li>
@@ -624,6 +624,33 @@
                                 @if (getOnlineUser()->can('view-users'))
                                 <li>
                                     <a href="{{ route('employee.timeoff.index') }}">Tous les congé</a>
+                                </li>
+                                @endif --}}
+                            </ul>
+                        </div>
+                    </li>
+                    @endif
+
+
+
+
+
+
+                    {{-- Equipes --}}
+                    <li class="side-nav-title side-nav-item">Documentations</li>
+                    @if (getOnlineUser()->can('edit-users'))
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarProjects66" aria-expanded="false"
+                            aria-controls="sidebarProjects66" class="side-nav-link">
+                            <i class="uil-user-check"></i>
+                            <span>Documentations</span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarProjects66">
+                            <ul class="side-nav-second-level">
+                                @if (getOnlineUser()->can('view-users'))
+                                <li>
+                                    <a href="{{ route('doc.categorie.index') }}">Categoriés</a>
                                 </li>
                                 @endif
                             </ul>
