@@ -14,11 +14,13 @@ use App\Models\Invoice;
 use App\Models\RefundRequest;
 use App\Models\Report;
 use App\Models\SettingInvoice;
+use App\Models\Ticket;
 use App\Models\TypeConsultation;
 use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
 define("SERVER", "http://sms.wallyskak.com");
@@ -647,6 +649,36 @@ if (!function_exists('generateCodeFactureAvoir')) {
 
         // Ajoute les deux derniers chiffres de l'année au début du code
         return "DER" . now()->year % 100 . "$code";
+    }
+}
+
+
+// generate code tickets
+if (!function_exists('generateCodeBillet')) {
+    function generateCodeBillet()
+    {
+        //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
+        $billet = Ticket::whereYear('created_at', '=', now()->year)
+            ->whereNotNull('ticket_code')
+            ->orderByRaw('RIGHT(ticket_code, 4) DESC')
+            ->first();
+
+        // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
+        if (!$billet || $billet->created_at->year != now()->year) {
+            $code = "0001";
+        }
+        // Sinon, incrémente le dernier code de 1
+        else {
+            // Récupère les quatre derniers caractères du code
+            $lastCode = substr($billet->ticket_code, -4);
+
+            // Convertit la chaîne en entier et l'incrémente de 1
+            $code = intval($lastCode) + 1;
+            $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+        }
+
+        // Ajoute les deux derniers chiffres de l'année au début du code
+        return "TI-" . now()->year % 100 . "$code";
     }
 }
 

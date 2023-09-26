@@ -219,6 +219,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/problemereport',[ProblemeReportersController::class, 'store'])->name('probleme.report.store');
     Route::get('/getproblemereport/{id}', [ProblemeReportersController::class, 'edit'])->name('probleme.report.edit');
     Route::post('/problemereport/update',[ProblemeReportersController::class, 'update'])->name('probleme.report.update');
+    Route::post('/problemereport/send-chat-bot',[ProblemeReportersController::class, 'sendMessage'])->name('probleme.report.sendMessage');
     Route::get('/problemereport/delete/{id}', [ProblemeReportersController::class, 'destroy'])->name('probleme.report.destroy');
 
     //Demande de remboursement
