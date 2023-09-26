@@ -248,7 +248,9 @@ class CashboxDailyController extends Controller
 
             $lastvalCashbox = Cashbox::find(2);
             // dd($lastvalCashbox);
-                $result = $lastvalCashbox->current_balance + $lastvalCashbox->opening_balance;
+
+            // on met a jour le solde total de la caisse : montant actuel + solde d'ouverture + ecart
+                $result = $lastvalCashbox->current_balance + $lastvalCashbox->opening_balance + $sf->total_ecart;
                 // dd($result);
             $lastvalCashbox->update([
                     'current_balance' => $result,
