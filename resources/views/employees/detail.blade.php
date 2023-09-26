@@ -33,7 +33,12 @@
                                 <div class="col-auto">
                                     @if($employee->photo_url==null)
                                     <div class="avatar-lg">
-                                        Pas d'image
+                                        <div class="avatar-sm" style="margin-right: 10px">
+                                            <span class="avatar-title bg-light rounded-circle me-2"
+                                                style="padding: 50px; font-size:50px; color:inherit;">
+                                                {{getNameInitials($employee->first_name." ".$employee->last_name." ")}}
+                                            </span>
+                                        </div>
                                     </div>
                                     @else
                                     <div class="avatar-lg">

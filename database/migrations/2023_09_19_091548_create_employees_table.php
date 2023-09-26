@@ -18,14 +18,14 @@ class CreateEmployeesTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
-            $table->string('telephone');
-            $table->string('gender');
-            $table->string('date_of_birth');
-            $table->string('place_of_birth');
-            $table->string('nationality');
-            $table->string('cnss_number');
-            $table->string('address');
-            $table->string('city');
+            $table->string('telephone')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('date_of_birth')->nullable();
+            $table->string('place_of_birth')->nullable();
+            $table->string('nationality')->nullable();
+            $table->string('cnss_number')->nullable();
+            $table->string('address')->nullable();
+            $table->string('city')->nullable();
             $table->string('photo_url')->nullable();
             
             // $table->unsignedBigInteger('employee_payroll_id');
