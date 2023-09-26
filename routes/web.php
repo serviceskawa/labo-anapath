@@ -38,10 +38,12 @@ use App\Http\Controllers\DetailsContratController;
 use App\Http\Controllers\TypeConsultationController;
 use App\Http\Controllers\CategoryPrestationController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogReportController;
 use App\Http\Controllers\ProblemCategoryController;
 use App\Http\Controllers\ProblemeReportersController;
 use App\Http\Controllers\RefundRequestController;
+use App\Http\Controllers\EmployeeDocumentController;
 use App\Http\Controllers\SettingReportTemplateController;
 use App\Http\Controllers\SignalController;
 use App\Http\Controllers\SupplierCategorieController;
@@ -51,6 +53,7 @@ use App\Http\Controllers\UnitMeasurementController;
 use App\Models\AppelTestOder;
 use App\Models\Article;
 use App\Models\CashboxDaily;
+use App\Models\Document;
 use App\Models\EmployeeTimeoff;
 use App\Models\ExpenseCategorie;
 use App\Models\Movement;
@@ -562,6 +565,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+
     // Route::prefix('employee_payrolls')->group(function () {
         Route::get('contrat-payrolls', [EmployeePayrollController::class, 'index'])->name('employee.payroll.index');
         Route::get('contrat-payroll-create', [EmployeePayrollController::class, 'create'])->name('employee.payroll.create');
@@ -584,4 +588,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('employee-timeoff-delete/{employeeTimeoff}', [EmployeeTimeoffController::class, 'delete'])->name('employee.timeoff.delete');
     // });
     
+
+    // Chats 
+    Route::get('/chat-bot',[HomeController::class, 'chat'])->name('chat.bot');
+    Route::POST('/chat-bot',[HomeController::class, 'getMessage'])->name('chat.getMessage');
+    Route::post('/send-chat-bot',[HomeController::class, 'sendMessage'])->name('chat.sendMessage');
+    Route::POST('/check-chat-bot',[HomeController::class, 'checkMessage'])->name('chat.checkMessage');
+
+
+
+    // Chats 
+
+    Route::put('/update-document/{employeeDocument}',[EmployeeDocumentController::class, 'update'])->name('document.update');
+    Route::post('/store-document',[EmployeeDocumentController::class, 'store'])->name('document.store');
+    Route::get('/delete-document/{employeeDocument}',[EmployeeDocumentController::class, 'delete'])->name('document.delete');
+
 });

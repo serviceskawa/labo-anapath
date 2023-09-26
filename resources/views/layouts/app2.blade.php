@@ -478,24 +478,46 @@
                                 </li>
                                 @endif
                                 @if (getOnlineUser()->can('view-roles'))
-                                <li>
-                                    <a href="{{ route('user.role-index') }}">Rôles</a>
+                                <li class="side-nav-item" style="margin-left: 38px">
+                                    <a href="{{ route('user.role-index') }}" class="side-nav-link">
+                                        <span> Rôles </span>
+                                    </a>
+                                    <div class="collapse">
+                                        <ul class="side-nav-second-level">
+                                            @if (Route::current()->getName() == 'user.role-create')
+                                            <li style="display:none">
+                                                <a href="">show</a>
+                                            </li>
+                                            @endif
+                                            @if (Route::current()->getName() == 'user.role-show')
+                                            <li style="display:none">
+                                                <a href="">show</a>
+                                            </li>
+                                            @endif
+                                        </ul>
+                                    </div>
                                 </li>
                                 @endif
                                 @if (getOnlineUser()->can('view-users'))
-                                <li>
-                                    <a href="{{ route('user.index') }} ">Tous les utilisateurs </a>
+                                <li class="side-nav-item" style="margin-left: 38px">
+                                    <a href="{{ route('user.index') }}" class="side-nav-link">
+                                        <span> Tous les utilisateurs </span>
+                                    </a>
+                                    <div class="collapse">
+                                        <ul class="side-nav-second-level">
+                                            @if (Route::current()->getName() == 'user.edit')
+                                            <li style="display:none">
+                                                <a href="">show</a>
+                                            </li>
+                                            @endif
+                                            @if (Route::current()->getName() == 'user.create')
+                                            <li style="display:none">
+                                                <a href="">show</a>
+                                            </li>
+                                            @endif
+                                        </ul>
+                                    </div>
                                 </li>
-                                @if (Route::current()->getName() == 'user.edit')
-                                <li style="display:none">
-                                    <a href="">show</a>
-                                </li>
-                                @endif
-                                @if (Route::current()->getName() == 'user.create')
-                                <li style="display:none">
-                                    <a href="">show</a>
-                                </li>
-                                @endif
                                 @endif
                             </ul>
                         </div>
@@ -510,6 +532,15 @@
                         </a>
                     </li>
                     @endif
+
+                    <li class="side-nav-item">
+                        <a href="{{ route('chat.bot')}}" class="side-nav-link">
+                            <i class="uil-comments-alt"></i>
+                            <span class="badge bg-warning float-end">{{ getUnreadMessageCount(Auth::user()->id) ?
+                                getUnreadMessageCount(Auth::user()->id) :'' }}</span>
+                            <span> Messages </span>
+                        </a>
+                    </li>
 
 
 

@@ -21,6 +21,7 @@
     </div>
 </div>
 
+{{-- Creer un employer --}}
 <div class="">
     <div class="row">
         <div class="col-sm-12">
@@ -181,8 +182,8 @@
                                     <td>
 
 
-                                        <a href="{{ route('employee.contrat.edit',$paie->id) }}" target="_blank"
-                                            class="btn btn-info"><i class="mdi mdi-lead-pencil"></i></a>
+                                        <a href="{{ route('employee.contrat.edit',$paie->id) }}" class="btn btn-info"><i
+                                                class="mdi mdi-lead-pencil"></i></a>
 
                                         <button type="button" onclick="deleteModalEmployeeContrat({{ $paie->id }})"
                                             class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
@@ -198,35 +199,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -304,8 +276,71 @@
     </div>
 </div>
 
-@endsection
 
+
+{{-- Documents --}}
+<div class="">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body profile-user-box">
+                    <div class="row">
+                        <div class="page-title-box">
+                            <div class="page-title-right mr-3">
+                                @include('employees.documents.create')
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#bs-example-modal-lg-file-create">
+                                    <i class="uil-plus me-1">Nouveau document</i>
+                                </button>
+                            </div>
+                            <h4 class="page-title">Documents</h4>
+                        </div>
+                    </div>
+
+                    <div id="cardCollpase1" class="collapse pt-3 show">
+
+                        <table id="datatable3" class="table table-striped dt-responsive nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nom</th>
+                                    <th>Fichier</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach ($documents as $document)
+
+                                <tr>
+                                    @if($document->employee_id==$employee->id)
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $document->name_file }}</td>
+                                    <td><a href="{{ asset('storage/' . $document->file)  }}" download>Télécharger</a>
+                                    </td>
+                                    <td>
+                                        @include('employees.documents.edit',['document' => $document])
+                                        <button type="button" data-bs-toggle="modal"
+                                            data-bs-target="#bs-example-modal-lg-file-edit-{{ $document->id }}"
+                                            class="btn btn-info"><i class="mdi mdi-lead-pencil"></i>
+                                        </button>
+
+                                        <button type="button" onclick="deleteModalDocument({{ $document->id }})"
+                                            class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
+                                    </td>
+                                    @endif
+                                </tr>
+
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
 
 @push('extra-js')
 <script>

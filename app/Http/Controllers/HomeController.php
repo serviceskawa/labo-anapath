@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChatBotEvent;
 use App\Models\Appointment;
+use App\Models\chat;
 use App\Models\Consultation;
 use App\Models\Contrat;
 use App\Models\Invoice;
@@ -16,6 +18,9 @@ use App\Models\TestOrder;
 use App\Models\User;
 use App\Models\UserRole;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 
@@ -65,9 +70,9 @@ class HomeController extends Controller
         if (!getOnlineUser()->can('view-dashboard')) {
             return view('home');
         } else {
-            
+
             Log::info('cc je teste le log pour voir');
-            
+
             $patients = $this->patients->all()->count();
             $contrats = $this->contrats->all()->count();
             $tests = $this->tests->all()->count();
@@ -248,6 +253,7 @@ class HomeController extends Controller
         }
 
     }
+
     public function dashboard()
     {
         $setting = Setting::find(1);
@@ -295,5 +301,127 @@ class HomeController extends Controller
         return view('dashboard', compact('patients', 'contrats', 'tests', 'totalToday', 'totalMonth',
         'testOrdersCount','noFinishTest','finishTest','Appointments', 'loggedInUserIds',
         'testOrdersToday','invoice'));
+    }
+
+    public function chat()
+    {
+       $users = User::all();
+       $usersWithMessage = User::whereIn('id', function($query) {
+        $query->select('sender_id')
+            ->from('chats')
+            ->where('receve_id', Auth::user()->id)
+            ->whereNotNull('sender_id')
+            ->distinct()
+            ->union(
+                DB::table('chats')
+                    ->select('receve_id')
+                    ->where('sender_id', Auth::user()->id)
+                    ->whereNotNull('receve_id')
+                    ->distinct()
+            );
+        })->get();
+
+        return view('chat.index',compact('users','usersWithMessage'));
+    }
+
+    public function getMessage(Request $request)
+    {
+        $sender_id = Auth::user()->id;
+        $recever_id = $request->recever_id;
+        $sender = User::find($sender_id);
+        $receve = User::find($recever_id);
+
+        // Récupérez les messages pour affichage
+        $message_count = Chat::where(function ($query) use ($sender_id, $recever_id) {
+                $query->where('sender_id', $sender_id)->where('receve_id', $recever_id);
+            })->orWhere(function ($query) use ($sender_id, $recever_id) {
+                $query->where('sender_id', $recever_id)->where('receve_id', $sender_id);
+            })->orderBy('created_at', 'asc')
+        ->count();
+
+        $messages = Chat::where(function ($query) use ($sender_id, $recever_id) {
+                $query->where('sender_id', $sender_id)->where('receve_id', $recever_id);
+            })->orWhere(function ($query) use ($sender_id, $recever_id) {
+                $query->where('sender_id', $recever_id)->where('receve_id', $sender_id);
+            })->orderBy('created_at', 'asc')
+        ->get();
+
+        chat::where('receve_id',$sender_id)->update(['read'=>1]);
+
+        // $forMessageRead = chat::where('receve_id',$sender_id)->get();
+        // foreach ($forMessageRead as $value) {
+        //     if ($value->read == 0) {
+        //         $chat = chat::find($value->id);
+        //         $chat->fill(['read',1);
+        //     }
+        // }
+        if ( $message_count) {
+            return response()->json(['message'=>'old','content_message'=>$messages,'user_connect'=>$sender_id,'sender'=>$sender,'receve'=>$receve]);
+        }else{
+            chat::create([
+                'sender_id'=> $sender_id,
+                'receve_id' => $recever_id,
+                'status' =>0
+            ]);
+            return response()->json(['message'=>'new','sender'=>$sender,'receve'=>$receve]);
+        }
+    }
+
+
+    public function sendMessage(Request $request)
+    {
+        $sender_id = Auth::user()->id;
+        $recever_id = $request->receve_id;
+        $message = $request->message;
+
+        $sender = User::find($sender_id);
+        $receve = User::find($recever_id);
+        // dd($request);
+            $chat = chat::create([
+                'sender_id'=> $sender_id,
+                'receve_id' => $recever_id,
+                'message' => $message,
+                'status' =>1,
+                'read' => 0
+            ]);
+
+            // Récupérez les messages pour affichage
+            $message_count = Chat::where(function ($query) use ($sender_id, $recever_id) {
+                    $query->where('sender_id', $sender_id)->where('receve_id', $recever_id);
+                })->orWhere(function ($query) use ($sender_id, $recever_id) {
+                    $query->where('sender_id', $recever_id)->where('receve_id', $sender_id);
+                })->orderBy('created_at', 'asc')
+            ->count();
+            if ($message_count>1) {
+                if ($request->old != 0) {
+                    return response()->json(['id'=>$chat->id,'sender'=>$sender,'receve'=>$receve]);
+                }else {
+                    return back()->with('error',"Cette discussion existe déjà");
+                }
+            }else{
+                return back()->with('sucess',"Nouvelle discussion entamée");
+            }
+
+
+
+    }
+
+    public function checkMessage(Request $request)
+    {
+        $message = $request->message;
+        $recever_id = $request->receve_id;
+        $sender_id = Auth::user()->id;
+
+        $messageNew = chat::where('message',$message)->where(function ($query) use ($sender_id, $recever_id) {
+            $query->where('sender_id', $sender_id)->where('receve_id', $recever_id);
+        })->orWhere(function ($query) use ($sender_id, $recever_id) {
+            $query->where('sender_id', $recever_id)->where('receve_id', $sender_id);
+        })->orderBy('created_at', 'asc')->first();
+
+        // Récupérez les nouveaux messages depuis la base de données en fonction de $lastMessageId
+        $newMessages = Chat::where('id', '>', $messageNew->id)->orderBy('created_at', 'asc')->get();
+
+        // Retournez les nouveaux messages au format JSON
+        return response()->json(['messages' => $newMessages,'receve_id'=>$request->receve_id]);
     }
 }

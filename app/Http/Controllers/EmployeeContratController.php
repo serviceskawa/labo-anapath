@@ -169,7 +169,7 @@ class EmployeeContratController extends Controller
                 // Enregistrez les données dans la base de données
                 $paie->save();
 
-                
+                // return redirect(route('employee.detail'))->with('success', " Opération effectuée avec succès  ! ");
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
                 return back()->with('error', "Échec de l'enregistrement ! ");

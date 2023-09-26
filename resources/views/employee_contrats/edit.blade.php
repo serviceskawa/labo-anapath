@@ -66,13 +66,24 @@
                                         contrat<span style="color:red;">*</span></label>
                                     <select class="form-select" name="contract_type" required>
                                         <option>Selectionner un type de contrat</option>
-                                        <option value="CDI">CDI</option>
-                                        <option value="CDD">CDD</option>
-                                        <option value="Saisonnier">Saisonnier</option>
-                                        <option value="Apprentissage">Apprentissage</option>
-                                        <option value="Extra">Extra</option>
-                                        <option value="Intérim">Intérim</option>
-                                        <option value="Stagiaire">Stagiaire</option>
+                                        <option value="CDI" {{$employeeContrat->employee_contrat->contract_type=="CDI" ?
+                                            'selected' : ''}}>CDI</option>
+                                        <option value="CDD" {{$employeeContrat->employee_contrat->contract_type=="CDD" ?
+                                            'selected' : ''}}>CDD</option>
+                                        <option value="Saisonnier" {{$employeeContrat->
+                                            employee_contrat->contract_type=="Saisonnier" ? 'selected' : ''}}>Saisonnier
+                                        </option>
+                                        <option value="Apprentissage" {{$employeeContrat->
+                                            employee_contrat->contract_type=="Apprentissage" ? 'selected' :
+                                            ''}}>Apprentissage</option>
+                                        <option value="Extra" {{$employeeContrat->
+                                            employee_contrat->contract_type=="Extra" ? 'selected' : ''}}>Extra</option>
+                                        <option value="Intérim" {{$employeeContrat->
+                                            employee_contrat->contract_type=="Intérim" ? 'selected' : ''}}>Intérim
+                                        </option>
+                                        <option value="Stagiaire" {{$employeeContrat->
+                                            employee_contrat->contract_type=="Stagiaire" ? 'selected' : ''}}>Stagiaire
+                                        </option>
                                     </select>
                                 </div>
                             </div>

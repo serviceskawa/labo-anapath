@@ -198,6 +198,28 @@ function deleteModalEx(id) {
 }
 
 
+// SUPPRESSION de documents
+function deleteModalDocument(id) {
+
+    Swal.fire({
+        title: "Voulez-vous supprimer l'élément ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Oui ",
+        cancelButtonText: "Non !",
+    }).then(function(result) {
+        if (result.value) {
+            window.location.href = baseUrl + "/delete-document/" + id;
+            Swal.fire(
+                "Suppression !",
+                "En cours de traitement ...",
+                "success"
+            )
+        }
+    });
+}
+
+
 /* DATATABLE */
 $(document).ready(function() {
 
@@ -253,6 +275,34 @@ $(document).ready(function() {
     });
 });
 
+
+
+
+/* DATATABLE */
+$(document).ready(function() {
+
+    $('#datatable3').DataTable({
+        "order": [
+            [0, "asc"]
+        ],
+        "columnDefs": [{
+            "targets": [0],
+            "searchable": false
+        }],
+        "language": {
+            "lengthMenu": "Afficher _MENU_ enregistrements par page",
+            "zeroRecords": "Aucun enregistrement disponible",
+            "info": "Afficher page _PAGE_ sur _PAGES_",
+            "infoEmpty": "Aucun enregistrement disponible",
+            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+            "sSearch": "Rechercher:",
+            "paginate": {
+                "previous": "Précédent",
+                "next": "Suivant"
+            }
+        },
+    });
+});
 
 //EDITION
 function edit(id) {

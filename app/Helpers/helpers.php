@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\CashboxTicket;
+use App\Models\chat;
 use App\Models\Role;
 use App\Models\Doctor;
 use App\Models\Patient;
@@ -17,6 +18,7 @@ use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\DB;
 
 define("SERVER", "http://sms.wallyskak.com");
 define("API_KEY", "cd571010a5549230264e74b9c89349fdcf5ed81c");
@@ -519,6 +521,7 @@ if (!function_exists('generateCodeTicket')) {
         return "BC".now()->year % 100 . "-$code";
     }
 }
+
 // generate code facture
 if (!function_exists('generateCodeFacture')) {
     function generateCodeFacture()
@@ -547,6 +550,74 @@ if (!function_exists('generateCodeFacture')) {
         return "FA" . now()->year % 100 . "$code";
     }
 }
+
+if (!function_exists('getNameInitials')) {
+    function getNameInitials($fullName) {
+        $initials = "";
+        $nameParts = explode(" ", trim($fullName));
+
+        foreach ($nameParts as $namePart) {
+            if (!empty($namePart)) {
+                $initials .= strtoupper($namePart[0]);
+            }
+        }
+        return $initials;
+
+    }
+}
+
+if (!function_exists('getUnreadMessageCount')) {
+    function getUnreadMessageCount($userId) {
+        // Remplacez "messages" par le nom de votre table de messages
+        $unreadMessages = DB::table('chats')
+            ->where('receve_id', $userId) // Remplacez "receve_id" par le nom de votre colonne pour l'ID du destinataire
+            ->where('status', 1) // Les messages non lus ont lu = 0
+            ->where('read', 0) // Les messages non lus ont lu = 0
+            ->count();
+
+        return $unreadMessages;
+    }
+}
+
+if (!function_exists('getUnreadMessageBySenderCount')) {
+    function getUnreadMessageBySenderCount($userId,$senderID) {
+        // Remplacez "messages" par le nom de votre table de messages
+        $unreadMessages = DB::table('chats')
+            ->where('receve_id', $userId) // Remplacez "receve_id" par le nom de votre colonne pour l'ID du destinataire
+            ->where('sender_id', $senderID) // Remplacez "receve_id" par le nom de votre colonne pour l'ID du destinataire
+            ->where('status', 1) // Les messages non lus ont lu = 0
+            ->where('read', 0) // Les messages non lus ont lu = 0
+            ->count();
+
+        return $unreadMessages;
+    }
+}
+
+if (!function_exists('getMessageUnreadBySender')) {
+    function getMessageUnreadBySender($userId,$senderID) {
+
+        $lastMessage =  Chat::where(function ($query) use ($senderID,$userId) {
+            $query->where('sender_id', $senderID)->where('receve_id', $userId);
+        })->orWhere(function ($query) use ($senderID, $userId) {
+            $query->where('sender_id', $userId)->where('receve_id', $senderID);
+        })->orderBy('created_at', 'desc')
+        ->first();
+        return $lastMessage->sender_id == $userId ? 'Vous: '.$lastMessage->message: $lastMessage->message;
+    }
+}
+
+if (!function_exists('getMessageUnreadSender')) {
+    function getMessageUnreadSender($userId,$senderID) {
+
+      $lastSentMessage = chat::where('sender_id', $senderID)
+        ->where('receve_id', $userId)
+        ->orderBy('created_at', 'desc') // Triez par date d'envoi décroissante
+        ->first(); // Récupérez le premier message (le plus récent)
+        return $lastSentMessage;
+    }
+}
+
+
 
 // generate code facture
 if (!function_exists('generateCodeFactureAvoir')) {
@@ -577,18 +648,17 @@ if (!function_exists('generateCodeFactureAvoir')) {
     }
 }
 
-function tronquerChaine($chaine) {
-    if (strlen($chaine) > 50) {
+function tronquerChaine($chaine,$nbr=50) {
+
+    if (strlen($chaine) > $nbr) {
         // Si la chaîne est plus longue que 100 caractères, on la tronque et on ajoute les trois points de suspension
-        $chaine_tronquee = substr($chaine, 0, 50) . '...';
+        $chaine_tronquee = substr($chaine, 0, $nbr) . '...';
         return $chaine_tronquee;
     } else {
         // Sinon, on retourne la chaîne telle quelle
         return $chaine;
     }
 }
-
-
 
 
 // recupère les informations d'une demande d'examen

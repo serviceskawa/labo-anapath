@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use App\Models\EmployeeContrat;
+use App\Models\EmployeeDocument;
 use App\Models\EmployeePayroll;
 use App\Models\EmployeeTimeoff;
 use App\Models\Setting;
@@ -128,8 +129,9 @@ class EmployeeController extends Controller
             $employees = Employee::latest()->get();
             $conges = EmployeeTimeoff::latest()->get();
             $paies = EmployeePayroll::latest()->get();
+            $documents = EmployeeDocument::latest()->get();
             // dd($conges);
-            return view('employees.detail', compact('paies','employee','employees','conges'))->with('success', " Opération effectuée avec succès  ! ");
+            return view('employees.detail', compact('documents','paies','employee','employees','conges'))->with('success', " Opération effectuée avec succès  ! ");
             // return back()->with('success', " Opération effectuée avec succès  ! ");
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! ");

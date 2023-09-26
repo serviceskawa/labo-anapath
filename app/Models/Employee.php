@@ -15,6 +15,11 @@ class Employee extends Model
         return $this->hasMany(EmployeeContrat::class,'employee_id');
     }
 
+    public function employee_document()
+    {
+        return $this->hasMany(EmployeeDocument::class,'employee_id');
+    }
+
     public function employee_timeoff()
     {
         return $this->hasMany(EmployeeTimeoff::class,'employee_id');
