@@ -62,6 +62,15 @@
                             <span> Tableau de bord </span>
                         </a>
                     </li>
+
+                    <li class="side-nav-item">
+                        <a href="{{ route('chat.bot')}}" class="side-nav-link">
+                            <i class="uil-comments-alt"></i>
+                            <span class="badge bg-warning float-end">{{ getUnreadMessageCount(Auth::user()->id) ? getUnreadMessageCount(Auth::user()->id) :'' }}</span>
+                            <span> Messages </span>
+                        </a>
+                    </li>
+
                     <li class="side-nav-item">
                         <a href="{{ route('Appointment.index') }}" class="side-nav-link">
                             <i class="uil-calender"></i>
@@ -501,13 +510,7 @@
                     </li>
                     @endif
 
-                    <li class="side-nav-item">
-                        <a href="{{ route('chat.bot')}}" class="side-nav-link">
-                            <i class="uil-comments-alt"></i>
-                            <span class="badge bg-warning float-end">{{ getUnreadMessageCount(Auth::user()->id) ? getUnreadMessageCount(Auth::user()->id) :'' }}</span>
-                            <span> Messages </span>
-                        </a>
-                    </li>
+
 
 
 

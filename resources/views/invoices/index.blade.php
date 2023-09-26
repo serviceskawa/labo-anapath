@@ -95,6 +95,19 @@
 
 
 
+                <div class="row mb-3">
+                    <div class="col-lg-2 p-1 alert alert-light rounded-pill"
+                        style="margin-right: 5px; text-align:center;">
+                        <strong> Factures de vente : {{$vente}} </strong>
+                    </div>
+                    <div class="col-lg-2 p-1 ml-3 alert alert-danger rounded-pill"
+                        style="margin-right: 5px; text-align:center;">
+                        <strong> Factures d'avoir : {{$avoir}} </strong>
+                    </div>
+                </div>
+
+
+
                 <table id="datatable1" class="table dt-responsive nowrap w-100">
                     <thead>
                         <tr>

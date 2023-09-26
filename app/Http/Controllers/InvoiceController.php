@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cashbox;
 use App\Models\CashboxAdd;
+use App\Models\CashboxDaily;
 use App\Models\Consultation;
 use DataTables;
 use Illuminate\Support\Str;
@@ -44,11 +45,27 @@ class InvoiceController extends Controller
     {
         $invoices = $this->invoices->latest()->get();
         $setting = $this->setting->find(1);
-        $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'
-        $annuletotalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->where(['status_invoice'=>1])->sum('total');
-        $totalToday = $this->invoices->whereDate('updated_at', $today)->where('paid','=',1)->where(['status_invoice'=>0])->sum('total') - $annuletotalToday;
+        $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'->whereRaw('Date(updated_at) = ?', [now()->toDateString()])
+        $closecashbox = CashboxDaily::where('status',1)->orderBy('updated_at','desc')->first();
+        $annuletotalToday = $this->invoices
+                            ->whereDate('updated_at', $today)
+                            ->where('paid','=',1)
+                            ->where(['status_invoice'=>1])
+                            ->where('updated_at','>', $closecashbox->updated_at)->sum('total');
+        $totalToday = $this->invoices
+                            ->whereDate('updated_at', $today)
+                            ->where('paid','=',1)
+                            ->where(['status_invoice'=>0])
+                            ->where('updated_at','>', $closecashbox->updated_at)
+                            ->sum('total') - $annuletotalToday;
+        $vente = $this->invoices
+                            ->where('status_invoice','=',0)
+                            ->count();
+        $avoir = $this->invoices
+                            ->where('status_invoice','=',1)
+                            ->count();
         config(['app.name' => $setting->titre]);
-        return view('invoices.index', compact('invoices','totalToday'));
+        return view('invoices.index', compact('invoices','totalToday','vente', 'avoir'));
     }
 
     /**
@@ -224,7 +241,7 @@ class InvoiceController extends Controller
 
             ->setRowClass(function ($data) use ($request) {
                 if($data->status_invoice == 1){
-                    return 'table-warning';
+                    return 'table-danger';
                 }
             })
 
