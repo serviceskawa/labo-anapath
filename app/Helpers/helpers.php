@@ -3,7 +3,6 @@
 use App\Models\CashboxDaily;
 use App\Models\CashboxTicket;
 use App\Models\chat;
-use App\Models\chat;
 use App\Models\Role;
 use App\Models\Doctor;
 use App\Models\Patient;
@@ -20,7 +19,6 @@ use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\DB;
 
 define("SERVER", "http://sms.wallyskak.com");
