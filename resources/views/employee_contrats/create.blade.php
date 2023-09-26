@@ -4,8 +4,8 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myLargeModalLabel">Contrat de {{ $employee->first_name }} {{
-                    $employee->last_name }}</h4>
+                <h4 class="modal-title" id="myLargeModalLabel">Contrat de {{
+                    $employee->last_name }} {{ $employee->first_name }}</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body">
@@ -156,14 +156,14 @@
                                                     </div>
 
                                                     <div class="mb-3 col-lg-6">
-                                                        <label for="simpleinput" class="form-label">Iban</label>
+                                                        <label for="simpleinput" class="form-label">Numéro de compte bancaire (IBAN)</label>
                                                         <input type="text" name="iban" class="form-control" />
                                                     </div>
                                                 </div>
 
                                                 <div class="row">
                                                     <div class="mb-3 col-lg-6">
-                                                        <label for="simpleinput" class="form-label">Bic</label>
+                                                        <label for="simpleinput" class="form-label">BIC</label>
                                                         <input type="text" name="bic" class="form-control" />
                                                     </div>
                                                 </div>

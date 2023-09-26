@@ -35,8 +35,8 @@
                                     <div class="avatar-lg">
                                         <div class="avatar-sm" style="margin-right: 10px">
                                             <span class="avatar-title bg-light rounded-circle me-2"
-                                                style="padding: 50px; font-size:50px; color:inherit;">
-                                                {{getNameInitials($employee->first_name." ".$employee->last_name." ")}}
+                                                style="padding: 50px; font-size:40px; color:inherit;">
+                                                {{getNameInitials($employee->last_name." ".$employee->first_name." ")}}
                                             </span>
                                         </div>
                                     </div>
