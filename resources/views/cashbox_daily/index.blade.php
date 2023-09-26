@@ -39,11 +39,12 @@
             <div id="cardCollpase1" class="collapse pt-3 show">
 
 
-                <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                <table id="datatable1" class="table dt-responsive nowrap w-100">
                     <thead>
                         <tr>
                             <th>Actions</th>
                             <th>ID</th>
+                            <th>Code</th>
                             <th>Date d'ouverture</th>
                             <th>Solde d'ouverture</th>
                             <th>Date de fermeture</th>
@@ -54,7 +55,7 @@
                     </thead>
 
                     <tbody>
-                        @foreach ($cashboxDailys as $item)
+                        @foreach ($cashboxDailys as $key=>$item)
                         <tr class="{{ $item->total_ecart < 0 ? 'table-danger' : 'table-white' }}">
                             <td>
                                 @include('cashbox_daily.details',['item' => $item])
@@ -65,7 +66,9 @@
                                     data-bs-target="#bs-example-modal-lg-show-{{ $item->id }}"
                                     class="btn btn-primary"><i class="mdi mdi-eye"></i> </button>
                             </td>
-                            <td>{{ $item->id }}</td>
+                            <td>{{ $key+1 }}</td>
+                            {{-- <td>{{ $item->id }}</td> --}}
+                            <td>{{ $item->code }}</td>
                             <td>{{ $item->created_at }}</td>
                             <td>{{ $item->opening_balance }}</td>
                             @if ($item->status==1)

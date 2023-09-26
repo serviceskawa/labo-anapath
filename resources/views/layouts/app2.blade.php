@@ -402,38 +402,6 @@
                     </li>
                     @endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     {{-- Administration --}}
                     <li class="side-nav-title side-nav-item">ADMINISTRATIONS</li>
 

@@ -96,7 +96,7 @@
                                                     </div>
                                                 </div>
 
-
+                                                <!-- ESPECES -->
                                                 <div class="row mb-3">
                                                     <div class="col-md-2">
                                                         <label class="form-label" for="userName1">ESPECES</label>
@@ -110,7 +110,7 @@
                                                             name="cash_calculated" value="{{$especessum}}" readonly>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <input type="number" class="form-control" id="cash_confirmation"
+                                                        <input type="number" min="0" class="form-control" id="cash_confirmation"
                                                             required name="cash_confirmation" value="">
                                                         {{-- <div id="error-message" style="color: red;"></div> --}}
                                                     </div>
@@ -120,7 +120,7 @@
                                                     </div>
                                                 </div>
 
-
+                                                <!-- MOBILE MONEY -->
                                                 <div class="row mb-3">
                                                     <div class="col-md-2">
                                                         <label class="form-label" for="userName1">MOBILE MONEY</label>
@@ -136,7 +136,7 @@
                                                             value="{{$mobilemoneysum}}" readonly>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <input type="number" class="form-control"
+                                                        <input type="number" class="form-control" min="0"
                                                             id="mobile_money_confirmation"
                                                             name="mobile_money_confirmation" value="" required>
                                                         {{-- <div id="error-message" style="color: red;"></div> --}}
@@ -149,7 +149,7 @@
 
                                                 </div>
 
-
+                                                <!-- CHEQUES -->
                                                 <div class="row mb-3">
                                                     <div class="col-md-2">
                                                         <label class="form-label" for="userName1">CHEQUES</label>
@@ -163,7 +163,7 @@
                                                             name="cheque_calculated" value="{{$chequessum}}" readonly>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <input type="number" class="form-control"
+                                                        <input type="number" class="form-control" min="0"
                                                             id="cheque_confirmation" name="cheque_confirmation" value=""
                                                             required>
                                                         {{-- <div id="error-message" style="color: red;"></div> --}}
@@ -174,7 +174,7 @@
                                                     </div>
                                                 </div>
 
-
+                                                <!-- VIREMENT -->
                                                 <div class="row mb-3">
                                                     <div class="col-md-2">
                                                         <label class="form-label" for="userName1">VIREMENT</label>
@@ -189,7 +189,7 @@
                                                             value="{{$virementsum}}" readonly>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <input type="number" class="form-control"
+                                                        <input type="number" class="form-control" min="0"
                                                             id="virement_confirmation" name="virement_confirmation"
                                                             value="" required>
                                                         {{-- <div id="error-message" style="color: red;"></div> --}}
@@ -209,7 +209,9 @@
                                             {{-- <li class="previous list-inline-item">
                                                 <a href="#" class="btn btn-info">Previous</a>
                                             </li> --}}
-                                            <div id="error-message" style="color: red;"></div>
+                                            <div id="error-message" class="alert alert-warning alert-dismissible fade show" role="alert">
+                                                    
+                                            </div>
                                             <li class="next list-inline-item float-end">
                                                 <a href="#" class="btn btn-info" id="suivantBtn"
                                                     style="display: none;">Suivant</a>
@@ -409,7 +411,7 @@
                                                     <label class="form-label"
                                                         style="font-weight: 900;">Commentaire</label>
                                                     <textarea class="form-control" rows="6" name="description"
-                                                        placeholder="Laissez une description"></textarea>
+                                                        placeholder="Laissez une description" id="description"></textarea>
                                                 </div>
                                             </div>
 
@@ -450,6 +452,7 @@ let chequeConfirmationInpu = document.getElementById("cheque_confirmation");
 let virementConfirmationInpu = document.getElementById("virement_confirmation");
 let errorMessage = document.getElementById("error-message");
 let suivantBtn = document.getElementById("suivantBtn");
+let description = document.getElementById("description");
 // Récupérez l'élément du bloc de code que vous souhaitez afficher/masquer
 let paymentDetails = document.getElementById("payment-details");
 // Fonction pour vérifier si tous les champs sont remplis
@@ -461,11 +464,11 @@ let virementValue = virementConfirmationInpu.value.trim();
 
 if (cashValue === "" || mobileMoneyValue === "" || chequeValue === "" || virementValue === "") {
 suivantBtn.style.display = "none"; // Cacher le bouton "Suivant"
-errorMessage.textContent = "Tous les champs sont requis.";
+errorMessage.textContent = "Veuillez renseigner tous les champs. Les montants comptés par moyen de paiement sont obligatoires pour garantir une fermeture de caisse précise et complète.";
 paymentDetails.classList.add("d-none");
 } else {
 suivantBtn.style.display = "block"; // Afficher le bouton "Suivant"
-errorMessage.textContent = "";
+errorMessage.style.display = "none";
 paymentDetails.classList.remove("d-none");
 }
 }
@@ -559,6 +562,10 @@ checkFields();
         // event.preventDefault();
         // }
         // balanceCloseInput.value = totalSoldeInput.value - totalPoint.value;
+        console.log(totalEcartPointInput.value);
+        if ( totalEcartPointInput.value != 0) {
+            description.setAttribute("required", "required");
+        }
     }
 
     // Appelez la fonction initiale pour calculer les valeurs au chargement de la page
@@ -675,6 +682,9 @@ checkFields();
         // nouveau code
         let total_money = open_money + totalConfirmation;
         document.querySelector("#close_balance").value = total_money;
+        if ( totalEcart != 0) {
+            description.setAttribute("required", "required");
+        }
         // console.log();
     }
 
@@ -763,7 +773,11 @@ checkFields();
         // totalEcartInput.value = totalEcart;
         totalEcartInput.value = parseFloat(totalConfirmationPointInput.value) - totalCalculatedValue;
 
-
+        if ( totalEcartInput.value != 0) {
+            description.setAttribute("required", "required");
+        }else{
+            description.removeAttribute("required");
+        }
         // Total ecart
         // let total_calculer = parseFloat(document.querySelector("#total_calculated").value) || 0.0;
         // let total_confirmer = parseFloat(document.querySelector("#total_confirmation").value) || 0.0;
