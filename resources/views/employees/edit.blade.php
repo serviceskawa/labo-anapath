@@ -17,16 +17,14 @@
                         <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
 
                         <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Nom<span style="color:red;">*</span></label>
                                 <input type="text"
                                     value="{{ old('first_name') ? old('first_name') : $item->first_name }}"
                                     name="first_name" class="form-control" required>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Prénoms<span
                                         style="color:red;">*</span></label>
                                 <input type="text" value="{{ old('last_name') ? old('last_name') : $item->last_name }}"
@@ -36,18 +34,14 @@
 
 
                         <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Email<span
                                         style="color:red;">*</span></label>
                                 <input type="email" value="{{ old('email') ? old('email') : $item->email }}"
                                     name="email" class="form-control" required>
                             </div>
-                        </div>
 
-
-
-                        <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Téléphone<span
                                         style="color:red;">*</span></label>
                                 <input type="text" value="{{ old('telephone') ? old('telephone') : $item->telephone }}"
@@ -56,17 +50,15 @@
                         </div>
 
                         <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Date de naissance<span
                                         style="color:red;">*</span></label>
                                 <input type="date"
                                     value="{{ old('date_of_birth') ? old('date_of_birth') : $item->date_of_birth }}"
                                     name="date_of_birth" class="form-control" required>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Lieu de naissance<span
                                         style="color:red;">*</span></label>
                                 <input type="text"
@@ -76,7 +68,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Sexe<span
                                         style="color:red;">*</span></label>
                                 <select class="form-select mb-3" name="gender" required>
@@ -87,15 +79,30 @@
                                     </option>
                                 </select>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="mb-3 col-lg-12">
+                            <div class="mb-3 col-lg-6">
                                 <label for="simpleinput" class="form-label">Nationalité<span
                                         style="color:red;">*</span></label>
                                 <input type="text"
                                     value="{{ old('nationality') ? old('nationality') : $item->nationality }}"
                                     name="nationality" class="form-control" required />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 col-lg-6">
+                                <label for="simpleinput" class="form-label">Adresse<span
+                                        style="color:red;">*</span></label>
+                                <input type="text" name="address"
+                                    value="{{ old('address') ? old('address') : $item->address }}" class="form-control"
+                                    required />
+                            </div>
+
+                            <div class="mb-3 col-lg-6">
+                                <label for="simpleinput" class="form-label">Ville<span
+                                        style="color:red;">*</span></label>
+                                <input type="text" name="city" value="{{ old('city') ? old('city') : $item->city }}"
+                                    class="form-control" required />
                             </div>
                         </div>
 
@@ -108,26 +115,6 @@
                                     name="cnss_number" class="form-control" required />
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="mb-3 col-lg-12">
-                                <label for="simpleinput" class="form-label">Adresse<span
-                                        style="color:red;">*</span></label>
-                                <input type="text" name="address"
-                                    value="{{ old('address') ? old('address') : $item->address }}" class="form-control"
-                                    required />
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="mb-3 col-lg-12">
-                                <label for="simpleinput" class="form-label">Ville<span
-                                        style="color:red;">*</span></label>
-                                <input type="text" name="city" value="{{ old('city') ? old('city') : $item->city }}"
-                                    class="form-control" required />
-                            </div>
-                        </div>
-
 
                         <div class="row">
                             <div class="mb-3 col-lg-12">
