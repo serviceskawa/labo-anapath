@@ -59,41 +59,26 @@ class EmployeeController extends Controller
             'last_name' => 'required|string|max:100',
             'email' => 'required|string|max:50',
             'telephone' => 'required|string',
-            // 'place_of_birth' => 'required|string|max:100',
-            // 'nationality' => 'required|string|max:50',
-            // 'cnss_number' => 'required|string|max:20',
-            // 'address' => 'required|string|max:255',
-            // 'city' => 'required|string|max:50',
-            // 'photo_url' => 'nullable|image|max:2046',
         ]);
-
-        // if ($request->hasFile('photo_url')) {
-        //     $imagePath = $request->file('photo_url')->store('images','public');
-        // }else{
-        //     $imagePath = null;
-        // }
 
 
         try {
-
             $employee = new Employee();
-
-                $employee->first_name = $request->first_name;
-                $employee->last_name = $request->last_name;
-                $employee->email = $request->email;
-                $employee->telephone = $request->telephone;
-
-
-                $employee->gender = null;
-                $employee->date_of_birth = null;
-                $employee->place_of_birth = null;
-                $employee->nationality = null;
-                $employee->cnss_number = null;
-                $employee->address = null;
-                $employee->city = null;
-                $employee->photo_url = null;
-                // $employee->photo_url = $imagePath;
-                $employee->save();
+            
+            $employee->first_name = $request->first_name;
+            $employee->last_name = $request->last_name;
+            $employee->email = $request->email;
+            $employee->telephone = $request->telephone;
+            $employee->gender = null;
+            $employee->date_of_birth = null;
+            $employee->place_of_birth = null;
+            $employee->nationality = null;
+            $employee->cnss_number = null;
+            $employee->address = null;
+            $employee->city = null;
+            $employee->photo_url = null;
+            $employee->save();
+            
 
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
