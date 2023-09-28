@@ -8,7 +8,8 @@
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3 mb-1">
-                <a href="{{ route('daily.index') }}" type="button" class="btn btn-primary"> <i class="dripicons-reply"></i> Retour</a>
+                <a href="{{ route('daily.index') }}" type="button" class="btn btn-primary"> <i
+                        class="dripicons-reply"></i> Retour</a>
             </div>
             <h4 class="page-title">Opération de fermeture de la caisse</h4>
         </div>
@@ -18,9 +19,6 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box">
-            {{-- <div class="page-title-right mr-3">
-                <a href="#" class="btn btn-danger">Fermer la caisse</a>
-            </div> --}}
 
         </div>
     </div>
@@ -112,7 +110,6 @@
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control" id="cash_confirmation"
                                                             required name="cash_confirmation" value="">
-                                                        {{-- <div id="error-message" style="color: red;"></div> --}}
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control" id="cash_ecart"
@@ -139,7 +136,6 @@
                                                         <input type="number" class="form-control"
                                                             id="mobile_money_confirmation"
                                                             name="mobile_money_confirmation" value="" required>
-                                                        {{-- <div id="error-message" style="color: red;"></div> --}}
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control"
@@ -166,7 +162,6 @@
                                                         <input type="number" class="form-control"
                                                             id="cheque_confirmation" name="cheque_confirmation" value=""
                                                             required>
-                                                        {{-- <div id="error-message" style="color: red;"></div> --}}
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control" id="cheque_ecart"
@@ -192,7 +187,6 @@
                                                         <input type="number" class="form-control"
                                                             id="virement_confirmation" name="virement_confirmation"
                                                             value="" required>
-                                                        {{-- <div id="error-message" style="color: red;"></div> --}}
                                                     </div>
                                                     <div class="col-md-3">
                                                         <input type="number" class="form-control" id="virement_ecart"

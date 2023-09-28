@@ -220,6 +220,50 @@ function deleteModalDocument(id) {
 }
 
 
+// suppression documentation
+function deleteModalDocCategorie(id) {
+
+    Swal.fire({
+        title: "Voulez-vous supprimer l'élément ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Oui ",
+        cancelButtonText: "Non !",
+    }).then(function(result) {
+        if (result.value) {
+            window.location.href = baseUrl + "/categorie-documentation-delete/" + id;
+            Swal.fire(
+                "Suppression !",
+                "En cours de traitement ...",
+                "success"
+            )
+        }
+    });
+}
+
+
+
+// suppression documentation
+function deleteModalDoc(id) {
+    Swal.fire({
+        title: "Voulez-vous supprimer l'élément ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Oui ",
+        cancelButtonText: "Non !",
+    }).then(function(result) {
+        if (result.value) {
+            window.location.href = baseUrl + "/document-delete/" + id;
+            Swal.fire(
+                "Suppression !",
+                "En cours de traitement ...",
+                "success"
+            )
+        }
+    });
+}
+
+
 /* DATATABLE */
 $(document).ready(function() {
 

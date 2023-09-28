@@ -12,6 +12,7 @@ use App\Http\Controllers\MovementController;
 use App\Http\Controllers\EmployeeTimeoffController;
 use App\Http\Controllers\EmployeePayrollController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\DocumentationCategorieController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DoctorController;
@@ -38,6 +39,7 @@ use App\Http\Controllers\DetailsContratController;
 use App\Http\Controllers\TypeConsultationController;
 use App\Http\Controllers\CategoryPrestationController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\DocController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogReportController;
 use App\Http\Controllers\ProblemCategoryController;
@@ -54,6 +56,7 @@ use App\Models\AppelTestOder;
 use App\Models\Article;
 use App\Models\CashboxDaily;
 use App\Models\Document;
+use App\Models\DocumentationCategorie;
 use App\Models\EmployeeTimeoff;
 use App\Models\ExpenseCategorie;
 use App\Models\Movement;
@@ -603,4 +606,28 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/store-document',[EmployeeDocumentController::class, 'store'])->name('document.store');
     Route::get('/delete-document/{employeeDocument}',[EmployeeDocumentController::class, 'delete'])->name('document.delete');
 
+
+
+    // Route::prefix('documentation_categories')->group(function () {
+        Route::get('/categorie-documentations', [DocumentationCategorieController::class, 'index'])->name('doc.categorie.index');
+        Route::get('/getcategorie-doc', [DocumentationCategorieController::class, 'getcategoriedocs'])->name('doc.getcategoriedocs');
+        Route::get('/get-docs-by-category/{doc_id}', [DocumentationCategorieController::class, 'getdocs'])->name('doc.getdocs');
+        
+        Route::get('/categorie-documentation-create', [DocumentationCategorieController::class, 'create'])->name('doc.categorie.create');
+        Route::get('/categorie-documentation-edit/{documentationCategorie}', [DocumentationCategorieController::class, 'edit'])->name('doc.categorie.edit');
+        Route::put('/categorie-documentation-update/{documentationCategorie}', [DocumentationCategorieController::class, 'update'])->name('doc.categorie.update');
+        Route::post('/categorie-documentation-store', [DocumentationCategorieController::class, 'store'])->name('doc.categorie.store');
+        Route::get('/categorie-documentation-delete/{documentationCategorie}', [DocumentationCategorieController::class, 'delete'])->name('doc.categorie.delete');
+    // });
+
+
+
+    // Route::prefix('docs')->group(function () {
+        Route::get('/documents', [DocController::class, 'index'])->name('doc.index');
+        Route::get('/document-create', [DocController::class, 'create'])->name('doc.create');
+        Route::get('/document-edit/{doc}', [DocController::class, 'edit'])->name('doc.edit');
+        Route::put('/document-update/{doc}', [DocController::class, 'update'])->name('doc.update');
+        Route::post('/document-store', [DocController::class, 'store'])->name('doc.store');
+        Route::get('/document-delete/{doc}', [DocController::class, 'delete'])->name('doc.delete');
+    // });
 });

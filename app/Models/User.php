@@ -51,6 +51,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function docs()
+    {
+        return $this->hasMany(Doc::class);
+    }
+
     public function movements()
     {
         return $this->hasMany(Movement::class);
