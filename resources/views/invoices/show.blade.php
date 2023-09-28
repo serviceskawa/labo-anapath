@@ -73,34 +73,41 @@
 
                 <div class="row">
                     <div class="col-12">
+                        <div>
+                        </div>
                         <div class="table-responsive">
-                            <table class="table mt-4">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Titre de l'examen</th>
-                                        <th>Quantité</th>
-                                        <th>Prix(F CFA)</th>
-                                        <th>Remise(F CFA)</th>
-                                        <th class="text-end">Total(F CFA)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                            @if ($refund)
+                                <div class="d-flex mt-5" ><h4 style="margin-right: 10px">Raison :</h4> <span style="margin-top: 10px" >{{ $refund ? ($refund->reason ? $refund->reason->description : ''):'' }}</span> </div>
+                            @else
+                                <table class="table mt-4">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Titre de l'examen</th>
+                                            <th>Quantité</th>
+                                            <th>Prix(F CFA)</th>
+                                            <th>Remise(F CFA)</th>
+                                            <th class="text-end">Total(F CFA)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
 
-                                    @foreach ($invoice->details as $key => $item)
-                                    <tr>
-                                        <td>{{ $key + 1 }} </td>
-                                        <td>
-                                            <b>{{ $item->test_name }}</b>
-                                        </td>
-                                        <td>1</td>
-                                        <td>{{ $item->price }}</td>
-                                        <td>{{ $item->discount }}</td>
-                                        <td class="text-end">{{ $item->total }}</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                        @foreach ($invoice->details as $key => $item)
+                                        <tr>
+                                            <td>{{ $key + 1 }} </td>
+                                            <td>
+                                                <b>{{ $item->test_name }}</b>
+                                            </td>
+                                            <td>1</td>
+                                            <td>{{ $item->price }}</td>
+                                            <td>{{ $item->discount }}</td>
+                                            <td class="text-end">{{ $item->total }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
+
                         </div> <!-- end table-responsive-->
                     </div> <!-- end col -->
                 </div>
@@ -146,12 +153,12 @@
 
                                                             <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
                                                                 value="CHEQUES">CHEQUES</option>
-                                                            
+
                                                             <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
                                                                 value="VIREMENT">VIREMENT</option>
                                                             {{-- <option
                                                                 {{ $invoice->payment == 'CARTEBANCAIRE' ? 'selected' : '' }}
-                                                                value="CARTEBANCAIRE">CARTE BANQUAIRE</option> 
+                                                                value="CARTEBANCAIRE">CARTE BANQUAIRE</option>
                                                             <option {{ $invoice->payment == 'CREDIT' ? 'selected' : '' }}
                                                                 value="CREDIT">CREDIT</option>
                                                             <option {{ $invoice->payment == 'AUTRE' ? 'selected' : '' }}
@@ -217,7 +224,7 @@
 
                                                             <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
                                                                 value="CHEQUES">CHEQUES</option>
-                                                            
+
                                                             <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
                                                                 value="VIREMENT">VIREMENT</option>
                                                     </select>

@@ -8,17 +8,17 @@
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal">Signaler un problème</button> --}}
-                <a href="{{route('probleme.report.create')}}" type="button" class="btn btn-primary">Signaler un problème</a>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#standard-modal"><i class="mdi mdi-ticket"></i> Créer un ticket</button>
+                {{-- <a href="{{route('probleme.report.create')}}" type="button" class="btn btn-primary"><i class="mdi mdi-ticket"></i> Créer un ticket</a> --}}
             </div>
-            <h4 class="page-title">Problèmes signalés</h4>
+            <h4 class="page-title"> <i class="mdi mdi-ticket"></i> Tickets</h4>
         </div>
 
         <!----MODAL---->
 
-        {{-- @include('errors_reports.create_modal') --}}
+        @include('errors_reports.create_modal')
 
-        @include('errors_reports.edit')
+        {{-- @include('errors_reports.edit') --}}
 
     </div>
 </div>
@@ -37,7 +37,7 @@
                 <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false" aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                 <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
             </div>
-            <h5 class="card-title mb-0">Liste des problèmes signalés</h5>
+            <h5 class="card-title mb-0">Liste des Tickets</h5>
 
             <div id="cardCollpase1" class="collapse pt-3 show">
 
@@ -46,17 +46,17 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Demande d'examen</th>
-                            <th>Description</th>
-                            <th>Catégorie</th>
+                            <th>Numéro du ticket</th>
+                            <th>Objet</th>
+                            <th>Dernière actualisation</th>
                             <th>Status</th>
-                            @foreach (getRolesByUser(Auth::user()->id) as $role)
+                            {{-- @foreach (getRolesByUser(Auth::user()->id) as $role)
 
                                 @if ($role->name == "rootuser")
                                     <th>Traité</th>
                                     @break
                                 @endif
-                            @endforeach
+                            @endforeach --}}
 
                         </tr>
                     </thead>
@@ -64,35 +64,26 @@
 
                     <tbody>
 
-                        @foreach ($problemReports as $key=>$item)
-                        <tr>
-                            <td>{{ $key+1 }}</td>
-                            <td>{{ $item->order->code }}</td>
-                            <td>{{ $item->description }}</td>
-                            <td>{{ $item->categorie->name }}</td>
-                            <td>
-                                @if ($item->status==1)
-                                <span class="badge bg-success">Traité</span>
-                                @else
-                                <span class="badge bg-warning">En attente</span>
-                                @endif
-                            </td>
-                            @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
+                        @foreach ($tickets as $key=>$item)
+                            <tr>
+                                <td>{{ $key+1 }}</td>
+                                <td><a href="{{route('probleme.report.edit',$item->id)}}" style="color: rgb(126, 122, 122)">{{ $item->ticket_code }}</a></td>
+                                <td>{{ $item->subject }}</td>
+                                <td><a href="{{route('probleme.report.edit',$item->id)}}" style="color: rgb(126, 122, 122)">{{ date_format($item->created_at, 'y-m-d (H:i)') }}</a></td>
+                                <td>
+                                    <a href="{{route('probleme.report.edit',$item->id)}}" style="color: rgb(126, 122, 122)">
+                                        @if ($item->status == "ouvert")
+                                            <span class="badge bg-success">Ouvert</span>
+                                        @elseif ($item->status == "repondu")
+                                            <span class="badge bg-info">Répondu</span>
+                                        @elseif ($item->status == "fermé")
+                                            <span class="badge bg-warning">Fermé</span>
+                                        @endif
+                                    </a>
 
-                                @if ($role->name == "rootuser")
-                                    <td>
-                                        <div>
-                                            <input type="checkbox" {{ $item->status != 0 ? 'checked' : '' }} id="switch3" data-switch="success"/>
-                                            <label for="switch3"  onclick="updateStatus({{$item->id}})" data-on-label="oui" data-off-label="non" class="mb-0 d-block"></label>
-                                        </div>
-                                    </td>
-                                    @break
-                                @endif
-                            @endforeach
+                                </td>
 
-
-                        </tr>
+                            </tr>
                         @endforeach
 
 

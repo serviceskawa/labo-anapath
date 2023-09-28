@@ -10,6 +10,7 @@ use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -142,5 +143,16 @@ class User extends Authenticatable
     public function fullname()
     {
         return $this->firstname .' '.$this->lastname ;
+    }
+    public function userCheckRole($role_name)
+    {
+        $access = false;
+        foreach (getRolesByUser(Auth::user()->id) as $role){
+            if ($role->name == $role_name){
+                $access = true;
+                break;
+            }
+        }
+        return $access;
     }
 }
