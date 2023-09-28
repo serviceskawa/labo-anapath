@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Article;
 use App\Models\CashboxDaily;
 use App\Models\CashboxTicket;
 use App\Models\chat;
@@ -618,6 +619,64 @@ if (!function_exists('getMessageUnreadSender')) {
         ->orderBy('created_at', 'desc') // Triez par date d'envoi décroissante
         ->first(); // Récupérez le premier message (le plus récent)
         return $lastSentMessage;
+    }
+}
+
+//Récupérer le nombre de demandes d'examen en attente
+if (!function_exists('getnbrTestOrderpending')) {
+    function getnbrTestOrderpending(){
+        $nbr = TestOrder::whereHas('report', function($query){
+            $query->where('status',0);
+        })->count();
+        return $nbr;
+    }
+}
+
+//Récupérer le nombre de factures impayées
+if (!function_exists('getnbrInvoicepending')) {
+    function getnbrInvoicepending(){
+        $nbr = Invoice::where('paid',0)->count();
+        return $nbr;
+    }
+}
+
+//Récupérer le nombre de stocks minimum atteint
+if (!function_exists('getnbrStockMinim')) {
+    function getnbrStockMinim(){
+        $nbr = Article::where('quantity_in_stock', '<=', DB::raw('minimum'))->count();
+        return $nbr;
+    }
+}
+
+//Récupérer le nombre de demandes de remboursement en attente
+if (!function_exists('getnbrRefundRequestPending')) {
+    function getnbrRefundRequestPending(){
+        $nbr = $nbr = RefundRequest::where('status', 'En attente')->count();
+        return $nbr;
+    }
+}
+
+//Récupérer le nombre de bon de caisse en attente
+if (!function_exists('getnbrBonCaissePending')) {
+    function getnbrBonCaissePending(){
+        $nbr = $nbr = CashboxTicket::where('status', 'En attente')->count();
+        return $nbr;
+    }
+}
+
+//Récupérer le nombre de tickets en attente
+if (!function_exists('getnbrTicketPending')) {
+    function getnbrTicketPending($userId){
+        $user = User::find($userId);
+        $is_admin = $user->userCheckRole('rootuser');
+        $nbr = null;
+        if ($is_admin) {
+            $nbr = Ticket::where('status','ouvert')->count();
+        } else {
+            $nbr = Ticket::where('user_id',$userId)->where('status','ouvert')->count();
+        }
+
+        return $nbr;
     }
 }
 

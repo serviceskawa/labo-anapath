@@ -109,11 +109,14 @@
 
                     @if (getOnlineUser()->can('view-test-orders'))
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerce1" aria-expanded="false"
+                        <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarEcommerce1" aria-expanded="false"
                             aria-controls="sidebarEcommerce1" class="side-nav-link">
                             <i class="uil-syringe"></i>
                             <span> Demandes d'examen</span>
                             <span class="menu-arrow"></span>
+                            @if (getnbrTestOrderpending()!=0)
+                                <span class="badge bg-warning mb-1" style="margin-left: 25px;">{{getnbrTestOrderpending()}}</span>
+                            @endif
                         </a>
                         <div class="collapse" id="sidebarEcommerce1">
                             <ul class="side-nav-second-level">
@@ -217,43 +220,51 @@
                     {{-- Finances --}}
                     <li class="side-nav-title side-nav-item">COMPTABILITÉS</li>
                     {{-- Facture --}}
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false"
-                            aria-controls="sidebarProjects" class="side-nav-link">
-                            <i class="uil-user-check"></i>
-                            <span> Factures </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="sidebarProjects">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href="{{ route('invoice.index') }}">Toutes les Factures</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('invoice.create') }}">Créer</a>
-                                </li>
-                                @if (getOnlineUser()->can('view-setting-invoice'))
-                                <li>
-                                    <a href="{{ route('invoice.business') }}">Rapports</a>
-                                </li>
+                    @if (getOnlineUser()->can('view-invoices'))
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarProjects" aria-expanded="false"
+                                aria-controls="sidebarProjects" class="side-nav-link">
+                                <i class="uil-user-check"></i>
+                                <span> Factures </span>
+                                <span class="menu-arrow"></span>
+                                @if (getnbrInvoicepending() !=0)
+                                    <span class="badge bg-warning" style="margin-left: 105px"> {{getnbrInvoicepending()}} </span>
                                 @endif
-                                @if (getOnlineUser()->can('view-setting-invoice'))
-                                <li>
-                                    <a href="{{ route('invoice.setting.index') }}">Paramètre</a>
-                                </li>
-                                @endif
-                            </ul>
-                        </div>
-                    </li>
+                            </a>
+                            <div class="collapse" id="sidebarProjects">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{{ route('invoice.index') }}">Toutes les Factures</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('invoice.create') }}">Créer</a>
+                                    </li>
+                                    @if (getOnlineUser()->can('view-setting-invoice'))
+                                    <li>
+                                        <a href="{{ route('invoice.business') }}">Rapports</a>
+                                    </li>
+                                    @endif
+                                    @if (getOnlineUser()->can('view-setting-invoice'))
+                                    <li>
+                                        <a href="{{ route('invoice.setting.index') }}">Paramètre</a>
+                                    </li>
+                                    @endif
+                                </ul>
+                            </div>
+                        </li>
+                    @endif
 
                     {{-- Caisses --}}
                     @if (getOnlineUser()->can('view-cashboxes'))
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerce9" aria-expanded="false"
+                        <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarEcommerce9" aria-expanded="false"
                             aria-controls="sidebarEcommerce9" class="side-nav-link">
                             <i class="uil-balance-scale"></i>
                             <span> Caisses </span>
                             <span class="menu-arrow"></span>
+                            @if (getnbrBonCaissePending())
+                                <span class="badge bg-warning" style="margin-left:110px" > {{getnbrBonCaissePending()}} </span>
+                            @endif
                         </a>
                         <div class="collapse" id="sidebarEcommerce9">
                             <ul class="side-nav-second-level">
@@ -271,7 +282,12 @@
 
                                 @if (getOnlineUser()->can('view-cashbox-tickets'))
                                 <li>
-                                    <a href="{{ route('cashbox.ticket.index') }}">Bon de caisse</a>
+                                    <a href="{{ route('cashbox.ticket.index') }}">
+                                        Bon de caisse
+                                        @if (getnbrBonCaissePending())
+                                            <span class="badge bg-warning float-end" > {{getnbrBonCaissePending()}} </span>
+                                        @endif
+                                    </a>
                                 </li>
                                 @endif
 
@@ -325,11 +341,14 @@
                     {{-- Articles --}}
                     @if (getOnlineUser()->can('view-articles'))
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarForms-articles" aria-expanded="false"
+                        <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarForms-articles" aria-expanded="false"
                             aria-controls="sidebarForms" class="side-nav-link">
                             <i class="uil-shop"></i>
                             <span>Stocks</span>
                             <span class="menu-arrow"></span>
+                            @if (getnbrStockMinim() !=0)
+                                <span class="badge bg-warning" style="margin-left: 105px"> {{getnbrStockMinim()}} </span>
+                            @endif
                         </a>
                         <div class="collapse" id="sidebarForms-articles">
                             <ul class="side-nav-second-level">
@@ -381,11 +400,14 @@
                     {{-- Remboursements --}}
                     @if (getOnlineUser()->can('view-refund-requests'))
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerce5" aria-expanded="false"
+                        <a data-bs-toggle="collapse" href="#sidebarEcommerce5" style="padding-right: 2px;" aria-expanded="false"
                             aria-controls="sidebarEcommerce5" class="side-nav-link">
                             <i class="uil-balance-scale"></i>
                             <span> Remboursements</span>
                             <span class="menu-arrow"></span>
+                            @if (getnbrRefundRequestPending() !=0)
+                                <span class="badge bg-warning" style="margin-left: 50px"> {{getnbrRefundRequestPending()}} </span>
+                            @endif
                         </a>
                         <div class="collapse" id="sidebarEcommerce5">
                             <ul class="side-nav-second-level">
@@ -415,11 +437,14 @@
                     <li class="side-nav-title side-nav-item">ADMINISTRATIONS</li>
 
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerce3" aria-expanded="false"
+                        <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarEcommerce3" aria-expanded="false"
                             aria-controls="sidebarEcommerce3" class="side-nav-link">
                             <i class="uil-question-circle"></i>
                             <span> Signaler un problème</span>
                             <span class="menu-arrow"></span>
+                            @if (getnbrTicketPending(Auth::user()->id) !=0)
+                                <span class="badge bg-warning" style="margin-left: 20px"> {{getnbrTicketPending(Auth::user()->id)}} </span>
+                            @endif
                         </a>
                         <div class="collapse" id="sidebarEcommerce3">
                             <ul class="side-nav-second-level">
@@ -430,10 +455,7 @@
                                 <li>
                                     <a href="{{ route('probleme.report.create') }}">Signaler</a>
                                 </li>
-                                <li>
-                                    <a href="{{ route('categorie.erreur.index') }}">Catégories</a>
-                                </li>
-
+                               
                             </ul>
                         </div>
                     </li>

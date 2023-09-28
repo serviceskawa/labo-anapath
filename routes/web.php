@@ -81,6 +81,7 @@ Route::middleware(['web'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/home/invoiceByDay', [App\Http\Controllers\HomeController::class, 'invoiceByDay'])->name('home.invoiceByDay');
 
     Route::get('/confirm-login', [TFAuthController::class, 'show'])->name('login.confirm');
     Route::post('/confirm-login', [TFAuthController::class, 'postAuth'])->name('login.postAuth');
