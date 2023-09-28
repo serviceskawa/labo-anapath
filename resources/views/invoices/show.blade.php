@@ -36,7 +36,7 @@
                             <h4>Informations du Patient</h4>
                             <address>
                                 <strong>Nom: </strong> {{ $invoice->client_name }}<br>
-                                <strong>Addresse: </strong> {{ $invoice->client_address }}<br>
+                                <strong>Adresse: </strong> {{ $invoice->client_address }}<br>
                             </address>
                         </div>
 
@@ -76,14 +76,14 @@
                         <div>
                         </div>
                         <div class="table-responsive">
-                            @if ($refund)
-                                <div class="d-flex mt-5" ><h4 style="margin-right: 10px">Raison :</h4> <span style="margin-top: 10px" >{{ $refund ? ($refund->reason ? $refund->reason->description : ''):'' }}</span> </div>
-                            @else
+                            
+                                
+                            
                                 <table class="table mt-4">
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Titre de l'examen</th>
+                                            <th>Designation</th>
                                             <th>Quantité</th>
                                             <th>Prix(F CFA)</th>
                                             <th>Remise(F CFA)</th>
@@ -91,6 +91,16 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @if ($refund)
+                                        <tr>
+                                            <td>1</td>
+                                            <td>{{ $refund ? ($refund->reason ? $refund->reason->description : ''):'' }}</td>
+                                            <td>1</td>
+                                            <td>{{ $refund  ? $refund->montant :'' }}</td>
+                                            <td>0.0 </td>
+                                            <td>{{ $refund ? $refund->montant:'' }}</td>
+                                        </tr>
+                                        @else
 
                                         @foreach ($invoice->details as $key => $item)
                                         <tr>
@@ -104,9 +114,10 @@
                                             <td class="text-end">{{ $item->total }}</td>
                                         </tr>
                                         @endforeach
+                                        @endif
                                     </tbody>
                                 </table>
-                            @endif
+                            
 
                         </div> <!-- end table-responsive-->
                     </div> <!-- end col -->

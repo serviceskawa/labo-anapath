@@ -47,23 +47,31 @@ class InvoiceController extends Controller
         $setting = $this->setting->find(1);
         $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'->whereRaw('Date(updated_at) = ?', [now()->toDateString()])
         $closecashbox = CashboxDaily::where('status',1)->orderBy('updated_at','desc')->first();
-        $annuletotalToday = $this->invoices
+        if ($closecashbox) {
+            $annuletotalToday = $this->invoices
                             ->whereDate('updated_at', $today)
                             ->where('paid','=',1)
                             ->where(['status_invoice'=>1])
                             ->where('updated_at','>', $closecashbox->updated_at)->sum('total');
-        $totalToday = $this->invoices
+            $totalToday = $this->invoices
                             ->whereDate('updated_at', $today)
                             ->where('paid','=',1)
                             ->where(['status_invoice'=>0])
                             ->where('updated_at','>', $closecashbox->updated_at)
                             ->sum('total') - $annuletotalToday;
-        $vente = $this->invoices
+            $vente = $this->invoices
                             ->where('status_invoice','=',0)
                             ->count();
-        $avoir = $this->invoices
+            $avoir = $this->invoices
                             ->where('status_invoice','=',1)
                             ->count();
+        } else {
+            $totalToday = 0;
+            $vente = 0;
+            $avoir = 0;
+        }
+        
+        
         config(['app.name' => $setting->titre]);
         return view('invoices.index', compact('invoices','totalToday','vente', 'avoir'));
     }
