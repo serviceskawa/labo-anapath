@@ -203,12 +203,14 @@ class ProblemeReportersController extends Controller
         $ticket = $this->tickets->find($request->ticket_id);
         $last_comment = TicketComment::latest()->first();
         $is_read = false;
-        if ($last_comment->user_id != $sender_id) {
-            $last_comment->read = 1;
-            $last_comment->save();
-            $ticket->status = "ouvert";
-            $ticket->save();
-            $is_read = true;
+        if ($last_comment) {
+            if ($last_comment->user_id != $sender_id) {
+                $last_comment->read = 1;
+                $last_comment->save();
+                $ticket->status = "ouvert";
+                $ticket->save();
+                $is_read = true;
+            }
         }
 
         $comment = TicketComment::create([
