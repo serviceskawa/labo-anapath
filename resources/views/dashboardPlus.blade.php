@@ -13,7 +13,7 @@
                     <div class="page-title-right">
 
                     </div>
-                    <h4 class="page-title">Dashboard</h4>
+                    <h4 class="page-title">Tableau de bord</h4>
                 </div>
             </div>
         </div>
@@ -52,7 +52,7 @@
                                 <div class="float-end">
                                     <i class="mdi mdi-cart-plus widget-icon"></i>
                                 </div>
-                                <h5 class="text-muted fw-normal mt-0" title="Number of Orders">CLIENTS PRO</h5>
+                                <h5 class="text-muted fw-normal mt-0" title="Number of Orders">CLIENTS PRO.</h5>
                                 <h3 class="mt-3 mb-3"> {{$valeurClient}} </h3>
                                 <p class="mb-0 text-muted">
                                     <span class="{{$crClient>=0 ? 'text-success':'text-danger'}} me-2">
@@ -210,21 +210,21 @@
                                 <h3 class="fw-normal">
                                     <span>64%</span>
                                 </h3>
-                                <p class="text-muted mb-0">Completed</p>
+                                <p class="text-muted mb-0">Livré</p>
                             </div>
                             <div class="col-4">
                                 <i class="mdi mdi-trending-down text-primary mt-3 h3"></i>
                                 <h3 class="fw-normal">
                                     <span>26%</span>
                                 </h3>
-                                <p class="text-muted mb-0"> In-progress</p>
+                                <p class="text-muted mb-0"> Terminé</p>
                             </div>
                             <div class="col-4">
                                 <i class="mdi mdi-trending-down text-danger mt-3 h3"></i>
                                 <h3 class="fw-normal">
                                     <span>10%</span>
                                 </h3>
-                                <p class="text-muted mb-0"> Behind</p>
+                                <p class="text-muted mb-0"> En attente</p>
                             </div>
                         </div>
                         <!-- end row-->
@@ -241,30 +241,33 @@
             <div class="col-xl-6 col-lg-12 order-lg-2 order-xl-1">
                 <div class="card">
                     <div class="card-body">
-                        <a href="" class="btn btn-sm btn-link float-end">Export
+                        <!-- <a href="" class="btn btn-sm btn-link float-end">Export
                             <i class="mdi mdi-download ms-1"></i>
-                        </a>
+                        </a> -->
                         <h4 class="header-title mt-2 mb-3">EXAMENS LES PLUS DEMANDÉS</h4>
 
                         <div class="table-responsive">
-                            <table class="table table-centered table-nowrap table-hover mb-0">
-                                <tbody>
-                                    @foreach ($examensDemandes as $key =>$examen)
-                                        <tr>
-                                            <td>
-                                                {{$key+1}}
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{ $examen->test_name }}</h5>
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{ $examen->total_demandes }} </h5>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                        <table class="table table-centered table-nowrap table-hover mb-0">
+                            <tbody>
+                                @for ($i = 0; $i < 7 && $i < count($examensDemandes); $i++)
+                                    @php
+                                        $examen = $examensDemandes[$i];
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            {{ $i+1 }}
+                                        </td>
+                                        <td>
+                                            <h5 class="font-14 my-1 fw-normal">{{ $examen->test_name }}</h5>
+                                        </td>
+                                        <td>
+                                            <h5 class="font-14 my-1 fw-normal">{{ $examen->total_demandes }}</h5>
+                                        </td>
+                                    </tr>
+                                @endfor
+                            </tbody>
+                        </table>
 
-                                </tbody>
-                            </table>
                         </div> <!-- end table-responsive-->
                     </div> <!-- end card-body-->
                 </div> <!-- end card-->
