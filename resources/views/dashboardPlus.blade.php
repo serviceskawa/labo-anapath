@@ -13,7 +13,7 @@
                     <div class="page-title-right">
 
                     </div>
-                    <h4 class="page-title">Dashboard</h4>
+                    <h4 class="page-title">Tableau de bord</h4>
                 </div>
             </div>
         </div>
@@ -52,7 +52,7 @@
                                 <div class="float-end">
                                     <i class="mdi mdi-cart-plus widget-icon"></i>
                                 </div>
-                                <h5 class="text-muted fw-normal mt-0" title="Number of Orders">CLIENTS PRO</h5>
+                                <h5 class="text-muted fw-normal mt-0" title="Number of Orders">CLIENTS PRO.</h5>
                                 <h3 class="mt-3 mb-3"> {{$valeurClient}} </h3>
                                 <p class="mb-0 text-muted">
                                     <span class="{{$crClient>=0 ? 'text-success':'text-danger'}} me-2">
@@ -167,23 +167,9 @@
 
 
             <div class="col-lg-4">
-                <div class="card"   style="padding-bottom: 100px;">
+                <div class="card"   style="padding-bottom: 95px;">
                     <div class="card-body">
-                        {{-- <div class="dropdown float-end">
-                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="mdi mdi-dots-vertical"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Weekly Report</a>
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Monthly Report</a>
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Action</a>
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Settings</a>
-                            </div>
-                        </div> --}}
+
                         <h4 class="header-title mb-4">STATUT D'EXAMENS</h4>
 
                         <div class="my-4 chartjs-chart" style="height: 202px;">
@@ -220,35 +206,38 @@
             <div class="col-xl-6 col-lg-12 order-lg-2 order-xl-1">
                 <div class="card">
                     <div class="card-body">
-                        
+
                         <h4 class="header-title mt-2 mb-3">EXAMENS LES PLUS DEMANDÉS</h4>
 
                         <div class="table-responsive">
-                            <table class="table table-centered table-nowrap table-hover mb-0">
-                                <tbody>
-                                    @foreach ($examensDemandes as $key =>$examen)
-                                        <tr>
-                                            <td>
-                                                {{$key+1}}
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{ $examen->test_name }}</h5>
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{ $examen->total_demandes }} </h5>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                        <table class="table table-centered table-nowrap table-hover mb-0">
+                            <tbody>
+                                @for ($i = 0; $i < 7 && $i < count($examensDemandes); $i++)
+                                    @php
+                                        $examen = $examensDemandes[$i];
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            {{ $i+1 }}
+                                        </td>
+                                        <td>
+                                            <h5 class="font-14 my-1 fw-normal">{{ $examen->test_name }}</h5>
+                                        </td>
+                                        <td>
+                                            <h5 class="font-14 my-1 fw-normal">{{ $examen->total_demandes }}</h5>
+                                        </td>
+                                    </tr>
+                                @endfor
+                            </tbody>
+                        </table>
 
-                                </tbody>
-                            </table>
                         </div> <!-- end table-responsive-->
                     </div> <!-- end card-body-->
                 </div> <!-- end card-->
             </div> <!-- end col-->
 
             <div class="col-xl-6 col-lg-12 order-lg-1">
-                <div class="card">
+                <div class="card" style="padding-bottom: 15px">
                     <div class="card-body">
 
                         <h4 class="header-title">Total Sales</h4>
