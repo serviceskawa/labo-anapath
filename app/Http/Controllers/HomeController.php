@@ -366,6 +366,20 @@ class HomeController extends Controller
             // dd($examensDemandes);
         //Fin examen fréquent
 
+        //Status test order
+            $totalByStatus = TestOrder::join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+            ->groupBy('reports.status')
+            ->select('reports.status', DB::raw('COUNT(*) as total'))
+            ->get();
+        //fin test order
+
+        //Hopitaux
+            $Hoptitals = TestOrder::join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+            ->groupBy('reports.status')
+            ->select('reports.status', DB::raw('COUNT(*) as total'))
+            ->get();
+        //Fin hospitaux
+
 
 
         return view('dashboardPlus',compact(
@@ -374,7 +388,7 @@ class HomeController extends Controller
             'crTestOrder','valeurTestOrder',
             'crInvoice','valeurInvoice',
             'totalForCurrentWeek', 'totalForLastWeek', 'totalToday',
-            'examensDemandes'
+            'examensDemandes','totalByStatus'
         ));
 
     }
@@ -423,6 +437,31 @@ class HomeController extends Controller
         });
 
         return response()->json(['current'=>$totalCurrentWeekByDay,'last'=>$totalCurrentLastByDay]);
+
+
+    }
+    public function testorderStatus()
+    {
+
+
+        $invoicePaid = Invoice::where('status_invoice',0)->where('paid',1)->count();
+        $invoiceTotalPaid = Invoice::where('status_invoice',0)->where('paid',1)->sum('total');
+
+        $invoiceNoPaid = Invoice::where('status_invoice',0)->where('paid',0)->count();
+        $invoiceTotalNoPaid = Invoice::where('status_invoice',0)->where('paid',0)->sum('total');
+
+        $refundPaid = Invoice::where('status_invoice',1)->where('paid',1)->count();
+        $refundTotalPaid = Invoice::where('status_invoice',1)->where('paid',1)->sum('total');
+
+        $refundNoPaid = Invoice::where('status_invoice',1)->where('paid',0)->count();
+        $refundTotalNoPaid = Invoice::where('status_invoice',1)->where('paid',0)->sum('total');
+
+        return response()->json([
+            'invoicePaid'=>$invoicePaid,'invoiceNoPaid'=>$invoiceNoPaid,
+            'refundPaid'=>$refundPaid,'refundNoPaid'=>$refundNoPaid,
+            'invoiceTotalPaid'=>(int)$invoiceTotalPaid,'invoiceTotalNoPaid'=>(int)$invoiceTotalNoPaid,
+            'refundTotalPaid'=>(int)$refundTotalPaid,'refundTotalNoPaid'=>(int)$refundTotalNoPaid
+        ]);
 
 
     }
