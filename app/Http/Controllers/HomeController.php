@@ -381,7 +381,6 @@ class HomeController extends Controller
         //Fin hospitaux
 
 
-
         return view('dashboardPlus',compact(
             'crPatient','valeurPatient',
             'crClient','valeurClient',
