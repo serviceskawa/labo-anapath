@@ -240,7 +240,7 @@
                 <div class="card" style="padding-bottom: 15px">
                     <div class="card-body">
 
-                        <h4 class="header-title">Total Sales</h4>
+                        <h4 class="header-title">FACTURES</h4>
 
                         <div id="average-sales-test" class="apex-charts mb-4 mt-4"
                             data-colors="#727cf5,#0acf97,#fa5c7c,#ffbc00"></div>

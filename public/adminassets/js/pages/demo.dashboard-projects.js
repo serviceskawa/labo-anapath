@@ -111,17 +111,17 @@ $(document).ready(function () {
             }
         }))
         ),
-        0<o("#project-status-chart-test").length&&(a={
+        0<o("#project-status-chart").length&&(a={
             labels:["Terminé","En attente"],
             datasets:[{
-                data:[statusTestOrder.length() > 1 ? statusTestOrder[1]['total']:0,statusTestOrder[0]['total']],
+                data:[statusTestOrder[1]['total'],statusTestOrder[0]['total']],
                 backgroundColor:(
-                    r=o("#project-status-chart-test").data("colors"))?r.split(","):["#E52D4F","#0acf97"],
+                    r=o("#project-status-chart").data("colors"))?r.split(","):["#E52D4F","#0acf97"],
                     borderColor:"transparent",
                     borderWidth:"3"
                 }]
             },
-            e.push(this.respChart(o("#project-status-chart-test"),
+            e.push(this.respChart(o("#project-status-chart"),
             "Doughnut",a,{
                 maintainAspectRatio:!1,
                 cutoutPercentage:80,
