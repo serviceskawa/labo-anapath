@@ -124,25 +124,10 @@
         <!-- end row -->
 
         <div class="row" style="display: flex">
+
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-body">
-                        {{-- <div class="dropdown float-end">
-                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <i class="mdi mdi-dots-vertical"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Sales Report</a>
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Profit</a>
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Action</a>
-                            </div>
-                        </div> --}}
                         <h4 class="header-title mb-3">CHIFFRE D'AFFAIRES</h4>
 
                         <div class="chart-content-bg">
@@ -180,70 +165,48 @@
                 </div> <!-- end card-->
             </div> <!-- end col-->
 
+
             <div class="col-lg-4">
-                <div class="card"   style="padding-bottom: 135px;">
+                <div class="card"   style="padding-bottom: 95px;">
                     <div class="card-body">
-                        {{-- <div class="dropdown float-end">
-                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="mdi mdi-dots-vertical"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Weekly Report</a>
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Monthly Report</a>
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Action</a>
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Settings</a>
-                            </div>
-                        </div> --}}
+
                         <h4 class="header-title mb-4">STATUT D'EXAMENS</h4>
 
                         <div class="my-4 chartjs-chart" style="height: 202px;">
-                            <canvas id="project-status-chart" data-colors="#0acf97,#727cf5,#fa5c7c"></canvas>
+                            <canvas id="project-status-chart" data-colors="#0acf97,#E52D4F"></canvas>
                         </div>
 
-                        <div class="row text-center mt-2 py-2">
-                            <div class="col-4">
+
+                        <div class="row text-center mt-5 py-2">
+                            <div class="col-6">
                                 <i class="mdi mdi-trending-up text-success mt-3 h3"></i>
                                 <h3 class="fw-normal">
-                                    <span>64%</span>
+                                    <span>{{ count($totalByStatus)>1 ? $totalByStatus[1]['total'] :'' }}</span>
                                 </h3>
-                                <p class="text-muted mb-0">Livré</p>
+                                <p class="text-muted mb-0">Terminé</p>
                             </div>
-                            <div class="col-4">
-                                <i class="mdi mdi-trending-down text-primary mt-3 h3"></i>
-                                <h3 class="fw-normal">
-                                    <span>26%</span>
-                                </h3>
-                                <p class="text-muted mb-0"> Terminé</p>
-                            </div>
-                            <div class="col-4">
+                            <div class="col-6">
                                 <i class="mdi mdi-trending-down text-danger mt-3 h3"></i>
                                 <h3 class="fw-normal">
-                                    <span>10%</span>
+                                    <span>{{ $totalByStatus[0]['total'] }}</span>
                                 </h3>
-                                <p class="text-muted mb-0"> En attente</p>
+                                <p class="text-muted mb-0">En attente</p>
                             </div>
                         </div>
                         <!-- end row-->
-
                     </div> <!-- end card body-->
                 </div> <!-- end card -->
             </div><!-- end col-->
 
         </div>
-        <!-- end row -->
 
 
-        <div class="row">
+
+        <div class="row" style="display: flex; justify-content:space-between">
             <div class="col-xl-6 col-lg-12 order-lg-2 order-xl-1">
                 <div class="card">
                     <div class="card-body">
-                        <!-- <a href="" class="btn btn-sm btn-link float-end">Export
-                            <i class="mdi mdi-download ms-1"></i>
-                        </a> -->
+
                         <h4 class="header-title mt-2 mb-3">EXAMENS LES PLUS DEMANDÉS</h4>
 
                         <div class="table-responsive">
@@ -274,46 +237,31 @@
             </div> <!-- end col-->
 
             <div class="col-xl-6 col-lg-12 order-lg-1">
-                <div class="card">
+                <div class="card" style="padding-bottom: 15px">
                     <div class="card-body">
-                        <div class="dropdown float-end">
-                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <i class="mdi mdi-dots-vertical"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Sales Report</a>
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Profit</a>
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item">Action</a>
-                            </div>
-                        </div>
+
                         <h4 class="header-title">Total Sales</h4>
 
-                        <div id="average-sales" class="apex-charts mb-4 mt-4"
+                        <div id="average-sales-test" class="apex-charts mb-4 mt-4"
                             data-colors="#727cf5,#0acf97,#fa5c7c,#ffbc00"></div>
 
 
                         <div class="chart-widget-list">
                             <p>
-                                <i class="mdi mdi-square text-primary"></i> Direct
-                                <span class="float-end">$300.56</span>
+                                <i class="mdi mdi-square text-success"></i> Factures de vente payées
+                                <span class="float-end" id="invoicePaid"></span>
                             </p>
                             <p>
-                                <i class="mdi mdi-square text-danger"></i> Affilliate
-                                <span class="float-end">$135.18</span>
+                                <i class="mdi mdi-square text-warning"></i> Factures de vente payées
+                                <span class="float-end" id="invoiceNoPaid"></span>
                             </p>
                             <p>
-                                <i class="mdi mdi-square text-success"></i> Sponsored
-                                <span class="float-end">$48.96</span>
+                                <i class="mdi mdi-square text-primary"></i> Factures d'avoir payées
+                                <span class="float-end" id="refundPaid"></span>
                             </p>
                             <p class="mb-0">
-                                <i class="mdi mdi-square text-warning"></i> E-mail
-                                <span class="float-end">$154.02</span>
+                                <i class="mdi mdi-square text-danger"></i> Factures d'avoir non payées
+                                <span class="float-end" id="refundNoPaid"></span>
                             </p>
                         </div>
                     </div> <!-- end card-body-->
@@ -330,6 +278,7 @@
 @push('extra-js')
     <script>
         var baseUrl = "{{ url('/') }}";
+        var statusTestOrder = {!! json_encode($totalByStatus) !!}
     </script>
     <script src="{{ asset('viewjs/home.js') }}"></script>
     <script src="{{asset('adminassets/js/vendor/apexcharts.min.js')}}"></script>

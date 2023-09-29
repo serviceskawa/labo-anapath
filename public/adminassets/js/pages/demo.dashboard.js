@@ -1,10 +1,67 @@
-//EDITION
+function formatMontant(montant) {
+    var formattedMontant = montant.toLocaleString('fr-FR', { style: 'currency', currency: 'XOF' });
+    return formattedMontant.replace("XOF", "F CFA");
+}
+
+$(document).ready(function () {
 function invoiceByDay(){
     // Populate Data in Edit Modal Form
     $.ajax({
         type: "GET",
         url: baseUrl+"/home/invoiceByDay",
         success: function (data) {
+            // Récupérez les montants pour la semaine actuelle et la semaine passée
+            var currentWeekData = data.current; // Montants de la semaine actuelle
+            var lastWeekData = data.last; // Montants de la semaine passée
+
+            //Mises à jour des données graphique
+            var e=["#727cf5","#0acf97","#fa5c7c","#ffbc00"];
+            var r={
+                chart:{
+                    height:364,
+                    type:"line",
+                    dropShadow:{
+                        enabled:!0,
+                        opacity:.2,
+                        blur:7,
+                        left:-7,
+                        top:7
+                    }
+                },
+                dataLabels:{
+                    enabled:!1
+                },
+                stroke:{
+                    curve:"smooth",
+                    width:4
+                },
+                series:[{
+                    name:"Current Week",
+                    data:Object.values(currentWeekData) // Utilisez les montants de la semaine actuelle ici
+                },
+                {
+                    name:"Previous Week",
+                    data:Object.values(lastWeekData) // Utilisez les montants de la semaine passée ici
+                }],
+                colors:e,
+                zoom:{enabled:!1},
+                legend:{show:!1},
+                xaxis:{
+                    type:"string",
+                    categories:["Lun","Mar","Mer","Jed","Ven","Sam","Dim"],
+                    tooltip:{enabled:!1}
+                    ,axisBorder:{show:!1}
+                },
+                yaxis:{
+                    labels:{
+                        formatter:function(e){return e/1000+"k"},
+                        offsetX:-15
+                    }
+                }
+            };
+
+            new ApexCharts(document.querySelector("#revenue-chart-test"),r).render();
+
             console.log(data);
         },
         error: function (data) {
@@ -12,6 +69,56 @@ function invoiceByDay(){
         }
     });
 }
+
+function invoicePaid() {
+    // Populate Data in Edit Modal Form
+    $.ajax({
+        type: "GET",
+        url: baseUrl+"/home/testOrderByStatus",
+        success: function (data) {
+            // Récupérez le nbr de factures de vente et d'avoir payées ou pas
+            var invoicePaid = data.invoicePaid;
+            var invoiceNoPaid = data.invoiceNoPaid;
+            var refundPaid = data.refundPaid;
+            var refundNoPaid = data.refundNoPaid;
+            console.log(data);
+                document.getElementById('invoicePaid').textContent = formatMontant(data.invoiceTotalPaid)
+                document.getElementById('invoiceNoPaid').textContent = formatMontant(data.invoiceTotalNoPaid)
+                document.getElementById('refundPaid').textContent = formatMontant(data.refundTotalPaid)
+                document.getElementById('refundNoPaid').textContent = formatMontant(data.refundTotalNoPaid)
+
+
+            //Mises à jour des données graphique
+            e=["#0acf97","#ffbc00","#727cf5","#fa5c7c"];
+            r={chart:{height:208,type:"donut"},
+            legend:{show:!1},
+            stroke:{colors:["transparent"]},
+            series:[invoicePaid,invoiceNoPaid,refundPaid,refundNoPaid],
+            labels:["Facture de vente payées","Facture de vente non payées","Facture d'avoir payées","Facture d'avoir non payées"],
+            colors:e,
+            responsive:[
+                {
+                    breakpoint:480,
+                    options:{
+                        chart:{width:200},
+                        legend:{position:"bottom"}
+                    }
+                }
+            ]
+        };
+        new ApexCharts(document.querySelector("#average-sales-test"),r).render()
+
+            console.log(data);
+        },
+        error: function (data) {
+            console.log('Error:', data);
+        }
+    });
+}
+invoiceByDay();
+invoicePaid();
+
+})
 
 
 
@@ -23,7 +130,8 @@ function invoiceByDay(){
             window.Apex={
                 chart:{
                     parentHeightOffset:0,
-                    toolbar:{show:!1}},
+                    toolbar:{show:!1}
+                },
                     grid:{
                         padding:{
                             left:0,
@@ -33,8 +141,11 @@ function invoiceByDay(){
                     colors:["#727cf5","#0acf97","#fa5c7c","#ffbc00"]
                 };
                     var e=["#727cf5","#0acf97","#fa5c7c","#ffbc00"],
+
                     t=o("#revenue-chart").data("colors");
+
                     t&&(e=t.split(","));
+
                     var r={
                         chart:{
                             height:364,
@@ -78,7 +189,11 @@ function invoiceByDay(){
                             }
                         }
                     };
-                    new ApexCharts(document.querySelector("#revenue-chart"),r).render();e=["#727cf5","#e3eaef"];
+
+                    new ApexCharts(document.querySelector("#revenue-chart"),r).render();
+
+                    e=["#727cf5","#e3eaef"];
+
                     (t=o("#high-performing-product").data("colors"))&&(e=t.split(","));
                     r={chart:{
                         height:257,

@@ -89,6 +89,7 @@ Route::middleware(['web'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/home/invoiceByDay', [App\Http\Controllers\HomeController::class, 'invoiceByDay'])->name('home.invoiceByDay');
+    Route::get('/home/testOrderByStatus', [App\Http\Controllers\HomeController::class, 'testorderStatus'])->name('home.testorderStatus');
 
     Route::get('/confirm-login', [TFAuthController::class, 'show'])->name('login.confirm');
     Route::post('/confirm-login', [TFAuthController::class, 'postAuth'])->name('login.postAuth');
