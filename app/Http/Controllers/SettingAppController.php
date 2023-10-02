@@ -1,0 +1,175 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\SettingApp;
+use Illuminate\Http\Request;
+
+class SettingAppController extends Controller
+{
+    protected $setting;
+    public function __construct(SettingApp $setting)
+    {
+        $this->setting = $setting;
+    }
+    public function index()
+    {
+        $app_name = $this->setting->where('key','lab_name')->first();
+        $devise = $this->setting->where('key','devise')->first();
+        $adress = $this->setting->where('key','adress')->first();
+        $phone = $this->setting->where('key','phone')->first();
+        $email = $this->setting->where('key','email')->first();
+        $web_site = $this->setting->where('key','web_site')->first();
+        $footer = $this->setting->where('key','footer')->first();
+        $email_host = $this->setting->where('key','email_host')->first();
+        $email_port = $this->setting->where('key','email_port')->first();
+        $username = $this->setting->where('key','username')->first();
+        $password = $this->setting->where('key','password')->first();
+        $encryption = $this->setting->where('key','encryption')->first();
+        $from_adresse = $this->setting->where('key','from_adresse')->first();
+        $from_name = $this->setting->where('key','from_name')->first();
+        $api_sms = $this->setting->where('key','api_sms')->first();
+        $link_api_sms = $this->setting->where('key','link_api_sms')->first();
+        $key_ourvoice = $this->setting->where('key','key_ourvoice')->first();
+        $link_ourvoice_call = $this->setting->where('key','link_ourvoice_call')->first();
+        $link_ourvoice_sms = $this->setting->where('key','link_ourvoice_sms')->first();
+
+        return view('settings.app.setting', compact(
+            'app_name', 'devise', 'adress', 'phone', 'email', 'web_site', 'footer',
+            'email_host', 'username', 'email_port', 'password', 'encryption', 'from_name', 'from_adresse',
+            'api_sms', 'link_api_sms', 'key_ourvoice', 'link_ourvoice_call', 'link_ourvoice_sms'
+        ));
+    }
+
+    public function store(Request $request)
+    {
+        // Récupérez les valeurs directement à partir de la demande HTTP
+        $nbr = $request->nbrform;
+        $appNameValue = $request->input('app_name');
+        $deviseValue = $request->input('devise');
+        $adresseValue = $request->input('adress');
+        $telephoneValue = $request->input('phone');
+        $emailValue = $request->input('email');
+        $webSiteValue = $request->input('web_site');
+        $footerValue = $request->input('footer');
+        $email_hostValue = $request->input('email_host');
+        $email_portValue = $request->input('email_port');
+        $usernameValue = $request->input('username');
+        $passwordValue = $request->input('password');
+        $encryptionValue = $request->input('encryption');
+        $from_adresseValue = $request->input('from_adresse');
+        $from_nameValue = $request->input('from_name');
+        $api_smsValue = $request->input('api_sms');
+        $link_api_smsValue = $request->input('link_api_sms');
+        $key_ourvoiceValue = $request->input('key_ourvoice');
+        $link_ourvoice_callValue = $request->input('link_ourvoice_call');
+        $link_ourvoice_smsValue = $request->input('link_ourvoice_sms');
+
+        // Mettez à jour les enregistrements dans la base de données
+
+        switch ($nbr) {
+            case 1:
+                # code...
+                $app_name = $this->setting->where('key', 'lab_name')->first();
+                $app_name ? $app_name->update(['value' => $appNameValue]):'';
+
+                $devise = $this->setting->where('key', 'devise')->first();
+                $devise ? $devise->update(['value' => $deviseValue]):'';
+
+                $adress = $this->setting->where('key', 'adress')->first();
+                $adress ? $adress->update(['value' => $adresseValue]):'';
+
+                $telephone = $this->setting->where('key', 'phone')->first();
+                $telephone ? $telephone->update(['value' => $telephoneValue]):'';
+
+                $email = $this->setting->where('key', 'email')->first();
+                $email ? $email->update(['value' => $emailValue]):'';
+
+                $web_site = $this->setting->where('key', 'web_site')->first();
+                $web_site ? $web_site->update(['value' => $webSiteValue]):'';
+
+                $footer = $this->setting->where('key', 'footer')->first();
+                $footer ? $footer->update(['value' => $footerValue]) : '';
+
+                if ($request->file('logo') ) {
+
+                    $logo = time() . '_settings_app_logo.' . $request->file('logo')->extension();
+
+                    $path_logo = $request->file('logo')->storeAs('settings/app', $logo, 'public');
+
+                }
+                if ($request->file('favicon') ) {
+
+                    $favicon = time() . '_settings_app_favicon.' . $request->file('favicon')->extension();
+
+                    $path_favicon = $request->file('favicon')->storeAs('settings/app', $favicon, 'public');
+
+                }
+                if ($request->file('logo_white') ) {
+
+                    $img3 = time() . '_settings_app_blanc.' . $request->file('logo_white')->extension();
+
+                    $path_img3 = $request->file('logo_white')->storeAs('settings/app', $img3, 'public');
+
+                }
+
+                $logo = $this->setting->where('key', 'logo')->first();
+                $logo ? $logo->update(['value' => $path_logo]) : '';
+
+                $favicon = $this->setting->where('key', 'favicon')->first();
+                $favicon ? $favicon->update(['value' => $path_favicon]) : '';
+
+                $logo_white = $this->setting->where('key', 'logo_white')->first();
+                $logo_white ? $logo_white->update(['value' => $path_img3]) : '';
+
+
+                break;
+            case 2:
+
+                $email_host = $this->setting->where('key', 'email_host')->first();
+                $email_host ? $email_host->update(['value' => $email_hostValue]):'';
+
+                $email_port = $this->setting->where('key', 'email_port')->first();
+                $email_port ? $email_port->update(['value' => $email_portValue]): '';
+
+                $username = $this->setting->where('key', 'username')->first();
+                $username ? $username->update(['value' => $usernameValue]):'';
+
+                $password = $this->setting->where('key', 'password')->first();
+                $password ? $password->update(['value' => $passwordValue]):'';
+
+                $encryption = $this->setting->where('key', 'encryption')->first();
+                $encryption ? $encryption->update(['value' => $encryptionValue]):'';
+
+                $from_adresse = $this->setting->where('key', 'from_adresse')->first();
+                $from_adresse ? $from_adresse->update(['value' => $from_adresseValue]):'';
+
+                $from_name = $this->setting->where('key', 'from_name')->first();
+                $from_name ? $from_name->update(['value' => $from_nameValue]):'';
+                break;
+
+            case 3:
+                $api_sms = $this->setting->where('key', 'api_sms')->first();
+                $api_sms ?  $api_sms->update(['value' => $api_smsValue]): '';
+
+                $link_api_sms = $this->setting->where('key', 'link_api_sms')->first();
+                $link_api_sms ? $link_api_sms->update(['value' => $link_api_smsValue]): '';
+
+                $key_ourvoice = $this->setting->where('key', 'key_ourvoice')->first();
+                $key_ourvoice ? $key_ourvoice->update(['value' => $key_ourvoiceValue]):'';
+
+                $link_ourvoice_call = $this->setting->where('key', 'link_ourvoice_call')->first();
+                $link_ourvoice_call ? $link_ourvoice_call->update(['value' => $link_ourvoice_callValue]): '';
+
+                $link_ourvoice_sms = $this->setting->where('key', 'link_ourvoice_sms')->first();
+                $link_ourvoice_sms ? $link_ourvoice_sms->update(['value' => $link_ourvoice_smsValue]):'';
+                break;
+
+            default:
+                # code...
+                break;
+        }
+
+        return back()->with('success', "Mise à jour effectuée avec succès");
+    }
+}

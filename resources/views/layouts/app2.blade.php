@@ -3,14 +3,16 @@
 
 <head>
     <meta charset="utf-8">
-    <title>@yield('title') | {{ config('app.name', 'Labocaap') }}</title>
+    <title>@yield('title') | {{ App\Models\SettingApp::where('key','lab_name')->first()->value }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
     $setting = \App\Models\Setting::orderBy('id', 'desc')->first();
+    $logo = \App\Models\SettingApp::where('key', 'logo')->first();
+    $favicon = \App\Models\SettingApp::where('key', 'favicon')->first();
     @endphp
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ $setting ? Storage::url($setting->favicon) : '' }}">
+    <link rel="shortcut icon" href="{{ $favicon ? Storage::url($favicon->value) : '' }}">
 
     <link href="{{ asset('/adminassets/css/vendor/dataTables.bootstrap5.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('/adminassets/css/vendor/responsive.bootstrap5.css') }}" rel="stylesheet" type="text/css">
@@ -43,10 +45,10 @@
             <!-- LOGO -->
             <a href="{{ route('home') }}" class="logo logo-light text-center">
                 <span class="logo-lg">
-                    <img src="{{ $setting ? Storage::url($setting->logo_blanc) : '' }}" alt="" width="200px">
+                    <img src="{{ $logo ? Storage::url($logo->value) : '' }}" alt="" width="200px">
                 </span>
                 <span class="logo-sm">
-                    <img src="{{ $setting ? Storage::url($setting->favicon) : '' }}" alt="" width="50px">
+                    <img src="{{ $favicon ? Storage::url($favicon->value) : '' }}" alt="" width="50px">
                 </span>
             </a>
 
@@ -455,7 +457,7 @@
                                 <li>
                                     <a href="{{ route('probleme.report.create') }}">Signaler</a>
                                 </li>
-                               
+
                             </ul>
                         </div>
                     </li>
@@ -525,12 +527,20 @@
 
                     @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
                     <li class="side-nav-item">
-                        <a href="{{ route('settings.app-index') }}" class="side-nav-link">
+                        <a href="{{ route('settings.index') }}" class="side-nav-link">
                             <i class="uil-document-layout-right"></i>
                             <span>Paramètres</span>
                         </a>
                     </li>
                     @endif
+                    {{-- @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
+                    <li class="side-nav-item">
+                        <a href="{{ route('settings.app-index') }}" class="side-nav-link">
+                            <i class="uil-document-layout-right"></i>
+                            <span>Paramètres</span>
+                        </a>
+                    </li>
+                    @endif --}}
 
 
 
@@ -743,7 +753,7 @@
                             {{-- <script>
                                 document.write(new Date().getFullYear())
                             </script> © Labocaap --}}
-                            {{ Carbon\Carbon::now()->formatLocalized('%G') }} © {{ $setting->titre }}
+                            {{ Carbon\Carbon::now()->formatLocalized('%G') }} © {{ App\Models\SettingApp::where('key','footer')->first()->value }}
                         </div>
 
                     </div>

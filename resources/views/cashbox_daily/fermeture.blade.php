@@ -34,7 +34,7 @@
                 <div class="card">
                     <div class="card-body">
 
-                        <h4 class="header-title mb-3">Point sur les depenses</h4>
+                        <h4 class="header-title mb-3">Récapitulatif</h4>
 
                         <form action="{{ route('daily.update') }}" method="POST" autocomplete="on">
                             @csrf
@@ -210,7 +210,7 @@
                                                 <a href="#" class="btn btn-info">Previous</a>
                                             </li> --}}
                                             <div id="error-message" class="alert alert-warning alert-dismissible fade show" role="alert">
-                                                    
+
                                             </div>
                                             <li class="next list-inline-item float-end">
                                                 <a href="#" class="btn btn-info" id="suivantBtn"

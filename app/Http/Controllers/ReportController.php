@@ -9,6 +9,7 @@ use App\Models\Report;
 use App\Models\Doctor;
 use App\Models\LogReport;
 use App\Models\Setting;
+use App\Models\SettingApp;
 use GuzzleHttp\Client;
 //use App\Helpers\herpers;
 use Illuminate\Http\Request;
@@ -465,9 +466,11 @@ class ReportController extends Controller
             $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/06/RESULTAT-DISPONIBLE-FRANCAIS-VF.mp3';
             $audio_url_non_disponible = 'https://caap.bj/wp-content/uploads/2023/05/F.-RESULTAT-INDISPONIBLE.mp3';
         }
+        $link_ourvoice_call = SettingApp::where('key','link_ourvoice_call')->first();
 
         // Pour lancer un appel 'https://staging.getourvoice.com/api/v1/calls'https://api.getourvoice.com/v1/calls
-        $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/calls', [
+        // $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/calls', [
+        $responsevocal = $client->request('POST', $link_ourvoice_call->value, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
                 'Content-Type' => 'application/json',
@@ -535,8 +538,11 @@ class ReportController extends Controller
         $to = '229'.$report->patient->telephone1;
         $body = 'Bonjour c\'est l cabinet medical Anathomie pathologique adechinan situé à fifadji vos résultats d\'analyse sont maintenant disponible vous pouvez venir les recupérer à tout moment pendant nos heures d\'ouvertures. Nous sommes ouvert du Lundi au vendredi de 08h à 17h Merci de votre confiance';
 
+        $link_ourvoice_sms = SettingApp::where('key','link_ourvoice_sms')->first();
+
         // Pour lancer un appel
-        $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/messages', [
+        // $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/messages', [
+        $responsevocal = $client->request('POST', $link_ourvoice_sms->value, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
                 'Content-Type' => 'application/json',
