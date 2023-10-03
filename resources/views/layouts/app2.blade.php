@@ -688,7 +688,7 @@
                                     <a href="{{ route('doc.categorie.index') }}">Tous les catégories</a>
                                 </li>
                                 @endif
-                                @if (getOnlineUser()->can('view-users'))
+                                {{-- @if (getOnlineUser()->can('view-users'))
                                 <li>
                                     <a href="{{ route('doc.index') }}">Tous les documents</a>
                                 </li>
@@ -697,7 +697,7 @@
                                 <li>
                                     <a href="{{ route('employee.index') }}">Documentations</a>
                                 </li>
-                                @endif
+                                @endif --}}
                             </ul>
                         </div>
                     </li>

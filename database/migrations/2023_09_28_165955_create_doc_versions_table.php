@@ -18,7 +18,7 @@ class CreateDocVersionsTable extends Migration
             $table->unsignedBigInteger('doc_id');
             $table->string('attachment');
             // Clé étrangère
-            $table->foreign('doc_id')->references('id')->on('docs');
+            $table->foreign('doc_id')->references('id')->on('docs')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });

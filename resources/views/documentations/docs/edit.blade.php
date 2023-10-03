@@ -19,11 +19,18 @@
                         <div class="row">
                             <div class="mb-3 col-lg-12">
                                 <label for="simpleinput" class="form-label">Nom<span style="color:red;">*</span></label>
-                                <input type="text" name="name" value="{{ old('name') ? old('name') : $doc->name }}"
+                                <input type="text" name="title" value="{{ old('title') ? old('title') : $doc->title }}"
                                     class="form-control" required>
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="example-fileinput" class="form-label">Fichier<span
+                                        style="color:red;">*</span></label>
+                                <input type="file" name="attachment" id="example-fileinput" class="form-control">
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>

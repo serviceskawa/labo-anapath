@@ -27,6 +27,15 @@ class DocController extends Controller
         return view('documentations.docs.index', compact('docs','categories'));
     }
 
+    public function detail_index($categorie)
+    {
+        if (!getOnlineUser()->can('create-employees')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
+        $cat = Doc::where('documentation_categorie_id', $categorie)->get();
+        return view('documentations.docs.index_detail', compact('cat'));
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -51,8 +60,7 @@ class DocController extends Controller
 
         $this->validate($request,[
             'title' => 'required|string|max:255',
-            'description' => 'string|max:255',
-            'documentation_categorie_id' => 'integer',
+            'category_id' => 'integer',
             'attachment' => 'required'
         ]);
 
@@ -60,16 +68,18 @@ class DocController extends Controller
         {
             $imagePath = $request->file('attachment')->store('documents','public');
         }
-         
+        
+        
         try {          
                 $doc = new Doc();
                 $doc->title = $request->title;
-                $doc->description = $request->description;
                 $doc->attachment = $imagePath;
                 $doc->is_current_version = 1;
-                $doc->documentation_categorie_id = $request->documentation_categorie_id;
+                $doc->documentation_categorie_id = $request->category_id;
                 $doc->user_id = auth()->user()->id;
-                $doc->save(); 
+                $doc->save();
+                // dd($request->category_id);
+                // dd('ok');
 
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
@@ -78,6 +88,70 @@ class DocController extends Controller
     
     }
 
+
+
+     public function store_fichier(Request $request)
+    {
+        if (!getOnlineUser()->can('create-employees')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
+        $this->validate($request,[
+            'title' => 'required|string|max:255',
+            'documentation_categorie_id' => 'integer',
+            'attachment' => 'required'
+        ]);
+
+        if ($request->hasFile('attachment')) 
+        {
+            $imagePath = $request->file('attachment')->store('documents','public');
+        }else{
+            $imagePath = null;
+        }
+        
+        try {          
+            $doc = new Doc();
+            $doc->title = $request->title;
+            $doc->attachment = $imagePath;
+            $doc->is_current_version = 1;
+            $doc->documentation_categorie_id = $request->documentation_categorie_id;
+            $doc->user_id = auth()->user()->id;
+            $doc->save();
+            // dd($request->category_id);
+            // dd('ok');
+                return back()->with('success', " Opération effectuée avec succès  ! ");
+            } catch(\Throwable $ex){
+                return back()->with('error', "Échec de l'enregistrement ! ");
+            }
+    
+    }
+
+    public function getrecents()
+    {
+        // Récupérez toutes les fichiers recent
+        $recentfiles = Doc::latest()->limit(3)->get();
+        // dd($recentfiles);
+        // Retournez les catégories au format JSON
+        return response()->json($recentfiles);
+    }
+
+
+    public function getfiledelete()
+    {
+        // Récupérez toutes les fichier supprimes
+        $deletedFiles = Doc::onlyTrashed()->get();
+
+        // dd($recentfiles);
+        // Retournez les catégories au format JSON
+        return response()->json($deletedFiles);
+    }
+
+    public function supprimer(Doc $doc)
+    {
+        $doc->delete();
+
+        return back()->with('success', " Elément supprimé avec succès  ! ");
+    }
     /**
      * Display the specified resource.
      *
@@ -109,7 +183,32 @@ class DocController extends Controller
      */
     public function update(Request $request, Doc $doc)
     {
-        //
+        if (!getOnlineUser()->can('edit-employees')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
+        $this->validate($request,[
+            'title' => 'required|string|max:255'
+        ]);
+
+        if ($request->hasFile('attachment')) 
+        {
+            $imagePath = $request->file('attachment')->store('documents','public');
+        }else{
+            $imagePath = $doc->attachment;
+        }
+        
+        try 
+        {
+            // dd($request->title);       
+            $doc->title = $request->title;
+            $doc->attachment = $imagePath;
+            $doc->save();
+            
+            return back()->with('success', " Opération effectuée avec succès  ! ");
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! ");
+        }
     }
 
     /**
@@ -118,8 +217,14 @@ class DocController extends Controller
      * @param  \App\Models\Doc  $doc
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Doc $doc)
+    public function delete(Doc $doc)
     {
-        //
+        // if (!getOnlineUser()->can('delete-emloyees')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+
+        $doc->delete();
+
+        return back()->with('success', " Elément supprimé avec succès  ! ");
     }
 }

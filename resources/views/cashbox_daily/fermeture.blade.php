@@ -289,7 +289,9 @@
                                                             value="{{$mobilemoneysum}}" readonly>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        -
+                                                        <input type="number" class="form-control"
+                                                            id="mobile_money_calculated" name="mobile_money_calculated"
+                                                            value="{{$mobilemoneysum}}" readonly>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <input type="number" class="form-control"
@@ -315,7 +317,8 @@
                                                             name="cheque_calculated" value="{{$chequessum}}" readonly>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        -
+                                                        <input type="number" class="form-control" id="cheque_calculated"
+                                                            name="cheque_calculated" value="{{$chequessum}}" readonly>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <input type="number" class="form-control"
@@ -342,7 +345,9 @@
                                                             value="{{$virementsum}}" readonly>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        -
+                                                        <input type="number" class="form-control"
+                                                            id="virement_calculated" name="virement_calculated"
+                                                            value="{{$virementsum}}" readonly>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <input type="number" class="form-control"
