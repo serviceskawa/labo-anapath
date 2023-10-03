@@ -422,7 +422,7 @@
                                 </li>
 
                                 <li>
-                                    <a href="{{ route('refund.request.categorie.index') }}">Catégorie</a>
+                                    <a href="{{ route('refund.request.categorie.index') }}">Paramètres</a>
                                 </li>
 
                             </ul>
