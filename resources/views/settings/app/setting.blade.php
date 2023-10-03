@@ -43,7 +43,7 @@
                         </li>
                         <li class="side-nav-item">
                             <a href="#basictab2" id="email" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
-                                <i class="mdi mdi-face-profile me-1"></i>
+                                <i class="mdi mdi-email-outline me-1"></i>
                                 <span class="d-none d-sm-inline">Email</span>
                             </a>
                         </li>
@@ -51,6 +51,13 @@
                             <a href="#basictab3" id="mobile" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
                                 <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i>
                                 <span class="d-none d-sm-inline">Communication Mobile</span>
+                            </a>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="#basictab4" id="bank" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
+                                <i class="mdi mdi-bank me-1"></i>
+                                <span class="d-none d-sm-inline">Banques</span>
                             </a>
                         </li>
                     </ul>
@@ -64,6 +71,7 @@
                     </div>
                     <div class="card">
                         <div class="card-body tab-content b-0 mb-0">
+
                             <div class="tab-pane" id="basictab1">
                                 <form action="{{route('settings.store')}}" method="post" enctype="multipart/form-data">
                                     @csrf
@@ -234,6 +242,81 @@
                                     </div>
                                 </form>
                             </div>
+
+                            <div class="tab-pane" id="basictab4">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="page-title-box">
+                                            <div class="page-title-right mr-3">
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#standard-modal">Ajouter une nouvelle banque</button>
+                                            </div>
+                                            <h4 class="page-title">Liste des banques</h4>
+                                        </div>
+
+                                        <!----MODAL---->
+
+                                        @include('bank.create')
+
+                                        @include('bank.edit')
+
+                                    </div>
+                                </div>
+                                <div class="">
+
+                                    <div class="card mb-md-0 mb-3">
+                                        <div class="card-body">
+                                            <div class="card-widgets">
+                                                <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
+                                                <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false"
+                                                    aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
+                                                <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                                            </div>
+                                            <h5 class="card-title mb-0">Liste des banques</h5>
+
+                                            <div id="cardCollpase1" class="collapse pt-3 show">
+
+
+                                                <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Nom</th>
+                                                            <th>Numéro de compte</th>
+                                                            <th>Description</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+
+
+                                                    <tbody>
+
+                                                        @foreach ($banks as $item)
+                                                            <tr>
+                                                                <td>{{ $item->name }}</td>
+                                                                <td>{{ $item->account_number }}</td>
+                                                                <td>{{ $item->description}}</td>
+                                                                <td>
+                                                                    <button type="button" onclick="edit({{$item->id}})" class="btn btn-primary">
+                                                                        <i class="mdi mdi-lead-pencil"></i>
+                                                                    </button>
+                                                                    <button type="button" onclick="deleteModal({{$item->id}})" class="btn btn-danger">
+                                                                        <i class="mdi mdi-trash-can-outline"></i>
+                                                                    </button>
+                                                                </td>
+
+                                                            </tr>
+                                                        @endforeach
+
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div> <!-- end card-->
+
+
+                                </div>
+                            </div>
                         </div> <!-- tab-content -->
                     </div>
                 </div>
@@ -247,9 +330,10 @@
 
 @push('extra-js')
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
-    integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    var baseUrl = "{{ url('/') }}";
+</script>
+<script src="{{asset('viewjs/setting/app.js')}}"></script>
 
 <script>
     var titleHeader = document.getElementById('titleHeader');
@@ -263,6 +347,9 @@
     })
     $('#mobile').on('click', function(){
         titleHeader.textContent = "Communication mobile"
+    })
+    $('#bank').on('click', function(){
+        titleHeader.textContent = "Banques"
     })
     $('#generalLi').on('click', function(){
         general2.style.display = "none"

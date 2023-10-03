@@ -124,85 +124,6 @@
         <!-- end row -->
 
         <div class="row" style="display: flex">
-
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="header-title mb-3">CHIFFRE D'AFFAIRES</h4>
-
-                        <div class="chart-content-bg">
-                            <div class="row text-center">
-                                <div class="col-md-6">
-                                    <p class="text-muted mb-0 mt-3">Semaine actuelle</p>
-                                    <h2 class="fw-normal mb-3">
-                                        <small
-                                            class="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
-                                        <span>{{ formatMontant($totalForCurrentWeek) }}</span>
-                                    </h2>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="text-muted mb-0 mt-3">Semaine précédente</p>
-                                    <h2 class="fw-normal mb-3">
-                                        <small
-                                            class="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
-                                        <span>{{ formatMontant($totalForLastWeek) }}</span>
-                                    </h2>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="dash-item-overlay d-none d-md-block" dir="ltr">
-                            <h5>Aujourd'hui: {{formatMontant($totalToday)}}</h5>
-
-                            <a href="{{route('invoice.business')}}" class="btn btn-outline-primary">View Statements
-                                <i class="mdi mdi-arrow-right ms-2"></i>
-                            </a>
-                        </div>
-                        <div dir="ltr">
-                            <div id="revenue-chart" class="apex-charts mt-3" data-colors="#727cf5,#0acf97"></div>
-                        </div>
-                    </div> <!-- end card-body-->
-                </div> <!-- end card-->
-            </div> <!-- end col-->
-
-
-            <div class="col-lg-4">
-                <div class="card"   style="padding-bottom: 95px;">
-                    <div class="card-body">
-
-                        <h4 class="header-title mb-4">STATUT D'EXAMENS</h4>
-
-                        <div class="my-4 chartjs-chart" style="height: 202px;">
-                            <canvas id="project-status-chart" data-colors="#0acf97,#E52D4F"></canvas>
-                        </div>
-
-
-                        <div class="row text-center mt-5 py-2">
-                            <div class="col-6">
-                                <i class="mdi mdi-trending-up text-success mt-3 h3"></i>
-                                <h3 class="fw-normal">
-                                    <span>{{ count($totalByStatus)>1 ? $totalByStatus[1]['total'] :'' }}</span>
-                                </h3>
-                                <p class="text-muted mb-0">Terminé</p>
-                            </div>
-                            <div class="col-6">
-                                <i class="mdi mdi-trending-down text-danger mt-3 h3"></i>
-                                <h3 class="fw-normal">
-                                    <span>{{ $totalByStatus[0]['total'] }}</span>
-                                </h3>
-                                <p class="text-muted mb-0">En attente</p>
-                            </div>
-                        </div>
-                        <!-- end row-->
-                    </div> <!-- end card body-->
-                </div> <!-- end card -->
-            </div><!-- end col-->
-
-        </div>
-
-
-
-        <div class="row" style="display: flex; justify-content:space-between">
             <div class="col-xl-6 col-lg-12 order-lg-2 order-xl-1">
                 <div class="card">
                     <div class="card-body">
@@ -236,41 +157,282 @@
                 </div> <!-- end card-->
             </div> <!-- end col-->
 
-            <div class="col-xl-6 col-lg-12 order-lg-1">
-                <div class="card" style="padding-bottom: 15px">
+            <div class="col-lg-6">
+                <div class="card"   style="padding-bottom: 20px;">
                     <div class="card-body">
 
-                        <h4 class="header-title">FACTURES</h4>
+                        <h4 class="header-title mb-4">STATUT D'EXAMENS</h4>
 
-                        <div id="average-sales-test" class="apex-charts mb-4 mt-4"
-                            data-colors="#727cf5,#0acf97,#fa5c7c,#ffbc00"></div>
-
-
-                        <div class="chart-widget-list">
-                            <p>
-                                <i class="mdi mdi-square text-success"></i> Factures de vente payées
-                                <span class="float-end" id="invoicePaid"></span>
-                            </p>
-                            <p>
-                                <i class="mdi mdi-square text-warning"></i> Factures de vente payées
-                                <span class="float-end" id="invoiceNoPaid"></span>
-                            </p>
-                            <p>
-                                <i class="mdi mdi-square text-primary"></i> Factures d'avoir payées
-                                <span class="float-end" id="refundPaid"></span>
-                            </p>
-                            <p class="mb-0">
-                                <i class="mdi mdi-square text-danger"></i> Factures d'avoir non payées
-                                <span class="float-end" id="refundNoPaid"></span>
-                            </p>
+                        <div class="my-4 chartjs-chart" style="height: 202px;">
+                            <canvas id="project-status-chart" data-colors="#0acf97,#E52D4F"></canvas>
                         </div>
-                    </div> <!-- end card-body-->
-                </div> <!-- end card-->
-            </div> <!-- end col-->
 
+
+                        <div class="row text-center mt-5 py-2">
+                            <div class="col-6">
+                                <i class="mdi mdi-trending-up text-success mt-3 h3"></i>
+                                <h3 class="fw-normal">
+                                    <span>{{ count($totalByStatus)>1 ? $totalByStatus[1]['total'] :'' }}</span>
+                                </h3>
+                                <p class="text-muted mb-0">Terminé</p>
+                            </div>
+                            <div class="col-6">
+                                <i class="mdi mdi-trending-down text-danger mt-3 h3"></i>
+                                <h3 class="fw-normal">
+                                    <span>{{ $totalByStatus[0]['total'] }}</span>
+                                </h3>
+                                <p class="text-muted mb-0">En attente</p>
+                            </div>
+                        </div>
+                        <!-- end row-->
+                    </div> <!-- end card body-->
+                </div> <!-- end card -->
+            </div><!-- end col-->
 
         </div>
-        <!-- end row -->
+
+        @if (getOnlineUser()->can('view-dashbord-finance'))
+            <div class="row" style="display: flex; justify-content:space-between">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title mb-3">CHIFFRE D'AFFAIRES</h4>
+
+                            <div class="chart-content-bg">
+                                <div class="row text-center">
+                                    <div class="col-md-6">
+                                        <p class="text-muted mb-0 mt-3">Semaine actuelle</p>
+                                        <h2 class="fw-normal mb-3">
+                                            <small
+                                                class="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
+                                            <span>{{ formatMontant($totalForCurrentWeek) }}</span>
+                                        </h2>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="text-muted mb-0 mt-3">Semaine précédente</p>
+                                        <h2 class="fw-normal mb-3">
+                                            <small
+                                                class="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
+                                            <span>{{ formatMontant($totalForLastWeek) }}</span>
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dash-item-overlay d-none d-md-block" dir="ltr">
+                                <h5>Aujourd'hui: {{formatMontant($totalToday)}}</h5>
+
+                                <a href="{{route('invoice.business')}}" class="btn btn-outline-primary">View Statements
+                                    <i class="mdi mdi-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                            <div dir="ltr">
+                                <div id="revenue-chart" class="apex-charts mt-3" data-colors="#727cf5,#0acf97"></div>
+                            </div>
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+                </div> <!-- end col-->
+
+                <div class="col-xl-4 col-lg-12 order-lg-1">
+                    <div class="card" style="padding-bottom: 95px">
+                        <div class="card-body">
+
+                            <h4 class="header-title">FACTURES</h4>
+
+                            <div id="average-sales-test" class="apex-charts mb-4 mt-4"
+                                data-colors="#727cf5,#0acf97,#fa5c7c,#ffbc00"></div>
+
+
+                            <div class="chart-widget-list">
+                                <p>
+                                    <i class="mdi mdi-square text-success"></i> Factures de vente payées
+                                    <span class="float-end" id="invoicePaid"></span>
+                                </p>
+                                <p>
+                                    <i class="mdi mdi-square text-warning"></i> Factures de vente payées
+                                    <span class="float-end" id="invoiceNoPaid"></span>
+                                </p>
+                                <p>
+                                    <i class="mdi mdi-square text-primary"></i> Factures d'avoir payées
+                                    <span class="float-end" id="refundPaid"></span>
+                                </p>
+                                <p class="mb-0">
+                                    <i class="mdi mdi-square text-danger"></i> Factures d'avoir non payées
+                                    <span class="float-end" id="refundNoPaid"></span>
+                                </p>
+                            </div>
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+                </div> <!-- end col-->
+
+
+            </div>
+            <!-- end row -->
+        @endif
+
+        <div class="row">
+
+            {{-- Examen terminé aujourd'hi --}}
+
+            <div class="col-xl-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        <h4 class="header-title mb-3">Comptes rendu dsponible aujourd'hui</h4>
+
+                        <div class="table-responsive">
+                            <table table id="datatable1" class="table table-hover table-centered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Code</th>
+                                        <th>Patiens</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($testOrdersToday as $testOrderToday)
+                                        @if ($testOrderToday->is_deliver == 1)
+                                            <tr>
+                                                <td>
+                                                    {{ $testOrderToday->order->created_at }}
+                                                </td>
+                                                <td>{{ $testOrderToday->order->code }}</td>
+                                                <td>{{ $testOrderToday->patient->lastname }}
+                                                    {{ $testOrderToday->patient->firstname }}</td>
+                                                <td class="table-action">
+                                                    @if ($testOrderToday->status != 1)
+                                                        <a type="button"
+                                                            href="{{ route('details_test_order.index', $testOrderToday->id) }}"
+                                                            class="btn btn-warning" title="Compte rendu"><i
+                                                                class="uil-file-medical"></i> </a>;
+                                                        <button type="button" onclick="deleteModal($testOrderToday->id)"
+                                                            class="btn btn-danger" title="Supprimer"><i
+                                                                class="mdi mdi-trash-can-outline"></i> </button>;
+                                                    @else
+                                                        <a type="button"
+                                                            href="{{ route('report.show', $testOrderToday->id) }}"
+                                                            class="btn btn-warning" title="Compte rendu"><i
+                                                                class="uil-file-medical"></i> </a>
+                                                    @endif
+
+                                                    @if (!empty($testOrderToday->invoice->id))
+                                                        <a type="button"
+                                                            href="{{ route('invoice.show', $testOrderToday->invoice->id) }}"
+                                                            class="btn btn-success" title="Facture"><i
+                                                                class="mdi mdi-printer"></i> </a>
+                                                    @else
+                                                        <a type="button"
+                                                            href="{{ route('invoice.storeFromOrder', $testOrderToday->id) }}"
+                                                            class="btn btn-success" title="Facture"><i
+                                                                class="mdi mdi-printer"></i> </a>
+                                                    @endif
+                                                    @if (!empty($testOrderToday))
+                                                        @if ($testOrderToday->status == 1)
+                                                            <a type="button" target="_blank"
+                                                                href="{{ route('report.updateDeliver', $testOrderToday->id) }}"
+                                                                class="btn btn-warning"
+                                                                title="Imprimer le compte rendu"><i
+                                                                    class="mdi mdi-printer"></i> Imprimer </a>
+                                                        @endif
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @else
+                                        @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div> <!-- end table-responsive-->
+
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div>
+            <!-- end col-->
+
+        </div>
+
+        {{-- Statistique par docteur --}}
+        <div class="row">
+            <div class="col-xl-12 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+
+                        <h4 class="header-title mb-3">Statistique par docteurs</h4>
+                        <div class="table-responsive">
+                            <table table id="datatable1" class="table table-hover table-centered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Docteurs</th>
+                                        <th>Demandes Affectées</th>
+                                        <th>Demandes Traitées</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($doctorDatas as $doctorData)
+                                            <tr>
+                                                <td>
+                                                    {{ $doctorData['doctor'] }}
+                                                </td>
+                                                <td>
+                                                    {{ $doctorData['assigne'] }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $doctorData['traite'] }}
+                                                </td>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div> <!-- end table-responsive-->
+
+                    </div>
+                    <!-- end card-body -->
+                </div>
+                <!-- end card-->
+            </div>
+            <!-- end col -->
+        </div>
+
+        {{-- utilisateur connecté --}}
+        <div class="row">
+            <div class="col-xl-12 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+
+                        <h4 class="header-title mb-4">Utilisateurs connectés</h4>
+
+                        <div class="table-responsive">
+                            <table table id="datatable1" class="table table-hover table-centered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nom</th>
+                                        <th>Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($loggedInUserIds as $key => $userID)
+                                        <tr>
+                                            <td>{{ $key + 1 }}</td>
+                                            <td>
+                                                {{ $userID->lastname }} {{ $userID->firstname }}
+                                                {{ $userID->id == Auth::user()->id ? '(Vous)' : '' }}
+                                            </td>
+                                            <td> {{ $userID->email }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div> <!-- end table-responsive-->
+
+                    </div>
+                    <!-- end card-body -->
+                </div>
+                <!-- end card-->
+            </div>
+            <!-- end col -->
+        </div>
     </div><!-- container -->
 
 @endsection

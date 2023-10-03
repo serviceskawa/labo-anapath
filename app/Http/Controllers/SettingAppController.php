@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bank;
 use App\Models\SettingApp;
 use Illuminate\Http\Request;
 
@@ -33,9 +34,10 @@ class SettingAppController extends Controller
         $key_ourvoice = $this->setting->where('key','key_ourvoice')->first();
         $link_ourvoice_call = $this->setting->where('key','link_ourvoice_call')->first();
         $link_ourvoice_sms = $this->setting->where('key','link_ourvoice_sms')->first();
+        $banks = Bank::latest()->get();
 
         return view('settings.app.setting', compact(
-            'app_name', 'devise', 'adress', 'phone', 'email', 'web_site', 'footer',
+            'app_name', 'devise', 'adress', 'phone', 'email', 'web_site', 'footer','banks',
             'email_host', 'username', 'email_port', 'password', 'encryption', 'from_name', 'from_adresse',
             'api_sms', 'link_api_sms', 'key_ourvoice', 'link_ourvoice_call', 'link_ourvoice_sms'
         ));
