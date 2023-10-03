@@ -421,6 +421,10 @@
                                     <a href="{{ route('refund.request.create') }}">Ajouter</a>
                                 </li>
 
+                                <li>
+                                    <a href="{{ route('refund.request.categorie.index') }}">Catégorie</a>
+                                </li>
+
                             </ul>
                         </div>
                     </li>
