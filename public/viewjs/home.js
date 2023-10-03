@@ -7,7 +7,7 @@ $('#datatable1').DataTable({
         "searchable": false
     }],
     "language": {
-        "lengthMenu": "Afficher _MENU_ enregistrements par page",
+        "lengthMenu": "Afficher _MENU_",
         "zeroRecords": "Aucun enregistrement disponible",
         "info": "Afficher page _PAGE_ sur _PAGES_",
         "infoEmpty": "Aucun enregistrement disponible",

@@ -382,49 +382,73 @@ class HomeController extends Controller
                 ->select('reports.status', DB::raw('COUNT(*) as total'))
                 ->get();
             //Fin hospitaux
+
             //Statistique des docteurs
-            $doctorDatas = [];
-
-            $doctorData =[
-                'doctor' => '',
-                'assigne' => 0,
-                'traite' => 0
-            ];
-
-            foreach (getUsersByRole('docteur') as $doctor)
-            {
-                $doctorData['id'] = $doctor->id;
-                $doctorData['doctor'] = $doctor->lastname .' '. $doctor->firstname;
-
-                foreach ($this->testOrders->where('attribuate_doctor_id',$doctorData['id'])->get() as $key) {
-                    $doctorData['assigne']++;
-                }
-                $data = $this->testOrders->where('attribuate_doctor_id',$doctorData['id'])
-                            ->whereHas('report', function($query){
-                                $query->where('status',1);
-                            })
-                            ->get();
-                foreach ($data as $key) {
-                    $doctorData['traite']++;
-                }
-                $doctorDatas [] = $doctorData;
+                $doctorDatas = [];
 
                 $doctorData =[
                     'doctor' => '',
                     'assigne' => 0,
                     'traite' => 0
                 ];
-            }
+
+                foreach (getUsersByRole('docteur') as $doctor)
+                {
+                    $doctorData['id'] = $doctor->id;
+                    $doctorData['doctor'] = $doctor->lastname .' '. $doctor->firstname;
+
+                    foreach ($this->testOrders->where('attribuate_doctor_id',$doctorData['id'])->get() as $key) {
+                        $doctorData['assigne']++;
+                    }
+                    $data = $this->testOrders->where('attribuate_doctor_id',$doctorData['id'])
+                                ->whereHas('report', function($query){
+                                    $query->where('status',1);
+                                })
+                                ->get();
+                    foreach ($data as $key) {
+                        $doctorData['traite']++;
+                    }
+                    $doctorDatas [] = $doctorData;
+
+                    $doctorData =[
+                        'doctor' => '',
+                        'assigne' => 0,
+                        'traite' => 0
+                    ];
+                }
             //Fin statistique
 
             // Tests orders
-            $now = Carbon::now();
-            $today = now()->format('Y-m-d');
-            $testOrdersToday = $this->reports->whereDate('updated_at', $today)->get();
-
-
-            $loggedInUserIds = $this->users->where('is_connect',1)->whereDate('updated_at', '=', $now->toDateString())->get();
+                $now = Carbon::now();
+                $today = now()->format('Y-m-d');
+                $testOrdersToday = $this->reports->whereDate('updated_at', $today)->get();
+                $loggedInUserIds = $this->users->where('is_connect',1)->whereDate('updated_at', '=', $now->toDateString())->get();
             // fin test orders
+
+            //Données par docteur
+                $testOrdersByDoctors = null;
+                $testOrdersByDoctorCount = null;
+                $totalByStatusForDoctor = null;
+                $appointments = null;
+                //total de demandes affectées à un docteur
+                $testOrdersByDoctorCount = TestOrder::where('attribuate_doctor_id',Auth::user()->id)->count();
+
+                //Demandes d'examen affectées à un docteur
+                $testOrdersByDoctors = TestOrder::where('attribuate_doctor_id',Auth::user()->id)->get();
+                $testOrdersByDoctorsToday = TestOrder::where('attribuate_doctor_id',Auth::user()->id)->whereHas('report', function($query) use($today) {
+                    $query->whereDate('updated_at',$today);
+                })->get();
+
+                //Status des demandes affectées à un doctor
+                $totalByStatusForDoctor = TestOrder::where('attribuate_doctor_id',Auth::user()->id)->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+                    ->groupBy('reports.status')
+                    ->select('reports.status', DB::raw('COUNT(*) as total'))
+                    ->get();
+
+                //Rendez-vous par doctor
+                $appointments = Appointment::where('user_id',Auth::user()->id)->where('status','pending')->get();
+
+            //Fin données
 
 
 
@@ -434,7 +458,9 @@ class HomeController extends Controller
                 'crTestOrder','valeurTestOrder',
                 'crInvoice','valeurInvoice','testOrdersToday', 'loggedInUserIds',
                 'totalForCurrentWeek', 'totalForLastWeek', 'totalToday',
-                'examensDemandes','totalByStatus','doctorDatas'
+                'examensDemandes','totalByStatus','doctorDatas',
+                'testOrdersByDoctors','testOrdersByDoctorsToday','testOrdersByDoctorCount',
+                'totalByStatusForDoctor', 'appointments'
             ));
         }
 
