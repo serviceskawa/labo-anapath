@@ -8,15 +8,12 @@
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                @foreach (getRolesByUser(Auth::user()->id) as $role)
                 {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
-
-                @if ($role->name == "rootuser")
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                @if (getOnlineUser()->can('view-add-cashbox-expense'))
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#standard-modal">Approvissier la caisse</button>
-                @break
                 @endif
-                @endforeach
+
 
             </div>
             <h4 class="page-title">Caisse de dépense</h4>
@@ -58,13 +55,9 @@
                             <th>#</th>
                             <th>Date</th>
                             <th>Montant</th>
-                            {{-- <th>Banque</th>
-                            <th>Numéro de chèque</th> --}}
-                            {{-- <th>Facture concernée</th> --}}
+
                             <th>Utilisateur</th>
                             <th>Action</th>
-                            {{-- <th>Description</th> --}}
-                            {{-- <th>Actions</th> --}}
 
                         </tr>
                     </thead>
@@ -78,10 +71,7 @@
                             <td>{{ ++$key }}</td>
                             <td>{{ $item->date }}</td>
                             <td>{{ $item->bank ? $item->amount:'-'.$item->amount }}</td>
-                            {{-- <td>{{ $item->bank ? $item->bank->name :'Néant' }}</td>
-                            <td>{{ $item->cheque_number ? $item->cheque_number : 'Néant' }}</td> --}}
-                            {{-- <td>{{ $item->invoice ? ($item->invoice->order? $item->invoice->order->code:''):'' }}
-                            </td> --}}
+
                             <td>{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
                             <td>
                                 <a class="btn btn-primary" href="#" data-bs-toggle="modal"
@@ -90,13 +80,7 @@
                                 </a>
                                 @include('cashbox.depense.edit_depense',['item' => $item])
                             </td>
-                            {{-- <td>{{ $item->description }}</td> --}}
-                            {{-- <td>
-                                <button type="button" onclick="editVente({{$item->id}})" class="btn btn-primary"><i
-                                        class="mdi mdi-lead-pencil"></i> </button>
-                                <button type="button" onclick="deleteModalVente({{$item->id}})"
-                                    class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
-                            </td> --}}
+                        
 
                         </tr>
                         @endforeach

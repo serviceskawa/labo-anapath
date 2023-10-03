@@ -50,13 +50,7 @@
                             <th>Objet</th>
                             <th>Dernière actualisation</th>
                             <th>Status</th>
-                            {{-- @foreach (getRolesByUser(Auth::user()->id) as $role)
-
-                                @if ($role->name == "rootuser")
-                                    <th>Traité</th>
-                                    @break
-                                @endif
-                            @endforeach --}}
+                           
 
                         </tr>
                     </thead>

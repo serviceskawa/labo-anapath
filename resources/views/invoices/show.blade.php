@@ -76,9 +76,9 @@
                         <div>
                         </div>
                         <div class="table-responsive">
-                            
-                                
-                            
+
+
+
                                 <table class="table mt-4">
                                     <thead>
                                         <tr>
@@ -117,7 +117,7 @@
                                         @endif
                                     </tbody>
                                 </table>
-                            
+
 
                         </div> <!-- end table-responsive-->
                     </div> <!-- end col -->
@@ -143,80 +143,8 @@
 
                     @if ($invoice->contrat)
                         @if ($invoice->contrat->is_close == 1)
-                            @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                @if ($role->name == 'Caissier')
-                                    @if ($settingInvoice != null && $invoice->paid != 1)
-                                        <div>
-                                            <div class="row d-flex align-items-end">
-                                                <div class="col-md-4 col-12">
 
-                                                    <div class="mb-3">
-                                                        <label for="exampleFormControlInput1" class="form-label">Type de
-                                                            paiement</label>
-                                                        <select class="form-select select2" data-toggle="select2"
-                                                            name="payment" value="{{ $invoice->payment }}" id="payment"
-                                                            required>
-                                                            <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
-                                                                value="ESPECES">ESPECES</option>
-                                                            <option
-                                                                {{ $invoice->payment == 'MOBILEMONEY' ? 'selected' : '' }}
-                                                                value="MOBILEMONEY">MOBILE MONEY</option>
-
-                                                            <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
-                                                                value="CHEQUES">CHEQUES</option>
-
-                                                            <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
-                                                                value="VIREMENT">VIREMENT</option>
-                                                            {{-- <option
-                                                                {{ $invoice->payment == 'CARTEBANCAIRE' ? 'selected' : '' }}
-                                                                value="CARTEBANCAIRE">CARTE BANQUAIRE</option>
-                                                            <option {{ $invoice->payment == 'CREDIT' ? 'selected' : '' }}
-                                                                value="CREDIT">CREDIT</option>
-                                                            <option {{ $invoice->payment == 'AUTRE' ? 'selected' : '' }}
-                                                                value="AUTRE">AUTRE</option> --}}
-
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4 col-12">
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Code de la facture normalisée</label>
-                                                        {{-- <input type="text" class="form-control" id="invoice_total"
-                                                    value="{{ number_format(abs($invoice->total), 0, ',', ' ') }}"
-                                                    readonly> --}}
-                                                        <input type="text" name="code" placeholder="Code MECeF/DGI"
-                                                            minlength="24" maxlength="24" id="code"
-                                                            class="form-control">
-                                                    </div>
-                                                </div>
-
-                                                <!-- Verification caisse ferme ou non -->
-                                                <div class="col-md-4 col-12">
-                                                    @if ($cashbox->statut==0)
-                                                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                                        <strong>Caisse fermée - </strong> Veuillez ouvrir la caisse avant de procéder à
-                                                        l'encaissement.
-                                                    </div>
-                                                        @else
-                                                        @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                                            @if ($role->name == "Caissier")
-                                                            <button type="button" onclick="updateStatus()" class="btn btn-success mb-3"><i
-                                                                    class="mdi mdi-cash"></i>
-                                                                Terminer la facture</button>
-                                                            @endif
-                                                        @endforeach
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                @endif
-                            @endforeach
-                        @endif
-                    @else
-                        @foreach (getRolesByUser(Auth::user()->id) as $role)
-                            @if ($role->name == 'Caissier')
+                            @if (getOnlineUser()->can('view-cashier'))
                                 @if ($settingInvoice != null && $invoice->paid != 1)
                                     <div>
                                         <div class="row d-flex align-items-end">
@@ -225,19 +153,22 @@
                                                 <div class="mb-3">
                                                     <label for="exampleFormControlInput1" class="form-label">Type de
                                                         paiement</label>
-                                                    <select class="form-select select2" data-toggle="select2" name="payment"
-                                                        value="{{ $invoice->payment }}" id="payment" required>
+                                                    <select class="form-select select2" data-toggle="select2"
+                                                        name="payment" value="{{ $invoice->payment }}" id="payment"
+                                                        required>
                                                         <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
-                                                                value="ESPECES">ESPECES</option>
-                                                            <option
-                                                                {{ $invoice->payment == 'MOBILEMONEY' ? 'selected' : '' }}
-                                                                value="MOBILEMONEY">MOBILE MONEY</option>
+                                                            value="ESPECES">ESPECES</option>
+                                                        <option
+                                                            {{ $invoice->payment == 'MOBILEMONEY' ? 'selected' : '' }}
+                                                            value="MOBILEMONEY">MOBILE MONEY</option>
 
-                                                            <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
-                                                                value="CHEQUES">CHEQUES</option>
+                                                        <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
+                                                            value="CHEQUES">CHEQUES</option>
 
-                                                            <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
-                                                                value="VIREMENT">VIREMENT</option>
+                                                        <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
+                                                            value="VIREMENT">VIREMENT</option>
+
+
                                                     </select>
                                                 </div>
                                             </div>
@@ -245,14 +176,14 @@
                                             <div class="col-md-4 col-12">
                                                 <div class="mb-3">
                                                     <label class="form-label">Code de la facture normalisée</label>
-                                                    {{-- <input type="text" class="form-control" id="invoice_total"
-                                            value="{{ number_format(abs($invoice->total), 0, ',', ' ') }}"
-                                            readonly> --}}
+
                                                     <input type="text" name="code" placeholder="Code MECeF/DGI"
-                                                        minlength="24" maxlength="24" id="code" class="form-control">
+                                                        minlength="24" maxlength="24" id="code"
+                                                        class="form-control">
                                                 </div>
                                             </div>
-                                                <!-- Verifiaction caisse ferme ou non -->
+
+                                            <!-- Verification caisse ferme ou non -->
                                             <div class="col-md-4 col-12">
                                                 @if ($cashbox->statut==0)
                                                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -260,84 +191,80 @@
                                                     l'encaissement.
                                                 </div>
                                                     @else
-                                                    @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                                        @if ($role->name == "Caissier")
+                                                    @if (getOnlineUser()->can('view-cashier'))
                                                         <button type="button" onclick="updateStatus()" class="btn btn-success mb-3"><i
-                                                                class="mdi mdi-cash"></i>
-                                                            Terminer la facture</button>
-                                                        @endif
-                                                    @endforeach
+                                                            class="mdi mdi-cash"></i>
+                                                        Terminer la facture</button>
+                                                    @endif
+
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
                                 @endif
                             @endif
-                        @endforeach
+
+                        @endif
+                    @else
+
+                        @if (getOnlineUser()->can('view-cashier'))
+                            @if ($settingInvoice != null && $invoice->paid != 1)
+                                <div>
+                                    <div class="row d-flex align-items-end">
+                                        <div class="col-md-4 col-12">
+
+                                            <div class="mb-3">
+                                                <label for="exampleFormControlInput1" class="form-label">Type de
+                                                    paiement</label>
+                                                <select class="form-select select2" data-toggle="select2" name="payment"
+                                                    value="{{ $invoice->payment }}" id="payment" required>
+                                                    <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
+                                                            value="ESPECES">ESPECES</option>
+                                                        <option
+                                                            {{ $invoice->payment == 'MOBILEMONEY' ? 'selected' : '' }}
+                                                            value="MOBILEMONEY">MOBILE MONEY</option>
+
+                                                        <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
+                                                            value="CHEQUES">CHEQUES</option>
+
+                                                        <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
+                                                            value="VIREMENT">VIREMENT</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 col-12">
+                                            <div class="mb-3">
+                                                <label class="form-label">Code de la facture normalisée</label>
+                                                {{-- <input type="text" class="form-control" id="invoice_total"
+                                        value="{{ number_format(abs($invoice->total), 0, ',', ' ') }}"
+                                        readonly> --}}
+                                                <input type="text" name="code" placeholder="Code MECeF/DGI"
+                                                    minlength="24" maxlength="24" id="code" class="form-control">
+                                            </div>
+                                        </div>
+                                            <!-- Verifiaction caisse ferme ou non -->
+                                        <div class="col-md-4 col-12">
+                                            @if ($cashbox->statut==0)
+                                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                                <strong>Caisse fermée - </strong> Veuillez ouvrir la caisse avant de procéder à
+                                                l'encaissement.
+                                            </div>
+                                                @else
+                                                @if (getOnlineUser()->can('view-cashier'))
+                                                    <button type="button" onclick="updateStatus()" class="btn btn-success mb-3"><i
+                                                        class="mdi mdi-cash"></i>
+                                                    Terminer la facture</button>
+                                                @endif
+                                                
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endif
+
                     @endif
-
-
-
-
-                {{-- @if ($invoice->paid == 1 && $settingInvoice->status == 1)
-                <div class="row"
-                    style="border: ridge;border-radius: 5px;border-color: rgb(119, 147, 234);padding: 5px;">
-
-                    <div class="col-lg-8" style="display: flex; padding-left:75px;">
-                        <div id="qrcode"></div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div style="text-align: center">Code MECeFDGI <br> {{ $invoice->codeMecef }} </div>
-                        <div style="display:flex; justify-content:space-between"><span>MECef NIM:</span>
-                            <span>{{ $invoice->nim }}</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between"><span>MECef Compteurs :</span>
-                            {{ $invoice->counters }} </div>
-                        <div style="display:flex; justify-content:space-between"><span>MECef Heure :</span>
-                            {{ $invoice->dategenerate }} </div>
-                    </div>
-                </div>
-                @endif --}}
-
-
-
-                {{-- <div class="d-print-none text-end mt-4">
-                    <div class="text-end" style="float: right;">
-
-                        @if ($invoice->paid != 1)
-
-                        @if ($settingInvoice != null)
-                        @if ($settingInvoice->status != 1)
-                        @foreach (getRolesByUser(Auth::user()->id) as $role)
-                        @if ($role->name == "Caissier")
-                        <div class="d-flex" style="width: 500px;">
-                            <div>
-                                <button type="button" onclick="updateStatus({{$invoice->id}})" class="btn btn-success"
-                                    st><i class="mdi mdi-cash"></i>
-                                    Marqué comme Payé</button>
-
-                            </div>
-                        </div>
-                        @endif
-                        @endforeach
-                        @else
-                        @foreach (getRolesByUser(Auth::user()->id) as $role)
-                        @if ($role->name == "Caissier")
-
-                        <button type="button" onclick="invoicebtn()" class="btn btn-success"><i
-                                class="mdi mdi-cash"></i>
-                            Terminer la facture</button>
-
-                        @endif
-                        @endforeach
-                        @endif
-                        @endif
-
-
-
-                    </div>
-                </div> --}}
-                <!-- end buttons -->
 
 
             </div> <!-- end card-body-->
@@ -412,59 +339,3 @@
     <script src="{{ asset('viewjs/invoice/show.js') }}"></script>
 @endpush
 
-
-{{-- @if ($invoice->paid == 1 && $settingInvoice->status == 1)
-                            <div class="row"
-                                style="border: ridge;border-radius: 5px;border-color: rgb(119, 147, 234);padding: 5px;">
-
-                                <div class="col-lg-8" style="display: flex; padding-left:75px;">
-                                    <div id="qrcode"></div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div style="text-align: center">Code MECeFDGI <br> {{ $invoice->codeMecef }} </div>
-                                    <div style="display:flex; justify-content:space-between"><span>MECef NIM:</span>
-                                        <span>{{ $invoice->nim }}</span>
-                                    </div>
-                                    <div style="display:flex; justify-content:space-between"><span>MECef Compteurs :</span>
-                                        {{ $invoice->counters }} </div>
-                                    <div style="display:flex; justify-content:space-between"><span>MECef Heure :</span>
-                                        {{ $invoice->dategenerate }} </div>
-                                </div>
-                            </div>
-                        @endif --}}
-{{-- <div class="d-print-none text-end mt-4">
-                        <div class="text-end" style="float: right;">
-
-                            @if ($invoice->paid != 1)
-
-                                @if ($settingInvoice != null)
-                                    @if ($settingInvoice->status != 1)
-                                        @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                            @if ($role->name == 'Caissier')
-                                                   <div class="d-flex" style="width: 500px;">
-                                                       <div>
-                                                        <button type="button" onclick="updateStatus({{$invoice->id}})" class="btn btn-success" st><i class="mdi mdi-cash"></i>
-                                                            Marqué comme Payé</button>
-
-                                                       </div>
-                                                   </div>
-                                            @endif
-                                        @endforeach
-                                    @else
-                                        @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                            @if ($role->name == 'Caissier')
-
-                                                    <button type="button" onclick="invoicebtn()" class="btn btn-success"><i
-                                                        class="mdi mdi-cash"></i>
-                                                    Terminer la facture</button>
-
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                @endif
-
-                            @endif
-
-                        </div>
-                    </div> --}}
-<!-- end buttons -->

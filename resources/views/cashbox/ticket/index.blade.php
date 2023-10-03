@@ -95,14 +95,11 @@
                                 <th>Fournisseur</th>
                                 <th>Description</th>
                                 <th>Status</th>
-                                @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                    {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
-
-                                    @if ($role->name == "rootuser")
-                                        <th>Traitement</th>
-                                        @break
-                                    @endif
-                                @endforeach
+                                {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
+                                @if (getOnlineUser()->can('view-process-cashbox-tickets'))
+                                    <th>Traitement</th>
+                                @endif
+                             
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -132,22 +129,19 @@
                                         <span class="badge bg-danger">Décliné</span>
                                         @endif
                                     </td>
-                                    @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                        {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
+                                    {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
+                                    @if (getOnlineUser()->can('view-process-cashbox-tickets'))
+                                        <td >
 
-                                        @if ($role->name == "rootuser")
-                                            <td >
+                                            <select class="form-select " id="example-select" onchange="updateStatusTicket({{$ticket->id}})">
+                                                <option {{ $ticket->status == 'en attente' ? 'selected':'' }} value='en attente'>En attente</option>
+                                                <option {{ $ticket->status == 'approuve' ? 'selected':'' }}  value='approuve'>Approuvée</option>
+                                                <option {{ $ticket->status == 'rejete' ? 'selected':'' }} value='rejete'>Décliné</option>
+                                            </select>
 
-                                                <select class="form-select " id="example-select" onchange="updateStatusTicket({{$ticket->id}})">
-                                                    <option {{ $ticket->status == 'en attente' ? 'selected':'' }} value='en attente'>En attente</option>
-                                                    <option {{ $ticket->status == 'approuve' ? 'selected':'' }}  value='approuve'>Approuvée</option>
-                                                    <option {{ $ticket->status == 'rejete' ? 'selected':'' }} value='rejete'>Décliné</option>
-                                                </select>
+                                        </td>
+                                    @endif
 
-                                            </td>
-                                            @break
-                                        @endif
-                                    @endforeach
 
                                     <td>
                                         <a class="btn btn-primary" href="#" data-bs-toggle="modal"
@@ -158,24 +152,6 @@
                                         <a type="button" href="{{ route('cashbox.ticket.details.index',$ticket->id) }}"
                                             class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i>
                                         </a>
-
-                                        {{-- @if ($ticket->status == "en attente")
-                                            @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                                @if ($role->name == "rootuser")
-                                                    <a type="button" href="{{ route('cashbox.ticket.status.update',['id'=>$ticket->id,'status'=>"approuve"]) }}"
-                                                        class="btn btn-success"><i class="mdi mdi-lead-pencil"></i>
-                                                    </a>
-                                                    <a type="button" href="{{ route('cashbox.ticket.status.update',['id'=>$ticket->id,'status'=>"rejete"]) }}"
-                                                        class="btn btn-warning"><i class="mdi mdi-lead-pencil"></i>
-                                                    </a>
-                                                    @break
-                                                @endif
-                                            @endforeach
-
-                                            <button type="submit" onclick="deleteTicket({{ $ticket->id }})"
-                                                class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i>
-                                            </button>
-                                        @endif --}}
 
                                     </td>
                                 </tr>
@@ -259,211 +235,3 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 @endpush
-
-{{-- @push('extra-js')
-    <script type="text/javascript">
-        var baseUrl = "/";
-
-        // SUPPRESSION
-        function deleteModal(id) {
-
-            Swal.fire({
-                title: "Voulez-vous supprimer l'élément ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Oui ",
-                cancelButtonText: "Non !",
-            }).then(function(result) {
-                if (result.value) {
-                    window.location.href = "{{ url('detail-prestations/delete') }}" + "/" + id;
-                    Swal.fire(
-                        "Suppression !",
-                        "En cours de traitement ...",
-                        "success"
-                    )
-                }
-            });
-        }
-
-        /* DATATABLE */
-        $(document).ready(function() {
-
-            $('#datatable1').DataTable({
-                "order": [
-                    [7, "desc"]
-                ],
-                "columnDefs": [{
-                    "targets": [0],
-                    "searchable": false
-                }],
-                "language": {
-                    "lengthMenu": "Afficher _MENU_ enregistrements par page",
-                    "zeroRecords": "Aucun enregistrement disponible",
-                    "info": "Afficher page _PAGE_ sur _PAGES_",
-                    "infoEmpty": "Aucun enregistrement disponible",
-                    "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-                    "sSearch": "Rechercher:",
-                    "paginate": {
-                        "previous": "Précédent",
-                        "next": "Suivant"
-                    }
-                },
-            });
-
-        });
-
-
-        $('#addDetailForm').on('submit', function(e) {
-            e.preventDefault();
-
-            let prestation_order_id = $('#prestation_order_id').val();
-            let patient_id = $('#patient_id').val();
-            let prestation_id = $('#prestation_id').val();
-            let price = $('#price').val();
-            let remise = $('#remise').val();
-            let mont = $('#mont').val();
-            console.log(prestation_id);
-
-            $.ajax({
-                url: "{{ route('details_prestation_order.store') }}",
-                // url: baseUrl+"/prestation_order/details",
-                type: "POST",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    prestation_order_id: prestation_order_id,
-                    patient_id: patient_id,
-                    prestation_id: prestation_id,
-                    price: price,
-                    remise: remise,
-                    total: mont,
-                },
-                success: function(response) {
-                    $('#addDetailForm').trigger("reset")
-                    if (response) {
-                        console.log(response);
-                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-                        location.reload();
-                    };
-                },
-                // error: function(response) {
-                //     console.log(response)
-                // },
-                error: function(xhr, status, error) {
-                    console.log(xhr.responseText);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
-        });
-
-        //EDITION
-        // function edit(id) {
-        //     var e_id = id;
-        //     // var baseUrl = "{{ url('/') }}";
-        //     // Populate Data in Edit Modal Form
-        //     $.ajax({
-        //         type: "GET",
-        //         // url: "{{ url('prestations_order/edit') }}" + '/' + e_id,
-        //         url: baseUrl+"prestations_order/edit/"+e_id,
-        //         success: function(data) {
-        //             var code = document.getElementById('code');
-        //             code.innerHTML = data.data.code;
-        //             $('#prestation_order_id').val(data.data.id);
-        //             var patient = data.patient.firstname + ' ' + data.patient.lastname;
-        //             $('#patient_id').val(patient);
-        //             var contrat = data.contrat.name;
-        //             $('#contrat').val(contrat);
-        //             console.log(data.data.contrat_id);
-        //             $('#contrat_id').val(data.data.contrat_id);
-        //             $('#prestation_id').val(data.prestation_id);
-        //             console.log(data);
-        //             $('#editModal').modal('show');
-        //         },
-        //         error: function(data) {
-        //             console.log('Error:', data);
-        //         }
-        //     });
-        // }
-
-        //EDITION PRESTATION
-        function editprestation(prestation_order_id, prestation_id, row) {
-            var e_id = prestation_id;
-            var order_id = prestation_order_id;
-            var rowID = row;
-            // var baseUrl = "{{ url('/') }}";
-            $.ajax({
-                type: "GET",
-                // url: "{{ url('prestations/edit') }}" + '/' + e_id,
-                url: baseUrl+"prestations_order/edit/"+e_id,
-                success: function(data) {
-
-                    $('#prestation_id2').val(data.id);
-                    $('#total2').val(data.price);
-                    $('#rowID').val(rowID);
-                    $('#prestation_order_id2').val(order_id);
-                    $('#editModal2').modal('show');
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                }
-            });
-        }
-
-        // SUPPRESSION
-        function deleteprestation(prestation_order_id, prestation_id, row) {
-            var prestation_id = prestation_id;
-            var order_id = prestation_order_id;
-            var rowID = row;
-
-            $.ajax({
-                url: "{{ route('prestations_order.destroyDetail') }}",
-                type: "POST",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    prestation_order_id: order_id,
-                    prestation_id: prestation_id,
-                    rowID: rowID,
-
-                },
-                success: function(response) {
-
-                    if (response) {
-                        console.log(response);
-                        toastr.success("Supprimé avec succès", 'Suppression réussi');
-                        location.reload();
-                    }
-                    //$('#datatable1').DataTable().ajax.reload();
-                    // $('#addDetailForm').trigger("reset")
-                    // updateSubTotal();
-                },
-                error: function(response) {
-                    console.log(response)
-                },
-            });
-
-        }
-
-        function getTest() {
-            var prestation_id = $('#prestation_id').val();
-
-
-            $.ajax({
-                type: "POST",
-                url: "{{ route('prestations_order.getPrestationOrder') }}",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    prestationId: prestation_id,
-                },
-                success: function(data) {
-                    console.log(data.total);
-                    $('#total').val(data.total);
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                }
-            });
-
-        }
-    </script>
-    <script src="{{asset('viewjs/prestation/prestationorder.js')}}"></script>
-@endpush --}}

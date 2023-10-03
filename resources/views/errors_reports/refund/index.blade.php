@@ -85,31 +85,29 @@
                                         <td>
                                             <div class="row">
                                                 <div class="col-6">
-                                                    @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                                        @if ($role->name == 'rootuser')
-                                                            @if ($item->status  == 'En attente' || $item->status =='Aprouvé' || $item->status == 'Rejeté')
-                                                                <select class="form-select " id="refund_status"
-                                                                        onchange="updateStatusRefund({{ $item->id }})">
-                                                                        <option {{ $item->status == 'En attente' ? 'selected' : '' }}
-                                                                            value="En attente">En
-                                                                            attente</option>
-                                                                        <option {{ $item->status == 'Approuvé' ? 'selected' : '' }}
-                                                                            value="Aprouvé">Acceptée
-                                                                        </option>
-                                                                        <option {{ $item->status == 'Rejeté' ? 'selected' : '' }}
-                                                                            value="Rejeté">Refusée
-                                                                        </option>
 
-                                                                    </select>
-                                                            @endif
+                                                    @if (getOnlineUSer()->can('view-process-refund-reques'))
+                                                        @if ($item->status  == 'En attente' || $item->status =='Aprouvé' || $item->status == 'Rejeté')
+                                                            <select class="form-select " id="refund_status"
+                                                                    onchange="updateStatusRefund({{ $item->id }})">
+                                                                    <option {{ $item->status == 'En attente' ? 'selected' : '' }}
+                                                                        value="En attente">En
+                                                                        attente</option>
+                                                                    <option {{ $item->status == 'Approuvé' ? 'selected' : '' }}
+                                                                        value="Aprouvé">Acceptée
+                                                                    </option>
+                                                                    <option {{ $item->status == 'Rejeté' ? 'selected' : '' }}
+                                                                        value="Rejeté">Refusée
+                                                                    </option>
 
-                                                            @break
+                                                                </select>
                                                         @endif
-                                                    @endforeach
+                                                    @endif
+
                                                 </div>
 
-                                                <div class="col-6">
-                                                    <a class="btn btn-primary" href="#" data-bs-toggle="modal"
+                                                <div class="col-6 d-flex">
+                                                    <a class="btn btn-primary" style="margin-right: 10px" href="#" data-bs-toggle="modal"
                                                         data-bs-target="#bs-example-show-{{ $item->id }}"><i
                                                             class="mdi mdi-eye"></i>
                                                     </a>
