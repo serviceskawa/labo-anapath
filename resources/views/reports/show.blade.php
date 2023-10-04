@@ -249,6 +249,7 @@
                     <div class="card mb-md-0 mb-3 mt-3">
                         <h5 class="card-header">Signataires du compte rendu<span style="color:red;">*</span></h5>
                         <div class="card-body">
+
                             <div class="row my-3">
                                 <div class="">
                                     <div class="my-3  form-check-inline">
@@ -257,7 +258,7 @@
                                             <option value="">Selectionner un docteur</option>
                                             @foreach (getUsersByRole('docteur') as $item)
                                                 <option value="{{ $item->id }}"
-                                                    {{ $report->signatory1 == $item->id ? 'selected' : '' }}>
+                                                    {{ $report->order->attribuate_doctor_id == $item->id ? 'selected' : '' }} >
                                                     {{ $item->lastname }} {{ $item->firstname }}
                                                 </option>
                                             @endforeach
@@ -276,6 +277,7 @@
                                             @endforeach
                                         </select>
                                     </div>
+
                                     <div class="m-3 form-check-inline">
                                         <label for="example-fileinput" class="form-label">Signataire 3</label>
                                         <select name="doctor_signataire3" id="doctor_signataire3" class="form-control">
@@ -291,7 +293,38 @@
 
                                 </div>
                             </div>
-                            <div class="row">
+
+                            <div class="row mb-3" style="padding-right: 1px; flex-wrap:nowrap">
+                                <div class="col-3 mt-3 form-check-inline">
+                                    {{-- <label for="example-fileinput" class="form-label">Assigner un réviseur</label> --}}
+                                    <select name="reviewed_by_user_id" {{App\Models\SettingApp::where('key','report_review_title')->first()->value =='' ? 'disabled':''}} id="reviewed_by_user_id" class="form-control">
+                                        <option value="">Assigner un réviseur</option>
+                                        @foreach (getUsersByRole('docteur') as $item)
+                                            @if ($report->order->attribuate_doctor_id != $item->id)
+                                                <option value="{{ $item->id }}"
+                                                    {{ $report->reviewed_by_user_id == $item->id ? 'selected' : '' }}>
+                                                    {{ $item->lastname }} {{ $item->firstname }}
+                                                </option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-3 mt-3">
+                                    <input type="hidden" name="status" id="status" value="{{$report->status}}">
+                                    {{-- <button type="button" id="btn-status" class="btn" {{ Auth::user()->id != $report->order->attribuate_doctor_id ? 'disabled':'' }} >Marqué comme En attente</button> --}}
+                                    <button type="button" id="btn-status" class="btn" >Marqué comme En attente</button>
+                                </div>
+                                @if(App\Models\SettingApp::where('key','report_review_title')->first()->value =='')
+                                <div class="col-6 mt-2 alert alert-warning alert-dismissible fade show" role="alert">
+                                    <strong>Revue de rapport - </strong> Veuillez enregistrer un revue de rapport.
+                                </div>
+                                @endif
+                            </div>
+
+
+
+
+                            {{-- <div class="row">
                                 <div class="mb-3">
                                     <label for="simpleinput" class="form-label mb-3">Etat du compte rendu<span
                                             style="color:red;">*</span></label>
@@ -303,8 +336,9 @@
                                         </option>
                                     </select>
                                 </div>
-                            </div>
-                            <button type="submit" class="btn btn-warning w-100 mt-3">Mettre à jour</button>
+                            </div> --}}
+                            {{-- <button type="submit"{{ Auth::user()->id != $report->order->attribuate_doctor_id ? 'disabled':'' }} class="btn btn-warning w-100 mt-3">Mettre à jour</button> --}}
+                            <button type="submit"class="btn btn-warning w-100 mt-3">Mettre à jour</button>
                         </div>
                     </div>
 
@@ -417,6 +451,45 @@
 @endsection
 
 @push('extra-js')
+
+    <script>
+        /* DATATABLE */
+        $(document).ready(function() {
+            var status = $('#status').val()
+            var btnStatus = document.getElementById('btn-status');
+            if (status == 0) {
+                if (btnStatus.classList.contains("btn-warning")) {
+                    btnStatus.classList.remove("btn-warning");
+                }
+                btnStatus.classList.add("btn-success");
+                btnStatus.textcontent = "Marqué comme Terminé"
+            }else{
+                if (btnStatus.classList.contains("btn-success")) {
+                    btnStatus.classList.remove("btn-success");
+                }
+                btnStatus.classList.add("btn-warning");
+                btnStatus.textcontent = "Marqué comme En attente"
+            }
+            $('#btn-status').on('click',function(){
+                if ($('#status').val() ==0) {
+                    $('#status').val(1)
+                    if (btnStatus.classList.contains("btn-success")) {
+                        btnStatus.classList.remove("btn-success");
+                    }
+                    btnStatus.classList.add("btn-warning");
+                    btnStatus.textcontent = "Marqué comme En attente"
+                }else{
+                    $('#status').val(0)
+                    if (btnStatus.classList.contains("btn-warning")) {
+                        btnStatus.classList.remove("btn-warning");
+                    }
+                    btnStatus.classList.add("btn-success");
+                    btnStatus.textcontent = "Marqué comme En attente"
+                }
+            })
+        })
+    </script>
+
     <script>
         const report = {!! json_encode($report) !!}
         var code = {!! json_encode($report->code) !!}

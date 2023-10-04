@@ -161,11 +161,11 @@
                                 </li>
                                 @endif
 
-                                <li>
+                                {{-- <li>
                                     <a href="{{ route('log.report-index') }}">
                                         <span> Historiques</span>
                                     </a>
-                                </li>
+                                </li> --}}
                                 <li>
                                     <a href="{{ route('settings.report-index') }}">Paramètres </a>
                                 </li>

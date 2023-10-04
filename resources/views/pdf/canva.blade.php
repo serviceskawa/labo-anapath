@@ -115,36 +115,56 @@ date_default_timezone_set('Europe/Paris');
 
     <div style="">
         <table style="width: 100%;">
-            <tr>
+            @if ($status !=0)
+                <tr>
 
-                <td style="text-align: center;    width: 25%">
-                    @if ($signatory1 != null)
-                        @if ($signature1 != null)
-                            <img width="85" src="{{ asset('storage/' . $signature1) }}" alt="">
+
+                    <td style="text-align: center;    width: 25%">
+                        @if ($signatory1 != null)
+                            @if ($signature1 != null)
+                                <img width="85" src="{{ asset('storage/' . $signature1) }}" alt="">
+                            @endif
+                            <br><br>{{ $signatory1 }}
                         @endif
-                        <br><br>{{ $signatory1 }}
-                    @endif
-                </td>
+                    </td>
 
-                <td style="text-align: center;    width: 25%">
-                    @if ($signatory2 != null)
-                        @if ($signature2 != null)
-                            <img width="85" src="{{ asset('storage/' . $signature2) }}" alt="">
+                    <td style="text-align: center;    width: 25%">
+                        @if ($signatory2 != null)
+                            @if ($signature2 != null)
+                                <img width="85" src="{{ asset('storage/' . $signature2) }}" alt="">
+                            @endif
+                            <br><br>{{ $signatory2 }}
                         @endif
-                        <br><br>{{ $signatory2 }}
-                    @endif
 
-                </td>
+                    </td>
 
-                <td style="text-align: center;    width: 25%">
-                    @if ($signatory3 != null)
-                        @if ($signature3 != null)
-                            <img width="85" src="{{ asset('storage/' . $signature3) }}" alt="">
+                    <td style="text-align: center;    width: 25%">
+                        @if ($signatory3 != null)
+                            @if ($signature3 != null)
+                                <img width="85" src="{{ asset('storage/' . $signature3) }}" alt="">
+                            @endif
+                            <br><br>{{ $signatory3 }}
                         @endif
-                        <br><br>{{ $signatory3 }}
-                    @endif
-                </td>
-            </tr>
+                    </td>
+
+
+                </tr>
+                <tr>
+                    <td style="text-align: center;    width: 25%">
+                        @if ($revew_by != null)
+                            {{-- @if ($revew_by_signature != null)
+                                <img width="85" src="{{ asset('storage/' . $revew_by_signature) }}" alt="">
+                            @endif --}}
+                            <strong>{{ $report_review_title }}</strong>
+                            <br>{{ $revew_by }}
+                        @endif
+                    </td>
+                </tr>
+            @else
+                <tr>
+                    
+                </tr>
+            @endif
         </table>
         <!--@if ($test_affiliate != '')
 Examen Référence: {{ $test_affiliate }}

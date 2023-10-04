@@ -18,7 +18,9 @@
             </div>
             <h4 class="page-title"></h4>
         </div>
+        @include('settings.report.create')
 
+        @include('settings.report.edit')
 
     </div>
 </div>
@@ -51,6 +53,13 @@
                             <a href="#basictab3" id="mobile" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
                                 <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i>
                                 <span class="d-none d-sm-inline">Communication Mobile</span>
+                            </a>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="#basictab5" id="mobile" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
+                                <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i>
+                                <span class="d-none d-sm-inline">Compte rendu</span>
                             </a>
                         </li>
 
@@ -317,6 +326,120 @@
 
                                 </div>
                             </div>
+
+                            <div class="tab-pane" id="basictab5">
+
+                                    <input type="hidden" name="nbrform" value="1">
+                                    <div id="basicwizard5">
+
+                                        <ul class="nav nav-pills nav-justified form-wizard-header mb-4">
+                                            <li class="nav-item">
+                                                <a href="#general3" id="generalcr" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
+                                                    <i class="mdi mdi-account-circle me-1"></i>
+                                                    <span class="d-none d-sm-inline">Général</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="#general4" id="titre" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
+                                                    <i class="mdi mdi-face-profile me-1"></i>
+                                                    <span class="d-none d-sm-inline">Titre</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <div class="tab-content1 b-0 mb-0">
+                                            <div class="tab-pane" id="general3" style="display: block">
+                                                <form action="{{route('settings.store')}}" method="post" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <input type="hidden" name="nbrform" value="4">
+                                                    <div class="row">
+                                                        <div class=" mb-3">
+                                                            <div class="input-group flex-nowrap">
+                                                                <span class="input-group-text" id="basic-addon1"><i class="mdi mdi-book-edit"></i></span>
+                                                                <input type="text" class="form-control" placeholder="Pied de page du rapport" value="{{$report_footer->value}}" aria-label="report_footer" name="report_footer" aria-describedby="basic-addon1">
+                                                            </div>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <div class="input-group flex-nowrap">
+                                                                <span class="input-group-text" id="basic-addon1"><i class="mdi mdi-google-maps"></i></span>
+                                                                <input type="text" class="form-control" value="{{$report_review_title->value}}" placeholder="Revue du rapport" aria-label="report_review_title" name="report_review_title" aria-describedby="basic-addon1">
+                                                            </div>
+                                                        </div>
+                                                    </div> <!-- end row -->
+                                                    <div style="padding-bottom: 10px;padding-top:10px">
+                                                        <button type="submit" class="btn btn-primary">Enrégistrer <i class="mdi mdi-check-all"></i></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                            <div class="tab-pane" id="general4" style="display: none">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                            <div class="page-title-box">
+                                                                <div class="page-title-right mr-3 mb-1">
+                                                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                                        data-bs-target="#standard-modal">Ajouter un nouveau titre</button>
+                                                                </div>
+                                                                <h4 class="page-title"></h4>
+                                                            </div>
+
+
+                                                    </div>
+                                                </div>
+                                                <div class="card mb-md-0 mb-3">
+                                                    <div class="card-body">
+                                                        <div class="card-widgets">
+                                                            <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
+                                                            <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false"
+                                                                aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
+                                                            <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                                                        </div>
+                                                        <h5 class="card-title mb-0">Liste des Titres</h5>
+
+                                                        <div id="cardCollpase1" class="collapse pt-3 show">
+
+
+                                                            <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                                                                <thead class="col-lg-12" style="text-align: center;">
+                                                                    <tr>
+                                                                        <th class="col-lg-2">#</th>
+                                                                        <th class="col-lg-6">Titres</th>
+                                                                        <th class="col-lg-4">Actions</th>
+
+                                                                    </tr>
+                                                                </thead>
+
+
+                                                                <tbody>
+
+                                                                    @foreach ($titles as $item)
+                                                                        <tr>
+                                                                            <td>{{ $item->id }}</td>
+                                                                            <td style="font-weight:{{ $item->status !=0 ? 'bold':'' }}">{{ $item->title }} {{ $item->status !=0 ? '(Par defaut)':'' }}</td>
+                                                                            <td>
+                                                                                <button type="button" onclick="edit({{ $item->id }})"
+                                                                                    class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
+                                                                                <button type="button" onclick="deleteModal({{ $item->id }})"
+                                                                                    class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
+                                                                            </td>
+
+                                                                        </tr>
+                                                                    @endforeach
+
+                                                                </tbody>
+                                                            </table>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div> <!-- end card-->
+                                            </div>
+                                        </div> <!-- tab-content -->
+                                    </div> <!-- end #basicwizard-->
+
+
+                            </div>
+
                         </div> <!-- tab-content -->
                     </div>
                 </div>
@@ -334,11 +457,14 @@
     var baseUrl = "{{ url('/') }}";
 </script>
 <script src="{{asset('viewjs/setting/app.js')}}"></script>
+<script src="{{asset('viewjs/setting/report.js')}}"></script>
 
 <script>
     var titleHeader = document.getElementById('titleHeader');
     var general1 = document.getElementById('general1');
     var general2 = document.getElementById('general2');
+    var general3 = document.getElementById('general3');
+    var general4 = document.getElementById('general4');
     $('#general').on('click', function(){
         titleHeader.textContent = "Général"
     })
@@ -358,6 +484,15 @@
     $('#logo').on('click', function(){
         general1.style.display = "none"
         general2.style.display = "block";
+    })
+
+    $('#generalcr').on('click', function(){
+        general4.style.display = "none"
+        general3.style.display = "block";
+    })
+    $('#titre').on('click', function(){
+        general3.style.display = "none"
+        general4.style.display = "block";
     })
 
 

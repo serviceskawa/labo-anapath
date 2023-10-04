@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AssignedReviewer;
 use App\Models\AppelByReport;
+use App\Models\Cashbox;
 use App\Models\Report;
 
 //use App\Models\Contrat;
@@ -87,6 +89,10 @@ class ReportController extends Controller
         $doctor_signataire1 = $request->doctor_signataire1;
         $doctor_signataire2 = $request->doctor_signataire2;
         $doctor_signataire3 = $request->doctor_signataire3;
+        $revew_by = null;
+        if (!empty($request->reviewed_by_user_id)) {
+            $revew_by = $request->reviewed_by_user_id;
+        }
         $user = Auth::user();
 
         $report = $this->report->findorfail($request->report_id);
@@ -97,12 +103,23 @@ class ReportController extends Controller
                 'signatory1' => $doctor_signataire1,
                 'signatory2' => $doctor_signataire2,
                 'signatory3' => $doctor_signataire3,
+                'reviewed_by_user_id' => $revew_by,
                 'status' => $request->status == '1' ? '1' : '0',
                 'title' => $request->title,
                 'description_supplementaire' => $request->description_supplementaire != '' ? $request->description_supplementaire : '',
                 'description_supplementaire_micro' => $request->description_supplementaire_micro != '' ? $request->description_supplementaire_micro : '',
             ])
             ->save();
+            if (!empty($request->reviewed_by_user_id)) {
+                $user = User::find($request->reviewed_by_user_id);
+                $data = [
+                    'user_name' => $user->fullname(),
+                    'report_title' => $request->title,
+                    'report_test_order' => $report->order->code
+                ];
+                event(new AssignedReviewer($request->reviewed_by_user_id,$data));
+            }
+
 
         $log = new LogReport();
         $log->operation = 'Mettre à jour ';
@@ -134,8 +151,9 @@ class ReportController extends Controller
             ->latest()
             ->get();
         $setting = $this->setting->find(1);
+        $cashbox = Cashbox::find(2);
         config(['app.name' => $setting->titre]);
-        return view('reports.show', compact('report', 'setting', 'templates', 'titles', 'logs'));
+        return view('reports.show', compact('report', 'setting', 'templates', 'titles', 'logs','cashbox'));
     }
 
     // public function send_sms($id)
@@ -197,6 +215,10 @@ class ReportController extends Controller
             $signatory1 = $this->user->findorfail($report->signatory1);
         }
 
+        if ($report->reviewed_by_user_id != 0) {
+            $reviewed_by_user = $this->user->findorfail($report->reviewed_by_user_id);
+        }
+
         if ($report->signatory2 != 0) {
             $signatory2 = $this->user->findorfail($report->signatory2);
         }
@@ -242,7 +264,11 @@ class ReportController extends Controller
             'patient_age' => $report->patient->age,
             'patient_year_or_month' => $year_month,
             'patient_genre' => $report->patient->genre,
-            'footer' => $setting->footer,
+            'status' => $report->status,
+            'revew_by' => $report->reviewed_by_user_id !=0 ? $reviewed_by_user->lastname . ' ' . $reviewed_by_user->firstname:'',
+            'revew_by_signature' => $report->reviewed_by_user_id !=0 ? $reviewed_by_user->signature:'',
+            'report_review_title' => SettingApp::where('key','report_review_title')->first()->value,
+            'footer' => SettingApp::where('key','report_footer')->first()->value,
             'hospital_name' => $report->order ? $report->order->hospital->name : '',
             'doctor_name' => $report->order ? $report->order->doctor->name : '',
             'created_at' => date_format($report->created_at, 'd/m/Y'),

@@ -1,65 +1,4 @@
-{{-- <!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-
-<body style="background-color:rgb(236, 239, 246); text-align:center; display:flex-col; justify-content:center; padding-left:150px;padding-right:150px;padding-top:25px;padding-bottom:50px">
-    <div style="margin-bottom: 25px; font-size: 20px"><strong>Labocaap</strong></div>
-    <div style=" padding:50px; margin-left:50px; margin-right:50px; text-align:center ;background-color:rgb(255, 255, 255);">
-        <h1 style="font-size: 20px">Confirmez votre adresse électronique</h1>
-        <p style="font-size: 15px; color:rgb(150, 152, 155)">Votre code de confirmation se trouve ci-dessous - saisissez-le dans la fenêtre ouverte de votre navigateur et
-            nous vous aiderons à vous connecter.</p>
-        <div style="text-align: center; font-size:45px;">
-            <h2 style="background-color:rgb(210, 225, 240);">{{ $user['opt'] }} </h2>
-        </div>
-        <p style="font-size: 20px; color:rgb(150, 152, 155)">Si vous n'avez pas demandé cet e-mail, il n'y a pas lieu de s'inquiéter - vous pouvez l'ignorer en toute
-            sécurité.</p>
-    </div>
-</body>
-
-</html> --}}
-
-<!--
-==================== Respmail ====================
-Respmail is a response HTML email designed to work
-on all major devices and responsive for smartphones
-that support media queries.
-
-** NOTE **
-This template comes with a lot of standard features
-that has been thoroughly tested on major platforms
-and devices, it is extremely flexible to use and
-can be easily customized by removing any row that
-you do not need.
-
-it is gauranteed to work 95% without any major flaws,
-any changes or adjustments should thoroughly be
-tested and reviewed to match with the general
-structure.
-
-** Profile **
-Licensed under MIT (https://github.com/charlesmudy/responsive-html-email-template/blob/master/LICENSE)
-Designed by Shina Charles Memud
-Respmail v1.2 (http://charlesmudy.com/respmail/)
-
-** Quick modification **
-We are using width of 500 for the whole content,
-you can change it any size you want (e.g. 600).
-The fastest and safest way is to use find & replace
-Sizes: [
-		wrapper   : '500',
-		columns   : '210',
-		x-columns : [
-						left : '90',
-						right: '350'
-				]
-		}
-	-->
 
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 	<html lang="en" xml:lang="en" dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"> <!-- sets the language of the email, but as email clients often strip the <html> element it’s also important to set a lang on a body wrapping element -->
@@ -69,7 +8,7 @@ Sizes: [
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="x-apple-disable-message-reformatting"><!-- This meta tag prevents the Apple auto-scaling emails bug  -->
 		 <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no"> <!-- disable auto telephone, adress, email and date linking in iOS -->
-		<title>Respmail is a response HTML email designed to work on all major email platforms and smartphones</title>
+		<title>Notification de réviseur de compte rendu</title>
 		<style type="text/css">
 			/* RESET STYLES */
 			html { background-color:#E1E1E1; margin:0; padding:0; }
@@ -286,8 +225,7 @@ Sizes: [
 															<table border="0" cellpadding="30" cellspacing="0" width="100%">
 																<tr>
 																	<td align="center" valign="top" class="textContent">
-																		<h1 style="color:#FFFFFF;line-height:100%;font-family:Helvetica,Arial,sans-serif;font-size:25px;font-weight:normal;margin-bottom:5px;text-align:center;">Confirmez votre adresse électronique</h1>
-
+																		<h1 style="color:#FFFFFF;line-height:100%;font-family:Helvetica,Arial,sans-serif;font-size:25px;font-weight:normal;margin-bottom:5px;text-align:center;">Notification de réviseur de compte rendu</h1>
 																	</td>
 																</tr>
 															</table>
@@ -324,8 +262,19 @@ Sizes: [
 																		<table border="0" cellpadding="0" cellspacing="0" width="100%">
 																			<tr>
 																				<td valign="top" class="textContent">
-																					<div style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;margin-top:3px;color:#5F5F5F;line-height:135%;">Votre code de confirmation se trouve ci-dessous - saisissez-le dans la fenêtre ouverte de votre navigateur et
-                                                                                        nous vous aiderons à vous connecter.</div>
+																					<div style="text-align:justify;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;margin-top:3px;color:#5F5F5F;line-height:135%;">
+                                                                                        <p>Bonjour {{ $data['user_name'] }},</p> <br>
+                                                                                        <p>Vous avez été ajouté comme réviseur au compte rendu suivant :</p>
+                                                                                        <p><strong>Titre du compte rendu :</strong> {{$data['report_title']}}</p>
+                                                                                        <p><strong>Demande d'examen :</strong> {{$data['report_test_order']}} </p>
+
+                                                                                        <p>Merci de prendre le temps de réviser ce compte rendu et de fournir vos commentaires. Votre contribution est très appréciée.</p>
+
+                                                                                        <p>Si vous avez des questions ou des commentaires, n'hésitez pas à nous contacter.</p>
+
+                                                                                        <p>Merci,</p>
+                                                                                        <p> {{$lab['value']}} </p>
+                                                                                    </div>
 																				</td>
 																			</tr>
 																		</table>
@@ -346,39 +295,7 @@ Sizes: [
 							</tr>
 							<!-- // MODULE ROW -->
 
-							<!-- MODULE ROW // -->
-							<tr>
-								<td align="center" valign="top">
-									<!-- CENTERING TABLE // -->
-									<table border="0" cellpadding="0" cellspacing="0" width="100%">
-										<tr style="padding-top:0;">
-											<td align="center" valign="top">
-												<!-- FLEXIBLE CONTAINER // -->
-												<table border="0" cellpadding="30" cellspacing="0" width="500" class="flexibleContainer">
-													<tr>
-														<td style="padding-top:0;" align="center" valign="top" width="500" class="flexibleContainerCell">
 
-															<!-- CONTENT TABLE // -->
-															<table border="0" cellpadding="0" cellspacing="0" width="50%" class="emailButton" style="background-color: #3498DB;">
-																<tr>
-																	<td align="center" valign="middle" class="buttonContent" style="padding-top:15px;padding-bottom:15px;padding-right:15px;padding-left:15px;">
-																		<div style="color:#FFFFFF;text-decoration:none;font-family:Helvetica,Arial,sans-serif;font-size:20px;line-height:135%;" href="#" target="_blank">{{ $user['opt'] }}</div>
-																	</td>
-																</tr>
-															</table>
-															<!-- // CONTENT TABLE -->
-
-														</td>
-													</tr>
-												</table>
-												<!-- // FLEXIBLE CONTAINER -->
-											</td>
-										</tr>
-									</table>
-									<!-- // CENTERING TABLE -->
-								</td>
-							</tr>
-							<!-- // MODULE ROW -->
 
 							<!-- MODULE ROW // -->
 							<tr>
@@ -427,7 +344,7 @@ Sizes: [
 
 						<table bgcolor="#E1E1E1" border="0" cellpadding="0" cellspacing="0" width="500" id="emailFooter">
 
-							
+
 							<tr>
 								<td align="center" valign="top">
 									<!-- CENTERING TABLE // -->

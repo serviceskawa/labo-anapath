@@ -84,8 +84,8 @@ public function __construct(
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        
-        // https://api.getourvoice.com/v1/calls?page=1&limit=10&filter[direction]=outgoing&time_from=2023-09-17&time_to=2023-09-20 
+
+        // https://api.getourvoice.com/v1/calls?page=1&limit=10&filter[direction]=outgoing&time_from=2023-09-17&time_to=2023-09-20
 
         // Récupération des données nécessaires
         $examens = $this->testOrder->with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
@@ -100,13 +100,13 @@ public function __construct(
         // Affichage de la vue
         return view('examens.index', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
     }
-    
+
     public function getEvent()
     {
         $setting = $this->setting->find(1);
         $client = new Client();
         $accessToken = $setting->api_key_ourvoice;
-       
+
         $responsevocal = $client->request('GET', 'https://api.getourvoice.com/v1/calls?page=1&limit=10&filter[direction]=outgoing&time_from=2023-09-15&time_to=2023-09-20 ', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
@@ -114,7 +114,7 @@ public function __construct(
                 'Accept' => 'application/json',
             ],
             'json' => [
-                
+
             ],
         ]);
         $responsevocal1 = $client->request('GET', 'https://api.getourvoice.com/v1/calls?page=2&limit=10&filter[direction]=outgoing&time_from=2023-09-15&time_to=2023-09-20 ', [
@@ -124,7 +124,7 @@ public function __construct(
                 'Accept' => 'application/json',
             ],
             'json' => [
-                
+
             ],
         ]);
         $responsevocal2 = $client->request('GET', 'https://api.getourvoice.com/v1/calls?page=3&limit=10&filter[direction]=outgoing&time_from=2023-09-15&time_to=2023-09-20 ', [
@@ -134,7 +134,7 @@ public function __construct(
                 'Accept' => 'application/json',
             ],
             'json' => [
-                
+
             ],
         ]);
         $responsevocal3 = $client->request('GET', 'https://api.getourvoice.com/v1/calls?page=4&limit=10&filter[direction]=outgoing&time_from=2023-09-15&time_to=2023-09-20 ', [
@@ -144,7 +144,7 @@ public function __construct(
                 'Accept' => 'application/json',
             ],
             'json' => [
-                
+
             ],
         ]);
         $responsevocal4 = $client->request('GET', 'https://api.getourvoice.com/v1/calls?page=5&limit=10&filter[direction]=outgoing&time_from=2023-09-15&time_to=2023-09-20 ', [
@@ -154,7 +154,7 @@ public function __construct(
                 'Accept' => 'application/json',
             ],
             'json' => [
-                
+
             ],
         ]);
 
@@ -869,7 +869,8 @@ public function __construct(
 
             $test_order->test_affiliate = $data['test_affiliate'] ? $data['test_affiliate'] : "";            // $test_order->type_order_id = (int)$data['type_examen_id'];
             $test_order->type_order_id = (int)$request->type_examen_id;
-            $test_order->attribuate_doctor_id = (int)$data['attribuate_doctor_id'];
+            $data['attribuate_doctor_id'] ? $test_order->attribuate_doctor_id = (int)$data['attribuate_doctor_id']:'';
+            $data['attribuate_doctor_id'] ? $test_order->assignment_date = Carbon::now():'';
             $test_order->option = $data['option'];
             $test_order->save();
 
@@ -880,6 +881,7 @@ public function __construct(
                 $report->fill([
                     "code" => "CO" . $test_order->code,
                     "patient_id" => $test_order->patient_id,
+                    "assignment_date" => $test_order->assignment_date
                 ]);
             }
 

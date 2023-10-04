@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bank;
 use App\Models\SettingApp;
+use App\Models\TitleReport;
 use Illuminate\Http\Request;
 
 class SettingAppController extends Controller
@@ -34,12 +35,15 @@ class SettingAppController extends Controller
         $key_ourvoice = $this->setting->where('key','key_ourvoice')->first();
         $link_ourvoice_call = $this->setting->where('key','link_ourvoice_call')->first();
         $link_ourvoice_sms = $this->setting->where('key','link_ourvoice_sms')->first();
+        $report_footer = $this->setting->where('key','report_footer')->first();
+        $report_review_title = $this->setting->where('key','report_review_title')->first();
         $banks = Bank::latest()->get();
+        $titles = TitleReport::latest()->get();
 
         return view('settings.app.setting', compact(
-            'app_name', 'devise', 'adress', 'phone', 'email', 'web_site', 'footer','banks',
+            'app_name', 'devise', 'adress', 'phone', 'email', 'web_site', 'footer','banks', 'titles',
             'email_host', 'username', 'email_port', 'password', 'encryption', 'from_name', 'from_adresse',
-            'api_sms', 'link_api_sms', 'key_ourvoice', 'link_ourvoice_call', 'link_ourvoice_sms'
+            'api_sms', 'link_api_sms', 'key_ourvoice', 'link_ourvoice_call', 'link_ourvoice_sms','report_footer','report_review_title'
         ));
     }
 
@@ -66,6 +70,8 @@ class SettingAppController extends Controller
         $key_ourvoiceValue = $request->input('key_ourvoice');
         $link_ourvoice_callValue = $request->input('link_ourvoice_call');
         $link_ourvoice_smsValue = $request->input('link_ourvoice_sms');
+        $report_footerValue = $request->input('report_footer');
+        $report_review_titleValue = $request->input('report_review_title');
 
         // Mettez à jour les enregistrements dans la base de données
 
@@ -165,6 +171,14 @@ class SettingAppController extends Controller
 
                 $link_ourvoice_sms = $this->setting->where('key', 'link_ourvoice_sms')->first();
                 $link_ourvoice_sms ? $link_ourvoice_sms->update(['value' => $link_ourvoice_smsValue]):'';
+                break;
+
+            case 4:
+                $report_footer = $this->setting->where('key', 'report_footer')->first();
+                $report_footer ?  $report_footer->update(['value' => $report_footerValue]): '';
+
+                $report_review_title = $this->setting->where('key', 'report_review_title')->first();
+                $report_review_title ?  $report_review_title->update(['value' => $report_review_titleValue]): '';
                 break;
 
             default:

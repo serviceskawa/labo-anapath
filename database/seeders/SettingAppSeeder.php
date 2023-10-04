@@ -50,5 +50,12 @@ class SettingAppSeeder extends Seeder
             ['key' => 'link_ourvoice_sms', 'value' => 'link ourvoice sms'],
             // ... Ajoutez d'autres paramètres de configuration de la communication mobile ici
         ]);
+
+        // Configuration du paramètre du compte rendu
+        DB::table('setting_apps')->insert([
+            ['key' => 'report_footer', 'value' => 'LE footer'],
+            ['key' => 'report_review_title', 'value' => ''],
+        ]);
+
     }
 }
