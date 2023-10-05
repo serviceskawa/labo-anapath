@@ -212,7 +212,7 @@
                     </div>
 
                     <div class="card mb-md-0 mb-3 mt-3">
-                        <h5 class="card-header">Images De l'examen</h5>
+                        <h5 class="card-header">Pièces jointes</h5>
                         <div class="card-body">
 
                             <!-- The grid: four columns -->
@@ -247,15 +247,15 @@
                     </div>
 
                     <div class="card mb-md-0 mb-3 mt-3">
-                        <h5 class="card-header">Signataires du compte rendu<span style="color:red;">*</span></h5>
+                        <h5 class="card-header">Signature<span style="color:red;">*</span></h5>
                         <div class="card-body">
 
-                            <div class="row my-3">
-                                <div class="">
-                                    <div class="my-3  form-check-inline">
-                                        <label for="example-fileinput" class="form-label">Signatiare 1</label>
+                                <div class="row">
+                                
+                                    <div class="col-5 form-check-inline">
+                                        <label for="example-fileinput" class="form-label">Signé par</label>
                                         <select name="doctor_signataire1" id="doctor_signataire1" class="form-control">
-                                            <option value="">Selectionner un docteur</option>
+                                            <option value="">Sélectionner un docteur</option>
                                             @foreach (getUsersByRole('docteur') as $item)
                                                 <option value="{{ $item->id }}"
                                                     {{ $report->order->attribuate_doctor_id == $item->id ? 'selected' : '' }} >
@@ -265,7 +265,23 @@
                                         </select>
                                     </div>
 
-                                    <div class="m-3 form-check-inline">
+                                    <div class="col-5 form-check-inline">
+                                        <label for="example-fileinput" class="form-label">Second avis de relecture donné et validé par :</label>
+                                        {{-- <label for="example-fileinput" class="form-label">Assigner un réviseur</label> --}}
+                                        <select name="reviewed_by_user_id" {{App\Models\SettingApp::where('key','report_review_title')->first()->value =='' ? 'disabled':''}} id="reviewed_by_user_id" class="form-control">
+                                            <option value="">Sélectionner un docteur</option>
+                                            @foreach (getUsersByRole('docteur') as $item)
+                                                @if ($report->order->attribuate_doctor_id != $item->id)
+                                                    <option value="{{ $item->id }}"
+                                                        {{ $report->reviewed_by_user_id == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->lastname }} {{ $item->firstname }}
+                                                    </option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- <div class="m-3 form-check-inline">
                                         <label for="example-fileinput" class="form-label">Signatiare 2</label>
                                         <select name="doctor_signataire2" id="doctor_signataire2" class="form-control">
                                             <option value="">Selectionner un docteur</option>
@@ -276,9 +292,9 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                    </div>
+                                    </div> -->
 
-                                    <div class="m-3 form-check-inline">
+                                    <!-- <div class="m-3 form-check-inline">
                                         <label for="example-fileinput" class="form-label">Signataire 3</label>
                                         <select name="doctor_signataire3" id="doctor_signataire3" class="form-control">
                                             <option value="">Selectionner un docteur</option>
@@ -289,27 +305,12 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                    </div>
-
-                                </div>
+                                    </div> -->
                             </div>
 
-                            <div class="row mb-3" style="padding-right: 1px; flex-wrap:nowrap">
-                                <div class="col-3 mt-3 form-check-inline">
-                                    {{-- <label for="example-fileinput" class="form-label">Assigner un réviseur</label> --}}
-                                    <select name="reviewed_by_user_id" {{App\Models\SettingApp::where('key','report_review_title')->first()->value =='' ? 'disabled':''}} id="reviewed_by_user_id" class="form-control">
-                                        <option value="">Assigner un réviseur</option>
-                                        @foreach (getUsersByRole('docteur') as $item)
-                                            @if ($report->order->attribuate_doctor_id != $item->id)
-                                                <option value="{{ $item->id }}"
-                                                    {{ $report->reviewed_by_user_id == $item->id ? 'selected' : '' }}>
-                                                    {{ $item->lastname }} {{ $item->firstname }}
-                                                </option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-3 mt-3">
+                            <div class="row mb-10" style="padding-right: 1px; flex-wrap:nowrap">
+                                
+                                <div class="col-10 mt-3">
                                     <input type="hidden" name="status" id="status" value="{{$report->status}}">
                                     {{-- <button type="button" id="btn-status" class="btn" {{ Auth::user()->id != $report->order->attribuate_doctor_id ? 'disabled':'' }} >Marqué comme En attente</button> --}}
                                     <button type="button" id="btn-status" class="btn" >Marqué comme En attente</button>
