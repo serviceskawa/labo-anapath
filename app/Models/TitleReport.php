@@ -9,4 +9,5 @@ class TitleReport extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $table = 'report_titles';
 }

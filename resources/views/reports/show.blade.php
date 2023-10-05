@@ -462,13 +462,13 @@
                     btnStatus.classList.remove("btn-warning");
                 }
                 btnStatus.classList.add("btn-success");
-                btnStatus.textcontent = "Marqué comme Terminé"
+                btnStatus.textContent = "Marqué comme Terminé"
             }else{
                 if (btnStatus.classList.contains("btn-success")) {
                     btnStatus.classList.remove("btn-success");
                 }
                 btnStatus.classList.add("btn-warning");
-                btnStatus.textcontent = "Marqué comme En attente"
+                btnStatus.textContent = "Marqué comme En attente"
             }
             $('#btn-status').on('click',function(){
                 if ($('#status').val() ==0) {
@@ -477,14 +477,14 @@
                         btnStatus.classList.remove("btn-success");
                     }
                     btnStatus.classList.add("btn-warning");
-                    btnStatus.textcontent = "Marqué comme En attente"
+                    btnStatus.textContent = "Marqué comme En attente"
                 }else{
                     $('#status').val(0)
                     if (btnStatus.classList.contains("btn-warning")) {
                         btnStatus.classList.remove("btn-warning");
                     }
                     btnStatus.classList.add("btn-success");
-                    btnStatus.textcontent = "Marqué comme En attente"
+                    btnStatus.textContent = "Marqué comme Terminé"
                 }
             })
         })
