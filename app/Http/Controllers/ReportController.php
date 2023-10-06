@@ -120,6 +120,8 @@ class ReportController extends Controller
                 'description_supplementaire_micro' => $request->description_supplementaire_micro != '' ? $request->description_supplementaire_micro : '',
             ])
             ->save();
+        $report->order->assigned_to_user_id =  $request->doctor_signataire1;
+        $report->order->save();
         if ($report->status == 1) {
             $report->signature_date = Carbon::now();
             $report->save();
