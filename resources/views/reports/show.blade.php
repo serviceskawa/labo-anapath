@@ -259,8 +259,7 @@
 
                                     <div class="col-5 form-check-inline">
                                         <label for="example-fileinput" class="form-label">Signé par</label>
-                                        <select name="doctor_signataire1" id="doctor_signataire1" class="form-control"
-                                            disabled>
+                                        <select name="doctor_signataire1" id="doctor_signataire1" class="form-control">
                                             <option value="">Sélectionner un docteur</option>
                                             @foreach (getUsersByRole('docteur') as $item)
                                                 <option value="{{ $item->id }}"
