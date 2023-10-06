@@ -184,6 +184,14 @@ public function __construct(
         config(['app.name' => $setting->titre]);
 
         $testOrders = $this->testOrder->all();
+
+        foreach ($testOrders as $key => $testOrder) {
+            if (!empty($testOrder->attribuate_doctor_id) && empty($testOrder->assigned_to_user_id)) {
+                $testOrder->assigned_to_user_id = $testOrder->attribuate_doctor_id;
+                $testOrder->save();
+            }
+        }
+
         $testStats = $this->getTestStats($testOrders);
 
         return view('examens.index2', array_merge(compact('examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders', 'testStats'), [
@@ -870,6 +878,7 @@ public function __construct(
             $test_order->test_affiliate = $data['test_affiliate'] ? $data['test_affiliate'] : "";            // $test_order->type_order_id = (int)$data['type_examen_id'];
             $test_order->type_order_id = (int)$request->type_examen_id;
             $data['attribuate_doctor_id'] ? $test_order->attribuate_doctor_id = (int)$data['attribuate_doctor_id']:'';
+            $data['attribuate_doctor_id'] ? $test_order->assigned_to_user_id = (int)$data['attribuate_doctor_id']:'';
             $data['attribuate_doctor_id'] ? $test_order->assignment_date = Carbon::now():'';
             $test_order->option = $data['option'];
             $test_order->save();
@@ -881,7 +890,6 @@ public function __construct(
                 $report->fill([
                     "code" => "CO" . $test_order->code,
                     "patient_id" => $test_order->patient_id,
-                    "assignment_date" => $test_order->assignment_date
                 ]);
             }
 

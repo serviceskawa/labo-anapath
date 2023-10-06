@@ -96,7 +96,8 @@
                                 <div class="row">
                                     <div class="mb-3">
                                         <label for="simpleinput" class="form-label">Template</label>
-                                        <select class="form-select select2" data-toggle="select2" id="template" name="template">
+                                        <select class="form-select select2" data-toggle="select2" id="template"
+                                            name="template">
                                             <option value="">Sélectionner un template</option>
                                             @forelse ($templates as $template)
                                                 <option value="{{ $template->id }}">{{ $template->title }} </option>
@@ -121,7 +122,8 @@
                                 <div class="row">
                                     <div class="mb-3">
                                         <label for="simpleinput" class="form-label">Template</label>
-                                        <select class="form-select select2" data-toggle="select2" id="template_micro" name="template">
+                                        <select class="form-select select2" data-toggle="select2" id="template_micro"
+                                            name="template">
                                             <option value="">Sélectionner un template</option>
                                             @forelse ($templates as $template)
                                                 <option value="{{ $template->id }}">{{ $template->title }} </option>
@@ -135,7 +137,8 @@
                                     <div class="mb-3">
                                         <label for="simpleinput" class="form-label">Récapitulatifs<span
                                                 style="color:red;">*</span></label>
-                                        <textarea name="content_micro" id="editor_micro" class="form-control mb-3" cols="30" rows="50" style="height: 500px;">{{ $report->description_micro }}</textarea>
+                                        <textarea name="content_micro" id="editor_micro" class="form-control mb-3" cols="30" rows="50"
+                                            style="height: 500px;">{{ $report->description_micro }}</textarea>
 
                                     </div>
                                 </div>
@@ -201,8 +204,8 @@
                                             {{ $report->description_supplementaire }}
                                         </div> --}}
                                         {{-- <textarea id="simplemde1">{{ $report->description_supplementaire }}</textarea> --}}
-                                        <textarea name="description_supplementaire_micro" id="editor_micro2" class="form-control mb-3" cols="15" rows="10"
-                                            style="height: 250px;">{{ $report->description_supplementaire_micro }}</textarea>
+                                        <textarea name="description_supplementaire_micro" id="editor_micro2" class="form-control mb-3" cols="15"
+                                            rows="10" style="height: 250px;">{{ $report->description_supplementaire_micro }}</textarea>
 
                                     </div>
                                 </div>
@@ -220,10 +223,11 @@
 
                                 <div class="col-lg-12">
 
-                                            <!-- The expanding image container -->
+                                    <!-- The expanding image container -->
                                     <div class="container mb-3">
                                         <!-- Close the image -->
-                                        <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+                                        <span onclick="this.parentElement.style.display='none'"
+                                            class="closebtn">&times;</span>
 
                                         <!-- Expanded image -->
                                         <img id="expandedImg" style="width:50%">
@@ -234,9 +238,9 @@
 
                                     <div class="d-lg-flex d-none justify-content-center">
                                         @foreach (explode('|', $report->order->files_name) as $file_name)
-
-                                            <img src="/storage/examen_images/{{$report->order->code}}/{{$file_name}}" onclick="myFunction(this)" class="img-fluid img-thumbnail p-2" style="max-width: 75px;" alt="{{$file_name}}">
-
+                                            <img src="/storage/examen_images/{{ $report->order->code }}/{{ $file_name }}"
+                                                onclick="myFunction(this)" class="img-fluid img-thumbnail p-2"
+                                                style="max-width: 75px;" alt="{{ $file_name }}">
                                         @endforeach
                                     </div>
                                 </div> <!-- end col -->
@@ -246,19 +250,21 @@
                         </div>
                     </div>
 
-                    <div class="card mb-md-0 mb-3 mt-3">
-                        <h5 class="card-header">Signature<span style="color:red;">*</span></h5>
-                        <div class="card-body">
+                    @if ($report->order->assigned_to_user_id == Auth::user()->id || getOnlineUser()->can('view-super-doctor'))
+                        <div class="card mb-md-0 mb-3 mt-3">
+                            <h5 class="card-header">Signature<span style="color:red;">*</span></h5>
+                            <div class="card-body">
 
                                 <div class="row">
-                                
+
                                     <div class="col-5 form-check-inline">
                                         <label for="example-fileinput" class="form-label">Signé par</label>
-                                        <select name="doctor_signataire1" id="doctor_signataire1" class="form-control">
+                                        <select name="doctor_signataire1" id="doctor_signataire1" class="form-control"
+                                            disabled>
                                             <option value="">Sélectionner un docteur</option>
                                             @foreach (getUsersByRole('docteur') as $item)
                                                 <option value="{{ $item->id }}"
-                                                    {{ $report->order->attribuate_doctor_id == $item->id ? 'selected' : '' }} >
+                                                    {{ $report->order->assigned_to_user_id == $item->id ? 'selected' : '' }}>
                                                     {{ $item->lastname }} {{ $item->firstname }}
                                                 </option>
                                             @endforeach
@@ -266,12 +272,15 @@
                                     </div>
 
                                     <div class="col-5 form-check-inline">
-                                        <label for="example-fileinput" class="form-label">Second avis de relecture donné et validé par :</label>
+                                        <label for="example-fileinput" class="form-label">Second avis de relecture donné
+                                            et validé par :</label>
                                         {{-- <label for="example-fileinput" class="form-label">Assigner un réviseur</label> --}}
-                                        <select name="reviewed_by_user_id" {{App\Models\SettingApp::where('key','report_review_title')->first()->value =='' ? 'disabled':''}} id="reviewed_by_user_id" class="form-control">
+                                        <select name="reviewed_by_user_id"
+                                            {{ App\Models\SettingApp::where('key', 'report_review_title')->first()->value == '' ? 'disabled' : '' }}
+                                            id="reviewed_by_user_id" class="form-control">
                                             <option value="">Sélectionner un docteur</option>
                                             @foreach (getUsersByRole('docteur') as $item)
-                                                @if ($report->order->attribuate_doctor_id != $item->id)
+                                                @if ($report->order->assigned_to_user_id != $item->id)
                                                     <option value="{{ $item->id }}"
                                                         {{ $report->reviewed_by_user_id == $item->id ? 'selected' : '' }}>
                                                         {{ $item->lastname }} {{ $item->firstname }}
@@ -282,66 +291,69 @@
                                     </div>
 
                                     <!-- <div class="m-3 form-check-inline">
-                                        <label for="example-fileinput" class="form-label">Signatiare 2</label>
-                                        <select name="doctor_signataire2" id="doctor_signataire2" class="form-control">
-                                            <option value="">Selectionner un docteur</option>
-                                            @foreach (getUsersByRole('docteur') as $item)
-                                                <option value="{{ $item->id }}"
-                                                    {{ $report->signatory2 == $item->id ? 'selected' : '' }}>
-                                                    {{ $item->lastname }} {{ $item->firstname }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div> -->
+                                            <label for="example-fileinput" class="form-label">Signatiare 2</label>
+                                            <select name="doctor_signataire2" id="doctor_signataire2" class="form-control">
+                                                <option value="">Selectionner un docteur</option>
+                                                @foreach (getUsersByRole('docteur') as $item)
+                                                    <option value="{{ $item->id }}"
+                                                        {{ $report->signatory2 == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->lastname }} {{ $item->firstname }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div> -->
 
                                     <!-- <div class="m-3 form-check-inline">
-                                        <label for="example-fileinput" class="form-label">Signataire 3</label>
-                                        <select name="doctor_signataire3" id="doctor_signataire3" class="form-control">
-                                            <option value="">Selectionner un docteur</option>
-                                            @foreach (getUsersByRole('docteur') as $item)
-                                                <option value="{{ $item->id }}"
-                                                    {{ $report->signatory3 == $item->id ? 'selected' : '' }}>
-                                                    {{ $item->lastname }} {{ $item->firstname }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div> -->
-                            </div>
+                                            <label for="example-fileinput" class="form-label">Signataire 3</label>
+                                            <select name="doctor_signataire3" id="doctor_signataire3" class="form-control">
+                                                <option value="">Selectionner un docteur</option>
+                                                @foreach (getUsersByRole('docteur') as $item)
+                                                    <option value="{{ $item->id }}"
+                                                        {{ $report->signatory3 == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->lastname }} {{ $item->firstname }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div> -->
+                                </div>
 
-                            <div class="row mb-10" style="padding-right: 1px; flex-wrap:nowrap">
-                                
-                                <div class="col-10 mt-3">
+                                <div class="row mb-10" style="padding-right: 1px; flex-wrap:nowrap">
+
+                                    {{-- <div class="col-10 mt-3">
                                     <input type="hidden" name="status" id="status" value="{{$report->status}}">
-                                    {{-- <button type="button" id="btn-status" class="btn" {{ Auth::user()->id != $report->order->attribuate_doctor_id ? 'disabled':'' }} >Marqué comme En attente</button> --}}
-                                    <button type="button" id="btn-status" class="btn" >Marqué comme En attente</button>
+                                <button type="button" id="btn-status" class="btn" >Marqué comme En attente</button>
+                                </div> --}}
+                                    @if (App\Models\SettingApp::where('key', 'report_review_title')->first()->value == '')
+                                        <div class="col-6 mt-2 alert alert-warning alert-dismissible fade show"
+                                            role="alert">
+                                            <strong>Revue de rapport - </strong> Veuillez enregistrer un revue de rapport.
+                                        </div>
+                                    @endif
                                 </div>
-                                @if(App\Models\SettingApp::where('key','report_review_title')->first()->value =='')
-                                <div class="col-6 mt-2 alert alert-warning alert-dismissible fade show" role="alert">
-                                    <strong>Revue de rapport - </strong> Veuillez enregistrer un revue de rapport.
+
+
+
+
+                                <div class="row">
+                                    <div class="mb-3 mt-3">
+                                        <label for="simpleinput" class="form-label mb-3">Etat du compte rendu<span
+                                                style="color:red;">*</span></label>
+                                        <select class="form-select" name="status">
+                                            <option value="0" {{ $report->status == 0 ? 'selected' : '' }}>En attente
+                                                de
+                                                relecture</option>
+                                            <option value="1" {{ $report->status == 1 ? 'selected' : '' }}>Terminé
+                                            </option>
+                                        </select>
+                                    </div>
                                 </div>
-                                @endif
+                                {{-- <button type="submit"{{ Auth::user()->id != $report->order->attribuate_doctor_id ? 'disabled':'' }} class="btn btn-warning w-100 mt-3">Mettre à jour</button> --}}
+                                <button type="submit"class="btn btn-warning w-100 mt-3">Mettre à jour</button>
                             </div>
-
-
-
-
-                            {{-- <div class="row">
-                                <div class="mb-3">
-                                    <label for="simpleinput" class="form-label mb-3">Etat du compte rendu<span
-                                            style="color:red;">*</span></label>
-                                    <select class="form-select" name="status">
-                                        <option value="0" {{ $report->status == 0 ? 'selected' : '' }}>En attente
-                                            de
-                                            relecture</option>
-                                        <option value="1" {{ $report->status == 1 ? 'selected' : '' }}>Terminé
-                                        </option>
-                                    </select>
-                                </div>
-                            </div> --}}
-                            {{-- <button type="submit"{{ Auth::user()->id != $report->order->attribuate_doctor_id ? 'disabled':'' }} class="btn btn-warning w-100 mt-3">Mettre à jour</button> --}}
-                            <button type="submit"class="btn btn-warning w-100 mt-3">Mettre à jour</button>
                         </div>
-                    </div>
+                    @else
+                        <button type="submit"class="btn btn-warning w-100 mt-3">Mettre à jour</button>
+                    @endif
 
 
                 </form>
@@ -381,11 +393,13 @@
 
                     <div class="card-body">
                         <p><b>Signature 1</b> :
-                            {{ $report->signatory1 == null ? 'Inactif' : getSignatory1($report->signatory1) }}</p>
-                        <p><b>Signature 2</b> :
-                            {{ $report->signatory2 == null ? 'Inactif' : getSignatory1($report->signatory2) }}</p>
-                        <p><b>Signature 3</b> :
-                            {{ $report->signatory3 == null ? 'Inactif' : getSignatory1($report->signatory3) }}</p>
+                            {{ $report->order->assigned_to_user_id == null ? 'Inactif' : getSignatory1($report->order->assigned_to_user_id) }}
+                        </p>
+                        <p><b>Avis de relecture</b> :
+                            {{ $report->reviewed_by_user_id == null ? 'Inactif' : getSignatory1($report->reviewed_by_user_id) }}
+                        </p>
+                        {{-- <p><b>Signature 3</b> :
+                            {{ $report->signatory3 == null ? 'Inactif' : getSignatory1($report->signatory3) }}</p> --}}
                     </div>
 
                 </div>
@@ -452,7 +466,6 @@
 @endsection
 
 @push('extra-js')
-
     <script>
         /* DATATABLE */
         $(document).ready(function() {
@@ -464,22 +477,22 @@
                 }
                 btnStatus.classList.add("btn-success");
                 btnStatus.textContent = "Marqué comme Terminé"
-            }else{
+            } else {
                 if (btnStatus.classList.contains("btn-success")) {
                     btnStatus.classList.remove("btn-success");
                 }
                 btnStatus.classList.add("btn-warning");
                 btnStatus.textContent = "Marqué comme En attente"
             }
-            $('#btn-status').on('click',function(){
-                if ($('#status').val() ==0) {
+            $('#btn-status').on('click', function() {
+                if ($('#status').val() == 0) {
                     $('#status').val(1)
                     if (btnStatus.classList.contains("btn-success")) {
                         btnStatus.classList.remove("btn-success");
                     }
                     btnStatus.classList.add("btn-warning");
                     btnStatus.textContent = "Marqué comme En attente"
-                }else{
+                } else {
                     $('#status').val(0)
                     if (btnStatus.classList.contains("btn-warning")) {
                         btnStatus.classList.remove("btn-warning");

@@ -96,6 +96,16 @@ class ReportController extends Controller
         $user = Auth::user();
 
         $report = $this->report->findorfail($request->report_id);
+        if (!empty($request->reviewed_by_user_id) && $report->reviewed_by_user_id != $request->reviewed_by_user_id) {
+            $user = User::find($request->reviewed_by_user_id);
+            $data = [
+                'user_name' => $user->fullname(),
+                'report_title' => $request->title,
+                'report_test_order' => $report->order->code
+            ];
+
+            event(new AssignedReviewer($request->reviewed_by_user_id,$data));
+        }
         $report
             ->fill([
                 'description' => $request->content,
@@ -110,16 +120,10 @@ class ReportController extends Controller
                 'description_supplementaire_micro' => $request->description_supplementaire_micro != '' ? $request->description_supplementaire_micro : '',
             ])
             ->save();
-            if (!empty($request->reviewed_by_user_id)) {
-                $user = User::find($request->reviewed_by_user_id);
-                $data = [
-                    'user_name' => $user->fullname(),
-                    'report_title' => $request->title,
-                    'report_test_order' => $report->order->code
-                ];
-                event(new AssignedReviewer($request->reviewed_by_user_id,$data));
-            }
-
+        if ($report->status == 1) {
+            $report->signature_date = Carbon::now();
+            $report->save();
+        }
 
         $log = new LogReport();
         $log->operation = 'Mettre à jour ';
