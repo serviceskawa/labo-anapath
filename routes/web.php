@@ -45,6 +45,7 @@ use App\Http\Controllers\ProblemCategoryController;
 use App\Http\Controllers\ProblemeReportersController;
 use App\Http\Controllers\RefundRequestController;
 use App\Http\Controllers\EmployeeDocumentController;
+use App\Http\Controllers\SettingAppController;
 use App\Http\Controllers\SettingReportTemplateController;
 use App\Http\Controllers\SignalController;
 use App\Http\Controllers\SupplierCategorieController;
@@ -306,6 +307,8 @@ Route::middleware(['auth'])->group(function () {
         // App settings
         Route::get('app', [SettingController::class, 'app'])->name('settings.app-index');
         Route::post('app-store', [SettingController::class, 'app_store'])->name('settings.app-store');
+        Route::get('app-new', [SettingAppController::class, 'index'])->name('settings.index');
+        Route::post('app-store-new', [SettingAppController::class, 'store'])->name('settings.store');
     });
 
     //Historique
@@ -592,9 +595,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('employee-timeoff-store', [EmployeeTimeoffController::class, 'store'])->name('employee.timeoff.store');
         Route::get('employee-timeoff-delete/{employeeTimeoff}', [EmployeeTimeoffController::class, 'delete'])->name('employee.timeoff.delete');
     // });
-    
 
-    // Chats 
+
+    // Chats
     Route::get('/chat-bot',[HomeController::class, 'chat'])->name('chat.bot');
     Route::POST('/chat-bot',[HomeController::class, 'getMessage'])->name('chat.getMessage');
     Route::post('/send-chat-bot',[HomeController::class, 'sendMessage'])->name('chat.sendMessage');
@@ -602,7 +605,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-    // Chats 
+    // Chats
 
     Route::put('/update-document/{employeeDocument}',[EmployeeDocumentController::class, 'update'])->name('document.update');
     Route::post('/store-document',[EmployeeDocumentController::class, 'store'])->name('document.store');

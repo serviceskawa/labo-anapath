@@ -145,7 +145,7 @@ class CashboxController extends Controller
 
     public function store_bank(Request $request)
     {
-        if (!getOnlineUser()->can('banks')) {
+        if (!getOnlineUser()->can('create-banks')) {
             return back()->with('error',"vous n'êtes pas autorisé");
         }
 

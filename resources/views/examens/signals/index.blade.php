@@ -47,16 +47,12 @@
                             <th>Code examen</th>
                             <th>Comentaire</th>
                             <th>Envoyé par</th>
-                            @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
 
-                                @if ($role->name == "rootuser")
-                                    <th>Actions</th>
-                                    @break
-                                @endif
-                            @endforeach
-
-
+                            {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
+                            @if (getOnlineUser()->can('view-process-ticket'))
+                                <th>Actions</th>
+                            @endif
+                            
                         </tr>
                     </thead>
 
@@ -70,16 +66,13 @@
                             <td>{{ getTestOrderData($item->test_order_id)->code }}</td>
                             <td>{{ $item->commentaire }}</td>
                             <td>{{ $item->user->lastname }} {{ $item->user->firstname }}</td>
-                            @foreach (getRolesByUser(Auth::user()->id) as $role)
-                                {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
+                            {{-- //Lorsque l'utilisateur n'a pas le role nécessaire. --}}
+                            @if (getOnlineUser()->can('view-process-ticket'))
+                                <td>
+                                    <button type="button" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
+                                </td>
+                            @endif
 
-                                @if ($role->name == "rootuser")
-                                    <td>
-                                        <button type="button" class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
-                                    </td>
-                                    @break
-                                @endif
-                            @endforeach
                         </tr>
                         @endforeach
 

@@ -11,7 +11,7 @@
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#standard-modal">Ajouter une nouvelle raison</button>
                 </div>
-                <h4 class="page-title">Raison de remboursement</h4>
+                <h4 class="page-title">Paramètre de remboursement</h4>
             </div>
 
             <!----MODAL---->

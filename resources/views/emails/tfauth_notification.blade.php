@@ -268,7 +268,7 @@ Sizes: [
 																				<td align="left" class="textContent">
 																					<!-- CONTENT // -->
 																					<div style="font-family:Helvetica,Arial,sans-serif;font-size:20px;color:#828282;text-align:center;line-height:120%;">
-																						<div style="margin-bottom: 25px; margin-top: 25px;"><strong>Labocaap</strong></div>
+																						<div style="margin-bottom: 25px; margin-top: 25px;"><strong>{{ $lab['value'] }}</strong></div>
 																					</div>
 																				</td>
 																			</tr>

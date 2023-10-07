@@ -8,9 +8,11 @@
     <meta content="" name="author" />
     @php
         $setting = \App\Models\Setting::orderBy('id', 'desc')->first();
+        $logo = \App\Models\SettingApp::where('key', 'logo')->first();
+        $favicon = \App\Models\SettingApp::where('key', 'favicon')->first();
     @endphp
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ $setting ? Storage::url($setting->favicon) : '' }}">
+    <link rel="shortcut icon" href="{{ $favicon ? Storage::url($favicon->value) : '' }}">
 
     <!-- App css -->
     <link href="{{ asset('/adminassets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
@@ -34,7 +36,7 @@
                         <div class="card-header pt-4 pb-4 text-center ">
                             <a href="#">
                                 <span>
-                                    <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt=""
+                                    <img src="{{ $logo ? Storage::url($logo->value) : '' }}" alt=""
                                         width="250px"></span>
                             </a>
                         </div>

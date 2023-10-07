@@ -150,6 +150,7 @@ class HomeController extends Controller
 
 
 
+<<<<<<< HEAD
             //Statistiques par médecin
 
             // $doctorDatas =[
@@ -253,8 +254,79 @@ class HomeController extends Controller
             'testOrdersCount','noFinishTest', 'noSaveTest','noFinishWeek','finishTest','Appointments',
             'loggedInUserIds','nototalToday', 'nototalMonth', 'nototalLastMonth', 'testOrdersToday','invoice','doctorDatas'));
         }
+=======
+        if (!getOnlineUser()->can('view-dashboard')) {
+            return view('home');
+        } else {
+            // Date de début du mois actuel
+            $dateDebutMoisActuel = Carbon::now()->startOfMonth();
+
+            // Date de début du mois précédent
+            $dateDebutMoisPrecedent = Carbon::now()->subMonth()->startOfMonth();
 
 
+            //Patients
+                // Remplacez "Patient" par le nom correct du modèle si nécessaire
+                $valeurMoisActuelPatient = Patient::whereBetween('created_at', [$dateDebutMoisActuel, Carbon::now()])->count();
+                $valeurMoisPrecedentPatient = Patient::whereBetween('created_at', [$dateDebutMoisPrecedent, $dateDebutMoisActuel->subDay()])->count();
+
+                // Calcul de la croissance en pourcentage
+                if ($valeurMoisPrecedentPatient !== 0) {
+                    $croissance = (($valeurMoisActuelPatient - $valeurMoisPrecedentPatient) / $valeurMoisPrecedentPatient) * 100;
+                } else {
+                    $croissance = 0; // Pour éviter la division par zéro
+                }
+
+                $valeurPatient = Patient::count();
+                $crPatient = number_format($croissance, 2);
+            //Fin patient
+
+            //Client Pro
+
+                // Remplacez "Client" par le nom correct du modèle si nécessaire
+                $valeurMoisActuel = Client::whereBetween('created_at', [$dateDebutMoisActuel, Carbon::now()])->count();
+                $valeurMoisPrecedent = Client::whereBetween('created_at', [$dateDebutMoisPrecedent, $dateDebutMoisActuel->subDay()])->count();
+
+                // Calcul de la croissance en pourcentage
+                if ($valeurMoisPrecedent !== 0) {
+                    $croissance = (($valeurMoisActuel - $valeurMoisPrecedent) / $valeurMoisPrecedent) * 100;
+                } else {
+                    $croissance = 0; // Pour éviter la division par zéro
+                }
+                // dd($valeurMoisActuel,$valeurMoisPrecedent,$croissance);
+
+                $valeurClient = Client::count();
+                $crClient = number_format($croissance, 2);
+            //Fin client pro
+
+            //DEMANDE D'EXAMEN
+                $valeurMoisActuel = TestOrder::whereBetween('created_at', [$dateDebutMoisActuel, Carbon::now()])->count();
+                $valeurMoisPrecedent = TestOrder::whereBetween('created_at', [$dateDebutMoisPrecedent, $dateDebutMoisActuel->subDay()])->count();
+
+                // Calcul de la croissance en pourcentage
+                if ($valeurMoisPrecedent !== 0) {
+                    $croissance = (($valeurMoisActuel - $valeurMoisPrecedent) / $valeurMoisPrecedent) * 100;
+                } else {
+                    $croissance = 0; // Pour éviter la division par zéro
+                }
+
+                $valeurTestOrder = TestOrder::count();
+                $crTestOrder = number_format($croissance, 2);
+            //Fin  Demande d'examen
+
+            //CHIFFRE D'AFFAIRE
+                $valeurMoisActuel = Invoice::whereBetween('created_at', [$dateDebutMoisActuel, Carbon::now()])->sum('total');
+                $valeurMoisPrecedent = Invoice::whereBetween('created_at', [$dateDebutMoisPrecedent, $dateDebutMoisActuel->subDay()])->sum('total');
+>>>>>>> 1054c2262524b46fb8652cfa706ce633cbdd36d5
+
+                // Calcul de la croissance en pourcentage
+                if ($valeurMoisPrecedent !== 0) {
+                    $croissance = (($valeurMoisActuel - $valeurMoisPrecedent) / $valeurMoisPrecedent) * 100;
+                } else {
+                    $croissance = 0; // Pour éviter la division par zéro
+                }
+
+<<<<<<< HEAD
         // // Date de début du mois actuel
         // $dateDebutMoisActuel = Carbon::now()->startOfMonth();
 
@@ -390,6 +462,146 @@ class HomeController extends Controller
         //     'totalForCurrentWeek', 'totalForLastWeek', 'totalToday',
         //     'examensDemandes','totalByStatus'
         // ));
+=======
+                $valeurInvoice = Invoice::sum('total');
+                $crInvoice = number_format($croissance, 2);
+            //Fin chiffre d'affaire
+
+            //CHIFFRE D'AFFAIRE DES MOIS
+
+                $today = Carbon::today();
+
+                $beginingWeekCurrent = now()->startOfWeek(); // Récupérer le début de la semaine en cours
+                $endingWeekCurrent = now()->endOfWeek(); // Récupérer la fin de la semaine en cours
+
+                $beginingWeekLast = now()->startOfWeek()->subWeek(); // Récupérer le début de la semaine en passée
+                $endingWeekLast = $beginingWeekLast->copy()->endOfWeek(); // Récupérer la fin de la semaine précédente
+
+                $todayTest = now()->format('Y-m-d');
+
+                // Total pour la semaine actuelle facture de vente
+                $totalForCurrentWeek = $this->invoices
+                    ->whereBetween('updated_at', [$beginingWeekCurrent, $endingWeekCurrent])
+                    ->where('paid', '=', 1)
+                    ->where(['status_invoice' => 0])
+                    ->sum('total');
+                // Total pour la semaine passée facture de vente
+                $totalForLastWeek = $this->invoices
+                    ->whereBetween('updated_at', [$beginingWeekLast, $endingWeekLast])
+                    ->where('paid', '=', 1)
+                    ->where(['status_invoice' => 0])
+                    ->sum('total');
+                $totalToday = $this->invoices
+                    ->whereDate('updated_at', $todayTest)
+                    ->where('paid',1)
+                    ->where(['status_invoice'=>0])
+                    ->sum('total');
+            //Fin CHIFFRE D'AFFAIRE
+
+            //Examen fréquent
+                $examensDemandes =DB::table('detail_test_orders')
+                ->select('test_id', 'test_name', DB::raw('COUNT(*) as total_demandes'))
+                ->groupBy('test_id', 'test_name')
+                ->orderByDesc('total_demandes')
+                ->get();
+                // dd($examensDemandes);
+            //Fin examen fréquent
+
+            //Status test order
+                $totalByStatus = TestOrder::join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+                ->groupBy('reports.status')
+                ->select('reports.status', DB::raw('COUNT(*) as total'))
+                ->get();
+            //fin test order
+
+            //Hopitaux
+                $Hoptitals = TestOrder::join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+                ->groupBy('reports.status')
+                ->select('reports.status', DB::raw('COUNT(*) as total'))
+                ->get();
+            //Fin hospitaux
+
+            //Statistique des docteurs
+                $doctorDatas = [];
+
+                $doctorData =[
+                    'doctor' => '',
+                    'assigne' => 0,
+                    'traite' => 0
+                ];
+
+                foreach (getUsersByRole('docteur') as $doctor)
+                {
+                    $doctorData['id'] = $doctor->id;
+                    $doctorData['doctor'] = $doctor->lastname .' '. $doctor->firstname;
+
+                    foreach ($this->testOrders->where('attribuate_doctor_id',$doctorData['id'])->get() as $key) {
+                        $doctorData['assigne']++;
+                    }
+                    $data = $this->testOrders->where('attribuate_doctor_id',$doctorData['id'])
+                                ->whereHas('report', function($query){
+                                    $query->where('status',1);
+                                })
+                                ->get();
+                    foreach ($data as $key) {
+                        $doctorData['traite']++;
+                    }
+                    $doctorDatas [] = $doctorData;
+
+                    $doctorData =[
+                        'doctor' => '',
+                        'assigne' => 0,
+                        'traite' => 0
+                    ];
+                }
+            //Fin statistique
+
+            // Tests orders
+                $now = Carbon::now();
+                $today = now()->format('Y-m-d');
+                $testOrdersToday = $this->reports->whereDate('updated_at', $today)->get();
+                $loggedInUserIds = $this->users->where('is_connect',1)->whereDate('updated_at', '=', $now->toDateString())->get();
+            // fin test orders
+
+            //Données par docteur
+                $testOrdersByDoctors = null;
+                $testOrdersByDoctorCount = null;
+                $totalByStatusForDoctor = null;
+                $appointments = null;
+                //total de demandes affectées à un docteur
+                $testOrdersByDoctorCount = TestOrder::where('attribuate_doctor_id',Auth::user()->id)->count();
+
+                //Demandes d'examen affectées à un docteur
+                $testOrdersByDoctors = TestOrder::where('attribuate_doctor_id',Auth::user()->id)->get();
+                $testOrdersByDoctorsToday = TestOrder::where('attribuate_doctor_id',Auth::user()->id)->whereHas('report', function($query) use($today) {
+                    $query->whereDate('updated_at',$today);
+                })->get();
+
+                //Status des demandes affectées à un doctor
+                $totalByStatusForDoctor = TestOrder::where('attribuate_doctor_id',Auth::user()->id)->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+                    ->groupBy('reports.status')
+                    ->select('reports.status', DB::raw('COUNT(*) as total'))
+                    ->get();
+
+                //Rendez-vous par doctor
+                $appointments = Appointment::where('user_id',Auth::user()->id)->where('status','pending')->get();
+
+            //Fin données
+
+
+
+            return view('dashboardPlus',compact(
+                'crPatient','valeurPatient',
+                'crClient','valeurClient',
+                'crTestOrder','valeurTestOrder',
+                'crInvoice','valeurInvoice','testOrdersToday', 'loggedInUserIds',
+                'totalForCurrentWeek', 'totalForLastWeek', 'totalToday',
+                'examensDemandes','totalByStatus','doctorDatas',
+                'testOrdersByDoctors','testOrdersByDoctorsToday','testOrdersByDoctorCount',
+                'totalByStatusForDoctor', 'appointments'
+            ));
+        }
+>>>>>>> 1054c2262524b46fb8652cfa706ce633cbdd36d5
 
     }
 

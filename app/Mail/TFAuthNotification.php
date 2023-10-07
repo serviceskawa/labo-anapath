@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\SettingApp;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -31,10 +32,14 @@ class TFAuthNotification extends Mailable
      */
     public function build()
     {
-        $this->from("admin@caap.bj", "LaboCaap") // L'expéditeur
+        $from_adresse = SettingApp::where('key','from_adresse')->first();
+        $from_name = SettingApp::where('key','from_name')->first();
+        $lab_name = SettingApp::where('key','lab_name')->first();
+        
+        $this->from($from_adresse->value, $from_name->value) // L'expéditeur
         ->subject('Connection Confirmation de code')
         ->view('emails.tfauth_notification')
-        ->with('user', $this->user);
+        ->with(['user'=>$this->user,'lab'=>$lab_name]);
         //dd($this);
     }
 }

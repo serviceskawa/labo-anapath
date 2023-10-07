@@ -188,7 +188,8 @@ class SettingController extends Controller
         $banks = $this->banks->latest()->get();
         config(['app.name' => $setting->titre]);
         // dd($setting);
-        return view('settings.app.index' , compact(['setting','banks']));
+        // return view('settings.app.index' , compact(['setting','banks']));
+        return view('settings.app.setting');
     }
 
     public function app_store(Request $request)

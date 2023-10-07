@@ -127,7 +127,25 @@ $(document).ready(function () {
                 cutoutPercentage:80,
                 legend:{display:!1}
             }))
-        ),e
+        ),
+        0<o("#project-status-chart-doctor").length&&(a={
+            labels:["Terminé","En attente"],
+            datasets:[{
+                data:[totalByStatusForDoctor[1]['total'],totalByStatusForDoctor[0]['total']],
+                backgroundColor:(
+                    r=o("#project-status-chart-doctor").data("colors"))?r.split(","):["#E52D4F","#0acf97"],
+                    borderColor:"transparent",
+                    borderWidth:"3"
+                }]
+            },
+            e.push(this.respChart(o("#project-status-chart-doctor"),
+            "Doughnut",a,{
+                maintainAspectRatio:!1,
+                cutoutPercentage:80,
+                legend:{display:!1}
+            }))
+        ),
+        e
     },
     t.prototype.init=function(){
             var r=this;
