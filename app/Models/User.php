@@ -147,12 +147,12 @@ class User extends Authenticatable
     public function userCheckRole($role_name)
     {
         $access = false;
-        foreach (getRolesByUser(Auth::user()->id) as $role){
-            if ($role->name == $role_name){
-                $access = true;
-                break;
-            }
-        }
+        // foreach (getRolesByUser(Auth::user()->id) as $role){
+        //     if ($role->name == $role_name){
+        //         $access = true;
+        //         break;
+        //     }
+        // }
         return $access;
     }
 }
