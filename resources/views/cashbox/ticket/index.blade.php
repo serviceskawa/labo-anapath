@@ -232,6 +232,7 @@
                         console.log(data);
                         toastr.success("Mis à jour du ticket", 'Ajout réussi');
                         // location.reload();
+                         window.location.href = "{{ url('cashbox/tickets') }}"
                     },
                     error: function (error) {
                         console.log(error);

@@ -203,9 +203,7 @@
 <script>
 var ROUTECOMMENTTICKET = "{{route('probleme.report.sendMessage')}}"
 var TOKENSENDMESSAGE = "{{ csrf_token() }}"
-var ticket = {
-    !!json_encode($ticket) !!
-}
+var ticket = {!!json_encode($ticket) !!}
 
 $('#openSelect').on('click', function() {
     var openSelect = document.getElementById('openSelect')

@@ -10,7 +10,7 @@
             <div class="modal-body">
                 <h4>Code : {{$ticket->code}}</h4>
                <h4> Catégorie de la dépense :  {{ $ticket->categorie ? $ticket->categorie->name :'' }}</h4>
-               <h4> Fournisseur :  {{ $ticket->supplier->name }}</h4>
+               <h4> Fournisseur :  {{ $ticket->supplier ? $ticket->supplier->name:'' }}</h4>
                 <h4>Montant total : {{ $ticket->amount }}</h4>
                  {{-- Debut --}}
                  <h5 class="mt-3">Listes des articles</h5>

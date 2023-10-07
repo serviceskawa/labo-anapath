@@ -87,10 +87,9 @@
 
                         <div class="col-md-6 col-12">
                             <div class="mb-3">
-                                <label for="example-select" class="form-label">Fournisseur<span
-                                        style="color:red;">*</span></label>
-                                <select class="form-select select2" data-toggle="select2" required name="supplier_id"
-                                    required>
+                                <label for="example-select" class="form-label">Fournisseur</label>
+                                <select class="form-select select2" data-toggle="select2" name="supplier_id"
+                                    >
                                     <option value="">Sélectionner le fournisseur</option>
                                     @forelse ($suppliers as $supplier)
                                         <option value="{{ $supplier->id }}" {{$ticket->supplier_id == $supplier->id ? 'selected':''}}>{{ $supplier->name }}</option>
