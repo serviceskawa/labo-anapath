@@ -117,9 +117,7 @@ date_default_timezone_set('Europe/Paris');
         <table style="width: 100%;">
             @if ($status !=0)
                 <tr>
-
-
-                    <td style="text-align: center;    width: 25%">
+                    <td style="text-align: left; width: 33%; vertical-align: bottom;">
                         @if ($signatory1 != null)
                             @if ($signature1 != null)
                                 <img width="85" src="{{ asset('storage/' . $signature1) }}" alt="">
@@ -128,41 +126,33 @@ date_default_timezone_set('Europe/Paris');
                         @endif
                     </td>
 
-                    <td style="text-align: center;    width: 25%">
+                    <td style="text-align: center; width: 33%; vertical-align: bottom;">
                         @if ($signatory2 != null)
                             @if ($signature2 != null)
                                 <img width="85" src="{{ asset('storage/' . $signature2) }}" alt="">
                             @endif
                             <br><br>{{ $signatory2 }}
                         @endif
-
                     </td>
-
-                    <td style="text-align: center;    width: 25%">
-                        @if ($signatory3 != null)
-                            @if ($signature3 != null)
-                                <img width="85" src="{{ asset('storage/' . $signature3) }}" alt="">
-                            @endif
-                            <br><br>{{ $signatory3 }}
-                        @endif
-                    </td>
-
-
-                </tr>
-                <tr>
-                    <td style="text-align: center;    width: 25%">
+                    
+                    <td style="text-align: right; width: 34%; vertical-align: bottom;">
                         @if ($revew_by != null)
                             {{-- @if ($revew_by_signature != null)
                                 <img width="85" src="{{ asset('storage/' . $revew_by_signature) }}" alt="">
                             @endif --}}
-                            <strong>{{ $report_review_title }}</strong>
-                            <br>{{ $revew_by }}
+                            {{ $report_review_title }}
+                            <br><strong>{{ $revew_by }}</strong>
                         @endif
                     </td>
-                </tr>
-            @else
-                <tr>
-                    
+
+                    <!--<td style="text-align: center;    width: 25%">-->
+                    <!--    @if ($signatory3 != null)-->
+                    <!--        @if ($signature3 != null)-->
+                    <!--            <img width="85" src="{{ asset('storage/' . $signature3) }}" alt="">-->
+                    <!--        @endif-->
+                    <!--        <br><br>{{ $signatory3 }}-->
+                    <!--    @endif-->
+                    <!--</td>-->
                 </tr>
             @endif
         </table>
