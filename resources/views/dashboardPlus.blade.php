@@ -192,6 +192,203 @@
 
             </div>
 
+
+            <div class="row" style="margin-left: 5px;margin-right:5px">
+                <h4 class="header-title mt-2 mb-2">STATISTIQUE MENSUELLE</h4>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card  mb-3">
+                            <div class="card-body">
+                                EXAMENS DEMNADES
+                                <div class="row mt-3">
+                                    <div class="col-sm-6 col-xl-4">
+                                        <div class="card shadow-none m-0 border-start">
+                                            <div class="card-body text-center">
+                                                <i class="dripicons-checklist text-muted" style="font-size: 24px;"></i>
+                                                <h3><span>{{$nombreTests}}</span></h3>
+                                                <p class="text-muted font-15 mb-0">Total d'examens</p>
+                                            </div>
+                                        </div>
+                                    </div>
+        
+                                    <div class="col-sm-6 col-xl-4">
+                                        <div class="card shadow-none m-0 border-start">
+                                            <div class="card-body text-center">
+                                                <i class="dripicons-user-group text-muted" style="font-size: 24px;"></i>
+                                                <h3><span>{{$c_a_tests}}</span></h3>
+                                                <p class="text-muted font-15 mb-0">Chiffre d'affaire</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-xl-4">
+                                        <div class="card shadow-none m-0 border-start">
+                                            <div class="card-body text-center">
+                                                <i class="dripicons-user-group text-muted" style="font-size: 24px;"></i>
+                                                <h3><span>{{$totalPatientTest}}</span></h3>
+                                                <p class="text-muted font-15 mb-0">Patients</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> <!-- end card-body-->
+                        </div>
+
+                        <div class="card  mb-3">
+                            <div class="card-body">
+                                PRESTATIONS DEMANDEES
+                                <div class="row mt-3">
+                                    <div class="col-sm-6 col-xl-4">
+                                        <div class="card shadow-none m-0 border-start">
+                                            <div class="card-body text-center">
+                                                <i class="dripicons-checklist text-muted" style="font-size: 24px;"></i>
+                                                <h3><span>{{$nombrePrestations}}</span></h3>
+                                                <p class="text-muted font-15 mb-0">Total de prestation</p>
+                                            </div>
+                                        </div>
+                                    </div>
+        
+                                    <div class="col-sm-6 col-xl-4">
+                                        <div class="card shadow-none m-0 border-start">
+                                            <div class="card-body text-center">
+                                                <i class="dripicons-checklist text-muted" style="font-size: 24px;"></i>
+                                                <h3><span>{{$c_a_prestation}}</span></h3>
+                                                <p class="text-muted font-15 mb-0">Chiffre d'affaire</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-xl-4">
+                                        <div class="card shadow-none m-0 border-start">
+                                            <div class="card-body text-center">
+                                                <i class="dripicons-user-group text-muted" style="font-size: 24px;"></i>
+                                                <h3><span>{{$totalPatientPrestation}}</span></h3>
+                                                <p class="text-muted font-15 mb-0">Patients</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div> <!-- end card-body-->
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-body ">
+                                STATISTIQUE PATIENTS
+                                
+                                                 
+                                <div class="row mt-3">
+
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h4 class="header-title mt-1 mb-3">Hôpitaux</h4>
+        
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm table-centered mb-0 font-14">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>Hôpital</th>
+                                                                <th>Patients</th>
+                                                                <th style="width: 40%;"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($totalDemandesParHopital as $patient)
+                                                                <tr>
+                                                                    <td>{{$patient->nom_hopital}}</td>
+                                                                    <td> {{$patient->total_patients}} </td>
+                                                                    <td>
+                                                                        <div class="progress" style="height: 3px;">
+                                                                            <div class="progress-bar" role="progressbar" style="width: {{($patient->total_patients/$totalDemandesParHopitalCount)*100}}%; height: 20px;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                           
+                                                        </tbody>
+                                                    </table>
+                                                </div> <!-- end table-responsive-->
+                                            </div> <!-- end card-body-->
+                                        </div> <!-- end card-->
+                                    </div> <!-- end col-->
+
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                {{-- <a href="" class="p-0 float-end">Export <i class="mdi mdi-download ms-1"></i></a> --}}
+                                                <h4 class="header-title mt-1 mb-3">Médécin traitant</h4>
+        
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm table-centered mb-0 font-14">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>Médécin</th>
+                                                                <th>Patients</th>
+                                                                <th style="width: 40%;"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($totalDemandesParMedecin as $medecin)
+                                                                <tr>
+                                                                    <td>{{$medecin->nom_medecin}}</td>
+                                                                    <td>{{$medecin->total_patients}}</td>
+                                                                    <td>
+                                                                        <div class="progress" style="height: 3px;">
+                                                                            <div class="progress-bar" role="progressbar" style="width: {{ ($medecin->total_patients/$totalDemandesParMedecinCount)*100 }}%; height: 20px;" aria-valuenow="{{$medecin->total_patients}}" aria-valuemin="0" aria-valuemax="{{$totalDemandesParMedecinCount}}"></div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div> <!-- end table-responsive-->
+                                            </div> <!-- end card-body-->
+                                        </div> <!-- end card-->
+                                    </div> <!-- end col-->
+
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h4 class="header-title mt-1 mb-3">Type de demande</h4>
+        
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm table-centered mb-0 font-14">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>Type</th>
+                                                                <th>Patients</th>
+                                                                <th style="width: 40%;"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($totalDemandesParType as $type)
+                                                                <tr>
+                                                                    <td>{{$type->nom_type}}</td>
+                                                                    <td>{{$type->total_patients}}</td>
+                                                                    <td>
+                                                                        <div class="progress" style="height: 3px;">
+                                                                            <div class="progress-bar" role="progressbar" style="width: {{($type->total_patients/$totalDemandesParTypeCount)*100}}%; height: 20px;" aria-valuenow="{{$type->total_patients}}" aria-valuemin="0" aria-valuemax="{{$totalDemandesParTypeCount}}"></div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div> <!-- end table-responsive-->
+                                            </div> <!-- end card-body-->
+                                        </div> <!-- end card-->
+                                    </div> <!-- end col-->
+        
+        
+                                </div>
+                                <!-- end row -->
+                            </div> <!-- end card-body-->
+                        </div>
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div>
+
+
+
             @if (getOnlineUser()->can('view-dashbord-finance'))
                 <div class="row" style="display: flex; justify-content:space-between">
                     <div class="col-lg-8">
@@ -673,6 +870,8 @@
             </div>
             <!-- end row-->
         @endif
+
+
 
     </div><!-- container -->
 

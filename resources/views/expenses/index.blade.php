@@ -104,6 +104,14 @@
                             <td>
                                 <a class="btn btn-primary" href="{{route('expense.details.index',$item->id)}}" ><i class="uil-eye"></i>
                                 </a>
+                                @if ($item->paid ==0)
+                                    <a class="btn btn-success" href="{{route('expense.paid',$item->id)}}" ><i class="mdi mdi-printer"></i>
+                                    </a>
+                                @else
+                                    <a class="btn btn-warning" href="{{route('update.stock.mouv',$item->id)}}" ><i class="mdi mdi-cart-check"></i>
+                                    </a>
+                                @endif
+
                                 {{-- @include('expenses.show',['item' => $item]) --}}
 
                                 {{-- <a class="btn btn-primary" href="#" data-bs-toggle="modal"

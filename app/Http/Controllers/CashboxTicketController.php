@@ -74,18 +74,19 @@ class CashboxTicketController extends Controller
             'expense_category_id' => $request->expense_categorie_id,
             'description' => $request->description
         ];
+
         $code = generateCodeTicket();
         !empty($data['supplier']) ? $supplier = $this->suppliers->where('name','like',$data['supplier'])->first() :$supplier=null;
-        
-        if (!empty($supplier) && !empty($data['supplier_id'])) {
+
+
+        if ($supplier) {
             $data['supplier_id'] = $supplier->id;
         } else {
-          if(!empty($data['supplier_id'])){
-               $supplierCreate = $this->suppliers->create([
-            'name' => $data['supplier']
-           ]);
-           $data['supplier_id'] = $supplierCreate->id;
-          }
+            $supplierCreate = $this->suppliers->create([
+                'name' => $data['supplier']
+            ]);
+            // dd(!empty($data['supplier']),$supplier,$supplierCreate,$data);
+            $data['supplier_id'] = $supplierCreate->id;
         }
 
 
@@ -249,9 +250,6 @@ class CashboxTicketController extends Controller
        ])->save();
 
        if ($status == "approuve") {
-            $cash = Cashbox::find(1);
-            $cash->current_balance -= $ticket->amount;
-            $cash->save();
 
             $expense = Expense::create([
                 'amount' => $ticket->amount,
@@ -260,15 +258,8 @@ class CashboxTicketController extends Controller
                 'user_id' => Auth::user()->id,
                 'expense_categorie_id' => $ticket->expense_category_id,
                 'cashbox_ticket_id' => $ticket->id,
-                'paid' => 1,
+                'paid' => 0,
                 'receipt' => $ticket->ticket_file
-            ]);
-
-            CashboxAdd::create([
-                'cashbox_id' => 1,
-                'date' => Carbon::now(),
-                'amount' => $ticket->amount,
-                'user_id' => Auth::user()->id
             ]);
 
             $details = $ticket->details()->get();
@@ -287,19 +278,19 @@ class CashboxTicketController extends Controller
                 $expense->amount += $detail->quantity;
                 $expense->save();
 
-                if ($article) {
-                    $article->quantity_in_stock += $detail->quantity;
-                    $article->save();
-                    Movement::create([
-                        'movement_type' => 'augmenter',
-                        'date_mouvement' => Carbon::now()->format('d/m/y'),
-                        'quantite_changed' => $detail->quantity,
-                        'description' => '',
-                        'article_id' => $article->id,
-                        'user_id' => Auth::user()->id
-                    ]);
+                // if ($article) {
+                //     $article->quantity_in_stock += $detail->quantity;
+                //     $article->save();
+                //     Movement::create([
+                //         'movement_type' => 'augmenter',
+                //         'date_mouvement' => Carbon::now()->format('d/m/y'),
+                //         'quantite_changed' => $detail->quantity,
+                //         'description' => '',
+                //         'article_id' => $article->id,
+                //         'user_id' => Auth::user()->id
+                //     ]);
 
-                }
+                // }
             }
 
        }

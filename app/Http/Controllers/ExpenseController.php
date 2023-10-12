@@ -26,7 +26,8 @@ class ExpenseController extends Controller
     protected $supplier;
     protected $setting;
 
-    public function __construct(Expense $expense, Setting $setting, ExpenceDetail $expenseDetail, Article $article, Supplier $supplier){
+    public function __construct(Expense $expense, Setting $setting, ExpenceDetail $expenseDetail, Article $article, Supplier $supplier)
+    {
         $this->expense = $expense;
         $this->expenseDetail = $expenseDetail;
         $this->supplier = $supplier;
@@ -51,21 +52,21 @@ class ExpenseController extends Controller
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
-        return view('expenses.index',compact(['expenses','expenses_categorie','cash_ticket']));
+        return view('expenses.index', compact(['expenses', 'expenses_categorie', 'cash_ticket']));
     }
 
     public function detail_index($id)
     {
         if (!getOnlineUser()->can('view-expence-details')) {
-            return back()->with('error',"Vous n\'êtes pas autorisé");
+            return back()->with('error', "Vous n\'êtes pas autorisé");
         }
 
         $expense = $this->expense->find($id);
         $suppliers = $this->supplier->latest()->get();
         $expenses_categorie = ExpenseCategorie::latest()->get();
         $setting = $this->setting->find(1);
-        config(['app.name'=>$setting->titre]);
-        return view('expenses.show',compact(['expense','suppliers','expenses_categorie']));
+        config(['app.name' => $setting->titre]);
+        return view('expenses.show', compact(['expense', 'suppliers', 'expenses_categorie']));
     }
 
     /**
@@ -80,7 +81,7 @@ class ExpenseController extends Controller
         $articles = Article::latest()->get();
         $suppliers = Supplier::latest()->get();
 
-        return view('expenses.create',compact(['expenses_categories','cash_tickets','articles','suppliers']));
+        return view('expenses.create', compact(['expenses_categories', 'cash_tickets', 'articles', 'suppliers']));
     }
 
     /**
@@ -95,82 +96,82 @@ class ExpenseController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-                if ($request->hasFile('receipt'))
-                {
-                    $path = $request->file('receipt')->store('preuves', 'public');
-                } else {
-                    $path = null;
-                }
+        if ($request->hasFile('receipt')) {
+            $path = $request->file('receipt')->store('preuves', 'public');
+        } else {
+            $path = null;
+        }
+
+        //                 $search_article = Article::find($request->item_id)->first();
+
+        //         try {
+        //                 Expense::create([
+        //                     'total_amount' => $request->total_amount,
+        //                     'user_id' => Auth::user()->id,
+        //                     'unit_price' => $request->unit_price,
+        //                     'expense_categorie_id' => $request->expense_categorie_id,
+        //                     'cashbox_ticket_id' => $request->cashbox_ticket_id,
+        //                     'paid' => $request->paid,
+        //                     'receipt' => $path,
+        //                     'supplier_id' => $request->supplier_id,
+        //                     'item_id' => $request->item_id,
+        //                     'item_name' => $search_article->article_name,
+        //                     'quantity' => $request->quantity,
+        // =======
+        !empty($request->supplier) ? $supplier = $this->supplier->where('name','like',$request->supplier)->first() :$supplier=null;
 
 
-//                 $search_article = Article::find($request->item_id)->first();
-
-//         try {
-//                 Expense::create([
-//                     'total_amount' => $request->total_amount,
-//                     'user_id' => Auth::user()->id,
-//                     'unit_price' => $request->unit_price,
-//                     'expense_categorie_id' => $request->expense_categorie_id,
-//                     'cashbox_ticket_id' => $request->cashbox_ticket_id,
-//                     'paid' => $request->paid,
-//                     'receipt' => $path,
-//                     'supplier_id' => $request->supplier_id,
-//                     'item_id' => $request->item_id,
-//                     'item_name' => $search_article->article_name,
-//                     'quantity' => $request->quantity,
-// =======
-                $supplier = $this->supplier->where('name','like',$request->supplier)->first();
-                if (!empty($supplier)) {
-                    $data['supplier_id'] = $supplier->id;
-                } else {
-                   $supplierCreate = $this->supplier->create([
-                    'name' => $request->supplier
-                   ]);
-                   $data['supplier_id'] = $supplierCreate->id;
-                }
+        if ($supplier) {
+            $data['supplier_id'] = $supplier->id;
+        } else {
+            $supplierCreate = $this->supplier->create([
+                'name' => $request->supplier
+            ]);
+           $data['supplier_id'] = $supplierCreate->id;
+        }
         try {
-                $expense = Expense::create([
-                    // 'amount' => $request->amount,
-                    'user_id' => Auth::user()->id,
-                    // 'description' => $request->description,
-                    'expense_categorie_id' => $request->expense_categorie_id,
-                    'supplier_id' =>  $data['supplier_id'],
-                    'user_id' => Auth::user()->id,
-                    // 'cashbox_ticket_id' => $request->cashbox_ticket_id,
-                    // 'paid' => $request->paid,
-                    // 'receipt' => $path
-                ]);
+            $expense = Expense::create([
+                // 'amount' => $request->amount,
+                'user_id' => Auth::user()->id,
+                // 'description' => $request->description,
+                'expense_categorie_id' => $request->expense_categorie_id,
+                'supplier_id' => $data['supplier_id'],
+                'user_id' => Auth::user()->id,
+                // 'cashbox_ticket_id' => $request->cashbox_ticket_id,
+                // 'paid' => $request->paid,
+                // 'receipt' => $path
+            ]);
 
-                return redirect()->route('expense.details.index',$expense->id)->with('success', " Opération effectuée avec succès  ! ");
-            } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ". $ex);
-            }
+            return redirect()
+                ->route('expense.details.index', $expense->id)
+                ->with('success', ' Opération effectuée avec succès  ! ');
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex);
+        }
     }
 
     public function detail_store(Request $request)
     {
         if (!getOnlineUser()->can('create-expence-details')) {
-            return back()->with('error',"Vous n\'êtes pas autorisé");
+            return back()->with('error', "Vous n\'êtes pas autorisé");
         }
         $data = [
             'expense_id' => $request->expense_id,
             'article_name' => $request->article_name,
             'quantity' => $request->quantity,
             'unit_price' => $request->unit_price,
-            'line_amount' => $request->unit_price*$request->quantity,
+            'line_amount' => $request->unit_price * $request->quantity,
         ];
 
         // return response()->json($data);
-        $article = $this->article->where('article_name','=',$data['article_name'])->first();
+        $article = $this->article->where('article_name', '=', $data['article_name'])->first();
 
         try {
-
-
             DB::transaction(function () use ($data, $article) {
                 $details = new ExpenceDetail();
                 $details->expense_id = $data['expense_id'];
                 $details->article_name = $data['article_name'];
-                $details->article_id = $article ? $article->id:null;
+                $details->article_id = $article ? $article->id : null;
                 $details->unit_price = $data['unit_price'];
                 $details->quantity = $data['quantity'];
                 $details->line_amount = $data['line_amount'];
@@ -179,11 +180,10 @@ class ExpenseController extends Controller
             $expense = $this->expense->find($data['expense_id']);
             $expense->amount += $data['line_amount'];
             $expense->save();
-            return response()->json($expense,200);
+            return response()->json($expense, 200);
             // return back()->with('success', "Bon de caisse enregistré");
-
-        } catch(\Throwable $ex){
-            return response()->json("Échec de l'enregistrement ! " .$ex->getMessage(),500);
+        } catch (\Throwable $ex) {
+            return response()->json("Échec de l'enregistrement ! " . $ex->getMessage(), 500);
         }
     }
 
@@ -194,9 +194,11 @@ class ExpenseController extends Controller
         // }
         $ticket = $this->expense->findorfail($request->expense_id);
 
-        $ticket->fill([
-            "amount" => $request->amount,
-        ])->save();
+        $ticket
+            ->fill([
+                'amount' => $request->amount,
+            ])
+            ->save();
 
         return response()->json($ticket);
     }
@@ -211,7 +213,7 @@ class ExpenseController extends Controller
         $ticket->amount -= $detail->line_amount;
         $ticket->save();
         $detail->delete();
-        return back()->with('success', "Un élement a été supprimé !");
+        return back()->with('success', 'Un élement a été supprimé !');
     }
 
     /**
@@ -257,61 +259,108 @@ class ExpenseController extends Controller
         // }
         $expense = $this->expense->find($request->expense_id);
 
-
         try {
-                if ($request->hasFile('receipt'))
-                {
-                    $path = $request->file('receipt')->store('preuves', 'public');
-                } else {
-                    $path = null;
-                }
+            if ($request->hasFile('receipt')) {
+                $path = $request->file('receipt')->store('preuves', 'public');
+            } else {
+                $path = null;
+            }
 
+            $expense->update([
+                'user_id' => Auth::user()->id,
+                'description' => $request->description,
+                'expense_categorie_id' => $request->expense_categorie_id,
+                'supplier_id' => $request->supplier_id,
+                // 'cashbox_ticket_id' => $request->cashbox_ticket_id,
+                'paid' => $request->paid,
+                'receipt' => $path,
+            ]);
 
-                $expense->update([
-                    'user_id' => Auth::user()->id,
-                    'description' => $request->description,
-                    'expense_categorie_id' => $request->expense_categorie_id,
-                    'supplier_id' => $request->supplier_id,
-                    // 'cashbox_ticket_id' => $request->cashbox_ticket_id,
-                    'paid' => $request->paid,
-                    'receipt' => $path
-                ]);
+            $expense->save();
 
-                $expense->save();
+            // if ($expense->paid=1) {
+            //     $cash = Cashbox::find(1);
+            //     $cash->current_balance -= $expense->amount;
+            //     $cash->save();
 
-                if ($expense->paid=1) {
-                    $cash = Cashbox::find(1);
-                    $cash->current_balance -= $expense->amount;
-                    $cash->save();
+            //     CashboxAdd::create([
+            //         'cashbox_id' => 1,
+            //         'date' => Carbon::now(),
+            //         'amount' => $expense->amount,
+            //         'user_id' => Auth::user()->id
+            //     ]);
+            //     $details = $expense->details()->get();
+            //     foreach ($details as $key => $detail) {
+            //         $article = $this->article->where('article_name',$detail->item_name)->first();
+            //         if (!empty($article)) {
+            //             $article->quantity_in_stock += $detail->quantity;
+            //             $article->save();
+            //             Movement::create([
+            //                 'movement_type' => 'augmenter',
+            //                 'date_mouvement' => Carbon::now()->format('d/m/y'),
+            //                 'quantite_changed' => $detail->quantity,
+            //                 'description' => '',
+            //                 'article_id' => $article->id,
+            //                 'user_id' => Auth::user()->id
+            //             ]);
 
-                    CashboxAdd::create([
-                        'cashbox_id' => 1,
-                        'date' => Carbon::now(),
-                        'amount' => $expense->amount,
-                        'user_id' => Auth::user()->id
+            //         }
+            //     }
+            // }
+
+            return redirect()
+                ->route('all_expense.index')
+                ->with('success', ' Mise à jour effectuée avec succès  ! ');
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
+        }
+    }
+
+    public function expense_paid($id)
+    {
+        $expense = $this->expense->find($id);
+        try {
+            $expense->paid = 1;
+            $expense->save();
+            $cash = Cashbox::find(1);
+            $cash->current_balance -= $expense->amount;
+            $cash->save();
+
+            CashboxAdd::create([
+                'cashbox_id' => 1,
+                'date' => Carbon::now(),
+                'amount' => $expense->amount,
+                'user_id' => Auth::user()->id,
+            ]);
+            return back()->with('success', 'Dépense marquée comme payéé');
+        } catch (\Throwable $th) {
+            return back()->with('error', 'Échec de la mise à jour ! ' . $th->getMessage());
+        }
+    }
+
+    public function update_stock_mouv($id)
+    {
+        $expense = $this->expense->find($id);
+        try {
+            $details = $expense->details()->get();
+            foreach ($details as $key => $detail) {
+                $article = $this->article->where('article_name', $detail->article_name)->first();
+                if (!empty($article)) {
+                    $article->quantity_in_stock += $detail->quantity;
+                    $article->save();
+                    Movement::create([
+                        'movement_type' => 'augmenter',
+                        'date_mouvement' => Carbon::now()->format('d/m/y'),
+                        'quantite_changed' => $detail->quantity,
+                        'description' => '',
+                        'article_id' => $article->id,
+                        'user_id' => Auth::user()->id,
                     ]);
-                    $details = $expense->details()->get();
-                    foreach ($details as $key => $detail) {
-                        $article = $this->article->where('article_name',$detail->item_name)->first();
-                        if (!empty($article)) {
-                            $article->quantity_in_stock += $detail->quantity;
-                            $article->save();
-                            Movement::create([
-                                'movement_type' => 'augmenter',
-                                'date_mouvement' => Carbon::now()->format('d/m/y'),
-                                'quantite_changed' => $detail->quantity,
-                                'description' => '',
-                                'article_id' => $article->id,
-                                'user_id' => Auth::user()->id
-                            ]);
-
-                        }
-                    }
                 }
-
-                return redirect()->with('success', " Mise à jour effectuée avec succès  ! ");
-        } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+            }
+            return back()->with('success', 'Stock mis à jour');
+        } catch (\Throwable $th) {
+            return back()->with('error', 'Échec de la mise à jour ! ' . $th->getMessage());
         }
     }
 
@@ -329,6 +378,6 @@ class ExpenseController extends Controller
 
         $expense = $this->expense->find($expense)->delete();
 
-        return back()->with('success', " Elément supprimé avec succès  ! ");
+        return back()->with('success', ' Elément supprimé avec succès  ! ');
     }
 }

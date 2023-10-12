@@ -33,7 +33,7 @@
                             @foreach ($ticket->details()->get() as $key => $article)
                                 <tr>
                                     <td>{{ ++$key}}</td>
-                                    <td>{{ $article->article_name }}</td>
+                                    <td>{{ $article->item_name }}</td>
                                     <td>{{ $article->unit_price }}</td>
                                     <td>{{ $article->quantity }}</td>
                                     <td>{{ $article->line_amount }} </td>

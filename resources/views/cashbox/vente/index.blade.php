@@ -57,7 +57,7 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Date</th>
+                            {{-- <th>Date</th> --}}
                             <th>Montant</th>
                             <th>Facture</th>
                             <th>Type de payement</th>
@@ -73,7 +73,7 @@
                         @foreach ($cashadds as $key => $item)
                         <tr class="{{ $item->invoice ? '' : 'table-danger' }}">
                             <td>{{ ++$key }}</td>
-                            <td>{{ $item->date }}</td>
+                            {{-- <td>{{ date('d-m-Y (H:i)', strtotime($item->date )) }}</td> --}}
                             <td>{{ $item->amount }}</td>
                             <td>
 
@@ -81,7 +81,7 @@
                                 {{ $item->invoice->order ? $item->invoice->order->code : $item->invoice->code }}
                                 <br>
                                 <small class="text-muted">Du
-                                    {{ date('d-m-y', strtotime($item->invoice->created_at)) }}</small>
+                                    {{ date('d-m-y (H:i)', strtotime($item->invoice->created_at)) }}</small>
                                 @else
                                 -
                                 @endif
@@ -100,7 +100,7 @@
                                 @endif
                             </td>
 
-                            <td>{{ $item->created_at->format('d/m/y') }}</td>
+                            <td>{{ $item->created_at->format('d-m-Y (H:i)') }}</td>
 
                             <td>{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
                             {{-- <td>

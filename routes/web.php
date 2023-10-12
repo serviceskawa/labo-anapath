@@ -534,6 +534,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('expense-detail',[ExpenseController::class, 'detail_store'])->name('expense.detail.store');
         Route::get('expense-delete/{expense}', [ExpenseController::class, 'delete'])->name('all_expense.delete');
         Route::get('/expense-detail-delete/{id}',[ExpenseController::class,'detail_destroy']);
+        Route::get('/expense-status/{id}',[ExpenseController::class,'expense_paid'])->name('expense.paid');
+        Route::get('/expense-detail-mouv-stock/{id}',[ExpenseController::class,'update_stock_mouv'])->name('update.stock.mouv');
     // });
 
 

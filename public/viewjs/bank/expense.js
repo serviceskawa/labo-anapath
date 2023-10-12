@@ -257,6 +257,10 @@ $('#add_detail').on('click', function(e) {
             console.log(response);
             if (response) {
                 toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                $('#article-name').val('');
+                $('#unit_price').val('');
+                $('#quantity').val('');
+                $('#total').val('');
             }
             $('#datatable1').DataTable().ajax.reload();
             // $('#addDetailForm').trigger("reset")

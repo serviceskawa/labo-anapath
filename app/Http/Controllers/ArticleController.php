@@ -6,7 +6,9 @@ use App\Models\Article;
 use App\Models\Movement;
 use App\Models\Setting;
 use App\Models\UnitMeasurement;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
@@ -78,7 +80,7 @@ class ArticleController extends Controller
         ];
      
         try {
-                Article::create([
+                $article = Article::create([
                     'article_name' => $request->article_name,
                     'description' => $request->description,
                     'quantity_in_stock' => $request->quantity_in_stock,
@@ -87,6 +89,14 @@ class ArticleController extends Controller
                     'lot_number'=>$request->lot_number,
                     'minimum'=>$request->minimum,
                     'prix'=>$request->prix,
+                ]);
+                Movement::create([
+                    'movement_type' => 'stock initial',
+                    'date_mouvement' => Carbon::now()->format('d/m/y'),
+                    'quantite_changed' => $article->quantity_in_stock,
+                    'description' => 'Stock initial',
+                    'article_id' => $article->id,
+                    'user_id' => Auth::user()->id,
                 ]);
                 
             return back()->with('success', " Opération effectuée avec succès  ! ");

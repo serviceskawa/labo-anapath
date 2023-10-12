@@ -2,6 +2,25 @@
 
 @section('title', 'Fermeture de la caisse')
 
+@section('css')
+
+    <style>
+        @media print {
+            .section1 {
+                display: block; /* Affiche la section1 lors de l'impression */
+            }
+
+            .section2 {
+                display: none; /* Masque la section2 lors de l'impression */
+            }
+            .section3 {
+                display: none; /* Masque la section3 lors de l'impression */
+            }
+        }
+    </style>
+
+@endsection
+
 @section('content')
 
 <div class="row">
@@ -225,214 +244,233 @@
                                     {{-- Panel 2 pour le point general --}}
                                     <div class="tab-pane" id="profile-tab-2">
                                         <div class="row d-none" id="payment-details">
-                                            <div class="col-12">
-                                                <div class="row mb-3">
-                                                    <div class="col-md-2">
-                                                        <label class="form-label" style="font-weight: 900;"
-                                                            for="userName1">Mode de
-                                                            paiement</label>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <label class="form-label" style="font-weight: 900;"
-                                                            for="userName1">Fond initial</label>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <label class="form-label" style="font-weight: 900;"
-                                                            for="userName1">Vente</label>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <label class="form-label" style="font-weight: 900;"
-                                                            for="userName1">Solde</label>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <label class="form-label" style="font-weight: 900;"
-                                                            for="userName1">Comptage</label>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <label class="form-label" style="font-weight: 900;"
-                                                            for="userName1">Ecart</label>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="row mb-3">
-                                                    <div class="col-md-2">
-                                                        <label class="form-label" for="userName1">ESPECES</label>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control" id="open_cash"
-                                                            name="open_cash" value="{{$open_cash->opening_balance}}"
-                                                            readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control" id="cash_calculated"
-                                                            name="cash_calculated" value="{{$especessum}}" readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control"
-                                                            id="total_solde_especes" name="total_solde_especes" value=""
-                                                            readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control"
-                                                            id="cash_confirmation_point" name="cash_confirmation_point"
-                                                            required value="" readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control" id="cash_ecart_point"
-                                                            name="cash_ecart_point" value="" readonly>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row mb-3">
-                                                    <div class="col-md-2">
-                                                        <label class="form-label" for="userName1">MOBILE MONEY</label>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        -
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control"
-                                                            id="mobile_money_calculated" name="mobile_money_calculated"
-                                                            value="{{$mobilemoneysum}}" readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        -
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control"
-                                                            id="mobile_money_confirmation_point" required
-                                                            name="mobile_money_confirmation_point" value="" readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control"
-                                                            id="mobile_money_ecart_point"
-                                                            name="mobile_money_ecart_point" value="" readonly>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row mb-3">
-                                                    <div class="col-md-2">
-                                                        <label class="form-label" for="userName1">CHEQUES</label>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        -
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control" id="cheque_calculated"
-                                                            name="cheque_calculated" value="{{$chequessum}}" readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        -
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control"
-                                                            id="cheque_confirmation_point" required
-                                                            name="cheque_confirmation_point" value="" readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control"
-                                                            id="cheque_ecart_point" name="cheque_ecart_point" value=""
-                                                            readonly>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row mb-3">
-                                                    <div class="col-md-2">
-                                                        <label class="form-label" for="userName1">VIREMENT</label>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        -
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control"
-                                                            id="virement_calculated" name="virement_calculated"
-                                                            value="{{$virementsum}}" readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        -
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control"
-                                                            id="virement_confirmation_point" required
-                                                            name="virement_confirmation_point" value="" readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control"
-                                                            id="virement_ecart_point" name="virement_ecart_point"
-                                                            value="" readonly>
-                                                    </div>
-                                                </div>
-
-                                                {{-- Total --}}
-                                                <div class="row mb-3">
-                                                    <div class="col-md-2">
-                                                        <label class="form-label" for="userName1">TOTAL</label>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control" id="open_cash"
-                                                            name="open_cash" value="{{$open_cash->opening_balance}}"
-                                                            readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control" id="total_calculated"
-                                                            name="total_calculated" value="" readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control total-solde"
-                                                            id="total_solde" name="total_solde" value="" readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number"
-                                                            class="form-control total-confirmation-point"
-                                                            id="total_confirmation_point" required
-                                                            name="total_confirmation_point" value="" readonly>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control total-ecart-point"
-                                                            id="total_ecart_point" name="total_ecart_point" value=""
-                                                            readonly>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="col-md-4">
-                                                    Solde de fermeture
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <input type="number" class="form-control close-balance"
-                                                        id="close_balance" name="close_balance" value="" readonly>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
+                                            <div class="section1">
                                                 <div class="col-12">
-                                                    <label class="form-label"
-                                                        style="font-weight: 900;">Commentaire</label>
-                                                    <textarea class="form-control" rows="6" name="description"
-                                                        placeholder="Laissez une description" id="description"></textarea>
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-2">
+                                                            <label class="form-label" style="font-weight: 900;"
+                                                                for="userName1">Mode de
+                                                                paiement</label>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label class="form-label" style="font-weight: 900;"
+                                                                for="userName1">Fond initial</label>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label class="form-label" style="font-weight: 900;"
+                                                                for="userName1">Vente</label>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label class="form-label" style="font-weight: 900;"
+                                                                for="userName1">Solde</label>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label class="form-label" style="font-weight: 900;"
+                                                                for="userName1">Comptage</label>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label class="form-label" style="font-weight: 900;"
+                                                                for="userName1">Ecart</label>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-2">
+                                                            <label class="form-label" for="userName1">ESPECES</label>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control" id="open_cash"
+                                                                name="open_cash" value="{{$open_cash->opening_balance}}"
+                                                                readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control" id="cash_calculated"
+                                                                name="cash_calculated" value="{{$especessum}}" readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control"
+                                                                id="total_solde_especes" name="total_solde_especes" value=""
+                                                                readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control"
+                                                                id="cash_confirmation_point" name="cash_confirmation_point"
+                                                                required value="" readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control" id="cash_ecart_point"
+                                                                name="cash_ecart_point" value="" readonly>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-2">
+                                                            <label class="form-label" for="userName1">MOBILE MONEY</label>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            -
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control"
+                                                                id="mobile_money_calculated" name="mobile_money_calculated"
+                                                                value="{{$mobilemoneysum}}" readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            -
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control"
+                                                                id="mobile_money_confirmation_point" required
+                                                                name="mobile_money_confirmation_point" value="" readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control"
+                                                                id="mobile_money_ecart_point"
+                                                                name="mobile_money_ecart_point" value="" readonly>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-2">
+                                                            <label class="form-label" for="userName1">CHEQUES</label>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            -
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control" id="cheque_calculated"
+                                                                name="cheque_calculated" value="{{$chequessum}}" readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            -
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control"
+                                                                id="cheque_confirmation_point" required
+                                                                name="cheque_confirmation_point" value="" readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control"
+                                                                id="cheque_ecart_point" name="cheque_ecart_point" value=""
+                                                                readonly>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-2">
+                                                            <label class="form-label" for="userName1">VIREMENT</label>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            -
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control"
+                                                                id="virement_calculated" name="virement_calculated"
+                                                                value="{{$virementsum}}" readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            -
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control"
+                                                                id="virement_confirmation_point" required
+                                                                name="virement_confirmation_point" value="" readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control"
+                                                                id="virement_ecart_point" name="virement_ecart_point"
+                                                                value="" readonly>
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Total --}}
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-2">
+                                                            <label class="form-label" for="userName1">TOTAL</label>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control" id="open_cash"
+                                                                name="open_cash" value="{{$open_cash->opening_balance}}"
+                                                                readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control" id="total_calculated"
+                                                                name="total_calculated" value="" readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control total-solde"
+                                                                id="total_solde" name="total_solde" value="" readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number"
+                                                                class="form-control total-confirmation-point"
+                                                                id="total_confirmation_point" required
+                                                                name="total_confirmation_point" value="" readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input type="number" class="form-control total-ecart-point"
+                                                                id="total_ecart_point" name="total_ecart_point" value=""
+                                                                readonly>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="col-md-4">
+                                                        Solde de fermeture
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <input type="number" class="form-control close-balance"
+                                                            id="close_balance" name="close_balance" value="" readonly>
+                                                    </div>
                                                 </div>
                                             </div>
 
-                                            <div class="col-12 mt-4">
-                                                <button type="submit" class="btn btn-success float-end">
-                                                    Confirmer et fermer la caisse
-                                                </button>
+
+                                            <div class="section2">
+
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <label class="form-label"
+                                                            style="font-weight: 900;">Commentaire</label>
+                                                        <textarea class="form-control" rows="6" name="description"
+                                                            placeholder="Laissez une description" id="description"></textarea>
+                                                    </div>
+                                                </div>
+
                                             </div>
+
                                         </div>
-                                        <ul class="list-inline mb-0 wizard">
-                                            <li class="previous list-inline-item">
-                                                <a href="#" class="btn btn-info">Précédent</a>
-                                            </li>
-                                            {{-- <li class="next list-inline-item float-end">
-                                                <a href="#" class="btn btn-info">Suivant</a>
-                                            </li> --}}
-                                        </ul>
+
+                                        <div class="section3">
+                                            <ul class="list-inline mb-0 mt-4 wizard">
+                                                <li class="previous list-inline-item">
+                                                    <a href="#" class="btn btn-info">Précédent</a>
+                                                </li>
+                                                <li class="next list-inline-item float-end">
+
+                                                    <div class="">
+                                                        <button type="button" id="print" class=" btn btn-warning">
+                                                            Imprimer
+                                                        </button>
+                                                        <button type="submit" class="btn btn-success">
+                                                            Confirmer et fermer la caisse
+                                                        </button>
+                                                    </div>
+                                                </li>
+                                                {{-- <li class="next list-inline-item float-end">
+                                                    <a href="#" class="btn btn-info">Suivant</a>
+                                                </li> --}}
+                                            </ul>
+                                        </div>
                                     </div>
+
+
                                 </div>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -793,6 +831,10 @@ checkFields();
     updateEcart('cheque_confirmation', 'cheque_calculated','cheque_ecart');
     updateEcart('virement_confirmation', 'virement_calculated', 'virement_ecart');
 
+$('#print').on('click', function() {
+    console.log('aaa');
+    window.print()
+})
 </script>
 <script>
     var baseUrl = "{{url('/')}}"
