@@ -238,12 +238,12 @@
                                             <input type="password" placeholder="Le jeton de l'API OURVOICE" value="{{$key_ourvoice->value}}" name="key_ourvoice" id="simpleinput" class="form-control">
                                         </div>
                                         <div class="col-6 mb-3">
-                                            <label for="simpleinput" class="form-label">Lien ourvoice SMS</label>
-                                            <input type="text" value="{{$link_ourvoice_call->value}}" name="link_ourvoice_call" placeholder="Lien de l'API OURVOICE pour les sms" id="simpleinput" class="form-control">
+                                            <label for="simpleinput" class="form-label">Lien ourvoice appel</label>
+                                            <input type="text" value="{{$link_ourvoice_call->value}}" name="link_ourvoice_call" placeholder="Lien de l'API OURVOICE pour les appels" id="simpleinput" class="form-control">
                                         </div>
                                         <div class="col-6 mb-3">
-                                            <label for="simpleinput" class="form-label">Lien ourvoice appel</label>
-                                            <input type="text" value="{{$link_ourvoice_sms->value}}" name="link_ourvoice_sms" placeholder="Lien de l'API OURVOICE pour les appels" id="simpleinput" class="form-control">
+                                            <label for="simpleinput" class="form-label">Lien ourvoice SMS</label>
+                                            <input type="text" value="{{$link_ourvoice_sms->value}}" name="link_ourvoice_sms" placeholder="Lien de l'API OURVOICE pour les SMS" id="simpleinput" class="form-control">
                                         </div>
                                     </div> <!-- end row -->
                                     <div style="padding-bottom: 10px;padding-top:10px">

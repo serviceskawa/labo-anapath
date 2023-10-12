@@ -450,7 +450,7 @@
                                         <td>{{ $log->id }}</td>
                                         <td>{{ $log->created_at }}</td>
                                         <td>{{ $log->operation }}</td>
-                                        <td>{{ $log->user->lastname }} {{ $log->user->firstname }}</td>
+                                        <td>{{ $log->user ? $log->user->lastname:'' }} {{ $log->user ? $log->user->firstname:'' }}</td>
                                     </tr>
                                 @endforeach
 

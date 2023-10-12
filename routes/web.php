@@ -12,7 +12,6 @@ use App\Http\Controllers\MovementController;
 use App\Http\Controllers\EmployeeTimeoffController;
 use App\Http\Controllers\EmployeePayrollController;
 use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\DocumentationCategorieController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DoctorController;
