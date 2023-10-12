@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Doc;
 use App\Models\DocumentationCategorie;
 use App\Models\Setting;
 use Illuminate\Http\Request;
@@ -21,7 +22,36 @@ class DocumentationCategorieController extends Controller
      */
     public function index()
     {
-        return view('documentations.categories.index');
+        $documents_categories = DocumentationCategorie::all();                                                                                                                                                                                                      
+        // return view('documentations.categories.index', compact('documents_categories'));
+        
+        // Récupérez toutes les catégories
+        $categories = DocumentationCategorie::all(); 
+        $select_categorie = DocumentationCategorie::latest()->get();
+
+        // Retournez les catégories au format JSON
+        // return response()->json($categories);
+        return view('documentations.categories.index', compact('select_categorie','documents_categories'));
+    }
+
+
+    public function getcategoriedocs()
+    {
+        // Récupérez toutes les catégories
+        $categories = DocumentationCategorie::latest()->get(); 
+
+        // Retournez les catégories au format JSON
+        return response()->json($categories);
+    }
+
+
+    public function getdocs($id)
+    {
+        // Récupérez toutes les catégories
+        $docs = Doc::where('documentation_categorie_id',$id)->get(); 
+
+        // Retournez les catégories au format JSON
+        return response()->json($docs);
     }
 
     /**
@@ -45,15 +75,16 @@ class DocumentationCategorieController extends Controller
         if (!getOnlineUser()->can('create-employees')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+    
         $this->validate($request, [
             'name' => ['required','string','max:255'],
         ]);
 
         try {
             
-                DocumentationCategorie::create([
-                    'name' => $request->name,
-                ]);
+                $document = new DocumentationCategorie();
+                $document->name = $request->name;
+                $document->save();
 
                  return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
@@ -95,17 +126,17 @@ class DocumentationCategorieController extends Controller
         if (!getOnlineUser()->can('edit-employees')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        
         $this->validate($request, [
             'name' => ['required','string','max:255'],
         ]);
-
+        
+        // dd($documentationCategorie);
         try {
             
-                $documentationCategorie->update([
-                    'name' => $request->name,
-                ]);
-
+            $documentationCategorie->name = $request->name;
+            $documentationCategorie->save();
+            // dd($documentationCategorie->name);
+               
                  return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
                 return back()->with('error', "Échec de l'enregistrement ! ");
@@ -118,11 +149,11 @@ class DocumentationCategorieController extends Controller
      * @param  \App\Models\DocumentationCategorie  $documentationCategorie
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DocumentationCategorie $documentationCategorie)
+    public function delete(DocumentationCategorie $documentationCategorie)
     {
-        if (!getOnlineUser()->can('delete-emloyees')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('delete-emloyees')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
 
         $documentationCategorie->delete();
 

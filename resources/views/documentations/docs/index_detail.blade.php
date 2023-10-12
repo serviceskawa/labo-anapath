@@ -1,18 +1,19 @@
 @extends('layouts.app2')
 
-@section('title', 'Employés')
+@section('title', 'Documents')
 
 @section('content')
 <div class="row">
     <div class="col-12">
         <div class="page-title-box">
             <div class="page-title-right mr-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#bs-example-modal-lg-create">Ajouter un nouveau employé</button>
+                <a href="{{ route('doc.categorie.index') }}" type="button" class="btn btn-primary"> <i
+                        class="dripicons-reply"></i>
+                    Retour</a>
             </div>
-            <h4 class="page-title">Employés</h4>
+            <h4 class="page-title">Documents</h4>
         </div>
-        @include('employees.create')
+
     </div>
 </div>
 
@@ -28,7 +29,7 @@
                     aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                 <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
             </div>
-            <h5 class="card-title mb-0">Liste des employés</h5>
+            <h5 class="card-title mb-0">Liste des differentes versions du documents</h5>
 
             <div id="cardCollpase1" class="collapse pt-3 show">
 
@@ -37,35 +38,31 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Nom & Prénoms</th>
-                            <th>Contacts</th>
+                            <th>Date</th>
+                            <th>Nom</th>
+                            <th>Utilisateur</th>
+                            <th>Fichier</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
 
-
                     <tbody>
-
-                        @foreach ($employees as $item)
+                        @foreach ($cat as $doc)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->first_name }} {{ $item->last_name }}</td>
-
+                            <td>{{ $doc->created_at}}</td>
+                            <td>{{ $doc->title}}</td>
+                            <td>{{ App\Models\User::find($doc->user_id)->firstname }} {{
+                                App\Models\User::find($doc->user_id)->lastname }}</td>
+                            <td><a href="{{asset('storage/'.$doc->attachment)}}" download>Telecharger</a></td>
                             <td>
-                                <p>
-                                    {{ $item->telephone }}
-                                </p>
-                                <p>
-                                    {{ $item->email }}
-                                </p>
-                            </td>
-
-                            <td>
-                                <a href="{{ route('employee.detail', $item->id) }}" class="btn btn-primary"><i
-                                        class="mdi mdi-eye"></i></a>
-
-                                <button type="button" onclick="deleteModalEmployee({{ $item->id }})"
-                                    class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
+                                @include('documentations.docs.edit')
+                                <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#bs-example-modal-lg-edit-{{ $doc->id }}" class="btn btn-info"><i
+                                        class="mdi mdi-lead-pencil"></i>
+                                </button>
+                                <button type="button" onclick="deleteModalDoc({{ $doc->id }})" class="btn btn-danger"><i
+                                        class="mdi mdi-trash-can-outline"></i> </button>
                             </td>
                         </tr>
                         @endforeach
