@@ -81,16 +81,23 @@
                         </div>
                     </div>
 
-                    <div class="row d-flex align-items-end">
-                        <div class="col-md-4 col-12">
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <label for="example-select" class="form-label">Description de la dépense</label>
+                            <input name="description" type="text" class="form-control mb-3" id=""  {{$expense->paid != 0 ? 'readonly':''}} value="{{$expense->description}}" >
+                        </div>
+
+                        <div class="col-md-6 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Montant<span
                                         style="color:red;">*</span></label>
-                                <input type="number" name="amount" id="amount" value="{{  old('amount') ? old('amount') : $expense->amount}}" readonly class="form-control" required>
+                                <input type="number" name="amount" id="amount" value="{{  old('amount') ? old('amount') : $expense->amount}}" {{$expense->paid != 0 ? 'readonly':''}} class="form-control" required>
                             </div>
                         </div>
 
-                        <div class="col-md-4 col-12">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-12">
                             <div class="mb-3 row">
                                <div class="col-10">
                                     <label for="example-select" class="form-label">Pièce jointe<span
@@ -99,14 +106,15 @@
                                </div>
                                <div class="col-2 mt-3">
                                     @if($expense->receipt)
-                                    <a href="{{ asset('storage/' . $expense->receipt) }}" style="font-size:25px" class="d-flex" download>  <i class="mdi mdi-eye"></i> <span style="font-size:10px">Télécharger</span> </a>  
+                                    <a href="{{ asset('storage/' . $expense->receipt) }}" style="font-size:25px" class="d-flex" download>  <i class="mdi mdi-eye"></i> <span style="font-size:10px">Télécharger</span> </a>
                                 @endif
                                </div>
                             </div>
                         </div>
 
-                        <div class="col-md-4 col-12">
+                        <div class="col-md-6 col-12">
                             <div class="mb-3">
+                                <label for="example-select" class="form-label">Status de la dépense</label>
                                 <select class="form-select" id="" name="paid" required>
                                     <option value="">Selectionner le statut de la caisse</option>
                                     <option value="0" {{$expense->paid == 0 ? 'selected' : ''}}>Non payé</option>
@@ -114,10 +122,7 @@
                                 </select>
                             </div>
                         </div>
-
-                            <label for="example-select" class="form-label">Description article
                     </div>
-                    <textarea name="description" class="form-control mb-3" id=""  {{$expense->paid != 0 ? 'readonly':''}}  rows="5"> {{$expense->description}} </textarea>
                 </div>
 
         </div>

@@ -293,6 +293,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('assignment/index', [AssignmentDoctorController::class, 'index'])->name('report.assignment.index');
         Route::get('assignment/create/{id}', [AssignmentDoctorController::class, 'create'])->name('report.assignment.create');
         Route::post('assignment/index', [AssignmentDoctorController::class, 'store'])->name('report.assignment.store');
+        Route::get('assignment/pdf/{id}', [AssignmentDoctorController::class, 'pdf'])->name('report.assignment.pdf');
 
         Route::get('/azerty', [ReportController::class, 'getReportsforDatatable'])->name('report.getReportsforDatatable');
 

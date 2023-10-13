@@ -332,7 +332,8 @@ class ExpenseController extends Controller
                 'amount' => $expense->amount,
                 'user_id' => Auth::user()->id,
             ]);
-            return back()->with('success', 'Dépense marquée comme payéé');
+            // return back()->with('success', 'Dépense marquée comme payéé');
+            return response()->json(200);
         } catch (\Throwable $th) {
             return back()->with('error', 'Échec de la mise à jour ! ' . $th->getMessage());
         }
@@ -358,7 +359,8 @@ class ExpenseController extends Controller
                     ]);
                 }
             }
-            return back()->with('success', 'Stock mis à jour');
+            // return back()->with('success', 'Stock mis à jour');
+            return response()->json(200);
         } catch (\Throwable $th) {
             return back()->with('error', 'Échec de la mise à jour ! ' . $th->getMessage());
         }

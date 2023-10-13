@@ -20,11 +20,12 @@
                     <h5 class="card-title mb-3">Ajouter un compte rendu</h5>
                     <form action="{{route('report.assignment.store')}}" method="post"  >
                         @csrf
+                        <input type="hidden" name="id" value="{{$doctor->id}}">
                         <div  id="dynamic">
                             <div class="row mt-3" id="dynamic-form">
                                 <div class="col-4">
                                     <label for="example-select" class="form-label">Compte rendu (demande d'examen)</label>
-                                    <select class="form-select select2" data-toggle="select2" name="report_id[]" required>
+                                    <select class="form-select select2" name="report_id[]" required>
                                         <option value="">Sélectionner un compte rendu</option>
                                         @foreach ($reports as $report)
                                             <option value="{{ $report->id }}">{{ $report->code }} ({{ $report->order->code }})</option>
@@ -41,11 +42,22 @@
                                     <button type="button" class="btn btn-danger" style="display: none">Supprimer</button>
                                 </div>
                             </div>
+
+                            <!-- Champs de menu déroulant caché (initial) pour les comptes rendus -->
+                            {{-- <div style="display: none;">
+                                <select class="form-select select2" data-toggle="select2" name="report_id[]">
+                                    <option value="">Sélectionner un compte rendu</option>
+                                    @foreach ($reports as $report)
+                                        <option value="{{ $report->id }}">{{ $report->code }} ({{ $report->order->code }})</option>
+                                    @endforeach
+                                </select>
+                            </div> --}}
+
                         </div>
 
                         <div class="float-end mt-4">
                             <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn btn-primary" style="margin-left: 10px">Ajouter une nouvelle demande d'examen</button>
+                            <button type="submit" class="btn btn-primary" style="margin-left: 10px">Affecter</button>
                         </div>
 
                     </form>
@@ -60,41 +72,39 @@
 
 @push('extra-js')
 <script type="text/javascript">
-   $(document).ready(function () {
-        // Fonction pour cloner une nouvelle ligne
+    $(document).ready(function () {
         function addNewRow() {
-            // Masquez le bouton "Plus" de l'ancienne ligne
-            $("#dynamic-form .btn-primary").hide();
-
-            // Clonez la dernière ligne du formulaire
+             // Masquez le bouton "Plus" de l'ancienne ligne
+             // Clonez la dernière ligne du formulaire
+             $("#dynamic-form .btn-primary").hide();
             var newRow = $("#dynamic-form").clone();
 
             // Effacez les valeurs des champs
             newRow.find('input[type=text], textarea').val('');
 
+            // Réinitialisez le menu déroulant pour la nouvelle ligne
+            newRow.find('select').val('');
+
             // Affichez le bouton "Supprimer" pour la nouvelle ligne
             newRow.find('.btn-danger').show();
+            // Affichez le bouton "Supprimer" pour la nouvelle ligne
+            newRow.find('.btn-primary').show();
 
             // Ajoutez la nouvelle ligne au formulaire
-            $("#dynamic").append(newRow);
-
-            // Affichez le bouton "Plus" sur la nouvelle ligne
-            newRow.find('.btn-primary').show();
+            newRow.appendTo("#dynamic");
 
             // Attachez un gestionnaire d'événements pour le bouton "Plus" de la nouvelle ligne
             newRow.find('.btn-primary').click(addNewRow);
         }
 
-        // Attachez un gestionnaire d'événements pour le bouton "Plus" initial
         $("#add-row").click(addNewRow);
 
-        // Supprimez une ligne
         $("#dynamic-form").on("click", ".btn-danger", function (event) {
-            $(this).remove();
-
+            $(this).closest(".row").remove();
             // Affichez le bouton "Plus" de la dernière ligne restante
             $("#dynamic-form .btn-primary").show();
         });
     });
 </script>
+
 @endpush
