@@ -167,6 +167,9 @@
                                     </a>
                                 </li> --}}
                                 <li>
+                                    <a href="{{ route('report.assignment.index') }}">Affectation </a>
+                                </li>
+                                <li>
                                     <a href="{{ route('settings.report-index') }}">Paramètres </a>
                                 </li>
 
@@ -223,37 +226,37 @@
                     <li class="side-nav-title side-nav-item">COMPTABILITÉS</li>
                     {{-- Facture --}}
                     @if (getOnlineUser()->can('view-invoices'))
-                        <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarProjects" aria-expanded="false"
-                                aria-controls="sidebarProjects" class="side-nav-link">
-                                <i class="uil-user-check"></i>
-                                <span> Factures </span>
-                                <span class="menu-arrow"></span>
-                                @if (getnbrInvoicepending() !=0)
-                                    <span class="badge bg-warning" style="margin-left: 105px"> {{getnbrInvoicepending()}} </span>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarProjects" aria-expanded="false"
+                            aria-controls="sidebarProjects" class="side-nav-link">
+                            <i class="uil-user-check"></i>
+                            <span> Factures </span>
+                            <span class="menu-arrow"></span>
+                            @if (getnbrInvoicepending() !=0)
+                                <span class="badge bg-warning" style="margin-left: 105px"> {{getnbrInvoicepending()}} </span>
+                            @endif
+                        </a>
+                        <div class="collapse" id="sidebarProjects">
+                            <ul class="side-nav-second-level">
+                                <li>
+                                    <a href="{{ route('invoice.index') }}">Toutes les Factures</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('invoice.create') }}">Créer</a>
+                                </li>
+                                @if (getOnlineUser()->can('view-setting-invoice'))
+                                <li>
+                                    <a href="{{ route('invoice.business') }}">Rapports</a>
+                                </li>
                                 @endif
-                            </a>
-                            <div class="collapse" id="sidebarProjects">
-                                <ul class="side-nav-second-level">
-                                    <li>
-                                        <a href="{{ route('invoice.index') }}">Toutes les Factures</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('invoice.create') }}">Créer</a>
-                                    </li>
-                                    @if (getOnlineUser()->can('view-setting-invoice'))
-                                    <li>
-                                        <a href="{{ route('invoice.business') }}">Rapports</a>
-                                    </li>
-                                    @endif
-                                    @if (getOnlineUser()->can('view-setting-invoice'))
-                                    <li>
-                                        <a href="{{ route('invoice.setting.index') }}">Paramètre</a>
-                                    </li>
-                                    @endif
-                                </ul>
-                            </div>
-                        </li>
+                                @if (getOnlineUser()->can('view-setting-invoice'))
+                                <li>
+                                    <a href="{{ route('invoice.setting.index') }}">Paramètre</a>
+                                </li>
+                                @endif
+                            </ul>
+                        </div>
+                    </li>
                     @endif
 
                     {{-- Caisses --}}

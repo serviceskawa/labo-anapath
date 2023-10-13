@@ -12,7 +12,6 @@ use App\Http\Controllers\MovementController;
 use App\Http\Controllers\EmployeeTimeoffController;
 use App\Http\Controllers\EmployeePayrollController;
 use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\DocumentationCategorieController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DoctorController;
@@ -30,6 +29,7 @@ use App\Http\Controllers\DocumentationCategorieController;
 use App\Http\Controllers\PrestationController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\AssignmentDoctorController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\CashboxController;
@@ -288,6 +288,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/passwordReport', [ReportController::class, 'password'])->name('report.password');
         Route::get('send_sms/{id}', [ReportController::class, 'send_sms'])->name('report.send-sms');
         Route::get('pdf/{id}', [ReportController::class, 'pdf'])->name('report.pdf');
+
+        //Affectation de compte rendu
+        Route::get('assignment/index', [AssignmentDoctorController::class, 'index'])->name('report.assignment.index');
+        Route::get('assignment/create/{id}', [AssignmentDoctorController::class, 'create'])->name('report.assignment.create');
+        Route::post('assignment/index', [AssignmentDoctorController::class, 'store'])->name('report.assignment.store');
 
         Route::get('/azerty', [ReportController::class, 'getReportsforDatatable'])->name('report.getReportsforDatatable');
 
@@ -621,7 +626,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/categorie-documentations', [DocumentationCategorieController::class, 'index'])->name('doc.categorie.index');
         Route::get('/getcategorie-doc', [DocumentationCategorieController::class, 'getcategoriedocs'])->name('doc.getcategoriedocs');
         Route::get('/get-docs-by-category/{doc_id}', [DocumentationCategorieController::class, 'getdocs'])->name('doc.getdocs');
-        
+
         Route::get('/categorie-documentation-create', [DocumentationCategorieController::class, 'create'])->name('doc.categorie.create');
         Route::get('/categorie-documentation-edit/{documentationCategorie}', [DocumentationCategorieController::class, 'edit'])->name('doc.categorie.edit');
         Route::put('/categorie-documentation-update/{documentationCategorie}', [DocumentationCategorieController::class, 'update'])->name('doc.categorie.update');
@@ -644,5 +649,5 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/document-supprimer/{doc}', [DocController::class, 'supprimer'])->name('doc.supprimer');
 
     // });
-    
+
 });

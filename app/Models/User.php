@@ -160,4 +160,10 @@ class User extends Authenticatable
         // }
         return $access;
     }
+
+    public function assignment()
+    {
+        return $this->hasMany(AssignmentDoctor::class,'doctor_id');
+    }
+
 }
