@@ -60,7 +60,7 @@
                                 <td
                                     style="background-color: rgb(255, 223, 12); color:rgb(255, 223, 12); font-weight :900;">
                                     {{
-                                    $item->quantity_in_stock }}/{{ $item->unit->name }}</td>
+                                    $item->quantity_in_stock }}/{{ $item->unit ? $item->unit->name:'' }}</td>
                                 @elseif($item->quantity_in_stock == 0)
                                 <td style="background-color: red; color:red; font-weight :900;">{{
                                     $item->quantity_in_stock }}/{{ $item->unit->name }}</td>

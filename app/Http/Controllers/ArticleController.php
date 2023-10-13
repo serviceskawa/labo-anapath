@@ -63,10 +63,10 @@ class ArticleController extends Controller
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
 
-        if($request->quantity_in_stock < $request->minimum)
-        {
-            return back()->with('error', "Échec de l'enregistrement, la quantite en stock est inferieur a la quantite minimale ! ");
-        }
+        // if($request->quantity_in_stock < $request->minimum)
+        // {
+        //     return back()->with('error', "Échec de l'enregistrement, la quantite en stock est inferieur a la quantite minimale ! ");
+        // }
 
         $data = [
             'article_name' => $request->article_name,
