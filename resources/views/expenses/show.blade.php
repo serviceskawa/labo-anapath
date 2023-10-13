@@ -91,10 +91,17 @@
                         </div>
 
                         <div class="col-md-4 col-12">
-                            <div class="mb-3">
-                                <label for="example-select" class="form-label">Pièce jointe<span
+                            <div class="mb-3 row">
+                               <div class="col-10">
+                                    <label for="example-select" class="form-label">Pièce jointe<span
                                         style="color:red;">*</span></label>
                                 <input type="file" name="receipt" value="{{  old('receipt') ? old('receipt') : $expense->receipt}}" class="form-control">
+                               </div>
+                               <div class="col-2 mt-3">
+                                    @if($expense->receipt)
+                                    <a href="{{ asset('storage/' . $expense->receipt) }}" style="font-size:25px" class="d-flex" download>  <i class="mdi mdi-eye"></i> <span style="font-size:10px">Télécharger</span> </a>  
+                                @endif
+                               </div>
                             </div>
                         </div>
 

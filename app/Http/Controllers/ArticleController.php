@@ -102,7 +102,7 @@ class ArticleController extends Controller
             return back()->with('success', " Opération effectuée avec succès  ! ");
 
         } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! ");
+            return back()->with('error', "Échec de l'enregistrement ! ".$ex);
         }
     }
 
