@@ -109,14 +109,16 @@
                     </thead>
                     <tbody>
                         @foreach($movements as $movement)
-                        <tr>
-                            <td>{{ $movement->article->article_name }}</td>
-                            <td>{{ $movement->movement_type == 'augmenter' ? 'Entrer' : ($movement->movement_type == 'diminuer' ? 'Sortir':'Stock initial') }}</td>
-                            <td>{{ $movement->date_mouvement }}</td>
-                            <td>{{ $movement->quantite_changed }}</td>
-                            <td>{{ $movement->user->firstname.' '.$movement->user->lastname }}</td>
-                            {{-- <td>{{ $movement->description }}</td> --}}
-                        </tr>
+                            @if($movement->article)
+                                 <tr>
+                                    <td>{{ $movement->article->article_name }}</td>
+                                    <td>{{ $movement->movement_type == 'augmenter' ? 'Entrer' : ($movement->movement_type == 'diminuer' ? 'Sortir':'Stock initial') }}</td>
+                                    <td>{{ $movement->date_mouvement }}</td>
+                                    <td>{{ $movement->quantite_changed }}</td>
+                                    <td>{{ $movement->user->firstname.' '.$movement->user->lastname }}</td>
+                                    {{-- <td>{{ $movement->description }}</td> --}}
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>

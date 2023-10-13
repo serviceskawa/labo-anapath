@@ -77,10 +77,12 @@
                 <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>Total</th>
-                            <th>Utilisateur</th>
                             <th>Catégorie</th>
                             <th>Ticket</th>
+                            <th>Pièce jointe</th>
+                            <th>Utilisateur</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -88,12 +90,18 @@
 
 
                     <tbody>
-                        @foreach ($expenses as $item)
+                        @foreach ($expenses as $key=>$item)
                         <tr>
+                            <td>{{$key+1}}</td>
                             <td>{{ $item->amount }}</td>
-                            <td>{{ $item->user->firstname }}</td>
                             <td>{{ $item->expensecategorie->name }}</td>
                             <td>{{ $item->cashticket ? $item->cashticket->code : '' }}</td>
+                            <td>
+                                @if($item->receipt)
+                                    <a href="{{ asset('storage/' . $item->receipt) }}" style="font-size:25px" class="d-flex" download>  <i class="mdi mdi-eye"></i> <span style="font-size:10px">Télécharger</span> </a> 
+                                @endif
+                            </td>
+                            <td>{{ $item->user->firstname }}</td>
 
                             @if ($item->paid==1)
                             <td><span class="badge bg-success">Payé</span></td>
