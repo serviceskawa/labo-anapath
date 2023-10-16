@@ -14,6 +14,7 @@ use App\Models\Movement;
 use App\Models\Setting;
 use App\Models\Supplier;
 use Carbon\Carbon;
+use Faker\Core\DateTime as CoreDateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -133,7 +134,7 @@ class ExpenseController extends Controller
             $expense = Expense::create([
                 // 'amount' => $request->amount,
                 'user_id' => Auth::user()->id,
-                // 'description' => $request->description,
+                'description' => $request->description,
                 'expense_categorie_id' => $request->expense_categorie_id,
                 'supplier_id' => $data['supplier_id'],
                 'user_id' => Auth::user()->id,
@@ -271,6 +272,8 @@ class ExpenseController extends Controller
                 'description' => $request->description,
                 'expense_categorie_id' => $request->expense_categorie_id,
                 'supplier_id' => $request->supplier_id,
+                'date' => $request->date,
+                'payment' => $request->payment,
                 // 'cashbox_ticket_id' => $request->cashbox_ticket_id,
                 'paid' => $request->paid,
                 'receipt' => $path,
@@ -343,6 +346,8 @@ class ExpenseController extends Controller
     {
         $expense = $this->expense->find($id);
         try {
+            $expense->paid = 2;
+            $expense->save();
             $details = $expense->details()->get();
             foreach ($details as $key => $detail) {
                 $article = $this->article->where('article_name', $detail->article_name)->first();

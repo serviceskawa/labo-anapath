@@ -19,7 +19,7 @@ class Article extends Model
 
     public function unit()
     {
-        return $this->belongsTo(UnitMeasurement::class,'id');
+        return $this->belongsTo(UnitMeasurement::class,'unit_measurement_id');
     }
 
     public function expenses()

@@ -9,6 +9,7 @@ use App\Models\UnitMeasurement;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\Facades\DataTables;
 
 class ArticleController extends Controller
 {
@@ -78,7 +79,7 @@ class ArticleController extends Controller
             'minimum'=>$request->minimum,
             'prix'=>$request->prix,
         ];
-     
+
         try {
                 $article = Article::create([
                     'article_name' => $request->article_name,
@@ -98,7 +99,7 @@ class ArticleController extends Controller
                     'article_id' => $article->id,
                     'user_id' => Auth::user()->id,
                 ]);
-                
+
             return back()->with('success', " Opération effectuée avec succès  ! ");
 
         } catch(\Throwable $ex){
@@ -150,11 +151,12 @@ class ArticleController extends Controller
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
 
-        if($request->quantity_in_stock < $request->minimum)
-        {
-            return back()->with('error', "Échec de l'enregistrement, la quantite en stock est inferieur a la quantite minimale ! ");
-        }
+        // if($request->quantity_in_stock < $request->minimum)
+        // {
+        //     return back()->with('error', "Échec de l'enregistrement, la quantite en stock est inferieur a la quantite minimale ! ");
+        // }
 
+        // dd($request);
         try {
                 $article->update([
                     'article_name' => $request->article_name,
@@ -167,7 +169,9 @@ class ArticleController extends Controller
                     'prix'=>$request->prix,
                 ]);
 
+
                 $article->save();
+                // dd($request,$article);
             return back()->with('success', " Mise à jour effectuée avec succès  ! ");
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
@@ -199,6 +203,7 @@ class ArticleController extends Controller
         });
         return response()->json($result);
     }
+
 }
 
 ?>

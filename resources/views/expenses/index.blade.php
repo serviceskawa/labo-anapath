@@ -32,7 +32,7 @@
 
                     @csrf
                     <div class="row d-flex align-items-end">
-                        <div class="col-md-4 col-12">
+                        <div class="col-md-3 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Catégorie de dépense<span
                                         style="color:red;">*</span></label>
@@ -48,13 +48,23 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4 col-12">
+                        <div class="col-md-3 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Fournisseur<span
                                         style="color:red;">*</span></label>
                                 <input type="text" id="supplier" class="form-control" name="supplier">
                             </div>
                         </div>
+
+                        <div class="col-md-3 col-12">
+                            <div class="mb-3">
+                                <label for="example-select" class="form-label">Objet<span
+                                        style="color:red;">*</span></label>
+                                <input type="text" id="objet" class="form-control" name="description">
+                            </div>
+                        </div>
+
+
 
                         <div class="col-md-3 col-12">
                             <div class="mb-3">
@@ -79,13 +89,16 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Désignation</th>
-                                <th>Total</th>
+                                <th>Date</th>
+                                <th>Fournisseur</th>
+                                <th>Objet de la dépense</th>
+                                <th>Montant</th>
+                                <th>Piece jointe</th>
                                 {{-- <th>Catégorie</th>
                             <th>Ticket</th>
                             <th>Pièce jointe</th>
                             <th>Utilisateur</th> --}}
-                                <th>Status</th>
+                                {{-- <th>Status</th> --}}
                                 @if (getOnlineUser()->can('view-process-cashbox-tickets'))
                                     <th>Traitement</th>
                                 @endif
@@ -98,23 +111,20 @@
                             @foreach ($expenses as $key => $item)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
+                                    <td>{{ $item->date }}</td>
+                                    <td>{{ $item->supplier->name }}</td>
                                     <td>{{ $item->description }}</td>
-                                    <td>{{ $item->amount }}</td>
+                                    <td>{{ $item->amount }} {{ $item->payment }}</td>
+                                    <td>
+                                        {{$item->invoice_number}}
+                                        @if ($item->receipt)
+                                        <a href="{{ asset('storage/' . $item->receipt) }}" style="font-size:25px" class="d-flex" download>  <i class="mdi mdi-file-outline"></i> </a>
+                                        @endif
+                                    </td>
                                     {{-- <td>{{ $item->expensecategorie->name }}</td>
                             <td>{{ $item->cashticket ? $item->cashticket->code : '' }}</td>
-                            <td>
-                                @if ($item->receipt)
-                                <a href="{{ asset('storage/' . $item->receipt) }}" style="font-size:25px" class="d-flex" download>  <i class="mdi mdi-eye"></i> <span style="font-size:10px">Télécharger</span> </a>
-                                @endif
-                            </td>
                             <td>{{ $item->user->firstname }}</td> --}}
 
-
-                                    @if ($item->paid == 1)
-                                        <td><span class="badge bg-success">Payé</span></td>
-                                    @elseif($item->paid == 0)
-                                        <td><span class="badge bg-info">Non payé</span></td>
-                                    @endif
 
                                     @if (getOnlineUser()->can('view-process-cashbox-tickets'))
                                         <td style="width: 300px">

@@ -38,6 +38,37 @@
         <div class="card mb-md-0 mb-3">
             <div class="card-body">
 
+                <form method="POST" action="{{route('report.assignment.store')}}" autocomplete="off">
+
+                    @csrf
+                    <div class="row d-flex align-items-end">
+                        <div class="col-md-5 col-12">
+                            <div class="mb-3">
+                                <label for="example-select" class="form-label">Docteur<span
+                                        style="color:red;">*</span></label>
+                                <select class="form-select select2" data-toggle="select2" required id="user_id"
+                                    name="user_id" required>
+                                    <option value="">Sélectionner un docteur</option>
+                                    @forelse (getUsersByRole('docteur') as $user)
+                                        <option value="{{ $user->id }}">{{ $user->fullname() }}</option>
+                                    @empty
+                                        Ajouter un utilisateur avec le rôle docteur
+                                    @endforelse
+                                </select>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-4 col-12">
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary" id="add_expense">Ajouter</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
                 <h5 class="card-title mb-0">Liste des affectations</h5>
 
                 <div id="cardCollpase1" class="show collapse pt-3">
@@ -49,12 +80,13 @@
                                 <th>#</th>
                                 <th>Docteur</th>
                                 <th>Nombre d'affectation</th>
+                                <th>Date d'affectation</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($doctors as $key => $doctor)
-                                <tr>
+                            @foreach ($assignments as $key => $assignment)
+                                {{-- <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $doctor->fullname() }}</td>
                                     <td>
@@ -87,6 +119,13 @@
                                         @endif
 
                                     </td>
+                                </tr> --}}
+                                <tr>
+                                    <td>{{$key+1}}</td>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>3</td>
+                                    <td>4</td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -58,10 +58,10 @@ class EmployeeContratController extends Controller
             'probation_end_date' => 'date|nullable',
             'working_days_per_week' => 'integer|nullable',
         ]);
-        
-        
+
+
          try {
-                
+
 
              $emp_contrat = EmployeeContrat::create([
                     'employee_id' => $request->employee_id,
@@ -79,7 +79,7 @@ class EmployeeContratController extends Controller
                 $employeePayroll = new EmployeePayroll();
 
                 // Attribuez les valeurs aux colonnes
-                $employeePayroll->employee_contrat_id = $emp_contrat->id; 
+                $employeePayroll->employee_contrat_id = $emp_contrat->id;
                 $employeePayroll->monthly_gross_salary = $request->monthly_gross_salary ? $request->monthly_gross_salary : null;
                 $employeePayroll->hourly_gross_rate = $request->hourly_gross_rate ? $request->hourly_gross_rate : null;
                 $employeePayroll->transport_allowance = $request->transport_allowance ? $request->transport_allowance : null;
@@ -88,12 +88,12 @@ class EmployeeContratController extends Controller
                 // Enregistrez les données dans la base de données
                 $employeePayroll->save();
 
-                
+
             // dd($employeePayroll);
-                
+
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ");
+                return back()->with('error', "Échec de l'enregistrement ! ".$ex->getMessage());
             }
     }
 
@@ -141,7 +141,7 @@ class EmployeeContratController extends Controller
         ]);
         $paie = EmployeePayroll::find($employeePayroll);
         $contrat = EmployeeContrat::find($paie->employee_contrat_id);
-       
+
          try {
                 $contrat->update([
                     'employee_id' => $request->employee_id,
@@ -153,14 +153,14 @@ class EmployeeContratController extends Controller
                     'probation_end_date' => $request->probation_end_date ? $request->probation_end_date : null,
                     'working_days_per_week' => $request->working_days_per_week ? $request->working_days_per_week : null,
                 ]);
-                
+
 
 
 
                 // $employeePayroll = new EmployeePayroll();
 
                 // Attribuez les valeurs aux colonnes
-                // $paie->employee_contrat_id = $paie->employee_contrat_id; 
+                // $paie->employee_contrat_id = $paie->employee_contrat_id;
                 $paie->monthly_gross_salary = $request->monthly_gross_salary ? $request->monthly_gross_salary : null;
                 $paie->hourly_gross_rate = $request->hourly_gross_rate ? $request->hourly_gross_rate : null;
                 $paie->transport_allowance = $request->transport_allowance ? $request->transport_allowance : null;

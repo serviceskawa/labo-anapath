@@ -48,7 +48,7 @@
         {{-- Bloc pour modifier les demandes d'examan --}}
         <form action="{{route('cashbox.ticket.update')}}" method="post" autocomplete="off"
         enctype="multipart/form-data">
-             <div class="card my-3">
+            <div class="card my-3">
 
 
 
@@ -113,7 +113,7 @@
                     {{-- <textarea name="description" class="form-control mb-3" id=""  {{$ticket->status != "en attente" ? 'readonly':''}}  rows="5"> {{$ticket->description}} </textarea> --}}
                 </div>
 
-        </div>
+            </div>
 
 
         {{-- Debut du bloc pour faire les l'ajout des articles  --}}

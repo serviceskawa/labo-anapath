@@ -64,7 +64,7 @@ class EmployeeController extends Controller
 
         try {
             $employee = new Employee();
-            
+
             $employee->first_name = $request->first_name;
             $employee->last_name = $request->last_name;
             $employee->email = $request->email;
@@ -78,11 +78,11 @@ class EmployeeController extends Controller
             $employee->city = null;
             $employee->photo_url = null;
             $employee->save();
-            
+
 
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ");
+                return back()->with('error', "Échec de l'enregistrement ! ". $ex);
             }
     }
 

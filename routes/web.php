@@ -52,6 +52,7 @@ use App\Http\Controllers\SettingReportTemplateController;
 use App\Http\Controllers\SignalController;
 use App\Http\Controllers\SupplierCategorieController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TestOrderAssignmentController;
 use App\Http\Controllers\TFAuthController;
 use App\Http\Controllers\UnitMeasurementController;
 use App\Models\AppelTestOder;
@@ -290,10 +291,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pdf/{id}', [ReportController::class, 'pdf'])->name('report.pdf');
 
         //Affectation de compte rendu
-        Route::get('assignment/index', [AssignmentDoctorController::class, 'index'])->name('report.assignment.index');
+        Route::get('assignment/index', [TestOrderAssignmentController::class, 'index'])->name('report.assignment.index');
         Route::get('assignment/create/{id}', [AssignmentDoctorController::class, 'create'])->name('report.assignment.create');
-        Route::post('assignment/index', [AssignmentDoctorController::class, 'store'])->name('report.assignment.store');
-        Route::get('assignment/pdf/{id}', [AssignmentDoctorController::class, 'pdf'])->name('report.assignment.pdf');
+        Route::post('assignment/index', [TestOrderAssignmentController::class, 'store'])->name('report.assignment.store');
+        Route::post('assignment/update/{id}', [TestOrderAssignmentController::class, 'update'])->name('report.assignment.update');
+        Route::get('assignment/detail/assignment/{id}', [TestOrderAssignmentController::class, 'index_detail'])->name('report.assignment.detail.index');
+        Route::post('assignment/detail/assignment', [TestOrderAssignmentController::class, 'store_detail'])->name('report.assignment.detail.store');
+        Route::get('assignment/detail/destroy/{id}', [TestOrderAssignmentController::class, 'destroy_detail'])->name('report.assignment.detail.destroy');
+        // Route::get('assignment/pdf/{id}', [AssignmentDoctorController::class, 'pdf'])->name('report.assignment.pdf');
 
         Route::get('/azerty', [ReportController::class, 'getReportsforDatatable'])->name('report.getReportsforDatatable');
 
