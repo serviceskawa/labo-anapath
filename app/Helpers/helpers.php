@@ -15,6 +15,8 @@ use App\Models\Invoice;
 use App\Models\RefundRequest;
 use App\Models\Report;
 use App\Models\SettingInvoice;
+use App\Models\TestOrderAssignment;
+use App\Models\TestOrderAssignmentDetail;
 use App\Models\Ticket;
 use App\Models\TypeConsultation;
 use App\Models\User;
@@ -523,6 +525,49 @@ if (!function_exists('generateCodeTicket')) {
 
         // Ajoute les deux derniers chiffres de l'année au début du code
         return "BC".now()->year % 100 . "-$code";
+    }
+}
+
+
+if(!function_exists('isAffecte')){
+    function isAffecte($id){
+        $detail = TestOrderAssignmentDetail::where('test_order_id',$id)->first();
+        if ($detail) {
+            $assignment = TestOrderAssignment::find($detail->test_order_assignment_id);
+            $data = $assignment->user;
+        }else{
+            $data = null;
+        }
+        return $data;
+    }
+}
+
+// generate code affectation
+if (!function_exists('generateCodeAssignment')) {
+    function generateCodeAssignment()
+    {
+        //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
+        $lastTestOrder = TestOrderAssignment::whereYear('created_at', '=', now()->year)
+            ->whereNotNull('code')
+            ->orderByRaw('RIGHT(code, 4) DESC')
+            ->first();
+
+        // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
+        if (!$lastTestOrder || $lastTestOrder->created_at->year != now()->year) {
+            $code = "0001";
+        }
+        // Sinon, incrémente le dernier code de 1
+        else {
+            // Récupère les quatre derniers caractères du code
+            $lastCode = substr($lastTestOrder->code, -4);
+
+            // Convertit la chaîne en entier et l'incrémente de 1
+            $code = intval($lastCode) + 1;
+            $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+        }
+
+        // Ajoute les deux derniers chiffres de l'année au début du code
+        return "AF".now()->year % 100 . "-$code";
     }
 }
 

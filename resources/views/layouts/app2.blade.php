@@ -130,6 +130,12 @@
                                     <a href="{{ route('test_order.create') }}">Ajouter</a>
                                 </li>
                                 @endif
+                                @if (getOnlineUser()->can('create-test-order-assignments'))
+                                <li>
+                                    <a href="{{ route('report.assignment.index') }}">Affectation </a>
+                                </li>
+                                @endif
+
 
                             </ul>
                         </div>
@@ -166,9 +172,6 @@
                                         <span> Historiques</span>
                                     </a>
                                 </li> --}}
-                                <li>
-                                    <a href="{{ route('report.assignment.index') }}">Affectation </a>
-                                </li>
                                 <li>
                                     <a href="{{ route('settings.report-index') }}">Paramètres </a>
                                 </li>

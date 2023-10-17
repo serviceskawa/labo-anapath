@@ -86,7 +86,7 @@ $(document).ready(function() {
                 data: 'id'
             },
             {
-                data: 'test_order_id'
+                data: 'test_order_code'
             },
             {
                 data: 'note'
@@ -113,7 +113,7 @@ $(document).ready(function() {
     $('.detail-list-table tbody').on('click', '#deleteBtn', function() {
         var data = dt_basic.row($(this).parents('tr')).data();
         var id = $(this).data('id');
-        console.log(data)
+        console.log(data.id)
         Swal.fire({
             title: "Voulez-vous supprimer l'élément ?",
             icon: "warning",
@@ -123,7 +123,7 @@ $(document).ready(function() {
         }).then(function(result) {
             if (result.value) {
                 $.ajax({
-                    url: baseUrl +"assignment/detail/destroy/"+data.id,
+                    url: baseUrl +"/report/assignment/detail/destroy/"+data.id,
                     success: function(response) {
 
                         console.log(response);
@@ -163,20 +163,78 @@ $('#add_detail').on('click', function(e) {
             "_token": TOKENSTOREDETAILTICKET,
             test_order_assignment_id:assignment.id,
             test_order_id: test_order_id,
-            note: note
+            note: note,
+            confirm:true
 
         },
         success: function(response) {
             $('#addDetailForm').trigger("reset")
             console.log(response);
-            if (response) {
+            if (response.status == 200) {
                 toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
                 $('#test_order_id').val('');
                 $('#note').val('');
+
+                $('#datatable1').DataTable().ajax.reload();
+            }else{
+                Swal.fire({
+                    title: "Cette demnde a déjà été affecté. Voulez-vous la retirer de son affectation et l'affecter à dans cette liste?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Oui ",
+                    cancelButtonText: "Non !",
+                }).then(function(result) {
+                    if (result.value) {
+
+                        $.ajax({
+                            url: baseUrl +"/report/assignment/detail/destroy/"+response.detail.id,
+                            success: function(response) {
+
+                                console.log(response);
+                                Swal.fire(
+                                    "Suppression !",
+                                    "En cours de traitement ...",
+                                    "success"
+                                )
+                                $('#datatable1').DataTable().ajax.reload()
+
+                                $.ajax({
+                                    url: ROUTESTOREDETAILTICKET,
+                                    type: "POST",
+                                    data: {
+                                        "_token": TOKENSTOREDETAILTICKET,
+                                        test_order_assignment_id:assignment.id,
+                                        test_order_id: test_order_id,
+                                        note: note,
+                                        confirm:true
+
+                                    },
+                                    success: function(response) {
+                                        $('#addDetailForm').trigger("reset")
+                                        console.log(response);
+                                        if (response.status == 200) {
+                                            toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                                            $('#test_order_id').val('');
+                                            $('#note').val('');
+                                        }
+                                        $('#datatable1').DataTable().ajax.reload();
+                                    },
+                                    error: function(response) {
+                                        console.log(response)
+                                    },
+                                });
+
+                            },
+                            error: function(response) {
+                                console.log(response);
+                                dt_basic.ajax.reload()
+
+                            },
+                        });
+
+                    }
+                });
             }
-            $('#datatable1').DataTable().ajax.reload();
-            // $('#addDetailForm').trigger("reset")
-            // updateSubTotal();
         },
         error: function(response) {
             console.log(response)

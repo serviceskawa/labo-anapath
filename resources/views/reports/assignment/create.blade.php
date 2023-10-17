@@ -6,30 +6,31 @@
 <div class="">
         <div class="page-title-box">
 
-            <h4 class="page-title">Affectation de comptes rendu au docteur :
+            <h4 class="page-title">Affectation {{ $assignment->code }}
                 {{-- {{ $doctor->firstname }} {{ $doctor->lastname }} --}}
             </h4>
         </div>
 
-        <form action="{{ route('report.assignment.store') }}" method="post">
+        <form action="{{ route('report.assignment.update') }}" method="post">
             <div class="card my-3">
                 <div class="card-body">
+                    <input type="hidden" name="id" value="{{$assignment->id}}">
 
                     <div class="row">
                         <div class="col-6">
-                            <label for="example-select" class="form-label">Docteur assigné</label>
+                            <label for="example-select" class="form-label">Docteur</label>
                             <select class="form-select select2" data-toggle="select2" name="user_id" id="user_id" required>
                                 <option value="">Sélectionner le docteur</option>
                                 @foreach (getUsersByRole('docteur') as $doctor)
-                                    <option value="{{ $doctor->id }}">{{ $doctor->fullname() }}</option>
+                                    <option value="{{ $doctor->id }}" {{ $assignment->user_id == $doctor->id ? 'selected' :'' }} >{{ $doctor->fullname() }}</option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div class="col-6">
-                            <label for="example-select" class="form-label">Date de l'affectation</label>
-                            <input type="datetime-local" id="date_assignment" class="form-control" name="date"
-                                value="">
+                            <label for="example-select" class="form-label">Date</label>
+                            <input type="date" id="date_assignment" class="form-control" name="date"
+                            value="{{ $assignment->date ? $assignment->date : now()->format('Y-m-d') }}">
                         </div>
 
                     </div>
@@ -52,10 +53,10 @@
                                 <div class="col-md-4 col-12">
                                     <div class="mb-3">
                                         <label for="example-select" class="form-label">Code</label>
-                                        <select class="form-select select2" data-toggle="select2" id="test_order_id" name="test_order_id" required>
+                                        <select class="form-select select2" data-toggle="select2" id="test_order_id" name="test_order_id">
                                             <option value="">Sélectionner une demande d'examen</option>
                                             @foreach ($testOrders as $order)
-                                                <option value="{{ $order->id }}">{{ $order->code }}</option>
+                                                <option value="{{ $order->id }}">{{ $order->code }} {{ isAffecte($order->id) ? '('.isAffecte($order->id)->fullname().')' :'' }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -131,7 +132,7 @@
     var TOKENSTOREDETAILTICKET = "{{ csrf_token() }}"
     // var ROUTEUPDATETOTALTICKET = "{{ route('cashbox.ticket.updateTotal') }}"
     // var TOKENUPDATETOTALTICKET = "{{ csrf_token() }}"
-    var ROUTEGETDETAIL = "{{ route('report.assignment.detail.index',$assignment->id)}}"
+    var ROUTEGETDETAIL = "{{ route('report.assignment.getDetail',$assignment->id)}}"
     </script>
     <script src="{{asset('viewjs/report/assignment.js')}}"></script>
 @endpush

@@ -147,7 +147,7 @@ $(document).ready(function() {
             $(api.column(3).footer()).html(quantity);
             $(api.column(2).footer()).html(unit_price);
 
-            sendTotal(expense.id, total);
+            // sendTotal(expense.id, total);
 
             var numRows = api.rows().count();
             if (numRows > 0) {
@@ -212,7 +212,6 @@ $(document).ready(function() {
             },
             success: function(response) {
                 console.log('cc',response)
-                $('#amount').val(response.amount)
 
             },
             error: function(response) {

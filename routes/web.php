@@ -294,10 +294,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('assignment/index', [TestOrderAssignmentController::class, 'index'])->name('report.assignment.index');
         Route::get('assignment/create/{id}', [AssignmentDoctorController::class, 'create'])->name('report.assignment.create');
         Route::post('assignment/index', [TestOrderAssignmentController::class, 'store'])->name('report.assignment.store');
-        Route::post('assignment/update/{id}', [TestOrderAssignmentController::class, 'update'])->name('report.assignment.update');
-        Route::get('assignment/detail/assignment/{id}', [TestOrderAssignmentController::class, 'index_detail'])->name('report.assignment.detail.index');
+        Route::post('assignment/update', [TestOrderAssignmentController::class, 'update'])->name('report.assignment.update');
+        Route::get('assignment/detail/{id}', [TestOrderAssignmentController::class, 'index_detail'])->name('report.assignment.detail.index');
         Route::post('assignment/detail/assignment', [TestOrderAssignmentController::class, 'store_detail'])->name('report.assignment.detail.store');
-        Route::get('assignment/detail/destroy/{id}', [TestOrderAssignmentController::class, 'destroy_detail'])->name('report.assignment.detail.destroy');
+        Route::get('assignment/detail/assignment/{id}', [TestOrderAssignmentController::class, 'getdetail'])->name('report.assignment.getDetail');
+        Route::get('assignment/detail/destroy/{id}', [TestOrderAssignmentController::class, 'detail_destroy'])->name('report.assignment.detail.destroy');
+        Route::get('assignment/print/{id}', [TestOrderAssignmentController::class, 'print'])->name('report.assignment.print');
         // Route::get('assignment/pdf/{id}', [AssignmentDoctorController::class, 'pdf'])->name('report.assignment.pdf');
 
         Route::get('/azerty', [ReportController::class, 'getReportsforDatatable'])->name('report.getReportsforDatatable');

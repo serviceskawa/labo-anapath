@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNewColumnExpenseTable extends Migration
+class AddTestOrderCodeDetailTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class AddNewColumnExpenseTable extends Migration
      */
     public function up()
     {
-        Schema::table('expenses', function (Blueprint $table) {
-            $table->date('date')->nullable();
-            $table->string('invoice_number')->nullable();
-            $table->enum('payment', ['ESPECES','CHEQUES','MOBILEMONEY','VIREMENT'])->default('ESPECES')->nullable();
+        Schema::table('test_order_assignment_details', function (Blueprint $table) {
+            $table->string('test_order_code')->nullable();
         });
     }
 
@@ -27,7 +25,7 @@ class AddNewColumnExpenseTable extends Migration
      */
     public function down()
     {
-        Schema::table('expenses', function (Blueprint $table) {
+        Schema::table('test_order_assignment_details', function (Blueprint $table) {
             //
         });
     }

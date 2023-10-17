@@ -119,16 +119,15 @@ class ExpenseController extends Controller
         //                     'item_name' => $search_article->article_name,
         //                     'quantity' => $request->quantity,
         // =======
-        !empty($request->supplier) ? $supplier = $this->supplier->where('name','like',$request->supplier)->first() :$supplier=null;
-
+        !empty($request->supplier) ? ($supplier = $this->supplier->where('name', 'like', $request->supplier)->first()) : ($supplier = null);
 
         if ($supplier) {
             $data['supplier_id'] = $supplier->id;
         } else {
             $supplierCreate = $this->supplier->create([
-                'name' => $request->supplier
+                'name' => $request->supplier,
             ]);
-           $data['supplier_id'] = $supplierCreate->id;
+            $data['supplier_id'] = $supplierCreate->id;
         }
         try {
             $expense = Expense::create([
@@ -136,6 +135,8 @@ class ExpenseController extends Controller
                 'user_id' => Auth::user()->id,
                 'description' => $request->description,
                 'expense_categorie_id' => $request->expense_categorie_id,
+                'invoice_number' => $request->invoice_number,
+                'amount' => $request->amount,
                 'supplier_id' => $data['supplier_id'],
                 'user_id' => Auth::user()->id,
                 // 'cashbox_ticket_id' => $request->cashbox_ticket_id,
@@ -179,8 +180,8 @@ class ExpenseController extends Controller
                 $details->save();
             });
             $expense = $this->expense->find($data['expense_id']);
-            $expense->amount += $data['line_amount'];
-            $expense->save();
+            // $expense->amount += $data['line_amount'];
+            // $expense->save();
             return response()->json($expense, 200);
             // return back()->with('success', "Bon de caisse enregistré");
         } catch (\Throwable $ex) {
@@ -274,12 +275,16 @@ class ExpenseController extends Controller
                 'supplier_id' => $request->supplier_id,
                 'date' => $request->date,
                 'payment' => $request->payment,
+                'amount' => $request->amount,
+                'invoice_number' => $request->invoice_number,
                 // 'cashbox_ticket_id' => $request->cashbox_ticket_id,
                 'paid' => $request->paid,
-                'receipt' => $path,
+                'receipt' => $path == null ? $expense->receipt : $path,
             ]);
 
             $expense->save();
+
+            // dd($expense);
 
             // if ($expense->paid=1) {
             //     $cash = Cashbox::find(1);
@@ -346,24 +351,56 @@ class ExpenseController extends Controller
     {
         $expense = $this->expense->find($id);
         try {
-            $expense->paid = 2;
-            $expense->save();
-            $details = $expense->details()->get();
-            foreach ($details as $key => $detail) {
-                $article = $this->article->where('article_name', $detail->article_name)->first();
-                if (!empty($article)) {
-                    $article->quantity_in_stock += $detail->quantity;
-                    $article->save();
-                    Movement::create([
-                        'movement_type' => 'augmenter',
-                        'date_mouvement' => Carbon::now()->format('d/m/y'),
-                        'quantite_changed' => $detail->quantity,
-                        'description' => '',
-                        'article_id' => $article->id,
-                        'user_id' => Auth::user()->id,
-                    ]);
+            if ($expense->paid == 1) {
+                $expense->paid = 2;
+                $expense->save();
+                $details = $expense->details()->get();
+                foreach ($details as $key => $detail) {
+                    $article = $this->article->where('article_name', $detail->article_name)->first();
+                    if (!empty($article)) {
+                        $article->quantity_in_stock += $detail->quantity;
+                        $article->save();
+                        Movement::create([
+                            'movement_type' => 'augmenter',
+                            'date_mouvement' => Carbon::now()->format('d/m/y'),
+                            'quantite_changed' => $detail->quantity,
+                            'description' => '',
+                            'article_id' => $article->id,
+                            'user_id' => Auth::user()->id,
+                        ]);
+                    }
+                }
+            } else {
+                $expense->paid = 2;
+                $expense->save();
+                $cash = Cashbox::find(1);
+                $cash->current_balance -= $expense->amount;
+                $cash->save();
+
+                CashboxAdd::create([
+                    'cashbox_id' => 1,
+                    'date' => Carbon::now(),
+                    'amount' => $expense->amount,
+                    'user_id' => Auth::user()->id,
+                ]);
+                $details = $expense->details()->get();
+                foreach ($details as $key => $detail) {
+                    $article = $this->article->where('article_name', $detail->article_name)->first();
+                    if (!empty($article)) {
+                        $article->quantity_in_stock += $detail->quantity;
+                        $article->save();
+                        Movement::create([
+                            'movement_type' => 'augmenter',
+                            'date_mouvement' => Carbon::now()->format('d/m/y'),
+                            'quantite_changed' => $detail->quantity,
+                            'description' => '',
+                            'article_id' => $article->id,
+                            'user_id' => Auth::user()->id,
+                        ]);
+                    }
                 }
             }
+
             // return back()->with('success', 'Stock mis à jour');
             return response()->json(200);
         } catch (\Throwable $th) {

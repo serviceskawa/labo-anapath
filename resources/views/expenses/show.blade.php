@@ -83,13 +83,13 @@
 
                     <div class="row">
                         <div class="col-md-6 col-12">
-                            <label for="example-select" class="form-label">Description de la dépense</label>
-                            <input name="description" type="text" class="form-control mb-3" id=""  {{$expense->paid != 0 ? 'readonly':''}} value="{{$expense->description}}" >
+                            <label for="example-select" class="form-label">Objet de la dépense</label>
+                            <input name="description" type="text" class="form-control mb-3" id=""  {{$expense->paid != 0 && !getOnlineUser()->can('view-super-depenses') ? 'readonly':''}} value="{{$expense->description}}" >
                         </div>
                         <div class="col-md-6 col-12">
                             <label for="example-select" class="form-label">Date de la dépense</label>
-                            <input class="form-control" {{$expense->paid != 0 ? 'readonly':''}} id="example-date" type="date"
-                                    value="{{  old('date') ? old('date') : $expense->date}}"
+                            <input class="form-control" {{$expense->paid != 0 && !getOnlineUser()->can('view-super-depenses') ? 'readonly':''}} id="example-date" type="date"
+                                    value="{{ old('date') ? old('date') : ($expense->date ?$expense->date:now()->format('Y-m-d')) }}"
                                     name="date">
                         </div>
 
@@ -97,7 +97,7 @@
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Montant<span
                                         style="color:red;">*</span></label>
-                                <input type="number" {{$expense->paid != 0 ? 'readonly':''}} name="amount" id="amount" value="{{  old('amount') ? old('amount') : $expense->amount}}" {{$expense->paid != 0 ? 'readonly':''}} class="form-control" required>
+                                <input type="number" {{$expense->paid == 0 && !getOnlineUser()->can('view-super-depenses') ? 'readonly':''}} name="amount" id="amount_input" value="{{$expense->amount}}" {{$expense->paid != 0 ? 'readonly':''}} class="form-control" required>
                             </div>
                         </div>
 
@@ -105,7 +105,7 @@
                             <label for="exampleFormControlInput1" class="form-label">Type de
                                 paiement</label>
                             <select class="form-select select2" data-toggle="select2"
-                                name="payment" {{$expense->paid != 0 ? 'disabled':''}} value="{{ $expense->payment }}" id="payment"
+                                name="payment" {{$expense->paid != 0 && !getOnlineUser()->can('view-super-depenses') ? 'disabled':''}} value="{{ $expense->payment }}" id="payment"
                                 required>
                                 <option {{ $expense->payment == 'ESPECES' ? 'selected' : '' }}
                                     value="ESPECES">ESPECES</option>
@@ -128,15 +128,14 @@
                         <div class="col-md-4 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Numéro de la facture</label>
-                                <input type="number" {{$expense->paid ==  2   ? 'readonly':''}} name="number_invoice" id="number_invoice" value="{{  old('number_invoice') ? old('number_invoice') : $expense->number_invoice}}" {{$expense->paid != 0 ? 'readonly':''}} class="form-control">
+                                <input type="number" {{$expense->paid ==  2 && !getOnlineUser()->can('view-super-depenses')  ? 'readonly':''}} name="invoice_number" id="invoice_number" value="{{  old('invoice_number') ? old('invoice_number') : $expense->invoice_number}}" {{$expense->paid != 0 ? 'readonly':''}} class="form-control">
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
                             <div class="mb-3 row">
                                <div class="col-10">
-                                    <label for="example-select" class="form-label">Pièce jointe<span
-                                        style="color:red;">*</span></label>
-                                <input type="file" name="receipt" {{$expense->paid == 2 ? 'disabled':''}} value="{{  old('receipt') ? old('receipt') : $expense->receipt}}" class="form-control">
+                                    <label for="example-select" class="form-label">Pièce jointe</label>
+                                <input type="file" name="receipt" value="{{$expense->receipt}}" class="form-control">
                                </div>
                                <div class="col-2 mt-3">
                                     @if($expense->receipt)
@@ -149,7 +148,7 @@
                         <div class="col-md-4 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Status de la dépense</label>
-                                <select class="form-select" id="" name="paid" required>
+                                <select class="form-select" {{$expense->paid ==  2 && !getOnlineUser()->can('view-super-depenses')  ? 'disabled':''}} id="" name="paid" required>
                                     <option value="">Selectionner le statut de la caisse</option>
                                     <option value="0" {{$expense->paid == 0 ? 'selected' : ''}}>Non payé</option>
                                     <option value="1" {{$expense->paid == 1 ? 'selected' : ''}}>Payé</option>
@@ -249,7 +248,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" {{$expense->paid == 2 && !getOnlineUser()->can('view-super-depense') ? 'disabled':''}} class="btn w-100 btn-success">Soumettre</button>
+                    <button type="submit" {{$expense->paid == 2 && !getOnlineUser()->can('view-super-depenses') ? 'disabled':''}} class="btn w-100 btn-success">Soumettre</button>
                 </div>
 
             </div>

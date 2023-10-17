@@ -78,6 +78,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Code</th>
                                 <th>Docteur</th>
                                 <th>Nombre d'affectation</th>
                                 <th>Date d'affectation</th>
@@ -122,10 +123,21 @@
                                 </tr> --}}
                                 <tr>
                                     <td>{{$key+1}}</td>
-                                    <td>1</td>
-                                    <td>2</td>
-                                    <td>3</td>
-                                    <td>4</td>
+                                    <td>{{ $assignment->code }}</td>
+                                    <td>{{ $assignment->user->fullname() }}</td>
+                                    <td> {{ $assignment->details()->count() }} </td>
+                                    <td> {{date_format($assignment->created_at,'d-m-Y')}} </td>
+                                    <td>
+                                        <a class="btn btn-primary" href="{{route('report.assignment.detail.index',$assignment->id)}}">
+                                            <i class="uil-eye"></i>
+                                        </a>
+
+                                        @if ($assignment->details()->count()>=1)
+                                            <a class="btn btn-warning" href="{{route('report.assignment.print',$assignment->id)}}">
+                                                <i class="mdi mdi-printer"></i>
+                                            </a>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -94,15 +94,11 @@
                                 <th>Objet de la dépense</th>
                                 <th>Montant</th>
                                 <th>Piece jointe</th>
-                                {{-- <th>Catégorie</th>
-                            <th>Ticket</th>
-                            <th>Pièce jointe</th>
-                            <th>Utilisateur</th> --}}
-                                {{-- <th>Status</th> --}}
+
                                 @if (getOnlineUser()->can('view-process-cashbox-tickets'))
                                     <th>Traitement</th>
                                 @endif
-                                <th>Actions</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
 
@@ -111,39 +107,46 @@
                             @foreach ($expenses as $key => $item)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ $item->date }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($item->date)) }}</td>
                                     <td>{{ $item->supplier->name }}</td>
                                     <td>{{ $item->description }}</td>
-                                    <td>{{ $item->amount }} {{ $item->payment }}</td>
+                                    <td>{{ $item->amount }} <br>
+                                        {{ $item->payment }}
+                                    </td>
                                     <td>
-                                        {{$item->invoice_number}}
-                                        @if ($item->receipt)
-                                        <a href="{{ asset('storage/' . $item->receipt) }}" style="font-size:25px" class="d-flex" download>  <i class="mdi mdi-file-outline"></i> </a>
+                                        <span> {{ $item->invoice_number? 'Re: ':'' }}  {{ $item->invoice_number }}</span>
+                                        @if ($item->receipt !=null)
+                                            <a href="{{ asset('storage/' . $item->receipt) }}" style="font-size:25px"
+                                                class="d-flex text-center" download> <i class="mdi mdi-file-outline"></i> </a>
                                         @endif
                                     </td>
-                                    {{-- <td>{{ $item->expensecategorie->name }}</td>
-                            <td>{{ $item->cashticket ? $item->cashticket->code : '' }}</td>
-                            <td>{{ $item->user->firstname }}</td> --}}
+
 
 
                                     @if (getOnlineUser()->can('view-process-cashbox-tickets'))
                                         <td style="width: 300px">
-                                            @if ($item->paid == 0)
-                                                <select class="form-select" style="width: 250px" id="status_expense" onchange="updateStatusExpense({{$item->id}},this)">
-                                                    <option {{ $item->paid == 0 ? 'selected' : '' }} value=0>Marquer comme
-                                                        non payée</option>
-                                                    <option {{ $item->paid == 1 ? 'selected' : '' }} value=1>Marquer comme
-                                                        payée</option>
-                                                    <option value=2>Marquer comme livrée</option>
+                                            @if ($item->paid != 2)
+                                                <select class="form-select" style="width: 250px" id="status_expense"
+                                                    onchange="updateStatusExpense({{ $item->id }},this)">
+                                                    <option {{ $item->paid == 0 ? 'selected' : '' }} value=0>Non payée
+                                                    </option>
+                                                    <option {{ $item->paid == 1 ? 'selected' : '' }} value=1>Payée non
+                                                        livrée</option>
+                                                    <option value=2 {{ $item->paid == 2 ? 'selected' : '' }}>Payée et
+                                                        livrée</option>
                                                 </select>
+                                            @else
+                                                <span
+                                                    class="badge badge-outline-{{ $item->paid == 1 ? 'warning' : 'success' }}">
+                                                    {{ $item->paid == 1 ? 'Marquée comme payée non livrée' : 'Marquée comme livrée' }}</span>
                                             @endif
 
                                         </td>
                                     @endif
 
                                     <td>
-                                        <a class="btn btn-primary" href="{{ route('expense.details.index', $item->id) }}"><i
-                                                class="uil-eye"></i>
+                                        <a class="btn btn-primary"
+                                            href="{{ route('expense.details.index', $item->id) }}"><i class="uil-eye"></i>
                                         </a>
 
 
@@ -186,7 +189,7 @@
                         success: function(data) {
                             response(
                                 data
-                                ); // Affichez les suggestions d'articles à l'utilisateur
+                            ); // Affichez les suggestions d'articles à l'utilisateur
                         }
                     });
                 },
@@ -194,39 +197,59 @@
             });
         });
 
-        function updateStatusExpense(id,element) {
+        function updateStatusExpense(id, element) {
             // var status = $('#status_expense').val();
             var e_id = id;
+            var title = '';
             console.log(element.value);
             if (element.value == 1) {
-                $.ajax({
-                    url: "/expense-status/"+e_id,
-                    type: "GET",
-                    success: function(data) {
-                        console.log(data);
-                        toastr.success("Dépense marquée comme payée", 'Dépense');
-                        // location.reload();
-                        window.location.href = "{{ url('/expense') }}"
-                    },
-                    error: function(error) {
-                        console.log(error);
-                    }
-                })
-            }else{
-                $.ajax({
-                    url: "/expense-detail-mouv-stock/"+e_id,
-                    type: "GET",
-                    success: function(data) {
-                        console.log(data);
-                        toastr.success("Stock mis à jour", 'Stock');
-                        // location.reload();
-                        window.location.href = "{{ url('/expense') }}"
-                    },
-                    error: function(error) {
-                        console.log(error);
-                    }
-                })
+                title = "Voulez-vous marquer cette dépense comme payée non livrée ?"
+            }else if (element.value == 2) {
+                title = "Voulez-vous marquer cette dépense comme payée et livrée ?"
             }
+            Swal.fire({
+                title: title,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Oui ",
+                cancelButtonText: "Non !",
+            }).then(function(result) {
+                if (result.value) {
+                    if (element.value == 1) {
+                        $.ajax({
+                            url: "/expense-status/" + e_id,
+                            type: "GET",
+                            success: function(data) {
+                                console.log(data);
+                                toastr.success("Dépense marquée comme payée", 'Dépense');
+                                // location.reload();
+                                window.location.href = "{{ url('/expense') }}"
+                            },
+                            error: function(error) {
+                                console.log(error);
+                            }
+                        })
+                    } else {
+
+                        $.ajax({
+                            url: "/expense-detail-mouv-stock/" + e_id,
+                            type: "GET",
+                            success: function(data) {
+
+                                console.log(data);
+                                toastr.success("Stock mis à jour", 'Stock');
+                                // location.reload();
+                                window.location.href = "{{ url('/expense') }}"
+                            },
+                            error: function(error) {
+                                console.log(error);
+                            }
+                        })
+                        
+                    }
+                }
+            });
+
         }
     </script>
     <!-- Inclure jQuery -->
