@@ -1,6 +1,6 @@
 @extends('layouts.app2')
 
-@section('title', 'Catégories')
+@section('title', 'Catégories documentations')
 
 @section('content')
 <style>
