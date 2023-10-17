@@ -542,6 +542,12 @@ if(!function_exists('isAffecte')){
     }
 }
 
+if(!function_exists('getAllRoles')){
+    function getAllRoles(){
+        return Role::latest()->get();
+    }
+}
+
 // generate code affectation
 if (!function_exists('generateCodeAssignment')) {
     function generateCodeAssignment()

@@ -635,6 +635,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/getcategorie-doc', [DocumentationCategorieController::class, 'getcategoriedocs'])->name('doc.getcategoriedocs');
         Route::get('/get-docs-by-category/{doc_id}', [DocumentationCategorieController::class, 'getdocs'])->name('doc.getdocs');
 
+
         Route::get('/categorie-documentation-create', [DocumentationCategorieController::class, 'create'])->name('doc.categorie.create');
         Route::get('/categorie-documentation-edit/{documentationCategorie}', [DocumentationCategorieController::class, 'edit'])->name('doc.categorie.edit');
         Route::put('/categorie-documentation-update/{documentationCategorie}', [DocumentationCategorieController::class, 'update'])->name('doc.categorie.update');
@@ -653,6 +654,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/document-update/{doc}', [DocController::class, 'update'])->name('doc.update');
         Route::post('/document-store', [DocController::class, 'store'])->name('doc.store');
         Route::post('/document-store-fichier', [DocController::class, 'store_fichier'])->name('doc.file.store');
+        Route::post('/share-docs-role', [DocController::class, 'sharedocs'])->name('doc.file.share');
         Route::get('/document-delete/{doc}', [DocController::class, 'delete'])->name('doc.delete');
         Route::get('/document-supprimer/{doc}', [DocController::class, 'supprimer'])->name('doc.supprimer');
 

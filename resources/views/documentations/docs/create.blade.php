@@ -54,7 +54,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="float-end mt-3">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
                         <button type="submit" class="btn btn-primary">Ajouter un nouveau fichier</button>
                     </div>

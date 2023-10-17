@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\AssignedReviewer;
+use App\Events\ShareDocEvent;
 use App\Listeners\SendAssignedReviewerNotification;
+use App\Listeners\ShareDocListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -24,6 +26,10 @@ class EventServiceProvider extends ServiceProvider
         AssignedReviewer::class => [
             SendAssignedReviewerNotification::class,
         ],
+
+        ShareDocEvent::class => [
+            ShareDocListener::class
+        ]
     ];
 
     /**

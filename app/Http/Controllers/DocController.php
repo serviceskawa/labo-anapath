@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ShareDocEvent;
 use App\Models\Doc;
 use App\Models\DocumentationCategorie;
+use App\Models\Role;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
@@ -64,13 +66,13 @@ class DocController extends Controller
             'attachment' => 'required'
         ]);
 
-        if ($request->hasFile('attachment')) 
+        if ($request->hasFile('attachment'))
         {
             $imagePath = $request->file('attachment')->store('documents','public');
         }
-        
-        
-        try {          
+
+
+        try {
                 $doc = new Doc();
                 $doc->title = $request->title;
                 $doc->attachment = $imagePath;
@@ -85,7 +87,7 @@ class DocController extends Controller
             } catch(\Throwable $ex){
                 return back()->with('error', "Échec de l'enregistrement ! ");
             }
-    
+
     }
 
 
@@ -102,14 +104,14 @@ class DocController extends Controller
             'attachment' => 'required'
         ]);
 
-        if ($request->hasFile('attachment')) 
+        if ($request->hasFile('attachment'))
         {
             $imagePath = $request->file('attachment')->store('documents','public');
         }else{
             $imagePath = null;
         }
-        
-        try {          
+
+        try {
             $doc = new Doc();
             $doc->title = $request->title;
             $doc->attachment = $imagePath;
@@ -123,7 +125,27 @@ class DocController extends Controller
             } catch(\Throwable $ex){
                 return back()->with('error', "Échec de l'enregistrement ! ");
             }
-    
+
+    }
+
+    public function sharedocs(Request $request)
+    {
+        // dd($request);
+        $doc_id = $request->doc_id;
+        $role_id = $request->role_id;
+        $role = Role::find($role_id);
+
+        $doc = Doc::find($doc_id);
+        $doc->update([
+            'role_id' => $role_id
+        ]);
+
+        foreach (getUsersByRole($role->slug) as  $user) {
+           event(new ShareDocEvent($user,$doc));
+        }
+
+        return back()->with('success', " Opération effectuée avec succès  ! ");
+
     }
 
     public function getrecents()
@@ -191,20 +213,20 @@ class DocController extends Controller
             'title' => 'required|string|max:255'
         ]);
 
-        if ($request->hasFile('attachment')) 
+        if ($request->hasFile('attachment'))
         {
             $imagePath = $request->file('attachment')->store('documents','public');
         }else{
             $imagePath = $doc->attachment;
         }
-        
-        try 
+
+        try
         {
-            // dd($request->title);       
+            // dd($request->title);
             $doc->title = $request->title;
             $doc->attachment = $imagePath;
             $doc->save();
-            
+
             return back()->with('success', " Opération effectuée avec succès  ! ");
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! ");

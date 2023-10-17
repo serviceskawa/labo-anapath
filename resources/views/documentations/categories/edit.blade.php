@@ -25,7 +25,7 @@
                         </div>
 
                     </div>
-                    <div class="modal-footer">
+                    <div class="float-end mt-3">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
                         <button type="submit" class="btn btn-primary">Mettre à jour</button>
                     </div>
