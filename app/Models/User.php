@@ -149,16 +149,11 @@ class User extends Authenticatable
     {
         return $this->firstname .' '.$this->lastname ;
     }
-    public function userCheckRole($role_name)
+    public function userCheckRole($id)
     {
-        $access = false;
-        // foreach (getRolesByUser(Auth::user()->id) as $role){
-        //     if ($role->name == $role_name){
-        //         $access = true;
-        //         break;
-        //     }
-        // }
-        return $access;
+       $access = UserRole::where('user_id',$this->id)->where('role_id',$id)->first();
+
+        return $access ? true: false;
     }
 
     public function assignment()

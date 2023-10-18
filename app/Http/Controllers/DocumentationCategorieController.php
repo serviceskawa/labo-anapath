@@ -6,6 +6,7 @@ use App\Models\Doc;
 use App\Models\DocumentationCategorie;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DocumentationCategorieController extends Controller
 {
@@ -22,11 +23,11 @@ class DocumentationCategorieController extends Controller
      */
     public function index()
     {
-        $documents_categories = DocumentationCategorie::all();                                                                                                                                                                                                      
+        $documents_categories = DocumentationCategorie::all();
         // return view('documentations.categories.index', compact('documents_categories'));
-        
+
         // Récupérez toutes les catégories
-        $categories = DocumentationCategorie::all(); 
+        $categories = DocumentationCategorie::all();
         $select_categorie = DocumentationCategorie::latest()->get();
 
         // Retournez les catégories au format JSON
@@ -38,7 +39,7 @@ class DocumentationCategorieController extends Controller
     public function getcategoriedocs()
     {
         // Récupérez toutes les catégories
-        $categories = DocumentationCategorie::latest()->get(); 
+        $categories = DocumentationCategorie::latest()->get();
 
         // Retournez les catégories au format JSON
         return response()->json($categories);
@@ -48,7 +49,7 @@ class DocumentationCategorieController extends Controller
     public function getdocs($id)
     {
         // Récupérez toutes les catégories
-        $docs = Doc::where('documentation_categorie_id',$id)->get(); 
+        $docs = Doc::where('documentation_categorie_id',$id)->where('user_id',Auth::user()->id)->get();
 
         // Retournez les catégories au format JSON
         return response()->json($docs);
@@ -75,13 +76,13 @@ class DocumentationCategorieController extends Controller
         if (!getOnlineUser()->can('create-employees')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-    
+
         $this->validate($request, [
             'name' => ['required','string','max:255'],
         ]);
 
         try {
-            
+
                 $document = new DocumentationCategorie();
                 $document->name = $request->name;
                 $document->save();
@@ -111,7 +112,7 @@ class DocumentationCategorieController extends Controller
      */
     public function edit(DocumentationCategorie $documentationCategorie)
     {
-        
+
     }
 
     /**
@@ -129,14 +130,14 @@ class DocumentationCategorieController extends Controller
         $this->validate($request, [
             'name' => ['required','string','max:255'],
         ]);
-        
+
         // dd($documentationCategorie);
         try {
-            
+
             $documentationCategorie->name = $request->name;
             $documentationCategorie->save();
             // dd($documentationCategorie->name);
-               
+
                  return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
                 return back()->with('error', "Échec de l'enregistrement ! ");

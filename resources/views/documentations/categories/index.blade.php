@@ -69,8 +69,7 @@
                         <div class="list-of-categorie">
 
                         </div>
-                        <a href="#" class="list-group-item border-0" id="files-delete"><i
-                                class="mdi mdi-delete font-18 align-middle me-2"></i>Fichiers supprimés</a>
+                        <a href="#" class="list-group-item border-0" id="files-delete"><i class="mdi mdi-delete font-18 align-middle me-2"></i>Fichiers supprimés</a>
                     </div>
                 </div>
 
@@ -207,6 +206,7 @@
 {{-- Le code js qui permet de retourner toutes les categories --}}
 <script>
     $(document).ready(function() {
+    var user_connect = {!! json_encode(Auth::user()) !!}
     $.ajax({
     // URL de la route vers le contrôleur
     url: '/getcategorie-doc',
@@ -250,32 +250,90 @@
         success: function(categoryContent) {
         // Créez une variable pour stocker le contenu HTML
         var contentHtml = '';
+        var promises = []; // Créez un tableau de promesses
+
 
         // Utilisez $.each pour parcourir les objets dans le tableau JSON
         $.each(categoryContent, function(index, entry) {
+            console.log(entry);
+            var role_id = entry.role_id;
+            var hasRole = false
+            var promise = $.ajax({
+                url: '/users/check-role/' + role_id, // Remplacez '/check-role/' par l'URL de votre route Laravel
+                type: 'GET',
+                dataType: 'json',
+            }).then(function(user){
+                    // Vous pouvez maintenant utiliser la valeur de "user" pour afficher les informations appropriées
+                    console.log(user);
+                    console.log(user_connect);
+                    if (user) {
+                         // Le reste de votre code pour créer l'élément HTML
+                        contentHtml += '<div class="col-xxl-3 col-lg-6">'
+                        contentHtml += '<div class="card m-1 shadow-none border">'
+                        contentHtml += '<div class="p-2"><div class="row align-items-center">'
+                        contentHtml += '<div class="col-auto"><div class="avatar-sm">'
+                        contentHtml += '<span class="avatar-title bg-light text-secondary rounded">'
+                        contentHtml += '<i class="mdi mdi-folder-zip font-16"></i></span></div></div>'
+                        contentHtml += '<div class="col ps-0"><a href="javascript:void(0);" class="text-muted fw-bold">'+entry.title+'</a>'
+                        contentHtml += '<p class="mb-0 font-13"> ' + (entry.file_size / (1024 * 1024)).toFixed(2) + ' MB</p></div>'
+                        contentHtml += '<div class="col-auto">'
+                        contentHtml += '<a href="#" class="table-action-btn dropdown-toggle arrow-none btn btn-light btn-xs" data-bs-toggle="dropdown" aria-expanded="false">'
+                        contentHtml += '<i class="mdi mdi-dots-horizontal"></i></a>'
+                        contentHtml += '<div class="dropdown-menu dropdown-menu-end"><a class="dropdown-item" id="share-item" data-entry-id="' + entry.id + '" href="#">'
+                        contentHtml += '<i class="mdi mdi-share-variant me-2 text-muted vertical-middle" ></i>Partager</a>'
+                        contentHtml += '<a class="dropdown-item voir-plus-link" href="#" data-entry-id="' + entry.id + '"><i class="uil-eye me-2 text-muted vertical-middle"></i>Voir plus</a>'
+                        // contentHtml += '<a class="dropdown-item" href="#"><i class="mdi mdi-pencil me-2 text-muted vertical-middle"></i>Rename</a>'
+                        contentHtml += '<a class="dropdown-item download-button" data-bs-toggle="modal" data-bs-target="#downloadModal" data-category-id="' + entry.id + '" href="#"><i class="mdi mdi-download me-2 text-muted vertical-middle"></i>Nouvelle version</a>'
+                        contentHtml += '<a class="dropdown-item delete-link" data-entry-id="' + entry.id + '" href="#"><i class="mdi mdi-delete me-2 text-muted vertical-middle"></i>Supprimer</a></div></div></div>'
+                        contentHtml += '</div></div></div></div>';
+                        console.log('cc user');
+                    } else {
+                        console.log(user_connect);
+                        if (entry.user_id == user_connect.id ) {
+                            contentHtml += '<div class="col-xxl-3 col-lg-6">'
+                            contentHtml += '<div class="card m-1 shadow-none border">'
+                            contentHtml += '<div class="p-2"><div class="row align-items-center">'
+                            contentHtml += '<div class="col-auto"><div class="avatar-sm">'
+                            contentHtml += '<span class="avatar-title bg-light text-secondary rounded">'
+                            contentHtml += '<i class="mdi mdi-folder-zip font-16"></i></span></div></div>'
+                            contentHtml += '<div class="col ps-0"><a href="javascript:void(0);" class="text-muted fw-bold">'+entry.title+'</a>'
+                            contentHtml += '<p class="mb-0 font-13">' + (entry.file_size / (1024 * 1024)).toFixed(2) + ' MB</p></div>'
+                            contentHtml += '<div class="col-auto">'
+                            contentHtml += '<a href="#" class="table-action-btn dropdown-toggle arrow-none btn btn-light btn-xs" data-bs-toggle="dropdown" aria-expanded="false">'
+                            contentHtml += '<i class="mdi mdi-dots-horizontal"></i></a>'
+                            contentHtml += '<div class="dropdown-menu dropdown-menu-end"><a class="dropdown-item" id="share-item" data-entry-id="' + entry.id + '" href="#">'
+                            contentHtml += '<i class="mdi mdi-share-variant me-2 text-muted vertical-middle" ></i>Partager</a>'
+                            contentHtml += '<a class="dropdown-item voir-plus-link" href="#" data-entry-id="' + entry.id + '"><i class="uil-eye me-2 text-muted vertical-middle"></i>Voir plus</a>'
+                            // contentHtml += '<a class="dropdown-item" href="#"><i class="mdi mdi-pencil me-2 text-muted vertical-middle"></i>Rename</a>'
+                            contentHtml += '<a class="dropdown-item download-button" data-bs-toggle="modal" data-bs-target="#downloadModal" data-category-id="' + entry.id + '" href="#"><i class="mdi mdi-download me-2 text-muted vertical-middle"></i>Nouvelle version</a>'
+                            contentHtml += '<a class="dropdown-item delete-link" data-entry-id="' + entry.id + '" href="#"><i class="mdi mdi-delete me-2 text-muted vertical-middle"></i>Supprimer</a></div></div></div>'
+                            contentHtml += '</div></div></div></div>';
+                            console.log('cc');
+                        }
+                    }
+            })
+            promises.push(promise);
+                // success: function(user) {
+
+                // },
+                // error: function(xhr, status, error) {
+                //     console.error(error);
+                // }
+
+            // });
         // Créez un élément HTML pour chaque entrée
-        contentHtml += '<div class="col-xxl-3 col-lg-6">'
-        contentHtml += '<div class="card m-1 shadow-none border">'
-        contentHtml += '<div class="p-2"><div class="row align-items-center">'
-        contentHtml += '<div class="col-auto"><div class="avatar-sm">'
-        contentHtml += '<span class="avatar-title bg-light text-secondary rounded">'
-        contentHtml += '<i class="mdi mdi-folder-zip font-16"></i></span></div></div>'
-        contentHtml += '<div class="col ps-0"><a href="javascript:void(0);" class="text-muted fw-bold">'+entry.title+'</a>'
-        contentHtml += '<p class="mb-0 font-13">2.3 MB</p></div>'
-        contentHtml += '<div class="col-auto">'
-        contentHtml += '<a href="#" class="table-action-btn dropdown-toggle arrow-none btn btn-light btn-xs" data-bs-toggle="dropdown" aria-expanded="false">'
-        contentHtml += '<i class="mdi mdi-dots-horizontal"></i></a>'
-        contentHtml += '<div class="dropdown-menu dropdown-menu-end"><a class="dropdown-item" id="share-item" data-entry-id="' + entry.id + '" href="#">'
-        contentHtml += '<i class="mdi mdi-share-variant me-2 text-muted vertical-middle" ></i>Partager</a>'
-        contentHtml += '<a class="dropdown-item voir-plus-link" href="#" data-entry-id="' + entry.id + '"><i class="uil-eye me-2 text-muted vertical-middle"></i>Voir plus</a>'
-        // contentHtml += '<a class="dropdown-item" href="#"><i class="mdi mdi-pencil me-2 text-muted vertical-middle"></i>Rename</a>'
-        contentHtml += '<a class="dropdown-item download-button" data-bs-toggle="modal" data-bs-target="#downloadModal" data-category-id="' + entry.id + '" href="#"><i class="mdi mdi-download me-2 text-muted vertical-middle"></i>Nouvelle version</a>'
-        contentHtml += '<a class="dropdown-item delete-link" data-entry-id="' + entry.id + '" href="#"><i class="mdi mdi-delete me-2 text-muted vertical-middle"></i>Supprimer</a></div></div></div>'
-        contentHtml += '</div></div></div></div>';
         });
 
             // Mettez à jour le contenu de la div "category-content"
-            $('#category-content').html(contentHtml);
+            // $('#category-content').html(contentHtml);
+
+            // Utilisez Promise.all pour attendre que toutes les promesses soient résolues
+            Promise.all(promises).then(function() {
+                // Mettez à jour le contenu de la div "category-content" une fois que toutes les promesses sont résolues
+                $('#category-content').html(contentHtml);
+            }).catch(function(error) {
+                console.error(error);
+            });
 
             },
                 error: function(xhr, status, error) {

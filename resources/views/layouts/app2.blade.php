@@ -698,48 +698,12 @@
                                 <li>
                                     <a href="{{ route('doc.categorie.index') }}">Tous les catégories</a>
                                 </li>
-                                @endif --}}
+                                @endif
                             </ul>
                         </div>
                     </li>
                     @endif
 
-
-
-
-
-
-                    {{-- Equipes --}}
-                    <li class="side-nav-title side-nav-item">Documentations</li>
-                    @if (getOnlineUser()->can('edit-users'))
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarProjects66" aria-expanded="false"
-                            aria-controls="sidebarProjects66" class="side-nav-link">
-                            <i class="uil-user-check"></i>
-                            <span>Documentations</span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="sidebarProjects66">
-                            <ul class="side-nav-second-level">
-                                @if (getOnlineUser()->can('view-users'))
-                                <li>
-                                    <a href="{{ route('doc.categorie.index') }}">Categoriés</a>
-                                </li>
-                                @endif
-                                {{-- @if (getOnlineUser()->can('view-users'))
-                                <li>
-                                    <a href="{{ route('doc.index') }}">Tous les documents</a>
-                                </li>
-                                @endif
-                                @if (getOnlineUser()->can('view-users'))
-                                <li>
-                                    <a href="{{ route('employee.index') }}">Documentations</a>
-                                </li>
-                                @endif --}}
-                            </ul>
-                        </div>
-                    </li>
-                    @endif
                 </ul>
                 <div class="clearfix"></div>
             </div>

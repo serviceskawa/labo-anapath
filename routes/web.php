@@ -356,6 +356,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('user-update', [UserController::class, 'update'])->name('user.update');
         Route::get('role-delete/{id}', [UserController::class, 'destroy'])->name('user.delete');
         Route::get('update-status-active/{id}', [UserController::class, 'updateActiveStatus'])->name('user.statusActive');
+        Route::get('check-role/{id}', [UserController::class, 'checkrole'])->name('user.check.role');
     });
 
     // Profile

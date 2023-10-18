@@ -37,7 +37,7 @@ class ShareDocListener
         ];
         try {
 
-            Mail::to($user->email)->queue(new ShareDocMail($data,asset('storage/'.$doc->attachment)));
+            Mail::to($user->email)->queue(new ShareDocMail($data));
         } catch (\Throwable $th) {
             dd($th->getMessage());
         }

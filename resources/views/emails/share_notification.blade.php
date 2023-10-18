@@ -265,7 +265,7 @@
 																					<div style="text-align:justify;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;margin-top:3px;color:#5F5F5F;line-height:135%;">
                                                                                         <p>Bonjour {{ $data['user_name'] }},</p> <br>
                                                                                         <p>Vous recevez cette notification parce que Mr/Mme {{ $data['user_sharer'] }} a partagé ce document si joint avec vous :</p>
-                                                                                        <p><strong>Document</strong> {{$data['doc_title']}}</p> <br>
+                                                                                        <p><strong>Document</strong> {{$data['doc_title']}}</p>
                                                                                         <p>Merci,</p>
                                                                                         <p> {{$lab['value']}} </p>
                                                                                     </div>

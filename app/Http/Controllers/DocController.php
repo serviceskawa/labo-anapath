@@ -38,6 +38,7 @@ class DocController extends Controller
         $cat = Doc::where('documentation_categorie_id', $categorie)->get();
         return view('documentations.docs.index_detail', compact('cat'));
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -69,7 +70,9 @@ class DocController extends Controller
         if ($request->hasFile('attachment'))
         {
             $imagePath = $request->file('attachment')->store('documents','public');
+            $fileSize =  $request->file('attachment')->getSize();
         }
+        dd($request);
 
 
         try {
@@ -78,6 +81,7 @@ class DocController extends Controller
                 $doc->attachment = $imagePath;
                 $doc->is_current_version = 1;
                 $doc->documentation_categorie_id = $request->category_id;
+                $doc->file_size = $fileSize;
                 $doc->user_id = auth()->user()->id;
                 $doc->save();
                 // dd($request->category_id);
@@ -85,7 +89,7 @@ class DocController extends Controller
 
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ");
+                return back()->with('error', "Échec de l'enregistrement ! ".$ex->getMessage());
             }
 
     }
@@ -107,9 +111,13 @@ class DocController extends Controller
         if ($request->hasFile('attachment'))
         {
             $imagePath = $request->file('attachment')->store('documents','public');
+            $fileSize =  $request->file('attachment')->getSize();
         }else{
             $imagePath = null;
         }
+
+
+
 
         try {
             $doc = new Doc();
@@ -117,13 +125,14 @@ class DocController extends Controller
             $doc->attachment = $imagePath;
             $doc->is_current_version = 1;
             $doc->documentation_categorie_id = $request->documentation_categorie_id;
+            $doc->file_size = $fileSize;
             $doc->user_id = auth()->user()->id;
             $doc->save();
             // dd($request->category_id);
             // dd('ok');
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ");
+                return back()->with('error', "Échec de l'enregistrement ! ".$ex->getMessage());
             }
 
     }

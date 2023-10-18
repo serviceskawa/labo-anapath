@@ -20,10 +20,9 @@ class ShareDocMail extends Mailable
      *
      * @return void
      */
-    public function __construct($data,$path)
+    public function __construct($data)
     {
         $this->data = $data;
-        $this->path = $path;
     }
 
     /**
@@ -40,7 +39,7 @@ class ShareDocMail extends Mailable
          $this->from($from_adresse->value, $from_name->value) // L'expéditeur
             ->subject('Notification : Un document vous a été partagé')
             ->view('emails.share_notification')
-            ->attachFromStorage($this->path)
-            ->with(['data'=>$this->data,'lab'=>$lab_name,'docPath'=>$this->path]);
+            // ->attachFromStorage($this->path)
+            ->with(['data'=>$this->data,'lab'=>$lab_name]);
     }
 }

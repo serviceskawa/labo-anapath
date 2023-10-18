@@ -236,4 +236,10 @@ class UserController extends Controller
         back()->with('error','Une erreur est subvenue'.$th);
        }
     }
+
+    public function checkrole($id)
+    {
+        $user = User::find(Auth::user()->id);
+        return response()->json($user->userCheckRole($id));
+    }
 }
