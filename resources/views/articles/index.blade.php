@@ -37,11 +37,11 @@
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
                     <div class="row mb-3">
-                        <div class="col-lg-2 p-1 alert alert-warning rounded-pill"
+                        <div class="col-lg-2 p-1 alert alert-danger rounded-pill"
                             style="margin-right: 5px; text-align:center;">
                             Rupture de stock : {{$rupture}}
                         </div>
-                        <div class="col-lg-2 p-1 ml-3 alert alert-danger rounded-pill"
+                        <div class="col-lg-2 p-1 ml-3 alert alert-warning rounded-pill"
                             style="margin-right: 5px; text-align:center;">
                             Seuil d'alerte attenint : {{$seuil}}
                         </div>
