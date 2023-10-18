@@ -9,6 +9,7 @@ use App\Models\UnitMeasurement;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class ArticleController extends Controller
@@ -37,9 +38,13 @@ class ArticleController extends Controller
         $units = UnitMeasurement::latest()->get();
         $movs = Movement::latest()->get();
         $setting = $this->setting->find(1);
+
+        $rupture = $this->article->where('quantity_in_stock',0)->where('deleted_at',null)->count();
+        $seuil = $this->article->where('quantity_in_stock','<',DB::raw('minimum'))->where('quantity_in_stock','>',0)->where('deleted_at',null)->count();
+
         config(['app.name' => $setting->titre]);
 
-        return view('articles.index',compact(['articles','units','movs']));
+        return view('articles.index',compact(['articles','units','movs','rupture','seuil']));
     }
 
     /**

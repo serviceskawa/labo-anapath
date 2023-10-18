@@ -36,6 +36,16 @@
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
+                    <div class="row mb-3">
+                        <div class="col-lg-2 p-1 alert alert-warning rounded-pill"
+                            style="margin-right: 5px; text-align:center;">
+                            Rupture de stock : {{$rupture}}
+                        </div>
+                        <div class="col-lg-2 p-1 ml-3 alert alert-danger rounded-pill"
+                            style="margin-right: 5px; text-align:center;">
+                            Seuil d'alerte attenint : {{$seuil}}
+                        </div>
+                    </div>
 
                     <table id="datatable1" class="table  dt-responsive nowrap w-100">
                         <select name="" class="form-control form-control-sm" id="qt"></select>
