@@ -113,7 +113,7 @@ class LoginController extends Controller
                 // Déconnectez l'utilisateur
                 Auth::logout();
                 // Redirigez l'utilisateur vers la page de connexion avec un message d'erreur
-                return redirect()->route('login')->with('error', 'Votre compte est désactivé. Veuillez contacter l\'administrateur.');
+                return redirect()->route('login')->withErrors('Votre compte est désactivé. Veuillez contacter l\'administrateur.');
             }
 
 

@@ -52,6 +52,7 @@
                 </span>
             </a>
 
+
             <div class="h-100" id="leftside-menu-container" data-simplebar="">
 
                 <!--- Sidemenu -->
@@ -604,8 +605,8 @@
 
 
                     {{-- Equipes --}}
+
                     <li class="side-nav-title side-nav-item">EQUIPES</li>
-                    @if (getOnlineUser()->can('edit-users'))
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarProjects6" aria-expanded="false"
                             aria-controls="sidebarProjects6" class="side-nav-link">
@@ -615,15 +616,19 @@
                         </a>
                         <div class="collapse" id="sidebarProjects6">
                             <ul class="side-nav-second-level">
-                                @if (getOnlineUser()->can('view-users'))
+                                @if (getOnlineUser()->can('view-employees'))
                                 <li>
                                     <a href="{{ route('employee.index') }}">Tous les employés</a>
                                 </li>
                                 @endif
+                                <li>
+
+                                    <a href="#"data-bs-toggle="modal"
+                                    data-bs-target="#bs-example-modal-lg-timeoffs-create2">Demande de congé</a>
+                                </li>
                             </ul>
                         </div>
                     </li>
-                    @endif
 
 
 
@@ -684,7 +689,13 @@
 
                     {{-- Documentations --}}
                     <li class="side-nav-title side-nav-item">DOCUMENTATIONS</li>
-                    @if (getOnlineUser()->can('edit-users'))
+                    <li class="side-nav-item">
+                        <a href="{{ route('doc.categorie.index') }}" class="side-nav-link">
+                            <i class="uil-document-layout-right"></i>
+                            <span>Documentations</span>
+                        </a>
+                    </li>
+                    {{-- <li class="side-nav-title side-nav-item">DOCUMENTATIONS</li>
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarProjects66" aria-expanded="false"
                             aria-controls="sidebarProjects66" class="side-nav-link">
@@ -701,8 +712,7 @@
                                 @endif
                             </ul>
                         </div>
-                    </li>
-                    @endif
+                    </li> --}}
 
                 </ul>
                 <div class="clearfix"></div>
@@ -785,6 +795,7 @@
                 <!-- Start Content-->
                 <div class="container-fluid">
 
+                    @include('employee_timeoffs.create2')
                     @yield('content')
 
                 </div> <!-- container -->

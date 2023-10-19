@@ -11,6 +11,7 @@ use App\Models\Setting;
 use App\Models\TestOrder;
 use Illuminate\Support\Str;
 use App\Models\Consultation;
+use App\Models\Employee;
 use App\Models\Invoice;
 use App\Models\RefundRequest;
 use App\Models\Report;
@@ -991,6 +992,20 @@ if (!function_exists('convertDate')) {
     {
         $date_input = date('Y-m-d H:i:s', strtotime($date));
         return $date_input;
+    }
+}
+
+if (!function_exists('getAllUsers')) {
+    function getAllUsers()
+    {
+        return User::all();
+    }
+}
+
+if (!function_exists('getAllEmployees')) {
+    function getAllEmployees()
+    {
+        return Employee::all();
     }
 }
 

@@ -55,7 +55,7 @@ class EmployeeTimeoffController extends Controller
 
            return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ");
+                return back()->with('error', "Échec de l'enregistrement ! ".$ex->getMessage());
             }
     }
 
@@ -92,18 +92,42 @@ class EmployeeTimeoffController extends Controller
     {
         try {
 
-    $employeeTimeoff->update([   
-        'employee_id' => $request->employee_id, 
-        'timeoff_type' => $request->timeoff_type,
-        'start_date' => $request->start_date,
-        'end_date' => $request->end_date,
-        'message' => $request->message,
-        'status' => $request->status,
-    ]);
+        $employeeTimeoff->update([
+            'employee_id' => $request->employee_id,
+            'timeoff_type' => $request->timeoff_type,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'message' => $request->message,
+            'status' => $request->status,
+        ]);
+
+        if ($request->status == 'active') {
+            $employe = Employee::find($employeeTimeoff->employee_id);
+            if ($employe->user_id) {
+                $employe->user->is_active = 0;
+                $employe->user->save();
+            }
+        }
+
            return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
                 return back()->with('error', "Échec de l'enregistrement ! ");
             }
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $timeoff = EmployeeTimeoff::find($request->id);
+        $timeoff->status = $request->status;
+        $timeoff->save();
+        if ($request->status == 'active') {
+            $employe = Employee::find($timeoff->employee_id);
+            if ($employe->user_id) {
+                $employe->user->is_active = 0;
+                $employe->user->save();
+            }
+        }
+        return response()->json(200);
     }
 
     /**

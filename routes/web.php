@@ -610,6 +610,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('employee-timeoff-create', [EmployeeTimeoffController::class, 'create'])->name('employee.timeoff.create');
         Route::get('employee-timeoff-edit/{employeeTimeoff}', [EmployeeTimeoffController::class, 'edit'])->name('employee.timeoff.edit');
         Route::put('employee-timeoff-update/{employeeTimeoff}', [EmployeeTimeoffController::class, 'update'])->name('employee.timeoff.update');
+        Route::get('employee-timeoff-update-status', [EmployeeTimeoffController::class, 'updateStatus'])->name('employee.timeoff.update.status');
         Route::post('employee-timeoff-store', [EmployeeTimeoffController::class, 'store'])->name('employee.timeoff.store');
         Route::get('employee-timeoff-delete/{employeeTimeoff}', [EmployeeTimeoffController::class, 'delete'])->name('employee.timeoff.delete');
     // });

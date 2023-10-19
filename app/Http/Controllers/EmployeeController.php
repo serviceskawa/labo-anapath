@@ -59,6 +59,7 @@ class EmployeeController extends Controller
             'last_name' => 'required|string|max:100',
             'email' => 'required|string|max:50',
             'telephone' => 'required|string',
+            'user_id' => 'nullable|exists:users,id'
         ]);
 
 
@@ -69,6 +70,7 @@ class EmployeeController extends Controller
             $employee->last_name = $request->last_name;
             $employee->email = $request->email;
             $employee->telephone = $request->telephone;
+            $employee->user_id = $request->user_id;
             $employee->gender = null;
             $employee->date_of_birth = null;
             $employee->place_of_birth = null;
@@ -138,14 +140,15 @@ class EmployeeController extends Controller
         $this->validate($request,[
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
-            'gender' => 'required|string',
-            'date_of_birth' => 'required|date',
-            'place_of_birth' => 'required|string|max:100',
-            'nationality' => 'required|string|max:50',
-            'cnss_number' => 'required|string|max:20',
-            'address' => 'required|string|max:255',
-            'city' => 'required|string|max:50',
+            'gender' => 'nullable',
+            'date_of_birth' => 'nullable|date',
+            'place_of_birth' => 'nullable|string|max:100',
+            'nationality' => 'nullable|string|max:50',
+            'cnss_number' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:50',
             'photo_url' => 'nullable|image|max:2046',
+            'user_id' => 'nullable|exists:users,id'
         ]);
 
         if ($request->hasFile('photo_url')) {
@@ -167,12 +170,13 @@ class EmployeeController extends Controller
                 $employee->address = $request->address;
                 $employee->city = $request->city;
                 $employee->photo_url = $imagePath;
+                $employee->user_id = $request->user_id;
 
             $employee->save();
 
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ");
+                return back()->with('error', "Échec de l'enregistrement ! ".$ex->getMessage());
             }
     }
 

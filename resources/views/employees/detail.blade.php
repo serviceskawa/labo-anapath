@@ -258,11 +258,24 @@
                                     <td>{{ $conge->start_date }}</td>
                                     <td>{{ $conge->end_date }}</td>
                                     <td>{{ $conge->timeoff_type }}</td>
-                                    <td>{{ $conge->status }}</td>
+                                    {{-- <td>{{ $conge->status }}</td> --}}
+                                    <td  style="width: 300px">
+                                        @if (getOnlineUser()->can('view-employees'))
+                                        @if ($conge->status != 'active')
+                                            <select class="form-select" style="width: 250px" onchange="updateStatusTimeOff({{ $conge->id }},this)">
+                                                <option  {{$conge->status != 'active'?'selected':''}} value="non active">Non active</option>
+                                                <option {{$conge->status == 'active' ? 'selected':''}} value="active">Active</option>
+                                            </select>
+                                        @else
+                                            <span class="badge badge-outline-success"> Active</span>
+                                        @endif
+
+                                        @endif
+                                    </td>
                                     <td>
                                         @include('employee_timeoffs.edit',['item' => $conge])
                                         <button type="button" data-bs-toggle="modal"
-                                            data-bs-target="#bs-example-modal-lg-edit-{{ $conge->id }}"
+                                            data-bs-target="#bs-payrolls-example-modal-lg-edit-{{ $conge->id }}"
                                             class="btn btn-info"><i class="mdi mdi-lead-pencil"></i>
                                         </button>
 
@@ -350,6 +363,45 @@
 @push('extra-js')
 <script>
     var baseUrl = "{{url('/')}}"
+    function updateStatusTimeOff(id,element)
+    {
+        var e_id = id;
+        var title = '';
+        console.log(element.value);
+        if (element.value == 'active') {
+            title = "Voulez-vous activer ce congé ?"
+        }else if (element.value == 'non active') {
+            title = "Voulez-vous désactiver ce congé ?"
+        }
+        Swal.fire({
+            title: title,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Oui ",
+            cancelButtonText: "Non !",
+        }).then(function(result) {
+            if (result.value) {
+                $.ajax({
+                    url: "/employee-timeoff-update-status/",
+                    type: "GET",
+                    data: {
+                        id: e_id,
+                        status:element.value
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        toastr.success("Status modifié", 'Congé');
+                        // location.reload();
+                        window.location.href = "{{ route('employee.detail',$employee) }}"
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                })
+            }
+        });
+
+    }
 </script>
 <script src="{{asset('viewjs/patient/index.js')}}"></script>
 @endpush

@@ -45,6 +45,21 @@
                                 <input type="text" name="telephone" class="form-control" required />
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="mb-3 col-lg-12">
+                                <label for="simpleinput" class="form-label">Utilisateur<span
+                                        style="color:red;">*</span></label>
+                                <select class="form-select select2" id="user_id" name="user_id">
+                                    <option value="">Associer à un utilisateur</option>
+                                    @forelse (getAllUsers() as $user)
+                                        <option value="{{ $user->id }}">{{ $user->fullname() }}</option>
+                                    @empty
+                                        Ajouter un utilisateur
+                                    @endforelse
+                                </select>
+                            </div>
+                        </div>
+
                         {{-- <div class="row">
                             <div class="mb-3 col-lg-12">
                                 <label for="simpleinput" class="form-label">Date de naissance<span
