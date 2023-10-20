@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Events\ShareDocEvent;
 use App\Models\Doc;
 use App\Models\DocumentationCategorie;
+use App\Models\DocVersion;
 use App\Models\Role;
 use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DocController extends Controller
 {
@@ -26,6 +29,8 @@ class DocController extends Controller
     {
         $categories = DocumentationCategorie::latest()->get();
         $docs = Doc::all();
+
+
         return view('documentations.docs.index', compact('docs','categories'));
     }
 
@@ -49,12 +54,27 @@ class DocController extends Controller
         //
     }
 
+    public function getAllVersion($id)
+    {
+        $doc_version = DocVersion::where('doc_id',$id)->get();
+        return response()->json($doc_version);
+    }
+
+    public function getUserDoc($id)
+    {
+        $doc_version = DocVersion::find($id);
+        $user = User::find($doc_version->user_id);
+        return response()->json($user->fullname());
+    }
+
     /**
      * Store a newly created resource in storage.
+     * Pour créer une nouvelle version du même document
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
         if (!getOnlineUser()->can('create-employees')) {
@@ -63,7 +83,7 @@ class DocController extends Controller
 
         $this->validate($request,[
             'title' => 'required|string|max:255',
-            'category_id' => 'integer',
+            'first_doc_id' => 'integer',
             'attachment' => 'required'
         ]);
 
@@ -72,18 +92,28 @@ class DocController extends Controller
             $imagePath = $request->file('attachment')->store('documents','public');
             $fileSize =  $request->file('attachment')->getSize();
         }
-        dd($request);
 
 
         try {
-                $doc = new Doc();
-                $doc->title = $request->title;
-                $doc->attachment = $imagePath;
-                $doc->is_current_version = 1;
-                $doc->documentation_categorie_id = $request->category_id;
-                $doc->file_size = $fileSize;
-                $doc->user_id = auth()->user()->id;
-                $doc->save();
+                // $doc = new Doc();
+                // $doc->title = $request->title;
+                // $doc->attachment = $imagePath;
+                // $doc->is_current_version = 1;
+                // $doc->documentation_categorie_id = $request->category_id;
+                // $doc->file_size = $fileSize;
+                // $doc->user_id = auth()->user()->id;
+                // $doc->save();
+                $lastVersion = DocVersion::where('doc_id',$request->first_doc_id)->latest()->first();
+
+                $doc_version = new DocVersion();
+                $doc_version->title = $request->title;
+                $doc_version->doc_id = $request->first_doc_id;
+                $doc_version->version = $lastVersion->version +1;
+                $doc_version->file_size = $fileSize;
+                $doc_version->attachment = $imagePath;
+                $doc_version->user_id = auth()->user()->id;
+                $doc_version->save();
+
                 // dd($request->category_id);
                 // dd('ok');
 
@@ -92,6 +122,23 @@ class DocController extends Controller
                 return back()->with('error', "Échec de l'enregistrement ! ".$ex->getMessage());
             }
 
+    }
+
+
+
+    public function doc_share()
+    {
+        $docs = [];
+        $user = User::find(Auth::user()->id);
+        $doc_all = Doc::all();
+        foreach ($doc_all as $key => $doc) {
+            if ($user->userCheckRole($doc->role_id)) {
+                $docs []=$doc;
+            }
+        }
+        $categories = DocumentationCategorie::latest()->get();
+
+        return view('documentations.docs.index', compact('docs','categories'));
     }
 
 
@@ -128,6 +175,15 @@ class DocController extends Controller
             $doc->file_size = $fileSize;
             $doc->user_id = auth()->user()->id;
             $doc->save();
+
+            $doc_version = new DocVersion();
+            $doc_version->doc_id = $doc->id;
+            $doc_version->title = $request->title;
+            $doc_version->attachment = $imagePath;
+            $doc_version->user_id = auth()->user()->id;
+            $doc_version->version = 1;
+            $doc_version->save();
+
             // dd($request->category_id);
             // dd('ok');
                 return back()->with('success', " Opération effectuée avec succès  ! ");
@@ -212,11 +268,12 @@ class DocController extends Controller
      * @param  \App\Models\Doc  $doc
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Doc $doc)
+    public function update(Request $request)
     {
         if (!getOnlineUser()->can('edit-employees')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+        $doc = Doc::find($request->doc_id);
 
         $this->validate($request,[
             'title' => 'required|string|max:255'
@@ -232,6 +289,7 @@ class DocController extends Controller
         try
         {
             // dd($request->title);
+            
             $doc->title = $request->title;
             $doc->attachment = $imagePath;
             $doc->save();

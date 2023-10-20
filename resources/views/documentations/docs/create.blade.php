@@ -38,7 +38,7 @@
                                 <label for="" class="form-label">Type de catégorie</label>
                                 <select required name="documentation_categorie_id" class="form-select" id="">
                                     <option>Selectionner la catégorie</option>
-                                    @foreach ($select_categorie as $cat)
+                                    @foreach ($categories as $cat)
                                     <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                                     @endforeach
                                 </select>
@@ -49,7 +49,7 @@
                             <div class="mb-3 col-lg-12">
                                 <label for="example-fileinput" class="form-label">Fichier<span
                                         style="color:red;">*</span></label>
-                                <input required type="file" name="attachment" id="example-fileinput"
+                                <input required type="file" accept=".pdf" name="attachment" id="example-fileinput"
                                     class="form-control">
                             </div>
                         </div>

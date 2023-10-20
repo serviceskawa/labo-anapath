@@ -61,6 +61,8 @@
                     </div>
 
                     @include('documentations.docs_versions.create')
+                    @include('documentations.docs_versions.history_version')
+                    @include('documentations.docs_versions.edit')
                     <div class="email-menu-list mt-3">
                         <a href="#" class="list-group-item border-0" id="recent-link"><i
                                 class="mdi mdi-clock-outline font-18 align-middle me-2"></i>Récent</a>
@@ -72,6 +74,7 @@
                         <a href="#" class="list-group-item border-0" id="files-delete"><i class="mdi mdi-delete font-18 align-middle me-2"></i>Fichiers supprimés</a>
                     </div>
                 </div>
+
 
                 <div class="page-aside-right">
                     <h5 class="mb-2 category-name"></h5>
@@ -206,6 +209,8 @@
 {{-- Le code js qui permet de retourner toutes les categories --}}
 <script>
     $(document).ready(function() {
+
+
     var user_connect = {!! json_encode(Auth::user()) !!}
     $.ajax({
     // URL de la route vers le contrôleur
@@ -250,46 +255,113 @@
         success: function(categoryContent) {
         // Créez une variable pour stocker le contenu HTML
         var contentHtml = '';
+
         var promises = []; // Créez un tableau de promesses
+
+        // Supposons que vous ayez un tableau d'objets représentant les éléments du menu.
+        var menuItems = [
+            {
+                label: 'Editer',
+                iconClass: 'mdi mdi-pencil',
+                id: 'doc-edit-button',
+                dataCategoryId: function(id) {
+                    return id
+                },
+                dataCategoryName: function(name) {
+                    return name
+                },
+                href: function(doc) {
+                    return '#';
+                }
+            },
+            {
+                label: 'Partager',
+                iconClass: 'mdi mdi-share-variant',
+                id: 'share-item',
+                dataCategoryId: function(id) {
+                    return id
+                },
+                href: function(doc) {
+                    return '#';
+                }
+            },
+            {
+                label: 'Visualiser',
+                iconClass: 'mdi mdi-eye',
+                type:"application/pdf",
+                attachment:true,
+                target:true,
+                href: function(doc) {
+                    return '{{asset('storage/')}}/' + doc;
+                }
+            },
+            {
+                label: 'Télécharger',
+                iconClass: 'mdi mdi-download',
+                download:true,
+                attachment:true,
+                href: function(doc) {
+                    return '{{asset('storage/')}}/' + doc;
+                }
+            },
+            {
+                label: 'Nouvelle version',
+                iconClass: 'mdi mdi-upload',
+                id: 'download-button',
+                dataCategoryId: function(id) {
+                    return id
+                },
+                dataCategoryName: function(name) {
+                    return name
+                },
+
+                href: function(doc) {
+                    return '#';
+                }
+            },
+            {
+                label: 'Historique version',
+                iconClass: 'mdi mdi-history',
+                id: 'all-version-button',
+                dataCategoryId: function(id) {
+                    return id
+                },
+                dataCategoryName: function(name) {
+                    return name
+                },
+                href: function(doc) {
+                    return '#';
+                }
+            },
+            {
+                label: 'Supprimer',
+                iconClass: 'mdi mdi-delete',
+                href: function(doc) {
+                    return '/document-supprimer/'+doc;
+                }
+            }
+        ];
+       
 
 
         // Utilisez $.each pour parcourir les objets dans le tableau JSON
-        $.each(categoryContent, function(index, entry) {
-            console.log(entry);
-            var role_id = entry.role_id;
-            var hasRole = false
-            var promise = $.ajax({
-                url: '/users/check-role/' + role_id, // Remplacez '/check-role/' par l'URL de votre route Laravel
-                type: 'GET',
-                dataType: 'json',
-            }).then(function(user){
-                    // Vous pouvez maintenant utiliser la valeur de "user" pour afficher les informations appropriées
-                    console.log(user);
-                    console.log(user_connect);
-                    if (user) {
-                         // Le reste de votre code pour créer l'élément HTML
-                        contentHtml += '<div class="col-xxl-3 col-lg-6">'
-                        contentHtml += '<div class="card m-1 shadow-none border">'
-                        contentHtml += '<div class="p-2"><div class="row align-items-center">'
-                        contentHtml += '<div class="col-auto"><div class="avatar-sm">'
-                        contentHtml += '<span class="avatar-title bg-light text-secondary rounded">'
-                        contentHtml += '<i class="mdi mdi-folder-zip font-16"></i></span></div></div>'
-                        contentHtml += '<div class="col ps-0"><a href="javascript:void(0);" class="text-muted fw-bold">'+entry.title+'</a>'
-                        contentHtml += '<p class="mb-0 font-13"> ' + (entry.file_size / (1024 * 1024)).toFixed(2) + ' MB</p></div>'
-                        contentHtml += '<div class="col-auto">'
-                        contentHtml += '<a href="#" class="table-action-btn dropdown-toggle arrow-none btn btn-light btn-xs" data-bs-toggle="dropdown" aria-expanded="false">'
-                        contentHtml += '<i class="mdi mdi-dots-horizontal"></i></a>'
-                        contentHtml += '<div class="dropdown-menu dropdown-menu-end"><a class="dropdown-item" id="share-item" data-entry-id="' + entry.id + '" href="#">'
-                        contentHtml += '<i class="mdi mdi-share-variant me-2 text-muted vertical-middle" ></i>Partager</a>'
-                        contentHtml += '<a class="dropdown-item voir-plus-link" href="#" data-entry-id="' + entry.id + '"><i class="uil-eye me-2 text-muted vertical-middle"></i>Voir plus</a>'
-                        // contentHtml += '<a class="dropdown-item" href="#"><i class="mdi mdi-pencil me-2 text-muted vertical-middle"></i>Rename</a>'
-                        contentHtml += '<a class="dropdown-item download-button" data-bs-toggle="modal" data-bs-target="#downloadModal" data-category-id="' + entry.id + '" href="#"><i class="mdi mdi-download me-2 text-muted vertical-middle"></i>Nouvelle version</a>'
-                        contentHtml += '<a class="dropdown-item delete-link" data-entry-id="' + entry.id + '" href="#"><i class="mdi mdi-delete me-2 text-muted vertical-middle"></i>Supprimer</a></div></div></div>'
-                        contentHtml += '</div></div></div></div>';
-                        console.log('cc user');
-                    } else {
+            $.each(categoryContent, function(index, entry) {
+                console.log(entry);
+                var attachment = entry.attachment;
+                console.log(attachment);
+                var role_id = entry.role_id;
+                var hasRole = false
+
+                var promise = $.ajax({
+                    url: '/users/check-role/' + role_id, // Remplacez '/check-role/' par l'URL de votre route Laravel
+                    type: 'GET',
+                    dataType: 'json',
+                }).then(function(user){
+                        // Vous pouvez maintenant utiliser la valeur de "user" pour afficher les informations appropriées
+                        console.log(user);
                         console.log(user_connect);
-                        if (entry.user_id == user_connect.id ) {
+                        if (user) {
+                            // Le reste de votre code pour créer l'élément HTML
                             contentHtml += '<div class="col-xxl-3 col-lg-6">'
                             contentHtml += '<div class="card m-1 shadow-none border">'
                             contentHtml += '<div class="p-2"><div class="row align-items-center">'
@@ -297,32 +369,134 @@
                             contentHtml += '<span class="avatar-title bg-light text-secondary rounded">'
                             contentHtml += '<i class="mdi mdi-folder-zip font-16"></i></span></div></div>'
                             contentHtml += '<div class="col ps-0"><a href="javascript:void(0);" class="text-muted fw-bold">'+entry.title+'</a>'
-                            contentHtml += '<p class="mb-0 font-13">' + (entry.file_size / (1024 * 1024)).toFixed(2) + ' MB</p></div>'
+                            contentHtml += '<p class="mb-0 font-13"> ' + (entry.file_size / (1024 * 1024)).toFixed(2) + ' MB</p></div>'
                             contentHtml += '<div class="col-auto">'
                             contentHtml += '<a href="#" class="table-action-btn dropdown-toggle arrow-none btn btn-light btn-xs" data-bs-toggle="dropdown" aria-expanded="false">'
                             contentHtml += '<i class="mdi mdi-dots-horizontal"></i></a>'
-                            contentHtml += '<div class="dropdown-menu dropdown-menu-end"><a class="dropdown-item" id="share-item" data-entry-id="' + entry.id + '" href="#">'
-                            contentHtml += '<i class="mdi mdi-share-variant me-2 text-muted vertical-middle" ></i>Partager</a>'
-                            contentHtml += '<a class="dropdown-item voir-plus-link" href="#" data-entry-id="' + entry.id + '"><i class="uil-eye me-2 text-muted vertical-middle"></i>Voir plus</a>'
-                            // contentHtml += '<a class="dropdown-item" href="#"><i class="mdi mdi-pencil me-2 text-muted vertical-middle"></i>Rename</a>'
-                            contentHtml += '<a class="dropdown-item download-button" data-bs-toggle="modal" data-bs-target="#downloadModal" data-category-id="' + entry.id + '" href="#"><i class="mdi mdi-download me-2 text-muted vertical-middle"></i>Nouvelle version</a>'
-                            contentHtml += '<a class="dropdown-item delete-link" data-entry-id="' + entry.id + '" href="#"><i class="mdi mdi-delete me-2 text-muted vertical-middle"></i>Supprimer</a></div></div></div>'
-                            contentHtml += '</div></div></div></div>';
-                            console.log('cc');
+                            contentHtml += '<div class="dropdown-menu dropdown-menu-end">'
+                                for (var j = 0; j < menuItems.length; j++) {
+                                    var item = menuItems[j];
+                                    contentHtml += '<a class="dropdown-item" ';
+                                    if (item.dataBsToggle) {
+                                        contentHtml += 'data-bs-toggle="' + item.dataBsToggle + '" ';
+                                    }
+                                    if (item.id) {
+                                        contentHtml += 'id="' + item.id + '" ';
+                                    }
+                                    if (item.dataBsTarget) {
+                                        contentHtml += 'data-bs-target="' + item.dataBsTarget(entry.id) + '" ';
+                                    }
+                                    if (item.dataEntryId) {
+                                        contentHtml += 'data-entry-id="' + item.dataEntryId(entry.id) + '" ';
+                                    }
+                                    if (item.dataCategoryId) {
+                                        contentHtml += 'data-category-id="' + item.dataCategoryId(entry.id) + '" ';
+                                    }
+                                    if (item.dataCategoryName) {
+                                        contentHtml += 'data-category-name="' + item.dataCategoryName(entry.title) + '" ';
+                                    }
+                                    if (item.type) {
+                                        contentHtml += 'type="' + item.type + '" ';
+                                    }
+                                    if (item.download) {
+                                        contentHtml += 'download ';
+                                    }
+                                    if (item.href && !item.attachment && !item.target) {
+                                        contentHtml += 'href="' + item.href(entry.id) + '">';
+                                    }
+                                    if (item.href && item.attachment && !item.target) {
+                                        contentHtml += 'href="' + item.href(attachment) + '">';
+                                    }
+                                    if (item.href && item.attachment && item.target) {
+                                        contentHtml += 'href="' + item.href(attachment) + '" target="_blank">';
+                                    }
+                                    contentHtml += '<i class="' + item.iconClass + '"></i>';
+                                    contentHtml += item.label + '</a>';
+                                }
+
+
+                            // contentHtml += '<a class="dropdown-item" id="share-item" data-entry-id="' + entry.id + '" href="#">'
+                            // contentHtml += '<i class="mdi mdi-share-variant me-2 text-muted vertical-middle" ></i>Partager</a>'
+                            // contentHtml += '<a class="dropdown-item voir-plus-link" href="#" data-entry-id="' + entry.id + '"><i class="uil-eye me-2 text-muted vertical-middle"></i>Voir plus</a>'
+                            // // contentHtml += '<a class="dropdown-item" href="#"><i class="mdi mdi-pencil me-2 text-muted vertical-middle"></i>Rename</a>'
+                            // contentHtml += '<a class="dropdown-item download-button" data-bs-toggle="modal" data-bs-target="#downloadModal" data-category-id="' + entry.id + '" href="#"><i class="mdi mdi-download me-2 text-muted vertical-middle"></i>Nouvelle version</a>'
+                            // contentHtml += '<a class="dropdown-item delete-link" data-entry-id="' + entry.id + '" href="#"><i class="mdi mdi-delete me-2 text-muted vertical-middle"></i>Supprimer</a></div></div></div>'
+
+                            contentHtml += '</div></div></div></div>'
+                            contentHtml += '</div></div></div>';
+                            console.log('cc user');
+                        } else {
+                            console.log(user_connect);
+                            if (entry.user_id == user_connect.id ) {
+                                contentHtml += '<div class="col-xxl-3 col-lg-6">'
+                                contentHtml += '<div class="card m-1 shadow-none border">'
+                                contentHtml += '<div class="p-2"><div class="row align-items-center">'
+                                contentHtml += '<div class="col-auto"><div class="avatar-sm">'
+                                contentHtml += '<span class="avatar-title bg-light text-secondary rounded">'
+                                contentHtml += '<i class="mdi mdi-folder-zip font-16"></i></span></div></div>'
+                                contentHtml += '<div class="col ps-0"><a href="javascript:void(0);" class="text-muted fw-bold">'+entry.title+'</a>'
+                                contentHtml += '<p class="mb-0 font-13">' + (entry.file_size / (1024 * 1024)).toFixed(2) + ' MB</p></div>'
+                                contentHtml += '<div class="col-auto">'
+                                contentHtml += '<a href="#" class="table-action-btn dropdown-toggle arrow-none btn btn-light btn-xs" data-bs-toggle="dropdown" aria-expanded="false">'
+                                contentHtml += '<i class="mdi mdi-dots-horizontal"></i></a>'
+
+                                contentHtml += '<div class="dropdown-menu dropdown-menu-end">'
+                                    for (var j = 0; j < menuItems.length; j++) {
+                                    var item = menuItems[j];
+                                    contentHtml += '<a class="dropdown-item" ';
+                                    if (item.dataBsToggle) {
+                                        contentHtml += 'data-bs-toggle="' + item.dataBsToggle + '" ';
+                                    }
+                                    if (item.id) {
+                                        contentHtml += 'id="' + item.id + '" ';
+                                    }
+                                    if (item.dataBsTarget) {
+                                        contentHtml += 'data-bs-target="' + item.dataBsTarget(entry.id) + '" ';
+                                    }
+                                    if (item.dataEntryId) {
+                                        contentHtml += 'data-entry-id="' + item.dataEntryId(entry.id) + '" ';
+                                    }
+                                    if (item.dataCategoryId) {
+                                        contentHtml += 'data-category-id="' + item.dataCategoryId(entry.id) + '" ';
+                                    }
+                                    if (item.dataCategoryName) {
+                                        contentHtml += 'data-category-name="' + item.dataCategoryName(entry.title) + '" ';
+                                    }
+                                    if (item.type) {
+                                        contentHtml += 'type="' + item.type + '" ';
+                                    }
+                                    if (item.download) {
+                                        contentHtml += 'download ';
+                                    }
+                                    if (item.href && !item.attachment && !item.target) {
+                                        contentHtml += 'href="' + item.href(entry.id) + '">';
+                                    }
+                                    if (item.href && item.attachment && !item.target) {
+                                        contentHtml += 'href="' + item.href(attachment) + '">';
+                                    }
+                                    if (item.href && item.attachment && item.target) {
+                                        contentHtml += 'href="' + item.href(attachment) + '" target="_blank">';
+                                    }
+                                    contentHtml += '<i class="' + item.iconClass + '"></i>';
+                                    contentHtml += item.label + '</a>';
+                                }
+                                contentHtml += '</div></div></div></div>'
+                                contentHtml+=  '</div></div></div>';
+                                console.log('cc');
+                            }
                         }
-                    }
-            })
-            promises.push(promise);
-                // success: function(user) {
+                })
+                promises.push(promise);
+                    // success: function(user) {
 
-                // },
-                // error: function(xhr, status, error) {
-                //     console.error(error);
-                // }
+                    // },
+                    // error: function(xhr, status, error) {
+                    //     console.error(error);
+                    // }
 
-            // });
-        // Créez un élément HTML pour chaque entrée
-        });
+                // });
+            // Créez un élément HTML pour chaque entrée
+            });
 
             // Mettez à jour le contenu de la div "category-content"
             // $('#category-content').html(contentHtml);
@@ -348,19 +522,198 @@
         console.error(error);
         }
     });
+    $(document).on('click', '#share-item', function(event) {
+
+        // Récupère l'ID de l'entrée à partir de l'attribut "data-entry-id"
+        console.log(this);
+        var entryId = this.getAttribute("data-category-id");
+        console.log(entryId);
+        $('#doc_id5').val(entryId);
+        $('#shareModal').modal('show');
+
+    });
 
 
 
-    $(document).on('click', '.download-button', function(event) {
-    event.preventDefault();
-    var categoryId = $(this).data('category-id');
+    $(document).on('click', '#download-button', function(event) {
+        event.preventDefault();
+        var categoryId = this.getAttribute("data-category-id");
+        var categoryName = this.getAttribute("data-category-name");
 
-    // Définissez la valeur du champ input avec la classe "category-id-input"
-    $('.category-id-input').val(categoryId);
+        // Définissez la valeur du champ input avec la classe "category-id-input"
+        $('#first_doc_id').val(categoryId);
+        $('#title').val(categoryName);
 
-    // Affichez la fenêtre modale
-    var modal = $('#downloadModal');
-    modal.modal('show');
+        // Affichez la fenêtre modale
+        var modal = $('#downloadModal');
+        modal.modal('show');
+    });
+
+
+    $(document).on('click', '#doc-edit-button', function(event) {
+        event.preventDefault();
+        var categoryId = this.getAttribute("data-category-id");
+        var categoryName = this.getAttribute("data-category-name");
+
+        console.log(categoryName);
+        console.log(categoryId);
+
+        // Définissez la valeur du champ input avec la classe "category-id-input"
+        $('#doc_id8').val(categoryId);
+        $('#title8').val(categoryName);
+
+        // Affichez la fenêtre modale
+        var modal = $('#doc-edit');
+        modal.modal('show');
+    });
+
+    $('#edit-doc-form').on('submit', function() {
+        event.preventDefault();
+        // var formData = new FormData(this);
+        var id = $('#doc_id8').val();
+        var title = $('#title8').val();
+        console.log(title);
+        console.log(id);
+        var attachments = $('#attachment').val();
+        $.ajax({
+            url: "{{ route('doc.update') }}",
+            type: "POST",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "doc_id": id,
+                "title": title,
+                "attachment": attachments
+            },
+            success: function(data) {
+                console.log(data);
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+
+    function formatTime(dateTimeString) {
+        var date = new Date(dateTimeString);
+        var day = date.getDate();
+        var month = date.getMonth() + 1; // Mois commence à 0, donc nous ajoutons 1
+        var year = date.getFullYear();
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var seconds = date.getSeconds();
+
+        // Ajoutez un zéro devant les chiffres uniques (par exemple, 03 au lieu de 3)
+        day = day < 10 ? '0' + day : day;
+        month = month < 10 ? '0' + month : month;
+        hours = hours < 10 ? '0' + hours : hours;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+
+        return day + '/' + month + '/' + year + ' ' + hours + ':' + minutes + ':' + seconds;
+    }
+
+
+    $(document).on('click', '#all-version-button', function(event) {
+        event.preventDefault();
+        var categoryId = this.getAttribute("data-category-id");
+        var categoryName = this.getAttribute("data-category-name");
+       
+
+        // Définissez la valeur du champ input avec la classe "category-id-input"
+        // $('#name_doc').val(categoryName);
+        name_doc = document.getElementById('name_doc');
+        name_doc.innerHTML = categoryName;
+        $.ajax({
+            url: '/document-all-version/'+categoryId,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                
+                // Sélectionnez le corps du tableau
+                var tableBody = document.querySelector("#datatable5 tbody");
+
+                
+                // Parcourez les données et ajoutez-les au tableau
+                data.forEach(function(item) {
+                    var menuVersionItems = [
+                        {
+                            label: 'Visualiser',
+                            iconClass: 'mdi mdi-eye',
+                            type: 'application/pdf',
+                            attachment: true,
+                            target: true,
+                            action: 'view', // Ajout d'une action pour chaque élément du menu
+                            href: function(doc) {
+                                    return '{{asset('storage/')}}/' + item.attachment;
+                                }
+                        },
+                        {
+                            label: 'Télécharger',
+                            iconClass: 'mdi mdi-download',
+                            download: true,
+                            attachment: true,
+                            action: 'download', // Ajout d'une action pour chaque élément du menu
+                            href: function(doc) {
+                                    return '{{asset('storage/')}}/' +  item.attachment;
+                                }
+                        },
+                    ];
+                    var row = tableBody.insertRow(); // Créez une nouvelle ligne
+
+                    // Créez des cellules pour chaque propriété de l'objet
+                    var cell1 = row.insertCell(0); // Première cellule (id)
+                    var cell2 = row.insertCell(1); // Deuxième cellule (name)
+                    var cell3 = row.insertCell(2); // Troisième cellule (description)
+                    var cell4 = row.insertCell(3); // Troisième cellule (description)
+
+                    // Remplissez les cellules avec les données
+                    cell1.textContent = formatTime(item.created_at);
+                    cell2.textContent = item.title;
+                    $.ajax({
+                        url: '/document-get-user/'+item.id,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            cell3.textContent = 'Ajouté par '+ data;
+                        }
+
+                    })
+                  // Créez une div pour contenir les éléments du menu
+                    var menuCell = document.createElement('div');
+                    menuCell.className = 'd-flex justify-start';
+                    // Parcourez les éléments du menu
+                    menuVersionItems.forEach(function(menuItem) {
+                        var link = document.createElement('a');
+                        link.className = 'dropdown-item';
+                        
+                        if (menuItem.action === 'view') {
+                            link.href = menuItem.href(item);
+                            link.target = '_blank';
+                        } else if (menuItem.action === 'download') {
+                            link.href = menuItem.href(item);
+                            link.download = true;
+                        }
+                        
+                        link.innerHTML = '<i class="' + menuItem.iconClass + '"></i> ';
+                        
+                        // Ajoutez le lien à la div du menu
+                        menuCell.appendChild(link);
+                    });
+
+                    // Insérez la div du menu dans la cellule
+                    cell4.appendChild(menuCell);
+
+
+                });
+            }
+
+        })
+
+        // Affichez la fenêtre modale
+        var modal = $('#allVersion');
+        modal.modal('show');
     });
 
 
@@ -428,9 +781,11 @@
                             recentFiles += '<a href="#" data-category-id="' + recentFile.id + '">';
                             recentFiles += recentFile.title; // Assurez-vous que le titre du fichier est correct
                             recentFiles += '</a>';
+                            recentFiles += '</br>';
                         });
 
                         // Mettez à jour le contenu de la div "category-content"
+                        $('.category-name').html('Fichiers récents')
                         $('#category-content').html(recentFiles);
                     },
                     error: function(xhr, status, error) {
@@ -469,6 +824,7 @@
         });
 
         // Mettez à jour le contenu de la div "category-content"
+        $('.category-name').html('Fichiers supprimés')
         $('#category-content').html(deletedFiles);
         },
                 error: function(xhr, status, error) {

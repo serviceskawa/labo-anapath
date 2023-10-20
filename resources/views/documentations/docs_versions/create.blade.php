@@ -13,21 +13,21 @@
 
                     <div style="text-align:right;"><span style="color:red;">*</span>Champs obligatoires</div>
 
-                    <input type="hidden" name="category_id" id="category_id_input"
+                    <input type="hidden" name="first_doc_id" id="first_doc_id"
                         class="form-control category-id-input">
 
                     <div class="row">
                         <div class="mb-3 col-lg-12">
                             <label for="example-fileinput" class="form-label">Titre<span
                                     style="color:red;">*</span></label>
-                            <input type="text" name="title" id="" required class="form-control">
+                            <input type="text" name="title" id="title" required class="form-control">
                         </div>
 
                         <div class="row">
                             <div class="mb-3 col-lg-12">
                                 <label for="example-fileinput" class="form-label">Fichier<span
                                         style="color:red;">*</span></label>
-                                <input type="file" name="attachment" id="example-fileinput" required
+                                <input type="file" name="attachment" accept=".pdf" id="example-fileinput" required
                                     class="form-control">
                             </div>
                         </div>

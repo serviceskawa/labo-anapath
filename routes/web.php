@@ -650,13 +650,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/documents-delete-files', [DocController::class, 'getfiledelete'])->name('file.doc.delete');
         Route::get('/documents-recents', [DocController::class, 'getrecents'])->name('doc.recent');
         Route::get('/documents', [DocController::class, 'index'])->name('doc.index');
+        Route::get('/documents/share-with-me', [DocController::class, 'doc_share'])->name('doc.share.with.me');
         Route::get('/documents/detail/{doc}', [DocController::class, 'detail_index'])->name('doc.detail.index');
         Route::get('/document-create', [DocController::class, 'create'])->name('doc.create');
         Route::get('/document-edit/{doc}', [DocController::class, 'edit'])->name('doc.edit');
-        Route::put('/document-update/{doc}', [DocController::class, 'update'])->name('doc.update');
-        Route::post('/document-store', [DocController::class, 'store'])->name('doc.store');
-        Route::post('/document-store-fichier', [DocController::class, 'store_fichier'])->name('doc.file.store');
+        Route::post('/document-update', [DocController::class, 'update'])->name('doc.update');
+        Route::post('/document-store', [DocController::class, 'store'])->name('doc.store'); //Nouvelle version
+        Route::post('/document-store-fichier', [DocController::class, 'store_fichier'])->name('doc.file.store'); //nouveau fichier
         Route::post('/share-docs-role', [DocController::class, 'sharedocs'])->name('doc.file.share');
+        Route::get('/document-all-version/{id}',[DocController::class, 'getAllVersion']);
+        Route::get('/document-get-user/{id}',[DocController::class, 'getUserDoc']);
         Route::get('/document-delete/{doc}', [DocController::class, 'delete'])->name('doc.delete');
         Route::get('/document-supprimer/{doc}', [DocController::class, 'supprimer'])->name('doc.supprimer');
 

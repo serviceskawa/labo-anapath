@@ -14,12 +14,17 @@ class Doc extends Model
 
     public function document_categorie()
     {
-        return $this->belongsTo(DocumentationCategorie::class);
+        return $this->belongsTo(DocumentationCategorie::class,'documentation_categorie_id');
     }
 
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(DocVersion::class, 'doc_id');
     }
 }

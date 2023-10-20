@@ -12,7 +12,7 @@
                     @csrf
                     <div class="modal-body">
                         <div style="text-align:right;"><span style="color:red;">*</span>Champs obligatoires</div>
-                        <input type="hidden" name="doc_id" id="doc_id">
+                        <input type="hidden" name="doc_id" id="doc_id5">
                         <div class="row">
                             <div class="mb-3 col-lg-12">
                                 <label for="" class="form-label">Rôle</label>

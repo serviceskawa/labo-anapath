@@ -28,11 +28,10 @@ class DocumentationCategorieController extends Controller
 
         // Récupérez toutes les catégories
         $categories = DocumentationCategorie::all();
-        $select_categorie = DocumentationCategorie::latest()->get();
 
         // Retournez les catégories au format JSON
         // return response()->json($categories);
-        return view('documentations.categories.index', compact('select_categorie','documents_categories'));
+        return view('documentations.categories.index', compact('categories'));
     }
 
 

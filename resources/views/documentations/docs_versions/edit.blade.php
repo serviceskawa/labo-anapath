@@ -1,4 +1,4 @@
-<div class="modal fade" id="bs-example-modal-lg-edit-{{ $doc->id }}" tabindex="-1" role="dialog"
+<div class="modal fade" id="doc-edit" tabindex="-1" role="dialog"
     aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('doc.update') }}" method="POST" autocomplete="on"
+                <form method="POST" id="edit-doc-form" autocomplete="on"
                     enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
@@ -16,11 +16,11 @@
 
                         <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
 
-                        <input type="hidden" name="doc_id" value="{{$doc->id}}">
+                        <input type="hidden" name="doc_id" id="doc_id8">
                         <div class="row">
                             <div class="mb-3 col-lg-12">
                                 <label for="simpleinput" class="form-label">Nom<span style="color:red;">*</span></label>
-                                <input type="text" name="title" value="{{ old('title') ? old('title') : $doc->title }}"
+                                <input type="text" name="title" id="title8"
                                     class="form-control" required>
                             </div>
                         </div>
