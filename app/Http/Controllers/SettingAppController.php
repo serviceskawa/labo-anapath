@@ -37,18 +37,21 @@ class SettingAppController extends Controller
         $link_ourvoice_sms = $this->setting->where('key','link_ourvoice_sms')->first();
         $report_footer = $this->setting->where('key','report_footer')->first();
         $report_review_title = $this->setting->where('key','report_review_title')->first();
+        $mail = $this->setting->where('key','admin_mails')->first();
+        $service = $this->setting->where('key','services')->first();
         $banks = Bank::latest()->get();
         $titles = TitleReport::latest()->get();
 
         return view('settings.app.setting', compact(
             'app_name', 'devise', 'adress', 'phone', 'email', 'web_site', 'footer','banks', 'titles',
-            'email_host', 'username', 'email_port', 'password', 'encryption', 'from_name', 'from_adresse',
+            'email_host', 'username', 'email_port', 'password', 'encryption', 'from_name', 'from_adresse','mail','service',
             'api_sms', 'link_api_sms', 'key_ourvoice', 'link_ourvoice_call', 'link_ourvoice_sms','report_footer','report_review_title'
         ));
     }
 
     public function store(Request $request)
     {
+        // dd($request);
         // Récupérez les valeurs directement à partir de la demande HTTP
         $nbr = $request->nbrform;
         $appNameValue = $request->input('app_name');
@@ -72,6 +75,8 @@ class SettingAppController extends Controller
         $link_ourvoice_smsValue = $request->input('link_ourvoice_sms');
         $report_footerValue = $request->input('report_footer');
         $report_review_titleValue = $request->input('report_review_title');
+        $mails = $request->input('mails');
+        $services = $request->input('services');
 
         // Mettez à jour les enregistrements dans la base de données
 
@@ -154,6 +159,12 @@ class SettingAppController extends Controller
 
                 $from_name = $this->setting->where('key', 'from_name')->first();
                 $from_name ? $from_name->update(['value' => $from_nameValue]):'';
+
+                $mail = $this->setting->where('key','admin_mails')->first();
+                $mail ? $mail->update(['value' => implode('|',$mails)]):'';
+
+                $service = $this->setting->where('key','services')->first();
+                $service ? $service->update(['value' => implode('|',$services)]):'';
                 break;
 
             case 3:

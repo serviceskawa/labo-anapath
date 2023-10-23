@@ -29,9 +29,10 @@ class DocController extends Controller
     {
         $categories = DocumentationCategorie::latest()->get();
         $docs = Doc::all();
+        $all_docs = true;
 
 
-        return view('documentations.docs.index', compact('docs','categories'));
+        return view('documentations.docs.index', compact('docs','categories','all_docs'));
     }
 
     public function detail_index($categorie)
@@ -137,8 +138,9 @@ class DocController extends Controller
             }
         }
         $categories = DocumentationCategorie::latest()->get();
+        $all_docs = false;
 
-        return view('documentations.docs.index', compact('docs','categories'));
+        return view('documentations.docs.index', compact('docs','categories','all_docs'));
     }
 
 
@@ -289,7 +291,7 @@ class DocController extends Controller
         try
         {
             // dd($request->title);
-            
+
             $doc->title = $request->title;
             $doc->attachment = $imagePath;
             $doc->save();

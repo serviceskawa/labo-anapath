@@ -599,6 +599,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('contrat-payroll-update/{employeePayroll}', [EmployeePayrollController::class, 'update'])->name('employee.payroll.update');
         Route::post('contrat-payroll-store', [EmployeePayrollController::class, 'store'])->name('employee.payroll.store');
         Route::get('contrat-payroll-delete/{employeePayroll}', [EmployeePayrollController::class, 'delete'])->name('employee.payroll.delete');
+
     // });
 
 
@@ -613,6 +614,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('employee-timeoff-update-status', [EmployeeTimeoffController::class, 'updateStatus'])->name('employee.timeoff.update.status');
         Route::post('employee-timeoff-store', [EmployeeTimeoffController::class, 'store'])->name('employee.timeoff.store');
         Route::get('employee-timeoff-delete/{employeeTimeoff}', [EmployeeTimeoffController::class, 'delete'])->name('employee.timeoff.delete');
+        Route::get('employee-my-timeoff', [EmployeeTimeoffController::class, 'myTimeOff'])->name('employee.timeoff.mytime');
     // });
 
 

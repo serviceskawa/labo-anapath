@@ -213,9 +213,37 @@
                                             <label for="simpleinput" class="form-label">Nom de l'expéditeur</label>
                                             <input type="text" id="simpleinput" value="{{$from_name->value}}" name="from_name" class="form-control">
                                         </div>
+
                                     </div> <!-- end row -->
+
+                                    <div class="mb-3">
+                                        <label for="example-select" class="form-label">Roles<span style="color:red;">*</span></label>
+                                        <select class="form-select select2" data-toggle="select2" required name="mails[]" multiple>
+                                            <option>Sélectionner les roles</option>
+                                            @foreach (App\Models\User::all() as $user)
+                                                @php
+                                                    $selectedMails = explode('|', $mail->value);
+                                                @endphp
+                                            <option value="{{$user->email}}" {{in_array($user->email, $selectedMails)  ? 'selected' : ''}} >{{$user->email}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="example-select" class="form-label">Roles<span style="color:red;">*</span></label>
+                                        <select class="form-select select2" data-toggle="select2" required name="services[]" multiple>
+                                            <option>Sélectionner les services</option>
+                                                @php
+                                                    $selectedServices = explode('|', $service->value);
+                                                @endphp
+                                            <option value="remboursement" {{ in_array("remboursement", $selectedServices) ? 'selected':'' }}>Service de demande de remboursement</option>
+                                            <option value="boncaisse" {{ in_array("boncaisse", $selectedServices) ? 'selected':'' }}>Service de bon de caisse</option>
+                                            <option value="ticket" {{ in_array("ticket", $selectedServices) ? 'selected':'' }}>Service de signaler un problème</option>
+                                            <option value="conge" {{ in_array("conge", $selectedServices) ? 'selected':'' }}>Service de demande de congé</option>
+                                        </select>
+                                    </div>
                                     <div style="padding-bottom: 10px;padding-top:10px">
-                                        <button class="btn btn-primary">Enrégistrer <i class="mdi mdi-check-all"></i></button>
+                                        <button class="btn btn-primary">Enregistrer <i class="mdi mdi-check-all"></i></button>
                                     </div>
                                 </form>
                             </div>

@@ -10,7 +10,7 @@
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#bs-example-modal-lg-create-docs">Ajouter un nouveau document</button>
             </div>
-            <h4 class="page-title">Documents</h4>
+            <h4 class="page-title"> {{$all_docs ? 'Documents' : 'Partagé avec moi'}} </h4>
         </div>
         @include('documentations.docs.create')
     </div>

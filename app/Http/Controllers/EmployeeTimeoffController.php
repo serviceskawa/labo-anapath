@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationAdminTimeOffEvent;
+use App\Events\NotificationEmployeTimeOffEvent;
 use App\Models\Employee;
 use App\Models\EmployeeTimeoff;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeTimeoffController extends Controller
 {
@@ -52,6 +56,8 @@ class EmployeeTimeoffController extends Controller
 
         // Enregistrez les données dans la base de données
         $employeeTimeoff->save();
+
+            event(new NotificationAdminTimeOffEvent($employeeTimeoff));
 
            return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
@@ -126,6 +132,7 @@ class EmployeeTimeoffController extends Controller
                 $employe->user->is_active = 0;
                 $employe->user->save();
             }
+            event(new NotificationEmployeTimeOffEvent($timeoff->employee_id,$timeoff));
         }
         return response()->json(200);
     }
@@ -145,5 +152,13 @@ class EmployeeTimeoffController extends Controller
         $employeeTimeoff->delete();
 
         return back()->with('success', " Elément supprimé avec succès  ! ");
+    }
+
+    public function myTimeOff(Request $request)
+    {
+        $user_id = $request->user_id;
+        $timeoffs = EmployeeTimeoff::where('employee_id',$user_id)->get();
+
+        return response()->json($timeoffs,200);
     }
 }

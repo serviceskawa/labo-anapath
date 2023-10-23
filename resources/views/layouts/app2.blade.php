@@ -625,6 +625,9 @@
 
                                     <a href="#"data-bs-toggle="modal"
                                     data-bs-target="#bs-example-modal-lg-timeoffs-create2">Demande de congé</a>
+
+                                    <a href="#"data-bs-toggle="modal"
+                                    data-bs-target="#bs-example-modal-lg-timeoffs-see">Toutes les demandes</a>
                                 </li>
                             </ul>
                         </div>
@@ -801,6 +804,7 @@
                 <div class="container-fluid">
 
                     @include('employee_timeoffs.create2')
+                    @include('employee_timeoffs.see')
                     @yield('content')
 
                 </div> <!-- container -->
@@ -864,6 +868,77 @@
             "progressBar": true,
             "timeOut": "7200",
         };
+
+        function formatTime(dateTimeString) {
+            var date = new Date(dateTimeString);
+            var day = date.getDate();
+            var month = date.getMonth() + 1; // Mois commence à 0, donc nous ajoutons 1
+            var year = date.getFullYear();
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var seconds = date.getSeconds();
+
+            // Ajoutez un zéro devant les chiffres uniques (par exemple, 03 au lieu de 3)
+            day = day < 10 ? '0' + day : day;
+            month = month < 10 ? '0' + month : month;
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            return year + '-' + month + '-' + day ;
+        }
+
+
+        $('#see-all-order').on('click', function() {
+            var user = document.getElementById('user_id_employee')
+            console.log(user.value);
+            if (user.value == 'Selectionner un employé') {
+                toastr.error('Veuillez sélectionner un employé');
+                return false;
+            }
+            // Sélectionnez le corps du tableau
+            var tableBody = document.querySelector("#datatable8 tbody");
+
+            // Supprimez toutes les lignes existantes dans le tableau
+            while (tableBody.firstChild) {
+                tableBody.removeChild(tableBody.firstChild);
+            }
+            $.ajax({
+                url: '/employee-my-timeoff/',
+                type: 'GET',
+                data: {
+                    user_id: user.value
+                },
+                success: function(data) {
+                    console.log(data);
+                    // <span class="badge badge-outline-success"> Active</span>
+
+                    // Parcourez les données et ajoutez-les au tableau
+                    data.forEach(function(item) {
+                        var row = tableBody.insertRow(); // Créez une nouvelle ligne
+
+                        // Créez des cellules pour chaque propriété de l'objet
+                        var cell1 = row.insertCell(0); // Première cellule (id)
+                        var cell2 = row.insertCell(1); // Deuxième cellule (name)
+                        var cell3 = row.insertCell(2); // Troisième cellule (description)
+                        var cell4 = row.insertCell(3); // Troisième cellule (description)
+
+                        cell1.textContent = formatTime(item.start_date);
+                        cell2.textContent = formatTime(item.end_date);
+                        cell3.textContent = item.message;
+                         var span = document.createElement('span');
+                         var style = 'badge badge-outline-';
+                         style +=item.status != 'active' ? 'warning' : 'success';
+
+                         span.className = style;
+                         span.textContent = item.status;
+                         cell4.appendChild(span);
+
+                    })
+                }
+            })
+        })
+
     </script>
 </body>
 
