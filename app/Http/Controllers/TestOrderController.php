@@ -620,7 +620,10 @@ public function __construct(
             // Génère un code unique
             $code_unique = generateCodeExamen();
 
-            $test_order->fill(["status" => '1', "code" => $code_unique])->save();
+            if(!$test_order->code)
+            {
+                $test_order->fill(["status" => '1', "code" => $code_unique])->save();
+            }
 
             $reportTestOrder = $this->report->where('test_order_id',$test_order->id)->first();
 
