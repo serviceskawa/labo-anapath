@@ -11,8 +11,6 @@ use App\Models\Contrat;
 use App\Models\DetailTestOrder;
 use App\Models\Invoice;
 use App\Models\Patient;
-use App\Models\Prestation;
-use App\Models\PrestationOrder;
 use App\Models\Report;
 use App\Models\Setting;
 use App\Models\Test;
@@ -450,37 +448,7 @@ class HomeController extends Controller
 
             //Fin données
 
-            //Nombre de prestation demandé & CA
-                $mois_souhaite = Carbon::now()->format('m'); // Le mois actuel.
-
-                // Compter le nombre de prestations pour le mois donné
-                $nombrePrestations = PrestationOrder::whereMonth('prestation_orders.created_at', $mois_souhaite)
-                    ->join('detail_prestation_orders', 'prestation_orders.id', '=', 'detail_prestation_orders.prestation_order_id')
-                    ->count();
-            
-                // Calculer le chiffre d'affaires pour le mois donné
-                $c_a_prestation = PrestationOrder::whereMonth('prestation_orders.created_at', $mois_souhaite)
-                    ->join('detail_prestation_orders', 'prestation_orders.id', '=', 'detail_prestation_orders.prestation_order_id')
-                    ->join('prestations', 'detail_prestation_orders.prestation_id', '=', 'prestations.id')
-                    ->sum('prestations.price');
-
-                // Compter le total de patients par prestations demandées pour le mois donné 
-                $totalPatientPrestation = PrestationOrder::whereMonth('prestation_orders.created_at', $mois_souhaite)
-                    // ->join('detail_prestation_orders', 'prestation_orders.id', '=', 'detail_prestation_orders.prestation_order_id')
-                    // ->join('prestations', 'detail_prestation_orders.prestation_id', '=', 'prestations.id')
-                    ->join('patients', 'prestation_orders.patient_id', '=', 'patients.id')
-                    ->count();
-
-                // Compter le nombre total de patients par prestation demandée pour le mois donné
-                $totalPatientsParPrestations = PrestationOrder::whereMonth('prestation_orders.created_at', $mois_souhaite)
-                    ->join('detail_prestation_orders', 'prestation_orders.id', '=', 'detail_prestation_orders.prestation_order_id')
-                    ->join('prestations', 'detail_prestation_orders.prestation_id', '=', 'prestations.id')
-                    ->join('patients', 'prestation_orders.patient_id', '=', 'patients.id')
-                    ->groupBy('prestations.id') // Grouper par l'ID de la prestation
-                    ->select('prestations.name', DB::raw('COUNT(patients.id) as totalPatients'))
-                    ->get();
-                    // dd($totalPatientPrestation,$totalPatientsParPrestations);
-            //Fin 
+           
 
             //Nombre de examen demandé & CA
                 $mois_souhaite = Carbon::now()->format('m'); // Le mois actuel.
@@ -507,7 +475,7 @@ class HomeController extends Controller
                     ->join('detail_test_orders', 'test_orders.id', '=', 'detail_test_orders.test_order_id')
                     ->join('tests', 'detail_test_orders.test_id', '=', 'tests.id')
                     ->join('patients', 'test_orders.patient_id', '=', 'patients.id')
-                    ->groupBy('tests.id') // Grouper par l'ID de la prestation
+                    ->groupBy('tests.id','tests.name') // Grouper par l'ID de la prestation
                     ->select('tests.name', DB::raw('COUNT(patients.id) as totalPatients'))
                     ->get();
                     // dd($totalPatientTest,$totalPatientsParTest);
@@ -522,7 +490,7 @@ class HomeController extends Controller
                     ->count();
                 $totalDemandesParHopital = TestOrder::whereMonth('test_orders.created_at', $mois_souhaite)
                     ->join('hospitals', 'test_orders.hospital_id', '=', 'hospitals.id')
-                    ->groupBy('hospitals.id')
+                    ->groupBy('hospitals.id','hospitals.name')
                     ->select('hospitals.name as nom_hopital', DB::raw('COUNT(DISTINCT test_orders.patient_id) as total_patients'))
                     ->get();
                 $totalDemandesParMedecinCount = TestOrder::whereMonth('test_orders.created_at', $mois_souhaite)
@@ -532,7 +500,7 @@ class HomeController extends Controller
                     ->count();
                 $totalDemandesParMedecin = TestOrder::whereMonth('test_orders.created_at', $mois_souhaite)
                     ->join('doctors', 'test_orders.doctor_id', '=', 'doctors.id')
-                    ->groupBy('doctors.id')
+                    ->groupBy('doctors.id','doctors.name')
                     ->select('doctors.name as nom_medecin', DB::raw('COUNT(DISTINCT test_orders.patient_id) as total_patients'))
                     ->get();
                 $totalDemandesParTypeCount = TestOrder::whereMonth('test_orders.created_at', $mois_souhaite)
@@ -542,7 +510,7 @@ class HomeController extends Controller
                     ->count();
                 $totalDemandesParType = TestOrder::whereMonth('test_orders.created_at', $mois_souhaite)
                     ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
-                    ->groupBy('type_orders.id')
+                    ->groupBy('type_orders.id','type_orders.title')
                     ->select('type_orders.title as nom_type', DB::raw('COUNT(DISTINCT test_orders.patient_id) as total_patients'))
                     ->get();
                 // dd($totalDemandesParMedecin, $totalDemandesParMedecinCount, $totalDemandesParHopital, $totalDemandesParType);
@@ -559,7 +527,6 @@ class HomeController extends Controller
                 'examensDemandes','totalByStatus','doctorDatas',
                 'testOrdersByDoctors','testOrdersByDoctorsToday','testOrdersByDoctorCount',
                 'totalByStatusForDoctor', 'appointments',
-                'nombrePrestations','c_a_prestation','totalPatientPrestation',
                 'nombreTests','c_a_tests','totalPatientTest',
                 'totalDemandesParHopital','totalDemandesParMedecin','totalDemandesParType',
                 'totalDemandesParHopitalCount','totalDemandesParMedecinCount','totalDemandesParTypeCount'

@@ -63,7 +63,7 @@
                             @foreach ($articles as $item)
                                 <tr class="{{ $item->quantity_in_stock == 0 ? 'table-danger': ($item->quantity_in_stock <= $item->minimum ? 'table-warning' :'') }}" >
                                     <td>{{ $item->article_name }}</td>
-                                    <td>{{ $item->quantity_in_stock }} {{ $item->unit ? $item->unit->name:'' }} <span style="display: none">  {{$item->quantity_in_stock == 0 ? 2: ($item->quantity_in_stock <= $item->minimum ? 1 :'')}} </span></td>
+                                    <td>{{ $item->quantity_in_stock }} {{ $item->unit ? $item->unit->name:'' }} <span style="display: none">  {{$item->quantity_in_stock == 0 ? 'rupture': ($item->quantity_in_stock <= $item->minimum ? 'atteint' :'')}} </span></td>
 
                                     <td>
                                         <button type="button" data-bs-toggle="modal"

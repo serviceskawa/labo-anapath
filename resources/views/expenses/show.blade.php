@@ -97,7 +97,7 @@
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Montant<span
                                         style="color:red;">*</span></label>
-                                <input type="number" {{$expense->paid == 0 && !getOnlineUser()->can('view-super-depenses') ? 'readonly':''}} name="amount" id="amount_input" value="{{$expense->amount}}" {{$expense->paid != 0 ? 'readonly':''}} class="form-control" required>
+                                <input type="number" {{$expense->paid != 0 && !getOnlineUser()->can('view-super-depenses') ? 'readonly':''}} name="amount" id="amount_input" value="{{$expense->amount}}" class="form-control" required>
                             </div>
                         </div>
 
@@ -128,7 +128,7 @@
                         <div class="col-md-4 col-12">
                             <div class="mb-3">
                                 <label for="example-select" class="form-label">Numéro de la facture</label>
-                                <input type="number" {{$expense->paid ==  2 && !getOnlineUser()->can('view-super-depenses')  ? 'readonly':''}} name="invoice_number" id="invoice_number" value="{{  old('invoice_number') ? old('invoice_number') : $expense->invoice_number}}" {{$expense->paid != 0 ? 'readonly':''}} class="form-control">
+                                <input type="number" {{$expense->paid ==  2 && !getOnlineUser()->can('view-super-depenses')  ? 'readonly':''}} name="invoice_number" id="invoice_number" value="{{  old('invoice_number') ? old('invoice_number') : $expense->invoice_number}}" class="form-control">
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
