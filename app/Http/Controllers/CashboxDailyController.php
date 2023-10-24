@@ -34,6 +34,7 @@ class CashboxDailyController extends Controller
         }
 
         $cashboxDailys = CashboxDaily::latest()->get();
+        // dd($cashboxDailys);
 
         $cashboxs = Cashbox::find(2);
         $cashboxtest = Cashbox::find(2);
@@ -41,6 +42,14 @@ class CashboxDailyController extends Controller
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('cashbox_daily.index',compact('cashboxDailys','cashboxs','cashboxtest'));
+    }
+
+    public function print($id)
+    {
+        $item = CashboxDaily::find($id);
+        $setting = $this->setting->find(1);
+        config(['app.name' => $setting->titre]);
+        return view('cashbox_daily.print',compact('item','setting'));
     }
 
     /**
@@ -142,73 +151,84 @@ class CashboxDailyController extends Controller
     public function detail_fermeture_caisse()
     {
 
-        $closecashbox = CashboxDaily::where('status',1)->whereRaw('Date(updated_at) = ?', [now()->toDateString()])->orderBy('updated_at','desc')->first();
+        $closecashbox = CashboxDaily::where('status',1)->orderBy('updated_at','desc')->first();
         // dd($closecashbox);
+        // ->whereRaw('Date(updated_at) = ?', [now()->toDateString()])
 
         if ($closecashbox) {
             // mobile money
             $mobilemoneysum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "MOBILEMONEY");
-            })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>', $closecashbox->updated_at)
+            })
+            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+            ->where('updated_at','>=', $closecashbox->updated_at)
             ->sum('amount');
 
             $mobilemoneycount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "MOBILEMONEY");
-            })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>', $closecashbox->updated_at)
+            })
+            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+            ->where('updated_at','>=', $closecashbox->updated_at)
             ->count();
 
             // Cheques
             $chequessum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "CHEQUES");
-            })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>', $closecashbox->updated_at)
+            })
+            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+            ->where('updated_at','>=', $closecashbox->updated_at)
             ->sum('amount');
 
             $chequescount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "CHEQUES");
-            })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>', $closecashbox->updated_at)
+            })
+            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+            ->where('updated_at','>=', $closecashbox->updated_at)
             ->count();
 
             // Especes
             $especessum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "ESPECES");
-            })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>', $closecashbox->updated_at)
+            })
+            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+            ->where('updated_at','>=', $closecashbox->updated_at)
             ->sum('amount');
 
             $especescount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "ESPECES");
-            })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>', $closecashbox->updated_at)
+            })
+            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+            ->where('updated_at','>=', $closecashbox->updated_at)
             ->count();
 
 
             // Virement
             $virementsum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "VIREMENT");
-            })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>', $closecashbox->updated_at)
+            })
+            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+            ->where('updated_at','>=', $closecashbox->updated_at)
             ->sum('amount');
 
             $virementcount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "VIREMENT");
-            })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>', $closecashbox->updated_at)
+            })
+            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+            ->where('updated_at','>=', $closecashbox->updated_at)
             ->count();
         } else {
             // mobile money
             $mobilemoneysum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "MOBILEMONEY");
-            })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+            })
+            ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
             // ->where('updated_at','>', $closecashbox->updated_at)
             ->sum('amount');
 
             $mobilemoneycount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "MOBILEMONEY");
-            })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+            })
+            ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
             // ->where('updated_at','>', $closecashbox->updated_at)
             ->count();
 

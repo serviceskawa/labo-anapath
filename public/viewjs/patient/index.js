@@ -269,7 +269,7 @@ $(document).ready(function() {
 
     $('#datatable1').DataTable({
         "order": [
-            [0, "desc"]
+            []
         ],
         "columnDefs": [{
             "targets": [0],

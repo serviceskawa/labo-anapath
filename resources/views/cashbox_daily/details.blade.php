@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title" id="myLargeModalLabel"><span>ID {{ $item->id }}</span>
+                <div class="modal-title" id="myLargeModalLabel"><span>ID {{ $item->code }}</span>
                     : {{ $item->created_at
                     }} - {{ $item->updated_at }}</div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>

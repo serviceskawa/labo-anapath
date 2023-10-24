@@ -564,6 +564,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('cashbox-daily-update', [CashboxDailyController::class, 'update'])->name('daily.update');
         Route::post('cashbox-daily-store', [CashboxDailyController::class, 'store'])->name('daily.store');
         Route::get('cashbox-daily-delete/{cashboxDaily}', [CashboxDailyController::class, 'delete'])->name('daily.delete');
+        Route::get('cashbox-daily-print/{id}', [CashboxDailyController::class, 'print'])->name('daily.print');
         Route::get('cashbox-daily-fermeture/{cashboxDaily}', [CashboxDailyController::class, 'detail_fermeture_caisse'])->name('daily.fermeture');
 
 
