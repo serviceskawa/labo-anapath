@@ -130,7 +130,7 @@
                                     <a href="{{ route('test_order.create') }}">Ajouter</a>
                                 </li>
                                 @endif
-                                @if (getOnlineUser()->can('create-test-order-assignments'))
+                                @if (getOnlineUser()->can('view-test-order-assignments'))
                                 <li>
                                     <a href="{{ route('report.assignment.index') }}">Affectation </a>
                                 </li>

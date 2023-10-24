@@ -77,7 +77,7 @@ $(document).ready(function() {
 
     $('#datatable1').DataTable({
         "order": [
-            [0, "asc"]
+            []
         ],
         "columnDefs": [{
             "targets": [0],

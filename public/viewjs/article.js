@@ -46,8 +46,8 @@ $(document).ready(function() {
                     });
 
                     select.append('<option value="">Qté en stock</option>');
-                    select.append('<option value="1">Seuil d\'alerte atteint</option>');
-                    select.append('<option value="2">Rupture de stock</option>');
+                    select.append('<option value="atteint">Seuil d\'alerte atteint</option>');
+                    select.append('<option value="rupture">Rupture de stock</option>');
             });
         },
     });

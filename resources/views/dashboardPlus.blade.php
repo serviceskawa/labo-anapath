@@ -233,42 +233,7 @@
                             </div> <!-- end card-body-->
                         </div>
 
-                        <!--<div class="card  mb-3">-->
-                        <!--    <div class="card-body">-->
-                        <!--        PRESTATIONS DEMANDEES-->
-                        <!--        <div class="row mt-3">-->
-                        <!--            <div class="col-sm-6 col-xl-4">-->
-                        <!--                <div class="card shadow-none m-0 border-start">-->
-                        <!--                    <div class="card-body text-center">-->
-                        <!--                        <i class="dripicons-checklist text-muted" style="font-size: 24px;"></i>-->
-                        <!--                        <h3><span>{{$nombrePrestations}}</span></h3>-->
-                        <!--                        <p class="text-muted font-15 mb-0">Total de prestation</p>-->
-                        <!--                    </div>-->
-                        <!--                </div>-->
-                        <!--            </div>-->
-        
-                        <!--            <div class="col-sm-6 col-xl-4">-->
-                        <!--                <div class="card shadow-none m-0 border-start">-->
-                        <!--                    <div class="card-body text-center">-->
-                        <!--                        <i class="dripicons-checklist text-muted" style="font-size: 24px;"></i>-->
-                        <!--                        <h3><span>{{$c_a_prestation}}</span></h3>-->
-                        <!--                        <p class="text-muted font-15 mb-0">Chiffre d'affaire</p>-->
-                        <!--                    </div>-->
-                        <!--                </div>-->
-                        <!--            </div>-->
-                        <!--            <div class="col-sm-6 col-xl-4">-->
-                        <!--                <div class="card shadow-none m-0 border-start">-->
-                        <!--                    <div class="card-body text-center">-->
-                        <!--                        <i class="dripicons-user-group text-muted" style="font-size: 24px;"></i>-->
-                        <!--                        <h3><span>{{$totalPatientPrestation}}</span></h3>-->
-                        <!--                        <p class="text-muted font-15 mb-0">Patients</p>-->
-                        <!--                    </div>-->
-                        <!--                </div>-->
-                        <!--            </div>-->
-                        <!--            </div>-->
-                        <!--        </div>-->
-                        <!--    </div> <!-- end card-body-->-->
-                        <!--</div>-->
+                        
 
                         <div class="card mb-3">
                             <div class="card-body ">
