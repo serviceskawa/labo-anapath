@@ -233,7 +233,7 @@
                             </div> <!-- end card-body-->
                         </div>
 
-                        
+
 
                         <div class="card mb-3">
                             <div class="card-body ">
@@ -248,7 +248,7 @@
                                                 <h4 class="header-title mt-1 mb-3">Hôpitaux</h4>
         
                                                 <div class="table-responsive">
-                                                    <table class="table table-sm table-centered mb-0 font-14">
+                                                    <table id="scroll-vertical-datatable" class="table table-sm table-centered mb-0 font-14">
                                                         <thead class="table-light">
                                                             <tr>
                                                                 <th>Hôpital</th>
@@ -283,7 +283,7 @@
                                                 <h4 class="header-title mt-1 mb-3">Médécin traitant</h4>
         
                                                 <div class="table-responsive">
-                                                    <table class="table table-sm table-centered mb-0 font-14">
+                                                    <table id="scroll-vertical-datatable1" class="table table-sm table-centered mb-0 font-14">
                                                         <thead class="table-light">
                                                             <tr>
                                                                 <th>Médécin</th>
@@ -293,6 +293,7 @@
                                                         </thead>
                                                         <tbody>
                                                             @foreach ($totalDemandesParMedecin as $medecin)
+                                                            @if($medecin->total_patients>5)
                                                                 <tr>
                                                                     <td>{{$medecin->nom_medecin}}</td>
                                                                     <td>{{$medecin->total_patients}}</td>
@@ -302,6 +303,7 @@
                                                                         </div>
                                                                     </td>
                                                                 </tr>
+                                                            @endif
                                                             @endforeach
                                                         </tbody>
                                                     </table>
