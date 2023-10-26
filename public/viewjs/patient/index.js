@@ -268,9 +268,7 @@ function deleteModalDoc(id) {
 $(document).ready(function() {
 
     $('#datatable1').DataTable({
-        "order": [
-            []
-        ],
+        "order": [],
         "columnDefs": [{
             "targets": [0],
             "searchable": false
@@ -288,13 +286,8 @@ $(document).ready(function() {
             }
         },
     });
-});
-
-
-
-
-/* DATATABLE */
-$(document).ready(function() {
+    });
+    $(document).ready(function() {
 
     $('#datatable2').DataTable({
         "order": [
@@ -317,13 +310,9 @@ $(document).ready(function() {
             }
         },
     });
-});
-
-
-
-
-/* DATATABLE */
-$(document).ready(function() {
+    });
+    
+    $(document).ready(function() {
 
     $('#datatable3').DataTable({
         "order": [

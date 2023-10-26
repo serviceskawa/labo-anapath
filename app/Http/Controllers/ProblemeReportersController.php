@@ -44,9 +44,9 @@ class ProblemeReportersController extends Controller
         $problemReports = $this->problemReport->latest()->get();
         $problemCategories = $this->problemCategory->latest()->get();
 
-        $user_role = User::find(Auth::user()->id)->userCheckRole('rootuser');
+        // $user_role = User::find(Auth::user()->id)->userCheckRole('rootuser');
 
-        if ($user_role) {
+        if (getOnlineUser()->can('view-process-cashbox-tickets')) {
             $tickets = Ticket::latest()->get();
         }else {
             $tickets = Ticket::where('user_id',Auth::user()->id)->latest()->get();

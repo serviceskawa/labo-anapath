@@ -98,7 +98,7 @@
 
 @push('extra-js')
     <script>
-        var baseUrl = "{{url('/')}}"
+        var baseUrl = "{{url('/')}}";
     </script>
     <script src="{{asset('viewjs/patient/index.js')}}"></script>
 @endpush
