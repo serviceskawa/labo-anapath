@@ -61,7 +61,7 @@ function closeModal(id) {
         cancelButtonText: "Non !",
     }).then(function(result) {
         if (result.value) {
-            window.location.href = "{{ url('contrats/close') }}" + "/" + id;
+            window.location.href = baseUrl + "/contrats/close/" + id;
             Swal.fire(
                 "Clôture !",
                 "En cours de traitement ...",

@@ -99,6 +99,31 @@
 @push('extra-js')
     <script>
         var baseUrl = "{{url('/')}}"
+
+        /* DATATABLE */
+        $(document).ready(function() {
+
+            $('#datatable1').DataTable({
+                "order": [],
+                "columnDefs": [{
+                    "targets": [0],
+                    "searchable": true
+                }],
+                "language": {
+                    "lengthMenu": "Afficher _MENU_ enregistrements par page",
+                    "zeroRecords": "Aucun enregistrement disponible",
+                    "info": "Afficher page _PAGE_ sur _PAGES_",
+                    "infoEmpty": "Aucun enregistrement disponible",
+                    "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+                    "sSearch": "Rechercher:",
+                    "paginate": {
+                        "previous": "Précédent",
+                        "next": "Suivant"
+                    }
+                },
+            });
+        });
     </script>
-    <script src="{{asset('viewjs/patient/index.js')}}"></script>
+
+    {{-- <script src="{{asset('viewjs/patient/index.js')}}"></script> --}}
 @endpush
