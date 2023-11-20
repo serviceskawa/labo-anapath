@@ -275,7 +275,13 @@ class ContratController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         // dd($id);
+
+
+
+
+
         $contrat = $this->contrat->find($id)->delete();
+
         if ($contrat) {
             return back()->with('success', "    Un élement a été supprimé ! ");
         } else {
@@ -285,7 +291,7 @@ class ContratController extends Controller
 
     public function close($id)
     {
-        if (!getOnlineUser()->can('delete-contrats')) {
+        if (!getOnlineUser()->can('edit-contrats')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         // dd($id);

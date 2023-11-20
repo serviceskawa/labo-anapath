@@ -16,7 +16,7 @@
                 <div class="card-body">
                     <input type="hidden" name="id" value="{{$assignment->id}}">
 
-                    <div class="row">
+                    <div class="row mb-3">
                         <div class="col-6">
                             <label for="example-select" class="form-label">Docteur</label>
                             <select class="form-select select2" data-toggle="select2" name="user_id" id="user_id" required>
@@ -33,6 +33,10 @@
                             value="{{ $assignment->date ? $assignment->date : now()->format('Y-m-d') }}">
                         </div>
 
+                    </div>
+                    <div class="row px-2">
+                        <label for="example-select" class="form-label p-0">Note</label>
+                        <textarea name="note_assignment" class="form-control" id="" cols="30" rows="5">{{ $assignment->note }}</textarea>
                     </div>
 
                 </div>

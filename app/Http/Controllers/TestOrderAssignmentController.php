@@ -70,6 +70,7 @@ class TestOrderAssignmentController extends Controller
         try {
             $assignment->update([
                 'user_id' => $request->user_id,
+                'note' => $request->note_assignment,
                 'date' => $request->date
             ]);
             return back()->with('success',"Mise à jour effectuée aves succès");

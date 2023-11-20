@@ -67,13 +67,13 @@
 
                             <td>
                                 <a type="button" href="{{ route('contrat_details.index', $item->id) }}"
-                                    class="btn btn-warning"><i class="mdi mdi-eye"></i> </a>
-                                <button type="button" onclick="edit({{ $item->id }})" class="btn btn-primary"><i
-                                        class="mdi mdi-lead-pencil"></i> </button>
-                                <button type="button" onclick="deleteModal({{ $item->id }})" class="btn btn-danger"><i
-                                        class="mdi mdi-trash-can-outline"></i> </button>
+                                    class="btn btn-warning" title="Voir détails contrat" ><i class="mdi mdi-eye"></i> </a>
+                                <button type="button" onclick="edit({{ $item->id }})" class="btn btn-primary" title="Editer contrat"><i
+                                        class="mdi mdi-lead-pencil" ></i> </button>
+                                <button type="button" onclick="deleteModal({{ $item->id }})" class="btn btn-danger" title="Supprimer contrat"><i
+                                        class="mdi mdi-trash-can-outline" ></i> </button>
                                 @if ($item->is_close != 1 )
-                                <button type="button" onclick="closeModal({{ $item->id }})" class="btn btn-secondary"><i
+                                <button type="button" onclick="closeModal({{ $item->id }})" class="btn btn-secondary" title="Clôturer contrat"><i
                                         class="mdi mdi-block-helper"></i> </button>
                                 @endif
 

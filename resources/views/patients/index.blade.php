@@ -101,5 +101,5 @@
         var baseUrl = "{{url('/')}}";
     </script>
 
-    {{-- <script src="{{asset('viewjs/patient/index.js')}}"></script> --}}
+    <script src="{{asset('viewjs/patient/index.js')}}"></script>
 @endpush

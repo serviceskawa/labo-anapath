@@ -56,14 +56,23 @@
                                     height="100">
                             </div>
                             <div class="float-start mt-3">
-                                <h4 class="m-0 ">Affectation de comptes rendu {{ $assignment->code }}</h4>
+                                <h4 class="m-0 "></h4>
                             </div>
                         </div>
 
                         <!-- Invoice Detail-->
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="">
                                 <div class="float-left mt-3">
+                                    <address>
+                                        <strong>Affectation de comptes rendu:</strong>
+                                        {{ $assignment->code }}<br>
+                                    </address>
+                                </div>
+
+                            </div><!-- end col -->
+                            <div class="">
+                                <div class="float-left">
                                     <address>
                                         <strong>Docteur :</strong>
                                         {{ $assignment->user->fullname() }}<br>
@@ -71,19 +80,16 @@
                                 </div>
 
                             </div><!-- end col -->
-                            {{-- <div class="col-sm-4 offset-sm-2">
-                                <div class="mt-3 float-sm-end">
-                                    <p class="font-13"><strong>Date: </strong> {{$invoice->created_at}}</p>
-                                    @if ($settingInvoice != null)
-                                        @if ($settingInvoice->status == 1)
-                                            <p class="font-13"><strong>Type de payment: </strong> {{$invoice->payment}}</p>
-                                        @endif
-                                    @endif
-                                    <p class="font-13"><strong>Code: </strong> <span
-                                            class="float-end">{{$invoice->code}}</span>
-
+                            <div class="">
+                                <div class="float-lef">
+                                    <address>
+                                        <strong>Note :</strong>
+                                        {{ $assignment->note }}<br>
+                                    </address>
                                 </div>
-                            </div><!-- end col --> --}}
+
+                            </div><!-- end col -->
+
                         </div>
                         <!-- end row -->
 

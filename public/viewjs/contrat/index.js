@@ -76,9 +76,7 @@ function closeModal(id) {
 $(document).ready(function() {
 
     $('#datatable1').DataTable({
-        "order": [
-            []
-        ],
+        "order": [],
         "columnDefs": [{
             "targets": [0],
             "searchable": false
