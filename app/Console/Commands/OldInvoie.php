@@ -114,7 +114,7 @@ class OldInvoie extends Command
                 }
 
             }else {
-                $code_facture = generateCodeFacture();
+                $code_facture = 'REGULAR'.$test_order->id;
                 // Creation de la facture
                 $invoice = Invoice::create([
                     "test_order_id" => $test_order->id,
@@ -126,6 +126,8 @@ class OldInvoie extends Command
                     "discount" => $test_order->discount,
                     "total" => $test_order->total,
                     "code" => $code_facture,
+                    "created_at" => $test_order->created_at,
+                    "updated_at" => $test_order->updated_at,
                 ]);
                 // Recupération des details de la demande d'examen
                 $tests = $test_order->details()->get();
@@ -140,6 +142,8 @@ class OldInvoie extends Command
                             "price" => $value->price,
                             "discount" => $value->discount,
                             "total" => $value->total,
+                            "created_at" => $test_order->created_at,
+                            "updated_at" => $test_order->updated_at,
                         ]);
                         $value->status =0;
                         $value->save();
