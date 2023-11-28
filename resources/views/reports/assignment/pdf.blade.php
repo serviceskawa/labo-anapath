@@ -39,6 +39,11 @@ date_default_timezone_set('Europe/Paris');
             <b>Docteur : {{ $doctor }}</b>
         </h3>
 
+        <h3
+            style="border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
+            <b>Date : {{ $date }}</b>
+        </h3>
+
         <p style="margin-left:10px; margin-right:10px; display:block; width: 100%;">
         <h4
             style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">

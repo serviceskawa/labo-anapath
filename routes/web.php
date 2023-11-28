@@ -53,6 +53,7 @@ use App\Http\Controllers\SignalController;
 use App\Http\Controllers\SupplierCategorieController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TestOrderAssignmentController;
+use App\Http\Controllers\TestPathologyMacroController;
 use App\Http\Controllers\TFAuthController;
 use App\Http\Controllers\UnitMeasurementController;
 use App\Models\AppelTestOder;
@@ -213,6 +214,16 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/testOrders/delete/image-gallerie/{index}/{test_order}', [TestOrderController::class, 'deleteimagegallerie'])->name('test_order.deleteimagegallerie');
     // Cette la route associer aux fichiers creation
     Route::put('/testOrders/create/image-gallerie/{test_order}', [TestOrderController::class, 'createimagegallerie'])->name('test_order.createimagegallerie');
+
+
+
+    //Macro
+    Route::get('/macro/index', [TestPathologyMacroController::class, 'index'])->name('macro.index');
+    Route::get('/macro/dataTable', [TestPathologyMacroController::class, 'getTestOrdersforDatatable'])->name('macro.getTestOrdersforDatatable');
+    Route::get('/macro/create', [TestPathologyMacroController::class, 'create'])->name('macro.create');
+    Route::post('/macro/create', [TestPathologyMacroController::class, 'store'])->name('macro.store');
+    Route::post('/macro/update', [TestPathologyMacroController::class, 'update'])->name('macro.update');
+    Route::get('/macro/delete/{id}', [TestPathologyMacroController::class, 'destroy'])->name('macro.delete');
 
 
 

@@ -16,6 +16,7 @@ use App\Models\Invoice;
 use App\Models\RefundRequest;
 use App\Models\Report;
 use App\Models\SettingInvoice;
+use App\Models\test_pathology_macro;
 use App\Models\TestOrderAssignment;
 use App\Models\TestOrderAssignmentDetail;
 use App\Models\Ticket;
@@ -538,6 +539,19 @@ if(!function_exists('isAffecte')){
             $data = $assignment->user;
         }else{
             $data = null;
+        }
+        return $data;
+    }
+}
+
+if(!function_exists('isMacro')){
+    function isMacro($id){
+        $detail = test_pathology_macro::where('id_test_pathology_order',$id)->first();
+        if ($detail) {
+
+            $data = true;
+        }else{
+            $data = false;
         }
         return $data;
     }

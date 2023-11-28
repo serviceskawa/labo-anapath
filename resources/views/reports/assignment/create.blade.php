@@ -5,7 +5,10 @@
 @section('content')
 <div class="">
         <div class="page-title-box">
-
+            <div class="page-title-right mr-3 mb-1">
+                <a href="{{ route('report.assignment.index') }}" type="button" class="btn btn-primary">Retour à la liste des
+                    affectations</a>
+            </div>
             <h4 class="page-title">Affectation {{ $assignment->code }}
                 {{-- {{ $doctor->firstname }} {{ $doctor->lastname }} --}}
             </h4>
@@ -34,10 +37,10 @@
                         </div>
 
                     </div>
-                    <div class="row px-2">
-                        <label for="example-select" class="form-label p-0">Note</label>
-                        <textarea name="note_assignment" class="form-control" id="" cols="30" rows="5">{{ $assignment->note }}</textarea>
-                    </div>
+                        <div class="row px-2">
+                            <label for="example-select" class="form-label p-0">Note</label>
+                            <textarea name="note_assignment" class="form-control" id="" cols="30" rows="5">{{ $assignment->note }}</textarea>
+                        </div>
 
                 </div>
             </div>

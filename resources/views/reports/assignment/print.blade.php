@@ -90,6 +90,16 @@
 
                             </div><!-- end col -->
 
+                            <div class="">
+                                <div class="float-lef">
+                                    <address>
+                                        <strong>Date :</strong>
+                                        {{ $assignment->date }}<br>
+                                    </address>
+                                </div>
+
+                            </div><!-- end col -->
+
                         </div>
                         <!-- end row -->
 
