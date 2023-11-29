@@ -162,7 +162,7 @@ public function __construct(
                 return $data->order->code;
             })
             ->addColumn('add_by', function ($data) {
-                return $data->user->fullname();
+                return $data->employee->fullname();
             })
             ->addColumn('assign_to', function ($data) {
 
