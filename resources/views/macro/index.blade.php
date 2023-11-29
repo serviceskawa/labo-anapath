@@ -78,8 +78,7 @@
                             <tr>
                                 <th>Code</th>
                                 <th>Réalisée par</th>
-                                <th>Affecté à</th>
-                                <th>Statuts</th>
+                                <th>Etat</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -87,10 +86,83 @@
                     </table>
 
                 </div>
+
             </div>
         </div> <!-- end card-->
 
+        <div class="card mb-md-0 mt-5">
+            <div class="card-body">
+
+                <h5 class="card-title mb-0">Liste des demandes de la journée</h5>
+
+                <div class="row">
+                    <div class=" col-12">
+
+                        <table id="datatable2" class="dt-responsive nowrap w-100 table">
+                            <thead>
+                                <tr>
+                                    {{-- <th>#</th> --}}
+                                    <th>Code</th>
+                                    <th>Macro</th>
+                                    <th>Date d'arrivée</th>
+                                </tr>
+                            </thead>
+
+
+                            {{-- <tbody>
+
+                                @foreach ( $results as $key =>$result )
+                                    <tr >
+                                        <td> {{ ++$key }} </td>
+                                        <td> {{ $result->code }} </td>
+                                        <td>
+                                            <select name="id_employee" id="{{$result->test_order}}" class="form-select select2" required data-toggle="select2" onchange="addMacro({{$result->test_order}})">
+                                                <option value="">Tous les laborantins</option>
+                                                @forelse ($employees as $employee)
+                                                    <option value="{{ $employee->id }}">{{ $employee->fullname() }}</option>
+                                                @empty
+                                                @endforelse
+                                            </select>
+                                        </td>
+                                        <td> {{ $result->created_at }} </td>
+
+                                    </tr>
+                                @endforeach
+
+                            </tbody> --}}
+                        </table>
+
+                    </div>
+
+                    {{-- <div  class="col-6">
+
+                        <table id="datatable2" class="dt-responsive nowrap w-100 table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Code</th>
+                                    <th>Macro</th>
+                                    <th>Date d'arrivée</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                        <tbody>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tbody>
+
+                    </div> --}}
+                </div>
+            </div>
+        </div>
+
     </div>
+    </div>
+
+
     @endsection
 
     @push('extra-js')
@@ -98,7 +170,8 @@
             var baseUrl = "{{ url('/') }}"
             // var ROUTETESTORDERDATATABLE = "{{ route('test_order.getTestOrdersforDatatable') }}"
             var ROUTETESTORDERDATATABLE = "{{ route('macro.getTestOrdersforDatatable') }}"
-            var URLupdateAttribuate = "{{ url('attribuateDoctor') }}" + '/' + doctor_id + '/' + order_id
+            var ROUTETESTORDERDATATABLE2 = "{{ route('macro.getTestOrdersforDatatable2') }}"
+            var TOKENSTOREDOCTOR = "{{ csrf_token() }}"
         </script>
         <script src="{{ asset('viewjs/macro.js') }}"></script>
     @endpush

@@ -220,8 +220,10 @@ Route::middleware(['auth'])->group(function () {
     //Macro
     Route::get('/macro/index', [TestPathologyMacroController::class, 'index'])->name('macro.index');
     Route::get('/macro/dataTable', [TestPathologyMacroController::class, 'getTestOrdersforDatatable'])->name('macro.getTestOrdersforDatatable');
+    Route::get('/macro/dataTable2', [TestPathologyMacroController::class, 'getTestOrdersforDatatable2'])->name('macro.getTestOrdersforDatatable2');
     Route::get('/macro/create', [TestPathologyMacroController::class, 'create'])->name('macro.create');
     Route::post('/macro/create', [TestPathologyMacroController::class, 'store'])->name('macro.store');
+    Route::post('/macro/one-create', [TestPathologyMacroController::class, 'store2'])->name('macro.store2');
     Route::post('/macro/update', [TestPathologyMacroController::class, 'update'])->name('macro.update');
     Route::get('/macro/delete/{id}', [TestPathologyMacroController::class, 'destroy'])->name('macro.delete');
 

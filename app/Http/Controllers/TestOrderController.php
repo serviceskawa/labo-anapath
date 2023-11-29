@@ -938,16 +938,16 @@ public function __construct(
     }
 
 
-public function getExamImages($examenCode)
-{
-    // Récupérez les noms des fichiers depuis la base de données
-    $testOrder = TestOrder::where('code', $examenCode)->first();
-    $fileNamesString = $testOrder->file_names;
-    $fileNames = explode('|', $fileNamesString);
+    public function getExamImages($examenCode)
+    {
+        // Récupérez les noms des fichiers depuis la base de données
+        $testOrder = TestOrder::where('code', $examenCode)->first();
+        $fileNamesString = $testOrder->file_names;
+        $fileNames = explode('|', $fileNamesString);
 
-    // Retournez les noms des fichiers au format JSON
-    return response()->json(['file_names' => $fileNames]);
-}
+        // Retournez les noms des fichiers au format JSON
+        return response()->json(['file_names' => $fileNames]);
+    }
 
     public function getStatus()
     {

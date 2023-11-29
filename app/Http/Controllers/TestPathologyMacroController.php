@@ -20,6 +20,7 @@ use App\Models\TypeOrder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -94,6 +95,40 @@ public function __construct(
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
+        $results = DB::table('test_orders')
+            ->select(
+                'test_orders.id as test_order',
+                'test_orders.code as code',
+                'test_orders.created_at',
+                'test_orders.is_urgent',
+                'reports.status as report_status',
+                'test_pathology_macros.id as test_pathology_macro_id'
+            )
+            ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+            ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
+            ->where(function ($query) {
+                $query->where('test_orders.is_urgent', 1)
+                    ->where('reports.status', 0)
+                    ->whereNotExists(function ($subquery) {
+                        $subquery->select(DB::raw(1))
+                                ->from('test_pathology_macros')
+                                ->whereRaw('id_test_pathology_order = test_orders.id');
+                    });
+            })
+            ->orWhere(function ($query) {
+                $query->where('reports.status', 0)
+                    ->whereNotExists(function ($subquery) {
+                        $subquery->select(DB::raw(1))
+                                ->from('test_pathology_macros')
+                                ->whereRaw('id_test_pathology_order = test_orders.id');
+                    })
+                    ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+            })
+            ->whereYear('test_orders.created_at', '!=', 2022)
+            ->orderBy('test_orders.created_at')
+            ->get();
+
+
         // $testOrders = $this->testOrder->all();
 
         // foreach ($testOrders as $key => $testOrder) {
@@ -103,7 +138,7 @@ public function __construct(
         //     }
         // }
 
-        return view('macro.index', array_merge(compact('orders', 'employees')));
+        return view('macro.index', array_merge(compact('orders', 'employees', 'results')));
     }
 
     // Debut
@@ -164,28 +199,43 @@ public function __construct(
             ->addColumn('add_by', function ($data) {
                 return $data->employee->fullname();
             })
-            ->addColumn('assign_to', function ($data) {
+            ->addColumn('state', function ($data) {
+                $select = "
+                    <ul>
+                        " . ($data->circulation ? '<li> <span class="badge bg-primary rounded-pill">Circulation</span></li>' : '') . "
+                        " . ($data->embedding ? '<li><span class="badge bg-primary rounded-pill">Enrobage</span></li>' : '') . "
+                        " . ($data->microtomy_spreading ? '<li><span class="badge bg-primary rounded-pill">Microtomie et Etalement</span></li>' : '') . "
+                        " . ($data->staining ? '<li><span class="badge bg-primary rounded-pill">Coloration</span></li>' : '') . "
+                        " . ($data->mounting ? '<li><span class="badge bg-primary rounded-pill">Montage</span></li>' : '') . "
+                    </ul>";
 
-                return isAffecte($data->order->id) ? isAffecte($data->order->id)->fullname() :'';
-            })
-            ->addColumn('status', function ($data) {
-                if (!empty($data->order->report)) {
-                    // $btn = $data->getReport($data->id);
-                    switch ($data->order->report->status) {
-                        case 1:
-                            $btn = '<div class="badge bg-success px-2 text-success rounded-pill">...</div>';
-                            break;
+                if (!$data->mounting) {
+                    $select .= "
+                        <select name='id_test_pathology_order".$data->id."' onchange='changeState(".$data->id.")' id='id_test_pathology_order".$data->id."' class='form-select select2' data-toggle='select2'>
+                            <option value=''>Tous les états</option>";
 
-                        default:
-                        $btn = '<div class="badge bg-warning px-2 text-warning rounded-pill">...</div>';;
-                            break;
+                    if (!$data->circulation) {
+                        $select .= "<option value='circulation'>Circulation</option>";
                     }
-                } else {
-                    $btn = 'Non enregistré';
+                    if (!$data->embedding) {
+                        $select .= "<option value='embedding'>Enrobage</option>";
+                    }
+                    if (!$data->microtomy_spreading) {
+                        $select .= "<option value='microtomy_spreading'>Microtomie et Etalement</option>";
+                    }
+                    if (!$data->staining) {
+                        $select .= "<option value='staining'>Coloration</option>";
+                    }
+                    if (!$data->mounting) {
+                        $select .= "<option value='mounting'>Montage</option>";
+                    }
+
+                    $select .= "</select>";
                 }
-                $span = $btn;
-                return $span;
+
+                return $select;
             })
+
             ->filter(function ($query) use ($request,$data) {
 
                 if (!empty($request->get('id_test_pathology_order'))) {
@@ -201,7 +251,117 @@ public function __construct(
                 }
 
             })
-            ->rawColumns(['action','code', 'add_by', 'assign_to', 'status'])
+            ->rawColumns(['action','code', 'add_by', 'state'])
+            ->make(true);
+    }
+
+    // Debut
+    public function getTestOrdersforDatatable2(Request $request)
+    {
+
+
+        $data = DB::table('test_orders')
+        ->select(
+            'test_orders.id as test_order',
+            'test_orders.code as code',
+            'test_orders.created_at',
+            'test_orders.is_urgent',
+            'reports.status as report_status',
+            'test_pathology_macros.id as test_pathology_macro_id'
+        )
+        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+        ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
+        ->where(function ($query) {
+            $query->where('test_orders.is_urgent', 1)
+                ->where('reports.status', 0)
+                ->whereNotExists(function ($subquery) {
+                    $subquery->select(DB::raw(1))
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
+                });
+        })
+        ->orWhere(function ($query) {
+            $query->where('reports.status', 0)
+                ->whereNotExists(function ($subquery) {
+                    $subquery->select(DB::raw(1))
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
+                })
+                ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+        })
+        ->whereYear('test_orders.created_at', '!=', 2022)
+        ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
+        ->orderBy('test_orders.created_at')
+        ->get();
+
+
+
+                $employees = $this->employees->all();
+            return DataTables::of($data)->addIndexColumn()
+
+            ->setRowData([
+                'data-mytag' => function ($data) {
+                    if ($data->is_urgent == 1) {
+                        $result = $data->is_urgent;
+                    } else {
+                        $result = "";
+                    }
+
+                    return 'mytag=' . $result;
+                },
+            ])
+            ->setRowClass(function ($data) use ($request) {
+                if($data->is_urgent == 1){
+                        if (!empty($data->report)) {
+                            if($data->report->is_deliver ==1){
+                                return 'table-success';
+                            }else {
+                                if($data->report->status == 1){
+                                    return 'table-warning';
+                                }
+                            }
+
+                        }
+                            return 'table-danger urgent';
+
+                }elseif (!empty($data->report)) {
+                    if($data->report->is_deliver ==1){
+                        return 'table-success';
+                    }else {
+                        if($data->report->status == 1){
+                            return 'table-warning';
+                        }
+                    }
+                }else {
+                    return '';
+                }
+            })
+
+            ->addColumn('code', function ($data) {
+                return $data->code;
+            })
+            ->addColumn('date', function ($data) {
+                return $data->created_at;
+            })
+            ->addColumn('state', function ($data) use ($employees) {
+                $select = "
+                    <select name='id_employee' id='{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro({$data->test_order})'>
+                        <option value=''>Tous les laborantins</option>";
+
+                foreach ($employees as $employee) {
+                    $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
+                }
+
+                $select .= "
+                    </select>";
+
+                return $select;
+            })
+
+            ->filter(function ($query) use ($request,$data) {
+
+            })
+            ->rawColumns(['action','code', 'date', 'state'])
             ->make(true);
     }
 
@@ -227,11 +387,48 @@ public function __construct(
 
         return redirect()->route('macro.index')->with('sucess', "Enregistrement effectué avec succès");
     }
+    public function store2(Request $request) {
+        // dd($request);
+
+
+            $macro = new test_pathology_macro();
+            $macro->id_employee = $request->id_employee;
+            $macro->date = Carbon::now();
+            $macro->id_test_pathology_order = $request->id;
+            $macro->user_id = Auth::user()->id;
+            $macro->save();
+
+        return response()->json(200);
+    }
 
     public function update(Request $request) {
-        $orders = $this->testOrder->all();
-        $employees = $this->employees->all();
-        return view('macro.create', array_merge(compact('orders', 'employees')));
+
+        $macro = $this->macro->find($request->id);
+
+        if ($request->state == 'circulation') {
+            $macro->circulation = true;
+        }else if($request->state == 'embedding') {
+            $macro->circulation = true;
+            $macro->embedding = true;
+        }else if($request->state == 'microtomy_spreading') {
+            $macro->circulation = true;
+            $macro->embedding = true;
+            $macro->microtomy_spreading = true;
+        }else if($request->state == 'staining') {
+            $macro->circulation = true;
+            $macro->embedding = true;
+            $macro->microtomy_spreading = true;
+            $macro->staining = true;
+        }else if($request->state == 'mounting') {
+            $macro->circulation = true;
+            $macro->embedding = true;
+            $macro->microtomy_spreading = true;
+            $macro->staining = true;
+            $macro->mounting = true;
+        }
+        $macro->save();
+
+        return response()->json($macro);
     }
     public function destroy($id) {
 
