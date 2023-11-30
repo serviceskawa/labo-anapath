@@ -3,7 +3,7 @@ $(document).ready(function () {
     var table = $("#products-datatable").DataTable({
         "columnDefs": [{
             "targets": [0],
-            "searchable": false
+            "searchable": false //essaie
         }],
         "bFilter": true,
         "language": {
