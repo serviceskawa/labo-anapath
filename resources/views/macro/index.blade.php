@@ -85,7 +85,7 @@
                                 </th>
                                 <th>Code</th>
                                 <th>Réalisée par</th>
-                                <th>Etat</th>
+                                <th>Etapes</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
