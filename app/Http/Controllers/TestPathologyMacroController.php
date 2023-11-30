@@ -188,6 +188,16 @@ public function __construct(
                 }
             })
 
+            ->addColumn('created', function ($data) {
+                $checkbox = "
+                 <div class='form-check'>
+                     <input type='checkbox' class='form-check-input'id='custom".$data->test_order."'>
+                     // <input type='checkbox' class='form-check-input'id='custom".$data->test_order."'>
+                 </div>
+                ";
+                return $checkbox;
+             })
+
             ->addColumn('action', function ($data) {
                $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
 
@@ -210,9 +220,11 @@ public function __construct(
                     </ul>";
 
                 if (!$data->mounting) {
+                    // Utilisation de htmlspecialchars pour échapper les caractères spéciaux
+                    $escapedCode = htmlspecialchars($data->order->code, ENT_QUOTES, 'UTF-8');
                     $select .= "
-                        <select name='id_test_pathology_order".$data->id."' onchange='changeState(".$data->id.")' id='id_test_pathology_order".$data->id."' class='form-select select2' data-toggle='select2'>
-                            <option value=''>Tous les états</option>";
+                        <select name='id_test_pathology_order".$data->id."' onchange='changeState(".$data->id.",\"".$escapedCode."\")' id='id_test_pathology_order".$data->id."' class='form-select select2' data-toggle='select2'>
+                            <option value=''>Sélectionner un étape</option>";
 
                     if (!$data->circulation) {
                         $select .= "<option value='circulation'>Circulation</option>";
@@ -251,7 +263,7 @@ public function __construct(
                 }
 
             })
-            ->rawColumns(['action','code', 'add_by', 'state'])
+            ->rawColumns(['action','code', 'add_by', 'state', 'created'])
             ->make(true);
     }
 
@@ -337,15 +349,26 @@ public function __construct(
                 }
             })
 
+            ->addColumn('created', function ($data) {
+                return $data->test_order;
+            })
+            ->addColumn('dateLim', function ($data) {
+                $formattedDate = Carbon::parse($data->created_at)->format('Y-m-d');
+                // Ajouter 10 jours
+                $newDate = Carbon::parse($formattedDate)->addDays(9);
+                $newDate = Carbon::parse($newDate)->format('Y-m-d');
+                return $newDate;
+            })
+            ->addColumn('date', function ($data) {
+                return dateFormat($data->created_at);
+            })
             ->addColumn('code', function ($data) {
                 return $data->code;
             })
-            ->addColumn('date', function ($data) {
-                return $data->created_at;
-            })
             ->addColumn('state', function ($data) use ($employees) {
+                $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
-                    <select name='id_employee' id='{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro({$data->test_order})'>
+                    <select name='id_employee' id='{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>
                         <option value=''>Tous les laborantins</option>";
 
                 foreach ($employees as $employee) {
@@ -357,12 +380,172 @@ public function __construct(
 
                 return $select;
             })
-
             ->filter(function ($query) use ($request,$data) {
 
             })
-            ->rawColumns(['action','code', 'date', 'state'])
+            ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
             ->make(true);
+    }
+    public function getTestOrdersforDatatable3(Request $request)
+    {
+
+
+        $data = DB::table('test_orders')
+        ->select(
+            'test_orders.id as test_order',
+            'test_orders.code as code',
+            'test_orders.created_at',
+            'test_orders.is_urgent',
+            'reports.status as report_status',
+            'test_pathology_macros.id as test_pathology_macro_id'
+        )
+        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+        ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
+        ->where(function ($query) {
+            $query->where('test_orders.is_urgent', 1)
+                ->where('reports.status', 0)
+                ->whereNotExists(function ($subquery) {
+                    $subquery->select(DB::raw(1))
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
+                });
+        })
+        ->orWhere(function ($query) {
+            $query->where('reports.status', 0)
+                ->whereNotExists(function ($subquery) {
+                    $subquery->select(DB::raw(1))
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
+                })
+                ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+        })
+        ->whereYear('test_orders.created_at', '!=', 2022)
+        ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
+        ->orderBy('test_orders.created_at')
+        ->get();
+
+
+
+                $employees = $this->employees->all();
+            return DataTables::of($data)->addIndexColumn()
+
+            ->setRowData([
+                'data-mytag' => function ($data) {
+                    if ($data->is_urgent == 1) {
+                        $result = $data->is_urgent;
+                    } else {
+                        $result = "";
+                    }
+
+                    return 'mytag=' . $result;
+                },
+            ])
+            ->setRowClass(function ($data) use ($request) {
+                if($data->is_urgent == 1){
+                        if (!empty($data->report)) {
+                            if($data->report->is_deliver ==1){
+                                return 'table-success';
+                            }else {
+                                if($data->report->status == 1){
+                                    return 'table-warning';
+                                }
+                            }
+
+                        }
+                            return 'table-danger urgent';
+
+                }elseif (!empty($data->report)) {
+                    if($data->report->is_deliver ==1){
+                        return 'table-success';
+                    }else {
+                        if($data->report->status == 1){
+                            return 'table-warning';
+                        }
+                    }
+                }else {
+                    return '';
+                }
+            })
+
+            ->addColumn('created', function ($data) {
+               $checkbox = "
+                <div class='form-check'>
+                    <input type='checkbox' class='form-check-input'id='customCheck'>
+                    // <input type='checkbox' class='form-check-input'id='customCheck".$data->test_order."'>
+                </div>
+               ";
+               return $checkbox;
+            })
+            ->addColumn('dateLim', function ($data) {
+                $formattedDate = Carbon::parse($data->created_at)->format('Y-m-d');
+                // Ajouter 10 jours
+                $newDate = Carbon::parse($formattedDate)->addDays(9);
+                $newDate = Carbon::parse($newDate)->format('Y-m-d');
+                return $newDate;
+            })
+            ->addColumn('date', function ($data) {
+                return dateFormat($data->created_at);
+            })
+            ->addColumn('code', function ($data) {
+                return $data->code;
+            })
+            ->addColumn('state', function ($data) use ($employees) {
+                $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
+                $select = "
+                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2'>
+                        <option value=''>Tous les laborantins</option>";
+
+                foreach ($employees as $employee) {
+                    $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
+                }
+
+                $select .= "
+                    </select>";
+
+                return $select;
+            })
+            ->filter(function ($query) use ($request,$data) {
+
+            })
+            ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
+            ->make(true);
+    }
+
+    public function countData() {
+        $data = DB::table('test_orders')
+        ->select(
+            'test_orders.id as test_order',
+            'test_orders.code as code',
+            'test_orders.created_at',
+            'test_orders.is_urgent',
+            'reports.status as report_status',
+            'test_pathology_macros.id as test_pathology_macro_id'
+        )
+        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+        ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
+        ->where(function ($query) {
+            $query->where('test_orders.is_urgent', 1)
+                ->where('reports.status', 0)
+                ->whereNotExists(function ($subquery) {
+                    $subquery->select(DB::raw(1))
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
+                });
+        })
+        ->orWhere(function ($query) {
+            $query->where('reports.status', 0)
+                ->whereNotExists(function ($subquery) {
+                    $subquery->select(DB::raw(1))
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
+                })
+                ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+        })
+        ->whereYear('test_orders.created_at', '!=', 2022)
+        ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
+        ->orderBy('test_orders.created_at')
+        ->count();
+        return response()->json($data);
     }
 
     public function create() {
@@ -390,12 +573,16 @@ public function __construct(
     public function store2(Request $request) {
         // dd($request);
 
-
             $macro = new test_pathology_macro();
             $macro->id_employee = $request->id_employee;
             $macro->date = Carbon::now();
-            $macro->id_test_pathology_order = $request->id;
             $macro->user_id = Auth::user()->id;
+            if ($request->id != null) {
+                $macro->id_test_pathology_order = $request->id;
+            }else {
+                $order = $this->testOrder->where('code',$request->code)->first();
+                $macro->id_test_pathology_order = $order->id;
+            }
             $macro->save();
 
         return response()->json(200);

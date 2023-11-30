@@ -221,7 +221,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/macro/index', [TestPathologyMacroController::class, 'index'])->name('macro.index');
     Route::get('/macro/dataTable', [TestPathologyMacroController::class, 'getTestOrdersforDatatable'])->name('macro.getTestOrdersforDatatable');
     Route::get('/macro/dataTable2', [TestPathologyMacroController::class, 'getTestOrdersforDatatable2'])->name('macro.getTestOrdersforDatatable2');
+    Route::get('/macro/dataTable3', [TestPathologyMacroController::class, 'getTestOrdersforDatatable3'])->name('macro.getTestOrdersforDatatable3');
     Route::get('/macro/create', [TestPathologyMacroController::class, 'create'])->name('macro.create');
+    Route::get('/macro/countData', [TestPathologyMacroController::class, 'countData'])->name('macro.countData');
     Route::post('/macro/create', [TestPathologyMacroController::class, 'store'])->name('macro.store');
     Route::post('/macro/one-create', [TestPathologyMacroController::class, 'store2'])->name('macro.store2');
     Route::post('/macro/update', [TestPathologyMacroController::class, 'update'])->name('macro.update');
@@ -588,6 +590,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('employee/details/{employee}', [EmployeeController::class, 'details'])->name('employee.detail');
         Route::get('employee-create', [EmployeeController::class, 'create'])->name('employee.create');
         Route::get('employee-edit/{employee}', [EmployeeController::class, 'edit'])->name('employee.edit');
+        Route::get('laborantin/{id}', [EmployeeController::class, 'edit2'])->name('employee.edit2');
         Route::put('employee-update/{employee}', [EmployeeController::class, 'update'])->name('employee.update');
         Route::post('employee-store', [EmployeeController::class, 'store'])->name('employee.store');
         Route::get('employee-delete/{employee}', [EmployeeController::class, 'delete'])->name('employee.delete');

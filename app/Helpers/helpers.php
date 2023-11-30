@@ -23,6 +23,7 @@ use App\Models\Ticket;
 use App\Models\TypeConsultation;
 use App\Models\User;
 use App\Models\UserRole;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Date;
@@ -541,6 +542,22 @@ if(!function_exists('isAffecte')){
             $data = null;
         }
         return $data;
+    }
+}
+if(!function_exists('dateLimite')){
+    function dateLimite($date){
+        $formattedDate = Carbon::parse($date)->format('Y-m-d');
+        // Ajouter 10 jours
+        $newDate = Carbon::parse($formattedDate)->addDays(9);
+        $newDate = Carbon::parse($newDate)->format('Y-m-d');
+        return $newDate;
+    }
+}
+
+if(!function_exists('dateFormat')){
+    function dateFormat($date){
+        $formattedDate = Carbon::parse($date)->format('Y-m-d');
+        return $formattedDate;
     }
 }
 

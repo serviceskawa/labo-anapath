@@ -20,13 +20,15 @@
 
         <div class="card mb-md-0 mb-3">
             <div class="card-body">
-                <div class="card-widgets">
-                    <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
-                    <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false"
-                        aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
-                    <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                <div class="d-flex justify-content-between mb-3">
+                    <div>
+                        <h5 class="card-title mb-0">Historique de traitement des demandes</h5>
+                    </div>
+                    <div class="">
+                        <button type="button" class="btn btn-primary" id="changeState" style="display: none;" >Changer d'étape</button>
+                    </div>
                 </div>
-                <h5 class="card-title mb-0">Historique</h5>
+
 
                 <div id="cardCollpase1" class="show collapse pt-3">
 
@@ -76,6 +78,11 @@
                     <table id="datatable1" class="dt-responsive nowrap w-100 table">
                         <thead>
                             <tr>
+                                <th class="all" style="width: 20px;">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="customCheck1">
+                                    </div>
+                                </th>
                                 <th>Code</th>
                                 <th>Réalisée par</th>
                                 <th>Etat</th>
@@ -90,21 +97,69 @@
             </div>
         </div> <!-- end card-->
 
-        <div class="card mb-md-0 mt-5">
+        {{-- <div class="card mb-md-0 mt-5">
             <div class="card-body">
 
-                <h5 class="card-title mb-0">Liste des demandes de la journée</h5>
+                <h5 class="card-title mb-0">Liste des Examens à traiter en priorité</h5>
 
-                <div class="row">
+                <div  id="cardCollpase1" class="show collapse pt-3">
+
                     <div class=" col-12">
 
                         <table id="datatable2" class="dt-responsive nowrap w-100 table">
                             <thead>
                                 <tr>
-                                    {{-- <th>#</th> --}}
-                                    <th>Code</th>
-                                    <th>Macro</th>
+                                    <th>#</th>
+                                    <th>Date limite</th>
                                     <th>Date d'arrivée</th>
+                                    <th>Code</th>
+                                    <th>Macro réalisé par</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
+
+        <div class="card mb-md-0 mt-5">
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between mb-3">
+                    <div>
+                        <h5 class="card-title d-flex mb-3">
+                            Liste des Examens à traiter en priorité
+                            <p id="count_data">
+
+                            </p>
+                        </h5>
+                    </div>
+                    <div class="">
+                        <button type="button" class="btn btn-primary" id="deleteSelectedRows" style="display: none;" >Traiter les demandes</button>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-lg-2 p-1 ml-3 alert alert-danger rounded-pill"
+                        style="margin-right: 5px; text-align:center;">
+                        Cas urgent
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="table-responsive">
+                        <table class="table table-centered w-100 dt-responsive nowrap" id="products-datatable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="all" style="width: 20px;">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="customCheck1">
+                                        </div>
+                                    </th>
+                                    <th>Date limite</th>
+                                    <th>Date d'arrivée</th>
+                                    <th>Code</th>
+                                    <th>Macro réalisé par</th>
+
                                 </tr>
                             </thead>
 
@@ -112,11 +167,16 @@
                             {{-- <tbody>
 
                                 @foreach ( $results as $key =>$result )
-                                    <tr >
-                                        <td> {{ ++$key }} </td>
-                                        <td> {{ $result->code }} </td>
+                                    <tr class="{{$result->is_urgent ? 'table-danger':''}}">
                                         <td>
-                                            <select name="id_employee" id="{{$result->test_order}}" class="form-select select2" required data-toggle="select2" onchange="addMacro({{$result->test_order}})">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="customCheck{{$result->test_order}}">
+                                            </div>
+                                        </td>
+                                        <td> {{ $result->code }} </td>
+                                        <td> {{ dateLimite($result->created_at) }} </td>
+                                        <td>
+                                            <select name="id_employee" id="laborantin{{$result->test_order}}" class="form-select select2" required data-toggle="select2">
                                                 <option value="">Tous les laborantins</option>
                                                 @forelse ($employees as $employee)
                                                     <option value="{{ $employee->id }}">{{ $employee->fullname() }}</option>
@@ -124,54 +184,36 @@
                                                 @endforelse
                                             </select>
                                         </td>
-                                        <td> {{ $result->created_at }} </td>
 
                                     </tr>
                                 @endforeach
 
                             </tbody> --}}
                         </table>
-
                     </div>
-
-                    {{-- <div  class="col-6">
-
-                        <table id="datatable2" class="dt-responsive nowrap w-100 table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Code</th>
-                                    <th>Macro</th>
-                                    <th>Date d'arrivée</th>
-                                </tr>
-                            </thead>
-
-                        </table>
-                        <tbody>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tbody>
-
-                    </div> --}}
                 </div>
             </div>
         </div>
 
     </div>
-    </div>
+</div>
 
 
     @endsection
 
     @push('extra-js')
+        <script src="{{asset('adminassets/js/vendor/dataTables.checkboxes.min.js')}}"></script>
+         <!-- demo app -->
+         {{-- <script src="{{asset('adminassets/js/pages/demo.products.js')}}"></script> --}}
+         <!-- end demo js-->
         <script>
             var baseUrl = "{{ url('/') }}"
             // var ROUTETESTORDERDATATABLE = "{{ route('test_order.getTestOrdersforDatatable') }}"
             var ROUTETESTORDERDATATABLE = "{{ route('macro.getTestOrdersforDatatable') }}"
             var ROUTETESTORDERDATATABLE2 = "{{ route('macro.getTestOrdersforDatatable2') }}"
+            var ROUTETESTORDERDATATABLE3 = "{{ route('macro.getTestOrdersforDatatable3') }}"
             var TOKENSTOREDOCTOR = "{{ csrf_token() }}"
         </script>
         <script src="{{ asset('viewjs/macro.js') }}"></script>
+        <script src="{{ asset('viewjs/demo-macro.js') }}"></script>
     @endpush

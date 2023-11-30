@@ -55,6 +55,25 @@ $(document).ready(function() {
         columns: [
 
             {
+                orderable: false,
+                data: 'created',
+                name: 'created',
+                targets: 0,
+                render: function (e, l, a, o) {
+                    return (
+                        "display" === l &&
+                            (e =
+                                '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>'),
+                        e
+                    );
+                },
+                checkboxes: {
+                    selectRow: true,
+                    selectAllRender:
+                        '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>',
+                },
+            },
+            {
                 data: 'code',
                 name: 'code'
             },
@@ -71,6 +90,10 @@ $(document).ready(function() {
                 name: 'action',
             },
         ],
+        select: {
+            style: "multi",
+            selector: "td:first-child",
+        },
         order: [
             [0, 'asc']
         ],
@@ -109,41 +132,56 @@ $(document).ready(function() {
         columns: [
 
             {
+                data: 'created',
+                name: 'created'
+            },
+            {
+               data: 'dateLim',
+               name: 'dateLim',
+           },
+            {
+               data: 'date',
+               name: 'date',
+           },
+            {
                 data: 'code',
                 name: 'code'
-            },
-             {
-                data: 'date',
-                name: 'date',
             },
              {
                 data: 'state',
                 name: 'state',
             },
         ],
-        order: [
-            [0, 'asc']
-        ],
+        order: [],
 
     });
 
-    $.fn.dataTable.ext.search.push(
-        function(settings, searchData, index, rowData, counter) {
-            var row = table.row(index).node();
-            var filterValue = $(row).data('mytag');
-            var e = document.getElementById("cas_status");
-            var filter = e.options[e.selectedIndex].value;
+    table.on( 'select', function ( e, dt, type, indexes ) {
+        if ( type === 'row' ) {
+            // Vérifiez si des lignes sont sélectionnées
+            var selectedRows = table.rows('.selected').data().length > 0;
 
-            if (filterValue == filter) {
-                return true;
-            } else if (filter == "") {
-                return true;
+            // Affichez ou masquez le bouton en fonction de la présence de lignes sélectionnées
+            if (selectedRows) {
+                $('#changeState').show();
             } else {
-                return false;
+                $('#changeState').hide();
             }
 
         }
-    );
+    } );
+    table.on('deselect', function () {
+       // Vérifiez si des lignes sont sélectionnées
+       var selectedRows = table.rows('.selected').data().length > 0;
+
+       // Affichez ou masquez le bouton en fonction de la présence de lignes sélectionnées
+       if (selectedRows) {
+           $('#changeState').show();
+       } else {
+           $('#changeState').hide();
+       }
+    });
+
 
      // Recherche selon les types d'examen
      $("#id_test_pathology_order").on("change", function() {
@@ -155,93 +193,160 @@ $(document).ready(function() {
         // alert(this.value)
         table.draw();
     });
-
     $('#date').on('input', function() {
         console.log($('#date').val());
         table.draw();
         //console.log(search.value);
     });
+
+    // Écoutez l'événement de clic sur le bouton pour effectuer l'action souhaitée
+    $("#changeState").on("click", function () {
+        var selectedData = table.rows('.selected').data().toArray();
+        Swal.fire({
+            title: "Confirmation : Changer l'étape des demandes sélectionnées ?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Confirmer ",
+            cancelButtonText: "Annuler !",
+        }).then(function(result) {
+            if (result.value) {
+
+                selectedData.forEach(function (rowData) {
+                    console.log(rowData);
+                    // Créer un élément div temporaire
+                    var tempDiv = document.createElement('div');
+
+                    // Injecter la chaîne HTML dans l'élément div
+                    tempDiv.innerHTML = rowData.state;
+                    // Accéder à l'élément select
+                    var selectElement = tempDiv.querySelector('select');
+                    var selectId = $(selectElement).attr('id');
+                    var selectedValue = $('#' + selectId).val();
+
+                    $.ajax({
+                        url: baseUrl + "/macro/update",
+                        type: "POST",
+                        data: {
+                            "_token": TOKENSTOREDOCTOR,
+                            id: rowData.id,
+                            state: selectedValue,
+                        },
+                        success: function(response) {
+                            $('#datatable1').DataTable().ajax.reload();
+                        },
+                        error: function(response) {
+                            console.log(response)
+                        },
+                    })
+                });
+
+
+
+            }
+        });
+
+    // Décochez toutes les lignes après l'action
+    table.rows().deselect();
 });
 
-function changeState(id) {
+});
+
+function changeState(id,code) {
     // Sélectionnez l'élément par son ID
     var element = $('#id_test_pathology_order' + id);
+    console.log(code);
 
     // Récupérez la valeur sélectionnée
     var selectedValue = element.val();
     var selected = "";
     if (selectedValue == 'circulation') {
-        selected = "Circulation"
+        selected = "CIRCULATION"
     }
     if (selectedValue == 'embedding') {
-        selected = "Enrobage"
+        selected = "ENROBAGE"
     }
     if (selectedValue == 'microtomy_spreading') {
-        selected = "Microtomie et Etalement"
+        selected = "MICROTOMIE ET ETALEMENT"
     }
     if (selectedValue == 'staining') {
-        selected = "Coloration"
+        selected = "COLORATION"
     }
     if (selectedValue == 'mounting') {
-        selected = "Montage"
+        selected = "MONTAGE"
+    }
+    var selectedRows =  $('#datatable1').DataTable().rows('.selected').data().length > 0;
+    if (!selectedRows) {
+        Swal.fire({
+            title: "Confirmation : Étape  ["+selected+"] pour la demande ['"+code+"'] ?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Confirmer ",
+            cancelButtonText: "Annuler !",
+        }).then(function(result) {
+            if (result.value) {
+                $.ajax({
+                    url: baseUrl + "/macro/update",
+                    type: "POST",
+                    data: {
+                        "_token": TOKENSTOREDOCTOR,
+                        id: id,
+                        state: selectedValue,
+                    },
+                    success: function(response) {
+                        $('#datatable1').DataTable().ajax.reload();
+                    },
+                    error: function(response) {
+                        console.log(response)
+                    },
+                })
+            }
+        });
     }
 
-    Swal.fire({
-        title: "Voulez-vous changer l'état de ce macro en "+selected+" ?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Oui ",
-        cancelButtonText: "Non !",
-    }).then(function(result) {
-        if (result.value) {
-            $.ajax({
-                url: baseUrl + "/macro/update",
-                type: "POST",
-                data: {
-                    "_token": TOKENSTOREDOCTOR,
-                    id: id,
-                    state: selectedValue,
-                },
-                success: function(response) {
-                    $('#datatable1').DataTable().ajax.reload();
-                },
-                error: function(response) {
-                    console.log(response)
-                },
-            })
-        }
-    });
+
 
 }
-function addMacro(id) {
+
+function addMacro(id,code) {
     var element = $('#' + id);
     var selectedValue = element.val();
-    Swal.fire({
-        title: "Voulez-vous ajouter ce macro en ?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Oui ",
-        cancelButtonText: "Non !",
-    }).then(function(result) {
-        if (result.value) {
-            $.ajax({
-                url: baseUrl + "/macro/one-create",
-                type: "POST",
-                data: {
-                    "_token": TOKENSTOREDOCTOR,
-                    id: id,
-                    id_employee: selectedValue,
-                },
-                success: function(response) {
-                    $('#datatable1').DataTable().ajax.reload();
-                    $('#datatable2').DataTable().ajax.reload();
-                },
-                error: function(response) {
-                    console.log(response)
-                },
-            })
-        }
-    });
+    $.ajax({
+        url: baseUrl + "/laborantin/" + selectedValue,
+        type: "GET",
+
+        success: function(response) {
+            Swal.fire({
+                title: "Confirmation : Étape [MACROSCOPIE] effectuée pour la demande ["+code+"] par ["+response+"] ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Confirmer ",
+                cancelButtonText: "Annuler !",
+            }).then(function(result) {
+                if (result.value) {
+                    $.ajax({
+                        url: baseUrl + "/macro/one-create",
+                        type: "POST",
+                        data: {
+                            "_token": TOKENSTOREDOCTOR,
+                            id: id,
+                            id_employee: selectedValue,
+                        },
+                        success: function(response) {
+                            $('#datatable1').DataTable().ajax.reload();
+                            $('#datatable2').DataTable().ajax.reload();
+                        },
+                        error: function(response) {
+                            console.log(response)
+                        },
+                    })
+                }
+            });
+        },
+        error: function(response) {
+            console.log(response)
+        },
+    })
+
 }
 
 

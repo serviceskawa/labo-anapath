@@ -99,6 +99,11 @@ class EmployeeController extends Controller
         //
     }
 
+    public function edit2($id) {
+        $employee = Employee::find($id);
+        return response()->json($employee->fullname());
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
