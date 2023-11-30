@@ -51,6 +51,10 @@ class addMacro extends Command
                 $macro->date = Carbon::now();
                 $macro->user_id = 5;
                 $macro->id_test_pathology_order = $detail->test_order_id;
+                $macro->circulation = 1;
+                $macro->embedding = 1;
+                $macro->microtomy_spreading = 1;
+                $macro->staining = 1;
                 $macro->save();
             }
         }
