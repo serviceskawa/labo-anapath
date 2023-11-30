@@ -57,7 +57,7 @@ class addMacro extends Command
                 $macro->save();
             }
         // Envoyer un message de succès
-        $this->info('Ajout effectué avec succès!');
+        $this->info('Ajout effectué avec succès!'); //essaie
         return 0;
     }
 }
