@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Employee;
 use App\Models\test_pathology_macro;
 use App\Models\TestOrderAssignment;
+use App\Models\TestOrderAssignmentDetail;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -41,11 +42,9 @@ class addMacro extends Command
      */
     public function handle()
     {
-        $orders = TestOrderAssignment::all();
+        $orders = TestOrderAssignmentDetail::all();
         $employee = Employee::find(1);
-        foreach ($orders as $key => $order) {
-            $details = $order->details();
-            foreach ($details as $key => $detail) {
+            foreach ($orders as $key => $detail) {
                 $macro = $macro = new test_pathology_macro();
                 $macro->id_employee = $employee->id;
                 $macro->date = Carbon::now();
@@ -57,7 +56,6 @@ class addMacro extends Command
                 $macro->staining = 1;
                 $macro->save();
             }
-        }
         // Envoyer un message de succès
         $this->info('Ajout effectué avec succès!');
         return 0;
