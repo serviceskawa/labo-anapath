@@ -156,7 +156,6 @@
                                         </div>
                                     </th>
                                     <th>Date limite</th>
-                                    <th>Date d'arrivée</th>
                                     <th>Code</th>
                                     <th>Macro réalisé par</th>
 

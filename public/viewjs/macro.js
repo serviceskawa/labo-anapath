@@ -308,8 +308,11 @@ function changeState(id,code) {
 }
 
 function addMacro(id,code) {
-    var element = $('#' + id);
+    var element = $('#laborantin' + id);
     var selectedValue = element.val();
+
+    var selectedRows =  $('#products-datatable').DataTable().rows('.selected').data().length > 0;
+    if (!selectedRows) {
     $.ajax({
         url: baseUrl + "/laborantin/" + selectedValue,
         type: "GET",
@@ -346,6 +349,7 @@ function addMacro(id,code) {
             console.log(response)
         },
     })
+    }
 
 }
 

@@ -483,16 +483,13 @@ public function __construct(
                 $newDate = Carbon::parse($newDate)->format('Y-m-d');
                 return $newDate;
             })
-            ->addColumn('date', function ($data) {
-                return dateFormat($data->created_at);
-            })
             ->addColumn('code', function ($data) {
                 return $data->code;
             })
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
-                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2'>
+                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>
                         <option value=''>Tous les laborantins</option>";
 
                 foreach ($employees as $employee) {

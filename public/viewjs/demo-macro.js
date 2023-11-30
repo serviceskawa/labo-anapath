@@ -5,7 +5,7 @@ $(document).ready(function () {
             "targets": [0],
             "searchable": false
         }],
-        "bFilter": false,
+        "bFilter": true,
         "language": {
             "lengthMenu": "Afficher _MENU_ enregistrements par page",
             "zeroRecords": "Aucun enregistrement disponible",
@@ -19,7 +19,7 @@ $(document).ready(function () {
             }
         },
         processing: true,
-        serverSide: true,
+        serverSide: false,
         ajax: {
             url: ROUTETESTORDERDATATABLE3,
         },
@@ -47,11 +47,6 @@ $(document).ready(function () {
                 orderable: true,
                data: 'dateLim',
                name: 'dateLim',
-            },
-            {
-                orderable: true,
-               data: 'date',
-               name: 'date',
             },
             {
                 orderable: true,
