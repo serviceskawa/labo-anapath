@@ -135,7 +135,7 @@
                         </h5>
                     </div>
                     <div class="">
-                        <button type="button" class="btn btn-primary" id="deleteSelectedRows" style="display: none;" >Traiter les demandes</button>
+                        <button type="button" class="btn btn-primary" id="deleteSelectedRows" style="display: none;" >Terminer la Macroscopie</button>
                     </div>
                 </div>
                 <div class="row mb-3">

@@ -556,7 +556,7 @@ if(!function_exists('dateLimite')){
 
 if(!function_exists('dateFormat')){
     function dateFormat($date){
-        $formattedDate = Carbon::parse($date)->format('Y-m-d');
+        $formattedDate = Carbon::parse($date)->format('d-m-Y');
         return $formattedDate;
     }
 }

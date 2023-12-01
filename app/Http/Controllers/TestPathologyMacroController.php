@@ -477,10 +477,10 @@ public function __construct(
                return $checkbox;
             })
             ->addColumn('dateLim', function ($data) {
-                $formattedDate = Carbon::parse($data->created_at)->format('Y-m-d');
+                $formattedDate = Carbon::parse($data->created_at)->format('d-m-Y');
                 // Ajouter 10 jours
                 $newDate = Carbon::parse($formattedDate)->addDays(9);
-                $newDate = Carbon::parse($newDate)->format('Y-m-d');
+                $newDate = Carbon::parse($newDate)->format('d-m-Y');
                 return $newDate;
             })
             ->addColumn('code', function ($data) {
@@ -489,8 +489,7 @@ public function __construct(
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
-                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>
-                        <option value=''>Tous les laborantins</option>";
+                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>";
 
                 foreach ($employees as $employee) {
                     $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
