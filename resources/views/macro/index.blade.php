@@ -84,7 +84,9 @@
                                     </div>
                                 </th>
                                 <th>Code</th>
-                                <th>Réalisée par</th>
+                                <th>Macro Réalisée par</th>
+                                <th>Date Macro</th>
+                                <th>Date Montage</th>
                                 <th>Etapes</th>
                                 <th>Actions</th>
                             </tr>

@@ -95,14 +95,8 @@ date_default_timezone_set('Europe/Paris');
         style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
 
     </h3>
-    {{-- <br> --}}
-    {{-- <div class="border_t"></div> --}}
     {!! $content !!}
     {!! $content_micro !!}
-
-    {{-- <br><br><br> --}}
-
-    {{-- <div class="border_b"></div> --}}
 
     @if ($content_supplementaire != '')
         <h3
@@ -134,31 +128,16 @@ date_default_timezone_set('Europe/Paris');
                             <br><br>{{ $signatory2 }}
                         @endif
                     </td>
-                    
+
                     <td style="text-align: right; width: 34%; vertical-align: bottom;">
                         @if ($revew_by != null)
-                            {{-- @if ($revew_by_signature != null)
-                                <img width="85" src="{{ asset('storage/' . $revew_by_signature) }}" alt="">
-                            @endif --}}
                             {{ $report_review_title }}
                             <br><strong>{{ $revew_by }}</strong>
                         @endif
                     </td>
-
-                    <!--<td style="text-align: center;    width: 25%">-->
-                    <!--    @if ($signatory3 != null)-->
-                    <!--        @if ($signature3 != null)-->
-                    <!--            <img width="85" src="{{ asset('storage/' . $signature3) }}" alt="">-->
-                    <!--        @endif-->
-                    <!--        <br><br>{{ $signatory3 }}-->
-                    <!--    @endif-->
-                    <!--</td>-->
                 </tr>
             @endif
         </table>
-        <!--@if ($test_affiliate != '')
-Examen Référence: {{ $test_affiliate }}
-@endif-->
     </div>
     <br><br>
     <page_footer>

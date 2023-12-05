@@ -82,6 +82,14 @@ $(document).ready(function() {
                 name: 'add_by',
             },
              {
+                data: 'date_macro',
+                name: 'date_macro',
+            },
+             {
+                data: 'date_montage',
+                name: 'date_montage',
+            },
+             {
                 data: 'state',
                 name: 'state',
             },

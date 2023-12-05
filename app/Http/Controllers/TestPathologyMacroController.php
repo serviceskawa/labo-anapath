@@ -209,6 +209,15 @@ public function __construct(
             ->addColumn('add_by', function ($data) {
                 return $data->employee->fullname();
             })
+            ->addColumn('date_macro', function ($data) {
+                return dateFormat($data->created_at);
+            })
+            ->addColumn('date_montage', function ($data) {
+                if ($data->mounting) {
+
+                    return dateFormat($data->updated_at);
+                }
+            })
             ->addColumn('state', function ($data) {
                 $select = "
                     <ul>
@@ -263,7 +272,7 @@ public function __construct(
                 }
 
             })
-            ->rawColumns(['action','code', 'add_by', 'state', 'created'])
+            ->rawColumns(['action','code', 'add_by', 'state', 'date_macro', 'date_montage','created'])
             ->make(true);
     }
 
