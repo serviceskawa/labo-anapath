@@ -268,7 +268,8 @@ public function __construct(
 
                 if(!empty($request->get('date'))){
                     //dd($request);
-                    $query->whereDate('created_at','like',$request->get('date'));
+                    $query->whereDate('created_at','like',$request->get('date'))
+                    ->orwhereDate('updated_at','like',$request->get('date'));
                 }
 
             })
@@ -399,14 +400,13 @@ public function __construct(
     {
 
 
-        $data = DB::table('test_orders')
+        $data =  DB::table('test_orders')
         ->select(
-            'test_orders.id as test_order',
-            'test_orders.code as code',
+            'test_orders.id AS test_order_id',
             'test_orders.created_at',
             'test_orders.is_urgent',
-            'reports.status as report_status',
-            'test_pathology_macros.id as test_pathology_macro_id'
+            'reports.status AS report_status',
+            'test_pathology_macros.id AS test_pathology_macro_id'
         )
         ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
         ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
@@ -415,23 +415,22 @@ public function __construct(
                 ->where('reports.status', 0)
                 ->whereNotExists(function ($subquery) {
                     $subquery->select(DB::raw(1))
-                            ->from('test_pathology_macros')
-                            ->whereRaw('id_test_pathology_order = test_orders.id');
+                        ->from('test_pathology_macros')
+                        ->whereRaw('id_test_pathology_order = test_orders.id');
                 });
         })
         ->orWhere(function ($query) {
             $query->where('reports.status', 0)
                 ->whereNotExists(function ($subquery) {
                     $subquery->select(DB::raw(1))
-                            ->from('test_pathology_macros')
-                            ->whereRaw('id_test_pathology_order = test_orders.id');
+                        ->from('test_pathology_macros')
+                        ->whereRaw('id_test_pathology_order = test_orders.id');
                 })
-                ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+                ->where(DB::raw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY)'), '<=', DB::raw('DATE(NOW() + INTERVAL 1 DAY)'));
         })
         ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
-        ->orderBy('test_orders.created_at')
-        ->get();
+        ->orderBy('test_orders.created_at');
+
 
 
 

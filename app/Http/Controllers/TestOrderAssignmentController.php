@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
+use App\Models\test_pathology_macro;
 use App\Models\TestOrder;
 use App\Models\TestOrderAssignment;
 use App\Models\TestOrderAssignmentDetail;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class TestOrderAssignmentController extends Controller
 {
@@ -28,8 +31,9 @@ class TestOrderAssignmentController extends Controller
     public function index()
     {
         $assignments = $this->assignment->latest()->get();
+        $orders = $this->order->all();
 
-        return view('reports.assignment.index',compact('assignments'));
+        return view('reports.assignment.index',compact('assignments','orders'));
     }
 
     public function getdetail($id)
@@ -105,10 +109,52 @@ class TestOrderAssignmentController extends Controller
                     $details->test_order_code = $order->code;
                     $details->save();
                 });
+                if (isMacro($data['test_order_id'])) {
+                    $detail = test_pathology_macro::where('id_test_pathology_order',$data['test_order_id'])->first();
+                    $detail->circulation = true;
+                    $detail->embedding = true;
+                    $detail->microtomy_spreading = true;
+                    $detail->staining = true;
+                    $detail->mounting = true;
+                    $detail->save();
+                }else {
+                    $macro = new test_pathology_macro();
+                    $macro->id_employee = 1;
+                    $macro->date = $request->date;
+                    $macro->id_test_pathology_order = $data['test_order_id'];
+                    $macro->user_id = Auth::user()->id;
+                    $macro->circulation = true;
+                    $macro->embedding = true;
+                    $macro->microtomy_spreading = true;
+                    $macro->staining = true;
+                    $macro->mounting = true;
+                    $macro->save();
+                }
 
                 return response()->json(['data'=>$data,'status'=>200],200);
             } else {
                 $detail = TestOrderAssignmentDetail::where('test_order_id',$data['test_order_id'])->first();
+                if (isMacro($data['test_order_id'])) {
+                    $detail = test_pathology_macro::where('id_test_pathology_order',$data['test_order_id'])->first();
+                    $detail->circulation = true;
+                    $detail->embedding = true;
+                    $detail->microtomy_spreading = true;
+                    $detail->staining = true;
+                    $detail->mounting = true;
+                    $detail->save();
+                }else {
+                    $macro = new test_pathology_macro();
+                    $macro->id_employee = 1;
+                    $macro->date = $request->date;
+                    $macro->id_test_pathology_order =$data['test_order_id'];
+                    $macro->user_id = Auth::user()->id;
+                    $macro->circulation = true;
+                    $macro->embedding = true;
+                    $macro->microtomy_spreading = true;
+                    $macro->staining = true;
+                    $macro->mounting = true;
+                    $macro->save();
+                }
                 return response()->json( ['status'=> 201,'detail'=>$detail], 201);
             }
 
@@ -137,5 +183,96 @@ class TestOrderAssignmentController extends Controller
         }
         // config(['app.name' => $setting->titre]);
         return view('reports.assignment.print', compact('assignment', 'setting', 'details'));
+    }
+
+    // Debut
+    public function getTestOrdersforDatatable(Request $request)
+    {
+
+
+        $data = $this->assignment->latest();;
+
+        return DataTables::of($data)->addIndexColumn()
+
+            ->setRowData([
+                'data-mytag' => function ($data) {
+                    if ($data->is_urgent == 1) {
+                        $result = $data->is_urgent;
+                    } else {
+                        $result = "";
+                    }
+
+                    return 'mytag=' . $result;
+                },
+            ])
+            ->setRowClass(function ($data) use ($request) {
+                if($data->is_urgent == 1){
+                        if (!empty($data->report)) {
+                            if($data->report->is_deliver ==1){
+                                return 'table-success';
+                            }else {
+                                if($data->report->status == 1){
+                                    return 'table-warning';
+                                }
+                            }
+
+                        }
+                            return 'table-danger urgent';
+
+                }elseif (!empty($data->report)) {
+                    if($data->report->is_deliver ==1){
+                        return 'table-success';
+                    }else {
+                        if($data->report->status == 1){
+                            return 'table-warning';
+                        }
+                    }
+                }else {
+                    return '';
+                }
+            })
+
+            ->addColumn('action', function ($data) {
+                $detail =
+                '<a class="btn btn-primary" href="'.route('report.assignment.detail.index',$data->id).'">
+                    <i class="uil-eye"></i>
+                </a>';
+                $deleteBtn = "";
+
+            if ($data->details()->count()>=1) {
+                $deleteBtn = '<a class="btn btn-warning" href="'.route('report.assignment.print',$data->id).'">
+                    <i class="mdi mdi-printer"></i>
+                </a>';
+            }
+
+
+                return $detail.' '.$deleteBtn ;
+            })
+            ->addColumn('code', function ($data) {
+                return $data->code;
+            })
+            ->addColumn('doctor', function ($data) {
+                return $data->user->fullname();
+            })
+            ->addColumn('date_assignment', function ($data) {
+                return dateFormat($data->created_at);
+            })
+            ->addColumn('nbr_assignment', function ($data) {
+               return $data->details()->count();
+            })
+            ->filter(function ($query) use ($request,$data) {
+
+                if (!empty($request->get('id_test_pathology_order'))) {
+                    // $query->whereHas('id_test_pathology_order', $request->get('id_test_pathology_order'));
+                    $query->whereHas('details', function($query) use ($request) {
+                        $query->where('test_order_id',$request->get('id_test_pathology_order'));
+                    });
+                }
+                if (!empty($request->get('id_doctor'))) {
+                    $query->where('user_id', $request->get('id_doctor'));
+                }
+            })
+            ->rawColumns(['action','code', 'doctor', 'date_assignment', 'nbr_assignment'])
+            ->make(true);
     }
 }

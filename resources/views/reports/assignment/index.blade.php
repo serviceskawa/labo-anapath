@@ -69,15 +69,45 @@
 
                 </form>
 
+                <div class="row">
+                    <div class="col-md-5 col-12">
+                        <div class="mb-3">
+                            <label for="example-select" class="form-label">Demande d'examen<span
+                                    style="color:red;">*</span></label>
+                                    <select name="id_test_pathology_order" id="id_test_pathology_order" class="form-select select2" data-toggle="select2">
+                                        <option value="">Toutes les demnades</option>
+                                        @forelse ($orders as $order)
+                                            <option value="{{ $order->id }}">{{ $order->code }}</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-12">
+                        <div class="mb-3">
+                            <label for="example-select" class="form-label">Docteur<span
+                                    style="color:red;">*</span></label>
+                            <select class="form-select select2" data-toggle="select2" required id="id_doctor">
+                                <option value="">Sélectionner un docteur</option>
+                                @forelse (getUsersByRole('docteur') as $user)
+                                    <option value="{{ $user->id }}">{{ $user->fullname() }}</option>
+                                @empty
+                                    Ajouter un utilisateur avec le rôle docteur
+                                @endforelse
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <h5 class="card-title mb-0">Liste des affectations</h5>
 
                 <div id="cardCollpase1" class="show collapse pt-3">
 
-                    <table id="datatable1" class="table-striped dt-responsive nowrap w-100 table">
+                    <table id="datatable2" class="table-striped dt-responsive nowrap w-100 table">
 
                         <thead>
                             <tr>
-                                <th>#</th>
+                                {{-- <th>#</th> --}}
                                 <th>Code</th>
                                 <th>Docteur</th>
                                 <th>Nombre d'affectation</th>
@@ -85,42 +115,9 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        {{-- <tbody>
                             @foreach ($assignments as $key => $assignment)
-                                {{-- <tr>
-                                    <td>{{ $key + 1 }}</td>
-                                    <td>{{ $doctor->fullname() }}</td>
-                                    <td>
-                                        @forelse ($doctor->assignment as $assignment)
-                                            <ul>
-                                                <li> {{ $assignment->report->code }}
-                                                    ({{ $assignment->report->order->code }})
-                                                </li>
-                                            </ul>
-                                        @empty
-                                            <span class="text-muet">Aucune affectation</span>
-                                        @endforelse
-                                    </td>
-                                    <td>
-                                        <a type="button" href="{{ route('report.assignment.create', $doctor->id) }}"
-                                            class="btn btn-primary" title="Affecter un compte rendu"><i
-                                                class="mdi mdi-lead-pencil"></i>
-                                        </a>
-                                        @if (!empty($doctor->assignment()->get()))
-                                            <a class="btn btn-warning" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#bs-example-modal-lg-edit-{{ $doctor->id }}"><i
-                                                    class="mdi mdi-eye"></i>
-                                            </a>
-                                            @include('reports.assignment.edit', ['item' => $doctor])
 
-                                            <a type="button" href="{{ route('report.assignment.pdf', $doctor->id) }}"
-                                                class="btn btn-primary" title="Affecter un compte rendu"><i
-                                                    class="mdi mdi-printer"></i>
-                                            </a>
-                                        @endif
-
-                                    </td>
-                                </tr> --}}
                                 <tr>
                                     <td>{{$key+1}}</td>
                                     <td>{{ $assignment->code }}</td>
@@ -140,7 +137,7 @@
                                     </td>
                                 </tr>
                             @endforeach
-                        </tbody>
+                        </tbody> --}}
 
                     </table>
 
@@ -153,18 +150,42 @@
 
 @push('extra-js')
 
-
+<script>
+            var ROUTETESTORDERDATATABLE = "{{ route('assignment.getTestOrdersforDatatable') }}"
+            var TOKENSTOREDOCTOR = "{{ csrf_token() }}"
+</script>
     <script>
         /* DATATABLE */
         $(document).ready(function() {
 
-            $('#datatable1').DataTable({
-                "order": [[ 0, "asc" ]],
-                "columnDefs": [
-                    {
-                        "targets": [ 0 ],
-                        "searchable": true
-                    }],
+            // $('#datatable1').DataTable({
+            //     "order": [[ 0, "asc" ]],
+            //     "columnDefs": [
+            //         {
+            //             "targets": [ 0 ],
+            //             "searchable": true
+            //         }],
+            //     "language": {
+            //         "lengthMenu": "Afficher _MENU_ enregistrements par page",
+            //         "zeroRecords": "Aucun enregistrement disponible",
+            //         "info": "Afficher page _PAGE_ sur _PAGES_",
+            //         "infoEmpty": "Aucun enregistrement disponible",
+            //         "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+            //         "sSearch": "Rechercher:",
+            //         "paginate": {
+            //         "previous": "Précédent",
+            //         "next": "Suivant"
+            //         }
+            //     },
+            // });
+
+            var table = $('#datatable2').DataTable({
+
+                "columnDefs": [{
+                    "targets": [0],
+                    "searchable": false
+                }],
+                "bFilter": false,
                 "language": {
                     "lengthMenu": "Afficher _MENU_ enregistrements par page",
                     "zeroRecords": "Aucun enregistrement disponible",
@@ -173,46 +194,64 @@
                     "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
                     "sSearch": "Rechercher:",
                     "paginate": {
-                    "previous": "Précédent",
-                    "next": "Suivant"
+                        "previous": "Précédent",
+                        "next": "Suivant"
                     }
                 },
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: ROUTETESTORDERDATATABLE,
+                    data: function(d) {
+                        d.id_test_pathology_order = $('#id_test_pathology_order').val()
+                        d.id_doctor = $('#id_doctor').val()
+                        d.date = $('#date').val()
+
+                    }
+                },
+                columns: [
+
+                    {
+                        data: 'code',
+                        name: 'code'
+                    },
+                    {
+                        data: 'doctor',
+                        name: 'doctor',
+                    },
+                    {
+                        data: 'nbr_assignment',
+                        name: 'nbr_assignment',
+                    },
+                    {
+                        data: 'date_assignment',
+                        name: 'date_assignment',
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                    },
+                ],
+                select: {
+                    style: "multi",
+                    selector: "td:first-child",
+                },
+                order: [
+                    [0, 'asc']
+                ],
+
+            });
+             // Recherche selon les types d'examen
+            $("#id_test_pathology_order").on("change", function() {
+                // alert(this.value)
+                table.draw();
+            });
+            // Recherche selon les cas
+            $("#id_doctor").on("change", function() {
+                // alert(this.value)
+                table.draw();
             });
         } );
     </script>
 
-
-    {{-- <script>
-        document.getElementById('print-button').addEventListener('click', function() {
-            var buttonsToHide = document.querySelectorAll('.no-print');
-            // Masquez les boutons en utilisant JavaScript
-            buttonsToHide.forEach(function(button) {
-                button.style.display = 'none';
-            });
-            // Sélectionnez le contenu du modal que vous souhaitez imprimer
-            var modalContent = document.querySelector('.modal-content');
-            // window.print()
-
-            // Créez une fenêtre d'impression
-            var printWindow = window.open('', '', 'width=2000,height=1000');
-
-            // Copiez le contenu du modal dans la fenêtre d'impression
-            // printWindow.document.open();
-            printWindow.document.write('<html><head><title>Impression</title></head><body>');
-            printWindow.document.write(modalContent.innerHTML);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-
-            // Attendez que le contenu soit chargé, puis imprimez
-            printWindow.onload = function() {
-                printWindow.print();
-                printWindow.close();
-
-                // Réaffichez les boutons après l'impression
-                buttonsToHide.forEach(function(button) {
-                    button.style.display = '';
-                });
-            };
-        });
-    </script> --}}
 @endpush

@@ -315,6 +315,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('assignment/detail/assignment/{id}', [TestOrderAssignmentController::class, 'getdetail'])->name('report.assignment.getDetail');
         Route::get('assignment/detail/destroy/{id}', [TestOrderAssignmentController::class, 'detail_destroy'])->name('report.assignment.detail.destroy');
         Route::get('assignment/print/{id}', [TestOrderAssignmentController::class, 'print'])->name('report.assignment.print');
+        Route::get('/assignmen/dataTable', [TestOrderAssignmentController::class, 'getTestOrdersforDatatable'])->name('assignment.getTestOrdersforDatatable');
         // Route::get('assignment/pdf/{id}', [AssignmentDoctorController::class, 'pdf'])->name('report.assignment.pdf');
 
         Route::get('/azerty', [ReportController::class, 'getReportsforDatatable'])->name('report.getReportsforDatatable');
