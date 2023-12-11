@@ -400,13 +400,14 @@ public function __construct(
     {
 
 
-        $data =  DB::table('test_orders')
+        $data = DB::table('test_orders')
         ->select(
-            'test_orders.id AS test_order_id',
+            'test_orders.id as test_order',
+            'test_orders.code as code',
             'test_orders.created_at',
             'test_orders.is_urgent',
-            'reports.status AS report_status',
-            'test_pathology_macros.id AS test_pathology_macro_id'
+            'reports.status as report_status',
+            'test_pathology_macros.id as test_pathology_macro_id'
         )
         ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
         ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
@@ -415,22 +416,23 @@ public function __construct(
                 ->where('reports.status', 0)
                 ->whereNotExists(function ($subquery) {
                     $subquery->select(DB::raw(1))
-                        ->from('test_pathology_macros')
-                        ->whereRaw('id_test_pathology_order = test_orders.id');
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
                 });
         })
         ->orWhere(function ($query) {
             $query->where('reports.status', 0)
                 ->whereNotExists(function ($subquery) {
                     $subquery->select(DB::raw(1))
-                        ->from('test_pathology_macros')
-                        ->whereRaw('id_test_pathology_order = test_orders.id');
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
                 })
-                ->where(DB::raw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY)'), '<=', DB::raw('DATE(NOW() + INTERVAL 1 DAY)'));
+                ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
         })
         ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderBy('test_orders.created_at');
-
+        // ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
+        ->orderBy('test_orders.created_at')
+        ->get();
 
 
 

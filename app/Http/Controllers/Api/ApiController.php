@@ -5,8 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\AppelTestOder;
 use App\Models\Report;
+use Carbon\Carbon;
+use DateTime;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Spipu\Html2Pdf\Exception\ExceptionFormatter;
+use Spipu\Html2Pdf\Exception\Html2PdfException;
+use Spipu\Html2Pdf\Html2Pdf;
 
 class ApiController extends Controller
 {
@@ -93,6 +100,127 @@ class ApiController extends Controller
             ]);
             return response()->json(['status'=>'ligne modifié'],200);
         }
-        
+
+    }
+
+    public function pdf(Request $request)
+    {
+
+        // return response()->json($request->patient['firstname']);
+
+        $text = $request->code;
+        $qrCode = new QrCode($text);
+        $qrCode->setSize(300);
+        $writer = new PngWriter();
+        $result = $writer->write($qrCode);
+        $qrPng = $text . '_qrcode.png';
+
+        // Save it to a file {{ asset('storage/' . $signature1) }}
+        // $result->saveToFile();
+        $result->saveToFile('storage/settings/app/' . $qrPng);
+
+        // Generate a data URI to include image data inline (i.e. inside an <img> tag)
+        $dataUri = $result->getDataUri();
+
+        // $qrCodeDataUri = $qrCode->writeDataUri();
+
+        $signatory1 = $request->signatory1 ?? '';
+        $signatory2 = $request->signatory2 ?? '';
+        $signatory3 = $request->signatory3 ?? '';
+
+
+        $birthday = $request->patient['birthday'];
+        $age = '';
+
+        if ($birthday) {
+            // Convertir la date de naissance en objet DateTime
+            $birthdate = new DateTime($birthday);
+
+            // Obtenir la date actuelle
+            $currentDate = new DateTime();
+
+            // Calculer la différence entre les deux dates
+            $ageInterval = $birthdate->diff($currentDate);
+
+            // Obtenir l'âge sous forme d'années, mois et jours
+            $ageYears = $ageInterval->y;
+            $ageMonths = $ageInterval->m;
+            $ageDays = $ageInterval->d;
+
+            // Afficher l'âge
+            if ($ageYears > 0) {
+                $age = $ageYears . ' ans';
+            } elseif ($ageMonths > 0) {
+                $age = $ageMonths . ' mois';
+            } else {
+                $age = $ageDays . ' jours';
+            }
+        } else {
+            $age = 'Date de naissance non spécifiée';
+        }
+
+        // Utilisez la variable $age comme nécessaire dans votre code
+
+
+        setlocale(LC_TIME, 'fr_FR');
+        date_default_timezone_set('Africa/Porto-Novo');
+        //date_format($report->updated_at,"d/m/Y");
+
+
+        $data = [
+            'code' => $request->code,
+            'current_date' => utf8_encode(strftime('%d/%m/%Y')),
+            'prelevement_date' => $request->testOrder ? date('d/m/Y', strtotime($request->testOrder['prelevementDate'])) : '',
+            'test_affiliate' => $request->testOrder ? $request->testOrder['test_affiliate'] : '',
+            'qrcode' => $dataUri,
+            'title' => $request->title,
+            'content' => $request->description,
+            'content_micro' => $request->descriptionMicro,
+            'content_supplementaire' => $request->descriptionSupplementaire ? $request->descriptionSupplementaire : '',
+            'content_supplementaire_micro' => $request->descriptionSupplementaireMicro ? $request->descriptionSupplementaireMicro : '',
+
+            'signatory1' => $request->signatory1 ? $signatory1 : '',
+            'signatory2' => $request->signatory2 ? $signatory2 : '',
+            'signatory3' => $request->signatory3 ? $signatory3 : '',
+
+            'patient_firstname' => $request->patient['firstname'],
+            'patient_lastname' => $request->patient['lastname'],
+            'patient_age' => $age,
+            'patient_genre' => $request->patient['genre'],
+            'status' => $request->status,
+            'header' => $request->header,
+            'footer' => $request->footer,
+            'hospital_name' => $request->testOrder ? ($request->testOrder['hospital'] ? $request->testOrder['hospital']['name'] : '') :'',
+            'doctor_name' => $request->testOrder ? ($request->testOrder['doctor'] ? $request->testOrder['doctor']['name'] : '') :'',
+            'created_at' => Carbon::parse($request->createdAt)->format('d/m/Y'),
+            'date' => date('d/m/Y'),
+        ];
+
+
+        try {
+
+            $content = view('pdf/canvaApi', $data)->render();
+
+            $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
+            $html2pdf->pdf->SetDisplayMode('fullpage');
+            $html2pdf->setTestTdInOnePage(false);
+            // $html2pdf->setProtection(['copy', 'print'], 'user', 'password');
+            $html2pdf->__construct($orientation = 'P', $format = 'A4', $lang = 'fr', $unicode = true, $encoding = 'UTF-8', $margins = [8, 20, 8, 8], $pdfa = false);
+            // $html2pdf->writeHTML($content);
+            try {
+                // Écrit le contenu dans le PDF
+                $html2pdf->writeHTML($content);
+            } catch (\Exception $e) {
+                // Affiche l'erreur ou enregistre-la dans les logs
+                return response()->json('Erreur lors de la génération du PDF : ' . $e->getMessage());
+            }
+            $newname = 'CO-' . $request->code . '.pdf';
+            return response()->json(200);
+        } catch (Html2PdfException $e) {
+            $html2pdf->clean();
+
+            $formatter = new ExceptionFormatter($e);
+            return response()->json($formatter->getHtmlMessage());
+        }
     }
 }
