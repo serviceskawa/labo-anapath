@@ -132,7 +132,7 @@
                                                     </option>
                                                     <option {{ $item->paid == 1 ? 'selected' : '' }} value=1>Payée non
                                                         livrée</option>
-                                                    <option value=2 {{ $item->paid == 2 ? 'selected' : '' }}>Payée et
+                                                    <option value={{ $item->paid == 2 ? 'selected' : '' }}>Payée et
                                                         livrée</option>
                                                 </select>
                                             @else
@@ -245,7 +245,7 @@
                                 console.log(error);
                             }
                         })
-                        
+
                     }
                 }
             });
