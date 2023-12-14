@@ -89,7 +89,7 @@
                         <div class="col-md-6 col-12">
                             <label for="example-select" class="form-label">Date de la dépense</label>
                             <input class="form-control" {{$expense->paid != 0 && !getOnlineUser()->can('view-super-depenses') ? 'readonly':''}} id="example-date" type="date"
-                                    value="{{ old('date') ? old('date') : ($expense->date ?$expense->date:now()->format('Y-m-d')) }}"
+                                    value="{{ old('date') ? old('date') : ($expense->date ? $expense->date:now()->format('Y-m-d')) }}"
                                     name="date">
                         </div>
 
