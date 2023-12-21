@@ -99,6 +99,7 @@ class TestOrderAssignmentController extends Controller
             // isAffecte($data['test_order_id']) ? $data['confirmation'] = false : true;
             if (!isAffecte($data['test_order_id'])) {
                 $detail = TestOrderAssignmentDetail::where('test_order_id',$data['test_order_id'])->first();
+
                 $detail ? $detail->delete() : '';
 
                 DB::transaction(function () use ($data,$order) {
@@ -110,13 +111,13 @@ class TestOrderAssignmentController extends Controller
                     $details->save();
                 });
                 if (isMacro($data['test_order_id'])) {
-                    $detail = test_pathology_macro::where('id_test_pathology_order',$data['test_order_id'])->first();
-                    $detail->circulation = true;
-                    $detail->embedding = true;
-                    $detail->microtomy_spreading = true;
-                    $detail->staining = true;
-                    $detail->mounting = true;
-                    $detail->save();
+                    $detailMacro = test_pathology_macro::where('id_test_pathology_order',$data['test_order_id'])->first();
+                    $detailMacro->circulation = true;
+                    $detailMacro->embedding = true;
+                    $detailMacro->microtomy_spreading = true;
+                    $detailMacro->staining = true;
+                    $detailMacro->mounting = true;
+                    $detailMacro->save();
                 }else {
                     $macro = new test_pathology_macro();
                     $macro->id_employee = 1;
@@ -135,13 +136,13 @@ class TestOrderAssignmentController extends Controller
             } else {
                 $detail = TestOrderAssignmentDetail::where('test_order_id',$data['test_order_id'])->first();
                 if (isMacro($data['test_order_id'])) {
-                    $detail = test_pathology_macro::where('id_test_pathology_order',$data['test_order_id'])->first();
-                    $detail->circulation = true;
-                    $detail->embedding = true;
-                    $detail->microtomy_spreading = true;
-                    $detail->staining = true;
-                    $detail->mounting = true;
-                    $detail->save();
+                    $detailMacro = test_pathology_macro::where('id_test_pathology_order',$data['test_order_id'])->first();
+                    $detailMacro->circulation = true;
+                    $detailMacro->embedding = true;
+                    $detailMacro->microtomy_spreading = true;
+                    $detailMacro->staining = true;
+                    $detailMacro->mounting = true;
+                    $detailMacro->save();
                 }else {
                     $macro = new test_pathology_macro();
                     $macro->id_employee = 1;
@@ -167,7 +168,7 @@ class TestOrderAssignmentController extends Controller
 
     public function detail_destroy($id)
     {
-        $detail = $this->details->find($id);
+        $detail = TestOrderAssignmentDetail::find($id);
         $detail->delete();
         return response()->json(200);
     }

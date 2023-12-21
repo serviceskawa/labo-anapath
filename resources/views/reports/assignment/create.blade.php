@@ -143,3 +143,4 @@
     </script>
     <script src="{{asset('viewjs/report/assignment.js')}}"></script>
 @endpush
+ROUTESTOREDETAILTICKET

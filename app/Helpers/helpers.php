@@ -565,7 +565,6 @@ if(!function_exists('isMacro')){
     function isMacro($id){
         $detail = test_pathology_macro::where('id_test_pathology_order',$id)->first();
         if ($detail) {
-
             $data = true;
         }else{
             $data = false;

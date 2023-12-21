@@ -453,9 +453,6 @@
                                                         </button>
                                                     </div>
                                                 </li>
-                                                {{-- <li class="next list-inline-item float-end">
-                                                    <a href="#" class="btn btn-info">Suivant</a>
-                                                </li> --}}
                                             </ul>
                                         </div>
                                     </div>

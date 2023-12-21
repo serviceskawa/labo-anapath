@@ -86,7 +86,7 @@
                                             <div class="row">
                                                 <div class="col-6">
 
-                                                    @if (getOnlineUSer()->can('view-process-refund-reques'))
+                                                    @if (getOnlineUSer()->can('view-process-refund-request'))
                                                         @if ($item->status  == 'En attente' || $item->status =='Aprouvé' || $item->status == 'Rejeté')
                                                             <select class="form-select " id="refund_status"
                                                                     onchange="updateStatusRefund({{ $item->id }})">

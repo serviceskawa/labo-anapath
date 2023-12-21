@@ -132,11 +132,11 @@ $(document).ready(function() {
                             "En cours de traitement ...",
                             "success"
                         )
-                        dt_basic.ajax.reload()
+                        $('#datatable1').DataTable().ajax.reload()
                     },
                     error: function(response) {
                         console.log(response);
-                        dt_basic.ajax.reload()
+                        $('#datatable1').DataTable().ajax.reload()
 
                     },
                 });
@@ -177,6 +177,7 @@ $('#add_detail').on('click', function(e) {
 
                 $('#datatable1').DataTable().ajax.reload();
             }else{
+                console.log(response)
                 Swal.fire({
                     title: "Cette demnde a déjà été affecté. Voulez-vous la retirer de son affectation et l'affecter à dans cette liste?",
                     icon: "warning",
@@ -227,7 +228,7 @@ $('#add_detail').on('click', function(e) {
                             },
                             error: function(response) {
                                 console.log(response);
-                                dt_basic.ajax.reload()
+                                $('#datatable1').DataTable().ajax.reload()
 
                             },
                         });
