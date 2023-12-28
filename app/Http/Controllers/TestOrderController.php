@@ -1058,7 +1058,11 @@ public function __construct(
                         // <button type="button" target="_blank" onclick="passwordTest('. $data->report->id.')" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </button>$data->option ?'<i class="uil-calling"></i>':'<i class="mdi mdi-message"></i> '
                         $icon = $data->option ? '<i class="uil-message"></i>':'<i class="uil-calling"></i>';
 
-                        $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> </a> ';
+                        if ($data->report->is_deliver ==0) {
+                            $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-success" title="Imprimer le compte rendu"><i class="mdi mdi-file-check"></i> </a> ';
+                        }else{
+                            $btnreport ="";
+                        }
                         $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
                     }else {
                         $btnreport ="";
@@ -1075,7 +1079,7 @@ public function __construct(
                 //     $btnreport = ' <a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
                 // }
 
-                return $btnVoir .  $btnReport . $btnInvoice . $btnreport . $btnDelete . $btncalling;
+                return $btnVoir .  $btnReport  . $btnreport . $btnDelete . $btncalling;
             })
             ->addColumn('appel', function ($data) {
                 if($data->report)
@@ -1322,20 +1326,18 @@ public function __construct(
                 }
 
 
-                if (!empty($data->report)) {
-                    if ($data->report->status ==1) {
-                        // <button type="button" target="_blank" onclick="passwordTest('. $data->report->id.')" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </button>$data->option ?'<i class="uil-calling"></i>':'<i class="mdi mdi-message"></i> '
-                        $icon = $data->option ? '<i class="uil-message"></i>':'<i class="uil-calling"></i>';
+                if ($data->report->status ==1) {
+                    // <button type="button" target="_blank" onclick="passwordTest('. $data->report->id.')" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </button>$data->option ?'<i class="uil-calling"></i>':'<i class="mdi mdi-message"></i> '
+                    $icon = $data->option ? '<i class="uil-message"></i>':'<i class="uil-calling"></i>';
 
-                        $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> </a> ';
-                        $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
-                    }else {
+                    if ($data->report->is_deliver ==0) {
+                        $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-success" title="Imprimer le compte rendu"><i class="mdi mdi-file-check"></i> </a> ';
+                    }else{
                         $btnreport ="";
-                        $btncalling="";
                     }
-
-                } else {
-                    $btnreport = "";
+                    $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
+                }else {
+                    $btnreport ="";
                     $btncalling="";
                 }
                 // if ($data->report->is_deliver == 1) {
