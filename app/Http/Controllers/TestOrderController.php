@@ -185,11 +185,11 @@ public function __construct(
 
        $totalAppel =  $this->testOrder
        ->with(['patient', 'contrat', 'type', 'details', 'report'])
-       ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
-       ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
-       ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.id')
-       ->whereNull('ato.type')
-       ->orWhere('ato.type', '!=', 'completed')->count();
+       ->with(['patient', 'contrat', 'type', 'details', 'report'])
+        ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
+        ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
+        ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.id')
+        ->Where('ato.event', '!=', 'voice.completed')->count();
 
 
         $testOrders = $this->testOrder->all();
@@ -1242,7 +1242,6 @@ public function __construct(
         ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
         ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
         ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.id')
-        ->whereNull('ato.event')
         ->Where('ato.event', '!=', 'voice.completed')
         ->orderBy('test_orders.created_at', 'desc')
         ->select('test_orders.*');
