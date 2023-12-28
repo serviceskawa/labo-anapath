@@ -1346,7 +1346,7 @@ public function __construct(
                 //     $btnreport = ' <a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
                 // }
 
-                return $btnVoir .  $btnReport . $btnInvoice . $btnreport . $btnDelete . $btncalling;
+                return $btnVoir .  $btnReport . $btnreport . $btnDelete . $btncalling;
             })
             ->addColumn('appel', function ($data) {
                 if($data->report)
