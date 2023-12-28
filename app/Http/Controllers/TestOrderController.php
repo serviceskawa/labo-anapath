@@ -1243,7 +1243,7 @@ public function __construct(
         ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
         ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.id')
         ->whereNull('ato.event')
-        ->orWhere('ato.event', '!=', 'voice.completed')
+        ->Where('ato.event', '!=', 'voice.completed')
         ->orderBy('test_orders.created_at', 'desc')
         ->select('test_orders.*');
 
