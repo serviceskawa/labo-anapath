@@ -183,6 +183,15 @@ public function __construct(
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
+       $totalAppel =  $this->testOrder
+       ->with(['patient', 'contrat', 'type', 'details', 'report'])
+       ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
+       ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
+       ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.id')
+       ->whereNull('ato.type')
+       ->orWhere('ato.type', '!=', 'completed')->count();
+
+
         $testOrders = $this->testOrder->all();
 
         foreach ($testOrders as $key => $testOrder) {
@@ -194,7 +203,7 @@ public function __construct(
 
         $testStats = $this->getTestStats($testOrders);
 
-        return view('examens.index2', array_merge(compact('examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders', 'testStats'), [
+        return view('examens.index2', array_merge(compact('examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders', 'testStats','totalAppel'), [
             'finishTest' => $testStats['finishTest'],
             'noFinishTest' => $testStats['noFinishTest'],
             'is_urgent' => $testStats['is_urgent'],
@@ -971,6 +980,276 @@ public function __construct(
 
 
         $data = $this->testOrder->with(['patient', 'contrat', 'type', 'details', 'report'])->orderBy('created_at', 'desc');
+
+        return Datatables::of($data)->addIndexColumn()
+            ->editColumn('created_at', function ($data) {
+                //change over here
+                //return date('y/m/d',$data->created_at);
+                return $data->created_at;
+            })
+            ->setRowData([
+                'data-mytag' => function ($data) {
+                    if ($data->is_urgent == 1) {
+                        $result = $data->is_urgent;
+                    } else {
+                        $result = "";
+                    }
+
+                    return 'mytag=' . $result;
+                },
+            ])
+            ->setRowClass(function ($data) use ($request) {
+                if($data->is_urgent == 1){
+                        if (!empty($data->report)) {
+                            if($data->report->is_deliver ==1){
+                                return 'table-success';
+                            }else {
+                                if($data->report->status == 1){
+                                    return 'table-warning';
+                                }
+                            }
+
+                        }
+                            return 'table-danger urgent';
+
+                }elseif (!empty($data->report)) {
+                    if($data->report->is_deliver ==1){
+                        return 'table-success';
+                    }else {
+                        if($data->report->status == 1){
+                            return 'table-warning';
+                        }
+                    }
+                }else {
+                    return '';
+                }
+            })
+
+            ->addColumn('action', function ($data) {
+                $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+                // $btnEdit = ' <a type="button" href="' . route('test_order.edit', $data->id) . '" class="btn btn-primary" title="Mettre à jour examen"><i class="mdi mdi-lead-pencil"></i></a>';
+                if ($data->status != 1) {
+                    $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+                    $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
+                    $btnreport = "";
+                } else {
+                    if ($data->report) {
+                        $btnReport = ' <a type="button" href="' . route('report.show', $data->report->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+                    }else {
+                        $btnReport = "";
+                    }
+
+                    $btnDelete = "";
+                }
+
+                if ($data->invoice) {
+                    if (!empty($data->invoice->id)) {
+                        $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->invoice->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
+                    } else {
+                        $btnInvoice = ' <a type="button" href="' . route('invoice.storeFromOrder', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
+                    }
+                } else {
+                   $btnInvoice="";
+                }
+
+
+                if (!empty($data->report)) {
+                    if ($data->report->status ==1) {
+                        // <button type="button" target="_blank" onclick="passwordTest('. $data->report->id.')" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> Imprimer </button>$data->option ?'<i class="uil-calling"></i>':'<i class="mdi mdi-message"></i> '
+                        $icon = $data->option ? '<i class="uil-message"></i>':'<i class="uil-calling"></i>';
+
+                        $btnreport = ' <a type="button" target="_blank" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Imprimer le compte rendu"><i class="mdi mdi-printer"></i> </a> ';
+                        $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
+                    }else {
+                        $btnreport ="";
+                        $btncalling="";
+                    }
+
+                } else {
+                    $btnreport = "";
+                    $btncalling="";
+                }
+                // if ($data->report->is_deliver == 1) {
+                //     $btnreport = ' <a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-success" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
+                // } else {
+                //     $btnreport = ' <a type="button" href="' . route('report.updateDeliver',  $data->report->id) . '" class="btn btn-warning" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
+                // }
+
+                return $btnVoir .  $btnReport . $btnInvoice . $btnreport . $btnDelete . $btncalling;
+            })
+            ->addColumn('appel', function ($data) {
+                if($data->report)
+                {
+                    $status = $this->getStatusCalling($data->report->id);
+                }else{
+                    $status = "";
+                }
+
+                switch ($status) {
+                    case 'voice.busy':
+                        $btn = 'danger';
+                        break;
+                    case 'no-answered':
+                        $btn = 'danger';
+                        break;
+                    case 'voice.completed':
+                        $btn = 'success';
+                        break;
+                    default:
+                        $btn = 'warning';
+                        break;
+                }
+
+                $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
+                if (!$data->option) {
+                    return $span;
+                }
+            })
+            ->addColumn('patient', function ($data) {
+                return $data->patient->firstname . ' ' . $data->patient->lastname;
+            })
+            ->addColumn('contrat', function ($data) {
+                return $data->contrat->name;
+            })
+            ->addColumn('details', function (TestOrder $testOrder) {
+                $a = $testOrder->details->map(function ($detail) {
+                    return Str::limit($detail->test_name, 30, '...');
+                    // return '<strong>' . $detail->order->type->title . '</strong>: ' . Str::limit($detail->test_name, 30, '...');
+                })->implode('<br>');
+                return '<strong>' . $testOrder->type_order_id != 0 ? ($testOrder->type?$testOrder->type->title :''):'' . '</strong>: ' . $a;
+            })
+            ->addColumn('rendu', function ($data) {
+                if (!empty($data->report)) {
+                    // $btn = $data->getReport($data->id);
+                    switch ($data->report->status) {
+                        case 1:
+                            $btn = 'Valider';
+                            break;
+
+                        default:
+                            $btn = 'En attente';
+                            break;
+                    }
+                } else {
+                    $btn = 'Non enregistré';
+                }
+                $span = '<span class="badge bg-primary rounded-pill">' . $btn . '</span>';
+                return $span;
+            })
+            ->addColumn('type', function ($data) {
+                return $data->type_order_id !=0 ? $data->type->title :'';
+            })
+            ->addColumn('urgence', function ($data) {
+                return $data->is_urgent;
+            })
+            ->addColumn('dropdown', function ($data) {
+                $order = $data;
+                $setting = $this->setting->find(1);
+                config(['app.name' => $setting->titre]);
+                return view('examens.datatables.attribuate', compact('order'));
+            })
+            ->filter(function ($query) use ($request,$data) {
+
+                if (!empty($request->get('attribuate_doctor_id'))) {
+                    $query->where('attribuate_doctor_id', $request->get('attribuate_doctor_id'));
+                }
+                if (!empty($request->get('cas_status'))) {
+                    $query->where('is_urgent', $request->get('cas_status'));
+                }
+
+                if (!empty($request->get('appel'))) {
+                    $query->whereHas('report', function ($query) use($request) {
+                            $query->whereHas('appel',function($query) use($request){
+                                $query->whereHas('appel_event', function($query) use($request){
+                                    $query->where('event',$request->get('appel'));
+                                });
+                            });
+                        });
+                    // $query->where('is_urgent', $request->get('cas_status'));
+                }
+                if (!empty($request->get('contrat_id'))) {
+                    $query->where('contrat_id', $request->get('contrat_id'));
+                }
+                if (!empty($request->get('type_examen'))) {
+                    $query->where('type_order_id', $request->get('type_examen'));
+                }
+                if (!empty($request->get('exams_status'))) {
+                    if ($request->get('exams_status') == "livrer") {
+                        $query->whereHas('report', function ($query) {
+                            $query->where('is_deliver', 1);
+                        });
+                    } elseif ($request->get('exams_status') == "non_livrer") {
+                        $query->whereHas('report', function ($query) {
+                            $query->where('is_deliver', 0);
+                        });
+                    } else {
+                        $query->whereHas('report', function ($query) use ($request) {
+                            $query->where('status', $request->get('exams_status'));
+                        });
+                        // $query->where('status', $request->get('exams_status'));
+                    }
+                }
+
+                if (!empty($request->get('appel'))) {
+
+                    $query->whereHas('report', function ($query) use($request){
+                            $query->whereHas('appel',function($query) use($request) {
+                                $query->whereHas('appel_event', function($query) use($request) {
+                                    $query->where('event',$request->get('appel'));
+                                });
+                            });
+                    });
+                }
+
+                if(!empty($request->get('contenu')))
+                {
+                    $query->where('code','like','%'.$request->get('contenu').'%')
+                        ->orwhereHas('report', function($query) use ($request){
+                        $query->where('description', 'like', '%'.$request->get('contenu').'%');
+                            })
+                        ->orwhereHas('patient', function ($query) use ($request){
+                        $query->where('firstname','like', '%'.$request->get('contenu').'%')
+                            ->orwhere('lastname', 'like', '%'.$request->get('contenu').'%');
+                            })
+                        ->orwhereHas('doctor', function ($query) use ($request){
+                            $query->where('name','like','%'.$request->get('contenu').'%');
+                        })
+                        ->orwhereHas('contrat', function ($query) use ($request){
+                            $query->where('name','like', '%'.$request->get('contenu').'%');
+                        });
+                }
+
+                if(!empty($request->get('dateBegin'))){
+                    //dd($request);
+                    $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
+                    $query->whereDate('created_at','>=',$newDate);
+                }
+                if(!empty($request->get('dateEnd'))){
+                    //dd($request);
+                    $query->whereDate('created_at','<=',$request->get('dateEnd'));
+                }
+
+            })
+            ->rawColumns(['action','appel', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
+            ->make(true);
+    }
+    // Debut
+    public function getTestOrdersforDatatable2(Request $request)
+    {
+
+        $data = $this->testOrder
+        ->with(['patient', 'contrat', 'type', 'details', 'report'])
+        ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
+        ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
+        ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.id')
+        ->whereNull('ato.type')
+        ->orWhere('ato.type', '!=', 'completed')
+        ->orderBy('test_orders.created_at', 'desc')
+        ->select('test_orders.*');
+
+
+
+        // $data = $this->testOrder->with(['patient', 'contrat', 'type', 'details', 'report'])->orderBy('created_at', 'desc');
 
         return Datatables::of($data)->addIndexColumn()
             ->editColumn('created_at', function ($data) {

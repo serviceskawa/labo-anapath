@@ -187,13 +187,48 @@
             </div>
         </div> <!-- end card-->
 
+        <div class="card mb-md-0 mt-3 mb-3">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-lg-2 p-1 alert alert-success rounded-pill"
+                        style="margin-right: 5px; text-align:center;">
+                        Total : {{$totalAppel}}
+                    </div>
+
+                </div>
+
+                <table id="datatable2" class="dt-responsive nowrap w-100 table">
+                    <thead>
+                        <tr>
+                            <th>Actions</th>
+                            <th>Appel</th>
+                            <th>Date</th>
+                            <th>Code</th>
+                            <th>Affecter à</th>
+                            <th>Patient</th>
+                            <th>Examens</th>
+                            <th>Contrat</th>
+                            {{-- <th>Pièce jointe</th> --}}
+                            {{-- <th>Examens demandés</th> --}}
+                            <th>Montant</th>
+                            <th>Compte rendu</th>
+                            {{-- <th>Type examen</th> --}}
+                            <th>Urgent</th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
     </div>
+</div>
     @endsection
 
     @push('extra-js')
         <script>
             var baseUrl = "{{ url('/') }}"
             var ROUTETESTORDERDATATABLE = "{{ route('test_order.getTestOrdersforDatatable') }}"
+            var ROUTETESTORDERDATATABLE2 = "{{ route('test_order.getTestOrdersforDatatable2') }}"
             var URLupdateAttribuate = "{{ url('attribuateDoctor') }}" + '/' + doctor_id + '/' + order_id
         </script>
         <script src="{{ asset('viewjs/test/order/index.js') }}"></script>

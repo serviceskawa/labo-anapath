@@ -23,7 +23,7 @@ function deleteModal(id) {
 $(document).ready(function() {
 
     var table = $('#datatable1').DataTable({
-        
+
         "columnDefs": [{
             "targets": [0],
             "searchable": false
@@ -56,6 +56,92 @@ $(document).ready(function() {
                 d.dateBegin = $('#dateBegin').val()
                 d.dateEnd = $('#dateEnd').val()
                 d.appel = $('#appel_status').val()
+
+            }
+        },
+        columns: [{
+                data: 'action',
+                name: 'action',
+            },
+            {
+                data: 'appel',
+                name: 'appel'
+            },
+            {
+                data: 'created_at',
+                name: 'created_at'
+            }, {
+                data: 'code',
+                name: 'code'
+            },{
+                data: 'dropdown',
+                name: 'dropdown'
+            },
+             {
+                data: 'patient',
+                name: 'patient',
+            },
+            {
+                data: 'details',
+                name: 'examens'
+            },
+            {
+                data: 'contrat',
+                name: 'contrat'
+            },
+            {
+                data: 'total',
+                name: 'total'
+            },
+            {
+                data: 'rendu',
+                name: 'rendu'
+            },
+            {
+                data: 'urgence',
+                name: 'urgence',
+                visible: false,
+            },
+        ],
+        order: [
+            [0, 'asc']
+        ],
+
+    });
+    var table_2 = $('#datatable2').DataTable({
+
+        "columnDefs": [{
+            "targets": [0],
+            "searchable": false
+        }],
+        "bFilter": false,
+        "language": {
+            "lengthMenu": "Afficher _MENU_ enregistrements par page",
+            "zeroRecords": "Aucun enregistrement disponible",
+            "info": "Afficher page _PAGE_ sur _PAGES_",
+            "infoEmpty": "Aucun enregistrement disponible",
+            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+            "sSearch": "Rechercher:",
+            "paginate": {
+                "previous": "Précédent",
+                "next": "Suivant"
+            }
+        },
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: ROUTETESTORDERDATATABLE2,
+            data: function(d) {
+                // d.attribuate_doctor_id = $('#doctor_signataire').val()
+                // d.cas_status = $('#cas_status').val()
+                // d.appel = $('#appel').val()
+                // d.contrat_id = $('#contrat_id').val()
+                // d.exams_status = $('#exams_status').val()
+                // d.type_examen = $('#type_examen').val()
+                // d.contenu = $('#contenu').val()
+                // d.dateBegin = $('#dateBegin').val()
+                // d.dateEnd = $('#dateEnd').val()
+                // d.appel = $('#appel_status').val()
 
             }
         },
@@ -153,7 +239,7 @@ $(document).ready(function() {
         // alert(this.value)
         table.draw();
     });
-    
+
     // $("#appel").on("change", function() {
     //     table.draw();
     // })

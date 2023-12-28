@@ -197,6 +197,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/test_order/updatetest',[TestOrderController::class, 'updateTest'])->name('test_order.updateTest');
     Route::post('/test_order/search',[TestOrderController::class, 'search'])->name('test_order.search');
     Route::get('/testOrders', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('test_order.getTestOrdersforDatatable');
+    Route::get('/testOrders2', [TestOrderController::class, 'getTestOrdersforDatatable2'])->name('test_order.getTestOrdersforDatatable2');
     // Cette la route associer aux fichier a supprimer
     Route::delete('/testOrders/delete/image-gallerie/{index}/{test_order}', [TestOrderController::class, 'deleteimagegallerie'])->name('test_order.deleteimagegallerie');
     Route::put('/testOrders/create/image-gallerie/{test_order}', [TestOrderController::class, 'createimagegallerie'])->name('test_order.createimagegallerie');
