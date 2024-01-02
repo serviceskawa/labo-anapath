@@ -9,4 +9,10 @@ class TestOrderAssignmentDetail extends Model
 {
     use HasFactory;
     public $guarded = [];
+    
+    public function order()
+    {
+        return $this->belongsTo(TestOrder::class, 'test_order_id');
+    }
+
 }

@@ -67,6 +67,8 @@ $(document).ready(function () {
         order: [[1, "asc"]],
     });
 
+   
+
     $.ajax({
         url: baseUrl + "/macro/countData",
         type: "GET",
@@ -97,6 +99,7 @@ $(document).ready(function () {
 
         }
     } );
+
     table.on('deselect', function () {
        // Vérifiez si des lignes sont sélectionnées
        var selectedRows = table.rows('.selected').data().length > 0;

@@ -109,6 +109,8 @@ class ReportController extends Controller
         $report
             ->fill([
                 'description' => $request->content,
+                'comment' => $request->comment,
+                'comment_sup' => $request->comment_sup,
                 'description_micro' => $request->content_micro,
                 'signatory1' => $doctor_signataire1,
                 'signatory2' => $doctor_signataire2,
@@ -330,15 +332,13 @@ class ReportController extends Controller
     // Met à jour le statut livré
     public function updateDeliverStatus($reportId)
     {
-        if (!getOnlineUser()->can('edit-reports')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('edit-reports')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         $report = $this->report->findorfail($reportId);
 
         if (empty($report)) {
-            return redirect()
-                ->back()
-                ->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
+           return response()->json(['error'=>"Ce compte rendu n'existe pas. Veuillez ressayer!"]);
         }
 
 
@@ -347,7 +347,9 @@ class ReportController extends Controller
                 'is_deliver' => 1,
             ])
             ->save();
-            $this->pdf($reportId);
+            // $this->pdf($reportId)';
+
+            return response()->json(['report'=>$report]);
     }
     // Lancer un appel ou envoyer un sms
     public function callOrSendSms($reportId)

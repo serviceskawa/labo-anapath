@@ -30,8 +30,35 @@ class TestOrderAssignmentController extends Controller
 
     public function index()
     {
-        $assignments = $this->assignment->latest()->get();
+        $assignments = $this->assignment->whereHas('details', function($query) {
+            $query->whereHas('order', function($query){
+                $query->whereHas('type', function($query){
+                    $query->where('slug','like','cytologie')
+                            ->orwhere('slug','!=','histologie');
+                })->where('status', '!=', 0) // Statut différent de 0
+                ->whereNull('deleted_at'); // deleted_at doit être NULL
+            });
+        })->latest()->get();;
         $orders = $this->order->all();
+
+        return view('reports.assignment.index',compact('assignments','orders'));
+    }
+
+    public function index_immuno()
+    {
+        $assignments = $this->assignment->whereHas('details', function($query) {
+            $query->whereHas('order', function($query){
+                $query->whereHas('type', function($query){
+                    $query->where('slug','immuno-interne')
+                            ->orwhere('slug','immuno-exterme');
+                })->where('status', '!=', 0) // Statut différent de 0
+                ->whereNull('deleted_at'); // deleted_at doit être NULL
+            });
+        })->latest()->get();
+        $orders = $this->order->whereHas('type', function($query){
+            $query->where('slug','immuno-interne')
+                    ->orwhere('slug','immuno-exterme');
+        })->latest()->get();
 
         return view('reports.assignment.index',compact('assignments','orders'));
     }
@@ -48,7 +75,25 @@ class TestOrderAssignmentController extends Controller
     public function index_detail($id)
     {
         $assignment = $this->assignment->find($id);
-        $testOrders = $this->order->latest()->get();
+        $testOrders = $this->order->whereHas('type', function($query){
+            $query->where('slug','like','cytologie')
+                    ->orwhere('slug','like','histologie')
+                    ->where('status', '!=', 0) // Statut différent de 0
+                    ->whereNull('deleted_at'); // deleted_at doit être NULL
+        })->latest()->get();
+
+        return view('reports.assignment.create',compact('assignment','testOrders'));
+    }
+    
+    public function index_immuno_detail($id)
+    {
+        $assignment = $this->assignment->find($id);
+        $testOrders = $this->order->whereHas('type', function($query){
+                    $query->where('slug','immuno-interne')
+                            ->orwhere('slug','immuno-exterme')
+                            ->where('status', '!=', 0) // Statut différent de 0
+                            ->whereNull('deleted_at'); // deleted_at doit être NULL
+                })->latest()->get();
 
         return view('reports.assignment.create',compact('assignment','testOrders'));
     }
@@ -191,7 +236,116 @@ class TestOrderAssignmentController extends Controller
     {
 
 
-        $data = $this->assignment->latest();;
+        $data = $this->assignment->whereHas('details', function($query) {
+            $query->whereHas('order', function($query){
+                $query->whereHas('type', function($query){
+                    $query->where('slug','like','cytologie')
+                            ->orwhere('slug','!=','histologie')
+                            ->where('status', '!=', 0) // Statut différent de 0
+                            ->whereNull('deleted_at'); // deleted_at doit être NULL
+                });
+            });
+        })->latest();
+
+        return DataTables::of($data)->addIndexColumn()
+
+            ->setRowData([
+                'data-mytag' => function ($data) {
+                    if ($data->is_urgent == 1) {
+                        $result = $data->is_urgent;
+                    } else {
+                        $result = "";
+                    }
+
+                    return 'mytag=' . $result;
+                },
+            ])
+            ->setRowClass(function ($data) use ($request) {
+                if($data->is_urgent == 1){
+                        if (!empty($data->report)) {
+                            if($data->report->is_deliver ==1){
+                                return 'table-success';
+                            }else {
+                                if($data->report->status == 1){
+                                    return 'table-warning';
+                                }
+                            }
+
+                        }
+                            return 'table-danger urgent';
+
+                }elseif (!empty($data->report)) {
+                    if($data->report->is_deliver ==1){
+                        return 'table-success';
+                    }else {
+                        if($data->report->status == 1){
+                            return 'table-warning';
+                        }
+                    }
+                }else {
+                    return '';
+                }
+            })
+
+            ->addColumn('action', function ($data) {
+                $detail =
+                '<a class="btn btn-primary" href="'.route('report.assignment.detail.index',$data->id).'">
+                    <i class="uil-eye"></i>
+                </a>';
+                $deleteBtn = "";
+
+            if ($data->details()->count()>=1) {
+                $deleteBtn = '<a class="btn btn-warning" href="'.route('report.assignment.print',$data->id).'">
+                    <i class="mdi mdi-printer"></i>
+                </a>';
+            }
+
+
+                return $detail.' '.$deleteBtn ;
+            })
+            ->addColumn('code', function ($data) {
+                return $data->code;
+            })
+            ->addColumn('doctor', function ($data) {
+                return $data->user->fullname();
+            })
+            ->addColumn('date_assignment', function ($data) {
+                return dateFormat($data->created_at);
+            })
+            ->addColumn('nbr_assignment', function ($data) {
+               return $data->details()->count();
+            })
+            ->filter(function ($query) use ($request,$data) {
+
+                if (!empty($request->get('id_test_pathology_order'))) {
+                    // $query->whereHas('id_test_pathology_order', $request->get('id_test_pathology_order'));
+                    $query->whereHas('details', function($query) use ($request) {
+                        $query->where('test_order_id',$request->get('id_test_pathology_order'));
+                    });
+                }
+                if (!empty($request->get('id_doctor'))) {
+                    $query->where('user_id', $request->get('id_doctor'));
+                }
+            })
+            ->rawColumns(['action','code', 'doctor', 'date_assignment', 'nbr_assignment'])
+            ->make(true);
+    }
+
+    // Debut
+    public function getTestOrdersforDatatable_immuno(Request $request)
+    {
+
+
+        $data = $this->assignment->whereHas('details', function($query) {
+            $query->whereHas('order', function($query){
+                $query->whereHas('type', function($query){
+                    $query->where('slug','immuno-interne')
+                            ->orwhere('slug','immuno-exterme')
+                            ->where('status', '!=', 0) // Statut différent de 0
+                            ->whereNull('deleted_at'); // deleted_at doit être NULL
+                });
+            });
+        })->latest();
 
         return DataTables::of($data)->addIndexColumn()
 

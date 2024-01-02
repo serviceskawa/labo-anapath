@@ -26,6 +26,18 @@ class AssignmentDoctorController extends Controller
         // dd($doctor);
         return view('reports.assignment.create',compact('reports','doctor'));
     }
+    public function create_immuno($id)
+    {
+        $reports = Report::whereHas('order', function($query){
+                $query->whereHas('type', function($query){
+                    $query->where('slug','immuno-interne')
+                            ->orwhere('slug','immuno-exterme');
+                });
+        })->latest()->get();
+        $doctor = User::find($id);
+        // dd($doctor);
+        return view('reports.assignment.create',compact('reports','doctor'));
+    }
 
     public function store(Request $request)
     {

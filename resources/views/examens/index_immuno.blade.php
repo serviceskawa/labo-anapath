@@ -10,7 +10,7 @@
             <a href="{{ route('test_order.create') }}"><button type="button" class="btn btn-primary">Ajouter une
                     nouvelle demande d'examen</button></a>
         </div>
-        <h4 class="page-title">Demandes d'examen</h4>
+        <h4 class="page-title">Demandes d'examen IMMUNO</h4>
     </div>
 
     <div class="">
@@ -27,7 +27,7 @@
                         aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                     <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                 </div>
-                <h5 class="card-title mb-0">Liste des demandes d'examen</h5>
+                <h5 class="card-title mb-0">Liste des demandes d'examen IMMUNO</h5>
 
                 <div id="cardCollpase1" class="show collapse pt-3">
 
@@ -37,7 +37,7 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Contrat</label>
-                                <select name="contrat_id" id="contrat_id" class="form-control">
+                                <select name="contrat_id" id="contrat_immuno_id" class="form-control">
                                     <option value="">Tous les contrats</option>
                                     @forelse ($contrats as $contrat)
                                     <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
@@ -52,7 +52,7 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Status</label>
-                                <select name="status" id="exams_status" class="form-control">
+                                <select name="status" id="exams_immuno_status" class="form-control">
                                     <option value="">Tous</option>
                                     <option value="1">Valider</option>
                                     <option value="0">En attente</option>
@@ -67,10 +67,12 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Type d'examen</label>
-                                <select name="type_examen" id="type_examen" class="form-control">
+                                <select name="type_examen" id="type_immuno_examen" class="form-control">
                                     <option value="">Tous</option>
                                     @forelse ($types_orders as $type)
+                                    @if ($type->slug == "immuno-interne" || $type->slug == "immuno-exterme")
                                     <option value="{{ $type->id }}">{{ $type->title }}</option>
+                                @endif
                                     @empty
                                     Ajouter un Type d'examen
                                     @endforelse
@@ -83,7 +85,7 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Urgent</label>
-                                <select name="cas_status" id="cas_status" class="form-control">
+                                <select name="cas_status" id="cas_immuno_status" class="form-control">
                                     <option value="">Tous</option>
                                     <option value="1">Urgent</option>
                                 </select>
@@ -96,7 +98,7 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Docteur</label>
-                                <select name="" id="doctor_signataire" class="form-control">
+                                <select name="" id="doctor_immuno_signataire" class="form-control">
                                     <option value="">Tous</option>
                                     @foreach (getUsersByRole('docteur') as $item)
                                     <option value="{{ $item->id }}">
@@ -111,21 +113,21 @@
                         <div class="col-lg-3">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Rechercher</label>
-                                <input type="text" name="contenu" id="contenu" class="form-control">
+                                <input type="text" name="contenu" id="contenu_immuno" class="form-control">
                             </div>
                         </div> <!-- end col -->
 
                         <div class="col-lg-3">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Date Début</label>
-                                <input type="date" name="dateBegin" id="dateBegin" class="form-control">
+                                <input type="date" name="dateBegin" id="dateBegin_immuno" class="form-control">
                             </div>
                         </div> <!-- end col -->
 
                         <div class="col-lg-3">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Date fin</label>
-                                <input type="date" name="dateEnd" id="dateEnd" class="form-control">
+                                <input type="date" name="dateEnd" id="dateEnd_immuno" class="form-control">
                             </div>
                         </div> <!-- end col -->
 
@@ -133,7 +135,7 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Status appel</label>
-                                <select name="status_appel" id="appel_status" class="form-control">
+                                <select name="status_appel" id="appel_immuno_status" class="form-control">
                                     <option value="">Tous</option>
                                     <option value="voice.completed">Décroché</option>
                                     <option value="voice.cancelled">Manqué</option>
@@ -161,7 +163,7 @@
                         </div>
                     </div>
 
-                    <table id="datatable1" class="dt-responsive nowrap w-100 table">
+                    <table id="datatable3" class="dt-responsive nowrap w-100 table">
                         <thead>
                             <tr>
                                 <th>Actions</th>
@@ -230,6 +232,7 @@
             var baseUrl = "{{ url('/') }}"
             var ROUTETESTORDERDATATABLE = "{{ route('test_order.getTestOrdersforDatatable') }}"
             var ROUTETESTORDERDATATABLE2 = "{{ route('test_order.getTestOrdersforDatatable2') }}"
+            var ROUTETESTORDERDATATABLE3 = "{{ route('test_order.getTestOrdersforDatatable3') }}"
             var URLupdateAttribuate = "{{ url('attribuateDoctor') }}" + '/' + doctor_id + '/' + order_id
             var URLUPDATEDELIVER = "{{ route('report.updateDeliver',"+id+") }}"
         </script>

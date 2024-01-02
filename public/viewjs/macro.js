@@ -163,6 +163,147 @@ $(document).ready(function() {
         order: [],
 
     });
+    var table3 = $('#datatable3').DataTable({
+
+        "columnDefs": [{
+            "targets": [0],
+            "searchable": false
+        }],
+        "bFilter": false,
+        "language": {
+            "lengthMenu": "Afficher _MENU_ enregistrements par page",
+            "zeroRecords": "Aucun enregistrement disponible",
+            "info": "Afficher page _PAGE_ sur _PAGES_",
+            "infoEmpty": "Aucun enregistrement disponible",
+            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+            "sSearch": "Rechercher:",
+            "paginate": {
+                "previous": "Précédent",
+                "next": "Suivant"
+            }
+        },
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: ROUTETESTORDERDATATABLEIMMUNO,
+            data: function(d) {
+                d.id_test_pathology_order = $('#id_test_pathology_order').val()
+                d.id_employee = $('#id_employee').val()
+                d.date = $('#date').val()
+
+            }
+        },
+        columns: [
+
+            {
+                orderable: false,
+                data: 'created',
+                name: 'created',
+                targets: 0,
+                render: function (e, l, a, o) {
+                    return (
+                        "display" === l &&
+                            (e =
+                                '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>'),
+                        e
+                    );
+                },
+                checkboxes: {
+                    selectRow: true,
+                    selectAllRender:
+                        '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>',
+                },
+            },
+            {
+                data: 'code',
+                name: 'code'
+            },
+             {
+                data: 'add_by',
+                name: 'add_by',
+            },
+             {
+                data: 'date_macro',
+                name: 'date_macro',
+            },
+             {
+                data: 'date_montage',
+                name: 'date_montage',
+            },
+             {
+                data: 'state',
+                name: 'state',
+            },
+            {
+                data: 'action',
+                name: 'action',
+            },
+        ],
+        select: {
+            style: "multi",
+            selector: "td:first-child",
+        },
+        order: [
+            [0, 'asc']
+        ],
+
+    });
+    var table4 = $('#datatable4').DataTable({
+
+        "columnDefs": [{
+            "targets": [0],
+            "searchable": false
+        }],
+        "bFilter": false,
+        "language": {
+            "lengthMenu": "Afficher _MENU_ enregistrements par page",
+            "zeroRecords": "Aucun enregistrement disponible",
+            "info": "Afficher page _PAGE_ sur _PAGES_",
+            "infoEmpty": "Aucun enregistrement disponible",
+            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+            "sSearch": "Rechercher:",
+            "paginate": {
+                "previous": "Précédent",
+                "next": "Suivant"
+            }
+        },
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: ROUTETESTORDERDATATABLEIMMUNO2,
+            data: function(d) {
+                // d.id_test_pathology_order = $('#id_test_pathology_order').val()
+                // d.id_employee = $('#id_employee').val()
+                // d.date = $('#date').val()
+
+            }
+        },
+        columns: [
+
+            {
+                data: 'created',
+                name: 'created'
+            },
+            {
+               data: 'dateLim',
+               name: 'dateLim',
+           },
+            {
+               data: 'date',
+               name: 'date',
+           },
+            {
+                data: 'code',
+                name: 'code'
+            },
+             {
+                data: 'state',
+                name: 'state',
+            },
+        ],
+        order: [],
+
+    });
 
     table.on( 'select', function ( e, dt, type, indexes ) {
         if ( type === 'row' ) {

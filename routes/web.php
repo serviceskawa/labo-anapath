@@ -184,6 +184,7 @@ Route::middleware(['auth'])->group(function () {
 
     //TEST_ORDER
     Route::get('/test_order/index', [TestOrderController::class, 'index2'])->name('test_order.index');
+    Route::get('/test_order/index-immuno', [TestOrderController::class, 'index_immuno'])->name('test_order.immuno.index');
     Route::get('/test_order/envents', [TestOrderController::class, 'getEvent']);
     Route::post('/test_order/store', [TestOrderController::class, 'store'])->name('test_order.store');
     Route::get('/test_order/create', [TestOrderController::class, 'create'])->name('test_order.create');
@@ -198,6 +199,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/test_order/search',[TestOrderController::class, 'search'])->name('test_order.search');
     Route::get('/testOrders', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('test_order.getTestOrdersforDatatable');
     Route::get('/testOrders2', [TestOrderController::class, 'getTestOrdersforDatatable2'])->name('test_order.getTestOrdersforDatatable2');
+    Route::get('/testOrders-immuno', [TestOrderController::class, 'getTestOrdersforDatatable_immuno'])->name('test_order.getTestOrdersforDatatable3');
+    Route::get('/testOrders-immuno2', [TestOrderController::class, 'getTestOrdersforDatatable_immuno2'])->name('test_order.getTestOrdersforDatatable4');
     // Cette la route associer aux fichier a supprimer
     Route::delete('/testOrders/delete/image-gallerie/{index}/{test_order}', [TestOrderController::class, 'deleteimagegallerie'])->name('test_order.deleteimagegallerie');
     Route::put('/testOrders/create/image-gallerie/{test_order}', [TestOrderController::class, 'createimagegallerie'])->name('test_order.createimagegallerie');
@@ -220,10 +223,17 @@ Route::middleware(['auth'])->group(function () {
 
     //Macro
     Route::get('/macro/index', [TestPathologyMacroController::class, 'index'])->name('macro.index');
+    Route::get('/macro/index-immuno', [TestPathologyMacroController::class, 'index_immuno'])->name('macro.immuno.index');
     Route::get('/macro/dataTable', [TestPathologyMacroController::class, 'getTestOrdersforDatatable'])->name('macro.getTestOrdersforDatatable');
     Route::get('/macro/dataTable2', [TestPathologyMacroController::class, 'getTestOrdersforDatatable2'])->name('macro.getTestOrdersforDatatable2');
     Route::get('/macro/dataTable3', [TestPathologyMacroController::class, 'getTestOrdersforDatatable3'])->name('macro.getTestOrdersforDatatable3');
+
+    Route::get('/macro/dataTable-immuno', [TestPathologyMacroController::class, 'getTestOrdersforDatatable_immuno'])->name('macro.immuno.getTestOrdersforDatatable');
+    Route::get('/macro/dataTable2-immuno', [TestPathologyMacroController::class, 'getTestOrdersforDatatable2_immuno'])->name('macro.immuno.getTestOrdersforDatatable2');
+    Route::get('/macro/dataTable3-immuno', [TestPathologyMacroController::class, 'getTestOrdersforDatatable3_immuno'])->name('macro.immuno.getTestOrdersforDatatable3');
+
     Route::get('/macro/create', [TestPathologyMacroController::class, 'create'])->name('macro.create');
+    Route::get('/macro/create-immuno', [TestPathologyMacroController::class, 'create_immuno'])->name('macro.immuno.create');
     Route::get('/macro/countData', [TestPathologyMacroController::class, 'countData'])->name('macro.countData');
     Route::post('/macro/create', [TestPathologyMacroController::class, 'store'])->name('macro.store');
     Route::post('/macro/one-create', [TestPathologyMacroController::class, 'store2'])->name('macro.store2');
@@ -308,10 +318,13 @@ Route::middleware(['auth'])->group(function () {
 
         //Affectation de compte rendu
         Route::get('assignment/index', [TestOrderAssignmentController::class, 'index'])->name('report.assignment.index');
+        Route::get('assignment/index-immuno', [TestOrderAssignmentController::class, 'index_immuno'])->name('report.assignment.immuno.index');
         Route::get('assignment/create/{id}', [AssignmentDoctorController::class, 'create'])->name('report.assignment.create');
+        Route::get('assignment/create-immuno/{id}', [AssignmentDoctorController::class, 'create_immuno'])->name('report.assignment.immuno.create');
         Route::post('assignment/index', [TestOrderAssignmentController::class, 'store'])->name('report.assignment.store');
         Route::post('assignment/update', [TestOrderAssignmentController::class, 'update'])->name('report.assignment.update');
         Route::get('assignment/detail/{id}', [TestOrderAssignmentController::class, 'index_detail'])->name('report.assignment.detail.index');
+        Route::get('assignment/detail-immuno/{id}', [TestOrderAssignmentController::class, 'index_immuno_detail'])->name('report.assignment.immuno.detail.index');
         Route::post('assignment/detail/assignment', [TestOrderAssignmentController::class, 'store_detail'])->name('report.assignment.detail.store');
         Route::get('assignment/detail/assignment/{id}', [TestOrderAssignmentController::class, 'getdetail'])->name('report.assignment.getDetail');
         Route::get('assignment/detail/destroy/{id}', [TestOrderAssignmentController::class, 'detail_destroy'])->name('report.assignment.detail.destroy');

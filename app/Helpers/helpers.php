@@ -707,7 +707,26 @@ if (!function_exists('getMessageUnreadSender')) {
 //Récupérer le nombre de demandes d'examen en attente
 if (!function_exists('getnbrTestOrderpending')) {
     function getnbrTestOrderpending(){
-        $nbr = TestOrder::whereHas('report', function($query){
+        $nbr = TestOrder::whereHas('type', function($query) {
+            $query->where('slug','cytologie')
+                  ->orwhere('slug','histologie');
+        })
+        ->whereHas('report', function($query){
+            $query->where('status',0);
+        })->count();
+        return $nbr;
+    }
+}
+
+
+//Récupérer le nombre de demandes d'examen en attente
+if (!function_exists('getnbrTestOrderImmunopending')) {
+    function getnbrTestOrderImmunopending(){
+        $nbr = TestOrder::whereHas('type', function($query) {
+            $query->where('slug','immuno-interne')
+                  ->orwhere('slug','immuno-exterme');
+        })
+        ->whereHas('report', function($query){
             $query->where('status',0);
         })->count();
         return $nbr;

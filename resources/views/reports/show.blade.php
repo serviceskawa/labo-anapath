@@ -106,6 +106,10 @@
                                         </select>
                                     </div>
                                 </div>
+                                <label for="simpleinput" class="form-label">Commentaire<span</label>
+
+                                <textarea name="comment" class="form-control mb-3" rows="5"
+                                    >{{ $report->comment }}</textarea>
 
                                 <div class="row">
                                     <div class="mb-3">
@@ -166,6 +170,11 @@
                                     </div>
                                 </div>
 
+                                <label for="simpleinput" class="form-label">Commentaire supplémentaire<span</label>
+
+                                <textarea name="comment_sup" class="form-control mb-3" rows="5"
+                                    >{{ $report->comment }}</textarea>
+
                                 <div class="row">
                                     <div class="mb-3 supplementaireid">
                                         <label for="simpleinput" class="form-label">Récapitulatifs<span
@@ -179,6 +188,7 @@
 
                                     </div>
                                 </div>
+
                             </div>
 
                             <div>
