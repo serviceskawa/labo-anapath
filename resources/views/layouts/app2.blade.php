@@ -149,24 +149,15 @@
                     @endif
 
                     @if (getOnlineUser()->can('view-test-orders'))
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarEcommerce10" aria-expanded="false"
-                            aria-controls="sidebarEcommerce10" class="side-nav-link">
-                            <i class="uil-syringe"></i>
-                            <span> IMMUNO</span>
-                            <span class="menu-arrow"></span>
-                            @if (getnbrTestOrderImmunopending()!=0)
-                                <span class="badge bg-warning mb-1" style="margin-left: 25px;">{{getnbrTestOrderImmunopending()}}</span>
-                            @endif
-                        </a>
-                        <div class="collapse" id="sidebarEcommerce10">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href="{{ route('test_order.immuno.index') }}">Toutes les demandes </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+                        <li class="side-nav-item">
+                            <a href="{{ route('test_order.immuno.index') }}" class="side-nav-link">
+                                <i class="uil-syringe"></i>
+                                <span> Immuno</span>
+                                @if (getnbrTestOrderImmunopending()!=0)
+                                    <span class="badge bg-warning mb-1" style="margin-left: 15px;">{{getnbrTestOrderImmunopending()}}</span>
+                                @endif
+                            </a>
+                        </li>
                     @endif
 
                     @if (getOnlineUser()->can('view-reports'))
