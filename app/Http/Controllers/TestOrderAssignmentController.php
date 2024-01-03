@@ -35,7 +35,7 @@ class TestOrderAssignmentController extends Controller
                 $query->whereHas('type', function($query){
                     $query->where('slug','like','cytologie')
                             ->orwhere('slug','!=','histologie');
-                })->where('status', '!=', 0) // Statut différent de 0
+                })->where('status', 1) // Statut différent de 0
                 ->whereNull('deleted_at'); // deleted_at doit être NULL
             });
         })->latest()->get();;
@@ -51,7 +51,7 @@ class TestOrderAssignmentController extends Controller
                 $query->whereHas('type', function($query){
                     $query->where('slug','immuno-interne')
                             ->orwhere('slug','immuno-exterme');
-                })->where('status', '!=', 0) // Statut différent de 0
+                })->where('status', 1) // Statut différent de 0
                 ->whereNull('deleted_at'); // deleted_at doit être NULL
             });
         })->latest()->get();
@@ -78,20 +78,20 @@ class TestOrderAssignmentController extends Controller
         $testOrders = $this->order->whereHas('type', function($query){
             $query->where('slug','like','cytologie')
                     ->orwhere('slug','like','histologie')
-                    ->where('status', '!=', 0) // Statut différent de 0
+                    ->where('status', 1) // Statut différent de 0
                     ->whereNull('deleted_at'); // deleted_at doit être NULL
         })->latest()->get();
 
         return view('reports.assignment.create',compact('assignment','testOrders'));
     }
-    
+
     public function index_immuno_detail($id)
     {
         $assignment = $this->assignment->find($id);
         $testOrders = $this->order->whereHas('type', function($query){
                     $query->where('slug','immuno-interne')
                             ->orwhere('slug','immuno-exterme')
-                            ->where('status', '!=', 0) // Statut différent de 0
+                            ->where('status', 1) // Statut différent de 0
                             ->whereNull('deleted_at'); // deleted_at doit être NULL
                 })->latest()->get();
 
@@ -241,7 +241,7 @@ class TestOrderAssignmentController extends Controller
                 $query->whereHas('type', function($query){
                     $query->where('slug','like','cytologie')
                             ->orwhere('slug','!=','histologie')
-                            ->where('status', '!=', 0) // Statut différent de 0
+                            ->where('status', 1) // Statut différent de 0
                             ->whereNull('deleted_at'); // deleted_at doit être NULL
                 });
             });
@@ -341,7 +341,7 @@ class TestOrderAssignmentController extends Controller
                 $query->whereHas('type', function($query){
                     $query->where('slug','immuno-interne')
                             ->orwhere('slug','immuno-exterme')
-                            ->where('status', '!=', 0) // Statut différent de 0
+                            ->where('status', 1) // Statut différent de 0
                             ->whereNull('deleted_at'); // deleted_at doit être NULL
                 });
             });

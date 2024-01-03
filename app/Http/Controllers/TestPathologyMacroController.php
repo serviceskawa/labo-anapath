@@ -90,7 +90,7 @@ public function __construct(
 
         $orders = $this->testOrder->whereHas('type', function($query) {
             $query->where('slug','like','cytologie')
-                  ->orwhere('slug','like','like')->where('status', '!=', 0) // Statut différent de 0
+                  ->orwhere('slug','like','like')->where('status', 1) // Statut différent de 0
                   ->whereNull('deleted_at'); // deleted_at doit être NULL;
             })->get();
         $employees = $this->employees->all();
@@ -154,7 +154,7 @@ public function __construct(
 
         $orders = $this->testOrder->whereHas('type', function($query) {
             $query->where('slug','immuno-interne')
-                  ->orwhere('slug','immuno-exterme')->where('status', '!=', 0) // Statut différent de 0
+                  ->orwhere('slug','immuno-exterme')->where('status', 1) // Statut différent de 0
                   ->whereNull('deleted_at'); // deleted_at doit être NULL;
             })->get();
         $employees = $this->employees->all();
@@ -210,7 +210,7 @@ public function __construct(
         ->whereHas('order', function ($query) {
             $query->whereHas('type', function($query) {
                 $query->where('slug','like','cytologie')
-                      ->orwhere('slug','like','histologie')->where('status', '!=', 0) // Statut différent de 0
+                      ->orwhere('slug','like','histologie')->where('status', 1) // Statut différent de 0
                       ->whereNull('deleted_at'); // deleted_at doit être NULL;
                 });
         })
@@ -370,9 +370,10 @@ public function __construct(
                             ->whereRaw('id_test_pathology_order = test_orders.id');
                 });
         })
-        ->whereHas('type', function($query) {
-            $query->where('slug','like','histologie')
-                ->orwhere('slug','like','cytologie');
+        ->where(function ($query) {
+            $query->where('test_orders.status', 1)
+                ->where('type_orders.slug','like','histologie')
+                ->orwhere('type_orders.slug','like','cytologie');
         })
         ->orWhere(function ($query) {
             $query->where('reports.status', 0)
@@ -496,12 +497,7 @@ public function __construct(
         ->where(function ($query) {
             $query->where('test_orders.status', 1)
                 ->where('type_orders.slug','like','histologie')
-                ->where('type_orders.slug','like','cytologie')
-                ->whereNotExists(function ($subquery) {
-                    $subquery->select(DB::raw(1))
-                            ->from('test_pathology_macros')
-                            ->whereRaw('id_test_pathology_order = test_orders.id');
-                });
+                ->orwhere('type_orders.slug','like','cytologie');
         })
         ->orWhere(function ($query) {
             $query->where('reports.status', 0)
@@ -607,7 +603,7 @@ public function __construct(
         ->whereHas('order', function ($query) {
             $query->whereHas('type', function($query) {
                 $query->where('slug','immuno-interne')
-                      ->orwhere('slug','immuno-exterme')->where('status', '!=', 0) // Statut différent de 0
+                      ->orwhere('slug','immuno-exterme')->where('status', 1) // Statut différent de 0
                       ->whereNull('deleted_at'); // deleted_at doit être NULL;
                 });
         })
@@ -1031,7 +1027,7 @@ public function __construct(
         $orders = $this->testOrder->whereHas('type', function($query) {
             $query->where('slug','cytologie')
                     ->orwhere('slug','histologie')
-                    ->where('status', '!=', 0) // Statut différent de 0
+                    ->where('status', 1) // Statut différent de 0
                     ->whereNull('deleted_at'); // deleted_at doit être NULL;
         })->get();;
         $employees = $this->employees->all();
@@ -1042,7 +1038,7 @@ public function __construct(
         $orders = $this->testOrder->whereHas('type', function($query) {
             $query->where('slug','immuno-interne')
                     ->orwhere('slug','immuno-exterme')
-                    ->where('status', '!=', 0) // Statut différent de 0
+                    ->where('status', 1) // Statut différent de 0
                     ->whereNull('deleted_at'); // deleted_at doit être NULL;
         })->get();
         $employees = $this->employees->all();

@@ -1599,7 +1599,7 @@ public function __construct(
             ->whereHas('type', function($query) {
                 $query->where('slug','!=','immuno-interne')
                     ->orwhere('slug','!=','immuno-exterme');
-                    //   ->where('status', '!=', 0) // Statut différent de 0
+                    //   ->where('status', 1) // Statut différent de 0
                     // ->whereNull('deleted_at'); // deleted_at doit être NULL;
             })
             ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
