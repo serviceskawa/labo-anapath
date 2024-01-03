@@ -37,7 +37,7 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Contrat</label>
-                                <select name="contrat_id" id="contrat_immuno_id" class="form-control">
+                                <select name="contrat_immuno_id" id="contrat_immuno_id" class="form-control">
                                     <option value="">Tous les contrats</option>
                                     @forelse ($contrats as $contrat)
                                     <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
@@ -52,7 +52,7 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Status</label>
-                                <select name="status" id="exams_immuno_status" class="form-control">
+                                <select name="exams_immuno_status" id="exams_immuno_status" class="form-control">
                                     <option value="">Tous</option>
                                     <option value="1">Valider</option>
                                     <option value="0">En attente</option>
@@ -67,7 +67,7 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Type d'examen</label>
-                                <select name="type_examen" id="type_immuno_examen" class="form-control">
+                                <select name="type_immuno_examen" id="type_immuno_examen" class="form-control">
                                     <option value="">Tous</option>
                                     @forelse ($types_orders as $type)
                                     @if ($type->slug == "immuno-interne" || $type->slug == "immuno-exterme")
@@ -85,7 +85,7 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Urgent</label>
-                                <select name="cas_status" id="cas_immuno_status" class="form-control">
+                                <select name="cas_immuno_status" id="cas_immuno_status" class="form-control">
                                     <option value="">Tous</option>
                                     <option value="1">Urgent</option>
                                 </select>
@@ -98,7 +98,7 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Docteur</label>
-                                <select name="" id="doctor_immuno_signataire" class="form-control">
+                                <select name="doctor_immuno_signataire" id="doctor_immuno_signataire" class="form-control">
                                     <option value="">Tous</option>
                                     @foreach (getUsersByRole('docteur') as $item)
                                     <option value="{{ $item->id }}">
@@ -113,21 +113,21 @@
                         <div class="col-lg-3">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Rechercher</label>
-                                <input type="text" name="contenu" id="contenu_immuno" class="form-control">
+                                <input type="text" name="contenu_immuno" id="contenu_immuno" class="form-control">
                             </div>
                         </div> <!-- end col -->
 
                         <div class="col-lg-3">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Date Début</label>
-                                <input type="date" name="dateBegin" id="dateBegin_immuno" class="form-control">
+                                <input type="date" name="dateBegin_immuno" id="dateBegin_immuno" class="form-control">
                             </div>
                         </div> <!-- end col -->
 
                         <div class="col-lg-3">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Date fin</label>
-                                <input type="date" name="dateEnd" id="dateEnd_immuno" class="form-control">
+                                <input type="date" name="dateEnd_immuno" id="dateEnd_immuno" class="form-control">
                             </div>
                         </div> <!-- end col -->
 
@@ -135,7 +135,7 @@
 
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Status appel</label>
-                                <select name="status_appel" id="appel_immuno_status" class="form-control">
+                                <select name="appel_immuno_status" id="appel_immuno_status" class="form-control">
                                     <option value="">Tous</option>
                                     <option value="voice.completed">Décroché</option>
                                     <option value="voice.cancelled">Manqué</option>
@@ -200,7 +200,7 @@
 
                 </div>
 
-                <table id="datatable2" class="dt-responsive nowrap w-100 table">
+                <table id="datatable4" class="dt-responsive nowrap w-100 table">
                     <thead>
                         <tr>
                             <th>Actions</th>
@@ -230,11 +230,10 @@
     @push('extra-js')
         <script>
             var baseUrl = "{{ url('/') }}"
-            var ROUTETESTORDERDATATABLE = "{{ route('test_order.getTestOrdersforDatatable') }}"
-            var ROUTETESTORDERDATATABLE2 = "{{ route('test_order.getTestOrdersforDatatable2') }}"
             var ROUTETESTORDERDATATABLE3 = "{{ route('test_order.getTestOrdersforDatatable3') }}"
+            var ROUTETESTORDERDATATABLE4 = "{{ route('test_order.getTestOrdersforDatatable4') }}"
             var URLupdateAttribuate = "{{ url('attribuateDoctor') }}" + '/' + doctor_id + '/' + order_id
             var URLUPDATEDELIVER = "{{ route('report.updateDeliver',"+id+") }}"
         </script>
-        <script src="{{ asset('viewjs/test/order/index.js') }}"></script>
+        <script src="{{ asset('viewjs/test/order/immuno.js') }}"></script>
     @endpush
