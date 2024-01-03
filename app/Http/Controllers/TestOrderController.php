@@ -1116,14 +1116,18 @@ public function __construct(
                     $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
                     $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
                     $btnreport = "";
+                    $btnPrintReport ="";
                 } else {
                     if ($data->report) {
                         $btnReport = ' <a type="button" href="' . route('report.show', $data->report->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+
                     }else {
                         $btnReport = "";
+                        $btnPrintReport ="";
                     }
 
                     $btnDelete = "";
+                    $btnPrintReport ="";
                 }
 
                 if ($data->invoice) {
@@ -1144,8 +1148,10 @@ public function __construct(
 
                         if ($data->report->is_deliver ==0) {
                             $btnreport = ' <button type="button"  class="btn btn-success" onclick="confirmAction(' . $data->report->id . ')" title="Marquer comme retirer"><i class="mdi mdi-file-check"></i> </button> ';
+                            $btnPrintReport = ' <a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
                         }else{
                             $btnreport ="";
+                            $btnPrintReport ="";
                         }
                         $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
                     }else {
@@ -1155,6 +1161,7 @@ public function __construct(
 
                 } else {
                     $btnreport = "";
+                    $btnPrintReport ="";
                     $btncalling="";
                 }
                 // if ($data->report->is_deliver == 1) {
@@ -1163,7 +1170,7 @@ public function __construct(
                 //     $btnreport = '   class="btn btn-warning" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
                 // }
 
-                return $btnVoir .  $btnReport  . $btnreport . $btnDelete . $btncalling;
+                return $btnVoir .  $btnReport  . $btnreport . $btnDelete . $btncalling . $btnPrintReport;
             })
             ->addColumn('appel', function ($data) {
                 if($data->report)
@@ -1385,14 +1392,18 @@ public function __construct(
                     $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
                     $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
                     $btnreport = "";
+                    $btnPrintReport ="";
                 } else {
                     if ($data->report) {
                         $btnReport = ' <a type="button" href="' . route('report.show', $data->report->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+
                     }else {
                         $btnReport = "";
+                        $btnPrintReport ="";
                     }
 
                     $btnDelete = "";
+                    $btnPrintReport ="";
                 }
 
                 if ($data->invoice) {
@@ -1413,8 +1424,10 @@ public function __construct(
 
                         if ($data->report->is_deliver ==0) {
                             $btnreport = ' <button type="button"  class="btn btn-success" onclick="confirmAction(' . $data->report->id . ')" title="Marquer comme retirer"><i class="mdi mdi-file-check"></i> </button> ';
+                            $btnPrintReport = ' <a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
                         }else{
                             $btnreport ="";
+                            $btnPrintReport ="";
                         }
                         $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
                     }else {
@@ -1424,6 +1437,7 @@ public function __construct(
 
                 } else {
                     $btnreport = "";
+                    $btnPrintReport ="";
                     $btncalling="";
                 }
                 // if ($data->report->is_deliver == 1) {
@@ -1432,7 +1446,7 @@ public function __construct(
                 //     $btnreport = '   class="btn btn-warning" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
                 // }
 
-                return $btnVoir .  $btnReport  . $btnreport . $btnDelete . $btncalling;
+                return $btnVoir .  $btnReport  . $btnreport . $btnDelete . $btncalling . $btnPrintReport;
             })
             ->addColumn('appel', function ($data) {
                 if($data->report)
@@ -1664,14 +1678,18 @@ public function __construct(
                     $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
                     $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
                     $btnreport = "";
+                    $btnPrintReport ="";
                 } else {
                     if ($data->report) {
                         $btnReport = ' <a type="button" href="' . route('report.show', $data->report->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+
                     }else {
                         $btnReport = "";
+                        $btnPrintReport ="";
                     }
 
                     $btnDelete = "";
+                    $btnPrintReport ="";
                 }
 
                 if ($data->invoice) {
@@ -1685,18 +1703,27 @@ public function __construct(
                 }
 
 
-                if ($data->report->status ==1) {
-                    // <button type="button" target="_blank" onclick="passwordTest('. $data->report->id.')" class="btn btn-warning" onclick="confirmAction(' . $data->report->id . ')" title="Marquer comme retirer"><i class="mdi mdi-printer"></i> Impributtoner </button>$data->option ?'<i class="uil-calling"></i>':'<i class="mdi mdi-message"></i> '
-                    $icon = $data->option ? '<i class="uil-message"></i>':'<i class="uil-calling"></i>';
+                if (!empty($data->report)) {
+                    if ($data->report->status ==1) {
+                        // <button type="button" target="_blank" onclick="passwordTest('. $data->report->id.')" class="btn btn-warning" onclick="confirmAction(' . $data->report->id . ')" title="Marquer comme retirer"><i class="mdi mdi-printer"></i> Impributtoner </button>$data->option ?'<i class="uil-calling"></i>':'<i class="mdi mdi-message"></i> '
+                        $icon = $data->option ? '<i class="uil-message"></i>':'<i class="uil-calling"></i>';
 
-                    if ($data->report->is_deliver ==0) {
-                        $btnreport = ' <button type="button"  class="btn btn-success" onclick="confirmAction(' . $data->report->id . ')" title="Marquer comme retirer"><i class="mdi mdi-file-check"></i> </button> ';
-                    }else{
+                        if ($data->report->is_deliver ==0) {
+                            $btnreport = ' <button type="button"  class="btn btn-success" onclick="confirmAction(' . $data->report->id . ')" title="Marquer comme retirer"><i class="mdi mdi-file-check"></i> </button> ';
+                            $btnPrintReport = ' <a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
+                        }else{
+                            $btnreport ="";
+                            $btnPrintReport ="";
+                        }
+                        $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
+                    }else {
                         $btnreport ="";
+                        $btncalling="";
                     }
-                    $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
-                }else {
-                    $btnreport ="";
+
+                } else {
+                    $btnreport = "";
+                    $btnPrintReport ="";
                     $btncalling="";
                 }
                 // if ($data->report->is_deliver == 1) {
@@ -1705,7 +1732,7 @@ public function __construct(
                 //     $btnreport = '   class="btn btn-warning" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
                 // }
 
-                return $btnVoir .  $btnReport . $btnreport . $btnDelete . $btncalling;
+                return $btnVoir .  $btnReport  . $btnreport . $btnDelete . $btncalling . $btnPrintReport;
             })
             ->addColumn('appel', function ($data) {
                 if($data->report)
