@@ -138,6 +138,7 @@ class UserController extends Controller
         if (!getOnlineUser()->can('edit-users')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+        
         $data = $this->validate($request, [
             'id' => 'required',
             'firstname' => 'required',

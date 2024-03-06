@@ -20,7 +20,6 @@ class TFAuthController extends Controller
 
     public function show()
     {
-
         $user = $this->userConnect;
         if ($user->is_active ==0) {
             return redirect()->route('login')->with('error', 'Votre compte est désactivé. Veuillez contacter l\'administrateur.');
