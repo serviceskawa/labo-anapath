@@ -104,8 +104,9 @@
 
                             <td>
                                
-                                 {{ $item->user->firstname ? $item->user->firstname : 'NoData' }}
-                                 {{ $item->user->lastname ? $item->user->lastname : 'NoData' }}
+                                {{ optional($item->user)->firstname ?? 'NoData' }}
+{{ optional($item->user)->lastname ?? 'NoData' }}
+
                             </td>
                             {{-- <td>
                                 <button type="button" onclick="editVente({{$item->id}})" class="btn btn-primary"><i
