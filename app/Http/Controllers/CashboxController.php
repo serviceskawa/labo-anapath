@@ -60,7 +60,7 @@ class CashboxController extends Controller
         $total = $entree + $sortie;
         // dd($sortie);
 
-        // dd($cashboxtest);
+        dd($$cashadds);
         $setting = $this->setting->find(1);
         config(['app.name'=>$setting->titre]);
         return view('cashbox.vente.index',compact(['sortie','entree','cashadds','totalToday','banks','cashboxDailys','cashboxs','cashboxtest']));
