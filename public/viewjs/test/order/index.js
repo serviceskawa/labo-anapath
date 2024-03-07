@@ -63,21 +63,21 @@ $(document).ready(function() {
                 data: 'action',
                 name: 'action',
             },
-            {
-                data: 'appel',
-                name: 'appel'
-            },
+            // {
+            //     data: 'appel',
+            //     name: 'appel'
+            // },
             {
                 data: 'created_at',
                 name: 'created_at'
             }, {
                 data: 'code',
                 name: 'code'
-            },{
+            }, {
                 data: 'dropdown',
                 name: 'dropdown'
             },
-             {
+            {
                 data: 'patient',
                 name: 'patient',
             },
@@ -149,21 +149,21 @@ $(document).ready(function() {
                 data: 'action',
                 name: 'action',
             },
-            {
-                data: 'appel',
-                name: 'appel'
-            },
+            // {
+            //     data: 'appel',
+            //     name: 'appel'
+            // },
             {
                 data: 'created_at',
                 name: 'created_at'
             }, {
                 data: 'code',
                 name: 'code'
-            },{
+            }, {
                 data: 'dropdown',
                 name: 'dropdown'
             },
-             {
+            {
                 data: 'patient',
                 name: 'patient',
             },
@@ -219,23 +219,23 @@ $(document).ready(function() {
         table.draw();
     });
 
-     // Recherche selon les contrats
-     $("#contrat_id").on("change", function() {
+    // Recherche selon les contrats
+    $("#contrat_id").on("change", function() {
         // alert(this.value)
         table.draw();
     });
-     // Recherche selon le status d'examen
-     $("#exams_status").on("change", function() {
+    // Recherche selon le status d'examen
+    $("#exams_status").on("change", function() {
         // alert(this.value)
         table.draw();
     });
-     // Recherche selon les types d'examen
-     $("#type_examen").on("change", function() {
+    // Recherche selon les types d'examen
+    $("#type_examen").on("change", function() {
         // alert(this.value)
         table.draw();
     });
-     // Recherche selon les cas
-     $("#cas_status").on("change", function() {
+    // Recherche selon les cas
+    $("#cas_status").on("change", function() {
         // alert(this.value)
         table.draw();
     });
@@ -243,7 +243,7 @@ $(document).ready(function() {
     // $("#appel").on("change", function() {
     //     table.draw();
     // })
-    $('#contenu').on("input", function(){
+    $('#contenu').on("input", function() {
         table.draw();
     });
 
@@ -259,7 +259,7 @@ $(document).ready(function() {
         //console.log(search.value);
     });
 
-    $('#appel_status').on('change',function() {
+    $('#appel_status').on('change', function() {
         // alert(this.value);
         table.draw();
     });
@@ -337,7 +337,7 @@ function confirmAction(id) {
     }).then(function(result) {
         $.ajax({
             type: "GET",
-            url: baseUrl+"/report/updateDeliver/"+id,
+            url: baseUrl + "/report/updateDeliver/" + id,
             success: function(data) {
                 console.log(data)
                 if (data) {

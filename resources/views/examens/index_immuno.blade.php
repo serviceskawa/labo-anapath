@@ -131,8 +131,7 @@
                             </div>
                         </div> <!-- end col -->
 
-                        <div class="col-lg-3">
-
+                        {{-- <div class="col-lg-3">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Status appel</label>
                                 <select name="appel_immuno_status" id="appel_immuno_status" class="form-control">
@@ -142,8 +141,7 @@
                                     <option value="voice.busy">Racroché</option>
                                 </select>
                             </div>
-
-                        </div> <!-- end col -->
+                        </div>  --}}
 
                     </div>
                     {{-- </form> --}}
@@ -167,7 +165,7 @@
                         <thead>
                             <tr>
                                 <th>Actions</th>
-                                <th>Appel</th>
+                                {{-- <th>Appel</th> --}}
                                 <th>Date</th>
                                 <th>Code</th>
                                 <th>Affecter à</th>
@@ -187,9 +185,9 @@
 
                 </div>
             </div>
-        </div> <!-- end card-->
+        </div>
 
-        <div class="card mb-md-0 mt-3 mb-3">
+        {{-- <div class="card mb-md-0 mt-3 mb-3">
             <div class="card-body">
                 <h5 class="card-title mb-3">Liste des demandes d'examen : APPEL NON DÉCROCHÉ</h5>
                 <div class="row mb-3">
@@ -211,18 +209,14 @@
                             <th>Patient</th>
                             <th>Examens</th>
                             <th>Contrat</th>
-                            {{-- <th>Pièce jointe</th> --}}
-                            {{-- <th>Examens demandés</th> --}}
                             <th>Montant</th>
                             <th>Compte rendu</th>
-                            {{-- <th>Type examen</th> --}}
                             <th>Urgent</th>
                         </tr>
                     </thead>
-
                 </table>
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
     @endsection

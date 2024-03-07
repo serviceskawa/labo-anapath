@@ -1054,8 +1054,6 @@ public function __construct(
     // Debut
     public function getTestOrdersforDatatable(Request $request)
     {
-
-
         $data = $this->testOrder
             ->with(['patient', 'contrat', 'type', 'details', 'report'])
             ->whereHas('type', function($query) {
@@ -1068,11 +1066,6 @@ public function __construct(
             ->orderBy('created_at', 'desc');
 
         return Datatables::of($data)->addIndexColumn()
-            ->editColumn('created_at', function ($data) {
-                //change over here
-                //return date('y/m/d',$data->created_at);
-                return $data->created_at;
-            })
             ->setRowData([
                 'data-mytag' => function ($data) {
                     if ($data->is_urgent == 1) {
@@ -1084,6 +1077,8 @@ public function __construct(
                     return 'mytag=' . $result;
                 },
             ])
+
+
             ->setRowClass(function ($data) use ($request) {
                 if($data->is_urgent == 1){
                         if (!empty($data->report)) {
@@ -1094,10 +1089,9 @@ public function __construct(
                                     return 'table-warning';
                                 }
                             }
-
                         }
-                            return 'table-danger urgent';
-
+                        
+                        return 'table-danger urgent';
                 }elseif (!empty($data->report)) {
                     if($data->report->is_deliver ==1){
                         return 'table-success';
@@ -1110,6 +1104,8 @@ public function __construct(
                     return '';
                 }
             })
+
+
 
             ->addColumn('action', function ($data) {
                 $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
@@ -1145,7 +1141,7 @@ public function __construct(
 
                 if (!empty($data->report)) {
                     if ($data->report->status ==1) {
-                        // <button type="button" target="_blank" onclick="passwordTest('. $data->report->id.')" class="btn btn-warning" onclick="confirmAction(' . $data->report->id . ')" title="Marquer comme retirer"><i class="mdi mdi-printer"></i> Impributtoner </button>$data->option ?'<i class="uil-calling"></i>':'<i class="mdi mdi-message"></i> '
+                       
                         $icon = $data->option ? '<i class="uil-message"></i>':'<i class="uil-calling"></i>';
 
                         if ($data->report->is_deliver ==0) {
@@ -1155,69 +1151,76 @@ public function __construct(
                             $btnreport ="";
                             $btnPrintReport ="";
                         }
+
                         $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
+                    
                     }else {
                         $btnreport ="";
                         $btncalling="";
                     }
-
                 } else {
                     $btnreport = "";
                     $btnPrintReport ="";
                     $btncalling="";
                 }
-                // if ($data->report->is_deliver == 1) {
-                //     $btnreport = '   class="btn btn-success" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
-                // } else {
-                //     $btnreport = '   class="btn btn-warning" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
-                // }
-
+               
                 return $btnVoir .  $btnReport  . $btnreport . $btnDelete . $btncalling . $btnPrintReport;
             })
-            ->addColumn('appel', function ($data) {
-                if($data->report)
-                {
-                    $status = $this->getStatusCalling($data->report->id);
-                }else{
-                    $status = "";
-                }
 
-                switch ($status) {
-                    case 'voice.busy':
-                        $btn = 'danger';
-                        break;
-                    case 'no-answered':
-                        $btn = 'danger';
-                        break;
-                    case 'voice.completed':
-                        $btn = 'success';
-                        break;
-                    default:
-                        $btn = 'warning';
-                        break;
-                }
 
-                $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
-                if (!$data->option) {
-                    return $span;
-                }
+          
+            // Code qui permet d'afficher un appel
+            // ->addColumn('appel', function ($data) {
+            //     if($data->report)
+            //     {
+            //         $status = $this->getStatusCalling($data->report->id);
+            //     }else{
+            //         $status = "";
+            //     }
+
+            //     switch ($status) {
+            //         case 'voice.busy':
+            //             $btn = 'danger';
+            //             break;
+            //         case 'no-answered':
+            //             $btn = 'danger';
+            //             break;
+            //         case 'voice.completed':
+            //             $btn = 'success';
+            //             break;
+            //         default:
+            //             $btn = 'warning';
+            //             break;
+            //     }
+
+            //     $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
+            //     if (!$data->option) {
+            //         return $span;
+            //     }
+            // })
+
+
+            ->editColumn('created_at', function ($data) {
+                return $data->created_at;
             })
+
             ->addColumn('patient', function ($data) {
                 return $data->patient->firstname . ' ' . $data->patient->lastname;
             })
+
             ->addColumn('contrat', function ($data) {
                 return $data->contrat->name;
             })
+
             ->addColumn('details', function (TestOrder $testOrder) {
                 $a = $testOrder->details->map(function ($detail) {
                     return Str::limit($detail->test_name, 30, '...');
-                    // return '<strong>' . $detail->order->type->title . '</strong>: ' . Str::limit($detail->test_name, 30, '...');
                 })->implode('<br>');
                 return '<strong>' . $testOrder->type_order_id != 0 ? ($testOrder->type?$testOrder->type->title :''):'' . '</strong>: ' . $a;
             })
+
             ->addColumn('rendu', function ($data) {
                 if (!empty($data->report)) {
-                    // $btn = $data->getReport($data->id);
                     switch ($data->report->status) {
                         case 1:
                             $btn = 'Valider';
@@ -1233,43 +1236,51 @@ public function __construct(
                 $span = '<span class="badge bg-primary rounded-pill">' . $btn . '</span>';
                 return $span;
             })
+
             ->addColumn('type', function ($data) {
                 return $data->type_order_id !=0 ? $data->type->title :'';
             })
+
             ->addColumn('urgence', function ($data) {
                 return $data->is_urgent;
             })
+
             ->addColumn('dropdown', function ($data) {
                 $order = $data;
                 $setting = $this->setting->find(1);
                 config(['app.name' => $setting->titre]);
                 return view('examens.datatables.attribuate', compact('order'));
             })
+
+
             ->filter(function ($query) use ($request,$data) {
 
                 if (!empty($request->get('attribuate_doctor_id'))) {
                     $query->where('attribuate_doctor_id', $request->get('attribuate_doctor_id'));
                 }
+
                 if (!empty($request->get('cas_status'))) {
                     $query->where('is_urgent', $request->get('cas_status'));
                 }
 
-                if (!empty($request->get('appel'))) {
-                    $query->whereHas('report', function ($query) use($request) {
-                            $query->whereHas('appel',function($query) use($request){
-                                $query->whereHas('appel_event', function($query) use($request){
-                                    $query->where('event',$request->get('appel'));
-                                });
-                            });
-                        });
-                    // $query->where('is_urgent', $request->get('cas_status'));
-                }
+                // if (!empty($request->get('appel'))) {
+                //     $query->whereHas('report', function ($query) use($request) {
+                //             $query->whereHas('appel',function($query) use($request){
+                //                 $query->whereHas('appel_event', function($query) use($request){
+                //                     $query->where('event',$request->get('appel'));
+                //                 });
+                //             });
+                //         });
+                // }
+
                 if (!empty($request->get('contrat_id'))) {
                     $query->where('contrat_id', $request->get('contrat_id'));
                 }
+
                 if (!empty($request->get('type_examen'))) {
                     $query->where('type_order_id', $request->get('type_examen'));
                 }
+
                 if (!empty($request->get('exams_status'))) {
                     if ($request->get('exams_status') == "livrer") {
                         $query->whereHas('report', function ($query) {
@@ -1283,20 +1294,18 @@ public function __construct(
                         $query->whereHas('report', function ($query) use ($request) {
                             $query->where('status', $request->get('exams_status'));
                         });
-                        // $query->where('status', $request->get('exams_status'));
                     }
                 }
 
-                if (!empty($request->get('appel'))) {
-
-                    $query->whereHas('report', function ($query) use($request){
-                            $query->whereHas('appel',function($query) use($request) {
-                                $query->whereHas('appel_event', function($query) use($request) {
-                                    $query->where('event',$request->get('appel'));
-                                });
-                            });
-                    });
-                }
+                // if (!empty($request->get('appel'))) {
+                //     $query->whereHas('report', function ($query) use($request){
+                //             $query->whereHas('appel',function($query) use($request) {
+                //                 $query->whereHas('appel_event', function($query) use($request) {
+                //                     $query->where('event',$request->get('appel'));
+                //                 });
+                //             });
+                //     });
+                // }
 
                 if(!empty($request->get('contenu')))
                 {
@@ -1317,17 +1326,16 @@ public function __construct(
                 }
 
                 if(!empty($request->get('dateBegin'))){
-                    //dd($request);
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
                     $query->whereDate('created_at','>=',$newDate);
                 }
+
                 if(!empty($request->get('dateEnd'))){
-                    //dd($request);
                     $query->whereDate('created_at','<=',$request->get('dateEnd'));
                 }
 
             })
-            ->rawColumns(['action','appel', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
+            ->rawColumns(['action','patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
             ->make(true);
     }
     // Debut
@@ -1343,6 +1351,7 @@ public function __construct(
                 })
                 ->orderBy('created_at', 'desc');
 
+                // dd($data);
         return Datatables::of($data)->addIndexColumn()
             ->editColumn('created_at', function ($data) {
                 //change over here
@@ -1421,7 +1430,7 @@ public function __construct(
 
                 if (!empty($data->report)) {
                     if ($data->report->status ==1) {
-                        // <button type="button" target="_blank" onclick="passwordTest('. $data->report->id.')" class="btn btn-warning" onclick="confirmAction(' . $data->report->id . ')" title="Marquer comme retirer"><i class="mdi mdi-printer"></i> Impributtoner </button>$data->option ?'<i class="uil-calling"></i>':'<i class="mdi mdi-message"></i> '
+                       
                         $icon = $data->option ? '<i class="uil-message"></i>':'<i class="uil-calling"></i>';
 
                         if ($data->report->is_deliver ==0) {
@@ -1431,7 +1440,8 @@ public function __construct(
                             $btnreport ="";
                             $btnPrintReport ="";
                         }
-                        $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
+                        $btncalling = '';
+                        // $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
                     }else {
                         $btnreport ="";
                         $btncalling="";
@@ -1442,55 +1452,53 @@ public function __construct(
                     $btnPrintReport ="";
                     $btncalling="";
                 }
-                // if ($data->report->is_deliver == 1) {
-                //     $btnreport = '   class="btn btn-success" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
-                // } else {
-                //     $btnreport = '   class="btn btn-warning" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
-                // }
-
+                
                 return $btnVoir .  $btnReport  . $btnreport . $btnDelete . $btncalling . $btnPrintReport;
             })
-            ->addColumn('appel', function ($data) {
-                if($data->report)
-                {
-                    $status = $this->getStatusCalling($data->report->id);
-                }else{
-                    $status = "";
-                }
 
-                switch ($status) {
-                    case 'voice.busy':
-                        $btn = 'danger';
-                        break;
-                    case 'no-answered':
-                        $btn = 'danger';
-                        break;
-                    case 'voice.completed':
-                        $btn = 'success';
-                        break;
-                    default:
-                        $btn = 'warning';
-                        break;
-                }
+            // ->addColumn('appel', function ($data) {
+            //     if($data->report)
+            //     {
+            //         $status = $this->getStatusCalling($data->report->id);
+            //     }else{
+            //         $status = "";
+            //     }
 
-                $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
-                if (!$data->option) {
-                    return $span;
-                }
-            })
+            //     switch ($status) {
+            //         case 'voice.busy':
+            //             $btn = 'danger';
+            //             break;
+            //         case 'no-answered':
+            //             $btn = 'danger';
+            //             break;
+            //         case 'voice.completed':
+            //             $btn = 'success';
+            //             break;
+            //         default:
+            //             $btn = 'warning';
+            //             break;
+            //     }
+
+            //     $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
+            //     if (!$data->option) {
+            //         return $span;
+            //     }
+            // })
+
             ->addColumn('patient', function ($data) {
                 return $data->patient->firstname . ' ' . $data->patient->lastname;
             })
             ->addColumn('contrat', function ($data) {
                 return $data->contrat->name;
             })
+
             ->addColumn('details', function (TestOrder $testOrder) {
                 $a = $testOrder->details->map(function ($detail) {
                     return Str::limit($detail->test_name, 30, '...');
-                    // return '<strong>' . $detail->order->type->title . '</strong>: ' . Str::limit($detail->test_name, 30, '...');
                 })->implode('<br>');
                 return '<strong>' . $testOrder->type_order_id != 0 ? ($testOrder->type?$testOrder->type->title :''):'' . '</strong>: ' . $a;
             })
+
             ->addColumn('rendu', function ($data) {
                 if (!empty($data->report)) {
                     // $btn = $data->getReport($data->id);
@@ -1509,18 +1517,22 @@ public function __construct(
                 $span = '<span class="badge bg-primary rounded-pill">' . $btn . '</span>';
                 return $span;
             })
+
             ->addColumn('type', function ($data) {
                 return $data->type_order_id !=0 ? $data->type->title :'';
             })
+
             ->addColumn('urgence', function ($data) {
                 return $data->is_urgent;
             })
+
             ->addColumn('dropdown', function ($data) {
                 $order = $data;
                 $setting = $this->setting->find(1);
                 config(['app.name' => $setting->titre]);
                 return view('examens.datatables.attribuate', compact('order'));
             })
+
             ->filter(function ($query) use ($request,$data) {
 
                 if (!empty($request->get('attribuate_doctor_id'))) {
@@ -1530,16 +1542,16 @@ public function __construct(
                     $query->where('is_urgent', $request->get('cas_status'));
                 }
 
-                if (!empty($request->get('appel'))) {
-                    $query->whereHas('report', function ($query) use($request) {
-                            $query->whereHas('appel',function($query) use($request){
-                                $query->whereHas('appel_event', function($query) use($request){
-                                    $query->where('event',$request->get('appel'));
-                                });
-                            });
-                        });
-                    // $query->where('is_urgent', $request->get('cas_status'));
-                }
+                // if (!empty($request->get('appel'))) {
+                //     $query->whereHas('report', function ($query) use($request) {
+                //             $query->whereHas('appel',function($query) use($request){
+                //                 $query->whereHas('appel_event', function($query) use($request){
+                //                     $query->where('event',$request->get('appel'));
+                //                 });
+                //             });
+                //         });
+                // }
+
                 if (!empty($request->get('contrat_id'))) {
                     $query->where('contrat_id', $request->get('contrat_id'));
                 }
@@ -1559,20 +1571,19 @@ public function __construct(
                         $query->whereHas('report', function ($query) use ($request) {
                             $query->where('status', $request->get('exams_status'));
                         });
-                        // $query->where('status', $request->get('exams_status'));
-                    }
+                   }
                 }
 
-                if (!empty($request->get('appel'))) {
+                // if (!empty($request->get('appel'))) {
 
-                    $query->whereHas('report', function ($query) use($request){
-                            $query->whereHas('appel',function($query) use($request) {
-                                $query->whereHas('appel_event', function($query) use($request) {
-                                    $query->where('event',$request->get('appel'));
-                                });
-                            });
-                    });
-                }
+                //     $query->whereHas('report', function ($query) use($request){
+                //             $query->whereHas('appel',function($query) use($request) {
+                //                 $query->whereHas('appel_event', function($query) use($request) {
+                //                     $query->where('event',$request->get('appel'));
+                //                 });
+                //             });
+                //     });
+                // }
 
                 if(!empty($request->get('contenu')))
                 {
@@ -1593,17 +1604,15 @@ public function __construct(
                 }
 
                 if(!empty($request->get('dateBegin'))){
-                    //dd($request);
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
                     $query->whereDate('created_at','>=',$newDate);
                 }
                 if(!empty($request->get('dateEnd'))){
-                    //dd($request);
-                    $query->whereDate('created_at','<=',$request->get('dateEnd'));
+                   $query->whereDate('created_at','<=',$request->get('dateEnd'));
                 }
 
             })
-            ->rawColumns(['action','appel', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
+            ->rawColumns(['action', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
             ->make(true);
     }
     // Debut
