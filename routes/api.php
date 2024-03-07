@@ -37,7 +37,7 @@ Route::post('/v1/login',[LoginController::class, 'login']);
 
 // Routes de recherches
 Route::get('/v1/alltestorders',[DoctorController::class, 'AllTestOrders']);
-Route::post('/v1/search',[DoctorController::class, 'searchAffectation']);
+Route::get('/v1/search/{query}',[DoctorController::class, 'searchAffectation']);
 Route::get('/v1/searchtestorderbydoctor/{query}',[DoctorController::class, 'searchAffectationByDoctor']);
 Route::get('/v1/testorder/old/{query}',[DoctorController::class, 'getOldTestOrders']);
 
