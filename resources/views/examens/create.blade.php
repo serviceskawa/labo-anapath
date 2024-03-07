@@ -65,8 +65,10 @@
                         <select class="form-select select2" data-toggle="select2" required id="type_examen"
                             name="type_examen">
                             <option>Sélectionner le type d'examen</option>
-                            @forelse ($types_orders as $type)
+                            @forelse ($types_orders->reverse() as $type)
+                            @if($type->id != 1)
                             <option value="{{ $type->id }}">{{ $type->title }}</option>
+                            @endif
                             @empty
                             Ajouter un Type d'examen
                             @endforelse

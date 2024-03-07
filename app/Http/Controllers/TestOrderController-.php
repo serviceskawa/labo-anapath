@@ -111,7 +111,6 @@ class TestOrderController extends Controller
 
     public function create()
     {
-
         if (!getOnlineUser()->can('create-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
@@ -119,7 +118,8 @@ class TestOrderController extends Controller
         $doctors = Doctor::all();
         $hopitals = Hospital::all();
         $contrats = Contrat::ofStatus('ACTIF')->get();
-        $types_orders = TypeOrder::all();
+        $types_orders = TypeOrder::latest()->get();
+        // $types_orders = TypeOrder::orderBy('id', 'desc')->get();
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
         return view('examens.create', compact(['patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));

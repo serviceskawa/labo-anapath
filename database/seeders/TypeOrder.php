@@ -29,6 +29,12 @@ class TypeOrder extends Seeder
             [
                 'id' => '4', 'title' => 'Cytologie', 'slug' => Str::slug("Cytologie"),
             ],
+            [
+                'id' => '5', 'title' => 'Biopsie', 'slug' => Str::slug("Biopsie"),
+            ],
+            [
+                'id' => '6', 'title' => 'Pièce opératoire', 'slug' => Str::slug("Pièce opératoire"),
+            ],
         ];
         DB::table('type_orders')->insert($type_orders);
     }
