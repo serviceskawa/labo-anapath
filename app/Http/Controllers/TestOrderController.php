@@ -1061,6 +1061,8 @@ public function __construct(
             ->whereHas('type', function($query) {
                 $query->where('slug','like','histologie')
                       ->orwhere('slug','like','cytologie')
+                      ->orwhere('slug','like','biopsie')
+                      ->orwhere('slug','like','pièce-opératoire')
                     ->whereNull('deleted_at'); // deleted_at doit être NULL;
             })
             ->orderBy('created_at', 'desc');
