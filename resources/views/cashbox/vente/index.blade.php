@@ -102,7 +102,11 @@
 
                             <td>{{ $item->created_at->format('d-m-Y (H:i)') }}</td>
 
-                            <td>{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
+                            <td>
+                               
+                                 {{ $item->user->firstname ? $item->user->firstname : 'NoData' }}
+                                 {{ $item->user->lastname ? $item->user->lastname : 'NoData' }}
+                            </td>
                             {{-- <td>
                                 <button type="button" onclick="editVente({{$item->id}})" class="btn btn-primary"><i
                                         class="mdi mdi-lead-pencil"></i> </button>
