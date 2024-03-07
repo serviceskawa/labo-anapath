@@ -35,9 +35,16 @@ Route::post('/generate/pdf',[ApiController::class, 'pdf']);
 // Routes de connexion 
 Route::post('/v1/login',[LoginController::class, 'login']);
 
-// Routes de recherches
+
+// Cette route affiche toutes les affectations
 Route::get('/v1/alltestorders',[DoctorController::class, 'AllTestOrders']);
+
+// Cette route permet de rechercher une affectation
 Route::get('/v1/search/{query}',[DoctorController::class, 'searchAffectation']);
-Route::get('/v1/searchtestorderbydoctor/{query}',[DoctorController::class, 'searchAffectationByDoctor']);
-Route::get('/v1/testorder/old/{query}',[DoctorController::class, 'getOldTestOrders']);
+
+// Cette route permet de filtrer une affectation par docteur, par son identifiant (Id)
+Route::get('/v1/searchtestorderbydoctor/{doctorId}',[DoctorController::class, 'searchAffectationByDoctor']);
+
+// Cette route permet de filtrer une affectation de plus de 10 jours affecter a un docteur
+Route::get('/v1/testorder/old/{doctorId}',[DoctorController::class, 'getOldTestOrders']);
 
