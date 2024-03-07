@@ -48,7 +48,7 @@ $(document).ready(function() {
             data: function(d) {
                 d.attribuate_doctor_id = $('#doctor_immuno_signataire').val()
                 d.cas_status = $('#cas_status').val()
-                    // d.appel = $('#appel').val()
+                d.appel = $('#appel').val()
                 d.contrat_id = $('#contrat_id').val()
                 d.exams_status = $('#exams_status').val()
                 d.type_examen = $('#type_examen').val()
