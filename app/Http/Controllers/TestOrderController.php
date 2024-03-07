@@ -1351,7 +1351,6 @@ public function __construct(
                 })
                 ->orderBy('created_at', 'desc');
 
-                // dd($data);
         return Datatables::of($data)->addIndexColumn()
             ->editColumn('created_at', function ($data) {
                 //change over here
@@ -1430,7 +1429,7 @@ public function __construct(
 
                 if (!empty($data->report)) {
                     if ($data->report->status ==1) {
-                       
+                        // <button type="button" target="_blank" onclick="passwordTest('. $data->report->id.')" class="btn btn-warning" onclick="confirmAction(' . $data->report->id . ')" title="Marquer comme retirer"><i class="mdi mdi-printer"></i> Impributtoner </button>$data->option ?'<i class="uil-calling"></i>':'<i class="mdi mdi-message"></i> '
                         $icon = $data->option ? '<i class="uil-message"></i>':'<i class="uil-calling"></i>';
 
                         if ($data->report->is_deliver ==0) {
@@ -1440,8 +1439,7 @@ public function __construct(
                             $btnreport ="";
                             $btnPrintReport ="";
                         }
-                        $btncalling = '';
-                        // $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
+                        $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
                     }else {
                         $btnreport ="";
                         $btncalling="";
@@ -1452,53 +1450,58 @@ public function __construct(
                     $btnPrintReport ="";
                     $btncalling="";
                 }
-                
+                // if ($data->report->is_deliver == 1) {
+                //     $btnreport = '   class="btn btn-success" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
+                // } else {
+                //     $btnreport = '   class="btn btn-warning" title="Livrer"><i class="uil uil-envelope-upload"></i> </a>';
+                // }
+
                 return $btnVoir .  $btnReport  . $btnreport . $btnDelete . $btncalling . $btnPrintReport;
             })
 
-            // ->addColumn('appel', function ($data) {
-            //     if($data->report)
-            //     {
-            //         $status = $this->getStatusCalling($data->report->id);
-            //     }else{
-            //         $status = "";
-            //     }
+            ->addColumn('appel', function ($data) {
+                // if($data->report)
+                // {
+                //     $status = $this->getStatusCalling($data->report->id);
+                // }else{
+                //     $status = "";
+                // }
 
-            //     switch ($status) {
-            //         case 'voice.busy':
-            //             $btn = 'danger';
-            //             break;
-            //         case 'no-answered':
-            //             $btn = 'danger';
-            //             break;
-            //         case 'voice.completed':
-            //             $btn = 'success';
-            //             break;
-            //         default:
-            //             $btn = 'warning';
-            //             break;
-            //     }
+                // switch ($status) {
+                //     case 'voice.busy':
+                //         $btn = 'danger';
+                //         break;
+                //     case 'no-answered':
+                //         $btn = 'danger';
+                //         break;
+                //     case 'voice.completed':
+                //         $btn = 'success';
+                //         break;
+                //     default:
+                //         $btn = 'warning';
+                //         break;
+                // }
 
-            //     $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
-            //     if (!$data->option) {
-            //         return $span;
-            //     }
-            // })
-
+                // $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
+                $span = '#';
+                // if (!$data->option) {
+                    return $span;
+                // }
+            })
+            
             ->addColumn('patient', function ($data) {
                 return $data->patient->firstname . ' ' . $data->patient->lastname;
             })
             ->addColumn('contrat', function ($data) {
                 return $data->contrat->name;
             })
-
             ->addColumn('details', function (TestOrder $testOrder) {
                 $a = $testOrder->details->map(function ($detail) {
                     return Str::limit($detail->test_name, 30, '...');
+                    // return '<strong>' . $detail->order->type->title . '</strong>: ' . Str::limit($detail->test_name, 30, '...');
                 })->implode('<br>');
                 return '<strong>' . $testOrder->type_order_id != 0 ? ($testOrder->type?$testOrder->type->title :''):'' . '</strong>: ' . $a;
             })
-
             ->addColumn('rendu', function ($data) {
                 if (!empty($data->report)) {
                     // $btn = $data->getReport($data->id);
@@ -1517,22 +1520,18 @@ public function __construct(
                 $span = '<span class="badge bg-primary rounded-pill">' . $btn . '</span>';
                 return $span;
             })
-
             ->addColumn('type', function ($data) {
                 return $data->type_order_id !=0 ? $data->type->title :'';
             })
-
             ->addColumn('urgence', function ($data) {
                 return $data->is_urgent;
             })
-
             ->addColumn('dropdown', function ($data) {
                 $order = $data;
                 $setting = $this->setting->find(1);
                 config(['app.name' => $setting->titre]);
                 return view('examens.datatables.attribuate', compact('order'));
             })
-
             ->filter(function ($query) use ($request,$data) {
 
                 if (!empty($request->get('attribuate_doctor_id'))) {
@@ -1542,16 +1541,16 @@ public function __construct(
                     $query->where('is_urgent', $request->get('cas_status'));
                 }
 
-                // if (!empty($request->get('appel'))) {
-                //     $query->whereHas('report', function ($query) use($request) {
-                //             $query->whereHas('appel',function($query) use($request){
-                //                 $query->whereHas('appel_event', function($query) use($request){
-                //                     $query->where('event',$request->get('appel'));
-                //                 });
-                //             });
-                //         });
-                // }
-
+                if (!empty($request->get('appel'))) {
+                    $query->whereHas('report', function ($query) use($request) {
+                            $query->whereHas('appel',function($query) use($request){
+                                $query->whereHas('appel_event', function($query) use($request){
+                                    $query->where('event',$request->get('appel'));
+                                });
+                            });
+                        });
+                    // $query->where('is_urgent', $request->get('cas_status'));
+                }
                 if (!empty($request->get('contrat_id'))) {
                     $query->where('contrat_id', $request->get('contrat_id'));
                 }
@@ -1571,19 +1570,20 @@ public function __construct(
                         $query->whereHas('report', function ($query) use ($request) {
                             $query->where('status', $request->get('exams_status'));
                         });
-                   }
+                        // $query->where('status', $request->get('exams_status'));
+                    }
                 }
 
-                // if (!empty($request->get('appel'))) {
+                if (!empty($request->get('appel'))) {
 
-                //     $query->whereHas('report', function ($query) use($request){
-                //             $query->whereHas('appel',function($query) use($request) {
-                //                 $query->whereHas('appel_event', function($query) use($request) {
-                //                     $query->where('event',$request->get('appel'));
-                //                 });
-                //             });
-                //     });
-                // }
+                    $query->whereHas('report', function ($query) use($request){
+                            $query->whereHas('appel',function($query) use($request) {
+                                $query->whereHas('appel_event', function($query) use($request) {
+                                    $query->where('event',$request->get('appel'));
+                                });
+                            });
+                    });
+                }
 
                 if(!empty($request->get('contenu')))
                 {
@@ -1604,15 +1604,17 @@ public function __construct(
                 }
 
                 if(!empty($request->get('dateBegin'))){
+                    //dd($request);
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
                     $query->whereDate('created_at','>=',$newDate);
                 }
                 if(!empty($request->get('dateEnd'))){
-                   $query->whereDate('created_at','<=',$request->get('dateEnd'));
+                    //dd($request);
+                    $query->whereDate('created_at','<=',$request->get('dateEnd'));
                 }
 
             })
-            ->rawColumns(['action', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
+            ->rawColumns(['action','appel', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
             ->make(true);
     }
     // Debut
