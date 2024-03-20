@@ -133,6 +133,8 @@ public function __construct(
             ->get();
 
 
+            $type_orders = TypeOrder::latest()->get();
+
         // $testOrders = $this->testOrder->all();
 
         // foreach ($testOrders as $key => $testOrder) {
@@ -142,7 +144,7 @@ public function __construct(
         //     }
         // }
 
-        return view('macro.index', array_merge(compact('orders', 'employees', 'results')));
+        return view('macro.index', array_merge(compact('type_orders','orders', 'employees', 'results')));
     }
     public function index_immuno()
     {
@@ -344,7 +346,6 @@ public function __construct(
             ->rawColumns(['action','code', 'add_by', 'state', 'date_macro', 'date_montage','created'])
             ->make(true);
     }
-
     // Debut
     public function getTestOrdersforDatatable2(Request $request)
     {
@@ -471,13 +472,12 @@ public function __construct(
     }
     public function getTestOrdersforDatatable3(Request $request)
     {
-
-
         $data = DB::table('test_orders')
         ->select(
             'test_orders.id as test_order',
             'test_orders.code as code',
             'test_orders.created_at',
+            'test_orders.type_order_id as type_order_id',
             'test_orders.is_urgent',
             'reports.status as report_status',
             'test_pathology_macros.id as test_pathology_macro_id'
@@ -497,7 +497,9 @@ public function __construct(
         ->where(function ($query) {
             $query->where('test_orders.status', 1)
                 ->where('type_orders.slug','like','histologie')
-                ->orwhere('type_orders.slug','like','cytologie');
+                ->orwhere('type_orders.slug','like','cytologie')
+                ->orwhere('type_orders.slug','like','biopsie')
+                ->orwhere('type_orders.slug','like','pièce-opératoire');
         })
         ->orWhere(function ($query) {
             $query->where('reports.status', 0)
@@ -509,7 +511,6 @@ public function __construct(
                 ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
         })
         ->whereYear('test_orders.created_at', '!=', 2022)
-        // ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
         ->orderBy('test_orders.created_at');
 
 
@@ -588,9 +589,19 @@ public function __construct(
 
                 return $select;
             })
-            ->filter(function ($query) use ($request,$data) {
+
+            ->filter(function ($query) use ($request) {
+                if (($request->get('typeOrderId'))) {
+                    // $query->whereHas('test_orders', function($query) use ($request){
+                        
+                        $query->where('test_orders.type_order_id',$request->get('typeOrderId')); 
+
+                    // });
+                }
 
             })
+
+
             ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
             ->make(true);
     }

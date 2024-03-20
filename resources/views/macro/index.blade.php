@@ -47,14 +47,14 @@
                                 </select>
                             </div>
 
-                        </div> <!-- end col -->
+                        </div> 
 
                         <div class="col-lg-4">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Date</label>
                                 <input type="date" name="date" id="date" class="form-control">
                             </div>
-                        </div> <!-- end col -->
+                        </div> 
 
                         <div class="col-lg-4">
 
@@ -68,10 +68,7 @@
                                     @endforelse
                                 </select>
                             </div>
-
-                        </div> <!-- end col -->
-
-
+                        </div> 
                     </div>
 
 
@@ -91,38 +88,46 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-
                     </table>
-
-                </div>
-
-            </div>
-        </div> <!-- end card-->
-
-        {{-- <div class="card mb-md-0 mt-5">
-            <div class="card-body">
-
-                <h5 class="card-title mb-0">Liste des Examens à traiter en priorité</h5>
-
-                <div  id="cardCollpase1" class="show collapse pt-3">
-
-                    <div class=" col-12">
-
-                        <table id="datatable2" class="dt-responsive nowrap w-100 table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Date limite</th>
-                                    <th>Date d'arrivée</th>
-                                    <th>Code</th>
-                                    <th>Macro réalisé par</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
                 </div>
             </div>
-        </div> --}}
+        </div> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         <div class="card mb-md-0 mt-5">
             <div class="card-body">
@@ -147,6 +152,26 @@
                     </div>
                 </div>
 
+
+                {{-- Formulaire --}}
+                <div class="col-lg-3">
+                    <div class="mb-3">
+                        <label for="example-fileinput" class="form-label">Type d'examen</label>
+                        <select name="typeOrderId" id="typeOrderId"  class="form-select select2">
+                            <option value="">Tous</option>
+                            @foreach ($type_orders as $item)
+
+                                @if($item->slug != "immuno-interne" && $item->slug != "immuno-exterme")
+                                    <option value="{{ $item->id }}">
+                                        {{ $item->title }}
+                                    </option>
+                                @endif
+
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="table-responsive">
                         <table class="table table-centered w-100 dt-responsive nowrap" id="products-datatable">
@@ -160,36 +185,8 @@
                                     <th>Date limite</th>
                                     <th>Code</th>
                                     <th>Macro réalisé par</th>
-
                                 </tr>
                             </thead>
-
-
-                            {{-- <tbody>
-
-                                @foreach ( $results as $key =>$result )
-                                    <tr class="{{$result->is_urgent ? 'table-danger':''}}">
-                                        <td>
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="customCheck{{$result->test_order}}">
-                                            </div>
-                                        </td>
-                                        <td> {{ $result->code }} </td>
-                                        <td> {{ dateLimite($result->created_at) }} </td>
-                                        <td>
-                                            <select name="id_employee" id="laborantin{{$result->test_order}}" class="form-select select2" required data-toggle="select2">
-                                                <option value="">Tous les laborantins</option>
-                                                @forelse ($employees as $employee)
-                                                    <option value="{{ $employee->id }}">{{ $employee->fullname() }}</option>
-                                                @empty
-                                                @endforelse
-                                            </select>
-                                        </td>
-
-                                    </tr>
-                                @endforeach
-
-                            </tbody> --}}
                         </table>
                     </div>
                 </div>

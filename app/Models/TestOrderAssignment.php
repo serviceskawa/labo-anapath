@@ -11,6 +11,11 @@ class TestOrderAssignment extends Model
     use HasFactory;
     public $guarded = [];
 
+    public function testOrderAssignmentDetails()
+    {
+        return $this->hasMany(TestOrderAssignmentDetail::class, 'test_order_assignment_id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class,'user_id');

@@ -15,4 +15,15 @@ class TestOrderAssignmentDetail extends Model
         return $this->belongsTo(TestOrder::class, 'test_order_id');
     }
 
+
+    public function testOrderAssignment()
+    {
+        return $this->belongsTo(TestOrderAssignment::class);
+    }
+
+    public function testOrder()
+    {
+        return $this->belongsTo(TestOrder::class, 'test_order_id');
+    }
+
 }

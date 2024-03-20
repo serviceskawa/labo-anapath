@@ -199,7 +199,7 @@
                     <div class="card-body">
                         <div class="card  mb-3">
                             <div class="card-body">
-                                EXAMENS DEMNADES
+                                EXAMENS DEMANDES
                                 <div class="row mt-3">
                                     <div class="col-sm-6 col-xl-4">
                                         <div class="card shadow-none m-0 border-start">

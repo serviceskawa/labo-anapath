@@ -59,37 +59,36 @@ $(document).ready(function() {
                 data: 'created',
                 name: 'created',
                 targets: 0,
-                render: function (e, l, a, o) {
+                render: function(e, l, a, o) {
                     return (
                         "display" === l &&
-                            (e =
-                                '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>'),
+                        (e =
+                            '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>'),
                         e
                     );
                 },
                 checkboxes: {
                     selectRow: true,
-                    selectAllRender:
-                        '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>',
+                    selectAllRender: '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>',
                 },
             },
             {
                 data: 'code',
                 name: 'code'
             },
-             {
+            {
                 data: 'add_by',
                 name: 'add_by',
             },
-             {
+            {
                 data: 'date_macro',
                 name: 'date_macro',
             },
-             {
+            {
                 data: 'date_montage',
                 name: 'date_montage',
             },
-             {
+            {
                 data: 'state',
                 name: 'state',
             },
@@ -107,6 +106,10 @@ $(document).ready(function() {
         ],
 
     });
+
+
+
+
     var table1 = $('#datatable2').DataTable({
 
         "columnDefs": [{
@@ -144,18 +147,18 @@ $(document).ready(function() {
                 name: 'created'
             },
             {
-               data: 'dateLim',
-               name: 'dateLim',
-           },
+                data: 'dateLim',
+                name: 'dateLim',
+            },
             {
-               data: 'date',
-               name: 'date',
-           },
+                data: 'date',
+                name: 'date',
+            },
             {
                 data: 'code',
                 name: 'code'
             },
-             {
+            {
                 data: 'state',
                 name: 'state',
             },
@@ -200,37 +203,36 @@ $(document).ready(function() {
                 data: 'created',
                 name: 'created',
                 targets: 0,
-                render: function (e, l, a, o) {
+                render: function(e, l, a, o) {
                     return (
                         "display" === l &&
-                            (e =
-                                '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>'),
+                        (e =
+                            '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>'),
                         e
                     );
                 },
                 checkboxes: {
                     selectRow: true,
-                    selectAllRender:
-                        '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>',
+                    selectAllRender: '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>',
                 },
             },
             {
                 data: 'code',
                 name: 'code'
             },
-             {
+            {
                 data: 'add_by',
                 name: 'add_by',
             },
-             {
+            {
                 data: 'date_macro',
                 name: 'date_macro',
             },
-             {
+            {
                 data: 'date_montage',
                 name: 'date_montage',
             },
-             {
+            {
                 data: 'state',
                 name: 'state',
             },
@@ -285,18 +287,18 @@ $(document).ready(function() {
                 name: 'created'
             },
             {
-               data: 'dateLim',
-               name: 'dateLim',
-           },
+                data: 'dateLim',
+                name: 'dateLim',
+            },
             {
-               data: 'date',
-               name: 'date',
-           },
+                data: 'date',
+                name: 'date',
+            },
             {
                 data: 'code',
                 name: 'code'
             },
-             {
+            {
                 data: 'state',
                 name: 'state',
             },
@@ -305,8 +307,8 @@ $(document).ready(function() {
 
     });
 
-    table.on( 'select', function ( e, dt, type, indexes ) {
-        if ( type === 'row' ) {
+    table.on('select', function(e, dt, type, indexes) {
+        if (type === 'row') {
             // Vérifiez si des lignes sont sélectionnées
             var selectedRows = table.rows('.selected').data().length > 0;
 
@@ -318,27 +320,27 @@ $(document).ready(function() {
             }
 
         }
-    } );
-    table.on('deselect', function () {
-       // Vérifiez si des lignes sont sélectionnées
-       var selectedRows = table.rows('.selected').data().length > 0;
+    });
+    table.on('deselect', function() {
+        // Vérifiez si des lignes sont sélectionnées
+        var selectedRows = table.rows('.selected').data().length > 0;
 
-       // Affichez ou masquez le bouton en fonction de la présence de lignes sélectionnées
-       if (selectedRows) {
-           $('#changeState').show();
-       } else {
-           $('#changeState').hide();
-       }
+        // Affichez ou masquez le bouton en fonction de la présence de lignes sélectionnées
+        if (selectedRows) {
+            $('#changeState').show();
+        } else {
+            $('#changeState').hide();
+        }
     });
 
 
-     // Recherche selon les types d'examen
-     $("#id_test_pathology_order").on("change", function() {
+    // Recherche selon les types d'examen
+    $("#id_test_pathology_order").on("change", function() {
         // alert(this.value)
         table.draw();
     });
-     // Recherche selon les cas
-     $("#id_employee").on("change", function() {
+    // Recherche selon les cas
+    $("#id_employee").on("change", function() {
         // alert(this.value)
         table.draw();
     });
@@ -349,7 +351,7 @@ $(document).ready(function() {
     });
 
     // Écoutez l'événement de clic sur le bouton pour effectuer l'action souhaitée
-    $("#changeState").on("click", function () {
+    $("#changeState").on("click", function() {
         var selectedData = table.rows('.selected').data().toArray();
         Swal.fire({
             title: "Confirmation : Changer l'étape des demandes sélectionnées ?",
@@ -360,7 +362,7 @@ $(document).ready(function() {
         }).then(function(result) {
             if (result.value) {
 
-                selectedData.forEach(function (rowData) {
+                selectedData.forEach(function(rowData) {
                     console.log(rowData);
                     // Créer un élément div temporaire
                     var tempDiv = document.createElement('div');
@@ -394,13 +396,13 @@ $(document).ready(function() {
             }
         });
 
-    // Décochez toutes les lignes après l'action
-    table.rows().deselect();
-});
+        // Décochez toutes les lignes après l'action
+        table.rows().deselect();
+    });
 
 });
 
-function changeState(id,code) {
+function changeState(id, code) {
     // Sélectionnez l'élément par son ID
     var element = $('#id_test_pathology_order' + id);
     console.log(code);
@@ -423,10 +425,10 @@ function changeState(id,code) {
     if (selectedValue == 'mounting') {
         selected = "MONTAGE"
     }
-    var selectedRows =  $('#datatable1').DataTable().rows('.selected').data().length > 0;
+    var selectedRows = $('#datatable1').DataTable().rows('.selected').data().length > 0;
     if (!selectedRows) {
         Swal.fire({
-            title: "Confirmation : Étape  ["+selected+"] pour la demande ['"+code+"'] ?",
+            title: "Confirmation : Étape  [" + selected + "] pour la demande ['" + code + "'] ?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Confirmer ",
@@ -456,48 +458,48 @@ function changeState(id,code) {
 
 }
 
-function addMacro(id,code) {
+function addMacro(id, code) {
     var element = $('#laborantin' + id);
     var selectedValue = element.val();
 
-    var selectedRows =  $('#products-datatable').DataTable().rows('.selected').data().length > 0;
+    var selectedRows = $('#products-datatable').DataTable().rows('.selected').data().length > 0;
     if (!selectedRows) {
-    $.ajax({
-        url: baseUrl + "/laborantin/" + selectedValue,
-        type: "GET",
+        $.ajax({
+            url: baseUrl + "/laborantin/" + selectedValue,
+            type: "GET",
 
-        success: function(response) {
-            Swal.fire({
-                title: "Confirmation : Étape [MACROSCOPIE] effectuée pour la demande ["+code+"] par ["+response+"] ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Confirmer ",
-                cancelButtonText: "Annuler !",
-            }).then(function(result) {
-                if (result.value) {
-                    $.ajax({
-                        url: baseUrl + "/macro/one-create",
-                        type: "POST",
-                        data: {
-                            "_token": TOKENSTOREDOCTOR,
-                            id: id,
-                            id_employee: selectedValue,
-                        },
-                        success: function(response) {
-                            $('#datatable1').DataTable().ajax.reload();
-                            $('#datatable2').DataTable().ajax.reload();
-                        },
-                        error: function(response) {
-                            console.log(response)
-                        },
-                    })
-                }
-            });
-        },
-        error: function(response) {
-            console.log(response)
-        },
-    })
+            success: function(response) {
+                Swal.fire({
+                    title: "Confirmation : Étape [MACROSCOPIE] effectuée pour la demande [" + code + "] par [" + response + "] ?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Confirmer ",
+                    cancelButtonText: "Annuler !",
+                }).then(function(result) {
+                    if (result.value) {
+                        $.ajax({
+                            url: baseUrl + "/macro/one-create",
+                            type: "POST",
+                            data: {
+                                "_token": TOKENSTOREDOCTOR,
+                                id: id,
+                                id_employee: selectedValue,
+                            },
+                            success: function(response) {
+                                $('#datatable1').DataTable().ajax.reload();
+                                $('#datatable2').DataTable().ajax.reload();
+                            },
+                            error: function(response) {
+                                console.log(response)
+                            },
+                        })
+                    }
+                });
+            },
+            error: function(response) {
+                console.log(response)
+            },
+        })
     }
 
 }

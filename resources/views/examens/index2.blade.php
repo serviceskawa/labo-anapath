@@ -46,7 +46,7 @@
                                 </select>
                             </div>
 
-                        </div> <!-- end col -->
+                        </div>
 
                         <div class="col-lg-3">
 
@@ -61,7 +61,7 @@
                                 </select>
                             </div>
 
-                        </div> <!-- end col -->
+                        </div>
 
                         <div class="col-lg-3">
 
@@ -77,7 +77,7 @@
                                 </select>
                             </div>
 
-                        </div> <!-- end col -->
+                        </div> 
 
                         <div class="col-lg-3">
 
@@ -89,7 +89,7 @@
                                 </select>
                             </div>
 
-                        </div> <!-- end col -->
+                        </div> 
 
 
                         <div class="col-lg-3">
@@ -106,45 +106,29 @@
                                 </select>
                             </div>
 
-                        </div> <!-- end col -->
+                        </div>
 
                         <div class="col-lg-3">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Rechercher</label>
                                 <input type="text" name="contenu" id="contenu" class="form-control">
                             </div>
-                        </div> <!-- end col -->
+                        </div>
 
                         <div class="col-lg-3">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Date Début</label>
                                 <input type="date" name="dateBegin" id="dateBegin" class="form-control">
                             </div>
-                        </div> <!-- end col -->
+                        </div>
 
                         <div class="col-lg-3">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Date fin</label>
                                 <input type="date" name="dateEnd" id="dateEnd" class="form-control">
                             </div>
-                        </div> <!-- end col -->
-
-                        {{-- <div class="col-lg-3">
-
-                            <div class="mb-3">
-                                <label for="example-fileinput" class="form-label">Status appel</label>
-                                <select name="status_appel" id="appel_status" class="form-control">
-                                    <option value="">Tous</option>
-                                    <option value="voice.completed">Décroché</option>
-                                    <option value="voice.cancelled">Manqué</option>
-                                    <option value="voice.busy">Racroché</option>
-                                </select>
-                            </div>
-
-                        </div> --}}
-
+                        </div>
                     </div>
-                    {{-- </form> --}}
 
                     <div class="row mb-3">
                         <div class="col-lg-2 p-1 alert alert-success rounded-pill"

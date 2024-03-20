@@ -1,6 +1,6 @@
-$(document).ready(function () {
+$(document).ready(function() {
     "use strict";
-    var table = $("#products-datatable").DataTable({
+    var tableType = $("#products-datatable").DataTable({
         "columnDefs": [{
             "targets": [0],
             "searchable": false //essai
@@ -22,31 +22,32 @@ $(document).ready(function () {
         serverSide: false,
         ajax: {
             url: ROUTETESTORDERDATATABLE3,
+            data: function(d) {
+                d.typeOrderId = $('#typeOrderId').val()
+            }
         },
-        columns: [
-            {
+        columns: [{
                 orderable: false,
                 data: 'created',
                 name: 'created',
                 targets: 0,
-                render: function (e, l, a, o) {
+                render: function(e, l, a, o) {
                     return (
                         "display" === l &&
-                            (e =
-                                '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>'),
+                        (e =
+                            '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>'),
                         e
                     );
                 },
                 checkboxes: {
                     selectRow: true,
-                    selectAllRender:
-                        '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>',
+                    selectAllRender: '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>',
                 },
             },
             {
                 orderable: true,
-               data: 'dateLim',
-               name: 'dateLim',
+                data: 'dateLim',
+                name: 'dateLim',
             },
             {
                 orderable: true,
@@ -64,10 +65,17 @@ $(document).ready(function () {
             style: "multi",
             selector: "td:first-child",
         },
-        order: [[1, "asc"]],
+        order: [
+            [1, "asc"]
+        ],
     });
 
-   
+
+    $("#typeOrderId").on("change", function() {
+        alert($('#typeOrderId').val());
+        tableType.draw();
+    });
+
 
     $.ajax({
         url: baseUrl + "/macro/countData",
@@ -76,7 +84,7 @@ $(document).ready(function () {
 
         },
         success: function(response) {
-           document.getElementById('count_data').textContent = "["+response+"]"
+            document.getElementById('count_data').textContent = "[" + response + "]"
         },
         error: function(response) {
             console.log(response)
@@ -85,10 +93,10 @@ $(document).ready(function () {
 
 
     // // Écoutez l'événement draw.dt, qui est déclenché chaque fois que la table est redessinée
-    table.on( 'select', function ( e, dt, type, indexes ) {
-        if ( type === 'row' ) {
+    tableType.on('select', function(e, dt, type, indexes) {
+        if (type === 'row') {
             // Vérifiez si des lignes sont sélectionnées
-            var selectedRows = table.rows('.selected').data().length > 0;
+            var selectedRows = tableType.rows('.selected').data().length > 0;
 
             // Affichez ou masquez le bouton en fonction de la présence de lignes sélectionnées
             if (selectedRows) {
@@ -98,95 +106,91 @@ $(document).ready(function () {
             }
 
         }
-    } );
-
-    table.on('deselect', function () {
-       // Vérifiez si des lignes sont sélectionnées
-       var selectedRows = table.rows('.selected').data().length > 0;
-
-       // Affichez ou masquez le bouton en fonction de la présence de lignes sélectionnées
-       if (selectedRows) {
-           $('#deleteSelectedRows').show();
-       } else {
-           $('#deleteSelectedRows').hide();
-       }
     });
 
+    tableType.on('deselect', function() {
+        // Vérifiez si des lignes sont sélectionnées
+        var selectedRows = tableType.rows('.selected').data().length > 0;
 
+        // Affichez ou masquez le bouton en fonction de la présence de lignes sélectionnées
+        if (selectedRows) {
+            $('#deleteSelectedRows').show();
+        } else {
+            $('#deleteSelectedRows').hide();
+        }
+    });
 
     // Écoutez l'événement de clic sur le bouton pour effectuer l'action souhaitée
-    $("#deleteSelectedRows").on("click", function () {
-            var selectedData = table.rows('.selected').data().toArray();
-            Swal.fire({
-                title: "Confirmation : Étape [MACROSCOPIE] effectuée pour les demandes sélectionnées ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Confirmer ",
-                cancelButtonText: "Annuler !",
-            }).then(function(result) {
-                if (result.value) {
+    $("#deleteSelectedRows").on("click", function() {
+        var selectedData = tableType.rows('.selected').data().toArray();
+        Swal.fire({
+            title: "Confirmation : Étape [MACROSCOPIE] effectuée pour les demandes sélectionnées ?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Confirmer ",
+            cancelButtonText: "Annuler !",
+        }).then(function(result) {
+            if (result.value) {
 
-                    selectedData.forEach(function (rowData) {
+                selectedData.forEach(function(rowData) {
 
-                        var code = rowData.code;
-                        var date = rowData.date;
+                    var code = rowData.code;
+                    var date = rowData.date;
 
-                        // Extraction du laborantin
-                        var selectedEmployeeHTML = rowData.state;
-                        var selectId = $(selectedEmployeeHTML).attr('id');
-                        var selectedEmployeeId = $('#' + selectId).val();
-                        console.log('rowData', rowData);
-                        console.log('date', date);
-                        console.log('code', code);
-                        console.log('selectedEmployeeId', selectedEmployeeId);
+                    // Extraction du laborantin
+                    var selectedEmployeeHTML = rowData.state;
+                    var selectId = $(selectedEmployeeHTML).attr('id');
+                    var selectedEmployeeId = $('#' + selectId).val();
+                    console.log('rowData', rowData);
+                    console.log('date', date);
+                    console.log('code', code);
+                    console.log('selectedEmployeeId', selectedEmployeeId);
 
-                        if (!selectedEmployeeId) {
-                            toastr.error("vous devez sélectionné le laboration", 'Laborantin');
-                        } else {
-                            $.ajax({
-                                url: baseUrl + "/macro/one-create",
-                                type: "POST",
-                                data: {
-                                    "_token": TOKENSTOREDOCTOR,
-                                    id: null,
-                                    code: rowData.code,
-                                    id_employee: selectedEmployeeId,
-                                },
-                                success: function(response) {
-                                    $('#datatable1').DataTable().ajax.reload();
-                                    $('#datatable2').DataTable().ajax.reload();
-                                    $('#products-datatable').DataTable().ajax.reload();
-                                    $.ajax({
-                                        url: baseUrl + "/macro/countData",
-                                        type: "GET",
-                                        data: {
+                    if (!selectedEmployeeId) {
+                        toastr.error("vous devez sélectionné le laboration", 'Laborantin');
+                    } else {
+                        $.ajax({
+                            url: baseUrl + "/macro/one-create",
+                            type: "POST",
+                            data: {
+                                "_token": TOKENSTOREDOCTOR,
+                                id: null,
+                                code: rowData.code,
+                                id_employee: selectedEmployeeId,
+                            },
+                            success: function(response) {
+                                $('#datatable1').DataTable().ajax.reload();
+                                $('#datatable2').DataTable().ajax.reload();
+                                $('#products-datatable').DataTable().ajax.reload();
+                                $.ajax({
+                                    url: baseUrl + "/macro/countData",
+                                    type: "GET",
+                                    data: {
 
-                                        },
-                                        success: function(response) {
-                                           document.getElementById('count_data').textContent = "["+response+"]"
-                                        },
-                                        error: function(response) {
-                                            console.log(response)
-                                        },
-                                    })
-                                },
-                                error: function(response) {
-                                    console.log(response)
-                                },
-                            })
-                        }
+                                    },
+                                    success: function(response) {
+                                        document.getElementById('count_data').textContent = "[" + response + "]"
+                                    },
+                                    error: function(response) {
+                                        console.log(response)
+                                    },
+                                })
+                            },
+                            error: function(response) {
+                                console.log(response)
+                            },
+                        })
+                    }
 
-                    });
+                });
 
 
 
-                }
-            });
+            }
+        });
 
         // Décochez toutes les lignes après l'action
-        table.rows().deselect();
+        tableType.rows().deselect();
     });
 
 });
-
-

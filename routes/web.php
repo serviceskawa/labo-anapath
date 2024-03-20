@@ -183,6 +183,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     //TEST_ORDER
+    Route::get('/test_order/myspace/{idDoctor}', [TestOrderController::class, 'statistique'])->name('myspace.index');
     Route::get('/test_order/index', [TestOrderController::class, 'index2'])->name('test_order.index');
     Route::get('/test_order/index-immuno', [TestOrderController::class, 'index_immuno'])->name('test_order.immuno.index');
     Route::get('/test_order/envents', [TestOrderController::class, 'getEvent']);
@@ -204,6 +205,13 @@ Route::middleware(['auth'])->group(function () {
     // Cette la route associer aux fichier a supprimer
     Route::delete('/testOrders/delete/image-gallerie/{index}/{test_order}', [TestOrderController::class, 'deleteimagegallerie'])->name('test_order.deleteimagegallerie');
     Route::put('/testOrders/create/image-gallerie/{test_order}', [TestOrderController::class, 'createimagegallerie'])->name('test_order.createimagegallerie');
+    
+    
+    
+    Route::get('/testOrder/myspace', [TestOrderController::class, 'getTestOrdersforDatatableMySpace'])->name('test_order.getTestOrdersforDatatableMySpace');
+    Route::get('/testOrder/myspace2', [TestOrderController::class, 'getTestOrdersforDatatableMySpace2'])->name('test_order.getTestOrdersforDatatableMySpace2');
+
+
 
     Route::post('/images/upload', [TestOrderController::class , 'upload'])->name('images.upload');
     Route::get('/examen-images/{examenCode}', [TestOrderController::class , 'getExamImages'])->name('images.getExamImages');

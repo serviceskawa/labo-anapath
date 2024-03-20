@@ -12,7 +12,8 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        $user = User::where('email',$request->email)->first();
+        $user = User::with('roles')->where('email', $request->email)->first();
+
         if (!$user) {
             return response()->json([
                 'status_code'=>401,
@@ -27,22 +28,11 @@ class LoginController extends Controller
             ],401);
         }
 
-        // $user = $request->user();
-        // $token = $user->createToken('MyApp')->accessToken;
-
-        // return response()->json([
-        //     'status_code'=>200,
-        //     'status_message'=> 'Vous êtes connecté',
-        //     'user' => $user,
-        //     'token' => $token,
-        // ]);
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $user = Auth::user();
-            $token = $user->createToken('MyApp');
-            // $token = $user->createToken('MyApp')->accessToken;
-            return response()->json(['token' => $token->plainTextToken, 'user' => $user]);
-        } else {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+        return response()->json([
+            'status_code'=>200,
+            'status_message'=> 'Vous êtes connecté',
+            'user' => $user,
+            'role' =>$user['roles']
+        ]);
     }
 }

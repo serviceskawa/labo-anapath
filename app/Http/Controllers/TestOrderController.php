@@ -22,6 +22,8 @@ use Illuminate\Http\Request;
 use App\Models\InvoiceDetail;
 use App\Models\DetailTestOrder;
 use App\Models\LogReport;
+use App\Models\TestOrderAssignment;
+use App\Models\TestOrderAssignmentDetail;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +31,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Contracts\DataTable;
+use Yajra\DataTables\DataTables as DataTablesDataTables;
+use Yajra\DataTables\Facades\DataTables as FacadesDataTables;
 
 class TestOrderController extends Controller
 {
@@ -46,10 +50,14 @@ class TestOrderController extends Controller
     protected $invoiceDetail;
     protected $detailTestOrder;
     protected $logReport;
+    protected $testOrderAssignment;
+    protected $testOrderAssignmentDetail;
 
 public function __construct(
     Test $test,
     TestOrder $testOrder,
+    TestOrderAssignment $testOrderAssignment,
+    TestOrderAssignmentDetail $testOrderAssignmentDetail,
     Doctor $doctor,
     Report $report,
     Contrat $contrat,
@@ -76,9 +84,606 @@ public function __construct(
     $this->invoiceDetail = $invoiceDetail;
     $this->detailTestOrder = $detailTestOrder;
     $this->logReport = $logReport;
-
+    $this->testOrderAssignmentDetail = $testOrderAssignmentDetail;
+    $this->testOrderAssignment = $testOrderAssignment;
 }
-    // Affiche la liste des examens
+
+    public function statistique($idDoctor)
+    {
+        // Nombre total de cas attribuer (ok)
+        $nbreTotalCasAttribuer = TestOrderAssignment::where('user_id', Auth::user()->id)->count();
+        $nbreTotalCasAttribuerValeur = $nbreTotalCasAttribuer;
+        $nbreTotalCasAttribuer = number_format($nbreTotalCasAttribuer,2);
+
+
+
+
+
+        // Nombre de cas en attente 
+        // $nbreTotalCasEnAttente = TestOrder::where('attribuate_doctor_id',Auth::user()->id)->
+        // Where('status',0)->count();
+        $nbreTotalCasEnAttente = TestOrderAssignmentDetail::with(['testOrderAssignment','testOrder.patient', 'testOrder.contrat', 'testOrder.type', 'testOrder.details', 'testOrder.report'])
+        ->whereHas('testOrder.type', function($query) {
+            $query->whereIn('slug', ['immuno-exterme', 'immuno-interne', 'histologie', 'cytologie', 'biopsie', 'pièce-opératoire'])
+                ->whereNull('deleted_at');
+        })
+        ->whereHas('testOrder.report', function($query) {
+            $query->where('status', 0); // Modifier la condition pour status égal à 0
+        })->whereHas('testOrderAssignment', function($query) {
+            $query->where('user_id', Auth::user()->id); // Modifier la condition pour status égal à 0
+        })->count(); // Modifier
+        $nbreTotalCasEnAttenteValeur = $nbreTotalCasEnAttente;
+        $nbreTotalCasEnAttente = number_format($nbreTotalCasEnAttente,2);
+        // dd($nbreTotalCasEnAttente);
+
+
+
+
+
+
+
+
+
+        // Nombre de cas terminer
+        // $nbreTotalCasEnTerminer = TestOrder::where('attribuate_doctor_id',Auth::user()->id)->
+        // Where('status',1)->count();
+        $nbreTotalCasEnTerminer = TestOrderAssignmentDetail::with(['testOrderAssignment','testOrder.patient', 'testOrder.contrat', 'testOrder.type', 'testOrder.details', 'testOrder.report'])
+        ->whereHas('testOrder.type', function($query) {
+            $query->whereIn('slug', ['immuno-exterme', 'immuno-interne', 'histologie', 'cytologie', 'biopsie', 'pièce-opératoire'])
+                ->whereNull('deleted_at');
+        })->whereHas('testOrder.report', function($query) {
+            $query->where('status', 1); // Modifier la condition pour status égal à 0
+        })->whereHas('testOrderAssignment', function($query) {
+            $query->where('user_id', Auth::user()->id); // Modifier la condition pour status égal à 0
+        })->count(); // Modifier
+        $nbreTotalCasEnTerminerValeur = $nbreTotalCasEnTerminer;
+        $nbreTotalCasEnTerminer = number_format($nbreTotalCasEnTerminer, 2);
+
+
+
+
+
+
+
+
+        // Nombre de cas urgent
+        // $nbreTotalCasUrgent = TestOrder::where('attribuate_doctor_id',Auth::user()->id)->
+        // Where('is_urgent',1)->count();
+        $nbreTotalCasUrgent = TestOrderAssignmentDetail::with(['testOrderAssignment','testOrder.patient', 'testOrder.contrat', 'testOrder.type', 'testOrder.details', 'testOrder.report'])
+        ->whereHas('testOrder.type', function($query) {
+            $query->whereIn('slug', ['immuno-exterme', 'immuno-interne', 'histologie', 'cytologie', 'biopsie', 'pièce-opératoire'])
+                ->whereNull('deleted_at');
+        })->whereHas('testOrder', function($query) {
+            $query->where('is_urgent', 1);
+        })
+        // ->whereHas('testOrder.report', function($query) {
+        //     $query->where('status', 1); 
+        // })
+        ->whereHas('testOrderAssignment', function($query) {
+            $query->where('user_id', Auth::user()->id); // Modifier la condition pour status égal à 0
+        })->count(); // Modifier
+        $nbreTotalCasUrgentValeur = $nbreTotalCasUrgent;
+        $nbreTotalCasUrgent = number_format($nbreTotalCasUrgent, 2);
+
+
+
+
+
+
+        // Nombre ce cas en retard 
+        // $dateLimite = Carbon::now()->subDays(26);
+        // $nbreTotalCasRetard = TestOrder::where('assignment_date', '<', $dateLimite)
+        // ->where('attribuate_doctor_id', Auth::user()->id)
+        // ->where('status', '>', 0)
+        // ->count();
+        
+        // xxxxxxxxxxxxxxx
+        $nbreTotalCasRetard = TestOrderAssignmentDetail::with(['testOrderAssignment','testOrder.patient', 'testOrder.contrat', 'testOrder.type', 'testOrder.details', 'testOrder.report'])
+        ->whereHas('testOrder.type', function($query) {
+            $query->whereIn('slug', ['immuno-exterme', 'immuno-interne', 'histologie', 'cytologie', 'biopsie', 'pièce-opératoire'])
+                ->whereNull('deleted_at');
+        })->whereHas('testOrder', function($query) {
+            $query->where('created_at', '<=', Carbon::now()->subDays(21));
+        })
+        ->whereHas('testOrder.report', function($query) {
+            $query->where('status', 0); 
+        })
+        ->whereHas('testOrderAssignment', function($query) {
+            $query->where('user_id', Auth::user()->id); 
+        })->count(); 
+        $nbreTotalCasRetardValeur = $nbreTotalCasRetard;
+        $nbreTotalCasRetard = number_format($nbreTotalCasRetard, 2);
+        // xxxxxxxxxxxxx
+
+        
+
+        $nbreTotalCasImmunoAttente = TestOrderAssignmentDetail::with(['testOrderAssignment','testOrder.patient', 'testOrder.contrat', 'testOrder.type', 'testOrder.details', 'testOrder.report'])
+        ->whereHas('testOrder.type', function($query) {
+            $query->whereIn('slug', ['immuno-exterme', 'immuno-interne', 'histologie', 'cytologie', 'biopsie', 'pièce-opératoire'])
+                ->whereNull('deleted_at');
+        })->whereHas('testOrder', function($query) {
+            $query->where('type_order_id', 2)->orWhere('type_order_id',3);
+        })
+        ->whereHas('testOrder.report', function($query) {
+            $query->where('status', 0); 
+        })
+        ->whereHas('testOrderAssignment', function($query) {
+            $query->where('user_id', Auth::user()->id); // Modifier la condition pour status égal à 0
+        })->count(); // Modifier
+        $nbreTotalCasImmunoAttenteValeur = $nbreTotalCasImmunoAttente;
+        $nbreTotalCasImmunoAttente = number_format($nbreTotalCasImmunoAttente, 2);
+        // dd($nbreTotalCasImmunoAttenteValeur);
+
+
+
+        // Les informations a envoyer la page index 
+        $examens = $this->testOrder->with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
+        $contrats = $this->contrat->all();
+        $patients = $this->patient->all();
+        $doctors = $this->doctor->all();
+        $hopitals = $this->hospital->all();
+        $types_orders = $this->typeOrder->all();
+        $setting = $this->setting->find(1);
+        config(['app.name' => $setting->titre]);
+
+       $totalAppel =  $this->testOrder
+       ->with(['patient', 'contrat', 'type', 'details', 'report'])
+       ->with(['patient', 'contrat', 'type', 'details', 'report'])
+        ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
+        ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
+        ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.voice_id')
+        ->Where('ato.event', '!=', 'voice.completed')->count();
+
+        $testOrders = $this->testOrder->all();
+
+        foreach ($testOrders as $key => $testOrder) {
+            if (!empty($testOrder->attribuate_doctor_id) && empty($testOrder->assigned_to_user_id)) {
+                $testOrder->assigned_to_user_id = $testOrder->attribuate_doctor_id;
+                $testOrder->save();
+            }
+        }
+        $testStats = $this->getTestStats($testOrders);
+
+        return view('examens.myspace.index',array_merge(compact('examens', 'nbreTotalCasImmunoAttenteValeur', 'nbreTotalCasImmunoAttente', 'nbreTotalCasRetardValeur', 'nbreTotalCasUrgentValeur', 'nbreTotalCasUrgentValeur', 'nbreTotalCasEnTerminerValeur', 'nbreTotalCasAttribuerValeur', 'nbreTotalCasEnAttenteValeur', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders', 'testStats','totalAppel','nbreTotalCasRetard','nbreTotalCasUrgent','nbreTotalCasEnTerminer','nbreTotalCasEnAttente','nbreTotalCasAttribuer','nbreTotalCasEnAttente'), [
+            'finishTest' => $testStats['finishTest'],
+            'noFinishTest' => $testStats['noFinishTest'],
+            'is_urgent' => $testStats['is_urgent'],
+        ]));
+    }
+
+
+
+public function getTestOrdersforDatatableMySpace(Request $request)
+{
+    
+    $data = TestOrderAssignmentDetail::with(['testOrderAssignment','testOrder.patient', 'testOrder.contrat', 'testOrder.type', 'testOrder.details', 'testOrder.report'])
+    ->whereHas('testOrder.type', function($query) {
+        $query->whereIn('slug', ['immuno-exterme', 'immuno-interne', 'histologie', 'cytologie', 'biopsie', 'pièce-opératoire'])
+            ->whereNull('deleted_at');
+    })
+    ->whereHas('testOrder.report', function($query) {
+        $query->where('status', 0); // Modifier la condition pour status égal à 0
+    })->whereHas('testOrderAssignment', function($query) {
+        $query->where('user_id', Auth::user()->id); // Modifier la condition pour status égal à 0
+    })
+    ->orderBy('created_at', 'asc')
+    ;
+   
+
+        return Datatables::of($data)->addIndexColumn()
+        ->setRowData([
+            'data-mytag' => function ($data) {
+
+                if ($data->testOrder->is_urgent == 1) {
+                    $result = $data->testOrder->is_urgent;
+                } else {
+                    $result = "";
+                }
+
+                return 'mytag=' . $result;
+            },
+        ])
+
+
+        ->setRowClass(function ($data) use ($request) {
+            if($data->testOrder->is_urgent == 1){
+                    if (!empty($data->testOrder->report)) {
+                        if($data->testOrder->report->is_deliver ==1){
+                            return 'table-success';
+                        }else {
+                            if($data->testOrder->report->status == 1){
+                                return 'table-warning';
+                            }
+                        }
+                    }
+                    
+                    return 'table-danger urgent';
+            }elseif (!empty($data->testOrder->report)) {
+
+                    if($data->testOrder->report->is_deliver ==1){
+                        return 'table-success';
+                    }else {
+                        if($data->testOrder->report->status == 1){
+                            return 'table-warning';
+                        }
+                    }
+
+            }else {
+                return '';
+            }
+        })
+
+
+
+        ->addColumn('action', function ($data) {
+            $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->testOrder->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+            
+            if ($data->testOrder->status != 1) {
+                $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->testOrder->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+                $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->testOrder->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
+                $btnreport = "";
+                $btnPrintReport ="";
+            } else {
+                if ($data->report) {
+                    $btnReport = ' <a type="button" href="' . route('report.show', $data->testOrder->report->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+
+                }else {
+                    $btnReport = "";
+                    $btnPrintReport ="";
+                }
+
+                $btnDelete = "";
+                $btnPrintReport ="";
+            }
+
+            if ($data->invoice) {
+                if (!empty($data->testOrder->invoice->id)) {
+                    $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->testOrder->invoice->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
+                } else {
+                    $btnInvoice = ' <a type="button" href="' . route('invoice.storeFromOrder', $data->testOrder->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
+                }
+            } else {
+               $btnInvoice="";
+            }
+
+
+            if (!empty($data->testOrder->report)) {
+                if ($data->testOrder->report->status ==1) {
+                   
+                    $icon = $data->testOrder->option ? '<i class="uil-message"></i>':'<i class="uil-calling"></i>';
+
+                    if ($data->testOrder->report->is_deliver ==0) {
+                        $btnreport = ' <button type="button"  class="btn btn-success" onclick="confirmAction(' . $data->testOrder->report->id . ')" title="Marquer comme retirer"><i class="mdi mdi-file-check"></i> </button> ';
+                        $btnPrintReport = ' <a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->testOrder->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
+                    }else{
+                        $btnreport ="";
+                        $btnPrintReport ="";
+                    }
+
+                    $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->testOrder->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
+                }else {
+                    $btnreport ="";
+                    $btncalling="";
+                }
+            } else {
+                $btnreport = "";
+                $btnPrintReport ="";
+                $btncalling="";
+            }
+           
+            return $btnVoir .  $btnReport  . $btnreport . $btnDelete  . $btnPrintReport;
+        })
+      
+       
+        ->editColumn('created_at', function ($data) {
+            return $data->testOrder->created_at;
+        })
+
+        ->addColumn('code', function ($data) {
+            return $data->testOrder->code;
+        })
+
+        ->addColumn('patient', function ($data) {
+            return  $data->testOrder->patient ? $data->testOrder->patient->firstname . ' ' .$data->testOrder->patient->lastname : "No Data";
+        })
+
+        ->addColumn('contrat', function ($data) {
+            return $data->testOrder->contrat ? $data->testOrder->contrat->name : "No Data";
+        })
+
+        ->addColumn('details', function ($data) {
+            $a = $data->testOrder->details->map(function ($detail) {
+                return Str::limit($detail->test_name, 30, '...');
+            })->implode('<br>');
+            return '<strong>' . $data->testOrder->type_order_id != 0 ? ($data->testOrder->type ? $data->testOrder->type->title : ''):'' . '</strong>: ' . $a;
+        })
+
+        ->addColumn('rendu', function ($data) {
+            if (!empty($data->testOrder->report)) {
+                switch ($data->testOrder->report->status) {
+                    case 1:
+                        $btn = 'Valider';
+                        break;
+
+                    default:
+                        $btn = 'En attente';
+                        break;
+                }
+            } else {
+                $btn = 'Non enregistré';
+            }
+            $span = '<span class="badge bg-primary rounded-pill">' . $btn . '</span>';
+            return $span;
+        })
+
+        ->addColumn('type', function ($data) {
+            return $data->testOrder->type_order_id !=0 ? $data->testOrder->type->title :'';
+        })
+
+        ->addColumn('urgence', function ($data) {
+            // return $data->is_urgent;
+            if($data->testOrder->urgent == 0) {
+                return "Non";
+            }elseif($data->testOrder->urgent == 1) {
+                return "Oui";
+            }
+        })
+
+        ->filter(function ($query) use ($request) {
+
+            if (($request->get('cas_status')==1)) {
+                $query->whereHas('testOrder', function($query) use($request) {
+                    $query->where('is_urgent', $request->get('cas_status')); // Modifier la condition pour status égal à 0
+                });
+            }
+
+           
+
+        })
+
+        ->rawColumns(['action','patient', 'code', 'contrat', 'created_at', 'details', 'rendu', 'type','urgence'])
+        ->make(true);
+}
+
+public function getTestOrdersforDatatableMySpace2(Request $request)
+{
+    $data = TestOrderAssignmentDetail::with(['testOrderAssignment','testOrder.patient', 'testOrder.contrat', 'testOrder.type', 'testOrder.details', 'testOrder.report'])
+    ->whereHas('testOrder.type', function($query) {
+        $query->whereIn('slug', ['immuno-exterme', 'immuno-interne', 'histologie', 'cytologie', 'biopsie', 'pièce-opératoire'])
+            ->whereNull('deleted_at');
+    })
+    ->whereHas('testOrder.report', function($query) {
+        $query->where('status', 1); // Modifier la condition pour status égal à 0
+    })->whereHas('testOrderAssignment', function($query) {
+        $query->where('user_id', Auth::user()->id); // Modifier la condition pour status égal à 0
+    })
+    ->orderBy('created_at', 'asc');
+
+        return Datatables::of($data)->addIndexColumn()
+        ->setRowData([
+            'data-mytag' => function ($data) {
+
+                if ($data->testOrder->is_urgent == 1) {
+                    $result = $data->testOrder->is_urgent;
+                } else {
+                    $result = "";
+                }
+
+                return 'mytag=' . $result;
+            },
+        ])
+
+
+        ->setRowClass(function ($data) use ($request) {
+            if($data->testOrder->is_urgent == 1){
+                    if (!empty($data->testOrder->report)) {
+                        if($data->testOrder->report->is_deliver ==1){
+                            return 'table-success';
+                        }else {
+                            if($data->testOrder->report->status == 1){
+                                return 'table-warning';
+                            }
+                        }
+                    }
+                    
+                    return 'table-danger urgent';
+            }elseif (!empty($data->testOrder->report)) {
+
+                    if($data->testOrder->report->is_deliver ==1){
+                        return 'table-success';
+                    }else {
+                        if($data->testOrder->report->status == 1){
+                            return 'table-warning';
+                        }
+                    }
+
+            }else {
+                return '';
+            }
+        })
+
+
+
+        ->addColumn('action', function ($data) {
+            $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->testOrder->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
+            // $btnEdit = ' <a type="button" href="' . route('test_order.edit', $data->id) . '" class="btn btn-primary" title="Mettre à jour examen"><i class="mdi mdi-lead-pencil"></i></a>';
+            if ($data->status != 1) {
+                $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->testOrder->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+                $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->testOrder->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
+                $btnreport = "";
+                $btnPrintReport ="";
+            } else {
+                if ($data->report) {
+                    $btnReport = ' <a type="button" href="' . route('report.show', $data->testOrder->report->id) . '" class="btn btn-warning" title="Compte rendu"><i class="uil-file-medical"></i> </a>';
+
+                }else {
+                    $btnReport = "";
+                    $btnPrintReport ="";
+                }
+
+                $btnDelete = "";
+                $btnPrintReport ="";
+            }
+
+            if ($data->testOrder->invoice) {
+                if (!empty($data->testOrder->invoice->id)) {
+                    $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->testOrder->invoice->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
+                } else {
+                    $btnInvoice = ' <a type="button" href="' . route('invoice.storeFromOrder', $data->testOrder->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
+                }
+            } else {
+               $btnInvoice="";
+            }
+
+
+            if (!empty($data->testOrder->report)) {
+                if ($data->testOrder->report->status ==1) {
+                   
+                    $icon = $data->testOrder->option ? '<i class="uil-message"></i>':'<i class="uil-calling"></i>';
+
+                    if ($data->testOrder->report->is_deliver ==0) {
+                        $btnreport = ' <button type="button"  class="btn btn-success" onclick="confirmAction(' . $data->testOrder->report->id . ')" title="Marquer comme retirer"><i class="mdi mdi-file-check"></i> </button> ';
+                        $btnPrintReport = ' <a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->testOrder->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
+                    }else{
+                        $btnreport ="";
+                        $btnPrintReport ="";
+                    }
+
+                    $btncalling = ' <a type="button" href="' . route('report.callOrSendSms',  $data->testOrder->report->id) . '" class="btn btn-warning" title="">'.$icon.'</a> ';
+                }else {
+                    $btnreport ="";
+                    $btncalling="";
+                }
+            } else {
+                $btnreport = "";
+                $btnPrintReport ="";
+                $btncalling="";
+            }
+           
+            return $btnVoir .  $btnReport  . $btnreport . $btnDelete  . $btnPrintReport;
+        })
+      
+       
+        ->editColumn('created_at', function ($data) {
+            return $data->testOrder->created_at;
+        })
+
+        ->addColumn('code', function ($data) {
+            return $data->testOrder->code;
+        })
+
+        ->addColumn('patient', function ($data) {
+            return $data->testOrder->patient->firstname . ' ' . $data->testOrder->patient->lastname;
+        })
+
+        ->addColumn('contrat', function ($data) {
+            return $data->testOrder->contrat->name;
+        })
+
+        ->addColumn('details', function ($data) {
+            $a = $data->testOrder->details->map(function ($detail) {
+                return Str::limit($detail->test_name, 30, '...');
+            })->implode('<br>');
+            return '<strong>' . $data->testOrder->type_order_id != 0 ? ($data->testOrder->type ? $data->testOrder->type->title : ''):'' . '</strong>: ' . $a;
+        })
+
+        ->addColumn('rendu', function ($data) {
+            if (!empty($data->testOrder->report)) {
+                switch ($data->testOrder->report->status) {
+                    case 1:
+                        $btn = 'Valider';
+                        break;
+
+                    default:
+                        $btn = 'En attente';
+                        break;
+                }
+            } else {
+                $btn = 'Non enregistré';
+            }
+            $span = '<span class="badge bg-primary rounded-pill">' . $btn . '</span>';
+            return $span;
+        })
+
+        ->addColumn('type', function ($data) {
+            return $data->type_order_id !=0 ? $data->type->title :'';
+        })
+
+        ->addColumn('urgence', function ($data) {
+            // return $data->is_urgent;
+            if($data->testOrder->urgent == 0) {
+                return "Non";
+            }elseif($data->testOrder->urgent == 1) {
+                return "Oui";
+            }
+        })
+
+        ->filter(function ($query) use ($request,$data) {
+
+            if (!empty($request->get('exams_status2'))) {
+
+                if (!empty($request->get('exams_status2'))) {
+
+                    if($request->get('exams_status2') == "livrer") {
+                        $query->whereHas('testOrder', function($queryModel) use($request) {
+                        
+                            $queryModel->whereHas('report', function($queryReport) use($request) {
+                            
+                                $queryReport->where('is_deliver', 1);
+                                
+                            });
+                        }); // Ajout du point-virgule ici pour terminer l'instruction
+                    }
+                }
+                elseif (!empty($request->get('exams_status2'))) {
+
+                    if($request->get('exams_status2') == "non_livrer") {
+                        $query->whereHas('testOrder', function($queryModel) use($request) {
+                            $queryModel->whereHas('report', function($queryReport) use($request) {
+                            
+                                $queryReport->where('is_deliver', 0);
+                                
+                            });
+                        }); // Ajout du point-virgule ici pour terminer l'instruction
+                    }
+                }
+                else {
+                    $query->whereHas('testOrder', function($queryModel) use($request) {
+                        $queryModel->whereHas('report', function($queryReport) use($request) {
+                    
+                            $queryReport->where('status', $request->get('exams_status2'));
+                    
+                        });
+                    }
+                );
+                }
+            }
+
+            if(!empty($request->get('dateBegin2'))){
+                $query->whereHas('testOrder', function($queryModel) use($request) {
+
+                $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin2'));
+                $queryModel->whereDate('created_at','>=',$newDate);
+                });
+            }
+
+            if(!empty($request->get('dateEnd2'))){
+
+                $query->whereHas('testOrder', function($queryModel) use($request) {
+
+                $queryModel->whereDate('created_at','<=',$request->get('dateEnd2'));
+
+            });
+
+            }
+
+        })
+
+        ->rawColumns(['action','patient', 'code', 'contrat', 'created_at', 'details', 'rendu', 'type','urgence'])
+        ->make(true);
+}
+
+
     public function index()
     {
         if (!getOnlineUser()->can('view-test-orders')) {

@@ -1,3 +1,228 @@
+/* DATATABLE 222*/
+$(document).ready(function() {
+
+    var table = $('#datatable11').DataTable({
+
+        "columnDefs": [{
+            "targets": [0],
+            "searchable": false
+        }],
+        "bFilter": false,
+        "language": {
+            "lengthMenu": "Afficher _MENU_ enregistrements par page",
+            "zeroRecords": "Aucun enregistrement disponible",
+            "info": "Afficher page _PAGE_ sur _PAGES_",
+            "infoEmpty": "Aucun enregistrement disponible",
+            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+            "sSearch": "Rechercher:",
+            "paginate": {
+                "previous": "Précédent",
+                "next": "Suivant"
+            }
+        },
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: ROUTETESTORDERDATATABLE222,
+            data: function(d) {
+                d.cas_status = $('#cas_status').val()
+                d.type_examen = $('#type_examen').val()
+            }
+        },
+        columns: [{
+                data: 'action',
+                name: 'action',
+            },
+            {
+                data: 'created_at',
+                name: 'created_at'
+            }, {
+                data: 'code',
+                name: 'code'
+            },
+            {
+                data: 'patient',
+                name: 'patient',
+            },
+            {
+                data: 'details',
+                name: 'examens'
+            },
+            {
+                data: 'contrat',
+                name: 'contrat'
+            },
+            {
+                data: 'rendu',
+                name: 'rendu'
+            },
+            {
+                data: 'urgence',
+                name: 'urgence',
+            },
+        ],
+        order: [
+            [0, 'asc']
+        ],
+
+    });
+
+    $.fn.dataTable.ext.search.push(
+        function(settings, searchData, index, rowData, counter) {
+            var row = table.row(index).node();
+            var filterValue = $(row).data('mytag');
+            var e = document.getElementById("cas_status");
+            var filter = e.options[e.selectedIndex].value;
+
+            if (filterValue == filter) {
+                return true;
+            } else if (filter == "") {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
+    );
+
+    // Recherche selon les types d'examen
+    $("#type_examen").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+    // Recherche selon les cas
+    $("#cas_status").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+});
+
+
+
+
+/* DATATABLE 333*/
+$(document).ready(function() {
+
+    var table = $('#datatable33').DataTable({
+
+        "columnDefs": [{
+            "targets": [0],
+            "searchable": false
+        }],
+        "bFilter": false,
+        "language": {
+            "lengthMenu": "Afficher _MENU_ enregistrements par page",
+            "zeroRecords": "Aucun enregistrement disponible",
+            "info": "Afficher page _PAGE_ sur _PAGES_",
+            "infoEmpty": "Aucun enregistrement disponible",
+            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
+            "sSearch": "Rechercher:",
+            "paginate": {
+                "previous": "Précédent",
+                "next": "Suivant"
+            }
+        },
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: ROUTETESTORDERDATATABLE333,
+            data: function(d) {
+                d.cas_status2 = $('#cas_status2').val()
+                d.type_examen2 = $('#type_examen2').val()
+                d.dateBegin2 = $('#dateBegin2').val()
+                d.dateEnd2 = $('#dateEnd2').val()
+                d.exams_status2 = $('#exams_status2').val()
+            }
+        },
+        columns: [{
+                data: 'action',
+                name: 'action',
+            },
+            {
+                data: 'created_at',
+                name: 'created_at'
+            }, {
+                data: 'code',
+                name: 'code'
+            },
+            {
+                data: 'patient',
+                name: 'patient',
+            },
+            {
+                data: 'details',
+                name: 'examens'
+            },
+            {
+                data: 'contrat',
+                name: 'contrat'
+            },
+            {
+                data: 'rendu',
+                name: 'rendu'
+            },
+            {
+                data: 'urgence',
+                name: 'urgence',
+            },
+        ],
+        order: [
+            [0, 'asc']
+        ],
+
+    });
+
+    $.fn.dataTable.ext.search.push(
+        function(settings, searchData, index, rowData, counter) {
+            var row = table.row(index).node();
+            var filterValue = $(row).data('mytag');
+            var e = document.getElementById("cas_status2");
+            var filter = e.options[e.selectedIndex].value;
+
+            if (filterValue == filter) {
+                return true;
+            } else if (filter == "") {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
+    );
+
+
+
+    // Recherche selon les types d'examen
+    $("#type_examen2").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+    // Recherche selon le status d'examen
+    $("#exams_status2").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+    $('#dateEnd2').on('input', function() {
+        // alert($('#dateEnd2').val());
+        table.draw();
+    });
+
+    $('#dateBegin2').on('input', function() {
+        // alert($('#dateBegin2').val());
+        table.draw();
+    });
+
+});
+
+
+
+
+
+
 // SUPPRESSION
 function deleteModal(id) {
 
@@ -108,6 +333,8 @@ $(document).ready(function() {
         ],
 
     });
+
+
     var table_2 = $('#datatable2').DataTable({
 
         "columnDefs": [{
@@ -267,6 +494,52 @@ $(document).ready(function() {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //EDITION
 function edit(id) {
     var e_id = id;
@@ -326,8 +599,6 @@ function updateAttribuate(doctor_id, order_id) {
 }
 
 function confirmAction(id) {
-
-
     Swal.fire({
         title: "Voulez-vous marquer comme retirer ce compte rendu ?",
         icon: "warning",
