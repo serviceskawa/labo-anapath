@@ -327,6 +327,14 @@ class TestOrderAssignmentController extends Controller
                 if (!empty($request->get('id_doctor'))) {
                     $query->where('user_id', $request->get('id_doctor'));
                 }
+
+                if(!empty($request->get('contenu')))
+                {
+                    $query->whereHas('details', function($query) use ($request) {
+                        $query->where('note','like','%'.$request->get('contenu').'%');
+                    })->orwhere('note','like','%'.$request->get('contenu').'%');   
+                }
+
             })
             ->rawColumns(['action','code', 'doctor', 'date_assignment', 'nbr_assignment'])
             ->make(true);

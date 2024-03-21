@@ -592,11 +592,11 @@ public function __construct(
 
             ->filter(function ($query) use ($request) {
                 if (($request->get('typeOrderId'))) {
-                    // $query->whereHas('test_orders', function($query) use ($request){
+                    $query->where(function($query) use ($request){
                         
-                        $query->where('test_orders.type_order_id',$request->get('typeOrderId')); 
+                        $query->where('type_order_id',$request->get('typeOrderId')); 
 
-                    // });
+                    });
                 }
 
             })

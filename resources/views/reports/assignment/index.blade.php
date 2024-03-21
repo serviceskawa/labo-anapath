@@ -70,12 +70,12 @@
                 </form>
 
                 <div class="row">
-                    <div class="col-md-5 col-12">
+                    <div class="col-md-4 col-12">
                         <div class="mb-3">
                             <label for="example-select" class="form-label">Demande d'examen<span
                                     style="color:red;">*</span></label>
                                     <select name="id_test_pathology_order" id="id_test_pathology_order" class="form-select select2" data-toggle="select2">
-                                        <option value="">Toutes les demnades</option>
+                                        <option value="">Toutes les demandes</option>
                                         @forelse ($orders as $order)
                                             <option value="{{ $order->id }}">{{ $order->code }}</option>
                                         @empty
@@ -83,7 +83,7 @@
                                     </select>
                         </div>
                     </div>
-                    <div class="col-md-5 col-12">
+                    <div class="col-md-4 col-12">
                         <div class="mb-3">
                             <label for="example-select" class="form-label">Docteur<span
                                     style="color:red;">*</span></label>
@@ -95,6 +95,12 @@
                                     Ajouter un utilisateur avec le rôle docteur
                                 @endforelse
                             </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-12">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Rechercher</label>
+                            <input type="text" name="contenu" id="contenu" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -158,27 +164,6 @@
         /* DATATABLE */
         $(document).ready(function() {
 
-            // $('#datatable1').DataTable({
-            //     "order": [[ 0, "asc" ]],
-            //     "columnDefs": [
-            //         {
-            //             "targets": [ 0 ],
-            //             "searchable": true
-            //         }],
-            //     "language": {
-            //         "lengthMenu": "Afficher _MENU_ enregistrements par page",
-            //         "zeroRecords": "Aucun enregistrement disponible",
-            //         "info": "Afficher page _PAGE_ sur _PAGES_",
-            //         "infoEmpty": "Aucun enregistrement disponible",
-            //         "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-            //         "sSearch": "Rechercher:",
-            //         "paginate": {
-            //         "previous": "Précédent",
-            //         "next": "Suivant"
-            //         }
-            //     },
-            // });
-
             var table = $('#datatable2').DataTable({
 
                 "columnDefs": [{
@@ -206,7 +191,7 @@
                         d.id_test_pathology_order = $('#id_test_pathology_order').val()
                         d.id_doctor = $('#id_doctor').val()
                         d.date = $('#date').val()
-
+                        d.contenu = $('#contenu').val()
                     }
                 },
                 columns: [
@@ -248,6 +233,11 @@
             });
             // Recherche selon les cas
             $("#id_doctor").on("change", function() {
+                // alert(this.value)
+                table.draw();
+            });
+
+            $('#contenu').on("input", function() {
                 // alert(this.value)
                 table.draw();
             });
