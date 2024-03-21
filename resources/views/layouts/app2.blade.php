@@ -126,11 +126,11 @@
                                 <li>
                                     <a href="{{ route('test_order.index') }}">Toutes les demandes </a>
                                 </li>
-                                {{-- @if (getOnlineUser()->can('create-test-orders')) --}}
+                                @if (getOnlineUser()->can('view-doctors'))
                                 <li>
                                     <a href="{{ route('myspace.index', Auth::user()->id) }}">Mon espace</a>
                                 </li>
-                                {{-- @endif --}}
+                                @endif
                                 @if (getOnlineUser()->can('create-test-orders'))
                                 <li>
                                     <a href="{{ route('test_order.create') }}">Ajouter</a>
