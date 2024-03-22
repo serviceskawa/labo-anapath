@@ -636,6 +636,7 @@ public function __construct(
                ";
                return $checkbox;
             })
+
             ->addColumn('dateLim', function ($data) {
                 $formattedDate = Carbon::parse($data->created_at)->format('d-m-Y');
                 // Ajouter 10 jours
@@ -643,9 +644,11 @@ public function __construct(
                 $newDate = Carbon::parse($newDate)->format('d-m-Y');
                 return $newDate;
             })
+
             ->addColumn('code', function ($data) {
                 return $data->code;
             })
+
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
@@ -662,7 +665,7 @@ public function __construct(
             })
 
             ->filter(function ($query) use ($request) {
-                if ($request->has('typeOrderId')) {
+                if ($request->get('typeOrderId')) {
                     $query->where('type_order_id', $request->get('typeOrderId'));
                 }
             })
