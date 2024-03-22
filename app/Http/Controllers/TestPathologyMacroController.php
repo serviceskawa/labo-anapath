@@ -842,7 +842,7 @@ public function __construct(
         ->whereHas('report', function($query) {
             $query->where('status', 0);
         })
-        ->whereDate('created_at', '<=', now()->addDay(11))
+        // ->whereDate('created_at', '<=', now()->addDay(11))
         ->whereYear('test_orders.created_at', '!=', 2022)
         ->orderBy('created_at', 'asc')
         ;
@@ -955,7 +955,7 @@ public function __construct(
         ->whereHas('report', function($query) {
             $query->where('status', 0);
         })
-        ->whereDate('created_at', '<=', now()->addDay(11))
+        // ->whereDate('created_at', '<=', now()->addDay(11))
         ->whereYear('test_orders.created_at', '!=', 2022)
         ->orderBy('created_at', 'asc')
         ;
@@ -1059,7 +1059,7 @@ public function __construct(
         // xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])
         ->whereHas('type', function($query) {
-            $query->whereIn('slug', ['cytologie'])
+            $query->where('slug', '=', 'cytologie')
                 ->whereNull('deleted_at');
         })
         ->where('is_urgent',1)
@@ -1069,7 +1069,7 @@ public function __construct(
         ->whereHas('report', function($query) {
             $query->where('status', 0);
         })
-        ->whereDate('created_at', '<=', now()->addDay(11))
+        // ->whereDate('created_at', '<=', now()->addDay(11))
         ->whereYear('test_orders.created_at', '!=', 2022)
         ->orderBy('created_at', 'asc')
         ;
@@ -1595,9 +1595,11 @@ public function __construct(
         $orders = $this->testOrder->whereHas('type', function($query) {
             $query->where('slug','cytologie')
                     ->orwhere('slug','histologie')
+                    ->orwhere('slug','biopsie')
+                    ->orwhere('slug','pièce-opératoire')
                     ->where('status', 1) // Statut différent de 0
                     ->whereNull('deleted_at'); // deleted_at doit être NULL;
-        })->get();;
+        })->get();
         $employees = $this->employees->all();
         return view('macro.create', array_merge(compact('orders', 'employees')));
     }
