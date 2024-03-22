@@ -24,4 +24,9 @@ class test_pathology_macro extends Model
         return $this->belongsTo(TestOrder::class, 'id_test_pathology_order');
     }
 
+    public function testOrder()
+    {
+        return $this->belongsTo(TestOrder::class, 'id_test_pathology_order');
+    }
+
 }

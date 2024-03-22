@@ -111,6 +111,11 @@ class TestOrder extends Model
         return $this->hasMany(DetailTestOrder::class, 'test_order_id');
     }
 
+    public function testOrderMacro()
+    {
+        return $this->hasMany(test_pathology_macro::class, 'id_test_pathology_order');
+    }
+
     /**
      * Get the Hospital that owns the TestOrder
      *

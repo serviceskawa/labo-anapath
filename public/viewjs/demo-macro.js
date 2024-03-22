@@ -23,7 +23,7 @@ $(document).ready(function() {
         ajax: {
             url: ROUTETESTORDERDATATABLE3,
             data: function(d) {
-                d.typeOrderId = $('#typeOrderId').val()
+                d.typeExamenId = $('#typeExamenId').val()
             }
         },
         columns: [{
@@ -71,8 +71,8 @@ $(document).ready(function() {
     });
 
 
-    $("#typeOrderId").on("change", function() {
-        alert($('#typeOrderId').val());
+    $("#typeExamenId").on("change", function() {
+        alert($('#typeExamenId').val());
         tableType.draw();
     });
 

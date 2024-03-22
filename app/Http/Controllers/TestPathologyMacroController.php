@@ -105,11 +105,21 @@ public function __construct(
                 'test_orders.code as code',
                 'test_orders.created_at',
                 'test_orders.is_urgent',
+                'test_orders.type_order_id as type_order_id',
                 'reports.status as report_status',
                 'test_pathology_macros.id as test_pathology_macro_id'
             )
             ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
             ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
+            
+            ->where(function ($query) {
+                $query->where('test_orders.type_order_id', '=' , 1)
+                ->orwhere('test_orders.type_order_id', '=' , 4)
+                ->orwhere('test_orders.type_order_id', '=' , 5)
+                ->orwhere('test_orders.type_order_id', '=' , 6)
+                ;
+            })
+            
             ->where(function ($query) {
                 $query->where('test_orders.is_urgent', 1)
                     ->where('reports.status', 0)
@@ -119,6 +129,7 @@ public function __construct(
                                 ->whereRaw('id_test_pathology_order = test_orders.id');
                     });
             })
+            
             ->orWhere(function ($query) {
                 $query->where('reports.status', 0)
                     ->whereNotExists(function ($subquery) {
@@ -132,8 +143,38 @@ public function __construct(
             ->orderBy('test_orders.created_at')
             ->get();
 
+            // dd($results);
 
             $type_orders = TypeOrder::latest()->get();
+
+
+
+            // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+            // $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])
+            // ->whereHas('type', function($query) {
+            //     $query->whereIn('slug', ['histologie', 'cytologie', 'biopsie', 'pièce-opératoire'])
+            //         ->whereNull('deleted_at');
+            // })
+            // ->where('is_urgent',1)
+            //     // Left  Join sur test_pathology_order avec test_orders
+            //     ->whereDoesntHave('testOrderMacro')
+            //     // Fin
+            // ->whereHas('report', function($query) {
+            //     $query->where('status', 0);
+            // })
+            // ->whereDate('created_at', '<=', now()->addDay(11))
+            // ->orderBy('created_at', 'asc')
+            // ->get()
+            // ;
+
+            // dd($data);
+            // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+
+
+
 
         // $testOrders = $this->testOrder->all();
 
@@ -470,48 +511,78 @@ public function __construct(
             ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
             ->make(true);
     }
+
+
+
     public function getTestOrdersforDatatable3(Request $request)
     {
-        $data = DB::table('test_orders')
-        ->select(
-            'test_orders.id as test_order',
-            'test_orders.code as code',
-            'test_orders.created_at',
-            'test_orders.type_order_id as type_order_id',
-            'test_orders.is_urgent',
-            'reports.status as report_status',
-            'test_pathology_macros.id as test_pathology_macro_id'
-        )
-        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
-        ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
-        ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
-        ->where(function ($query) {
-            $query->where('test_orders.is_urgent', 1)
-                ->where('reports.status', 0)
-                ->whereNotExists(function ($subquery) {
-                    $subquery->select(DB::raw(1))
-                            ->from('test_pathology_macros')
-                            ->whereRaw('id_test_pathology_order = test_orders.id');
-                });
+        
+        // debut
+        // $data = DB::table('test_orders')
+        // ->select(
+        //     'test_orders.id as test_order',
+        //     'test_orders.code as code',
+        //     'test_orders.created_at',
+        //     'test_orders.type_order_id as type_order_id',
+        //     'test_orders.is_urgent',
+        //     'reports.status as report_status',
+        //     'test_pathology_macros.id as test_pathology_macro_id'
+        // )
+        // ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+        // ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
+        // ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
+        // ->where(function ($query) {
+        //     $query->where('test_orders.is_urgent', 1)
+        //         ->where('reports.status', 0)
+        //         ->whereNotExists(function ($subquery) {
+        //             $subquery->select(DB::raw(1))
+        //                     ->from('test_pathology_macros')
+        //                     ->whereRaw('id_test_pathology_order = test_orders.id');
+        //         });
+        // })
+        // ->where(function ($query) {
+        //     $query->where('test_orders.status', 1)
+        //         ->where('test_orders.type_order_id','=',1)
+        //         ->orwhere('test_orders.type_order_id','=',4)
+        //         ->orwhere('test_orders.type_order_id','=',5)
+        //         ->orwhere('test_orders.type_order_id','=',6);
+        // })
+        // ->orWhere(function ($query) {
+        //     $query->where('reports.status', 0)
+        //         ->whereNotExists(function ($subquery) {
+        //             $subquery->select(DB::raw(1))
+        //                     ->from('test_pathology_macros')
+        //                     ->whereRaw('id_test_pathology_order = test_orders.id');
+        //         })
+        //         ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+        // })
+        // ->whereYear('test_orders.created_at', '!=', 2022)
+        // ->orderBy('test_orders.created_at');
+        // fin
+
+
+        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])
+        ->whereHas('type', function($query) {
+            $query->whereIn('slug', ['histologie', 'cytologie', 'biopsie', 'pièce-opératoire'])
+                ->whereNull('deleted_at');
         })
-        ->where(function ($query) {
-            $query->where('test_orders.status', 1)
-                ->where('type_orders.slug','like','histologie')
-                ->orwhere('type_orders.slug','like','cytologie')
-                ->orwhere('type_orders.slug','like','biopsie')
-                ->orwhere('type_orders.slug','like','pièce-opératoire');
+        ->where('is_urgent',1)
+            // Left  Join sur test_pathology_order avec test_orders
+            ->whereDoesntHave('testOrderMacro')
+            // Fin
+        ->whereHas('report', function($query) {
+            $query->where('status', 0);
         })
-        ->orWhere(function ($query) {
-            $query->where('reports.status', 0)
-                ->whereNotExists(function ($subquery) {
-                    $subquery->select(DB::raw(1))
-                            ->from('test_pathology_macros')
-                            ->whereRaw('id_test_pathology_order = test_orders.id');
-                })
-                ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
-        })
+        ->whereDate('created_at', '<=', now()->addDay(11))
         ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderBy('test_orders.created_at');
+        ->orderBy('created_at', 'asc')
+        ;
+        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+
 
 
 
@@ -591,20 +662,164 @@ public function __construct(
             })
 
             ->filter(function ($query) use ($request) {
-                if (($request->get('typeOrderId'))) {
-                    $query->where(function($query) use ($request){
-                        
-                        $query->where('type_order_id',$request->get('typeOrderId')); 
-
-                    });
+                if ($request->has('typeOrderId')) {
+                    $query->where('type_order_id', $request->get('typeOrderId'));
                 }
-
             })
+
+            // ->filter(function ($query) use ($request) {
+            //     if  ($request->get('typeOrderId')) {
+            //         $query->where(function($query) use ($request){         
+            //             $query->where('type_order_id',$request->get('typeOrderId')); 
+            //         });
+            //     }
+            // })
 
 
             ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
             ->make(true);
     }
+
+
+    // public function getTestOrdersforDatatable3(Request $request)
+    // {
+    //     // debut
+    //     $data = DB::table('test_orders')
+    //     ->select(
+    //         'test_orders.id as test_order',
+    //         'test_orders.code as code',
+    //         'test_orders.created_at',
+    //         'test_orders.type_order_id as type_order_id',
+    //         'test_orders.is_urgent',
+    //         'reports.status as report_status',
+    //         'test_pathology_macros.id as test_pathology_macro_id'
+    //     )
+    //     ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+    //     ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
+    //     ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
+    //     ->where(function ($query) {
+    //         $query->where('test_orders.is_urgent', 1)
+    //             ->where('reports.status', 0)
+    //             ->whereNotExists(function ($subquery) {
+    //                 $subquery->select(DB::raw(1))
+    //                         ->from('test_pathology_macros')
+    //                         ->whereRaw('id_test_pathology_order = test_orders.id');
+    //             });
+    //     })
+    //     ->where(function ($query) {
+    //         $query->where('test_orders.status', 1)
+    //             ->where('type_orders.slug','like','histologie')
+    //             ->orwhere('type_orders.slug','like','cytologie')
+    //             ->orwhere('type_orders.slug','like','biopsie')
+    //             ->orwhere('type_orders.slug','like','pièce-opératoire');
+    //     })
+    //     ->orWhere(function ($query) {
+    //         $query->where('reports.status', 0)
+    //             ->whereNotExists(function ($subquery) {
+    //                 $subquery->select(DB::raw(1))
+    //                         ->from('test_pathology_macros')
+    //                         ->whereRaw('id_test_pathology_order = test_orders.id');
+    //             })
+    //             ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+    //     })
+    //     ->whereYear('test_orders.created_at', '!=', 2022)
+    //     ->orderBy('test_orders.created_at');
+    //     // fin
+
+
+    //             $employees = $this->employees->all();
+    //         return DataTables::of($data)->addIndexColumn()
+
+    //         ->setRowData([
+    //             'data-mytag' => function ($data) {
+    //                 if ($data->is_urgent == 1) {
+    //                     $result = $data->is_urgent;
+    //                 } else {
+    //                     $result = "";
+    //                 }
+
+    //                 return 'mytag=' . $result;
+    //             },
+    //         ])
+    //         ->setRowClass(function ($data) use ($request) {
+    //             if($data->is_urgent == 1){
+    //                     if (!empty($data->report)) {
+    //                         if($data->report->is_deliver ==1){
+    //                             return 'table-success';
+    //                         }else {
+    //                             if($data->report->status == 1){
+    //                                 return 'table-warning';
+    //                             }
+    //                         }
+
+    //                     }
+    //                         return 'table-danger urgent';
+
+    //             }elseif (!empty($data->report)) {
+    //                 if($data->report->is_deliver ==1){
+    //                     return 'table-success';
+    //                 }else {
+    //                     if($data->report->status == 1){
+    //                         return 'table-warning';
+    //                     }
+    //                 }
+    //             }else {
+    //                 return '';
+    //             }
+    //         })
+
+    //         ->addColumn('created', function ($data) {
+    //            $checkbox = "
+    //             <div class='form-check'>
+    //                 <input type='checkbox' class='form-check-input'id='customCheck'>
+    //                 // <input type='checkbox' class='form-check-input'id='customCheck".$data->test_order."'>
+    //             </div>
+    //            ";
+    //            return $checkbox;
+    //         })
+    //         ->addColumn('dateLim', function ($data) {
+    //             $formattedDate = Carbon::parse($data->created_at)->format('d-m-Y');
+    //             // Ajouter 10 jours
+    //             $newDate = Carbon::parse($formattedDate)->addDays(9);
+    //             $newDate = Carbon::parse($newDate)->format('d-m-Y');
+    //             return $newDate;
+    //         })
+    //         ->addColumn('code', function ($data) {
+    //             return $data->code;
+    //         })
+    //         ->addColumn('state', function ($data) use ($employees) {
+    //             $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
+    //             $select = "
+    //                 <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>";
+
+    //             foreach ($employees as $employee) {
+    //                 $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
+    //             }
+
+    //             $select .= "
+    //                 </select>";
+
+    //             return $select;
+    //         })
+
+    //         ->filter(function ($query) use ($request) {
+    //             if ($request->has('typeOrderId')) {
+    //                 $query->where('type_order_id', $request->get('typeOrderId'));
+    //             }
+    //         })
+
+    //         // ->filter(function ($query) use ($request) {
+    //         //     if  ($request->get('typeOrderId')) {
+    //         //         $query->where(function($query) use ($request){         
+    //         //             $query->where('type_order_id',$request->get('typeOrderId')); 
+    //         //         });
+    //         //     }
+    //         // })
+
+
+    //         ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
+    //         ->make(true);
+    // }
     // Debut
     public function getTestOrdersforDatatable_immuno(Request $request)
     {

@@ -157,16 +157,14 @@
                 <div class="col-lg-3">
                     <div class="mb-3">
                         <label for="example-fileinput" class="form-label">Type d'examen</label>
-                        <select name="typeOrderId" id="typeOrderId"  class="form-select select2">
+                        <select name="typeExamenId" id="typeExamenId"  class="form-select select2">
                             <option value="">Tous</option>
                             @foreach ($type_orders as $item)
-
                                 @if($item->slug != "immuno-interne" && $item->slug != "immuno-exterme")
                                     <option value="{{ $item->id }}">
                                         {{ $item->title }}
                                     </option>
                                 @endif
-
                             @endforeach
                         </select>
                     </div>
