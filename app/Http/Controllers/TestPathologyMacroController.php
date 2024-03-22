@@ -1059,7 +1059,7 @@ public function __construct(
         // xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])
         ->whereHas('type', function($query) {
-            $query->where('slug', '=', 'cytologie')
+            $query->where('slug', ['cytologie'])
                 ->whereNull('deleted_at');
         })
         ->where('is_urgent',1)
