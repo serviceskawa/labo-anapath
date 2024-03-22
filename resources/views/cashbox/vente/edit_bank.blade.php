@@ -6,7 +6,7 @@
                 <h4 class="modal-title" id="standard-modalLabel">Enregistrer un dépôt bancaire</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
-            <form action="{{route('cashbox.vente.store.bank')}}" method="POST" autocomplete="off">
+            <form action="{{route('cashbox.vente.store.bank')}}" method="POST" autocomplete="off" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                         <div class="mb-3">

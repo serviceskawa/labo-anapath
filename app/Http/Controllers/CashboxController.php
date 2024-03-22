@@ -149,17 +149,13 @@ class CashboxController extends Controller
             return back()->with('error',"vous n'êtes pas autorisé");
         }
 
-        $examenFilePath = "";
-        if ($request->hasFile('bank_file')) {
-            $examenFile = $request->file('bank_file');
-            $examenFilePath = $examenFile->store('/tickets', 'public');
-        }
+    //    dd( $request->file('bank_file')->store('tickets', 'public'));
 
         $cashboxAddData = [
             'bank_id' => $request->bank_id,
             'cashbox_id' => 2,
             'amount' => $request->amount,
-            'attachement' => $examenFilePath,
+            'attachement' => $request->file('bank_file')->store('bank_deposit', 'public'),
             'date' => $request->date,
             'description' => $request->description ? $request->description : '',
             'user_id' => Auth::user()->id
@@ -185,7 +181,6 @@ class CashboxController extends Controller
                 $cash->save();
                 return back()->with('success', "Les informations de la caisse de vente ont été mis à jour ! ");
             } else {
-                # code...
                 return back()->with('error', "Le montant du dépôt ne peut pas être supérieur au montant de la caisse");
             }
 
