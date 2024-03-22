@@ -116,7 +116,7 @@ class TestOrderAssignmentController extends Controller
     public function update(Request $request)
     {
         $assignment = $this->assignment->find($request->id);
-        dd($request->date);
+        // dd($request->date);
         try {
             $assignment->update([
                 'user_id' => $request->user_id,
