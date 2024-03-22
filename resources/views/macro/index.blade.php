@@ -271,12 +271,12 @@
                             style="display: none;">Terminer la Macroscopie</button>
                     </div>
                 </div>
-                <div class="row mb-3">
+                {{-- <div class="row mb-3">
                     <div class="col-lg-2 p-1 ml-3 alert alert-danger rounded-pill"
                         style="margin-right: 5px; text-align:center;">
                         Cas urgent
                     </div>
-                </div>
+                </div> --}}
 
 
                 <div class="row mb-3 d-flex">
@@ -378,9 +378,7 @@
                     <div>
                         <h5 class="card-title d-flex mb-3">
                             Liste des Examens à traiter en priorité [Piece operatoire]
-                            <p id="count_data">
-
-                            </p>
+                            
                         </h5>
                     </div>
                     <div class="">
@@ -388,12 +386,12 @@
                             style="display: none;">Terminer la Macroscopie</button>
                     </div>
                 </div>
-                <div class="row mb-3">
+                {{-- <div class="row mb-3">
                     <div class="col-lg-2 p-1 ml-3 alert alert-danger rounded-pill"
                         style="margin-right: 5px; text-align:center;">
                         Cas urgent
                     </div>
-                </div>
+                </div> --}}
 
 
 
@@ -517,9 +515,7 @@
                     <div>
                         <h5 class="card-title d-flex mb-3">
                             Liste des Examens à traiter en priorité [Cytologie]
-                            <p id="count_data">
-
-                            </p>
+                            
                         </h5>
                     </div>
                     <div class="">
@@ -527,12 +523,12 @@
                             style="display: none;">Terminer la Macroscopie</button>
                     </div>
                 </div>
-                <div class="row mb-3">
+                {{-- <div class="row mb-3">
                     <div class="col-lg-2 p-1 ml-3 alert alert-danger rounded-pill"
                         style="margin-right: 5px; text-align:center;">
                         Cas urgent
                     </div>
-                </div>
+                </div> --}}
 
 
 
