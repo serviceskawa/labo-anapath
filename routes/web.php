@@ -235,6 +235,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/macro/dataTable', [TestPathologyMacroController::class, 'getTestOrdersforDatatable'])->name('macro.getTestOrdersforDatatable');
     Route::get('/macro/dataTable2', [TestPathologyMacroController::class, 'getTestOrdersforDatatable2'])->name('macro.getTestOrdersforDatatable2');
     Route::get('/macro/dataTable3', [TestPathologyMacroController::class, 'getTestOrdersforDatatable3'])->name('macro.getTestOrdersforDatatable3');
+    Route::get('/macro/dataTableHistologie', [TestPathologyMacroController::class, 'getTestOrdersforDatatableHistologie'])->name('macro.getTestOrdersforDatatableHistologie');
+    Route::get('/macro/dataTablePieceOperatoire', [TestPathologyMacroController::class, 'getTestOrdersforDatatablePieceOperatoire'])->name('macro.getTestOrdersforDatatablePieceOperatoire');
+    Route::get('/macro/dataTableCytologie', [TestPathologyMacroController::class, 'getTestOrdersforDatatableCytologie'])->name('macro.getTestOrdersforDatatableCytologie');
 
     Route::get('/macro/dataTable-immuno', [TestPathologyMacroController::class, 'getTestOrdersforDatatable_immuno'])->name('macro.immuno.getTestOrdersforDatatable');
     Route::get('/macro/dataTable2-immuno', [TestPathologyMacroController::class, 'getTestOrdersforDatatable2_immuno'])->name('macro.immuno.getTestOrdersforDatatable2');

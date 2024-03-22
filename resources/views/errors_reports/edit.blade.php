@@ -176,7 +176,7 @@
                                 <input type="text" id="message" class="bg-light form-control border-0"
                                     placeholder="Ecrivez un commentaire" required="">
                                 <div class="invalid-feedback">
-                                    Veillez saisir un message enter your messsage
+                                    Veiullez saisir un message enter your messsage
                                 </div>
                             </div>
                             <div class="col-sm-auto">

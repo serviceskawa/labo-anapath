@@ -824,6 +824,345 @@ public function __construct(
     //         ->make(true);
     // }
     // Debut
+
+
+    // Histoligie Piece Operatoire
+    public function getTestOrdersforDatatableHistologie(Request $request)
+    {
+        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])
+        ->whereHas('type', function($query) {
+            $query->whereIn('slug', ['histologie', 'biopsie'])
+                ->whereNull('deleted_at');
+        })
+        ->where('is_urgent',1)
+            // Left  Join sur test_pathology_order avec test_orders
+            ->whereDoesntHave('testOrderMacro')
+            // Fin
+        ->whereHas('report', function($query) {
+            $query->where('status', 0);
+        })
+        ->whereDate('created_at', '<=', now()->addDay(11))
+        ->whereYear('test_orders.created_at', '!=', 2022)
+        ->orderBy('created_at', 'asc')
+        ;
+        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+                $employees = $this->employees->all();
+            return DataTables::of($data)->addIndexColumn()
+
+            ->setRowData([
+                'data-mytag' => function ($data) {
+                    if ($data->is_urgent == 1) {
+                        $result = $data->is_urgent;
+                    } else {
+                        $result = "";
+                    }
+
+                    return 'mytag=' . $result;
+                },
+            ])
+            ->setRowClass(function ($data) use ($request) {
+                if($data->is_urgent == 1){
+                        if (!empty($data->report)) {
+                            if($data->report->is_deliver ==1){
+                                return 'table-success';
+                            }else {
+                                if($data->report->status == 1){
+                                    return 'table-warning';
+                                }
+                            }
+
+                        }
+                            return 'table-danger urgent';
+
+                }elseif (!empty($data->report)) {
+                    if($data->report->is_deliver ==1){
+                        return 'table-success';
+                    }else {
+                        if($data->report->status == 1){
+                            return 'table-warning';
+                        }
+                    }
+                }else {
+                    return '';
+                }
+            })
+
+            ->addColumn('created', function ($data) {
+               $checkbox = "
+                <div class='form-check'>
+                    <input type='checkbox' class='form-check-input'id='customCheck'>
+                    // <input type='checkbox' class='form-check-input'id='customCheck".$data->test_order."'>
+                </div>
+               ";
+               return $checkbox;
+            })
+
+            ->addColumn('dateLim', function ($data) {
+                $formattedDate = Carbon::parse($data->created_at)->format('d-m-Y');
+                // Ajouter 10 jours
+                $newDate = Carbon::parse($formattedDate)->addDays(9);
+                $newDate = Carbon::parse($newDate)->format('d-m-Y');
+                return $newDate;
+            })
+
+            ->addColumn('code', function ($data) {
+                return $data->code;
+            })
+
+            ->addColumn('state', function ($data) use ($employees) {
+                $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
+                $select = "
+                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>";
+
+                foreach ($employees as $employee) {
+                    $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
+                }
+
+                $select .= "
+                    </select>";
+
+                return $select;
+            })
+
+            ->filter(function ($query) use ($request) {
+                if ($request->get('typeOrderId')) {
+                    $query->where('type_order_id', $request->get('typeOrderId'));
+                }
+            })
+
+            ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
+            ->make(true);
+    }
+
+
+
+    // Histoligie Piece Operatoire
+    public function getTestOrdersforDatatablePieceOperatoire(Request $request)
+    {
+        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])
+        ->whereHas('type', function($query) {
+            $query->whereIn('slug', ['pièce-opératoire'])
+                ->whereNull('deleted_at');
+        })
+        ->where('is_urgent',1)
+            // Left  Join sur test_pathology_order avec test_orders
+            ->whereDoesntHave('testOrderMacro')
+            // Fin
+        ->whereHas('report', function($query) {
+            $query->where('status', 0);
+        })
+        ->whereDate('created_at', '<=', now()->addDay(11))
+        ->whereYear('test_orders.created_at', '!=', 2022)
+        ->orderBy('created_at', 'asc')
+        ;
+        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+                $employees = $this->employees->all();
+            return DataTables::of($data)->addIndexColumn()
+
+            ->setRowData([
+                'data-mytag' => function ($data) {
+                    if ($data->is_urgent == 1) {
+                        $result = $data->is_urgent;
+                    } else {
+                        $result = "";
+                    }
+
+                    return 'mytag=' . $result;
+                },
+            ])
+            ->setRowClass(function ($data) use ($request) {
+                if($data->is_urgent == 1){
+                        if (!empty($data->report)) {
+                            if($data->report->is_deliver ==1){
+                                return 'table-success';
+                            }else {
+                                if($data->report->status == 1){
+                                    return 'table-warning';
+                                }
+                            }
+
+                        }
+                            return 'table-danger urgent';
+
+                }elseif (!empty($data->report)) {
+                    if($data->report->is_deliver ==1){
+                        return 'table-success';
+                    }else {
+                        if($data->report->status == 1){
+                            return 'table-warning';
+                        }
+                    }
+                }else {
+                    return '';
+                }
+            })
+
+            ->addColumn('created', function ($data) {
+               $checkbox = "
+                <div class='form-check'>
+                    <input type='checkbox' class='form-check-input'id='customCheck'>
+                    // <input type='checkbox' class='form-check-input'id='customCheck".$data->test_order."'>
+                </div>
+               ";
+               return $checkbox;
+            })
+
+            ->addColumn('dateLim', function ($data) {
+                $formattedDate = Carbon::parse($data->created_at)->format('d-m-Y');
+                // Ajouter 10 jours
+                $newDate = Carbon::parse($formattedDate)->addDays(9);
+                $newDate = Carbon::parse($newDate)->format('d-m-Y');
+                return $newDate;
+            })
+
+            ->addColumn('code', function ($data) {
+                return $data->code;
+            })
+
+            ->addColumn('state', function ($data) use ($employees) {
+                $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
+                $select = "
+                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>";
+
+                foreach ($employees as $employee) {
+                    $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
+                }
+
+                $select .= "
+                    </select>";
+
+                return $select;
+            })
+
+            ->filter(function ($query) use ($request) {
+                if ($request->get('typeOrderId')) {
+                    $query->where('type_order_id', $request->get('typeOrderId'));
+                }
+            })
+
+            ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
+            ->make(true);
+    }
+
+
+
+
+    // Histoligie Cytologie
+    public function getTestOrdersforDatatableCytologie(Request $request)
+    {
+        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])
+        ->whereHas('type', function($query) {
+            $query->whereIn('slug', ['cytologie'])
+                ->whereNull('deleted_at');
+        })
+        ->where('is_urgent',1)
+            // Left  Join sur test_pathology_order avec test_orders
+            ->whereDoesntHave('testOrderMacro')
+            // Fin
+        ->whereHas('report', function($query) {
+            $query->where('status', 0);
+        })
+        ->whereDate('created_at', '<=', now()->addDay(11))
+        ->whereYear('test_orders.created_at', '!=', 2022)
+        ->orderBy('created_at', 'asc')
+        ;
+        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+                $employees = $this->employees->all();
+            return DataTables::of($data)->addIndexColumn()
+
+            ->setRowData([
+                'data-mytag' => function ($data) {
+                    if ($data->is_urgent == 1) {
+                        $result = $data->is_urgent;
+                    } else {
+                        $result = "";
+                    }
+
+                    return 'mytag=' . $result;
+                },
+            ])
+            ->setRowClass(function ($data) use ($request) {
+                if($data->is_urgent == 1){
+                        if (!empty($data->report)) {
+                            if($data->report->is_deliver ==1){
+                                return 'table-success';
+                            }else {
+                                if($data->report->status == 1){
+                                    return 'table-warning';
+                                }
+                            }
+
+                        }
+                            return 'table-danger urgent';
+
+                }elseif (!empty($data->report)) {
+                    if($data->report->is_deliver ==1){
+                        return 'table-success';
+                    }else {
+                        if($data->report->status == 1){
+                            return 'table-warning';
+                        }
+                    }
+                }else {
+                    return '';
+                }
+            })
+
+            ->addColumn('created', function ($data) {
+               $checkbox = "
+                <div class='form-check'>
+                    <input type='checkbox' class='form-check-input'id='customCheck'>
+                    // <input type='checkbox' class='form-check-input'id='customCheck".$data->test_order."'>
+                </div>
+               ";
+               return $checkbox;
+            })
+
+            ->addColumn('dateLim', function ($data) {
+                $formattedDate = Carbon::parse($data->created_at)->format('d-m-Y');
+                // Ajouter 10 jours
+                $newDate = Carbon::parse($formattedDate)->addDays(9);
+                $newDate = Carbon::parse($newDate)->format('d-m-Y');
+                return $newDate;
+            })
+
+            ->addColumn('code', function ($data) {
+                return $data->code;
+            })
+
+            ->addColumn('state', function ($data) use ($employees) {
+                $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
+                $select = "
+                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>";
+
+                foreach ($employees as $employee) {
+                    $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
+                }
+
+                $select .= "
+                    </select>";
+
+                return $select;
+            })
+
+            ->filter(function ($query) use ($request) {
+                if ($request->get('typeOrderId')) {
+                    $query->where('type_order_id', $request->get('typeOrderId'));
+                }
+            })
+
+            ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
+            ->make(true);
+    }
     public function getTestOrdersforDatatable_immuno(Request $request)
     {
 
