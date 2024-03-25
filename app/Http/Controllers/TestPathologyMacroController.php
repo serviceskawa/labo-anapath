@@ -881,7 +881,7 @@ public function __construct(
                 ->where('type_orders.slug','like','histologie')
                 ->orwhere('type_orders.slug','like','biopsie');
         })
-        ->orWhere(function ($query) {
+        ->Where(function ($query) {
             $query->where('reports.status', 0)
                 ->whereNotExists(function ($subquery) {
                     $subquery->select(DB::raw(1))
@@ -891,24 +891,7 @@ public function __construct(
                 ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
         })
         ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderBy('test_orders.created_at','ASC');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        ->orderBy('test_orders.code','ASC');
 
 
 
@@ -1028,10 +1011,11 @@ public function __construct(
                 })->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
         })
         ->where(function ($query) {
-            $query->where('test_orders.status', 1)
-                  ->where('type_orders.slug','like','pièce-opératoire');
+            $query
+            ->where('test_orders.status', 1)
+            ->where('type_orders.slug','like','pièce-opératoire');
         })
-        ->orWhere(function ($query) {
+        ->Where(function ($query) {
             $query->where('reports.status', 0)
                 ->whereNotExists(function ($subquery) {
                     $subquery->select(DB::raw(1))
@@ -1041,7 +1025,7 @@ public function __construct(
                 ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
         })
         ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderBy('test_orders.created_at','ASC');
+        ->orderBy('test_orders.code','ASC');
 
 
             $employees = $this->employees->all();
@@ -1084,7 +1068,6 @@ public function __construct(
                     return '';
                 }
             })
-
             ->addColumn('created', function ($data) {
                $checkbox = "
                 <div class='form-check'>
@@ -1094,7 +1077,6 @@ public function __construct(
                ";
                return $checkbox;
             })
-
             ->addColumn('dateLim', function ($data) {
                 $formattedDate = Carbon::parse($data->created_at)->format('d-m-Y');
                 // Ajouter 10 jours
@@ -1102,11 +1084,9 @@ public function __construct(
                 $newDate = Carbon::parse($newDate)->format('d-m-Y');
                 return $newDate;
             })
-
             ->addColumn('code', function ($data) {
                 return $data->code;
             })
-
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
@@ -1121,13 +1101,11 @@ public function __construct(
 
                 return $select;
             })
-
             ->filter(function ($query) use ($request) {
                 if ($request->get('typeOrderId')) {
                     $query->where('type_order_id', $request->get('typeOrderId'));
                 }
             })
-
             ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
             ->make(true);
     }
@@ -1164,7 +1142,7 @@ public function __construct(
             $query->where('test_orders.status', 1)
                   ->where('type_orders.slug','like','cytologie');
         })
-        ->orWhere(function ($query) {
+        ->Where(function ($query) {
             $query->where('reports.status', 0)
                 ->whereNotExists(function ($subquery) {
                     $subquery->select(DB::raw(1))
@@ -1174,41 +1152,11 @@ public function __construct(
                 ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
         })
         ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderBy('test_orders.created_at');
+        ->orderBy('test_orders.code','ASC');
         
-        $data = DB::table('test_orders')
-        ->select(
-            'test_orders.id as test_order',
-            'test_orders.code as code',
-            'test_orders.created_at',
-            'test_orders.type_order_id as type_order_id',
-            'test_orders.is_urgent',
-            'reports.status as report_status',
-            'test_pathology_macros.id as test_pathology_macro_id'
-        )
-        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
-        ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
-        ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
-        ->where(function ($query) {
-            $query->where('test_orders.is_urgent', 1)
-                ->where('reports.status', 0)
-                ->whereNotExists(function ($subquery) {
-                    $subquery->select(DB::raw(1))
-                            ->from('test_pathology_macros')
-                            ->whereRaw('id_test_pathology_order = test_orders.id');
-                })->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
-        })
-        ->where(function ($query) {
-            $query->where('test_orders.status', 1)
-                ->where('type_orders.slug','like','cytologie');
-        })
-        ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderBy('test_orders.created_at','ASC');
+       
 
-
-
-
-                $employees = $this->employees->all();
+            $employees = $this->employees->all();
             return DataTables::of($data)->addIndexColumn()
 
             ->setRowData([
@@ -1248,7 +1196,6 @@ public function __construct(
                     return '';
                 }
             })
-
             ->addColumn('created', function ($data) {
                $checkbox = "
                 <div class='form-check'>
@@ -1258,7 +1205,6 @@ public function __construct(
                ";
                return $checkbox;
             })
-
             ->addColumn('dateLim', function ($data) {
                 $formattedDate = Carbon::parse($data->created_at)->format('d-m-Y');
                 // Ajouter 10 jours
@@ -1266,11 +1212,9 @@ public function __construct(
                 $newDate = Carbon::parse($newDate)->format('d-m-Y');
                 return $newDate;
             })
-
             ->addColumn('code', function ($data) {
                 return $data->code;
             })
-
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
@@ -1285,13 +1229,11 @@ public function __construct(
 
                 return $select;
             })
-
             ->filter(function ($query) use ($request) {
                 if ($request->get('typeOrderId')) {
                     $query->where('type_order_id', $request->get('typeOrderId'));
                 }
             })
-
             ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
             ->make(true);
     }
@@ -1302,14 +1244,12 @@ public function __construct(
 
     public function getTestOrdersforDatatable_immuno(Request $request)
     {
-
-
         $data = $this->macro->with(['order','employee','user'])
         ->whereHas('order', function ($query) {
             $query->whereHas('type', function($query) {
                 $query->where('slug','immuno-interne')
-                      ->orwhere('slug','immuno-exterme')->where('status', 1) // Statut différent de 0
-                      ->whereNull('deleted_at'); // deleted_at doit être NULL;
+                      ->orwhere('slug','immuno-exterme')->where('status', 1)
+                      ->whereNull('deleted_at');
                 });
         })
         ->orderBy('created_at', 'desc');

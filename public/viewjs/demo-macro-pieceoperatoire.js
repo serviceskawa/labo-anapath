@@ -22,7 +22,9 @@ $(document).ready(function() {
         serverSide: false,
         ajax: {
             url: ROUTETESTORDERDATATABLEPIECEOPERATOIRE,
-            data: function(d) {}
+            data: function(d) {
+
+            }
         },
         columns: [{
                 orderable: false,
