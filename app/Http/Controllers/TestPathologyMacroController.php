@@ -852,8 +852,7 @@ public function __construct(
 
     // Histoligie Piece Operatoire
     public function getTestOrdersforDatatableHistologie(Request $request)
-    {
-        
+    {      
         $data = DB::table('test_orders')
         ->select(
             'test_orders.id as test_order',

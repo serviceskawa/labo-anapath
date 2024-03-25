@@ -22,7 +22,6 @@
     <link href="{{ asset('adminassets/css/vendor/simplemde.min.css') }}" rel="stylesheet" type="text/css" />
     <script src="{{ asset('adminassets/js/vendor/simplemde.min.js') }}"></script>
     <script src="{{ asset('adminassets/js/vendor/quill.min.js') }}"></script>
-    {{-- <script src="{{asset('adminassets/js/pages/demo.simplemde.js')}}"></script> --}}
     <script src="https://cdn.ckeditor.com/ckeditor5/36.0.0/super-build/ckeditor.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -43,17 +42,17 @@
     </div>
 
     <div class="">
-
         @include('layouts.alerts')
 
         <div class="row">
-            <!-- Contenu du compte rendu -->
+
             <div class="col-9">
                 <div style="text-align:right; margin-bottom:10px;"><span style="color:red;">*</span>champs obligatoires
                 </div>
 
                 <form action="{{ route('report.store') }}" id="reportForm" method="post">
                     @csrf
+
                     <input type="hidden" name="report_id" value="{{ $report->id }}">
 
                     <div class="card mb-md-0 mb-3">
@@ -264,7 +263,6 @@
                         <div class="card mb-md-0 mb-3 mt-3">
                             <h5 class="card-header">Signature<span style="color:red;">*</span></h5>
                             <div class="card-body">
-
                                 <div class="row">
 
                                     <div class="col-5 form-check-inline">
@@ -299,39 +297,9 @@
                                         </select>
                                     </div>
 
-                                    <!-- <div class="m-3 form-check-inline">
-                                            <label for="example-fileinput" class="form-label">Signatiare 2</label>
-                                            <select name="doctor_signataire2" id="doctor_signataire2" class="form-control">
-                                                <option value="">Selectionner un docteur</option>
-                                                @foreach (getUsersByRole('docteur') as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ $report->signatory2 == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->lastname }} {{ $item->firstname }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div> -->
-
-                                    <!-- <div class="m-3 form-check-inline">
-                                            <label for="example-fileinput" class="form-label">Signataire 3</label>
-                                            <select name="doctor_signataire3" id="doctor_signataire3" class="form-control">
-                                                <option value="">Selectionner un docteur</option>
-                                                @foreach (getUsersByRole('docteur') as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ $report->signatory3 == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->lastname }} {{ $item->firstname }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div> -->
                                 </div>
 
-                                <div class="row mb-10" style="padding-right: 1px; flex-wrap:nowrap">
-
-                                    {{-- <div class="col-10 mt-3">
-                                    <input type="hidden" name="status" id="status" value="{{$report->status}}">
-                                <button type="button" id="btn-status" class="btn" >Marqué comme En attente</button>
-                                </div> --}}
+                                <div class="row mb-10" style="padding-right: 1px; flex-wrap:nowrap">       
                                     @if (App\Models\SettingApp::where('key', 'report_review_title')->first()->value == '')
                                         <div class="col-6 mt-2 alert alert-warning alert-dismissible fade show"
                                             role="alert">
@@ -356,7 +324,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                {{-- <button type="submit"{{ Auth::user()->id != $report->order->attribuate_doctor_id ? 'disabled':'' }} class="btn btn-warning w-100 mt-3">Mettre à jour</button> --}}
+                               
                                 <button type="submit"class="btn btn-warning w-100 mt-3">Mettre à jour</button>
                             </div>
                         </div>
@@ -424,12 +392,23 @@
 
                 <div class="mb-md-0 mb-3 mt-3">
                     <div class="page-title">
-                        {{-- <button type="button" class="btn btn-secondary" onclick="passwordTest({{ $item->id }})"><i
-                                class="uil uil-print">Imprimer le compte rendu</i></button> --}}
+
+@php
+    $facture = App\Models\Invoice::where('test_order_id', $report->test_order_id)->value('paid');
+    // dd($facture);
+@endphp
+@if($facture == 1)
                         <a href="{{ route('report.pdf', $report->id) }}" target="_blank" rel="noopener noreferrer"
                             type="button" class="btn btn-secondary">Imprimer le compte rendu
                             </i>
                         </a>
+                        @elseif($facture == 0)
+                        <a href="#"  id="showAlertButton" onclick="fenetre()" rel="noopener noreferrer"
+                            type="button" class="btn btn-secondary">Imprimer le compte rendu
+                            </i>
+                        </a>
+                        @endif
+
                     </div>
                 </div>
 
@@ -449,7 +428,6 @@
                                     <th>Date</th>
                                     <th>Opération</th>
                                     <th>Utilisateur</th>
-
                                 </tr>
                             </thead>
 
@@ -521,4 +499,19 @@
     </script>
     <script src="{{ asset('viewjs/report/show.js') }}"></script>
     <script src="{{ asset('viewjs/report/gallery.js') }}"></script>
+
+    <script>
+
+        function fenetre(){
+            event.preventDefault();
+
+        // Afficher le Sweet Alert
+        Swal.fire({
+  icon: "warning",
+  title: "Attention",
+  text: "Impossible d'imprimer le compte rendu, la facture n'est pas payée",
+});
+        }
+
+</script>
 @endpush
