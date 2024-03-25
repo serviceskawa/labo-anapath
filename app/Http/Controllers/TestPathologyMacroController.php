@@ -382,12 +382,11 @@ public function __construct(
                 if (($request->get('contenu'))) {
                     $query->whereHas('order', function($query) use($request) {
                         $query->where('code','like','%'.$request->get('contenu').'%');
-                        // Modifier la condition pour status égal à 0
                     });
                 }
 
               
-
+        
 
                 if(!empty($request->get('dateBegin2'))){
                     $query->whereHas('testOrder', function($queryModel) use($request) {
