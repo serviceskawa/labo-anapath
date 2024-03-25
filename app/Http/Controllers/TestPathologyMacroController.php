@@ -891,7 +891,7 @@ public function __construct(
                 ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
         })
         ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderBy('test_orders.created_at');
+        ->orderBy('test_orders.created_at','ASC');
 
 
 
@@ -1041,10 +1041,10 @@ public function __construct(
                 ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
         })
         ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderBy('test_orders.created_at');
+        ->orderBy('test_orders.created_at','ASC');
 
 
-                $employees = $this->employees->all();
+            $employees = $this->employees->all();
             return DataTables::of($data)->addIndexColumn()
 
             ->setRowData([
@@ -1203,7 +1203,7 @@ public function __construct(
                 ->where('type_orders.slug','like','cytologie');
         })
         ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderBy('test_orders.created_at');
+        ->orderBy('test_orders.created_at','ASC');
 
 
 
