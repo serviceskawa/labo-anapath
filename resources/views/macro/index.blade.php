@@ -42,7 +42,7 @@
                                 <label for="example-fileinput" class="form-label">Demande d'examen</label>
                                 <select name="id_test_pathology_order" id="id_test_pathology_order"
                                     class="form-select select2" data-toggle="select2">
-                                    <option value="">Toutes les demnades</option>
+                                    <option value="">Toutes les demandes</option>
                                     @forelse ($orders as $order)
                                     <option value="{{ $order->id }}">{{ $order->code }}</option>
                                     @empty
