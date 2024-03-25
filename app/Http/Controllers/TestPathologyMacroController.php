@@ -255,11 +255,14 @@ public function __construct(
         ->whereHas('order', function ($query) {
             $query->whereHas('type', function($query) {
                 $query->where('slug','like','cytologie')
-                      ->orwhere('slug','like','histologie')->where('status', 1) // Statut différent de 0
+                      ->orwhere('slug','like','histologie')
+                      ->orwhere('slug','like','biopsie')
+                      ->orwhere('slug','like','pièce-opératoire')
+                      ->where('status', 1) // Statut différent de 0
                       ->whereNull('deleted_at'); // deleted_at doit être NULL;
                 });
         })
-                ->orderBy('created_at', 'desc');
+        ->orderBy('created_at', 'desc');
 
         return DataTables::of($data)->addIndexColumn()
 
@@ -878,15 +881,15 @@ public function __construct(
                 ->where('type_orders.slug','like','histologie')
                 ->orwhere('type_orders.slug','like','biopsie');
         })
-        // ->orWhere(function ($query) {
-        //     $query->where('reports.status', 0)
-        //         ->whereNotExists(function ($subquery) {
-        //             $subquery->select(DB::raw(1))
-        //                     ->from('test_pathology_macros')
-        //                     ->whereRaw('id_test_pathology_order = test_orders.id');
-        //         })
-        //         ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
-        // })
+        ->orWhere(function ($query) {
+            $query->where('reports.status', 0)
+                ->whereNotExists(function ($subquery) {
+                    $subquery->select(DB::raw(1))
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
+                })
+                ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+        })
         ->whereYear('test_orders.created_at', '!=', 2022)
         ->orderBy('test_orders.created_at');
 
@@ -910,7 +913,7 @@ public function __construct(
 
 
 
-                $employees = $this->employees->all();
+            $employees = $this->employees->all();
             return DataTables::of($data)->addIndexColumn()
 
             ->setRowData([
@@ -920,7 +923,6 @@ public function __construct(
                     } else {
                         $result = "";
                     }
-
                     return 'mytag=' . $result;
                 },
             ])
@@ -1027,12 +1029,19 @@ public function __construct(
         })
         ->where(function ($query) {
             $query->where('test_orders.status', 1)
-                ->where('type_orders.slug','like','pièce-opératoire');
+                  ->where('type_orders.slug','like','pièce-opératoire');
+        })
+        ->orWhere(function ($query) {
+            $query->where('reports.status', 0)
+                ->whereNotExists(function ($subquery) {
+                    $subquery->select(DB::raw(1))
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
+                })
+                ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
         })
         ->whereYear('test_orders.created_at', '!=', 2022)
         ->orderBy('test_orders.created_at');
-
-
 
 
                 $employees = $this->employees->all();
@@ -1129,6 +1138,43 @@ public function __construct(
     // Histoligie Cytologie
     public function getTestOrdersforDatatableCytologie(Request $request)
     {
+        $data = DB::table('test_orders')
+        ->select(
+            'test_orders.id as test_order',
+            'test_orders.code as code',
+            'test_orders.created_at',
+            'test_orders.type_order_id as type_order_id',
+            'test_orders.is_urgent',
+            'reports.status as report_status',
+            'test_pathology_macros.id as test_pathology_macro_id'
+        )
+        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+        ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
+        ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
+        ->where(function ($query) {
+            $query->where('test_orders.is_urgent', 1)
+                ->where('reports.status', 0)
+                ->whereNotExists(function ($subquery) {
+                    $subquery->select(DB::raw(1))
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
+                })->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+        })
+        ->where(function ($query) {
+            $query->where('test_orders.status', 1)
+                  ->where('type_orders.slug','like','cytologie');
+        })
+        ->orWhere(function ($query) {
+            $query->where('reports.status', 0)
+                ->whereNotExists(function ($subquery) {
+                    $subquery->select(DB::raw(1))
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
+                })
+                ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+        })
+        ->whereYear('test_orders.created_at', '!=', 2022)
+        ->orderBy('test_orders.created_at');
         
         $data = DB::table('test_orders')
         ->select(

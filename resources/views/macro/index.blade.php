@@ -138,7 +138,7 @@
 
 
 
-        {{-- Premier DataTble test --}}
+        {{-- Premier DataTable test --}}
         {{-- <div class="card mb-md-0 mt-5">
             <div class="card-body">
 
