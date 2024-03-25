@@ -116,7 +116,7 @@ $(document).ready(function() {
 
     // Rechercher par ecrire de texte
     $("#contenu").on("input", function() {
-        alert($('#contenu').val())
+        // alert($('#contenu').val())
         table.draw();
     });
 
