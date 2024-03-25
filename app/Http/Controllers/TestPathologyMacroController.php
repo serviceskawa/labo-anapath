@@ -379,7 +379,7 @@ public function __construct(
                     $query->where('id_employee', $request->get('id_employee'));
                 }
 
-                if (($request->get('contenu'))) {
+                if (!empty($request->get('contenu'))) {
                     $query->whereHas('order', function($query) use($request) {
                         $query->where('code','like','%'.$request->get('contenu').'%');
                     });
