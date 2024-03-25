@@ -364,8 +364,6 @@ class InvoiceController extends Controller
             })
             ->filter(function ($query) use ($request) {
 
-
-
                  if (!empty($request->get('cas_status'))) {
                      if ($request->get('cas_status') == 1) {
                          $query->where('paid', 1);
@@ -380,13 +378,7 @@ class InvoiceController extends Controller
                     }
                  }
 
-                //if ($request->get('cas_status')) {
-
-                   // if($request->get('cas_status')){
-                      //  $query->where('paid', $request->get('cas_status'));
-                    //}
-               // }
-
+              
 
                 if (!empty($request->get('status_invoice'))) {
                     if (!$request->get('status_invoice')) {
