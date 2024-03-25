@@ -1,4 +1,3 @@
-
 function afficherDetails(testOrderId) {
     // Code pour afficher les détails en utilisant le testOrderId
     console.log("Affichage des détails pour le testOrderId : " + testOrderId);
@@ -45,7 +44,7 @@ $(document).ready(function() {
                 data: 'created_at',
                 name: 'created_at'
             },
-             {
+            {
                 data: 'demande',
                 name: 'demande',
             },
@@ -87,19 +86,19 @@ $(document).ready(function() {
         ],
     });
 
-     // Recherche selon les cas
-     $("#cas_status").on("change", function() {
+    // Recherche selon les cas
+    $("#cas_status").on("change", function() {
+        alert(this.value)
+        table.draw();
+    });
+
+    // Recherche selon les cas
+    $("#status_invoice").on("change", function() {
         // alert(this.value)
         table.draw();
     });
 
-     // Recherche selon les cas
-     $("#status_invoice").on("change", function() {
-        // alert(this.value)
-        table.draw();
-    });
-
-    $('#contenu').on("input", function(){
+    $('#contenu').on("input", function() {
         table.draw();
     });
 

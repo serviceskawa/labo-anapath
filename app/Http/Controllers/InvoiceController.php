@@ -332,9 +332,16 @@ class InvoiceController extends Controller
                             break;
 
                         default:
-                            $btn = '<span class="badge bg-warning rounded-pill p-1"> En attente </span>';;
+                            $btn = '<span class="badge bg-warning rounded-pill p-1"> En attente </span>';
                             break;
                     }
+                        // if($data->paid == 0)
+                        // {
+                        //     $btn = '<span class="badge bg-warning rounded-pill p-1"> En attente </span>';
+                        // }elseif($data->paid == 1){
+                        //     $btn = '<span class="badge bg-warning rounded-pill p-1"> En attente </span>';
+                        // }
+
                 return $btn;
 
             })
@@ -357,13 +364,30 @@ class InvoiceController extends Controller
             })
             ->filter(function ($query) use ($request) {
 
-                if (!empty($request->get('cas_status'))) {
-                    if (!$request->get('cas_status')) {
+
+
+                 if (!empty($request->get('cas_status'))) {
+                     if ($request->get('cas_status') == 1) {
+                         $query->where('paid', 1);
+                        }else {
+                         $query;
+                     }
+                 }else{
+                    if ($request->get('cas_status') == 0) {
                         $query->where('paid', 0);
                     }else {
-                        $query->where('paid', $request->get('cas_status'));
+                        $query->where('paid', 1);
                     }
-                }
+                 }
+
+                //if ($request->get('cas_status')) {
+
+                   // if($request->get('cas_status')){
+                      //  $query->where('paid', $request->get('cas_status'));
+                    //}
+               // }
+
+
                 if (!empty($request->get('status_invoice'))) {
                     if (!$request->get('status_invoice')) {
                         $query->where('status_invoice', 0);
@@ -371,6 +395,7 @@ class InvoiceController extends Controller
                         $query->where('status_invoice', 1);
                     }
                 }
+
 
                 if(!empty($request->get('contenu')))
                 {
@@ -383,15 +408,17 @@ class InvoiceController extends Controller
                     });
                 }
 
+
                 if(!empty($request->get('dateBegin'))){
-                    //dd($request);
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
-                    $query->whereDate('created_at','>',$newDate);
+                    $query->whereDate('created_at','>=',$newDate);
                 }
+
+
                 if(!empty($request->get('dateEnd'))){
-                    //dd($request);
-                    $query->whereDate('created_at','<',$request->get('dateEnd'));
+                    $query->whereDate('created_at','<=',$request->get('dateEnd'));
                 }
+
             })
             ->rawColumns(['demande', 'total', 'remise','patient','type','status','action'])
             ->make(true);

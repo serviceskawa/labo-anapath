@@ -57,7 +57,7 @@
                         <div class="mb-3">
                             <label for="example-fileinput" class="form-label">Status</label>
                             <select name="cas_status" id="cas_status" class="form-control">
-                                <option value="">Tous</option>
+                                <option value="2">Tous</option>
                                 <option value="0">En attente</option>
                                 <option value="1">Payé</option>
                             </select>
