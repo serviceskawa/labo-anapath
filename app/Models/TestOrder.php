@@ -164,7 +164,7 @@ class TestOrder extends Model
      */
     public function invoice()
     {
-        return $this->hasOne(Invoice::class);
+        return $this->hasOne(Invoice::class,'test_order_id');
     }
 
     public function attribuateToDoctor()

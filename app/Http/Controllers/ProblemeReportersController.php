@@ -90,6 +90,7 @@ class ProblemeReportersController extends Controller
                 'user_id'=>Auth::user()->id,
                 'ticket_code'=>$code,
                 'description'=>$data['description'],
+                
             ]);
             return redirect()->route('probleme.report.index')->with('success',"Ticket enregistrée avec success");
         } catch (\Throwable $th) {

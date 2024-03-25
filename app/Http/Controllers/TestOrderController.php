@@ -1656,7 +1656,7 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
     public function getTestOrdersforDatatable(Request $request)
     {
         $data = $this->testOrder
-            ->with(['patient', 'contrat', 'type', 'details', 'report'])
+            ->with(['patient', 'contrat', 'type', 'details', 'report', 'invoice'])
             ->whereHas('type', function($query) {
                 $query->where('slug','like','histologie')
                       ->orwhere('slug','like','cytologie')
@@ -1733,6 +1733,7 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
                     if (!empty($data->invoice->id)) {
                         $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->invoice->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
                     } else {
+
                         $btnInvoice = ' <a type="button" href="' . route('invoice.storeFromOrder', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
                     }
                 } else {
@@ -1747,7 +1748,15 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
 
                         if ($data->report->is_deliver ==0) {
                             $btnreport = ' <button type="button"  class="btn btn-success" onclick="confirmAction(' . $data->report->id . ')" title="Marquer comme retirer"><i class="mdi mdi-file-check"></i> </button> ';
-                            $btnPrintReport = ' <a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
+                            // if(!empty($data->invoice->test_order_id) && $data->invoice->paid == 1)
+                            // {
+                            //     $btnPrintReport = '<a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
+                            // }elseif(!empty($data->invoice->test_order_id) && $data->invoice->paid==0){
+                            //     $btnPrintReport = ' <a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
+                            // }
+                            // btncompterendu
+                            $btnPrintReport = view('examens.btncompterendu',['data' => $data, 'rep' => $data->report]);
+
                         }else{
                             $btnreport ="";
                             $btnPrintReport ="";

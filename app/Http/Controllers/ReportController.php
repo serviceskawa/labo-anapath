@@ -106,7 +106,28 @@ class ReportController extends Controller
 
             event(new AssignedReviewer($request->reviewed_by_user_id,$data));
         }
-        $report
+
+        if($request->status==1)
+        {
+            $report
+            ->fill([
+                'delivery_date' => now(),
+                'description' => $request->content,
+                'comment' => $request->comment,
+                'comment_sup' => $request->comment_sup,
+                'description_micro' => $request->content_micro,
+                'signatory1' => $doctor_signataire1,
+                'signatory2' => $doctor_signataire2,
+                'signatory3' => $doctor_signataire3,
+                'reviewed_by_user_id' => $revew_by,
+                'status' => $request->status == '1' ? '1' : '0',
+                'title' => $request->title,
+                'description_supplementaire' => $request->description_supplementaire != '' ? $request->description_supplementaire : '',
+                'description_supplementaire_micro' => $request->description_supplementaire_micro != '' ? $request->description_supplementaire_micro : '',
+            ])
+            ->save();
+        }elseif($request->status==0){
+            $report
             ->fill([
                 'description' => $request->content,
                 'comment' => $request->comment,
@@ -122,6 +143,9 @@ class ReportController extends Controller
                 'description_supplementaire_micro' => $request->description_supplementaire_micro != '' ? $request->description_supplementaire_micro : '',
             ])
             ->save();
+        }
+
+
         $report->order->assigned_to_user_id =  $request->doctor_signataire1;
         $report->order->save();
         if ($report->status == 1) {
