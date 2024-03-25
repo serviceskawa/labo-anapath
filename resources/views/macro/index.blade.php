@@ -52,15 +52,14 @@
 
                         </div>
 
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Date</label>
                                 <input type="date" name="date" id="date" class="form-control">
                             </div>
                         </div>
 
-                        <div class="col-lg-4">
-
+                        <div class="col-lg-3">
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Réalisé par</label>
                                 <select name="id_employee" id="id_employee" class="form-select select2"
@@ -71,6 +70,13 @@
                                     @empty
                                     @endforelse
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3">
+                            <div class="mb-3">
+                                <label for="example-fileinput" class="form-label">Rechercher</label>
+                                <input type="text" name="contenu" id="contenu" class="form-control">
                             </div>
                         </div>
                     </div>

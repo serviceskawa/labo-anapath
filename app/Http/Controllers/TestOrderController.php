@@ -430,15 +430,11 @@ public function getTestOrdersforDatatableMySpace(Request $request)
         })
 
         ->filter(function ($query) use ($request) {
-
             if (($request->get('cas_status')==1)) {
                 $query->whereHas('testOrder', function($query) use($request) {
                     $query->where('is_urgent', $request->get('cas_status')); // Modifier la condition pour status égal à 0
                 });
             }
-
-           
-
         })
 
         ->rawColumns(['action','patient', 'code', 'contrat', 'created_at', 'details', 'rendu', 'type','urgence'])

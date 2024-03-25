@@ -251,7 +251,7 @@ public function __construct(
     {
 
 
-        $data = $this->macro->with(['order','employee','user'])
+        $data = $this->macro->with(['order','employee','user','testOrder'])
         ->whereHas('order', function ($query) {
             $query->whereHas('type', function($query) {
                 $query->where('slug','like','cytologie')
@@ -370,7 +370,7 @@ public function __construct(
                 return $select;
             })
 
-            ->filter(function ($query) use ($request,$data) {
+            ->filter(function ($query) use ($request) {
 
                 if (!empty($request->get('id_test_pathology_order'))) {
                     $query->where('id_test_pathology_order', $request->get('id_test_pathology_order'));
@@ -378,6 +378,25 @@ public function __construct(
                 if (!empty($request->get('id_employee'))) {
                     $query->where('id_employee', $request->get('id_employee'));
                 }
+
+                if (($request->get('contenu'))) {
+                    $query->whereHas('order', function($query) use($request) {
+                        $query->where('code','like','%'.$request->get('contenu').'%');
+                        // Modifier la condition pour status égal à 0
+                    });
+                }
+
+              
+
+
+                if(!empty($request->get('dateBegin2'))){
+                    $query->whereHas('testOrder', function($queryModel) use($request) {
+    
+                    $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin2'));
+                    $queryModel->whereDate('created_at','>=',$newDate);
+                    });
+                }
+
 
                 if(!empty($request->get('date'))){
                     //dd($request);

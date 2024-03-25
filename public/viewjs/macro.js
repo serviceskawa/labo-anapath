@@ -49,7 +49,7 @@ $(document).ready(function() {
                 d.id_test_pathology_order = $('#id_test_pathology_order').val()
                 d.id_employee = $('#id_employee').val()
                 d.date = $('#date').val()
-
+                d.contenu = $('#contenu').val()
             }
         },
         columns: [
@@ -106,6 +106,44 @@ $(document).ready(function() {
         ],
 
     });
+
+
+    // Recherche selon les types d'examen
+    $("#id_test_pathology_order").on("change", function() {
+        // alert($('#id_test_pathology_order').val())
+        table.draw();
+    });
+
+    // Rechercher par ecrire de texte
+    $("#contenu").on("input", function() {
+        // alert($('#contenu').val())
+        table.draw();
+    });
+
+    // Recherche selon les cas
+    $("#id_employee").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+    $('#date').on('input', function() {
+        // alert($('#date').val());
+        table.draw();
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -334,21 +372,7 @@ $(document).ready(function() {
     });
 
 
-    // Recherche selon les types d'examen
-    $("#id_test_pathology_order").on("change", function() {
-        // alert(this.value)
-        table.draw();
-    });
-    // Recherche selon les cas
-    $("#id_employee").on("change", function() {
-        // alert(this.value)
-        table.draw();
-    });
-    $('#date').on('input', function() {
-        console.log($('#date').val());
-        table.draw();
-        //console.log(search.value);
-    });
+
 
     // Écoutez l'événement de clic sur le bouton pour effectuer l'action souhaitée
     $("#changeState").on("click", function() {
