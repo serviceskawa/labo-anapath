@@ -397,7 +397,13 @@ class InvoiceController extends Controller
                         ->orwhereHas('patient', function ($query) use ($request){
                             $query->where('firstname','like', '%'.$request->get('contenu').'%')
                             ->orwhere('lastname', 'like', '%'.$request->get('contenu').'%');
-                    })->where('client_name','like', '%'.$request->get('contenu').'%');
+                    })
+                        ->orwhereHas('contrat', function ($query) use ($request){
+                            $query->where('name','like', '%'.$request->get('contenu').'%')
+                           ;
+                    })
+                        
+                    ;
                 }
 
 
