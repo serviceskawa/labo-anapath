@@ -237,7 +237,7 @@ class TestOrderAssignmentController extends Controller
     {
 
 
-        $data = $this->assignment->latest();
+        $data = $this->assignment->with('details')->latest();
 
         return DataTables::of($data)->addIndexColumn()
 
