@@ -139,7 +139,7 @@
 
 
         {{-- Premier DataTable test --}}
-        {{-- <div class="card mb-md-0 mt-5">
+        <div class="card mb-md-0 mt-5">
             <div class="card-body">
 
                 <div class="d-flex justify-content-between mb-3">
@@ -199,7 +199,7 @@
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
 
 
 
