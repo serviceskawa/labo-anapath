@@ -736,7 +736,7 @@ public function __construct(
             ->orwhere('type_order_id', 5)
             ->orwhere('type_order_id', 6)
             ->orwhere('type_order_id', 4);
-        });
+        })->where('test_orders.is_urgent',1);
 
 
                 $employees = $this->employees->all();
@@ -1132,10 +1132,9 @@ public function __construct(
                                     return 'table-warning';
                                 }
                             }
-
                         }
-                            return 'table-danger urgent';
 
+                    return 'table-danger urgent';
                 }elseif (!empty($data->report)) {
                     if($data->report->is_deliver ==1){
                         return 'table-success';
