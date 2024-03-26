@@ -877,8 +877,8 @@ public function __construct(
         })
         ->where(function ($query) {
             $query->where('test_orders.status', 1)
-                ->where('type_orders.slug','like','histologie')
-                ->orwhere('type_orders.slug','like','biopsie');
+                ->where('test_orders.type_order_id',1)
+                ->orwhere('test_orders.type_order_id',5);
         })
         ->Where(function ($query) {
             $query->where('reports.status', 0)
@@ -1012,7 +1012,7 @@ public function __construct(
         ->where(function ($query) {
             $query
             ->where('test_orders.status', 1)
-            ->where('type_orders.slug','like','pièce-opératoire');
+            ->where('test_orders.type_order_id',6);
         })
         ->Where(function ($query) {
             $query->where('reports.status', 0)
@@ -1139,7 +1139,7 @@ public function __construct(
         })
         ->where(function ($query) {
             $query->where('test_orders.status', 1)
-                  ->where('type_orders.slug','like','cytologie');
+                  ->where('test_orders.type_order_id',4);
         })
         ->Where(function ($query) {
             $query->where('reports.status', 0)

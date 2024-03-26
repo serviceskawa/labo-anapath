@@ -409,7 +409,7 @@ class ReportController extends Controller
 
     public function getReportsforDatatable(Request $request)
     {
-        $data = $this->report->latest();
+        $data = $this->report->with('order')->latest();
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -458,17 +458,36 @@ class ReportController extends Controller
                     $btnReport = ' ';
                 }
 
-                if ($data->status == 1) {
-                    if ($data->is_deliver == 1) {
-                        $btnInvoice = ' <a type="button" href="' . route('report.updateDeliver', $data->id) . '" class="btn btn-success">Imprimer </a>';
-                    } else {
-                        $btnInvoice = ' <a type="button" href="' . route('report.updateDeliver', $data->id) . '" class="btn btn-warning">Imprimer </a>';
-                    }
-                } else {
-                    $btnInvoice = '';
-                }
+                // if(!empty($data->order->invoice->paid) && $data->order->invoice->paid == 1)
+                // {
+                //     // $btnInvoice = "Payee";
+                //     if ($data->status == 1) {
+                //         if ($data->is_deliver == 1) {
+                //             $btnInvoice = ' <a type="button" href="' . route('report.updateDeliver', $data->id) . '" class="btn btn-success">Imprimer </a>';
+                //         } else {
+                //             $btnInvoice = ' <a type="button" href="' . route('report.updateDeliver', $data->id) . '" class="btn btn-warning">Imprimer </a>';
+                //         }
+                //     } else {
+                //         $btnInvoice = '';
+                //     }
 
-                return $btnVoir . $btnReport . $btnInvoice;
+                // }else{
+                //     $btnInvoice = "";
+                // }
+
+
+                // if ($data->status == 1) {
+                //     if ($data->is_deliver == 1) {
+                //         $btnInvoice = ' <a type="button" href="' . route('report.updateDeliver', $data->id) . '" class="btn btn-success">Imprimer </a>';
+                //     } else {
+                //         $btnInvoice = ' <a type="button" href="' . route('report.updateDeliver', $data->id) . '" class="btn btn-warning">Imprimer </a>';
+                //     }
+                // } else {
+                //     $btnInvoice = '';
+                // }
+
+                // return $btnVoir . $btnReport . $btnInvoice;
+                return $btnVoir . $btnReport;
             })
             ->filter(function ($query) use ($request) {
                 if (!empty($request->get('statusquery'))) {
