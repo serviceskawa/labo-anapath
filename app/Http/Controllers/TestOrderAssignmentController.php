@@ -238,14 +238,14 @@ class TestOrderAssignmentController extends Controller
 
 
         $data = $this->assignment->whereHas('details', function($query) {
-            $query->whereHas('order', function($query){
-                $query->whereHas('type', function($query){
-                    $query->where('slug','like','cytologie')
-                            ->orwhere('slug','!=','histologie')
-                            ->where('status', 1) // Statut différent de 0
-                            ->whereNull('deleted_at'); // deleted_at doit être NULL
-                });
-            });
+            // $query->whereHas('order', function($query){
+            //     // $query->whereHas('type', function($query){
+            //     //     $query->where('slug','like','cytologie')
+            //     //             ->orwhere('slug','!=','histologie')
+            //     //             ->where('status', 1) // Statut différent de 0
+            //     //             ->whereNull('deleted_at'); // deleted_at doit être NULL
+            //     // });
+            // });
         })->latest();
 
         return DataTables::of($data)->addIndexColumn()
