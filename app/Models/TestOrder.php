@@ -167,6 +167,12 @@ class TestOrder extends Model
         return $this->hasOne(Invoice::class,'test_order_id');
     }
 
+
+    public function macro()
+    {
+        return $this->hasOne(test_pathology_macro::class,'test_order_id');
+    }
+
     public function attribuateToDoctor()
     {
         return $this->belongsTo(User::class, 'attribuate_doctor_id');

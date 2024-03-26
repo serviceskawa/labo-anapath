@@ -350,6 +350,12 @@ Route::middleware(['auth'])->group(function () {
         // Mis à jour du statut livré
         Route::get('updateDeliver/{id}', [ReportController::class, 'updateDeliverStatus'])->name('report.updateDeliver');
         Route::get('callOrSendSms/{id}', [ReportController::class, 'callOrSendSms'])->name('report.callOrSendSms');
+
+        Route::get('/dataTable/suivi', [ReportController::class, 'getTestOrdersforDatatableSuivi'])->name('report.getTestOrdersforDatatableSuivi');
+       
+        Route::get('/suivi/index', [ReportController::class, 'indexsuivi'])->name('report.index.suivi');
+        Route::post('/suivi/store/informe', [ReportController::class, 'UpdateInformePatient'])->name('report.UpdateInformePatient');
+        Route::post('/suivi/store/livrer', [ReportController::class, 'UpdateLivrePatient'])->name('report.UpdateLivrePatient');
     });
 
     Route::prefix('settings')->group(function () {

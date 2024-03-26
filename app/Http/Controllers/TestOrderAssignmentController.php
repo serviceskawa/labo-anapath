@@ -38,7 +38,8 @@ class TestOrderAssignmentController extends Controller
                 })->where('status', 1) // Statut différent de 0
                 ->whereNull('deleted_at'); // deleted_at doit être NULL
             });
-        })->latest()->get();;
+        })->latest()->get();
+
         $orders = $this->order->all();
 
         return view('reports.assignment.index',compact('assignments','orders'));
@@ -78,6 +79,8 @@ class TestOrderAssignmentController extends Controller
         $testOrders = $this->order->whereHas('type', function($query){
             $query->where('slug','like','cytologie')
                     ->orwhere('slug','like','histologie')
+                    ->orwhere('slug','like','biopsie')
+                    ->orwhere('slug','like','pièce-opératoire')
                     ->where('status', 1) // Statut différent de 0
                     ->whereNull('deleted_at'); // deleted_at doit être NULL
         })->latest()->get();
@@ -240,7 +243,6 @@ class TestOrderAssignmentController extends Controller
         $data = $this->assignment->with('details')->latest();
 
         return DataTables::of($data)->addIndexColumn()
-
             ->setRowData([
                 'data-mytag' => function ($data) {
                     if ($data->is_urgent == 1) {

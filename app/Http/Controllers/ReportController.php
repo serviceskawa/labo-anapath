@@ -75,6 +75,20 @@ class ReportController extends Controller
         return view('reports.index', compact('reports', 'doctors'));
     }
 
+
+    public function indexsuivi()
+    {
+        if (!getOnlineUser()->can('view-reports')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
+        $reports = $this->report->orderBy('created_at', 'DESC')->get();
+        $doctors = $this->doctor->all();
+        $user = Auth::user();
+
+        return view('reports.suivi.index', compact('reports', 'doctors'));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -524,6 +538,105 @@ class ReportController extends Controller
                 }
             })
 
+            ->make(true);
+    }
+    
+
+    public function UpdateLivrePatient(Request $request)
+    {
+        $updatereport = Report::find($request->data_id_report);
+
+        $updatereport->is_delivered = 1;
+        $updatereport->delivery_date = now();
+
+        $updatereport->save();
+
+        return response()->json(["message" => "Operation réussie avec succès!",
+                                 'TestId' => $updatereport], 200);
+    }
+
+
+    public function UpdateInformePatient(Request $request)
+    {
+        $updatereport = Report::find($request->data_id_report);
+
+        $updatereport->is_called = 1;
+        $updatereport->call_date = now();
+
+        $updatereport->save();
+
+        return response()->json(["message" => "Operation réussie avec succès!",
+                                 'TestId' => $updatereport], 200);
+    }
+
+
+    public function getTestOrdersforDatatableSuivi(Request $request)
+    {
+        $data = $this->report->with('order')->latest();
+
+        return DataTables::of($data)
+            ->addIndexColumn()
+
+            ->editColumn('code', function ($data) {
+                if ($data->order) {
+                    return $data->order->code;
+                } else {
+                    return '';
+                }
+            })
+
+            ->addColumn('macro', function ($data) {
+                return  view("reports.suivi.btnmacro",['data'=>$data]);
+            })
+
+            ->addColumn('report', function ($data) {
+                return  view("reports.suivi.btnreport",['data'=>$data]);
+            })
+
+            ->addColumn('call', function ($data) {
+                return  view("reports.suivi.btninforme",['data'=>$data]);
+                // return $data->is_called;
+            })
+
+            ->addColumn('delivery', function ($data) {
+                return  view("reports.suivi.btndelivery",['data'=>$data]);
+            })
+            
+            ->filter(function ($query) use ($request) {
+                // if (!empty($request->get('statusquery'))) {
+                //     if ($request->get('statusquery') == 1) {
+                //         $query->where('status', 1);
+                //     } else {
+                //         $query->where('status', 0);
+                //     }
+                // }
+
+                // if (!empty($request->get('contenu'))) {
+                //     $query
+                //         ->where('code', 'like', '%' . $request->get('contenu') . '%')
+                //         ->orwhereHas('order', function ($query) use ($request) {
+                //             $query->where('code', 'like', '%' . $request->get('contenu') . '%');
+                //         })
+                //         ->orwhere('description', 'like', '%' . $request->get('contenu') . '%')
+                //         ->orwhereHas('patient', function ($query) use ($request) {
+                //             $query
+                //                 ->where('firstname', 'like', '%' . $request->get('contenu') . '%')
+                //                 ->orwhere('code', 'like', '%' . $request->get('contenu') . '%')
+                //                 ->orwhere('lastname', 'like', '%' . $request->get('contenu') . '%');
+                //         });
+                // }
+
+                // if (!empty($request->get('dateBegin'))) {
+                //     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
+                //     $query->whereDate('created_at', '>', $newDate);
+                // }
+
+                // if (!empty($request->get('dateEnd'))) {
+                //     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
+                //     $query->whereDate('created_at', '<', $newDate);
+                // }
+            })
+            ->rawColumns(['code', 'delivery', 'call','report','macro'])
             ->make(true);
     }
 

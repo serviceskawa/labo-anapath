@@ -141,9 +141,16 @@
                                     <a href="{{ route('macro.index') }}">Macroscopie </a>
                                 </li>
                                 @endif
+
                                 @if (getOnlineUser()->can('view-test-order-assignments'))
                                 <li>
                                     <a href="{{ route('report.assignment.index') }}">Affectation </a>
+                                </li>
+                                @endif
+
+                                @if (getOnlineUser()->can('view-test-order-assignments'))
+                                <li>
+                                    <a href="{{ route('report.index.suivi') }}">Suivi</a>
                                 </li>
                                 @endif
 
