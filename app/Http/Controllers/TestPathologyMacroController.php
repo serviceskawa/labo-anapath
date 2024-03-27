@@ -326,7 +326,7 @@ public function __construct(
                 return $data->employee->fullname();
             })
             ->addColumn('date_macro', function ($data) {
-                return dateFormat($data->created_at);
+                return dateFormat($data->date);
             })
             ->addColumn('date_montage', function ($data) {
                 if ($data->mounting) {
@@ -1644,11 +1644,9 @@ public function __construct(
     }
 
     public function store(Request $request) {
-        // dd($request);
-
         $orders = $request->orders;
+
         foreach ($orders as $key => $order) {
-            # code...
             $macro = new test_pathology_macro();
             $macro->id_employee = $request->id_employee;
             $macro->date = $request->date;

@@ -76,14 +76,10 @@ class TestOrderAssignmentController extends Controller
     public function index_detail($id)
     {
         $assignment = $this->assignment->find($id);
-        $testOrders = $this->order->whereHas('type', function($query){
-            $query->where('slug','like','cytologie')
-                    ->orwhere('slug','like','histologie')
-                    ->orwhere('slug','like','biopsie')
-                    ->orwhere('slug','like','pièce-opératoire')
+        $testOrders = $this->order
                     ->where('status', 1) // Statut différent de 0
-                    ->whereNull('deleted_at'); // deleted_at doit être NULL
-        })->latest()->get();
+                    ->whereNull('deleted_at') // deleted_at doit être NULL
+        ->latest()->get();
 
         return view('reports.assignment.create',compact('assignment','testOrders'));
     }
@@ -304,7 +300,7 @@ class TestOrderAssignmentController extends Controller
                 return $data->user->fullname();
             })
             ->addColumn('date_assignment', function ($data) {
-                return dateFormat($data->created_at);
+                return dateFormat($data->date);
             })
             ->addColumn('nbr_assignment', function ($data) {
                return $data->details()->count();
