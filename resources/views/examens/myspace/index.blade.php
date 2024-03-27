@@ -41,7 +41,7 @@
                         <div class="float-end">
                             <i class="mdi mdi-cart-plus widget-icon"></i>
                         </div>
-                        <h5 class="text-muted fw-normal mt-0" title="Number of Orders">DEMANDE AFFECTES</h5>
+                        <h5 class="text-muted fw-normal mt-0" title="Number of Orders">DEMANDES AFFECTÉES</h5>
                         <h3 class="mt-3 mb-3"> {{ $nbreTotalCasAttribuerValeur }} </h3>
                         <p class="mb-0 text-muted">
                             <span class="{{$nbreTotalCasAttribuer>=0 ? 'text-success':'text-danger'}} me-2">
@@ -85,7 +85,7 @@
                         <div class="float-end">
                             <i class="mdi mdi-cart-plus widget-icon"></i>
                         </div>
-                        <h5 class="text-muted fw-normal mt-0" title="Number of Orders">DEMANDE EN ATTENTE</h5>
+                        <h5 class="text-muted fw-normal mt-0" title="Number of Orders"><a href="#casenattente" style="text-decoration : none; color:inherit;">DEMANDES EN ATTENTE</a></h5>
                         <h3 class="mt-3 mb-3"> {{ $nbreTotalCasEnAttenteValeur }} </h3>
                         <p class="mb-0 text-muted">
                             <span class="{{$nbreTotalCasEnAttente>=0 ? 'text-success':'text-danger'}} me-2">
@@ -130,7 +130,7 @@
                         <div class="float-end">
                             <i class="mdi mdi-cart-plus widget-icon"></i>
                         </div>
-                        <h5 class="text-muted fw-normal mt-0" title="Number of Orders"> <a href="#casterminer" style="text-decoration : none; color:inherit;">DEMANDE TERMINES</a></h5>
+                        <h5 class="text-muted fw-normal mt-0" title="Number of Orders"> <a href="#casterminer" style="text-decoration : none; color:inherit;">DEMANDES TERMINÉES</a></h5>
                         <h3 class="mt-3 mb-3"> {{ $nbreTotalCasEnTerminerValeur }} </h3>
                         <p class="mb-0 text-muted">
                             <span class="{{$nbreTotalCasEnTerminer>=0 ? 'text-success':'text-danger'}} me-2">
@@ -156,7 +156,7 @@
                         <div class="float-end">
                             <i class="mdi mdi-cart-plus widget-icon"></i>
                         </div>
-                        <h5 class="text-muted fw-normal mt-0" title="Number of Orders">IMMUNO EN ATTENTE</h5>
+                        <h5 class="text-muted fw-normal mt-0" title="Number of Orders">IMMUNOS EN ATTENTE</h5>
                         <h3 class="mt-3 mb-3 text-danger"> {{ $nbreTotalCasImmunoAttenteValeur }} </h3>
                         <p class="mb-0 text-muted">
                             <span class="{{$nbreTotalCasImmunoAttente>=0 ? 'text-success' : 'text-danger'}} me-2">
@@ -200,7 +200,7 @@
                         <div class="float-end">
                             <i class="mdi mdi-cart-plus widget-icon"></i>
                         </div>
-                        <h5 class="text-muted fw-normal mt-0" title="Number of Orders">DEMANDE URGENTS</h5>
+                        <h5 class="text-muted fw-normal mt-0" title="Number of Orders">DEMANDES URGENTES</h5>
                         <h3 class="mt-3 mb-3 text-danger"> {{ $nbreTotalCasUrgentValeur }} </h3>
                         <p class="mb-0 text-muted">
                             <span class="{{$nbreTotalCasUrgent>=0 ? 'text-success':'text-danger'}} me-2">
@@ -244,7 +244,7 @@
                         <div class="float-end">
                             <i class="mdi mdi-cart-plus widget-icon"></i>
                         </div>
-                        <h5 class="text-muted fw-normal mt-0" title="Number of Orders">DEMANDE EN RETARDS</h5>
+                        <h5 class="text-muted fw-normal mt-0" title="Number of Orders">DEMANDES EN RETARD</h5>
                         <h3 class="mt-3 mb-3 text-danger"> {{ $nbreTotalCasRetardValeur }} </h3>
                         <p class="mb-0 text-muted">
                             <span class="{{$nbreTotalCasRetard>=0 ? 'text-success':'text-danger'}} me-2">
@@ -362,7 +362,7 @@
 
 
 
-            <div class="card mb-md-0 mb-3">
+            <div class="card mb-md-0 mb-3" id="casenattente">
                 <div class="card-body">
                     <div class="card-widgets">
                         <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
@@ -370,7 +370,7 @@
                             aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                         <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                     </div>
-                    <h5 class="card-title mb-0">Liste des cas en attente</h5>
+                    <h5 class="card-title mb-0">Liste des demandes en attente</h5>
 
                     <div id="cardCollpase1" class="show collapse pt-3">
 
@@ -493,7 +493,7 @@
                             aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                         <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                     </div>
-                    <h5 class="card-title mb-0">Liste des cas terminés</h5>
+                    <h5 class="card-title mb-0">Liste des demandes terminées</h5>
 
                     <div id="cardCollpase1" class="show collapse pt-3">
 
