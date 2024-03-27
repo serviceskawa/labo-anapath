@@ -7,5 +7,5 @@
 @elseif($response == true)
 <button class="btn btn-warning">Affecter</button>
 @elseif($response == false)
-<button class="btn btn-danger">En attente</button>
+<button class="btn btn-danger">Non affecter</button>
 @endif

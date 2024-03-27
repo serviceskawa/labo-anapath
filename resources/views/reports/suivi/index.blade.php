@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box">
-            <h4 class="page-title">Suivi des comptes rendu</h4>
+            <h4 class="page-title">Suivi des demandes</h4>
 
         </div>
 
@@ -27,7 +27,7 @@
                     aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                 <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
             </div>
-            <h5 class="card-title mb-0">Suivre les comptes rendu</h5>
+            <h5 class="card-title mb-0">Liste des demandes suivi</h5>
 
             <div id="cardCollpase1" class="show collapse pt-3">
 

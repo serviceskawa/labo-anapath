@@ -115,30 +115,34 @@
                         <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarEcommerce1" aria-expanded="false"
                             aria-controls="sidebarEcommerce1" class="side-nav-link">
                             <i class="uil-syringe"></i>
-                            <span> Demandes d'examen</span>
+                            <span class="badge bg-success mb-1">new</span>
+                            <span> Demandes d'examen  </span>
                             <span class="menu-arrow"></span>
                             @if (getnbrTestOrderpending()!=0)
-                                <span class="badge bg-warning mb-1" style="margin-left: 25px;">{{getnbrTestOrderpending()}}</span>
+                            
+                                <span class="badge bg-warning mb-1" style="margin-left: 25px;">{{getnbrTestOrderpending()}}</span> 
+                                {{-- <span class="" style="background: green; border-radius: 50%; height: 10px; width:10px;"></span> --}}
                             @endif
                         </a>
                         <div class="collapse" id="sidebarEcommerce1">
                             <ul class="side-nav-second-level">
                                 <li>
-                                    <a href="{{ route('test_order.index') }}">Toutes les demandes </a>
+                                    <a href="{{ route('test_order.index') }}">Toutes les demandes  </a>
                                 </li>
-                                @if (getOnlineUser()->can('view-doctors'))
+                                {{-- @if (getOnlineUser()->can('view-doctors')) --}}
                                 <li>
-                                    <a href="{{ route('myspace.index', Auth::user()->id) }}">Mon espace</a>
+                                    <a href="{{ route('myspace.index', Auth::user()->id) }}">Mon espace <span class="badge bg-success mb-1">new</span></a>
                                 </li>
-                                @endif
-                                @if (getOnlineUser()->can('create-test-orders'))
+                                {{-- @endif --}}
+                                
+                                {{-- @if (getOnlineUser()->can('create-test-orders'))
                                 <li>
                                     <a href="{{ route('test_order.create') }}">Ajouter</a>
                                 </li>
-                                @endif
+                                @endif --}}
                                 @if (getOnlineUser()->can('view-test-order-assignments'))
                                 <li>
-                                    <a href="{{ route('macro.index') }}">Macroscopie </a>
+                                    <a href="{{ route('macro.index') }}">Macroscopie <span class="badge bg-success mb-1">new</span></a>
                                 </li>
                                 @endif
 
@@ -150,7 +154,7 @@
 
                                 @if (getOnlineUser()->can('view-test-order-assignments'))
                                 <li>
-                                    <a href="{{ route('report.index.suivi') }}">Suivi</a>
+                                    <a href="{{ route('report.index.suivi') }}">Suivi des demandes <span class="badge bg-success mb-1">new</span></a>
                                 </li>
                                 @endif
 
