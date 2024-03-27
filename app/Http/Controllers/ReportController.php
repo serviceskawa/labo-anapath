@@ -577,6 +577,13 @@ class ReportController extends Controller
         return DataTables::of($data)
             ->addIndexColumn()
 
+            ->addColumn('date', function ($data) {
+                if ($data->order) {
+                    return dateFormat($data->order->created_at);
+                } else {
+                    return '';
+                }
+            })
             ->editColumn('code', function ($data) {
                 if ($data->order) {
                     return $data->order->code;
@@ -603,40 +610,46 @@ class ReportController extends Controller
             })
             
             ->filter(function ($query) use ($request) {
-                // if (!empty($request->get('statusquery'))) {
-                //     if ($request->get('statusquery') == 1) {
-                //         $query->where('status', 1);
-                //     } else {
-                //         $query->where('status', 0);
-                //     }
-                // }
+
+                if (!empty($request->get('statusquery'))) {
+                    if ($request->get('statusquery') == 1) {
+                        $query->where('is_delivered', 1);
+                    } elseif ($request->get('statusquery') == 2) {
+                        $query->where('is_called', 1);
+                    }elseif ($request->get('statusquery') == 3) {
+                        $query->where('status', 0);
+                    }elseif ($request->get('statusquery') == 4) {
+                        $query->where('status', 1);
+                    }
+                }
 
                 if (!empty($request->get('contenu'))) {
-                    $query
-                        ->where('code', 'like', '%' . $request->get('contenu') . '%')
-                        ->orwhereHas('order', function ($query) use ($request) {
+                    $query->whereHas('order', function ($query) use ($request) {
                             $query->where('code', 'like', '%' . $request->get('contenu') . '%');
-                        })
-                        ->orwhere('description', 'like', '%' . $request->get('contenu') . '%')
-                        ->orwhereHas('patient', function ($query) use ($request) {
-                            $query
-                                ->where('firstname', 'like', '%' . $request->get('contenu') . '%')
-                                ->orwhere('code', 'like', '%' . $request->get('contenu') . '%')
-                                ->orwhere('lastname', 'like', '%' . $request->get('contenu') . '%');
                         });
                 }
 
-                // if (!empty($request->get('dateBegin'))) {
-                //     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
-                //     $query->whereDate('created_at', '>', $newDate);
-                // }
+                if (!empty($request->get('dateBegin'))) {
 
-                // if (!empty($request->get('dateEnd'))) {
-                //     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
-                //     $query->whereDate('created_at', '<', $newDate);
-                // }
+                    $query->whereHas('order', function ($query) use ($request) {
+                        $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
+                        $query->whereDate('created_at', '>=', $newDate);
+                    });
+                }
+
+                if (!empty($request->get('dateEnd'))) {
+
+                    $query->whereHas('order', function ($query) use ($request) {
+                        $newDateEnd = Carbon::createFromFormat('Y-m-d', $request->get('dateEnd'));
+                        $query->whereDate('created_at', '<=', $newDateEnd);
+                    });
+
+                    
+
+                }
+
             })
-            ->rawColumns(['code', 'delivery', 'call','report','macro'])
+            ->rawColumns(['date', 'code', 'delivery', 'call','report','macro'])
             ->make(true);
     }
 

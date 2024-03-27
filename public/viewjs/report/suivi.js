@@ -52,6 +52,9 @@ $(document).ready(function() {
             }
         },
         columns: [{
+                data: 'date',
+                name: 'date'
+            }, {
                 data: 'code',
                 name: 'code'
             },

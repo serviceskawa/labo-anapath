@@ -78,6 +78,9 @@
                                 , title: "Opération réussie avec succès"
                             });
 
+                            setTimeout(function() {
+                                location.reload();
+                            }, 3000);
                         }
                         , error: function(response) {
                             console.log(response)
@@ -114,9 +117,9 @@
 
 
 
-            setInterval(function() {
-                location.reload();
-            }, 3000);
+            // setInterval(function() {
+            //     location.reload();
+            // }, 3000);
 
         });
 

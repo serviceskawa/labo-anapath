@@ -45,11 +45,17 @@
                             <label for="example-fileinput" class="form-label">Status</label>
                             <select name="statusquery" id="statusquery" class="form-control">
                                 <option value="">Tous</option>
-                                <option value="0">Attente</option>
-                                <option value="1">Valider</option>
+                                <option value="1">Livrée</option>
+                                <option value="2">Informée</option>
+                                <option value="3">En attente</option>
+                                <option value="4">Terminée</option>
                             </select>
                         </div>
                     </div>
+
+                    
+			
+
 
                     <div class="col-lg-3">
                         <div class="mb-3">
@@ -71,6 +77,7 @@
                 <table id="datatablesuivi" class="table-striped dt-responsive nowrap w-100 table">
                     <thead>
                         <tr>
+                            <th>Date</th>
                             <th>Code</th>
                             <th>Macro</th>
                             <th>Compte rendu</th>
