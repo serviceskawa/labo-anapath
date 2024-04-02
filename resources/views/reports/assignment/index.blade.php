@@ -100,7 +100,7 @@
                     <div class="col-md-4 col-12">
                         <div class="mb-3">
                             <label for="example-fileinput" class="form-label">Rechercher</label>
-                            <input type="text" name="contenu" id="contenu" class="form-control">
+                            <input type="text" name="contenu" id="contenu" placeholder="Notes des affectations" class="form-control">
                         </div>
                     </div>
                 </div>
