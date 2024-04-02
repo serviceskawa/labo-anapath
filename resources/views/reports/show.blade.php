@@ -402,7 +402,7 @@
             <div class="mb-md-0 mb-3 mt-3">
                 <div class="page-title">
 
-                    @php
+                    {{-- @php
                     $facture = App\Models\Invoice::where('test_order_id', $report->test_order_id)->value('paid');
                     @endphp
 
@@ -416,7 +416,12 @@
                         class="btn btn-secondary">Imprimer le compte rendu
                         </i>
                     </a>
-                    @endif
+                    @endif --}}
+
+                    <a href="{{ route('report.pdf', $report->id) }}" target="_blank" rel="noopener noreferrer"
+                        type="button" class="btn btn-secondary">Imprimer le compte rendu
+                        </i>
+                    </a>
 
                 </div>
             </div>
