@@ -1752,14 +1752,14 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
 
                         if ($data->report->is_deliver ==0) {
                             $btnreport = ' <button type="button"  class="btn btn-success" onclick="confirmAction(' . $data->report->id . ')" title="Marquer comme retirer"><i class="mdi mdi-file-check"></i> </button> ';
-                            // if(!empty($data->invoice->test_order_id) && $data->invoice->paid == 1)
-                            // {
-                            //     $btnPrintReport = '<a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
-                            // }elseif(!empty($data->invoice->test_order_id) && $data->invoice->paid==0){
-                            //     $btnPrintReport = ' <a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
-                            // }
+                            if(!empty($data->invoice->test_order_id) && $data->invoice->paid == 1)
+                            {
+                                $btnPrintReport = '<a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
+                            }elseif(!empty($data->invoice->test_order_id) && $data->invoice->paid==0){
+                                $btnPrintReport = ' <a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
+                            }
                             // btncompterendu
-                            $btnPrintReport = view('examens.btncompterendu',['data' => $data, 'rep' => $data->report]);
+                            // $btnPrintReport = view('examens.btncompterendu',['data' => $data, 'rep' => $data->report]);
 
                         }else{
                             $btnreport ="";
