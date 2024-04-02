@@ -227,15 +227,12 @@ class TestOrderAssignmentController extends Controller
         if (empty($assignment)) {
             return back()->with('error', "Cette affectation n'existe pas. Verifiez et réessayez svp ! ");
         }
-        // config(['app.name' => $setting->titre]);
         return view('reports.assignment.print', compact('assignment', 'setting', 'details'));
     }
 
     // Debut
     public function getTestOrdersforDatatable(Request $request)
     {
-
-
         $data = $this->assignment->with('details')->latest();
 
         return DataTables::of($data)->addIndexColumn()
@@ -262,8 +259,7 @@ class TestOrderAssignmentController extends Controller
                             }
 
                         }
-                            return 'table-danger urgent';
-
+                        return 'table-danger urgent';
                 }elseif (!empty($data->report)) {
                     if($data->report->is_deliver ==1){
                         return 'table-success';

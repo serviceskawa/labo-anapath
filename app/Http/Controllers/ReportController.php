@@ -428,8 +428,6 @@ class ReportController extends Controller
         return DataTables::of($data)
             ->addIndexColumn()
             ->editColumn('code', function ($data) {
-                //change over here
-                //return date('y/m/d',$data->created_at);
                 if ($data->order) {
                     return $data->order->code;
                 } else {
