@@ -20,11 +20,11 @@ date_default_timezone_set('Europe/Paris');
 
     <div style="display:inline-block; ">
         <span style="display: inline-block;padding-top: 5px; font-size:25px; margin-top:-50px "><img
-                src="{{ Storage::url($prefixe_code_demande_examen) }}" width="200px;" alt=""></span>
-        
+                src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}" width="100%;" alt=""></span>
     </div>
+        
     <div
-        style="display: inline-block; position: absolute; top: 0; left: 0; padding: 10px; text-align: right;">
+        style="display: inline-block; position: absolute; margin-top: 100px; left: 0; padding: 10px; text-align: right;">
         <p>
             <b>N° ANAPTH :</b> {{ $code }}
             <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
@@ -34,24 +34,22 @@ date_default_timezone_set('Europe/Paris');
         </p>
     </div>
 
-    <div style="display: inline-block; position: absolute; top: 0; right: 0; width: 50px; padding: 10px; text-align: right;">
+    <div style="display: inline-block; position: absolute; margin-top: 100px; right: 0; width: 50px; padding: 10px; text-align: right;">
         <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}"  style="width: 65px; alt="" srcset="">
     </div>
 
     <div
-        style="margin-top:20px; background-color:#0070C1; width:100%; height:50px;color:rgb(255,255,255); text-align: center; padding-top:19px;font-size:25px; text-transform: uppercase;">
+        style="margin-top:30px; background-color:#292929; width:100%; padding:15px; color:white; text-align: center;font-size:16px; text-transform: uppercase;">
         <b> {{ $title }} </b>
     </div>
-    <br><br>
     <div>
-        <h3
-            style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
+        <span style="padding-left: 10px; padding-right: 5px; margin-top:15px; border:none; background-color:rgb(255,255,255); font-size:16px; text-transform: uppercase; ">
             <b>Informations prélèvement</b>
-        </h3>
+        </span>
 
         <p style="margin-left:10px; margin-right:10px; display:block; width: 100%;">
 
-        <table style="max-width: 100%;width: 500px ">
+        <table style="max-width: 100%;width: 500px; margin-top:5px;">
             <tbody>
                 <tr>
                     <th width="30%">Nom :</th>
@@ -84,21 +82,14 @@ date_default_timezone_set('Europe/Paris');
         </table>
 
         </p>
-        <br>
     </div>
+    <hr style="height:1px; margin-top:5px;">
 
-    <h3
-        style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
-
-    </h3>
+    
     {!! $content !!}
     {!! $content_micro !!}
 
     @if ($content_supplementaire != '')
-        <h3
-            style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
-
-        </h3>
         {!! $content_supplementaire !!}
         {!! $content_supplementaire_micro !!}
     @endif
