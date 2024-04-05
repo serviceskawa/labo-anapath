@@ -283,8 +283,10 @@ class ReportController extends Controller
 
 
         $data = [
-            'code' => $report->order->code,
+            'code' => $report->code,
+            'test_order_code' => $report->order->code,
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
+            'signature_date' => date('d/m/Y', strtotime($report->signature_date)),
             'prelevement_date' => $report->order ? date('d/m/Y', strtotime($report->order->prelevement_date)) : '',
             'test_affiliate' => $report->order ? $report->order->test_affiliate : '',
             'qrcode' => $dataUri,
@@ -294,8 +296,12 @@ class ReportController extends Controller
             'content_supplementaire' => $report->description_supplementaire != '' ? $report->description_supplementaire : '',
             'content_supplementaire_micro' => $report->description_supplementaire_micro != '' ? $report->description_supplementaire_micro : '',
 
-            'signatory1' => $report->signatory1 != 0 ? $signatory1->lastname . ' ' . $signatory1->firstname : '',
-            'signature1' => $report->signatory1 != 0 ? $signatory1->signature : '',
+            // 'signatory1' => $report->signatory1 != 0 ? $signatory1->lastname . ' ' . $signatory1->firstname : '',
+            // 'signature1' => $report->signatory1 != 0 ? $signatory1->signature : '',
+
+            'signatory1' => $report->signateur  ? $report->signateur->lastname . ' ' . $report->signateur->firstname : '',
+            'signature1' => $report->signateur ? $report->signateur->signature : '',
+
 
             'signatory2' => $report->signatory2 != 0 ? $signatory2->lastname . ' ' . $signatory2->firstname : '',
             'signature2' => $report->signatory2 != 0 ? $signatory2->signature : '',
