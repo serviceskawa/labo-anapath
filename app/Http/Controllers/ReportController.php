@@ -314,7 +314,7 @@ class ReportController extends Controller
             'revew_by' => $report->reviewed_by_user_id !=0 ? $reviewed_by_user->lastname . ' ' . $reviewed_by_user->firstname:'',
             'revew_by_signature' => $report->reviewed_by_user_id !=0 ? $reviewed_by_user->signature:'',
             'report_review_title' => SettingApp::where('key','report_review_title')->first()->value,
-            'prefixe_code_demande_examen' => SettingApp::where('key','prefixe_code_demande_examen')->first()->value,
+            'entete' => SettingApp::where('key','entete')->first()->value,
             'footer' => SettingApp::where('key','report_footer')->first()->value,
             'hospital_name' => $report->order ? $report->order->hospital->name : '',
             'doctor_name' => $report->order ? $report->order->doctor->name : '',
