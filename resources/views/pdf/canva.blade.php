@@ -19,12 +19,11 @@ date_default_timezone_set('Europe/Paris');
 <page backbottom="10mm">
 
     <div style="display:inline-block; margin:0; padding:0;">
-        <span style="display: inline-block;"><img
-                src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}" width="100%;" alt=""></span>
+        <span style="display: inline-block;"><img src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}"
+                width="100%;" alt=""></span>
     </div>
-        
-    <div
-        style="display: inline-block; margin-top:150px; position: absolute; left: 0; padding: 10px; text-align: left;">
+
+    <div style="display: inline-block; margin-top:150px; position: absolute; left: 0; padding: 10px; text-align: left;">
         <p>
             <b>N° ANAPTH :</b> {{ $test_order_code }}
             <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
@@ -36,16 +35,19 @@ date_default_timezone_set('Europe/Paris');
         </p>
     </div>
 
-    <div style="display: inline-block; position: absolute; margin-top: 150px; right: 0; width: 50px; padding: 10px; text-align: right;">
-        <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}"  style="width: 65px; alt="" srcset="">
+    <div
+        style="display: inline-block; position: absolute; margin-top: 150px; right: 0; width: 50px; padding: 10px; text-align: right;">
+        <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}" style="width: 65px; alt="" srcset="">
     </div>
 
     <div
-        style="margin-top:90px; background-color:#292929; width:100%; padding:15px; color:white; text-align: center;font-size:16px; text-transform: uppercase;">
+        style=" margin-top:90px; background-color:#292929; width:100%; padding:15px; color:white; text-align:
+            center;font-size:16px; text-transform: uppercase;">
         <b> {{ $title }} </b>
     </div>
     <div>
-        <span style="padding-left: 10px; padding-right: 5px; margin-top:15px; border:none; background-color:rgb(255,255,255); font-size:16px; text-transform: uppercase; ">
+        <span
+            style="padding-left: 10px; padding-right: 5px; margin-top:15px; border:none; background-color:rgb(255,255,255); font-size:16px; text-transform: uppercase; ">
             <b>Informations prélèvement</b>
         </span>
 
@@ -55,14 +57,14 @@ date_default_timezone_set('Europe/Paris');
             <tbody>
                 <tr>
                     <th width="30%">Nom :</th>
-                    <td width="50%;">{{ $patient_firstname }} </td>
+                    <td width="50%;">{{ $patient_lastname }}</td>
                     <th width="30%;">Date prélèvement : </th>
                     <td width="50%;">{{ $prelevement_date }} </td>
                 </tr>
 
                 <tr>
                     <th>Prénoms :</th>
-                    <td>{{ $patient_lastname }} </td>
+                    <td>{{ $patient_firstname }}</td>
                     <th>Date d’arrivée labo : </th>
                     <td> {{ $created_at }} </td>
                 </tr>
@@ -87,65 +89,65 @@ date_default_timezone_set('Europe/Paris');
     </div>
     <hr style="height:1px; margin-top:5px;">
 
-    
+
     {!! $content !!}
     {!! $content_micro !!}
 
     @if ($content_supplementaire != '')
-        {!! $content_supplementaire !!}
-        {!! $content_supplementaire_micro !!}
+    {!! $content_supplementaire !!}
+    {!! $content_supplementaire_micro !!}
     @endif
 
     <div style="margin-top:30px;">
         <table style="width: 100%;">
             {{-- @if ($status ==1)
             <tr>
-                    <td style="text-align: left; width: 33%; vertical-align: bottom;">
-                        @if ($signator)
-                            @if ($signature1)
-                            <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
-                            @endif
-                            <br><br>{{ $signator }}
-                        @endif
-                    </td>
+                <td style="text-align: left; width: 33%; vertical-align: bottom;">
+                    @if ($signator)
+                    @if ($signature1)
+                    <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
+                    @endif
+                    <br><br>{{ $signator }}
+                    @endif
+                </td>
 
-                    <td style="text-align: center; width: 33%; vertical-align: bottom;">
-                        @if ($signatory2 != null)
-                            @if ($signature2 != null)
-                                <img width="85" src="{{ asset('storage/' . $signature2) }}" alt="">
-                            @endif
-                            <br><br>{{ $signatory2 }}
-                        @endif
-                    </td>
+                <td style="text-align: center; width: 33%; vertical-align: bottom;">
+                    @if ($signatory2 != null)
+                    @if ($signature2 != null)
+                    <img width="85" src="{{ asset('storage/' . $signature2) }}" alt="">
+                    @endif
+                    <br><br>{{ $signatory2 }}
+                    @endif
+                </td>
 
-                    <td style="text-align: right; width: 34%; vertical-align: bottom;">
-                        @if ($revew_by != null)
-                            {{ $report_review_title }}
-                            <br><strong>{{ $revew_by }}</strong>
-                        @endif
-                    </td>
+                <td style="text-align: right; width: 34%; vertical-align: bottom;">
+                    @if ($revew_by != null)
+                    {{ $report_review_title }}
+                    <br><strong>{{ $revew_by }}</strong>
+                    @endif
+                </td>
             </tr>
             @endif --}}
-            <p>{{$status}}</p>
-            @if ($status ==1)
+
+            @if ($status == 1)
             <tr>
                 <td style="text-align: left; width: 33%; vertical-align: bottom;">
-            <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
-            
-            <br><br>{{ $signator }}
+                    <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
+
+                    <br><br>{{ $signator }}
                 </td>
 
 
                 <td style="text-align: right; width: 34%; vertical-align: bottom;">
                     @if ($revew_by != null)
-                        {{ $report_review_title }}
-                        <br><strong>{{ $revew_by }}</strong>
+                    {{ $report_review_title }}
+                    <br><strong>{{ $revew_by }}</strong>
                     @endif
                 </td>
             </tr>
             @endif
 
-           
+
         </table>
     </div>
     <br><br>

@@ -271,7 +271,7 @@ class ReportController extends Controller
             $signatory3 = $this->user->findorfail($report->signatory3);
         }
         $year_month = '';
-        if ($report->patient->year_or_month != 1) {
+        if ($report->patient->year_or_month == 1) {
             $year_month = 'mois';
         } else {
             $year_month = 'ans';
@@ -300,7 +300,7 @@ class ReportController extends Controller
             // 'signature1' => $report->signatory1 != 0 ? $signatory1->signature : '',
 
             'signator' => $report->signateur  ? $report->signateur->lastname . ' ' . $report->signateur->firstname : '',
-            
+
             'signature1' => $report->signateur ? $report->signateur->signature : '',
 
 
