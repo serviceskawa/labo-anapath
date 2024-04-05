@@ -21,15 +21,10 @@ date_default_timezone_set('Europe/Paris');
     <div style="display:inline-block; ">
         <span style="display: inline-block;"><img
                 src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}" width="100%;" alt=""></span>
-        {{-- <div
-            style="display: inline-block; padding: 5px; position: absolute; top:20px; right: 0px; padding: 10px; text-align:right;">
-            <b><span style="font-size:17px; text-align:right;"> CENTRE ADECHINA ANATOMIE PATHOLOGIQUE</span></b>
-            <br><span style="font-size:10px; text-align:right;">Laboratoire d’Anatomie Pathologique</span>
-        </div> --}}
     </div>
         
     <div
-        style="display: inline-block; margin-top:100px; position: absolute; left: 0; padding: 10px; text-align: left;">
+        style="display: inline-block; margin-top:150px; position: absolute; left: 0; padding: 10px; text-align: left;">
         <p>
             <b>N° ANAPTH :</b> {{ $test_order_code }}
             <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
