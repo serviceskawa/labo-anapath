@@ -17,6 +17,7 @@ class SettingAppController extends Controller
     public function index()
     {
         $app_name = $this->setting->where('key','lab_name')->first();
+        $prefixe_code_demande_examen = $this->setting->where('key','prefixe_code_demande_examen')->first();
         $devise = $this->setting->where('key','devise')->first();
         $adress = $this->setting->where('key','adress')->first();
         $phone = $this->setting->where('key','phone')->first();
@@ -43,7 +44,7 @@ class SettingAppController extends Controller
         $titles = TitleReport::latest()->get();
 
         return view('settings.app.setting', compact(
-            'app_name', 'devise', 'adress', 'phone', 'email', 'web_site', 'footer','banks', 'titles',
+            'app_name', 'prefixe_code_demande_examen', 'devise', 'adress', 'phone', 'email', 'web_site', 'footer','banks', 'titles',
             'email_host', 'username', 'email_port', 'password', 'encryption', 'from_name', 'from_adresse','mail','service',
             'api_sms', 'link_api_sms', 'key_ourvoice', 'link_ourvoice_call', 'link_ourvoice_sms','report_footer','report_review_title'
         ));
@@ -55,6 +56,7 @@ class SettingAppController extends Controller
         // Récupérez les valeurs directement à partir de la demande HTTP
         $nbr = $request->nbrform;
         $appNameValue = $request->input('app_name');
+        $prefixeCodeDemandeExamenValue = $request->input('prefixe_code_demande_examen');
         $deviseValue = $request->input('devise');
         $adresseValue = $request->input('adress');
         $telephoneValue = $request->input('phone');
@@ -123,7 +125,6 @@ class SettingAppController extends Controller
                     $img3 = time() . '_settings_app_blanc.' . $request->file('logo_white')->extension();
 
                     $path_img3 = $request->file('logo_white')->storeAs('settings/app', $img3, 'public');
-
                 }
 
                 $logo = $this->setting->where('key', 'logo')->first();
@@ -134,8 +135,6 @@ class SettingAppController extends Controller
 
                 $logo_white = $this->setting->where('key', 'logo_white')->first();
                 $logo_white ? $logo_white->update(['value' => $path_img3]) : '';
-
-
                 break;
             case 2:
 
@@ -185,16 +184,34 @@ class SettingAppController extends Controller
                 break;
 
             case 4:
+                if ($request->file('entete')) {
+                    $img4 = time() . '_settings_app_entete.' . $request->file('entete')->extension();
+                    $path_img4 = $request->file('entete')->storeAs('settings/app', $img4, 'public');
+                }else{
+                    $path_img4 = $this->setting->where('key', 'entete')->first();
+                    // Votre chaîne JSON
+                    $jsonString = $path_img4;
+                    // Décoder la chaîne JSON en un tableau associatif
+                    $data = json_decode($jsonString, true);
+
+                    $path_img4 = $data['value'];
+                }
+
                 $report_footer = $this->setting->where('key', 'report_footer')->first();
                 $report_footer ?  $report_footer->update(['value' => $report_footerValue]): '';
+
+                $prefixe_code_demande_examen = $this->setting->where('key', 'prefixe_code_demande_examen')->first();
+                $prefixe_code_demande_examen ?  $prefixe_code_demande_examen->update(['value' => $prefixeCodeDemandeExamenValue]): '';
+
+                $entete = $this->setting->where('key', 'entete')->first();
+                $entete ? $entete->update(['value' => $path_img4]) : '';
 
                 $report_review_title = $this->setting->where('key', 'report_review_title')->first();
                 $report_review_title ?  $report_review_title->update(['value' => $report_review_titleValue]): '';
                 break;
 
             default:
-                # code...
-                break;
+            break;
         }
 
         return back()->with('success', "Mise à jour effectuée avec succès");

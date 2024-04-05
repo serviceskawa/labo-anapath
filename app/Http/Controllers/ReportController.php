@@ -314,6 +314,7 @@ class ReportController extends Controller
             'revew_by' => $report->reviewed_by_user_id !=0 ? $reviewed_by_user->lastname . ' ' . $reviewed_by_user->firstname:'',
             'revew_by_signature' => $report->reviewed_by_user_id !=0 ? $reviewed_by_user->signature:'',
             'report_review_title' => SettingApp::where('key','report_review_title')->first()->value,
+            'prefixe_code_demande_examen' => SettingApp::where('key','prefixe_code_demande_examen')->first()->value,
             'footer' => SettingApp::where('key','report_footer')->first()->value,
             'hospital_name' => $report->order ? $report->order->hospital->name : '',
             'doctor_name' => $report->order ? $report->order->doctor->name : '',
@@ -334,22 +335,9 @@ class ReportController extends Controller
             $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
             $html2pdf->pdf->SetDisplayMode('fullpage');
             $html2pdf->setTestTdInOnePage(false);
-            // $html2pdf->setProtection(['copy', 'print'], 'user', 'password');
             $html2pdf->__construct($orientation = 'P', $format = 'A4', $lang = 'fr', $unicode = true, $encoding = 'UTF-8', $margins = [8, 20, 8, 8], $pdfa = false);
             $html2pdf->writeHTML($content);
-            // Définir le mot de passe de protection
-            //$password = '1234@2023';
-
-            // Définir les permissions du document
-            // $permissions = array(
-            //     'print',
-            //     'modify',
-            //     'copy',
-            //     'annot-forms'
-            // );
-
-            // Appliquer la protection
-            //$html2pdf->pdf->SetProtection($permissions, $password, $password);
+          
             $newname = 'CO-' . $report->order->code . '.pdf';
             $html2pdf->output($newname);
         } catch (Html2PdfException $e) {

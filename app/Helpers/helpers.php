@@ -15,6 +15,7 @@ use App\Models\Employee;
 use App\Models\Invoice;
 use App\Models\RefundRequest;
 use App\Models\Report;
+use App\Models\SettingApp;
 use App\Models\SettingInvoice;
 use App\Models\test_pathology_macro;
 use App\Models\TestOrderAssignment;
@@ -483,6 +484,14 @@ if (!function_exists('generateCodeExamen')) {
             ->orderByRaw('RIGHT(code, 4) DESC')
             ->first();
 
+
+             // Récupérer la valeur de la base de données
+            $configuration = SettingApp::where('key', 'entete')->first();
+
+           
+
+
+
         // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
         if (!$lastTestOrder || $lastTestOrder->created_at->year != now()->year) {
             $code = "0001";
@@ -497,8 +506,14 @@ if (!function_exists('generateCodeExamen')) {
             $code = str_pad($code, 4, '0', STR_PAD_LEFT);
         }
 
+        $configuration = SettingApp::where('key', 'prefixe_code_demande_examen')->first();
+        // Décoder la chaîne JSON en un tableau associatif
+        $data = json_decode($configuration, true);
+
+        $codeexamen = $data['value'];
+
         // Ajoute les deux derniers chiffres de l'année au début du code
-        return now()->year % 100 . "-$code";
+        return $codeexamen.now()->year % 100 . "-$code";
     }
 }
 

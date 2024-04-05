@@ -393,9 +393,20 @@
                                                                 <input type="text" class="form-control" value="{{$report_review_title->value}}" placeholder="Revue du rapport" aria-label="report_review_title" name="report_review_title" aria-describedby="basic-addon1">
                                                             </div>
                                                         </div>
-                                                    </div> <!-- end row -->
+
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Entete</label>
+                                                            <input class="form-control" type="file" name="entete" id="inputGroupFile04">
+                                                        </div>
+
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Prefixe code demande d'examen</label>
+                                                            <input type="text" class="form-control" value="{{$prefixe_code_demande_examen->value}}" placeholder="Prefixe code demande d'examen" aria-label="prefixe_code_demande_examen" name="prefixe_code_demande_examen" aria-describedby="basic-addon1">
+                                                        </div>
+
+                                                    </div>
                                                     <div style="padding-bottom: 10px;padding-top:10px">
-                                                        <button type="submit" class="btn btn-primary">Enrégistrer <i class="mdi mdi-check-all"></i></button>
+                                                        <button type="submit" class="btn btn-primary">Enregistrer <i class="mdi mdi-check-all"></i></button>
                                                     </div>
                                                 </form>
                                             </div>
