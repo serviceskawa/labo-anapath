@@ -127,10 +127,13 @@ date_default_timezone_set('Europe/Paris');
             </tr>
             @endif --}}
 
-
+            <tr>
+                <td style="text-align: left; width: 33%; vertical-align: bottom;">
             <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
             
             <br><br>{{ $signator }}
+                </td>
+            </tr>
         </table>
     </div>
     <br><br>
