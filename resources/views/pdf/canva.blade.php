@@ -41,7 +41,7 @@ date_default_timezone_set('Europe/Paris');
     </div>
 
     <div
-        style=" margin-top:90px; background-color:#292929; width:100%; padding:15px; color:white; text-align:
+        style=" margin-top:90px; background-color:#1690F5; width:100%; padding:15px; color:white; text-align:
             center;font-size:16px; text-transform: uppercase;">
         <b> {{ $title }} </b>
     </div>
@@ -100,43 +100,20 @@ date_default_timezone_set('Europe/Paris');
 
     <div style="margin-top:30px;">
         <table style="width: 100%;">
-            {{-- @if ($status ==1)
-            <tr>
-                <td style="text-align: left; width: 33%; vertical-align: bottom;">
-                    @if ($signator)
-                    @if ($signature1)
-                    <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
-                    @endif
-                    <br><br>{{ $signator }}
-                    @endif
-                </td>
 
-                <td style="text-align: center; width: 33%; vertical-align: bottom;">
-                    @if ($signatory2 != null)
-                    @if ($signature2 != null)
-                    <img width="85" src="{{ asset('storage/' . $signature2) }}" alt="">
-                    @endif
-                    <br><br>{{ $signatory2 }}
-                    @endif
-                </td>
-
-                <td style="text-align: right; width: 34%; vertical-align: bottom;">
-                    @if ($revew_by != null)
-                    {{ $report_review_title }}
-                    <br><strong>{{ $revew_by }}</strong>
-                    @endif
-                </td>
-            </tr>
-            @endif --}}
-
+            // si le rapport est validé 
             @if ($status == 1)
             <tr>
                 <td style="text-align: left; width: 33%; vertical-align: bottom;">
-                    <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
-
-                    <br><br>{{ $signator }}
+                    @if ($signator && $signature1)
+                        <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
+                        <br><br>{{ $signator }}
+                    @elseif ($signator && !$signature1)
+                        {{ $signator }}
+                    @else
+                        <span style="color: red;">Aucun signataire spécifié</span>
+                    @endif
                 </td>
-
 
                 <td style="text-align: right; width: 34%; vertical-align: bottom;">
                     @if ($revew_by != null)
