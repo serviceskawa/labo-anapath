@@ -98,16 +98,15 @@ date_default_timezone_set('Europe/Paris');
 
     <div style="">
         <table style="width: 100%;">
-            @if ($status ==1)
+            {{-- @if ($status ==1)
             <tr>
-                <td style="text-align: left; width: 33%; vertical-align: bottom;">
-                    {{-- @if ($signator)
-                    <h5>Text</h5> --}}
-                            {{-- @if ($signature1) --}}
+                    <td style="text-align: left; width: 33%; vertical-align: bottom;">
+                        @if ($signator)
+                            @if ($signature1)
                             <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
-                            {{-- @endif --}}
+                            @endif
                             <br><br>{{ $signator }}
-                        {{-- @endif --}}
+                        @endif
                     </td>
 
                     <td style="text-align: center; width: 33%; vertical-align: bottom;">
@@ -125,9 +124,13 @@ date_default_timezone_set('Europe/Paris');
                             <br><strong>{{ $revew_by }}</strong>
                         @endif
                     </td>
-                </tr>
-            @endif
+            </tr>
+            @endif --}}
 
+
+            <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
+            
+            <br><br>{{ $signator }}
         </table>
     </div>
     <br><br>
