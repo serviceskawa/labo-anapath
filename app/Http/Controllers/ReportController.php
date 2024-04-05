@@ -286,7 +286,9 @@ class ReportController extends Controller
 
         $data = [
             'code' => $report->code,
+            'test_order_code' => $report->order->code,
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
+            'signature_date' => date('d/m/Y', strtotime($report->signature_date)),
             'prelevement_date' => $report->order ? date('d/m/Y', strtotime($report->order->prelevement_date)) : '',
             'test_affiliate' => $report->order ? $report->order->test_affiliate : '',
             'qrcode' => $dataUri,

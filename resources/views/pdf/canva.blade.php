@@ -24,13 +24,15 @@ date_default_timezone_set('Europe/Paris');
     </div>
         
     <div
-        style="display: inline-block; position: absolute; margin-top: 100px; left: 0; padding: 10px; text-align: right;">
+        style="display: inline-block; position: absolute; margin-top: 100px; left: 0; padding: 10px; text-align: left;">
         <p>
-            <b>N° ANAPTH :</b> {{ $code }}
+            <b>N° ANAPTH :</b> {{ $test_order_code }}
             <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
             {{ $test_affiliate != null ? $test_affiliate : '' }}
             <br>
-            <b>Date :</b> {{ $current_date }}
+            <b>Date validation:</b> {{ $signature_date }}
+            <br>
+            <b>Date impression:</b> {{ $current_date }}
         </p>
     </div>
 
