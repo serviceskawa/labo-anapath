@@ -98,11 +98,11 @@ date_default_timezone_set('Europe/Paris');
 
     <div style="">
         <table style="width: 100%;">
-            @if ($status !=0)
+            @if ($status ==1)
                 <tr>
                     <td style="text-align: left; width: 33%; vertical-align: bottom;">
-                        @if ($signator != null)
-                            @if ($signature1 != null)
+                        @if ($signator)
+                            @if ($signature1)
                             <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
                             @endif
                             <br><br>{{ $signator }}
