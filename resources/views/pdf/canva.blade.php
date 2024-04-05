@@ -128,12 +128,22 @@ date_default_timezone_set('Europe/Paris');
             @endif --}}
 
             <tr>
-                <td style="text-align: left; width: 33%; vertical-align: bottom;">
+                <td style="text-align: left; width: 33%; vertical-align: bottom; margin-top:30px;">
             <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
             
             <br><br>{{ $signator }}
                 </td>
+
+
+                <td style="text-align: right; width: 34%; vertical-align: bottom;">
+                    @if ($revew_by != null)
+                        {{ $report_review_title }}
+                        <br><strong>{{ $revew_by }}</strong>
+                    @endif
+                </td>
             </tr>
+
+           
         </table>
     </div>
     <br><br>
