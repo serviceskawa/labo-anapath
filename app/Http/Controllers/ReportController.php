@@ -300,6 +300,7 @@ class ReportController extends Controller
             // 'signature1' => $report->signatory1 != 0 ? $signatory1->signature : '',
 
             'signator' => $report->signateur  ? $report->signateur->lastname . ' ' . $report->signateur->firstname : '',
+            
             'signature1' => $report->signateur ? $report->signateur->signature : '',
 
 
