@@ -101,11 +101,11 @@ date_default_timezone_set('Europe/Paris');
             @if ($status !=0)
                 <tr>
                     <td style="text-align: left; width: 33%; vertical-align: bottom;">
-                        @if ($signatory1 != null)
+                        @if ($signator != null)
                             @if ($signature1 != null)
                             <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
                             @endif
-                            <br><br>{{ $signatory1 }}
+                            <br><br>{{ $signator }}
                         @endif
                     </td>
 
