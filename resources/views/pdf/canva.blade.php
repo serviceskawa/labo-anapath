@@ -29,7 +29,7 @@ date_default_timezone_set('Europe/Paris');
     </div>
         
     <div
-        style="display: inline-block; position: absolute; margin-top: 100px; left: 0; padding: 10px; text-align: left;">
+        style="display: inline-block; position: absolute; left: 0; padding: 10px; text-align: left;">
         <p>
             <b>N° ANAPTH :</b> {{ $test_order_code }}
             <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
