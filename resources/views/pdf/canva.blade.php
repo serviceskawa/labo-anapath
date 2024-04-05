@@ -127,7 +127,7 @@ date_default_timezone_set('Europe/Paris');
                 </tr>
             @endif --}}
 
-            <img width="85" src="{{ asset('storage/' . $signature1) }}" alt="">
+            <img width="85" src="{{ public_path('adminassets/images/signature.png') }}" alt="">
         </table>
     </div>
     <br><br>
