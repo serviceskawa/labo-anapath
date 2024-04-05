@@ -99,6 +99,7 @@ date_default_timezone_set('Europe/Paris');
     <div style="">
         <table style="width: 100%;">
             @if ($status ==1)
+            <h5>Text</h5>
                 <tr>
                     <td style="text-align: left; width: 33%; vertical-align: bottom;">
                         @if ($signator)
