@@ -148,11 +148,8 @@ class UserController extends Controller
 
         if ($request->file('signature') ) {
             $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();
-
             $path_signature = $request->file('signature')->storeAs('settings/app', $signature, 'public');
         }
-
-        // dd($request->roles);
 
         try {
 

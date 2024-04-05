@@ -173,9 +173,7 @@ class ReportController extends Controller
         $log->user_id = $user->id;
         $log->save();
 
-        return redirect()
-            ->back()
-            ->with('success', '   Examen mis à jour ! ');
+        return redirect()->back()->with('success', '   Examen mis à jour ! ');
     }
 
     /**
@@ -285,7 +283,7 @@ class ReportController extends Controller
 
 
         $data = [
-            'code' => $report->code,
+            'code' => $report->order->code,
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
             'prelevement_date' => $report->order ? date('d/m/Y', strtotime($report->order->prelevement_date)) : '',
             'test_affiliate' => $report->order ? $report->order->test_affiliate : '',
