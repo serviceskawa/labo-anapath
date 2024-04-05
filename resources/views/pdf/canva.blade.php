@@ -19,7 +19,7 @@ date_default_timezone_set('Europe/Paris');
 <page backbottom="10mm">
 
     <div style="display:inline-block; ">
-        <span style="display: inline-block;padding-top: 5px;"><img
+        <span style="display: inline-block;"><img
                 src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}" width="100%;" alt=""></span>
         {{-- <div
             style="display: inline-block; padding: 5px; position: absolute; top:20px; right: 0px; padding: 10px; text-align:right;">
@@ -29,7 +29,7 @@ date_default_timezone_set('Europe/Paris');
     </div>
         
     <div
-        style="display: inline-block; position: absolute; left: 0; padding: 10px; text-align: left;">
+        style="display: inline-block; margin-top:100px; position: absolute; left: 0; padding: 10px; text-align: left;">
         <p>
             <b>N° ANAPTH :</b> {{ $test_order_code }}
             <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
