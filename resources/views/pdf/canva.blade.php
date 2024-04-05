@@ -96,7 +96,7 @@ date_default_timezone_set('Europe/Paris');
         {!! $content_supplementaire_micro !!}
     @endif
 
-    <div style="">
+    <div style="margin-top:30px;">
         <table style="width: 100%;">
             {{-- @if ($status ==1)
             <tr>
@@ -126,9 +126,9 @@ date_default_timezone_set('Europe/Paris');
                     </td>
             </tr>
             @endif --}}
-
+            @if ($status ==1)
             <tr>
-                <td style="text-align: left; width: 33%; vertical-align: bottom; margin-top:30px;">
+                <td style="text-align: left; width: 33%; vertical-align: bottom;">
             <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
             
             <br><br>{{ $signator }}
@@ -142,6 +142,7 @@ date_default_timezone_set('Europe/Paris');
                     @endif
                 </td>
             </tr>
+            @endif
 
            
         </table>
