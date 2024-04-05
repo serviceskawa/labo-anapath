@@ -146,10 +146,32 @@ class UserController extends Controller
             'email' => 'required',
         ]);
 
-        if ($request->file('signature') ) {
-            $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();
-            $path_signature = $request->file('signature')->storeAs('settings/app', $signature, 'public');
-        }
+        // if ($request->file('signature') ) {
+        //     $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();
+        //     $path_signature = $request->file('signature')->storeAs('settings/app', $signature, 'public');
+        // }
+
+        // $imageFile = $request->file('signature');
+
+        // Déterminez le nom de fichier (avec son extension)
+        // $imageName = $imageFile->getClientOriginalName();
+
+             // Récupérez uniquement l'extension du fichier
+            //  $name = Auth::user()->firstname."_".Auth::user()->lastname.".".$imageFile->getClientOriginalExtension();
+
+        // dd($name);
+
+        // Vérifiez si un fichier image a été envoyé via la requête
+    if ($request->hasFile('signature')) {
+        $imageFile = $request->file('signature');
+        // Obtenez le nom d'origine du fichier
+        $namefichier = Auth::user()->firstname."_".Auth::user()->lastname.".".$imageFile->getClientOriginalExtension();
+       
+        // Enregistrez le fichier image dans le dossier public
+        $re = $request->file('signature')->move(public_path('adminassets/images'), $namefichier);
+    }
+
+    // dd($re);
 
         try {
 
@@ -161,7 +183,7 @@ class UserController extends Controller
                 "email" =>$request->email,
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
-                "signature" => $request->file('signature') ? $path_signature: ($user->signature ? $user->signature:''),
+                "signature" => $namefichier ? $namefichier : '',
             ]);
             $user->roles()->sync([]);
             $user->roles()->attach($request->roles);
