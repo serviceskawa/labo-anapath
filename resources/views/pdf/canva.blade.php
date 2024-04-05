@@ -19,13 +19,13 @@ date_default_timezone_set('Europe/Paris');
 <page backbottom="10mm">
 
     <div style="display:inline-block; ">
-        <span style="display: inline-block;padding-top: 5px; font-size:25px; margin-top:-50px "><img
-                src="{{ public_path('adminassets/images/Logo_long_CAAP@4x.png') }}" width="200px;" alt=""></span>
-        <div
+        <span style="display: inline-block;padding-top: 5px;"><img
+                src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}" width="100%;" alt=""></span>
+        {{-- <div
             style="display: inline-block; padding: 5px; position: absolute; top:20px; right: 0px; padding: 10px; text-align:right;">
             <b><span style="font-size:17px; text-align:right;"> CENTRE ADECHINA ANATOMIE PATHOLOGIQUE</span></b>
             <br><span style="font-size:10px; text-align:right;">Laboratoire d’Anatomie Pathologique</span>
-        </div>
+        </div> --}}
     </div>
         
     <div
