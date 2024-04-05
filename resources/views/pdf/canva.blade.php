@@ -36,12 +36,12 @@ date_default_timezone_set('Europe/Paris');
         </p>
     </div>
 
-    <div style="display: inline-block;  margin-top: 100px; right: 0; width: 50px; padding: 10px; text-align: right;">
-        <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}"  style="width: 65px;" alt="" srcset="">
+    <div style="display: inline-block; position: absolute; margin-top: 150px; right: 0; width: 50px; padding: 10px; text-align: right;">
+        <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}"  style="width: 65px; alt="" srcset="">
     </div>
 
     <div
-        style="margin-top:100px; background-color:#292929; width:100%; padding:15px; color:white; text-align: center;font-size:16px; text-transform: uppercase;">
+        style="margin-top:30px; background-color:#292929; width:100%; padding:15px; color:white; text-align: center;font-size:16px; text-transform: uppercase;">
         <b> {{ $title }} </b>
     </div>
     <div>
