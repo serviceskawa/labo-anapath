@@ -98,7 +98,7 @@ date_default_timezone_set('Europe/Paris');
 
     <div style="">
         <table style="width: 100%;">
-            @if ($status !=0)
+            {{-- @if ($status !=0)
                 <tr>
                     <td style="text-align: left; width: 33%; vertical-align: bottom;">
                         @if ($signatory1 != null)
@@ -125,7 +125,9 @@ date_default_timezone_set('Europe/Paris');
                         @endif
                     </td>
                 </tr>
-            @endif
+            @endif --}}
+
+            <img width="85" src="{{ asset('storage/' . $signature1) }}" alt="">
         </table>
     </div>
     <br><br>
