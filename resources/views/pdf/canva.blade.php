@@ -245,7 +245,7 @@ date_default_timezone_set('Europe/Paris');
     <div style="margin-top:30px;">
         <table style="width: 100%;">
 
-            // si le rapport est validé 
+           
             @if ($status == 1)
             <tr>
                 <td style="text-align: left; width: 33%; vertical-align: bottom;">
