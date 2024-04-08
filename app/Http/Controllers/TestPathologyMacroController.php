@@ -250,7 +250,6 @@ public function __construct(
     public function getTestOrdersforDatatable(Request $request)
     {
 
-
         $data = $this->macro->with(['order','employee','user','testOrder'])
         ->whereHas('order', function ($query) {
             $query->whereHas('type', function($query) {
@@ -1393,7 +1392,9 @@ public function __construct(
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
+
                     <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>";
+
 
                 foreach ($employees as $employee) {
                     $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
