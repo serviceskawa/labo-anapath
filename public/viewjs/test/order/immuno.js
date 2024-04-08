@@ -50,12 +50,12 @@ $(document).ready(function() {
                 d.exams_status = $('#exams_immuno_status').val()
                 d.type_examen = $('#type_immuno_examen').val()
                 d.cas_status = $('#cas_immuno_status').val()
-
                 d.attribuate_doctor_id = $('#doctor_immuno_signataire').val()
+                d.contenu = $('#contenu_immuno').val()
+                d.dateBegin = $('#dateBegin_immuno').val()
+                d.dateEnd = $('#dateEnd_immuno').val()
+
                 d.appel = $('#appel').val()
-                d.contenu = $('#contenu').val()
-                d.dateBegin = $('#dateBegin').val()
-                d.dateEnd = $('#dateEnd').val()
                 d.appel = $('#appel_status').val()
             }
         },
@@ -131,33 +131,33 @@ $(document).ready(function() {
 
 
     // Recherche selon les docteurs signataires
-    $("#doctor_signataire").on("change", function() {
-        // alert(this.value)
+    $("#doctor_immuno_signataire").on("change", function() {
+        alert(this.value)
         table.draw();
     });
 
 
     // Recherche selon les cas
     $("#cas_immuno_status").on("change", function() {
-        alert(this.value)
+        // alert(this.value)
         table.draw();
     });
 
     // $("#appel").on("change", function() {
     //     table.draw();
     // })
-    $('#contenu').on("input", function() {
+    $('#contenu_immuno').on("input", function() {
         table.draw();
     });
 
-    $('#dateEnd').on('input', function() {
-        console.log($('#dateEnd').val());
+    $('#dateEnd_immuno').on('input', function() {
+        // console.log($('#dateEnd').val());
         table.draw();
         //console.log(search.value);
     });
 
-    $('#dateBegin').on('input', function() {
-        console.log($('#dateBegin').val());
+    $('#dateBegin_immuno').on('input', function() {
+        // console.log($('#dateBegin').val());
         table.draw();
         //console.log(search.value);
     });
