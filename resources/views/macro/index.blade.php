@@ -571,7 +571,6 @@
 
 <script>
     var baseUrl = "{{ url('/') }}"
-            // var ROUTETESTORDERDATATABLE = "{{ route('test_order.getTestOrdersforDatatable') }}"
             var ROUTETESTORDERDATATABLE = "{{ route('macro.getTestOrdersforDatatable') }}"
             var ROUTETESTORDERDATATABLE2 = "{{ route('macro.getTestOrdersforDatatable2') }}"
             var ROUTETESTORDERDATATABLE3 = "{{ route('macro.getTestOrdersforDatatable3') }}"
