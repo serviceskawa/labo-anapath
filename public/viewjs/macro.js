@@ -488,6 +488,7 @@ function addMacro(id, code) {
 
     var selectedRows = $('#products-datatable').DataTable().rows('.selected').data().length > 0;
     if (!selectedRows) {
+<<<<<<< HEAD
         $.ajax({
             url: baseUrl + "/laborantin/" + selectedValue,
             type: "GET",

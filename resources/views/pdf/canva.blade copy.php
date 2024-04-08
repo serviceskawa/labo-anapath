@@ -129,7 +129,6 @@ date_default_timezone_set('Europe/Paris');
             </tr>
             @endif --}}
 
-
             @if ($status == 1)
             <tr>
                 <td style="text-align: left; width: 33%; vertical-align: bottom;">
