@@ -488,7 +488,7 @@ function addMacro(id, code) {
 
     var selectedRows = $('#products-datatable').DataTable().rows('.selected').data().length > 0;
     if (!selectedRows) {
-<<<<<<< HEAD
+
         $.ajax({
             url: baseUrl + "/laborantin/" + selectedValue,
             type: "GET",
@@ -528,63 +528,3 @@ function addMacro(id, code) {
     }
 
 }
-
-
-
-// //EDITION
-// function edit(id) {
-//     var e_id = id;
-
-//     // Populate Data in Edit Modal Form
-//     $.ajax({
-//         type: "GET",
-//         url: baseUrl + "/getdoctor/" + e_id,
-//         success: function(data) {
-
-//             $('#id2').val(data.id);
-//             $('#name').val(data.name);
-//             $('#telephone').val(data.telephone);
-//             $('#email').val(data.email);
-//             $('#role').val(data.role);
-//             $('#commission').val(data.commission);
-
-
-
-//             console.log(data);
-//             $('#editModal').modal('show');
-//         },
-//         error: function(data) {
-//             console.log('Error:', data);
-//         }
-//     });
-//     $.ajax({
-//         type: "GET",
-//         url: baseUrl + "/gettest/" + test_id,
-//         success: function(data) {
-
-
-//             $('#price').val(data.price);
-
-//         },
-//         error: function(data) {
-//             console.log('Error:', data);
-//         }
-//     });
-// }
-
-// function updateAttribuate(doctor_id, order_id) {
-
-//     $.ajax({
-//         type: "GET",
-//         url: URLupdateAttribuate,
-//         success: function(data) {
-//             console.log(data)
-//             if (data) {
-//                 toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-//             }
-//         },
-//         error: function(data) {
-//             console.log('Error:', data);
-//         }
-//     });
-// }

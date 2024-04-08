@@ -2174,22 +2174,20 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
                 if (!empty($request->get('exams_status'))) {
                     if ($request->get('exams_status') == "livrer") {
                         $query->whereHas('report', function ($query) {
-                            $query->where('is_deliver', 1);
+                            $query->where('is_delivered', 1);
                         });
                     } elseif ($request->get('exams_status') == "non_livrer") {
                         $query->whereHas('report', function ($query) {
-                            $query->where('is_deliver', 0);
+                            $query->where('is_delivered', 0);
                         });
                     } else {
                         $query->whereHas('report', function ($query) use ($request) {
                             $query->where('status', $request->get('exams_status'));
                         });
-                        // $query->where('status', $request->get('exams_status'));
                     }
                 }
 
                 if (!empty($request->get('appel'))) {
-
                     $query->whereHas('report', function ($query) use($request){
                             $query->whereHas('appel',function($query) use($request) {
                                 $query->whereHas('appel_event', function($query) use($request) {

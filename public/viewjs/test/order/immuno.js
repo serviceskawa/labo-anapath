@@ -46,17 +46,17 @@ $(document).ready(function() {
         ajax: {
             url: ROUTETESTORDERDATATABLE3,
             data: function(d) {
+                d.contrat_id = $('#contrat_immuno_id').val()
+                d.exams_status = $('#exams_immuno_status').val()
+                d.type_examen = $('#type_immuno_examen').val()
+                d.cas_status = $('#cas_immuno_status').val()
                 d.attribuate_doctor_id = $('#doctor_immuno_signataire').val()
-                d.cas_status = $('#cas_status').val()
-                d.appel = $('#appel').val()
-                d.contrat_id = $('#contrat_id').val()
-                d.exams_status = $('#exams_status').val()
-                d.type_examen = $('#type_examen').val()
-                d.contenu = $('#contenu').val()
-                d.dateBegin = $('#dateBegin').val()
-                d.dateEnd = $('#dateEnd').val()
-                d.appel = $('#appel_status').val()
+                d.contenu = $('#contenu_immuno').val()
+                d.dateBegin = $('#dateBegin_immuno').val()
+                d.dateEnd = $('#dateEnd_immuno').val()
 
+                d.appel = $('#appel').val()
+                d.appel = $('#appel_status').val()
             }
         },
         columns: [{
@@ -108,6 +108,72 @@ $(document).ready(function() {
         ],
 
     });
+
+
+    // Recherche selon les contrats
+    $("#contrat_immuno_id").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+    // Recherche selon le status d'examen
+    $("#exams_immuno_status").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+    // Recherche selon les types d'examen
+    $("#type_immuno_examen").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+
+
+    // Recherche selon les docteurs signataires
+    $("#doctor_immuno_signataire").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+
+    // Recherche selon les cas
+    $("#cas_immuno_status").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+    // $("#appel").on("change", function() {
+    //     table.draw();
+    // })
+    $('#contenu_immuno').on("input", function() {
+        table.draw();
+    });
+
+    $('#dateEnd_immuno').on('input', function() {
+        // console.log($('#dateEnd').val());
+        table.draw();
+        //console.log(search.value);
+    });
+
+    $('#dateBegin_immuno').on('input', function() {
+        // console.log($('#dateBegin').val());
+        table.draw();
+        //console.log(search.value);
+    });
+
+    $('#appel_status').on('change', function() {
+        // alert(this.value);
+        table.draw();
+    });
+
+
+
+
+
+
+
+
 
 
 
@@ -229,7 +295,7 @@ $(document).ready(function() {
 
     // Recherche selon les contrats
     $("#contrat_id").on("change", function() {
-        // alert(this.value)
+        alert(this.value)
         table.draw();
     });
     // Recherche selon le status d'examen
