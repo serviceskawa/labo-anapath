@@ -18,9 +18,9 @@ date_default_timezone_set('Europe/Paris');
 
 <page backbottom="10mm">
 
-    <div style="display:inline-block; ">
+    <div style="display:inline-block;">
         <span style="display: inline-block;padding-top: 5px; font-size:25px; margin-top:-50px "><img
-                src="{{ Storage::url($prefixe_code_demande_examen) }}" width="200px;" alt=""></span>
+                src="{{ Storage::url($entete) }}" width="200px;" alt=""></span>
     </div>
 
     <div
