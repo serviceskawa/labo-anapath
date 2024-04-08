@@ -16,11 +16,11 @@ date_default_timezone_set('Europe/Paris');
     }
 </style>
 
-<page backbottom="10mm">
+<page backbottom="10mm" >
 
     <div style="display:inline-block; margin:0; padding:0;">
         <span style="display: inline-block;"><img src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}"
-                width="100%;" alt=""></span>
+                width="100%;" style="margin:0; padding:0;" alt=""></span>
     </div>
 
     <div class="row" style="margin-top: 110px;">
