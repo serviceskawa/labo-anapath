@@ -328,7 +328,7 @@ class ReportController extends Controller
 
 
         try {
-            $impression_file_name = $this->setting->where('key', 'impression_file_name')->first();
+            $impression_file_name = SettingApp::where('key', 'impression_file_name')->first();
             $log = new LogReport();
             $log->operation = 'Imprimer';
             $log->report_id = $id;
