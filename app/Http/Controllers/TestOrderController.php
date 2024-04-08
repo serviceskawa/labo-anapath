@@ -2189,7 +2189,6 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
                 }
 
                 if (!empty($request->get('appel'))) {
-
                     $query->whereHas('report', function ($query) use($request){
                             $query->whereHas('appel',function($query) use($request) {
                                 $query->whereHas('appel_event', function($query) use($request) {

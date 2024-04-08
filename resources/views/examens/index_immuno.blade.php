@@ -187,36 +187,7 @@
             </div>
         </div>
 
-        {{-- <div class="card mb-md-0 mt-3 mb-3">
-            <div class="card-body">
-                <h5 class="card-title mb-3">Liste des demandes d'examen : APPEL NON DÉCROCHÉ</h5>
-                <div class="row mb-3">
-                    <div class="col-lg-2 p-1 alert alert-success rounded-pill"
-                        style="margin-right: 5px; text-align:center;">
-                        Total : {{$totalAppel}}
-                    </div>
-
-                </div>
-
-                <table id="datatable4" class="dt-responsive nowrap w-100 table">
-                    <thead>
-                        <tr>
-                            <th>Actions</th>
-                            <th>Appel</th>
-                            <th>Date</th>
-                            <th>Code</th>
-                            <th>Affecter à</th>
-                            <th>Patient</th>
-                            <th>Examens</th>
-                            <th>Contrat</th>
-                            <th>Montant</th>
-                            <th>Compte rendu</th>
-                            <th>Urgent</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div> --}}
+      
     </div>
 </div>
     @endsection
