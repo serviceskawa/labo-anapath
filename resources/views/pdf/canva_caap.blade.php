@@ -23,7 +23,7 @@ date_default_timezone_set('Europe/Paris');
                 width="100%;" alt=""></span>
     </div>
 
-    <div class="row" style="margin-top: 100px; margin-bottom: 100px;">
+    <div class="row" style="margin-top: 110px;">
         <div style="display: inline-block; margin-top:150px; position: absolute; left: 0; padding: 10px; text-align: left;">
             <p>
                 <b>N° ANAPTH :</b> {{ $test_order_code }}
