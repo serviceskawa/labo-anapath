@@ -23,7 +23,7 @@ date_default_timezone_set('Europe/Paris');
                 width="100%;" alt=""></span>
     </div>
 
-    <div style="display: inline-block; margin-top:150px; position: absolute; left: 0; padding: 10px; text-align: left;">
+    <div style="display: inline-block; margin-top:150px; margin-bottom:80px; position: absolute; left: 0; padding: 10px; text-align: left;">
         <p>
             <b>N° ANAPTH :</b> {{ $test_order_code }}
             <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
@@ -41,7 +41,7 @@ date_default_timezone_set('Europe/Paris');
     </div>
 
     <div
-        style=" margin-top:90px; margin-bottom:80px; background-color:#292929; width:100%; padding:15px; color:white; text-align:
+        style=" margin-top:90px;  background-color:#292929; width:100%; padding:15px; color:white; text-align:
             center;font-size:16px; text-transform: uppercase;">
         <b> {{ $title }} </b>
     </div>
