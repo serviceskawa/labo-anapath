@@ -132,7 +132,7 @@ $(document).ready(function() {
 
     // Recherche selon les docteurs signataires
     $("#doctor_immuno_signataire").on("change", function() {
-        alert(this.value)
+        // alert(this.value)
         table.draw();
     });
 
