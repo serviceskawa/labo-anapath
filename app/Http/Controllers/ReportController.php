@@ -173,9 +173,7 @@ class ReportController extends Controller
         $log->user_id = $user->id;
         $log->save();
 
-        return redirect()
-            ->back()
-            ->with('success', '   Examen mis à jour ! ');
+        return redirect()->back()->with('success', '   Examen mis à jour ! ');
     }
 
     /**
@@ -273,7 +271,7 @@ class ReportController extends Controller
             $signatory3 = $this->user->findorfail($report->signatory3);
         }
         $year_month = '';
-        if ($report->patient->year_or_month != 1) {
+        if ($report->patient->year_or_month == 1) {
             $year_month = 'mois';
         } else {
             $year_month = 'ans';
@@ -286,7 +284,9 @@ class ReportController extends Controller
 
         $data = [
             'code' => $report->code,
+            'test_order_code' => $report->order->code,
             'current_date' => utf8_encode(strftime('%d/%m/%Y')),
+            'signature_date' => date('d/m/Y', strtotime($report->signature_date)),
             'prelevement_date' => $report->order ? date('d/m/Y', strtotime($report->order->prelevement_date)) : '',
             'test_affiliate' => $report->order ? $report->order->test_affiliate : '',
             'qrcode' => $dataUri,
@@ -296,8 +296,13 @@ class ReportController extends Controller
             'content_supplementaire' => $report->description_supplementaire != '' ? $report->description_supplementaire : '',
             'content_supplementaire_micro' => $report->description_supplementaire_micro != '' ? $report->description_supplementaire_micro : '',
 
-            'signatory1' => $report->signatory1 != 0 ? $signatory1->lastname . ' ' . $signatory1->firstname : '',
-            'signature1' => $report->signatory1 != 0 ? $signatory1->signature : '',
+            // 'signatory1' => $report->signatory1 != 0 ? $signatory1->lastname . ' ' . $signatory1->firstname : '',
+            // 'signature1' => $report->signatory1 != 0 ? $signatory1->signature : '',
+
+            'signator' => $report->signateur  ? $report->signateur->lastname . ' ' . $report->signateur->firstname : '',
+
+            'signature1' => $report->signateur ? $report->signateur->signature : '',
+
 
             'signatory2' => $report->signatory2 != 0 ? $signatory2->lastname . ' ' . $signatory2->firstname : '',
             'signature2' => $report->signatory2 != 0 ? $signatory2->signature : '',
@@ -314,7 +319,7 @@ class ReportController extends Controller
             'revew_by' => $report->reviewed_by_user_id !=0 ? $reviewed_by_user->lastname . ' ' . $reviewed_by_user->firstname:'',
             'revew_by_signature' => $report->reviewed_by_user_id !=0 ? $reviewed_by_user->signature:'',
             'report_review_title' => SettingApp::where('key','report_review_title')->first()->value,
-            'prefixe_code_demande_examen' => SettingApp::where('key','prefixe_code_demande_examen')->first()->value,
+            'entete' => SettingApp::where('key','entete')->first()->value,
             'footer' => SettingApp::where('key','report_footer')->first()->value,
             'hospital_name' => $report->order ? $report->order->hospital->name : '',
             'doctor_name' => $report->order ? $report->order->doctor->name : '',

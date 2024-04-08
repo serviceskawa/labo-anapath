@@ -44,7 +44,7 @@
 
                         <div class="col-md-12 mb-3">
                             <label for="example-fileinput" class="form-label">Signature</label>
-                            <input type="file" class="dropify" name="signature" data-default-file="{{ $user->signature ? asset('storage/' . $user->signature) : '' }}"
+                            <input type="file" class="dropify" name="signature" data-default-file="{{ $user->signature ? asset('adminassets/images/'.$user->signature) : '' }}"
                                 data-max-file-size="3M" />
                         </div>
 

@@ -18,55 +18,53 @@ date_default_timezone_set('Europe/Paris');
 
 <page backbottom="10mm">
 
-    <div style="display:inline-block; ">
-        <span style="display: inline-block;padding-top: 5px; font-size:25px; margin-top:-50px "><img
-                src="{{ public_path('adminassets/images/Logo_long_CAAP@4x.png') }}" width="200px;" alt=""></span>
-        <div
-            style="display: inline-block; padding: 5px; position: absolute; top:20px; right: 0px; padding: 10px; text-align:right;">
-            <b><span style="font-size:17px; text-align:right;"> CENTRE ADECHINA ANATOMIE PATHOLOGIQUE</span></b>
-            <br><span style="font-size:10px; text-align:right;">Laboratoire d’Anatomie Pathologique</span>
-        </div>
+    <div style="display:inline-block; margin:0; padding:0;">
+        <span style="display: inline-block;"><img src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}"
+                width="100%;" alt=""></span>
     </div>
-    <div
-        style="display: inline-block; position: absolute; top: 0; left: 0; padding: 10px; text-align: right;">
+
+    <div style="display: inline-block; margin-top:150px; position: absolute; left: 0; padding: 10px; text-align: left;">
         <p>
-            <b>N° ANAPTH :</b> {{ $code }}
+            <b>N° ANAPTH :</b> {{ $test_order_code }}
             <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
             {{ $test_affiliate != null ? $test_affiliate : '' }}
             <br>
-            <b>Date :</b> {{ $current_date }}
+            <b>Date validation:</b> {{ $signature_date }}
+            <br>
+            <b>Date impression:</b> {{ $current_date }}
         </p>
     </div>
 
-    <div style="display: inline-block; position: absolute; top: 0; right: 0; width: 50px; padding: 10px; text-align: right;">
-        <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}"  style="width: 65px; alt="" srcset="">
+    <div
+        style="display: inline-block; position: absolute; margin-top: 150px; right: 0; width: 50px; padding: 10px; text-align: right;">
+        <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}" style="width: 65px; alt="" srcset="">
     </div>
 
     <div
-        style="margin-top:20px; background-color:#0070C1; width:100%; height:50px;color:rgb(255,255,255); text-align: center; padding-top:19px;font-size:25px; text-transform: uppercase;">
+        style=" margin-top:90px; background-color:#292929; width:100%; padding:15px; color:white; text-align:
+            center;font-size:16px; text-transform: uppercase;">
         <b> {{ $title }} </b>
     </div>
-    <br><br>
     <div>
-        <h3
-            style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
+        <span
+            style="padding-left: 10px; padding-right: 5px; margin-top:15px; border:none; background-color:rgb(255,255,255); font-size:16px; text-transform: uppercase; ">
             <b>Informations prélèvement</b>
-        </h3>
+        </span>
 
         <p style="margin-left:10px; margin-right:10px; display:block; width: 100%;">
 
-        <table style="max-width: 100%;width: 500px ">
+        <table style="max-width: 100%;width: 500px; margin-top:5px;">
             <tbody>
                 <tr>
                     <th width="30%">Nom :</th>
-                    <td width="50%;">{{ $patient_firstname }} </td>
+                    <td width="50%;">{{ $patient_lastname }}</td>
                     <th width="30%;">Date prélèvement : </th>
                     <td width="50%;">{{ $prelevement_date }} </td>
                 </tr>
 
                 <tr>
                     <th>Prénoms :</th>
-                    <td>{{ $patient_lastname }} </td>
+                    <td>{{ $patient_firstname }}</td>
                     <th>Date d’arrivée labo : </th>
                     <td> {{ $created_at }} </td>
                 </tr>
@@ -88,55 +86,68 @@ date_default_timezone_set('Europe/Paris');
         </table>
 
         </p>
-        <br>
     </div>
+    <hr style="height:1px; margin-top:5px;">
 
-    <h3
-        style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
 
-    </h3>
     {!! $content !!}
     {!! $content_micro !!}
 
     @if ($content_supplementaire != '')
-        <h3
-            style="padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); text-transform: uppercase; color:#0070C1; ">
-
-        </h3>
-        {!! $content_supplementaire !!}
-        {!! $content_supplementaire_micro !!}
+    {!! $content_supplementaire !!}
+    {!! $content_supplementaire_micro !!}
     @endif
 
-    <div style="">
+    <div style="margin-top:30px;">
         <table style="width: 100%;">
-            @if ($status !=0)
-                <tr>
-                    <td style="text-align: left; width: 33%; vertical-align: bottom;">
-                        @if ($signatory1 != null)
-                            @if ($signature1 != null)
-                                <img width="85" src="{{ asset('storage/' . $signature1) }}" alt="">
-                            @endif
-                            <br><br>{{ $signatory1 }}
-                        @endif
-                    </td>
+            {{-- @if ($status ==1)
+            <tr>
+                <td style="text-align: left; width: 33%; vertical-align: bottom;">
+                    @if ($signator)
+                    @if ($signature1)
+                    <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
+                    @endif
+                    <br><br>{{ $signator }}
+                    @endif
+                </td>
 
-                    <td style="text-align: center; width: 33%; vertical-align: bottom;">
-                        @if ($signatory2 != null)
-                            @if ($signature2 != null)
-                                <img width="85" src="{{ asset('storage/' . $signature2) }}" alt="">
-                            @endif
-                            <br><br>{{ $signatory2 }}
-                        @endif
-                    </td>
+                <td style="text-align: center; width: 33%; vertical-align: bottom;">
+                    @if ($signatory2 != null)
+                    @if ($signature2 != null)
+                    <img width="85" src="{{ asset('storage/' . $signature2) }}" alt="">
+                    @endif
+                    <br><br>{{ $signatory2 }}
+                    @endif
+                </td>
 
-                    <td style="text-align: right; width: 34%; vertical-align: bottom;">
-                        @if ($revew_by != null)
-                            {{ $report_review_title }}
-                            <br><strong>{{ $revew_by }}</strong>
-                        @endif
-                    </td>
-                </tr>
+                <td style="text-align: right; width: 34%; vertical-align: bottom;">
+                    @if ($revew_by != null)
+                    {{ $report_review_title }}
+                    <br><strong>{{ $revew_by }}</strong>
+                    @endif
+                </td>
+            </tr>
+            @endif --}}
+
+            @if ($status == 1)
+            <tr>
+                <td style="text-align: left; width: 33%; vertical-align: bottom;">
+                    <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
+
+                    <br><br>{{ $signator }}
+                </td>
+
+
+                <td style="text-align: right; width: 34%; vertical-align: bottom;">
+                    @if ($revew_by != null)
+                    {{ $report_review_title }}
+                    <br><strong>{{ $revew_by }}</strong>
+                    @endif
+                </td>
+            </tr>
             @endif
+
+
         </table>
     </div>
     <br><br>

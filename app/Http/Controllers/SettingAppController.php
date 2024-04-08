@@ -185,16 +185,16 @@ class SettingAppController extends Controller
 
             case 4:
                 if ($request->file('entete')) {
-                    $img4 = time() . '_settings_app_entete.' . $request->file('entete')->extension();
-                    $path_img4 = $request->file('entete')->storeAs('settings/app', $img4, 'public');
-                }else{
-                    $path_img4 = $this->setting->where('key', 'entete')->first();
-                    // Votre chaîne JSON
-                    $jsonString = $path_img4;
-                    // Décoder la chaîne JSON en un tableau associatif
-                    $data = json_decode($jsonString, true);
+                    
+                    // debut 
+                        $imageFile = $request->file('entete');
+                        // Obtenez le nom d'origine du fichier
+                        $namefichier = "entete_pdf_cr.".$imageFile->getClientOriginalExtension();
+                       
+                        // Enregistrez le fichier image dans le dossier public
+                        $re = $request->file('entete')->move(public_path('adminassets/images'), $namefichier);
+                    // fin
 
-                    $path_img4 = $data['value'];
                 }
 
                 $report_footer = $this->setting->where('key', 'report_footer')->first();
@@ -204,7 +204,7 @@ class SettingAppController extends Controller
                 $prefixe_code_demande_examen ?  $prefixe_code_demande_examen->update(['value' => $prefixeCodeDemandeExamenValue]): '';
 
                 $entete = $this->setting->where('key', 'entete')->first();
-                $entete ? $entete->update(['value' => $path_img4]) : '';
+                $entete ? $entete->update(['value' => $namefichier]) : '';
 
                 $report_review_title = $this->setting->where('key', 'report_review_title')->first();
                 $report_review_title ?  $report_review_title->update(['value' => $report_review_titleValue]): '';

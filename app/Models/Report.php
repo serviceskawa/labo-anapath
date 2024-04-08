@@ -24,6 +24,11 @@ class Report extends Model
         return $this->belongsTo(TestOrder::class, 'test_order_id');
     }
 
+    public function signateur()
+    {
+        return $this->belongsTo(User::class, 'signatory1');
+    }
+
 
     /**
      * Get the title that owns the Report
