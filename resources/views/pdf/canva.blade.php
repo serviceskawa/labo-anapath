@@ -167,7 +167,7 @@ date_default_timezone_set('Europe/Paris');
                 width="100%;" alt=""></span>
     </div>
 
-    <div style="display: inline-block; margin-top:300px; margin-bottom: 30px; position: absolute; left: 0; padding: 10px; text-align: left;">
+    <div style="display: inline-block; margin-top:150px; margin-bottom: 150px; position: absolute; left: 0; padding: 10px; text-align: left;">
         <p>
             <b>N° ANAPTH :</b> {{ $test_order_code }}
             <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
@@ -180,7 +180,7 @@ date_default_timezone_set('Europe/Paris');
     </div>
 
     <div
-        style="display: inline-block; position: absolute; margin-top:300px; margin-bottom: 30px; right: 0; width: 50px; padding: 10px; text-align: right;">
+        style="display: inline-block; position: absolute; margin-top: 150px; margin-bottom: 150px; right: 0; width: 50px; padding: 10px; text-align: right;">
         <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}" style="width: 65px;" alt="" srcset="">
     </div>
 
@@ -189,6 +189,7 @@ date_default_timezone_set('Europe/Paris');
             center;font-size:16px; text-transform: uppercase;">
         <b> {{ $title }} </b>
     </div>
+
     <div>
         <span
             style="padding-left: 10px; padding-right: 5px; margin-top:15px; border:none; background-color:rgb(255,255,255); font-size:16px; text-transform: uppercase; ">
