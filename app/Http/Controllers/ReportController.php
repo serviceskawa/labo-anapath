@@ -234,7 +234,6 @@ class ReportController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $report = $this->report->find($id);
-        // dd($report);
         $setting = $this->setting->find(1);
         $text = $report->order ? $report->order->code : '';
         $user = Auth::user();
@@ -327,22 +326,20 @@ class ReportController extends Controller
             'date' => date('d/m/Y'),
         ];
 
-        //dd($data);
 
         try {
+            $impression_file_name = $this->setting->where('key', 'impression_file_name')->first();
             $log = new LogReport();
             $log->operation = 'Imprimer';
             $log->report_id = $id;
             $log->user_id = $user->id;
             $log->save();
-            $content = view('pdf/canva', $data)->render();
-
+            $content = view('pdf/canva_'.$impression_file_name->value, $data)->render();
             $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
             $html2pdf->pdf->SetDisplayMode('fullpage');
             $html2pdf->setTestTdInOnePage(false);
             $html2pdf->__construct($orientation = 'P', $format = 'A4', $lang = 'fr', $unicode = true, $encoding = 'UTF-8', $margins = [8, 20, 8, 8], $pdfa = false);
             $html2pdf->writeHTML($content);
-          
             $newname = 'CO-' . $report->order->code . '.pdf';
             $html2pdf->output($newname);
         } catch (Html2PdfException $e) {
