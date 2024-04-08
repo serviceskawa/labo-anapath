@@ -14,6 +14,10 @@ date_default_timezone_set('Europe/Paris');
         border-top: 2px solid rgb(0, 0, 0, 0);
         border-radius: 5px;
     }
+
+    body{
+        margin: 0;
+    }
 </style>
 
 <page backbottom="10mm" >
