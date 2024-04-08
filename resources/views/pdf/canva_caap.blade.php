@@ -14,13 +14,9 @@ date_default_timezone_set('Europe/Paris');
         border-top: 2px solid rgb(0, 0, 0, 0);
         border-radius: 5px;
     }
-
-    body{
-        margin: 0;
-    }
 </style>
 
-<page backbottom="10mm" >
+<page backbottom="10mm" style="margin: 0px;">
 
     <div style="display:inline-block; margin:0; padding:0;">
         <span style="display: inline-block; margin:0; padding:0;"><img src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}"
