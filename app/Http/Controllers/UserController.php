@@ -169,6 +169,9 @@ class UserController extends Controller
        
         // Enregistrez le fichier image dans le dossier public
         $re = $request->file('signature')->move(public_path('adminassets/images'), $namefichier);
+    }else{
+        $user= $this->user->find($data['id']);
+        $namefichier = $user->signature;
     }
 
     // dd($re);
