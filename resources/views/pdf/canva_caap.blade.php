@@ -23,26 +23,28 @@ date_default_timezone_set('Europe/Paris');
                 width="100%;" alt=""></span>
     </div>
 
-    <div style="display: inline-block; margin-top:150px; margin-bottom:180px; position: absolute; left: 0; padding: 10px; text-align: left;">
-        <p>
-            <b>N° ANAPTH :</b> {{ $test_order_code }}
-            <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
-            {{ $test_affiliate != null ? $test_affiliate : '' }}
-            <br>
-            <b>Date validation:</b> {{ $signature_date }}
-            <br>
-            <b>Date impression:</b> {{ $current_date }}
-        </p>
+    <div class="row" style="margin-top: 100px; margin-bottom: 100px;">
+        <div style="display: inline-block; margin-top:150px; position: absolute; left: 0; padding: 10px; text-align: left;">
+            <p>
+                <b>N° ANAPTH :</b> {{ $test_order_code }}
+                <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
+                {{ $test_affiliate != null ? $test_affiliate : '' }}
+                <br>
+                <b>Date validation:</b> {{ $signature_date }}
+                <br>
+                <b>Date impression:</b> {{ $current_date }}
+            </p>
+        </div>
+    
+        <div
+            style="display: inline-block; position: absolute; margin-top: 150px; right: 0; width: 50px; padding: 10px; text-align: right;">
+            <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}" style="width: 65px;" alt="" srcset="">
+        </div>
     </div>
 
     <div
-        style="display: inline-block; position: absolute; margin-top: 150px; margin-bottom:80px; right: 0; width: 50px; padding: 10px; text-align: right;">
-        <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}" style="width: 65px;" alt="" srcset="">
-    </div>
-
-    <div
-        style=" margin-top:90px;  background-color:#292929; width:100%; padding:15px; color:white; text-align:
-            center; font-size:16px; text-transform: uppercase;">
+        style=" margin-top:90px; background-color:#292929; width:100%; padding:15px; color:white; text-align:
+            center;font-size:16px; text-transform: uppercase;">
         <b> {{ $title }} </b>
     </div>
     <div>
