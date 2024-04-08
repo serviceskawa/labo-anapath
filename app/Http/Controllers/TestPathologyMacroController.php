@@ -534,6 +534,7 @@ public function __construct(
             ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
             ->make(true);
     }
+<<<<<<< HEAD
 
 
 
@@ -708,6 +709,10 @@ public function __construct(
 
 
     public function getTestOrdersforDatatable3(Request $request)
+=======
+    
+     public function getTestOrdersforDatatable3(Request $request)
+>>>>>>> 691c7a7 (corection des conflits après merge)
     {
         $data = DB::table('test_orders')
         ->select(
@@ -1546,7 +1551,7 @@ public function __construct(
                $checkbox = "
                 <div class='form-check'>
                     <input type='checkbox' class='form-check-input'id='customCheck'>
-                    // <input type='checkbox' class='form-check-input'id='customCheck".$data->test_order."'>
+                    // <input type='checkbox' class='form-check-input'id='customCheck".$data->test_order_id."'>
                 </div>
                ";
                return $checkbox;
@@ -1564,7 +1569,11 @@ public function __construct(
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
+<<<<<<< HEAD
                     <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>";
+=======
+                    <select id='laborantin{$data->test_order_id}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order_id.",\"".$escapedCode."\")'>";
+>>>>>>> 691c7a7 (corection des conflits après merge)
 
                 foreach ($employees as $employee) {
                     $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
