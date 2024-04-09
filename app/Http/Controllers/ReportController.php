@@ -270,7 +270,7 @@ class ReportController extends Controller
             $signatory3 = $this->user->findorfail($report->signatory3);
         }
         $year_month = '';
-        if ($report->patient->year_or_month == 1) {
+        if ($report->patient->year_or_month != 1) {
             $year_month = 'mois';
         } else {
             $year_month = 'ans';
