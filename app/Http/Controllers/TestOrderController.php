@@ -90,9 +90,9 @@ public function __construct(
 
     public function statistique($idDoctor)
     {
-        if (!getOnlineUser()->can('view-doctors')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('view-doctors')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
         // Nombre total de cas attribuer (ok)
         $nbreTotalCasAttribuer = TestOrderAssignment::where('user_id', Auth::user()->id)->count();
         $nbreTotalCasAttribuerValeur = $nbreTotalCasAttribuer;

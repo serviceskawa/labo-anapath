@@ -1137,6 +1137,25 @@ if (!function_exists('getRolesByUser')) {
     }
 }
 
+
+
+if (!function_exists('getRolesByUserDocteur')) {
+    function getRolesByUserDocteur($userID)
+    {
+        $rolesusers = UserRole::where('user_id', $userID)->get();
+        foreach ($rolesusers as $value) {
+            $role = Role::find($value->role_id);
+            if($role->slug == "docteur")
+            {
+                $response = 1;
+            }else{
+                $response = 0;
+            }
+        }
+        return $response;
+    }
+}
+
 if (!function_exists('formatMontant')) {
     function formatMontant($montant) {
         $formattedMontant = number_format($montant, 0, ',', ' ');

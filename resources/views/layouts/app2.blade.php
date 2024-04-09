@@ -127,11 +127,11 @@
                         </a>
                         <div class="collapse" id="sidebarEcommerce1">
                             <ul class="side-nav-second-level">
-                                {{-- @if (getOnlineUser()->can('view-doctors')) --}}
+                                @if (getRolesByUserDocteur(Auth::user()->id)==1)
                                   <li>
                                     <a href="{{ route('myspace.index', Auth::user()->id) }}">Mon espace <span class="badge bg-success mb-1">new</span></a>
                                   </li>
-                                {{-- @endif --}}
+                                @endif
 
                                 <li>
                                     <a href="{{ route('test_order.index') }}">Toutes les demandes  </a>
