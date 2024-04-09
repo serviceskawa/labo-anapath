@@ -18,13 +18,13 @@ date_default_timezone_set('Europe/Paris');
 
 <page backbottom="10mm" style="margin: 0px;">
 
-    <div style="display:inline-block; margin:0; padding:0;">
+    <div style="display:inline-block; margin-top:-50px; padding:0;">
         <span style="display: inline-block; margin:0; padding:0;"><img src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}"
                 width="100%;" style="margin:0; padding:0;" alt=""></span>
     </div>
 
     <div class="row" style="margin-top: 110px;">
-        <div style="display: inline-block; margin-top:150px; position: absolute; left: 0; padding: 10px; text-align: left;">
+        <div style="display: inline-block; margin-top:100px; position: absolute; left: 0; padding: 10px; text-align: left;">
             <p>
                 <b>N° ANAPTH :</b> {{ $test_order_code }}
                 <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
@@ -37,16 +37,15 @@ date_default_timezone_set('Europe/Paris');
         </div>
     
         <div
-            style="display: inline-block; position: absolute; margin-top: 150px; right: 0; width: 50px; padding: 10px; text-align: right;">
+            style="display: inline-block; position: absolute; margin-top: 100px; right: 0; width: 50px; padding: 10px; text-align: right;">
             <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}" style="width: 65px;" alt="" srcset="">
         </div>
     </div>
 
-    <div
-        style="background-color:#292929; width:100%; padding:15px; color:white; text-align:
-            center;font-size:16px; text-transform: uppercase;">
+    <div style="background-color:#0070C1; width:100%; padding:15px; color:white; text-align:center;font-size:16px; text-transform: uppercase; margin-top:-40px;">
         <b> {{ $title }} </b>
     </div>
+    
     <div>
         <span
             style="padding-left: 10px; padding-right: 5px; margin-top:15px; border:none; background-color:rgb(255,255,255); font-size:16px; text-transform: uppercase; ">
@@ -59,14 +58,14 @@ date_default_timezone_set('Europe/Paris');
             <tbody>
                 <tr>
                     <th width="30%">Nom :</th>
-                    <td width="50%;">{{ $patient_lastname }}</td>
+                    <td width="50%;">{{ $patient_firstname }}</td>
                     <th width="30%;">Date prélèvement : </th>
                     <td width="50%;">{{ $prelevement_date }} </td>
                 </tr>
 
                 <tr>
                     <th>Prénoms :</th>
-                    <td>{{ $patient_firstname }}</td>
+                    <td>{{ $patient_lastname }}</td>
                     <th>Date d’arrivée labo : </th>
                     <td> {{ $created_at }} </td>
                 </tr>
@@ -89,7 +88,7 @@ date_default_timezone_set('Europe/Paris');
 
         </p>
     </div>
-    <hr style="height:1px; margin-top:5px;">
+    <hr style="height:1px; margin-top:5px; color:#0070C1;">
 
 
     {!! $content !!}
