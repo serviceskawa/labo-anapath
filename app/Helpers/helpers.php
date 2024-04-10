@@ -1148,8 +1148,6 @@ if (!function_exists('getRolesByUserDocteur')) {
             if($role->slug == "docteur")
             {
                 $response = 1;
-            }else{
-                $response = 0;
             }
         }
         return $response;
