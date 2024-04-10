@@ -65,7 +65,7 @@
                             <select class="form-select" id="year_or_month" name="year_or_month" required>
                                 <option value="">Sélectionner entre mois ou ans</option>
                                 <option value="0">Mois</option>
-                                <option value="1">Ans</option>
+                                <option value="1" selected>Ans</option>
                             </select>
                         </div>
                     </div>
