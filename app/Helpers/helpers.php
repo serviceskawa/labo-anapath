@@ -1143,11 +1143,13 @@ if (!function_exists('getRolesByUserDocteur')) {
     function getRolesByUserDocteur($userID)
     {
         $rolesusers = UserRole::where('user_id', $userID)->get();
+        $response = 0; // Initialisation à zéro par défaut
         foreach ($rolesusers as $value) {
             $role = Role::find($value->role_id);
             if($role->slug == "docteur")
             {
                 $response = 1;
+                break; // Sortir de la boucle dès qu'on trouve le rôle "docteur"
             }
         }
         return $response;
