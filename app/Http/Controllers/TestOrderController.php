@@ -971,10 +971,10 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
 
     public function create()
     {
-
         if (!getOnlineUser()->can('create-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+
         $cashbox = Cashbox::find(2);
         $patients = $this->patient->all();
         $doctors = $this->doctor->all();
@@ -983,6 +983,7 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
         $types_orders = $this->typeOrder->all();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
+        
         return view('examens.create', compact(['cashbox','patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
     }
 

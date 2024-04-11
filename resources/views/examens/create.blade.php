@@ -21,7 +21,7 @@
 
 <div class="page-title-box">
     <div class="page-title-right mr-3">
-        @if($cashbox->statut==0)
+        @if(isset($cashbox) && $cashbox->statut == 0)
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
             <strong>Caisse fermée - </strong> Veuillez ouvrir la caisse avant de procéder à
             l'encaissement.

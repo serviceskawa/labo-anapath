@@ -180,8 +180,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/updatecontratstatus/{id}', [ContratController::class, 'update_detail_status'])->name('contrat_details.update-status');
     Route::post('/contrats_details/update', [ContratController::class, 'contrat_details_update'])->name('contrat_details.update');
 
-
-
     //TEST_ORDER
     Route::get('/test_order/myspace/{idDoctor}', [TestOrderController::class, 'statistique'])->name('myspace.index');
     Route::get('/test_order/index', [TestOrderController::class, 'index2'])->name('test_order.index');
