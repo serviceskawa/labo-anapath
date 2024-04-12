@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Auth\LoginRequest;
 use Carbon\Carbon;
 use App\Http\Resources\User\UserResource;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -41,14 +42,26 @@ class LoginController extends Controller
 
     public function login(LoginRequest $request)
     {
+        $credentials = $request->only('email', 'password');
 
-        if (!auth()->attempt($request->all())) {
-            return $this->respondFailedLogin();
+        if (!auth()->attempt($credentials)) {
+                return $this->respondFailedLogin(false, true);
+        } else {
+            $user = auth()->user();
+
+            $tokenResult = $user->createToken('auth_token');
+
+            return $this->respondWithToken($tokenResult, $user);
         }
+        
+    }
 
-        $tokenResult = auth()->user()->createToken(Str::random(15));
-
-        return $this->respondWithToken($tokenResult, auth()->user());
+    protected function respondFailedLogin() {
+        return $this->respond([
+            'errors' => [
+                'message' => 'email or password is invalid'
+            ]
+        ], 422);
     }
 
     protected function respondWithToken($tokenResult, $user)
