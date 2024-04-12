@@ -58,7 +58,7 @@ class LoginController extends Controller
     }
 
     protected function respondFailedLogin() {
-        return $this->respond([
+        return response()->json([
             'errors' => [
                 'message' => 'email or password is invalid'
             ]
