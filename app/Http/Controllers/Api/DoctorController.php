@@ -14,7 +14,7 @@ class DoctorController extends Controller
 
     public function AllTestOrders()
     {
-        $results = TestOrder::with('report','patient','details','type','contrat')->latest()->get();
+        $results = TestOrder::with('report','patient','details','type','contrat', 'doctor' , 'hospital' , 'doctorExamen' , 'attribuateToDoctor')->latest()->get();
 
         return response()->json(['results' => $results]);
     }
