@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Doctor;
 use App\Models\TestOrder;
 use App\Models\TestOrderAssignmentDetail;
 use Carbon\Carbon;
@@ -11,6 +12,12 @@ use Illuminate\Support\Facades\Auth;
 
 class DoctorController extends Controller
 {
+
+    public function get_doctors() {
+        $doctors = Doctor::get();
+
+        return response()->json(['results' => $doctors]);
+    }
 
     public function AllTestOrders()
     {

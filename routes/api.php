@@ -39,6 +39,9 @@ Route::post('/v1/login',[LoginController::class, 'login']);
 // Cette route affiche toutes les affectations
 Route::get('/v1/alltestorders',[DoctorController::class, 'AllTestOrders']);
 
+// route to get doctors list
+Route::get('/v1/doctors',[DoctorController::class, 'get_doctors']);
+
 // Cette route permet de rechercher une affectation
 Route::get('/v1/search/{query}',[DoctorController::class, 'searchAffectation']);
 
