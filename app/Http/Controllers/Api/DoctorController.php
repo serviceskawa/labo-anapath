@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Doctor;
+use App\Models\Report;
 use App\Models\TestOrder;
 use App\Models\TestOrderAssignmentDetail;
 use Carbon\Carbon;
@@ -72,5 +73,30 @@ class DoctorController extends Controller
         
 
         return response()->json(['old_articles' => $oldTestOrders]);
+    }
+    
+    public function updateInformOrDeliveryPatientStatus(Request $request) {
+        $report = Report::where('id',$request->id)->first();
+
+        if($request->action == "information"){
+            $report->update([
+                'is_called' => 1,
+                'call_date' => now()
+            ]);
+        }else{
+
+            if($report->is_called == 0) {
+                return response()->json([
+                    'errors' => [
+                        'message' => 'Patient non informé.'
+                    ]
+                ], 422);
+            }
+            $report->update([
+                'is_delivered' => 1,
+                'delivery_date' => now()
+            ]);
+        }
+        return response()->json(["message" => "Operation réussie avec succès!"], 200);
     }
 }

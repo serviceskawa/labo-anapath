@@ -35,19 +35,23 @@ Route::post('/generate/pdf',[ApiController::class, 'pdf']);
 // Routes de connexion 
 Route::post('/v1/login',[LoginController::class, 'login']);
 
+Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
+    // Cette route affiche toutes les affectations
+    Route::get('/alltestorders',[DoctorController::class, 'AllTestOrders']);
 
-// Cette route affiche toutes les affectations
-Route::get('/v1/alltestorders',[DoctorController::class, 'AllTestOrders']);
+    // route to get doctors list
+    Route::get('/doctors',[DoctorController::class, 'get_doctors']);
 
-// route to get doctors list
-Route::get('/v1/doctors',[DoctorController::class, 'get_doctors']);
+    // Cette route permet de rechercher une affectation
+    Route::get('/search/{query}',[DoctorController::class, 'searchAffectation']);
 
-// Cette route permet de rechercher une affectation
-Route::get('/v1/search/{query}',[DoctorController::class, 'searchAffectation']);
+    // Cette route permet de filtrer une affectation par docteur, par son identifiant (Id)
+    Route::get('/searchtestorderbydoctor/{doctorId}',[DoctorController::class, 'searchAffectationByDoctor']);
 
-// Cette route permet de filtrer une affectation par docteur, par son identifiant (Id)
-Route::get('/v1/searchtestorderbydoctor/{doctorId}',[DoctorController::class, 'searchAffectationByDoctor']);
+    // Cette route permet de filtrer une affectation de plus de 10 jours affecter a un docteur
+    Route::get('/testorder/old/{doctorId}',[DoctorController::class, 'getOldTestOrders']);
 
-// Cette route permet de filtrer une affectation de plus de 10 jours affecter a un docteur
-Route::get('/v1/testorder/old/{doctorId}',[DoctorController::class, 'getOldTestOrders']);
+    Route::put('/testorder/report/patient',[DoctorController::class, 'updateInformOrDeliveryPatientStatus']);
+});
+
 
