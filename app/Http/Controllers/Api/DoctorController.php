@@ -22,7 +22,7 @@ class DoctorController extends Controller
 
     public function AllTestOrders()
     {
-        $results = TestOrder::with('report','patient','details','type','contrat', 'doctor' , 'hospital' , 'doctorExamen' , 'attribuateToDoctor')->latest()->get();
+        $results = TestOrder::with('report','patient','details','type','contrat', 'doctor' , 'hospital' , 'doctorExamen' , 'attribuateToDoctor')->latest()->paginate(15);
 
         return response()->json(['results' => $results]);
     }
