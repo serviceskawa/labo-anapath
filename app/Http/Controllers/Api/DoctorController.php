@@ -24,7 +24,7 @@ class DoctorController extends Controller
     {
         $results = TestOrder::with('report','patient','details','type','contrat', 'doctor' , 'hospital' , 'doctorExamen' , 'attribuateToDoctor')->latest()->paginate(15);
 
-        return response()->json([$results]);
+        return response()->json($results);
     }
     
     public function searchAffectation($query){
