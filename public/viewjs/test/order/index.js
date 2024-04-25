@@ -557,8 +557,6 @@ function edit(id) {
             $('#role').val(data.role);
             $('#commission').val(data.commission);
 
-
-
             console.log(data);
             $('#editModal').modal('show');
         },

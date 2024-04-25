@@ -97,7 +97,7 @@ public function __construct(
                   ->whereNull('deleted_at'); // deleted_at doit être NULL;
             })->get();
 
-            
+
         $employees = $this->employees->all();
 
 
@@ -171,12 +171,6 @@ public function __construct(
 
             // dd($data);
             // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-
-
-
-
-
 
         // $testOrders = $this->testOrder->all();
 
@@ -387,12 +381,12 @@ public function __construct(
                     });
                 }
 
-              
-        
+
+
 
                 if(!empty($request->get('dateBegin2'))){
                     $query->whereHas('testOrder', function($queryModel) use($request) {
-    
+
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin2'));
                     $queryModel->whereDate('created_at','>=',$newDate);
                     });
@@ -534,7 +528,7 @@ public function __construct(
             ->make(true);
     }
 
-    
+
      public function getTestOrdersforDatatable3(Request $request)
     {
         $data = DB::table('test_orders')
@@ -556,8 +550,8 @@ public function __construct(
         ->where('reports.status', 0)
         ->whereYear('reports.created_at', '!=', 2022)
         ->whereYear('reports.created_at', '!=', 2023)
-     
-        // Filtrage histologie ou biopsie 
+
+        // Filtrage histologie ou biopsie
         ->where(function ($query) {
             $query
             ->where('type_order_id', 1)
@@ -650,8 +644,8 @@ public function __construct(
 
             // ->filter(function ($query) use ($request) {
             //     if  ($request->get('typeOrderId')) {
-            //         $query->where(function($query) use ($request){         
-            //             $query->where('type_order_id',$request->get('typeOrderId')); 
+            //         $query->where(function($query) use ($request){
+            //             $query->where('type_order_id',$request->get('typeOrderId'));
             //         });
             //     }
             // })
@@ -666,7 +660,7 @@ public function __construct(
 
     // Histoligie Piece Operatoire
     public function getTestOrdersforDatatableHistologie(Request $request)
-    {      
+    {
         $data = DB::table('test_orders')
         ->select(
             'test_orders.id as test_order',
@@ -686,8 +680,8 @@ public function __construct(
         ->where('reports.status', 0)
         ->whereYear('reports.created_at', '!=', 2022)
         ->whereYear('reports.created_at', '!=', 2023)
-     
-        // Filtrage histologie ou biopsie 
+
+        // Filtrage histologie ou biopsie
         ->where(function ($query) {
             $query
             ->where('type_order_id', 1)
@@ -807,16 +801,12 @@ public function __construct(
         ->where('reports.status', 0)
         ->whereYear('reports.created_at', '!=', 2022)
         ->whereYear('reports.created_at', '!=', 2023)
-     
-        // Filtrage histologie ou biopsie 
+
+        // Filtrage histologie ou biopsie
         ->where(function ($query) {
             $query
             ->where('type_order_id', 6);
         });
-        
-
-
-
 
             $employees = $this->employees->all();
             return DataTables::of($data)->addIndexColumn()
@@ -925,8 +915,8 @@ public function __construct(
         ->where('reports.status', 0)
         ->whereYear('reports.created_at', '!=', 2022)
         ->whereYear('reports.created_at', '!=', 2023)
-     
-        // Filtrage histologie ou biopsie 
+
+        // Filtrage histologie ou biopsie
         ->where(function ($query) {
             $query
             ->where('type_order_id', 4);
@@ -934,7 +924,7 @@ public function __construct(
 
 
 
-       
+
 
             $employees = $this->employees->all();
             return DataTables::of($data)->addIndexColumn()

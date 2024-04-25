@@ -39,8 +39,6 @@
                     $('#contrat_id2').val(data.contrat_id);
                     $('#contrat_details_id2').val(data.id);
 
-
-
                     console.log(data);
                     $('#editModal').modal('show');
                 },
@@ -52,6 +50,7 @@
 
         $(document).ready(function() {
 
+             // Create doctor
             $('#doctor_id').select2({
                 placeholder: 'Select Category',
                 theme: 'bootstrap4',
@@ -156,6 +155,8 @@
 
             });
         });
+
+        
         $(document).ready(function() {
 
             $('#type_examen').on('change', function(e) {

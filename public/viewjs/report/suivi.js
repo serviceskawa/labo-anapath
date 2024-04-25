@@ -1,3 +1,5 @@
+
+
 // SUPPRESSION
 function deleteModal(id) {
 
@@ -20,6 +22,7 @@ function deleteModal(id) {
 }
 
 $(document).ready(function() {
+
     var table = $('#datatablesuivi').DataTable({
         "order": [],
         // language: {
@@ -49,6 +52,8 @@ $(document).ready(function() {
                 d.contenu = $('#contenu').val()
                 d.dateBegin = $('#dateBegin').val()
                 d.dateEnd = $('#dateEnd').val()
+                d.type_examen = $('#type_examen').val()
+                d.cas_status = $('#cas_status').val()
             }
         },
         columns: [{
@@ -78,10 +83,24 @@ $(document).ready(function() {
         order: [
             [0, 'asc']
         ],
+        dom: 'Bfrtip', // Ajoutez ce paramètre pour définir les éléments du DOM de DataTables
+        buttons: [ // Définissez les boutons que vous souhaitez
+        'copy', 'csv', 'excel', 'pdf', 'print'
+    ]
 
     });
     // Recherche selon les cas
     $("#statusquery").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+    $("#cas_status").on("change", function() {
+        // alert(this.value)
+        table.draw();
+    });
+
+    $("#type_examen").on("change", function() {
         // alert(this.value)
         table.draw();
     });
@@ -129,3 +148,4 @@ function edit(id) {
         }
     });
 }
+

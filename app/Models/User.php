@@ -67,7 +67,6 @@ class User extends Authenticatable
         return $this->hasMany(Expense::class);
     }
 
-
     public function daily(){
         return $this->hasMany(CashboxDaily::class);
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\AssignedReviewer;
+use App\Http\Requests\TagRequest;
 use App\Models\AppelByReport;
 use App\Models\Cashbox;
 use App\Models\Report;
@@ -21,12 +22,14 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 // require _DIR_.'/vendor/autoload.php';
 use App\Models\SettingReportTemplate;
-
+use App\Models\Tag;
 use App\Models\TitleReport;
+use App\Models\TypeOrder;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use QRcode as GlobalQRcode;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
@@ -42,11 +45,13 @@ class ReportController extends Controller
     protected $titleReport;
     protected $setting;
     protected $user;
+    protected $tag;
+    protected $typeOrder;
     /**
      * ReportController constructor.
      * Instanciate Report, Doctor and LogReport classes
      */
-    public function __construct(Report $report, Doctor $doctor, User $user, LogReport $logReport, TitleReport $titleReport, SettingReportTemplate $settingReportTemplate, Setting $setting)
+    public function __construct(Report $report, Doctor $doctor, User $user, LogReport $logReport, TitleReport $titleReport, SettingReportTemplate $settingReportTemplate, Setting $setting, Tag $tag, TypeOrder $typeOrder)
     {
         $this->middleware('auth');
         $this->report = $report;
@@ -56,6 +61,8 @@ class ReportController extends Controller
         $this->settingReportTemplate = $settingReportTemplate;
         $this->setting = $setting;
         $this->user = $user;
+        $this->tag = $tag;
+        $this->typeOrder = $typeOrder;
     }
 
     /**
@@ -75,6 +82,140 @@ class ReportController extends Controller
         return view('reports.index', compact('reports', 'doctors'));
     }
 
+    public function storeTags(TagRequest $request){
+        $data = [
+            'name' => $request->name,
+        ];
+
+        $exist = $this->tag->where('id', $request->name)->first();
+        try {
+            if ($exist === null ) {
+                $tag = $this->tag->create($data);
+                $status = "created";
+
+            }else {
+                $tag = [];
+                $status = "exist";
+            }
+
+            return response()->json(["tag" => $tag, "status"=> $status], 200);
+
+        } catch(\Throwable $ex){
+            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        }
+    }
+
+    // public function getReportsRapportsforDatatable(Request $request) {
+
+
+    //     // $data = DB::table(DB::raw(
+    //     //         "(SELECT
+    //     //         SUM(CASE WHEN tos.title = 'Histologie' THEN 1 ELSE 0 END) AS histologie,
+    //     //         SUM(CASE WHEN tos.title = 'Immuno Externe' THEN 1 ELSE 0 END) AS immuno_externe,
+    //     //         SUM(CASE WHEN tos.title = 'Immuno Interne' THEN 1 ELSE 0 END) AS immuno_interne,
+    //     //         SUM(CASE WHEN tos.title = 'Cytologie' THEN 1 ELSE 0 END) AS cytologie,
+    //     //         COUNT(tor.id) AS total_general,
+    //     //         0 AS attente,
+    //     //         0 AS termine,
+    //     //         0 AS affecte
+    //     //     FROM
+    //     //         type_orders AS tos
+    //     //     LEFT JOIN
+    //     //         test_orders AS tor ON tos.id = tor.type_order_id
+
+    //     //        UNION ALL
+
+    //     //       SELECT
+    //     //           0 AS histologie,
+    //     //         0 AS immuno_externe,
+    //     //         0 AS immuno_interne,
+    //     //         0 AS cytologie,
+    //     //         0 AS total_general,
+    //     //         SUM(CASE WHEN rep.status = '0' THEN 1 ELSE 0 END) AS attente,
+    //     //         SUM(CASE WHEN rep.status = '1' THEN 1 ELSE 0 END) AS termine,
+    //     //         SUM(CASE WHEN toad.test_order_id = rep.test_order_id THEN 1 ELSE 0 END) AS affecte
+    //     //     FROM
+    //     //         reports AS rep
+    //     //     LEFT JOIN
+    //     //         test_order_assignment_details AS toad ON toad.test_order_id = rep.test_order_id;
+    //     //     ) AS subquery"))
+    //     //     ->select([
+    //     //         DB::raw('SUM(subquery.histologie) AS histologie'),
+    //     //         DB::raw('SUM(subquery.immuno_externe) AS immuno_externe'),
+    //     //         DB::raw('SUM(subquery.immuno_interne) AS immuno_interne'),
+    //     //         DB::raw('SUM(subquery.cytologie) AS cytologie'),
+    //     //         DB::raw('SUM(subquery.total_general) AS total_general'),
+    //     //         DB::raw('SUM(subquery.attente) AS attente'),
+    //     //         DB::raw('SUM(subquery.termine) AS termine'),
+    //     //         DB::raw('SUM(subquery.affecte) AS affecte')
+    //     //     ])
+    //     //     ->groupBy('subquery.histologie', 'subquery.immuno_externe', 'subquery.immuno_interne', 'subquery.cytologie', 'subquery.total_general', 'subquery.attente', 'subquery.termine', 'subquery.affecte');
+
+
+    //     return DataTables::of($data)
+    //         ->addIndexColumn()
+    //         ->editColumn('total_general', function ($data) {
+    //             return '';
+    //         })
+
+    //         ->addColumn('exam_request', function ($data) {
+    //             return 'Total : '. $data->total_general. ' | '. 'Histologie : '. $data->histologie. '| Immuno Externe : '.$data->immuno_externe . '| Immuno Interne : '.$data->immuno_interne . '| Cytologie : '. $data->cytologie;
+
+    //         })
+
+    //         ->addColumn('macro', function ($data) {
+    //             // return $data->type_name;
+    //             return 'En attente : '. $data->attente. ' | '. 'Affecté : '. $data->affecte. '| Terminée : '.$data->termine;
+
+    //         })
+
+    //         ->addColumn('test_report', function ($data) {
+
+    //         })
+
+    //         ->addColumn('patient_informed', function ($data) {
+    //         })
+
+    //         ->addColumn('patient_delivered', function ($data) {
+
+    //         })
+
+    //         // ->filter(function ($query) use ($request) {
+    //         //     if (!empty($request->get('statusquery'))) {
+    //         //         if ($request->get('statusquery') == 1) {
+    //         //             $query->where('status', 1);
+    //         //         } else {
+    //         //             $query->where('status', 0);
+    //         //         }
+    //         //     }
+    //         //     if (!empty($request->get('contenu'))) {
+    //         //         $query
+    //         //             ->where('code', 'like', '%' . $request->get('contenu') . '%')
+    //         //             ->orwhereHas('order', function ($query) use ($request) {
+    //         //                 $query->where('code', 'like', '%' . $request->get('contenu') . '%');
+    //         //             })
+    //         //             ->orwhere('description', 'like', '%' . $request->get('contenu') . '%')
+    //         //             ->orwhereHas('patient', function ($query) use ($request) {
+    //         //                 $query
+    //         //                     ->where('firstname', 'like', '%' . $request->get('contenu') . '%')
+    //         //                     ->orwhere('code', 'like', '%' . $request->get('contenu') . '%')
+    //         //                     ->orwhere('lastname', 'like', '%' . $request->get('contenu') . '%');
+    //         //             });
+    //         //     }
+
+    //         //     if (!empty($request->get('dateBegin'))) {
+    //         //         //dd($request);
+    //         //         $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
+    //         //         $query->whereDate('created_at', '>', $newDate);
+    //         //     }
+
+    //         //     if (!empty($request->get('dateEnd'))) {
+    //         //         $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
+    //         //         $query->whereDate('created_at', '<', $newDate);
+    //         //     }
+    //         // })
+    //         ->make(true);
+    // }
 
     public function indexsuivi()
     {
@@ -86,7 +227,44 @@ class ReportController extends Controller
         $doctors = $this->doctor->all();
         $user = Auth::user();
 
-        return view('reports.suivi.index', compact('reports', 'doctors'));
+        $types_orders = $this->typeOrder->all();
+
+
+        $examens = DB::table('type_orders as tos')
+            ->join('test_orders as tor', 'tos.id', '=', 'tor.type_order_id')
+            ->select(
+                DB::raw("SUM(CASE WHEN tos.title = 'Histologie' THEN 1 ELSE 0 END) AS histologie"),
+                DB::raw("SUM(CASE WHEN tos.title = 'Immuno Externe' THEN 1 ELSE 0 END) AS immuno_externe"),
+                DB::raw("SUM(CASE WHEN tos.title = 'Immuno Interne' THEN 1 ELSE 0 END) AS immuno_interne"),
+                DB::raw("SUM(CASE WHEN tos.title = 'Cytologie' THEN 1 ELSE 0 END) AS cytologie"),
+                DB::raw("COUNT(tor.id) AS total_general")
+            )->get();
+
+            $rapports = DB::table('reports as rep')
+            ->leftJoin('test_order_assignment_details as toad', 'toad.test_order_id', '=', 'rep.test_order_id')
+            ->selectRaw("
+                SUM(CASE WHEN rep.status = '0' THEN 1 ELSE 0 END) AS attente,
+                SUM(CASE WHEN rep.status = '1' THEN 1 ELSE 0 END) AS termine,
+                SUM(CASE WHEN toad.test_order_id = rep.test_order_id THEN 1 ELSE 0 END) AS affecte
+            ")->get();
+
+            $macros = DB::table('test_orders as tor')
+            ->rightJoin('test_pathology_macros as tpm', 'tpm.id_test_pathology_order', '=', 'tor.id')
+            ->selectRaw("
+                SUM(CASE WHEN tpm.id_test_pathology_order = tor.id THEN 1 ELSE 0 END) AS pathology
+            ")->get();
+
+            $patient_called = DB::table('reports')
+                ->selectRaw("
+                    SUM(CASE WHEN reports.is_called = 1 THEN 1 ELSE 0 END) AS called,
+                    SUM(CASE WHEN reports.is_called = 0 THEN 1 ELSE 0 END) AS not_called,
+                    SUM(CASE WHEN reports.is_deliver = 1 THEN 1 ELSE 0 END) AS deliver,
+                    SUM(CASE WHEN reports.is_deliver = 0 THEN 1 ELSE 0 END) AS not_deliver
+                ")->get();
+
+
+
+        return view('reports.suivi.index', compact('patient_called', 'macros', 'rapports', 'examens', 'reports', 'doctors', 'types_orders'));
     }
 
     /**
@@ -107,6 +285,7 @@ class ReportController extends Controller
         if (!empty($request->reviewed_by_user_id)) {
             $revew_by = $request->reviewed_by_user_id;
         }
+
         $user = Auth::user();
 
         $report = $this->report->findorfail($request->report_id);
@@ -159,12 +338,22 @@ class ReportController extends Controller
             ->save();
         }
 
-
         $report->order->assigned_to_user_id =  $request->doctor_signataire1;
         $report->order->save();
         if ($report->status == 1) {
             $report->signature_date = Carbon::now();
             $report->save();
+        }
+
+        try {
+
+            $report->tags()->sync([]);
+            $report->tags()->attach($request->tags);
+
+            return redirect()->route('report.show', $report->id)->with('success', " Utilisateur mis à jour ! ");
+        } catch (\Throwable $th) {
+            return redirect()->route('report.show', $report->id)->with('error', "Échec de l'enregistrement ! " .$th->getMessage());
+
         }
 
         $log = new LogReport();
@@ -187,6 +376,7 @@ class ReportController extends Controller
         if (!getOnlineUser()->can('view-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+
         $report = $this->report->findorfail($id);
         $templates = $this->settingReportTemplate->all();
         $titles = $this->titleReport->all();
@@ -197,36 +387,10 @@ class ReportController extends Controller
         $setting = $this->setting->find(1);
         $cashbox = Cashbox::find(2);
         config(['app.name' => $setting->titre]);
-        return view('reports.show', compact('report', 'setting', 'templates', 'titles', 'logs','cashbox'));
+
+        $tags = $this->tag->all();
+        return view('reports.show', compact('report', 'setting', 'templates', 'titles', 'logs','cashbox', 'tags'));
     }
-
-    // public function send_sms($id)
-    // {
-    //     if (!getOnlineUser()->can('edit-reports')) {
-    //         return back()->with('error', "Vous n'êtes pas autorisé");
-    //     }
-    //     $report = $this->report->findorfail($id);
-
-    //     $tel = $report->patient->telephone1;
-    //     $number = "+22996631611";
-    //     $message = "test one";
-    //     $user = Auth::user();
-
-    //     try {
-
-    //         sendSingleMessage($tel, $message);
-    //         $log = new LogReport();
-    //         $log->operation = "Evoyer un message";
-    //         $log->report_id = $id;
-    //         $log->user_id = $user->id;
-    //         $log->save();
-
-    //         return redirect()->back()->with('success', "SMS envoyé avec succes ");
-    //     } catch (\Throwable $ex) {
-
-    //         return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
-    //     }
-    // }
 
     public function pdf($id)
     {
@@ -525,10 +689,9 @@ class ReportController extends Controller
                     $query->whereDate('created_at', '<', $newDate);
                 }
             })
-
             ->make(true);
     }
-    
+
 
     public function UpdateLivrePatient(Request $request)
     {
@@ -574,7 +737,7 @@ class ReportController extends Controller
             })
             ->editColumn('code', function ($data) {
                 if ($data->order) {
-                    return $data->order->code;
+                    return $data->order->code . '<br>'. DB::table('type_orders')->where('id', $data->order->type_order_id)->value('title');
                 } else {
                     return '';
                 }
@@ -596,8 +759,27 @@ class ReportController extends Controller
             ->addColumn('delivery', function ($data) {
                 return  view("reports.suivi.btndelivery",['data'=>$data]);
             })
-            
+
             ->filter(function ($query) use ($request) {
+
+                if (!empty($request->get('type_examen'))) {
+                    $query->whereHas('order', function ($query) use ($request) {
+                        $query->where('type_order_id', $request->type_examen);
+                    });
+                }
+
+                if (!empty($request->get('cas_status'))) {
+                    $query->whereHas('order', function ($query) use ($request) {
+                        if ($request->cas_status == 'Urgent') {
+                            $query->where('is_urgent', 0);
+                        } elseif ($request->cas_status == 'Retard') {
+                            // Assurez-vous que la colonne `created_at` est correctement nommée et indexée
+                            $threeWeeksAgo = now()->subWeeks(3);
+                            $query->where('created_at', '"<', $threeWeeksAgo);
+                        }
+                    });
+                }
+
 
                 if (!empty($request->get('statusquery'))) {
                     if ($request->get('statusquery') == 1) {
@@ -626,14 +808,10 @@ class ReportController extends Controller
                 }
 
                 if (!empty($request->get('dateEnd'))) {
-
                     $query->whereHas('order', function ($query) use ($request) {
                         $newDateEnd = Carbon::createFromFormat('Y-m-d', $request->get('dateEnd'));
                         $query->whereDate('created_at', '<=', $newDateEnd);
                     });
-
-                    
-
                 }
 
             })
