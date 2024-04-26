@@ -217,7 +217,7 @@ class ReportController extends Controller
     //         ->make(true);
     // }
 
-    public function indexsuivi()
+    public function indexsuivi(Request $request)
     {
         if (!getOnlineUser()->can('view-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
@@ -229,42 +229,79 @@ class ReportController extends Controller
 
         $types_orders = $this->typeOrder->all();
 
+        $month = $request->month; // Récupérez la valeur du mois depuis le formulaire
+        $year = $request->year;   // Récupérez la valeur de l'année depuis le formulaire
 
         $examens = DB::table('type_orders as tos')
-            ->join('test_orders as tor', 'tos.id', '=', 'tor.type_order_id')
-            ->select(
-                DB::raw("SUM(CASE WHEN tos.title = 'Histologie' THEN 1 ELSE 0 END) AS histologie"),
-                DB::raw("SUM(CASE WHEN tos.title = 'Immuno Externe' THEN 1 ELSE 0 END) AS immuno_externe"),
-                DB::raw("SUM(CASE WHEN tos.title = 'Immuno Interne' THEN 1 ELSE 0 END) AS immuno_interne"),
-                DB::raw("SUM(CASE WHEN tos.title = 'Cytologie' THEN 1 ELSE 0 END) AS cytologie"),
-                DB::raw("COUNT(tor.id) AS total_general")
-            )->get();
+        ->join('test_orders as tor', 'tos.id', '=', 'tor.type_order_id')
+        ->select(
+            DB::raw("SUM(CASE WHEN tos.title = 'Histologie' THEN 1 ELSE 0 END) AS histologie"),
+            DB::raw("SUM(CASE WHEN tos.title = 'Immuno Externe' THEN 1 ELSE 0 END) AS immuno_externe"),
+            DB::raw("SUM(CASE WHEN tos.title = 'Immuno Interne' THEN 1 ELSE 0 END) AS immuno_interne"),
+            DB::raw("SUM(CASE WHEN tos.title = 'Cytologie' THEN 1 ELSE 0 END) AS cytologie"),
+            DB::raw("COUNT(tor.id) AS total_general")
+        )
+        ->where('tor.status', 1); // Assurez-vous que cette condition est toujours nécessaire.
 
-            $rapports = DB::table('reports as rep')
-            ->leftJoin('test_order_assignment_details as toad', 'toad.test_order_id', '=', 'rep.test_order_id')
-            ->selectRaw("
-                SUM(CASE WHEN rep.status = '0' THEN 1 ELSE 0 END) AS attente,
-                SUM(CASE WHEN rep.status = '1' THEN 1 ELSE 0 END) AS termine,
-                SUM(CASE WHEN toad.test_order_id = rep.test_order_id THEN 1 ELSE 0 END) AS affecte
-            ")->get();
+        if (isset($month) && isset($year)) {
+        // Filtrer par mois et année si les deux sont spécifiés
+        $examens = $examens->whereMonth('tor.created_at', $month)
+                        ->whereYear('tor.created_at', $year);
+        }
 
-            $macros = DB::table('test_orders as tor')
-            ->rightJoin('test_pathology_macros as tpm', 'tpm.id_test_pathology_order', '=', 'tor.id')
-            ->selectRaw("
-                SUM(CASE WHEN tpm.id_test_pathology_order = tor.id THEN 1 ELSE 0 END) AS pathology
-            ")->get();
-
-            $patient_called = DB::table('reports')
-                ->selectRaw("
-                    SUM(CASE WHEN reports.is_called = 1 THEN 1 ELSE 0 END) AS called,
-                    SUM(CASE WHEN reports.is_called = 0 THEN 1 ELSE 0 END) AS not_called,
-                    SUM(CASE WHEN reports.is_deliver = 1 THEN 1 ELSE 0 END) AS deliver,
-                    SUM(CASE WHEN reports.is_deliver = 0 THEN 1 ELSE 0 END) AS not_deliver
-                ")->get();
+        $examens = $examens->get();
 
 
+        $rapports = DB::table('reports as rep')
+        ->join('test_orders as tor', 'tor.id', '=', 'rep.test_order_id')
+        ->leftJoin('test_order_assignment_details as toad', 'toad.test_order_id', '=', 'rep.test_order_id')
+        ->selectRaw("
+            SUM(CASE WHEN rep.status = '0' THEN 1 ELSE 0 END) AS attente,
+            SUM(CASE WHEN rep.status = '1' THEN 1 ELSE 0 END) AS termine,
+            SUM(CASE WHEN toad.test_order_id IS NOT NULL THEN 1 ELSE 0 END) AS affecte
+        ");
 
-        return view('reports.suivi.index', compact('patient_called', 'macros', 'rapports', 'examens', 'reports', 'doctors', 'types_orders'));
+        // Appliquer les filtres de date seulement si les deux, mois et année, sont spécifiés
+        if (isset($month) && isset($year)) {
+        $rapports = $rapports->whereMonth('tor.created_at', $month)
+                            ->whereYear('tor.created_at', $year);
+        }
+
+        $rapports = $rapports->get();
+
+        $macros = DB::table('test_orders as tor')
+        ->rightJoin('test_pathology_macros as tpm', 'tpm.id_test_pathology_order', '=', 'tor.id')
+        ->selectRaw("
+            SUM(CASE WHEN tpm.id_test_pathology_order = tor.id THEN 1 ELSE 0 END) AS pathology
+        ");
+
+        // Appliquer les filtres de date seulement si les deux, mois et année, sont spécifiés
+        if (isset($month) && isset($year)) {
+        $macros = $macros->whereMonth('tor.created_at', $month)
+                        ->whereYear('tor.created_at', $year);
+        }
+
+        $macros = $macros->get();
+
+        $patient_called = DB::table('reports')
+        ->selectRaw("
+            SUM(CASE WHEN reports.is_called = 1 THEN 1 ELSE 0 END) AS called,
+            SUM(CASE WHEN reports.is_called = 0 THEN 1 ELSE 0 END) AS not_called,
+            SUM(CASE WHEN reports.is_delivered = 1 THEN 1 ELSE 0 END) AS deliver,
+            SUM(CASE WHEN reports.is_delivered = 0 THEN 1 ELSE 0 END) AS not_deliver
+        ");
+
+        // Apply the date filters only if both month and year are provided
+        if (isset($month) && isset($year)) {
+        $patient_called = $patient_called->whereMonth('reports.created_at', $month)
+                                ->whereYear('reports.created_at', $year);
+        }
+
+        $patient_called = $patient_called->get();
+
+
+
+        return view('reports.suivi.index', compact('month', 'year', 'patient_called', 'macros', 'rapports', 'examens', 'reports', 'doctors', 'types_orders'));
     }
 
     /**

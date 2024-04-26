@@ -143,8 +143,46 @@
                         style="margin-right: 5px; text-align:center;">
                         <a href="#rapports" style="text-decoration : none; color:inherit;">Rapports</a>
                     </div>
-                </div>
 
+                   <form action="" id="rapports-datatables">
+                        <div class="row mb-3 d-flex">
+                            <div class="col-lg-3">
+                                <label for="example-fileinput" class="form-label">Année</label>
+                                <select name="year" id="year" class="form-control">
+                                    <option value="">Tous</option>
+                                    <option value="2024" {{ $year == '2024' ? 'selected':''}}>2024</option>
+                                    <option value="2023" {{ $year == '2023' ? 'selected':''}}>2023</option>
+                                    <option value="2022" {{ $year == '2022' ? 'selected':''}}>2022</option>
+                                    <option value="2021" {{ $year == '2021' ? 'selected':''}}>2021</option>
+                                    <option value="2020" {{ $year == '2020' ? 'selected':''}}>2020</option>
+                                </select>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <label for="example-fileinput" class="form-label">Mois</label>
+                                    <select name="month" id="month" class="form-control">
+                                        <option value="">Tous</option>
+                                        <option value="01" {{ $month == '01' ? 'selected':''}}>Janvier</option>
+                                        <option value="02" {{ $month == '02' ? 'selected':''}}>Février</option>
+                                        <option value="03" {{ $month == '03' ? 'selected':''}}>Mars</option>
+                                        <option value="04" {{ $month == '04' ? 'selected':''}}>Avril</option>
+                                        <option value="05" {{ $month == '05' ? 'selected':''}}>Mai</option>
+                                        <option value="06" {{ $month == '06' ? 'selected':''}}>Juin</option>
+                                        <option value="07" {{ $month == '07' ? 'selected':''}}>Juillet</option>
+                                        <option value="08" {{ $month == '08' ? 'selected':''}}>Août</option>
+                                        <option value="09" {{ $month == '09' ? 'selected':''}}>Septembre</option>
+                                        <option value="10" {{ $month == '10' ? 'selected':''}}>Octobre</option>
+                                        <option value="11" {{ $month == '11' ? 'selected':''}}>Novembre</option>
+                                        <option value="12" {{ $month == '12' ? 'selected':''}}>Décembre</option>
+                                    </select>
+                            </div>
+
+                            <div class="col-lg-3" style="margin-top : 25px;">
+                                <button type="submit" class="btn btn-success">Valider</button>
+                            </div>
+                        </div>
+                   </form>
+                </div>
 
                 <div class="row" id="rapports">
                     <div class="table-responsive">
@@ -161,29 +199,40 @@
                                 </tr>
                             </thead>
                             <tfoot>
-                                <tr>
-                                    @foreach ($examens as $exam)
-                                    <td></td>
-                                    <td>Total : {{ $exam->total_general }} <br> Histologie : {{ $exam->histologie  }} <br> Immuno Externe : {{ $exam->immuno_externe }} <br> Immuno Interne : {{ $exam->immuno_interne }} <br> Cytologie : {{ $exam->cytologie }}</td>
-                                    @foreach ( $macros as $macro)
-                                        <td>Réalisé : {{ $macro->pathology }} <br> Non Réalisé : {{ $exam->total_general  -  $macro->pathology }}</td>
+                                @foreach ($examens as $exam)
+                                    <tr>
+                                        <td>{{ $month }} - {{ $year }}</td>
+                                        <td>
+                                            Total : {{ $exam->total_general }} <br>
+                                            Histologie : {{ $exam->histologie  }} <br>
+                                            Immuno Externe : {{ $exam->immuno_externe }} <br>
+                                            Immuno Interne : {{ $exam->immuno_interne }} <br>
+                                            Cytologie : {{ $exam->cytologie }}
+                                        </td>
+                                        @foreach ( $macros as $macro)
+                                            <td>Réalisé : {{ $macro->pathology }} <br> Non Réalisé : {{ $exam->total_general  -  $macro->pathology }}</td>
 
-                                    @endforeach
-                                    @foreach ($rapports as $rapport)
-                                    <td>En attente : {{ $rapport->attente }} <br> Affecté : {{ $rapport->affecte  }} <br> Terminée : {{ $rapport->termine  }}</td>
-                                    @endforeach
-                                    @endforeach
-                                    <td>
-                                        @foreach ($patient_called as $patient)
-                                            En attente : {{ $patient->not_called }} <br> Informé : {{ $patient->called  }}
                                         @endforeach
-                                    </td>
-                                    <td>
-                                        @foreach ($patient_called as $patient)
-                                            En attente : {{ $patient->not_deliver }} <br> Livré : {{ $patient->deliver  }}
+                                        @foreach ($rapports as $rapport)
+                                            <td>
+                                                En attente : {{ $rapport->attente }} <br>
+                                                Affecté : {{ $rapport->affecte  }} <br>
+                                                Terminée : {{ $rapport->termine  }}
+                                            </td>
                                         @endforeach
-                                    </td>
-                                </tr>
+
+                                        <td>
+                                            @foreach ($patient_called as $patient)
+                                                En attente : {{ $patient->not_called }} <br> Informé : {{ $patient->called  }}
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            @foreach ($patient_called as $patient)
+                                                En attente : {{ $patient->not_deliver }} <br> Livré : {{ $patient->deliver  }}
+                                            @endforeach
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tfoot>
                         </table>
                     </div>
