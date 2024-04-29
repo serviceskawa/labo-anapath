@@ -1662,9 +1662,11 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
             ->with(['patient', 'contrat', 'type', 'details', 'report', 'invoice'])
             ->whereHas('type', function($query) {
                 $query->where('slug','like','histologie')
-                      ->orwhere('slug','like','cytologie')
-                      ->orwhere('slug','like','biopsie')
-                      ->orwhere('slug','like','pièce-opératoire')
+                    ->orwhere('slug','like','cytologie')
+                    ->orwhere('slug','like','biopsie')
+                    ->orwhere('slug','like','pièce-opératoire')
+                    ->orwhere('slug', 'like', 'immuno-externe')
+                    ->orwhere('slug', 'like', 'immuno-interne')
                     ->whereNull('deleted_at'); // deleted_at doit être NULL;
             })
             ->orderBy('created_at', 'desc');
@@ -1681,7 +1683,6 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
                     return 'mytag=' . $result;
                 },
             ])
-
 
             ->setRowClass(function ($data) use ($request) {
                 if($data->is_urgent == 1){
@@ -1708,8 +1709,6 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
                     return '';
                 }
             })
-
-
 
             ->addColumn('action', function ($data) {
                 $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
@@ -1743,7 +1742,6 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
                 } else {
                    $btnInvoice="";
                 }
-
 
                 if (!empty($data->report)) {
                     if ($data->report->status ==1) {

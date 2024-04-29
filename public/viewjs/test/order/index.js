@@ -192,8 +192,6 @@ $(document).ready(function() {
         }
     );
 
-
-
     // Recherche selon les types d'examen
     $("#type_examen2").on("change", function() {
         // alert(this.value)
@@ -217,10 +215,6 @@ $(document).ready(function() {
     });
 
 });
-
-
-
-
 
 
 // SUPPRESSION
@@ -333,7 +327,6 @@ $(document).ready(function() {
         ],
 
     });
-
 
     var table_2 = $('#datatable2').DataTable({
 

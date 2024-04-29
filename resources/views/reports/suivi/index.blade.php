@@ -150,11 +150,9 @@
                                 <label for="example-fileinput" class="form-label">Année</label>
                                 <select name="year" id="year" class="form-control">
                                     <option value="">Tous</option>
-                                    <option value="2024" {{ $year == '2024' ? 'selected':''}}>2024</option>
-                                    <option value="2023" {{ $year == '2023' ? 'selected':''}}>2023</option>
-                                    <option value="2022" {{ $year == '2022' ? 'selected':''}}>2022</option>
-                                    <option value="2021" {{ $year == '2021' ? 'selected':''}}>2021</option>
-                                    <option value="2020" {{ $year == '2020' ? 'selected':''}}>2020</option>
+                                   @foreach ($list_years as $list_year)
+                                    <option value="{{ $list_year->year }}" {{ $list_year->year == $year ? 'selected':''}}>{{  $list_year->year }}</option>
+                                   @endforeach
                                 </select>
                             </div>
 
@@ -178,7 +176,7 @@
                             </div>
 
                             <div class="col-lg-3" style="margin-top : 25px;">
-                                <button type="submit" class="btn btn-success">Valider</button>
+                                <button type="submit" class="btn btn-success">Filtrer</button>
                             </div>
                         </div>
                    </form>
@@ -223,7 +221,7 @@
 
                                         <td>
                                             @foreach ($patient_called as $patient)
-                                                En attente : {{ $patient->not_called }} <br> Informé : {{ $patient->called  }}
+                                                En attente : {{ $exam->total_general - $patient->called }} <br> Informé : {{ $patient->called  }}
                                             @endforeach
                                         </td>
                                         <td>

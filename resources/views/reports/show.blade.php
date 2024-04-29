@@ -357,7 +357,7 @@
 
                         <div class="mb-3">
                             <label for="example-select" class="form-label">Tags<span style="color:red;">*</span></label>
-                            <select class="form-select select2" data-toggle="select2" required name="tags[]" id="tag_id"
+                            <select class="form-select select2" data-toggle="select2" name="tags[]" id="tag_id"
                                 multiple>
                                 <option><b>Sélectionner les tags</b></option>
                                 @forelse ($tags as $tag)
@@ -377,9 +377,9 @@
                     <h5 class="card-header">Informations patient</h5>
 
                     <div class="card-body">
-                        <p><b>Nom</b> : {{ $report->patient->lastname }} {{ $report->patient->firstname }}</p>
-                        <p><b>Code patient</b> : {{ $report->patient->code }}</p>
-                        <p><b>Téléphone</b> : {{ $report->patient->telephone1 }}</p>
+                        <p><b>Nom</b> : {{ DB::table('patients')->where('id', $test_order->patient_id)->value('lastname') }} {{ DB::table('patients')->where('id', $test_order->patient_id)->value('firstname') }}</p>
+                        <p><b>Code patient</b> : {{ DB::table('patients')->where('id', $test_order->patient_id)->value('code')}}</p>
+                        <p><b>Téléphone</b> : {{ DB::table('patients')->where('id', $test_order->patient_id)->value('telephone1') }}</p>
                     </div>
                 </div>
 

@@ -85,10 +85,11 @@ $(document).ready(function() {
         ],
         dom: 'Bfrtip', // Ajoutez ce paramètre pour définir les éléments du DOM de DataTables
         buttons: [ // Définissez les boutons que vous souhaitez
-        'copy', 'csv', 'excel', 'pdf', 'print'
+        'csv', 'excel', 'pdf', 'print'
     ]
 
     });
+    
     // Recherche selon les cas
     $("#statusquery").on("change", function() {
         // alert(this.value)

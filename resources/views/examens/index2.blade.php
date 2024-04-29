@@ -32,9 +32,7 @@
                 <div id="cardCollpase1" class="show collapse pt-3">
 
                     <div class="row mb-3">
-
                         <div class="col-lg-3">
-
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Contrat</label>
                                 <select name="contrat_id" id="contrat_id" class="form-control">
@@ -45,7 +43,6 @@
                                     @endforelse
                                 </select>
                             </div>
-
                         </div>
 
                         <div class="col-lg-3">

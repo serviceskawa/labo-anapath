@@ -23,6 +23,7 @@ use Spipu\Html2Pdf\Html2Pdf;
 // require _DIR_.'/vendor/autoload.php';
 use App\Models\SettingReportTemplate;
 use App\Models\Tag;
+use App\Models\TestOrder;
 use App\Models\TitleReport;
 use App\Models\TypeOrder;
 use App\Models\User;
@@ -31,7 +32,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use QRcode as GlobalQRcode;
 use Spipu\Html2Pdf\Exception\Html2PdfException;
 use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 use Yajra\DataTables\Facades\DataTables;
@@ -47,11 +47,13 @@ class ReportController extends Controller
     protected $user;
     protected $tag;
     protected $typeOrder;
+    protected $testOrder;
+
     /**
      * ReportController constructor.
      * Instanciate Report, Doctor and LogReport classes
      */
-    public function __construct(Report $report, Doctor $doctor, User $user, LogReport $logReport, TitleReport $titleReport, SettingReportTemplate $settingReportTemplate, Setting $setting, Tag $tag, TypeOrder $typeOrder)
+    public function __construct(TestOrder $testOrder, Report $report, Doctor $doctor, User $user, LogReport $logReport, TitleReport $titleReport, SettingReportTemplate $settingReportTemplate, Setting $setting, Tag $tag, TypeOrder $typeOrder)
     {
         $this->middleware('auth');
         $this->report = $report;
@@ -63,6 +65,7 @@ class ReportController extends Controller
         $this->user = $user;
         $this->tag = $tag;
         $this->typeOrder = $typeOrder;
+        $this->testOrder = $testOrder;
     }
 
     /**
@@ -77,9 +80,11 @@ class ReportController extends Controller
         }
         $reports = $this->report->orderBy('created_at', 'DESC')->get();
         $doctors = $this->doctor->all();
+        $tags = $this->tag->all();
+
         $user = Auth::user();
 
-        return view('reports.index', compact('reports', 'doctors'));
+        return view('reports.index', compact('tags', 'reports', 'doctors'));
     }
 
     public function storeTags(TagRequest $request){
@@ -241,14 +246,13 @@ class ReportController extends Controller
             DB::raw("SUM(CASE WHEN tos.title = 'Cytologie' THEN 1 ELSE 0 END) AS cytologie"),
             DB::raw("COUNT(tor.id) AS total_general")
         )
-        ->where('tor.status', 1); // Assurez-vous que cette condition est toujours nécessaire.
+        ->where('tor.status', 1);
 
         if (isset($month) && isset($year)) {
         // Filtrer par mois et année si les deux sont spécifiés
         $examens = $examens->whereMonth('tor.created_at', $month)
                         ->whereYear('tor.created_at', $year);
         }
-
         $examens = $examens->get();
 
 
@@ -261,12 +265,10 @@ class ReportController extends Controller
             SUM(CASE WHEN toad.test_order_id IS NOT NULL THEN 1 ELSE 0 END) AS affecte
         ");
 
-        // Appliquer les filtres de date seulement si les deux, mois et année, sont spécifiés
         if (isset($month) && isset($year)) {
         $rapports = $rapports->whereMonth('tor.created_at', $month)
                             ->whereYear('tor.created_at', $year);
         }
-
         $rapports = $rapports->get();
 
         $macros = DB::table('test_orders as tor')
@@ -275,12 +277,10 @@ class ReportController extends Controller
             SUM(CASE WHEN tpm.id_test_pathology_order = tor.id THEN 1 ELSE 0 END) AS pathology
         ");
 
-        // Appliquer les filtres de date seulement si les deux, mois et année, sont spécifiés
         if (isset($month) && isset($year)) {
         $macros = $macros->whereMonth('tor.created_at', $month)
                         ->whereYear('tor.created_at', $year);
         }
-
         $macros = $macros->get();
 
         $patient_called = DB::table('reports')
@@ -291,17 +291,18 @@ class ReportController extends Controller
             SUM(CASE WHEN reports.is_delivered = 0 THEN 1 ELSE 0 END) AS not_deliver
         ");
 
-        // Apply the date filters only if both month and year are provided
         if (isset($month) && isset($year)) {
         $patient_called = $patient_called->whereMonth('reports.created_at', $month)
                                 ->whereYear('reports.created_at', $year);
         }
-
         $patient_called = $patient_called->get();
 
+        $list_years = TestOrder::select(DB::raw('YEAR(created_at) as year'))
+                   ->groupBy('year')
+                   ->orderBy('year', 'asc')
+                   ->get();
 
-
-        return view('reports.suivi.index', compact('month', 'year', 'patient_called', 'macros', 'rapports', 'examens', 'reports', 'doctors', 'types_orders'));
+        return view('reports.suivi.index', compact('list_years', 'month', 'year', 'patient_called', 'macros', 'rapports', 'examens', 'reports', 'doctors', 'types_orders'));
     }
 
     /**
@@ -415,6 +416,8 @@ class ReportController extends Controller
         }
 
         $report = $this->report->findorfail($id);
+        $test_order = $this->testOrder->findorfail($report->test_order_id);
+
         $templates = $this->settingReportTemplate->all();
         $titles = $this->titleReport->all();
         $logs = $this->logReport
@@ -426,7 +429,7 @@ class ReportController extends Controller
         config(['app.name' => $setting->titre]);
 
         $tags = $this->tag->all();
-        return view('reports.show', compact('report', 'setting', 'templates', 'titles', 'logs','cashbox', 'tags'));
+        return view('reports.show', compact('test_order', 'report', 'setting', 'templates', 'titles', 'logs','cashbox', 'tags'));
     }
 
     public function pdf($id)
@@ -471,7 +474,7 @@ class ReportController extends Controller
             $signatory3 = $this->user->findorfail($report->signatory3);
         }
         $year_month = '';
-        if ($report->patient->year_or_month != 1) {
+        if ($report->order->patient->year_or_month != 1) {
             $year_month = 'mois';
         } else {
             $year_month = 'ans';
@@ -510,11 +513,11 @@ class ReportController extends Controller
             'signatory3' => $report->signatory3 != 0 ? $signatory3->lastname . ' ' . $signatory3->firstname : '',
             'signature3' => $report->signatory3 != 0 ? $signatory3->signature : '',
 
-            'patient_firstname' => $report->patient->firstname,
-            'patient_lastname' => $report->patient->lastname,
-            'patient_age' => $report->patient->age,
+            'patient_firstname' => $report->order->patient->firstname,
+            'patient_lastname' => $report->order->patient->lastname,
+            'patient_age' => $report->order->patient->age,
             'patient_year_or_month' => $year_month,
-            'patient_genre' => $report->patient->genre,
+            'patient_genre' => $report->order->patient->genre,
             'status' => $report->status,
             'revew_by' => $report->reviewed_by_user_id !=0 ? $reviewed_by_user->lastname . ' ' . $reviewed_by_user->firstname:'',
             'revew_by_signature' => $report->reviewed_by_user_id !=0 ? $reviewed_by_user->signature:'',
@@ -627,17 +630,17 @@ class ReportController extends Controller
             })
 
             ->addColumn('codepatient', function ($data) {
-                return $data->patient->code;
+                return $data->order->patient->code;
 
                 // return Invoice::whereMonth('updated_at', )->sum('total');
             })
             ->addColumn('patient', function ($data) {
-                return $data->patient->firstname . ' ' . $data->patient->lastname;
+                return $data->order->patient->firstname . ' ' . $data->order->patient->lastname;
 
                 // return Invoice::whereMonth('updated_at', )->sum('total');
             })
             ->addColumn('telephone', function ($data) {
-                return $data->patient->telephone1;
+                return $data->order->patient->telephone1;
             })
             ->addColumn('created_at', function ($data) {
                 return \Carbon\Carbon::parse($data->created_at)->format('d/m/Y');
