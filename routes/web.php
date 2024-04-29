@@ -120,7 +120,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/categories/update', [SupplierCategorieController::class, 'update'])->name('supplier.categories.update');
     });
 
-
     //EXAMEN
     Route::get('/examens/index', [TestController::class, 'index'])->name('examens.index');
     Route::post('/examens/index', [TestController::class, 'store'])->name('examens.store');
@@ -200,15 +199,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/testOrders2', [TestOrderController::class, 'getTestOrdersforDatatable2'])->name('test_order.getTestOrdersforDatatable2');
     Route::get('/testOrders-immuno', [TestOrderController::class, 'getTestOrdersforDatatable_immuno'])->name('test_order.getTestOrdersforDatatable3');
     Route::get('/testOrders-immuno2', [TestOrderController::class, 'getTestOrdersforDatatable_immuno2'])->name('test_order.getTestOrdersforDatatable4');
-    // Cette la route associer aux fichier a supprimer
+    // Cette la route associer aux fichiers à supprimer
     Route::delete('/testOrders/delete/image-gallerie/{index}/{test_order}', [TestOrderController::class, 'deleteimagegallerie'])->name('test_order.deleteimagegallerie');
     Route::put('/testOrders/create/image-gallerie/{test_order}', [TestOrderController::class, 'createimagegallerie'])->name('test_order.createimagegallerie');
-    
-    
-    
+
+
     Route::get('/testOrder/myspace', [TestOrderController::class, 'getTestOrdersforDatatableMySpace'])->name('test_order.getTestOrdersforDatatableMySpace');
     Route::get('/testOrder/myspace2', [TestOrderController::class, 'getTestOrdersforDatatableMySpace2'])->name('test_order.getTestOrdersforDatatableMySpace2');
-
 
 
     Route::post('/images/upload', [TestOrderController::class , 'upload'])->name('images.upload');
@@ -220,11 +217,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/signal',[SignalController::class, 'index'])->name('signals.index');
     Route::post('/store-signal',[SignalController::class, 'store'])->name('signal.store');
 
-    // Cette la route associer aux fichiers pour la suppression des images
+    // Cette la route associée aux fichiers pour la suppression des images
     Route::delete('/testOrders/delete/image-gallerie/{index}/{test_order}', [TestOrderController::class, 'deleteimagegallerie'])->name('test_order.deleteimagegallerie');
-    // Cette la route associer aux fichiers creation
+    // Cette la route associée aux fichiers creation
     Route::put('/testOrders/create/image-gallerie/{test_order}', [TestOrderController::class, 'createimagegallerie'])->name('test_order.createimagegallerie');
-
 
 
     //Macro
@@ -248,9 +244,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/macro/one-create', [TestPathologyMacroController::class, 'store2'])->name('macro.store2');
     Route::post('/macro/update', [TestPathologyMacroController::class, 'update'])->name('macro.update');
     Route::get('/macro/delete/{id}', [TestPathologyMacroController::class, 'destroy'])->name('macro.delete');
-
-
-
 
     //Rapporte d'erreur
 
@@ -285,8 +278,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/refund-request-categorie/update',[RefundRequestController::class,'update_categorie'])->name('refund.request.categorie.update');
     Route::get('/refund-request-categorie/delete/{id}',[RefundRequestController::class,'destroy_categorie'])->name('refund.request.categorie.destroy');
 
-
-
     // Attribuer docteur signataire
     Route::get('/attribuateDoctor/{doctorId}/{orderId}', [TestOrderController::class, 'attribuateDoctor'])->name('test_order.attribuateDoctor');
 
@@ -297,7 +288,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/test_order/detailsdelete', [TestOrderController::class, 'details_destroy']);
     Route::post('/test_order/invoice_details/', [TestOrderController::class, 'getInvoice'])->name('test_order.invoice');
     Route::get('/test_order/show/{id}', [TestOrderController::class, 'show'])->name('test_order.show');
-
 
 
 
@@ -342,6 +332,8 @@ Route::middleware(['auth'])->group(function () {
         // Route::get('assignment/pdf/{id}', [AssignmentDoctorController::class, 'pdf'])->name('report.assignment.pdf');
 
         Route::get('/azerty', [ReportController::class, 'getReportsforDatatable'])->name('report.getReportsforDatatable');
+        Route::get('/report/rapport', [ReportController::class, 'getReportsRapportsforDatatable'])->name('report.getReportsRapportsforDatatable');
+
 
         Route::post('report-gettemplate', [ReportController::class, 'getTemplate'])->name('template.report-getTemplate');
 
@@ -350,7 +342,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('callOrSendSms/{id}', [ReportController::class, 'callOrSendSms'])->name('report.callOrSendSms');
 
         Route::get('/dataTable/suivi', [ReportController::class, 'getTestOrdersforDatatableSuivi'])->name('report.getTestOrdersforDatatableSuivi');
-       
+        Route::post('/reports/storeTags', [ReportController::class, 'storeTags'])->name('report.storeTags'); //Enregistrement tags depuis select2
+
         Route::get('/suivi/index', [ReportController::class, 'indexsuivi'])->name('report.index.suivi');
         Route::post('/suivi/store/informe', [ReportController::class, 'UpdateInformePatient'])->name('report.UpdateInformePatient');
         Route::post('/suivi/store/livrer', [ReportController::class, 'UpdateLivrePatient'])->name('report.UpdateLivrePatient');
@@ -532,8 +525,6 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
-
-
     // Articles
     // Route::prefix('articles')->group(function () {
         Route::get('articles', [ArticleController::class, 'index'])->name('article.index');
@@ -557,8 +548,6 @@ Route::middleware(['auth'])->group(function () {
     // });
 
 
-
-
     // UnitMeasurement
     // Route::prefix('unit_measurements')->group(function () {
         Route::get('unit_measurements', [UnitMeasurementController::class, 'index'])->name('unit.index');
@@ -568,7 +557,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('unit_measurement-store', [UnitMeasurementController::class, 'store'])->name('unit.store');
         Route::get('unit_measurement-delete/{unitMeasurement}', [UnitMeasurementController::class, 'delete'])->name('unit.delete');
     // });
-
 
 
     // Expense Categorie
@@ -613,7 +601,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('cashbox-daily-fermeture/{cashboxDaily}', [CashboxDailyController::class, 'detail_fermeture_caisse'])->name('daily.fermeture');
 
 
-
         // Employees
     // Route::prefix('employees')->group(function () {
         Route::get('employees', [EmployeeController::class, 'index'])->name('employee.index');
@@ -637,8 +624,6 @@ Route::middleware(['auth'])->group(function () {
     // });
 
 
-
-
     // Route::prefix('employee_payrolls')->group(function () {
         Route::get('contrat-payrolls', [EmployeePayrollController::class, 'index'])->name('employee.payroll.index');
         Route::get('contrat-payroll-create', [EmployeePayrollController::class, 'create'])->name('employee.payroll.create');
@@ -648,9 +633,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('contrat-payroll-delete/{employeePayroll}', [EmployeePayrollController::class, 'delete'])->name('employee.payroll.delete');
 
     // });
-
-
-
 
 
     // Route::prefix('employee_timeoffs')->group(function () {
@@ -664,17 +646,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('employee-my-timeoff', [EmployeeTimeoffController::class, 'myTimeOff'])->name('employee.timeoff.mytime');
     // });
 
-
     // Chats
     Route::get('/chat-bot',[HomeController::class, 'chat'])->name('chat.bot');
-    Route::POST('/chat-bot',[HomeController::class, 'getMessage'])->name('chat.getMessage');
+    Route::post('/chat-bot',[HomeController::class, 'getMessage'])->name('chat.getMessage');
     Route::post('/send-chat-bot',[HomeController::class, 'sendMessage'])->name('chat.sendMessage');
-    Route::POST('/check-chat-bot',[HomeController::class, 'checkMessage'])->name('chat.checkMessage');
-
-
+    Route::post('/check-chat-bot',[HomeController::class, 'checkMessage'])->name('chat.checkMessage');
 
     // Chats
-
     Route::put('/update-document/{employeeDocument}',[EmployeeDocumentController::class, 'update'])->name('document.update');
     Route::post('/store-document',[EmployeeDocumentController::class, 'store'])->name('document.store');
     Route::get('/delete-document/{employeeDocument}',[EmployeeDocumentController::class, 'delete'])->name('document.delete');

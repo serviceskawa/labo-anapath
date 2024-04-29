@@ -55,4 +55,15 @@ class Report extends Model
     {
         return $this->hasOne(AppelByReport::class);
     }
+
+
+    public function tags()
+    {
+        return $this->belongsToMany('App\Models\Tag', 'report_tags', 'report_id', 'tag_id');
+    }
+
+    public function hasTag($tagName)
+    {
+        return $this->tags()->where('name', $tagName)->exists();
+    }
 }
