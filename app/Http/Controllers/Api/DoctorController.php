@@ -26,6 +26,13 @@ class DoctorController extends Controller
 
         return response()->json($results);
     }
+
+    public function searchTestOrder($code)
+    {
+        $results = TestOrder::where('code',$code)->with('report','patient','details','type','contrat', 'doctor' , 'hospital' , 'doctorExamen' , 'attribuateToDoctor')->first();
+
+        return response()->json($results);
+    }
     
     public function searchAffectation($query){
       
