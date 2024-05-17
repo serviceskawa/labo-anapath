@@ -141,7 +141,11 @@ date_default_timezone_set('Europe/Paris');
 
                 <td style="text-align: right; width: 34%; vertical-align: bottom;">
                     @if ($revew_by != null)
+                    
                     {{ $report_review_title }}
+
+                    <img width="85" src="{{ asset('adminassets/images/'.$revew_by_signature) }}" alt="">
+
                     <br><strong>{{ $revew_by }}</strong>
                     @endif
                 </td>
