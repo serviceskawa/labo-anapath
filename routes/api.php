@@ -52,6 +52,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('/testorder/old/{doctorId}',[DoctorController::class, 'getOldTestOrders']);
 
     Route::put('/testorder/report/patient',[DoctorController::class, 'updateInformOrDeliveryPatientStatus']);
+
+    Route::get('/testorder/{code}',[DoctorController::class, 'searchTestOrder']);
 });
 
 

@@ -399,9 +399,6 @@
                         <label for="simpleinput" class="form-label">Adresse<span style="color:red;">*</span></label>
                         <textarea type="text" name="adresse" class="form-control" required></textarea>
                     </div>
-
-
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
@@ -415,8 +412,6 @@
 
 </div>
 @endsection
-
-
 
 @push('extra-js')
 <script>
