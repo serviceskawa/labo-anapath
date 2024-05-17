@@ -132,11 +132,13 @@ date_default_timezone_set('Europe/Paris');
 
             @if ($status == 1)
             <tr>
+                @if ($signator1 != null)
                 <td style="text-align: left; width: 33%; vertical-align: bottom;">
                     <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
 
                     <br><br>{{ $signator }}
                 </td>
+                @endif
 
 
                 <td style="text-align: right; width: 34%; vertical-align: bottom;">
