@@ -118,6 +118,7 @@ class UserController extends Controller
         if (!getOnlineUser()->can('edit-users')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+
         $user = $this->user->findorfail($id);
         $roles = $this->role->all();
 
@@ -138,7 +139,7 @@ class UserController extends Controller
         if (!getOnlineUser()->can('edit-users')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        
+
         $data = $this->validate($request, [
             'id' => 'required',
             'firstname' => 'required',
@@ -166,7 +167,7 @@ class UserController extends Controller
         $imageFile = $request->file('signature');
         // Obtenez le nom d'origine du fichier
         $namefichier = Auth::user()->firstname."_".Auth::user()->lastname.".".$imageFile->getClientOriginalExtension();
-       
+
         // Enregistrez le fichier image dans le dossier public
         $re = $request->file('signature')->move(public_path('adminassets/images'), $namefichier);
     }else{
@@ -179,7 +180,7 @@ class UserController extends Controller
         try {
 
 
-            $user= $this->user->find($data['id']);
+            $user = $this->user->find($data['id']);
 
 
             $user = $this->user->updateorcreate(["id" =>$request->id],[
@@ -188,6 +189,7 @@ class UserController extends Controller
                 "lastname" => $request->lastname,
                 "signature" => $namefichier ? $namefichier : '',
             ]);
+            
             $user->roles()->sync([]);
             $user->roles()->attach($request->roles);
 

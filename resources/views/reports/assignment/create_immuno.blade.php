@@ -63,7 +63,7 @@
                                         <select class="form-select select2" data-toggle="select2" id="test_order_id" name="test_order_id">
                                             <option value="">Sélectionner une demande d'examen</option>
                                             @foreach ($testOrders as $order)
-                                                <option value="{{ $order->id }}">{{ $order->code }} {{ isAffecte($order->id) ? '('.isAffecte($order->id)->fullname().')' :'' }}</option>
+                                                <option value="{{ $order->id }}">{{ $order->code }}  {{ isAffecte($order->id) ? '('.isAffecte($order->id)->fullname().')' :'' }}</option>
                                             @endforeach
                                         </select>
                                     </div>

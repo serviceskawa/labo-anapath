@@ -547,6 +547,19 @@ if (!function_exists('generateCodeTicket')) {
 }
 
 
+if(!function_exists('typeExamAffecte')){
+    function typeExamAffecte($id){
+        $type = TestOrder::where('id', $id)->first();
+        if ($type) {
+            $data = $type->type_order_id;
+        }else{
+            $data = null;
+        }
+        return $data;
+    }
+}
+
+
 if(!function_exists('isAffecte')){
     function isAffecte($id){
         $detail = TestOrderAssignmentDetail::where('test_order_id',$id)->first();
@@ -559,6 +572,29 @@ if(!function_exists('isAffecte')){
         return $data;
     }
 }
+
+
+if(!function_exists('isAffecteRefence')){
+    function isAffecteRefence($reference_code){
+
+        $reference_order = TestOrder::where('code', $reference_code)->first();
+        if($reference_order)
+        {
+            $detail = TestOrderAssignmentDetail::where('test_order_id', $reference_order->id)->first();
+            if ($detail) {
+                $assignment = TestOrderAssignment::find($detail->test_order_assignment_id);
+                $data = $assignment->user;
+            }else{
+                $data = null;
+            }
+            return $data;
+        }else{
+            return $data = null;
+        }
+    }
+}
+
+
 if(!function_exists('dateLimite')){
     function dateLimite($date){
         $formattedDate = Carbon::parse($date)->format('Y-m-d');

@@ -77,7 +77,7 @@
                                     <select name="id_test_pathology_order" id="id_test_pathology_order" class="form-select select2" data-toggle="select2">
                                         <option value="">Toutes les demandes</option>
                                         @forelse ($orders as $order)
-                                            <option value="{{ $order->id }}">{{ $order->code }}</option>
+                                            <option value="{{ $order->id }}">{{ $order->code }} {{ $order->test_affiliate ? "(".$order->test_affiliate.")" : "" }}</option>
                                         @empty
                                         @endforelse
                                     </select>

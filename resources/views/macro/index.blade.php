@@ -105,39 +105,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         {{-- Premier DataTable test --}}
         <div class="card mb-md-0 mt-5">
             <div class="card-body">
@@ -203,62 +170,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         {{-- Deuxieme DataTables Histologie et Biopsie --}}
         <div class="card mb-md-0 mt-5">
             <div class="card-body">
@@ -277,7 +188,7 @@
                             style="display: none;">Terminer la Macroscopie</button>
                     </div>
                 </div>
-                
+
 
 
                 <div class="row mb-3 d-flex">
@@ -323,54 +234,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         {{-- Troisieme DataTables Piece Operatoire --}}
         <div class="card mb-md-0 mt-5" id="piece-operatoire">
             <div class="card-body">
@@ -378,7 +241,7 @@
                 <div class="d-flex justify-content-between mb-3">
                     <div>
                         <h5 class="card-title d-flex mb-3">
-                            Demandes d'examens <span style="color: green;"> Pièce Opératoire </span> à traiter  
+                            Demandes d'examens <span style="color: green;"> Pièce Opératoire </span> à traiter
                         </h5>
                     </div>
                     <div class="">
@@ -386,7 +249,7 @@
                             style="display: none;">Terminer la Macroscopie</button>
                     </div>
                 </div>
-               
+
                 <div class="row mb-3 d-flex">
                     <div class="col-lg-2 p-1 ml-3 alert alert-light rounded-pill"
                         style="margin-right: 5px; text-align:center;">
@@ -433,72 +296,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         {{-- Troisieme DataTables Cytologie --}}
         <div class="card mb-md-0 mt-5" id="cytologie">
             <div class="card-body">
@@ -514,7 +311,7 @@
                             style="display: none;">Terminer la Macroscopie</button>
                     </div>
                 </div>
-                
+
                 <div class="row mb-3 d-flex">
                     <div class="col-lg-2 p-1 ml-3 alert alert-light rounded-pill"
                         style="margin-right: 5px; text-align:center;">
@@ -586,66 +383,6 @@
 <script src="{{ asset('viewjs/demo-macro-pieceoperatoire.js') }}"></script>
 <script src="{{ asset('viewjs/demo-macro-cytologie.js') }}"></script>
 
-{{-- <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var links = document.querySelectorAll(".alert.alert-light.rounded-pill");
-        
-        links.forEach(function(link) {
-            link.addEventListener("click", function() {
-                // Réinitialiser la couleur de tous les liens
-                links.forEach(function(l) {
-                    l.style.backgroundColor = "";
-                });
-
-                // Définir la couleur du lien cliqué
-                this.style.backgroundColor = "green";
-            });
-        });
-    });
-</script> --}}
-
-
-
-{{-- <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var links = document.querySelectorAll(".alert.alert-light.rounded-pill");
-        
-        links.forEach(function(link) {
-            link.addEventListener("click", function() {
-                // Supprimer la classe 'alert-success' de tous les liens
-                links.forEach(function(l) {
-                    l.classList.remove("alert-success");
-                    l.classList.add("alert-light");
-                });
-
-                // Ajouter la classe 'alert-success' au lien cliqué
-                this.classList.remove("alert-light");
-                this.classList.add("alert-success");
-            });
-        });
-    });
-</script> --}}
-
-
-{{-- <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var links = document.querySelectorAll(".alert.alert-light.rounded-pill");
-        
-        links.forEach(function(link) {
-            link.addEventListener("click", function() {
-                // Supprimer la classe 'alert-success' de tous les liens
-                links.forEach(function(l) {
-                    l.classList.remove("alert-success");
-                    l.classList.add("alert-light");
-                });
-
-                // Ajouter la classe 'alert-success' au lien cliqué
-                this.classList.remove("alert-light");
-                this.classList.add("alert-success");
-            });
-        });
-    });
-</script> --}}
 
 
 @endpush

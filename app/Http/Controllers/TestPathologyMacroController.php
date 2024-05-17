@@ -97,7 +97,7 @@ public function __construct(
                   ->whereNull('deleted_at'); // deleted_at doit être NULL;
             })->get();
 
-            
+
         $employees = $this->employees->all();
 
 
@@ -171,12 +171,6 @@ public function __construct(
 
             // dd($data);
             // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-
-
-
-
-
 
         // $testOrders = $this->testOrder->all();
 
@@ -318,9 +312,20 @@ public function __construct(
 
                 return !isAffecte($data->order->id) ? $btnDelete :'';
             })
+
+
+
             ->addColumn('code', function ($data) {
-                return $data->order->code;
+                $reponse = $data->order->test_affiliate ? "/ ".$data->order->test_affiliate : "";
+                return $data->order->code . " " . $reponse;
             })
+
+
+
+
+            // ->addColumn('code', function ($data) {
+            //     return $data->order->code;
+            // })
             ->addColumn('add_by', function ($data) {
                 return $data->employee->fullname();
             })
@@ -387,12 +392,12 @@ public function __construct(
                     });
                 }
 
-              
-        
+
+
 
                 if(!empty($request->get('dateBegin2'))){
                     $query->whereHas('testOrder', function($queryModel) use($request) {
-    
+
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin2'));
                     $queryModel->whereDate('created_at','>=',$newDate);
                     });
@@ -412,8 +417,6 @@ public function __construct(
     // Debut
     public function getTestOrdersforDatatable2(Request $request)
     {
-
-
         $data = DB::table('test_orders')
         ->select(
             'test_orders.id as test_order',
@@ -509,9 +512,22 @@ public function __construct(
             ->addColumn('date', function ($data) {
                 return dateFormat($data->created_at);
             })
+
+            // ->addColumn('code', function ($data) {
+            //     $reponse = $data->test_affiliate ? "(".$data->test_affiliate.")" : "";
+            //     return $data->code . " " . $reponse;
+            // })
+
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
+
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
+
+
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
@@ -534,7 +550,7 @@ public function __construct(
             ->make(true);
     }
 
-    
+
      public function getTestOrdersforDatatable3(Request $request)
     {
         $data = DB::table('test_orders')
@@ -544,6 +560,7 @@ public function __construct(
             'test_orders.created_at',
             'test_orders.type_order_id as type_order_id',
             'test_orders.is_urgent',
+            'test_orders.test_affiliate',
             'reports.status as report_status',
             'test_pathology_macros.id as test_pathology_macro_id'
         )
@@ -556,8 +573,8 @@ public function __construct(
         ->where('reports.status', 0)
         ->whereYear('reports.created_at', '!=', 2022)
         ->whereYear('reports.created_at', '!=', 2023)
-     
-        // Filtrage histologie ou biopsie 
+
+        // Filtrage histologie ou biopsie
         ->where(function ($query) {
             $query
             ->where('type_order_id', 1)
@@ -624,9 +641,16 @@ public function __construct(
                 $newDate = Carbon::parse($newDate)->format('d-m-Y');
                 return $newDate;
             })
+
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
+
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
+
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
@@ -650,8 +674,8 @@ public function __construct(
 
             // ->filter(function ($query) use ($request) {
             //     if  ($request->get('typeOrderId')) {
-            //         $query->where(function($query) use ($request){         
-            //             $query->where('type_order_id',$request->get('typeOrderId')); 
+            //         $query->where(function($query) use ($request){
+            //             $query->where('type_order_id',$request->get('typeOrderId'));
             //         });
             //     }
             // })
@@ -666,7 +690,7 @@ public function __construct(
 
     // Histoligie Piece Operatoire
     public function getTestOrdersforDatatableHistologie(Request $request)
-    {      
+    {
         $data = DB::table('test_orders')
         ->select(
             'test_orders.id as test_order',
@@ -674,6 +698,7 @@ public function __construct(
             'test_orders.created_at',
             'test_orders.type_order_id as type_order_id',
             'test_orders.is_urgent',
+            'test_orders.test_affiliate',
             'reports.status as report_status',
             'test_pathology_macros.id as test_pathology_macro_id'
         )
@@ -686,8 +711,8 @@ public function __construct(
         ->where('reports.status', 0)
         ->whereYear('reports.created_at', '!=', 2022)
         ->whereYear('reports.created_at', '!=', 2023)
-     
-        // Filtrage histologie ou biopsie 
+
+        // Filtrage histologie ou biopsie
         ->where(function ($query) {
             $query
             ->where('type_order_id', 1)
@@ -754,8 +779,13 @@ public function __construct(
                 return $newDate;
             })
 
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
+
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
 
             ->addColumn('state', function ($data) use ($employees) {
@@ -795,6 +825,7 @@ public function __construct(
             'test_orders.created_at',
             'test_orders.type_order_id as type_order_id',
             'test_orders.is_urgent',
+            'test_orders.test_affiliate',
             'reports.status as report_status',
             'test_pathology_macros.id as test_pathology_macro_id'
         )
@@ -807,16 +838,12 @@ public function __construct(
         ->where('reports.status', 0)
         ->whereYear('reports.created_at', '!=', 2022)
         ->whereYear('reports.created_at', '!=', 2023)
-     
-        // Filtrage histologie ou biopsie 
+
+        // Filtrage histologie ou biopsie
         ->where(function ($query) {
             $query
             ->where('type_order_id', 6);
         });
-        
-
-
-
 
             $employees = $this->employees->all();
             return DataTables::of($data)->addIndexColumn()
@@ -874,9 +901,17 @@ public function __construct(
                 $newDate = Carbon::parse($newDate)->format('d-m-Y');
                 return $newDate;
             })
+
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
+
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
+
+
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
@@ -913,6 +948,7 @@ public function __construct(
             'test_orders.created_at',
             'test_orders.type_order_id as type_order_id',
             'test_orders.is_urgent',
+            'test_orders.test_affiliate',
             'reports.status as report_status',
             'test_pathology_macros.id as test_pathology_macro_id'
         )
@@ -925,8 +961,8 @@ public function __construct(
         ->where('reports.status', 0)
         ->whereYear('reports.created_at', '!=', 2022)
         ->whereYear('reports.created_at', '!=', 2023)
-     
-        // Filtrage histologie ou biopsie 
+
+        // Filtrage histologie ou biopsie
         ->where(function ($query) {
             $query
             ->where('type_order_id', 4);
@@ -934,7 +970,7 @@ public function __construct(
 
 
 
-       
+
 
             $employees = $this->employees->all();
             return DataTables::of($data)->addIndexColumn()
@@ -991,9 +1027,16 @@ public function __construct(
                 $newDate = Carbon::parse($newDate)->format('d-m-Y');
                 return $newDate;
             })
+
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
+
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
+
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
@@ -1088,8 +1131,12 @@ public function __construct(
 
                 return !isAffecte($data->order->id) ? $btnDelete :'';
             })
+            // ->addColumn('code', function ($data) {
+            //     return $data->order->code;
+            // })
             ->addColumn('code', function ($data) {
-                return $data->order->code;
+                $reponse = $data->order->test_affiliate ? "/ ".$data->order->test_affiliate : "";
+                return $data->order->code . " " . $reponse;
             })
             ->addColumn('add_by', function ($data) {
                 return $data->employee->fullname();
@@ -1173,6 +1220,7 @@ public function __construct(
             'test_orders.code as code',
             'test_orders.created_at',
             'test_orders.is_urgent',
+            'test_orders.test_affiliate',
             'reports.status as report_status',
             'test_pathology_macros.id as test_pathology_macro_id'
         )
@@ -1261,8 +1309,12 @@ public function __construct(
             ->addColumn('date', function ($data) {
                 return dateFormat($data->created_at);
             })
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
@@ -1295,6 +1347,7 @@ public function __construct(
             'test_orders.code as code',
             'test_orders.created_at',
             'test_orders.is_urgent',
+            'test_orders.test_affiliate',
             'reports.status as report_status',
             'test_pathology_macros.id as test_pathology_macro_id'
         )
@@ -1386,8 +1439,12 @@ public function __construct(
                 $newDate = Carbon::parse($newDate)->format('d-m-Y');
                 return $newDate;
             })
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');

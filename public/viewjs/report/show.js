@@ -330,6 +330,7 @@ var codeqr = new QRCode(document.getElementById("qrcode"), {
     colorLight: "#ffffff",
     correctLevel: QRCode.CorrectLevel.H
 });
+
 $(document).ready(function () {
 
     $('#datatable1').DataTable({
@@ -607,4 +608,34 @@ $(document).ready(function () {
         })
     });
 
+     // Create doctor
+     $('#tag_id').select2({
+        placeholder: 'Select Tag',
+        theme: 'bootstrap4',
+        tags: true,
+    }).on('select2:close', function() {
+        var element = $(this);
+        var new_category = $.trim(element.val());
+
+        if (new_category != '') {
+            $.ajax({
+                url: ROUTESTOREREPORTTAGS,
+                method: "POST",
+                data: {
+                    "_token": TOKENSTOREREPORTTAGS,
+                    name: new_category
+                },
+                success: function(data) {
+
+                    if (data.status === "created") {
+                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+
+                        element.append('<option value="' + data.id + '">' + data.name +
+                            '</option>').val(new_category);
+                    }
+                }
+            })
+        }
+
+    });
 });
