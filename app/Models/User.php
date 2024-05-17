@@ -148,6 +148,13 @@ class User extends Authenticatable
     {
         return $this->firstname .' '.$this->lastname ;
     }
+
+
+    public function fullUserId()
+    {
+        return $this->id;
+    }
+
     public function userCheckRole($id)
     {
        $access = UserRole::where('user_id',$this->id)->where('role_id',$id)->first();

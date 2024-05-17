@@ -252,6 +252,8 @@ class ReportController extends Controller
         // Filtrer par mois et année si les deux sont spécifiés
         $examens = $examens->whereMonth('tor.created_at', $month)
                         ->whereYear('tor.created_at', $year);
+        } elseif (isset($year)) {
+            $patient_called = $examens->whereYear('tor.created_at', $year);
         }
         $examens = $examens->get();
 
@@ -268,7 +270,10 @@ class ReportController extends Controller
         if (isset($month) && isset($year)) {
         $rapports = $rapports->whereMonth('tor.created_at', $month)
                             ->whereYear('tor.created_at', $year);
+        } elseif (isset($year)) {
+            $patient_called = $rapports->whereYear('tor.created_at', $year);
         }
+
         $rapports = $rapports->get();
 
         $macros = DB::table('test_orders as tor')
@@ -280,7 +285,11 @@ class ReportController extends Controller
         if (isset($month) && isset($year)) {
         $macros = $macros->whereMonth('tor.created_at', $month)
                         ->whereYear('tor.created_at', $year);
+        } elseif (isset($year)) {
+            $patient_called = $macros->whereYear('tor.created_at', $year);
         }
+
+
         $macros = $macros->get();
 
         $patient_called = DB::table('reports')
@@ -294,7 +303,11 @@ class ReportController extends Controller
         if (isset($month) && isset($year)) {
         $patient_called = $patient_called->whereMonth('reports.created_at', $month)
                                 ->whereYear('reports.created_at', $year);
+        } elseif (isset($year)) {
+            $patient_called = $patient_called->whereYear('reports.created_at', $year);
         }
+
+
         $patient_called = $patient_called->get();
 
         $list_years = TestOrder::select(DB::raw('YEAR(created_at) as year'))
@@ -777,7 +790,7 @@ class ReportController extends Controller
             })
             ->editColumn('code', function ($data) {
                 if ($data->order) {
-                    return $data->order->code . '<br>'. DB::table('type_orders')->where('id', $data->order->type_order_id)->value('title');
+                return  view("reports.suivi.code",['data'=>$data]);
                 } else {
                     return '';
                 }

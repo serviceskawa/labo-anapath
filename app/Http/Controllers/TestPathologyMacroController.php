@@ -312,9 +312,20 @@ public function __construct(
 
                 return !isAffecte($data->order->id) ? $btnDelete :'';
             })
+
+
+
             ->addColumn('code', function ($data) {
-                return $data->order->code;
+                $reponse = $data->order->test_affiliate ? "/ ".$data->order->test_affiliate : "";
+                return $data->order->code . " " . $reponse;
             })
+
+
+
+
+            // ->addColumn('code', function ($data) {
+            //     return $data->order->code;
+            // })
             ->addColumn('add_by', function ($data) {
                 return $data->employee->fullname();
             })
@@ -406,8 +417,6 @@ public function __construct(
     // Debut
     public function getTestOrdersforDatatable2(Request $request)
     {
-
-
         $data = DB::table('test_orders')
         ->select(
             'test_orders.id as test_order',
@@ -503,9 +512,22 @@ public function __construct(
             ->addColumn('date', function ($data) {
                 return dateFormat($data->created_at);
             })
+
+            // ->addColumn('code', function ($data) {
+            //     $reponse = $data->test_affiliate ? "(".$data->test_affiliate.")" : "";
+            //     return $data->code . " " . $reponse;
+            // })
+
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
+
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
+
+
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
@@ -538,6 +560,7 @@ public function __construct(
             'test_orders.created_at',
             'test_orders.type_order_id as type_order_id',
             'test_orders.is_urgent',
+            'test_orders.test_affiliate',
             'reports.status as report_status',
             'test_pathology_macros.id as test_pathology_macro_id'
         )
@@ -618,9 +641,16 @@ public function __construct(
                 $newDate = Carbon::parse($newDate)->format('d-m-Y');
                 return $newDate;
             })
+
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
+
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
+
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
@@ -668,6 +698,7 @@ public function __construct(
             'test_orders.created_at',
             'test_orders.type_order_id as type_order_id',
             'test_orders.is_urgent',
+            'test_orders.test_affiliate',
             'reports.status as report_status',
             'test_pathology_macros.id as test_pathology_macro_id'
         )
@@ -748,8 +779,13 @@ public function __construct(
                 return $newDate;
             })
 
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
+
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
 
             ->addColumn('state', function ($data) use ($employees) {
@@ -789,6 +825,7 @@ public function __construct(
             'test_orders.created_at',
             'test_orders.type_order_id as type_order_id',
             'test_orders.is_urgent',
+            'test_orders.test_affiliate',
             'reports.status as report_status',
             'test_pathology_macros.id as test_pathology_macro_id'
         )
@@ -864,9 +901,17 @@ public function __construct(
                 $newDate = Carbon::parse($newDate)->format('d-m-Y');
                 return $newDate;
             })
+
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
+
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
+
+
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
@@ -903,6 +948,7 @@ public function __construct(
             'test_orders.created_at',
             'test_orders.type_order_id as type_order_id',
             'test_orders.is_urgent',
+            'test_orders.test_affiliate',
             'reports.status as report_status',
             'test_pathology_macros.id as test_pathology_macro_id'
         )
@@ -981,9 +1027,16 @@ public function __construct(
                 $newDate = Carbon::parse($newDate)->format('d-m-Y');
                 return $newDate;
             })
+
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
+
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
+
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
@@ -1078,8 +1131,12 @@ public function __construct(
 
                 return !isAffecte($data->order->id) ? $btnDelete :'';
             })
+            // ->addColumn('code', function ($data) {
+            //     return $data->order->code;
+            // })
             ->addColumn('code', function ($data) {
-                return $data->order->code;
+                $reponse = $data->order->test_affiliate ? "/ ".$data->order->test_affiliate : "";
+                return $data->order->code . " " . $reponse;
             })
             ->addColumn('add_by', function ($data) {
                 return $data->employee->fullname();
@@ -1163,6 +1220,7 @@ public function __construct(
             'test_orders.code as code',
             'test_orders.created_at',
             'test_orders.is_urgent',
+            'test_orders.test_affiliate',
             'reports.status as report_status',
             'test_pathology_macros.id as test_pathology_macro_id'
         )
@@ -1251,8 +1309,12 @@ public function __construct(
             ->addColumn('date', function ($data) {
                 return dateFormat($data->created_at);
             })
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
@@ -1285,6 +1347,7 @@ public function __construct(
             'test_orders.code as code',
             'test_orders.created_at',
             'test_orders.is_urgent',
+            'test_orders.test_affiliate',
             'reports.status as report_status',
             'test_pathology_macros.id as test_pathology_macro_id'
         )
@@ -1376,8 +1439,12 @@ public function __construct(
                 $newDate = Carbon::parse($newDate)->format('d-m-Y');
                 return $newDate;
             })
+            // ->addColumn('code', function ($data) {
+            //     return $data->code;
+            // })
             ->addColumn('code', function ($data) {
-                return $data->code;
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');

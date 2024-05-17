@@ -382,7 +382,8 @@ public function getTestOrdersforDatatableMySpace(Request $request)
         })
 
         ->addColumn('code', function ($data) {
-            return $data->testOrder->code;
+            $reponse = $data->testOrder->test_affiliate ? "/ ".$data->testOrder->test_affiliate : "";
+            return $data->testOrder->code . " " . $reponse;
         })
 
         ->addColumn('patient', function ($data) {
@@ -567,7 +568,8 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
         })
 
         ->addColumn('code', function ($data) {
-            return $data->testOrder->code;
+            $reponse = $data->testOrder->test_affiliate ? "/ ".$data->testOrder->test_affiliate : "";
+            return $data->testOrder->code . " " . $reponse;
         })
 
         ->addColumn('patient', function ($data) {
@@ -977,18 +979,18 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
         $cashbox = Cashbox::find(2);
         $patients = $this->patient->all();
         $doctors = $this->doctor->all();
+        $test_orders = $this->testOrder->all();
         $hopitals = $this->hospital->all();
         $contrats = $this->contrat->ofStatus('ACTIF')->get();
         $types_orders = $this->typeOrder->all();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
-        return view('examens.create', compact(['cashbox','patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
+        return view('examens.create', compact(['cashbox','patients', 'doctors', 'hopitals', 'contrats', 'types_orders', 'test_orders']));
     }
 
     public function store(TestOrderRequest $request)
     {
-
         if (!getOnlineUser()->can('create-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
@@ -1004,7 +1006,7 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
             'examen_reference_select' => $request->examen_reference_select,
             'examen_reference_input' => $request->examen_reference_input,
             'type_examen' => $request->type_examen,
-            'option'=> $request->option?1:0,
+            'option'=> $request->option ? 1 : 0,
         ];
 
         $contrat = $this->contrat->findOrFail($validatedData['contrat_id']);
@@ -1021,7 +1023,6 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
 
         $doctor = $this->doctor->firstOrCreate(['name' => $validatedData['doctor_id']]);
         $hospital = $this->hospital->firstOrCreate(['name' => $validatedData['hospital_id']]);
-
         $testAffiliate = $validatedData['examen_reference_select'] ?: $validatedData['examen_reference_input'] ?: "";
 
         if ($validatedData['examen_reference_select'] && !$validatedData['examen_reference_input']) {
@@ -1103,11 +1104,12 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
         // fusion update et read
         $patients = $this->patient->all();
         $doctors = $this->doctor->all();
+        $test_orders = $this->testOrder->all();
         $hopitals = $this->hospital->all();
         $contrats = $this->contrat->ofStatus('ACTIF')->get();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        return view('examens.details.index', compact(['test_order', 'details', 'tests', 'types_orders', 'patients', 'doctors', 'hopitals', 'contrats',]));
+        return view('examens.details.index', compact(['test_orders','test_order', 'details', 'tests', 'types_orders', 'patients', 'doctors', 'hopitals', 'contrats',]));
     }
 
     public function getInvoice(Request $request)
@@ -1325,7 +1327,7 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
             }else {
                 Report::create([
                     "code" => "CO" . $test_order->code,
-                    "patient_id" => $test_order->patient_id,
+                    // "patient_id" => $test_order->patient_id,
                     "description" => $settings ? $settings->placeholder : '',
                     "test_order_id" => $test_order->id,
                 ]);
@@ -1522,38 +1524,13 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
             if (!empty($reference)) {
 
                 $data['test_affiliate'] = $reference->code;
+
+                // dd($data['test_affiliate']);
             }
         }
 
         $directory = storage_path('app/public/examen_images/' . $testOrder->code);
-        // $fileNames = [];
-
-        // if (File::isDirectory($directory)) {
-        //     $files = File::files($directory);
-
-        //     foreach ($files as $file) {
-        //         $fileNames[] = $file->getFilename();
-        //     }
-        // }
-
-        // $fileNamesString = implode('|', $fileNames);
-
-        // dd($request->files_name);
-
-        // $uploadedFiles = $request->file('files_name'); // Utilise directement la chaîne 'files_name' ici
-        // $filenames = [];
-
-        // foreach ($uploadedFiles as $file) {
-        //     $filename = $file->store('examen_images', 'public');
-        //     $filenames[] = $filename;
-        // }
-
-        // foreach ($images as $image) {
-        //     $filename = $image->store('examen_images', 'public');
-        //     $files_name[] = $filename;
-        // }
-        // dd($request->attribuate_doctor_id);
-
+      
         try {
             $test_order = $this->testOrder->find($id);
             $test_order->contrat_id = (int)$data['contrat_id']; // on peut modifier le contrat
@@ -1781,39 +1758,15 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
 
 
 
-            // Code qui permet d'afficher un appel
-            // ->addColumn('appel', function ($data) {
-            //     if($data->report)
-            //     {
-            //         $status = $this->getStatusCalling($data->report->id);
-            //     }else{
-            //         $status = "";
-            //     }
-
-            //     switch ($status) {
-            //         case 'voice.busy':
-            //             $btn = 'danger';
-            //             break;
-            //         case 'no-answered':
-            //             $btn = 'danger';
-            //             break;
-            //         case 'voice.completed':
-            //             $btn = 'success';
-            //             break;
-            //         default:
-            //             $btn = 'warning';
-            //             break;
-            //     }
-
-            //     $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
-            //     if (!$data->option) {
-            //         return $span;
-            //     }
-            // })
 
 
             ->editColumn('created_at', function ($data) {
                 return $data->created_at;
+            })
+
+            ->addColumn('code', function ($data) {
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
 
             ->addColumn('patient', function ($data) {
@@ -1874,17 +1827,6 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
                 if (!empty($request->get('cas_status'))) {
                     $query->where('is_urgent', $request->get('cas_status'));
                 }
-
-                // if (!empty($request->get('appel'))) {
-                //     $query->whereHas('report', function ($query) use($request) {
-                //             $query->whereHas('appel',function($query) use($request){
-                //                 $query->whereHas('appel_event', function($query) use($request){
-                //                     $query->where('event',$request->get('appel'));
-                //                 });
-                //             });
-                //         });
-                // }
-
                 if (!empty($request->get('contrat_id'))) {
                     $query->where('contrat_id', $request->get('contrat_id'));
                 }
@@ -1908,16 +1850,6 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
                         });
                     }
                 }
-
-                // if (!empty($request->get('appel'))) {
-                //     $query->whereHas('report', function ($query) use($request){
-                //             $query->whereHas('appel',function($query) use($request) {
-                //                 $query->whereHas('appel_event', function($query) use($request) {
-                //                     $query->where('event',$request->get('appel'));
-                //                 });
-                //             });
-                //     });
-                // }
 
                 if(!empty($request->get('contenu')))
                 {
@@ -1953,9 +1885,7 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
     // Debut
     public function getTestOrdersforDatatable_immuno(Request $request)
     {
-
-
-        $data = $this->testOrder
+            $data = $this->testOrder
                 ->with(['patient', 'contrat', 'type', 'details', 'report'])
                 ->whereHas('type', function($query) {
                     $query->where('slug','immuno-interne')
@@ -2072,33 +2002,15 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
             })
 
             ->addColumn('appel', function ($data) {
-                // if($data->report)
-                // {
-                //     $status = $this->getStatusCalling($data->report->id);
-                // }else{
-                //     $status = "";
-                // }
-
-                // switch ($status) {
-                //     case 'voice.busy':
-                //         $btn = 'danger';
-                //         break;
-                //     case 'no-answered':
-                //         $btn = 'danger';
-                //         break;
-                //     case 'voice.completed':
-                //         $btn = 'success';
-                //         break;
-                //     default:
-                //         $btn = 'warning';
-                //         break;
-                // }
-
-                // $span = '<div class=" bg-'.$btn.' rounded-circle p-2 col-lg-2" ></div>';
                 $span = '#';
                 // if (!$data->option) {
                     return $span;
                 // }
+            })
+
+            ->addColumn('code', function ($data) {
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
 
             ->addColumn('patient', function ($data) {
@@ -2385,6 +2297,10 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
                     return $span;
                 }
             })
+            ->addColumn('code', function ($data) {
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
+            })
             ->addColumn('patient', function ($data) {
                 return $data->patient->firstname . ' ' . $data->patient->lastname;
             })
@@ -2655,6 +2571,10 @@ public function getTestOrdersforDatatableMySpace2(Request $request)
                 if (!$data->option) {
                     return $span;
                 }
+            })
+            ->addColumn('code', function ($data) {
+                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                return $data->code . " " . $reponse;
             })
             ->addColumn('patient', function ($data) {
                 return $data->patient->firstname . ' ' . $data->patient->lastname;

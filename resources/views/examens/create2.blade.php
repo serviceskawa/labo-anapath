@@ -7,7 +7,7 @@
                 <h4 class="modal-title" id="standard-modalLabel">Ajouter une demande d'examen</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
-        <form action="{{ route('test_order.store') }}" method="POST" autocomplete="off">
+        <form action="{{ route('test_order.store') }}" method="POST" autocomplete="off" enctype="multipart/form-data">
             @csrf
             <div class="modal-body">
 
