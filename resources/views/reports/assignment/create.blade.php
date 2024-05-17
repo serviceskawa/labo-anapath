@@ -46,7 +46,7 @@
         </div>
 
         {{-- Debut du bloc pour faire les l'ajout des articles --}}
-        
+
 
         <div class="card my-3 ">
             <div class="card-header">
@@ -60,17 +60,41 @@
                     <div class="row d-flex align-items-end">
                         <div class="col-md-4 col-12">
                             <div class="mb-3">
-                                <label for="example-select" class="form-label">Code</label>
+                                <label for="example-select" class="form-label">Code <small style="text-transform: uppercase; color: gray;">[Demande d'examen/Reférence]</small></label>
                                 <select class="form-select select2" data-toggle="select2" id="test_order_id"
                                     name="test_order_id">
                                     <option value="">Sélectionner une demande d'examen</option>
                                     @foreach ($testOrders as $order)
-                                    <option value="{{ $order->id }}">{{ $order->code }} {{ isAffecte($order->id) ?
-                                        '('.isAffecte($order->id)->fullname().')' :'' }}</option>
+                                    {{-- <option value="{{ $order->id }}"
+                                        data-user-id="{{ DoctorId($order->id) ? DoctorId($order->id) : 0 }}">
+                                        {{ $order->code }} {!! $order->test_affiliate ?
+                                        "<strong>[".$order->test_affiliate."]</strong>" : "" !!} {{
+                                        isAffecte($order->id) ?
+                                        ': '.isAffecte($order->id)->fullname() :'' }}
+                                    </option> --}}
+
+                                    <option value="{{ $order->id }}">
+                                        {{ $order->code }} {{ isAffecte($order->id) ? '('.isAffecte($order->id)->fullname() .')' : '' }} 
+                                        @if(typeExamAffecte($order->id) == 3)
+                                            / {{ $order->test_affiliate }}
+                                            {{ isAffecteRefence($order->test_affiliate) ? '('.isAffecteRefence($order->test_affiliate)->fullname() .')' : '' }}
+                                            {{-- Passer en parametre le test_affiliate --}}
+                                        @elseif(typeExamAffecte($order->id) == 2)
+                                            / {{ $order->test_affiliate }}
+                                        @endif
+                                    </option>
+
                                     @endforeach
                                 </select>
                             </div>
                         </div>
+
+
+                        {{-- <input type="hidden"
+                            value="{{ isAffecte($order->id) ? isAffecte($order->id)->fullUserId() : 0}}"
+                            name="user_id_affecte_examen"> --}}
+
+
                         <div class="col-md-4 col-12">
 
                             <div class="mb-3">

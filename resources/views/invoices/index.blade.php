@@ -219,6 +219,7 @@
                                         @else
                                             {{ $sale->total_sales }}
                                         @endif
+
                                         <br>
                                          @foreach ($paymensalesByContracts as $paymensalesByContract)
                                             {{ DB::table('contrats')->where('id', $paymensalesByContract->contrat_id)->value('name')}} : {{ $paymensalesByContract->total_contracts }} <br>

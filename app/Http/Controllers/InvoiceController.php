@@ -73,7 +73,6 @@ class InvoiceController extends Controller
 
         $month = $request->month; // Récupérez la valeur du mois depuis le formulaire
         $year = $request->year;   // Récupérez la valeur de l'année depuis le formulaire
-
         config(['app.name' => $setting->titre]);
 
         $list_years = TestOrder::select(DB::raw('YEAR(created_at) as year'))
@@ -84,15 +83,18 @@ class InvoiceController extends Controller
         $sales = DB::table('invoices')
         ->selectRaw("
             SUM(total) AS total_sales
-        ")
-        ->where('status_invoice', '0');
+        ")->where('status_invoice', '0');
 
         if (isset($month) && isset($year)) {
             // Filtrer par mois et année si les deux sont spécifiés
             $sales = $sales->whereMonth('invoices.created_at', $month)
                             ->whereYear('invoices.created_at', $year);
+            }elseif (isset($year)) {
+                $sales = $sales->whereYear('invoices.created_at', $year);
             }
             $sales = $sales->get();
+
+
 
         $credits = DB::table('invoices')
         ->selectRaw("
@@ -104,8 +106,12 @@ class InvoiceController extends Controller
             // Filtrer par mois et année si les deux sont spécifiés
             $credits = $credits->whereMonth('invoices.created_at', $month)
                             ->whereYear('invoices.created_at', $year);
+            }elseif (isset($year)) {
+                $credits = $credits->whereYear('invoices.created_at', $year);
             }
             $credits = $credits->get();
+
+
 
         $payments = DB::table('cashbox_adds')
         ->selectRaw("
@@ -116,8 +122,13 @@ class InvoiceController extends Controller
             // Filtrer par mois et année si les deux sont spécifiés
             $payments = $payments->whereMonth('cashbox_adds.created_at', $month)
                             ->whereYear('cashbox_adds.created_at', $year);
+            }elseif (isset($year)) {
+                $payments = $payments->whereYear('cashbox_adds.created_at', $year);
             }
             $payments = $payments->get();
+
+
+
 
             $salesByContracts = DB::table('invoices')
                 ->select('contrat_id', DB::raw("SUM(total) as total_contracts"))
@@ -127,8 +138,13 @@ class InvoiceController extends Controller
                     // Filtrer par mois et année si les deux sont spécifiés
                     $salesByContracts = $salesByContracts->whereMonth('invoices.created_at', $month)
                                     ->whereYear('invoices.created_at', $year);
+                    }elseif (isset($year)) {
+                        $salesByContracts = $salesByContracts->whereYear('invoices.created_at', $year);
                     }
                     $paymensalesByContracts = $salesByContracts->get();
+
+// dd($paymensalesByContracts);
+
 
 
         return view('invoices.index', compact('paymensalesByContracts', 'payments', 'credits', 'sales', 'list_years', 'month', 'year', 'invoices','totalToday','vente', 'avoir'));

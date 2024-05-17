@@ -383,66 +383,6 @@
 <script src="{{ asset('viewjs/demo-macro-pieceoperatoire.js') }}"></script>
 <script src="{{ asset('viewjs/demo-macro-cytologie.js') }}"></script>
 
-{{-- <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var links = document.querySelectorAll(".alert.alert-light.rounded-pill");
-
-        links.forEach(function(link) {
-            link.addEventListener("click", function() {
-                // Réinitialiser la couleur de tous les liens
-                links.forEach(function(l) {
-                    l.style.backgroundColor = "";
-                });
-
-                // Définir la couleur du lien cliqué
-                this.style.backgroundColor = "green";
-            });
-        });
-    });
-</script> --}}
-
-
-
-{{-- <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var links = document.querySelectorAll(".alert.alert-light.rounded-pill");
-
-        links.forEach(function(link) {
-            link.addEventListener("click", function() {
-                // Supprimer la classe 'alert-success' de tous les liens
-                links.forEach(function(l) {
-                    l.classList.remove("alert-success");
-                    l.classList.add("alert-light");
-                });
-
-                // Ajouter la classe 'alert-success' au lien cliqué
-                this.classList.remove("alert-light");
-                this.classList.add("alert-success");
-            });
-        });
-    });
-</script> --}}
-
-
-{{-- <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var links = document.querySelectorAll(".alert.alert-light.rounded-pill");
-
-        links.forEach(function(link) {
-            link.addEventListener("click", function() {
-                // Supprimer la classe 'alert-success' de tous les liens
-                links.forEach(function(l) {
-                    l.classList.remove("alert-success");
-                    l.classList.add("alert-light");
-                });
-
-                // Ajouter la classe 'alert-success' au lien cliqué
-                this.classList.remove("alert-light");
-                this.classList.add("alert-success");
-            });
-        });
-    });
-</script> --}}
 
 
 @endpush
