@@ -24,6 +24,11 @@ class Report extends Model
         return $this->belongsTo(TestOrder::class, 'test_order_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'reviewed_by_user_id');
+    }
+
     public function signateur()
     {
         return $this->belongsTo(User::class, 'signatory1');
