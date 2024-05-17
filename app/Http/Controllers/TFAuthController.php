@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\TFAuthNotification;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
@@ -52,6 +53,7 @@ class TFAuthController extends Controller
         $user = $user->findorfail($this->userConnect->id);
         $user->opt = $this->caesar_cipher_int($opt, 3);
         $user->save();
+        
         $data = [
             'name' => $user->firstname,
             'lastname' => $user->lastname,

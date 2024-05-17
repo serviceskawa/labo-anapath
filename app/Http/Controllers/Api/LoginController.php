@@ -50,6 +50,7 @@ class LoginController extends Controller
             $user = auth()->user();
 
             $tokenResult = $user->createToken('auth_token');
+            
 
             return $this->respondWithToken($tokenResult, $user);
         }
@@ -57,7 +58,7 @@ class LoginController extends Controller
     }
 
     protected function respondFailedLogin() {
-        return $this->respond([
+        return response()->json([
             'errors' => [
                 'message' => 'email or password is invalid'
             ]
@@ -67,11 +68,9 @@ class LoginController extends Controller
     protected function respondWithToken($tokenResult, $user)
     {
         return response()->json([
-            'access_token' => $tokenResult->accessToken,
+            'access_token' => $tokenResult->plainTextToken,
+            'expires_at' => now()->addMonth(12),
             'token_type' => 'bearer',
-            'expires_at' => Carbon::parse(
-                $tokenResult->token->expires_at
-            )->toDateTimeString(),
             'user' => new UserResource($user)
         ], 200);
     }
