@@ -622,42 +622,87 @@ $(document).ready(function() {
     function updateExamenReferenceFields() {
         var typeExamenOption = $('#type_examen option:selected').text();
 
-        if (typeExamenOption == "Immuno Externe") {
-            // Si "Immuno Externe" est sélectionné, masquer le champ "Examen de Référence Interne" et afficher le champ "Examen de Référence Externe"
-            $(".examenReferenceInputInterne").hide();
-            $(".examenReferenceInputExterne").show();
-            // Désactiver le champ "Examen de Référence Interne"
-            $("#examen_reference_select").prop("required", false);
-            // Réinitialiser le champ "Examen de Référence Interne"
-            $("#examen_reference_select").val('');
 
-            $("#examen_reference_input").prop("required", true);
+        // $(document).ready(function() {
+        //     function updateExamenFields() {
+        //         var typeExamenOption = $('#type_examen option:selected').text();
 
-        } else if (typeExamenOption == "Immuno Interne") {
-            // Si "Immuno Interne" est sélectionné, masquer le champ "Examen de Référence Externe" et afficher le champ "Examen de Référence Interne"
-            $(".examenReferenceInputExterne").hide();
-            $(".examenReferenceInputInterne").show();
-            // Désactiver le champ "Examen de Référence Externe"
-            $("#examen_reference_input").prop("required", false);
-            // Réinitialiser le champ "Examen de Référence Externe"
-            $("#examen_reference_input").val('');
+        //         if (typeExamenOption == "Immuno Externe") {
+        //             // Hide the internal exam field and remove its required attribute
+        //             $(".examenReferenceInputInterne").hide();
+        //             $("#examen_reference_select").prop("required", false).val('').prop("disabled", true);
 
-            $("#examen_reference_select").prop("required", true);
+        //             // Show the external exam field and add the required attribute
+        //             $(".examenReferenceInputExterne").show();
+        //             $("#examen_reference_input").prop("required", true).prop("disabled", false);
 
-        } else {
-            // Si aucune des options spécifiques n'est sélectionnée, cacher les deux champs
-            // $(".examenReferenceInputExterne").hide();
-            // $(".examenReferenceInputInterne").hide();
-            // // Activer les deux champs au cas où ils ont été désactivés
-            // $("#examen_reference_select").prop("disabled", false);
-            // $("#examen_reference_input").prop("disabled", false);
-            // // Réinitialiser les deux champs
-            // $("#examen_reference_select").val('');
-            // $("#examen_reference_input").val('');
-            $(".examenReferenceInputExterne, .examenReferenceInputInterne").hide();
-            $("#examen_reference_input").prop("required", false).val('');
-            $("#examen_reference_select").prop("required", false).val('');
-        }
+        //         } else if (typeExamenOption == "Immuno Interne") {
+        //             // Hide the external exam field and remove its required attribute
+        //             $(".examenReferenceInputExterne").hide();
+        //             $("#examen_reference_input").prop("required", false).val('').prop("disabled", true);
+
+        //             // Show the internal exam field and add the required attribute
+        //             $(".examenReferenceInputInterne").show();
+        //             $("#examen_reference_select").prop("required", true).prop("disabled", false);
+
+        //         } else {
+        //             // Hide both fields and remove their required attributes
+        //             $(".examenReferenceInputExterne, .examenReferenceInputInterne").hide();
+        //             $("#examen_reference_input").prop("required", false).val('').prop("disabled", true);
+        //             $("#examen_reference_select").prop("required", false).val('').prop("disabled", true);
+        //         }
+        //     }
+
+        //     $('#type_examen').on('change', function(e) {
+        //         updateExamenFields();
+        //     });
+
+        //     // Check the initial state on page load
+        //     updateExamenFields();
+        // });
+
+
+
+
+
+
+
+        // if (typeExamenOption == "Immuno Externe") {
+        //     // Si "Immuno Externe" est sélectionné, masquer le champ "Examen de Référence Interne" et afficher le champ "Examen de Référence Externe"
+        //     $(".examenReferenceInputInterne").hide();
+        //     $(".examenReferenceInputExterne").show();
+        //     // Désactiver le champ "Examen de Référence Interne"
+        //     $("#examen_reference_select").prop("required", false);
+        //     // Réinitialiser le champ "Examen de Référence Interne"
+        //     $("#examen_reference_select").val('');
+
+        //     $("#examen_reference_input").prop("required", true);
+
+        // } else if (typeExamenOption == "Immuno Interne") {
+        //     // Si "Immuno Interne" est sélectionné, masquer le champ "Examen de Référence Externe" et afficher le champ "Examen de Référence Interne"
+        //     $(".examenReferenceInputExterne").hide();
+        //     $(".examenReferenceInputInterne").show();
+        //     // Désactiver le champ "Examen de Référence Externe"
+        //     $("#examen_reference_input").prop("required", false);
+        //     // Réinitialiser le champ "Examen de Référence Externe"
+        //     $("#examen_reference_input").val('');
+
+        //     $("#examen_reference_select").prop("required", true);
+
+        // } else {
+        //     // Si aucune des options spécifiques n'est sélectionnée, cacher les deux champs
+        //     // $(".examenReferenceInputExterne").hide();
+        //     // $(".examenReferenceInputInterne").hide();
+        //     // // Activer les deux champs au cas où ils ont été désactivés
+        //     // $("#examen_reference_select").prop("disabled", false);
+        //     // $("#examen_reference_input").prop("disabled", false);
+        //     // // Réinitialiser les deux champs
+        //     // $("#examen_reference_select").val('');
+        //     // $("#examen_reference_input").val('');
+        //     $(".examenReferenceInputExterne, .examenReferenceInputInterne").hide();
+        //     $("#examen_reference_input").prop("required", false).val('');
+        //     $("#examen_reference_select").prop("required", false).val('');
+        // }
     }
 
     // Appeler la fonction lors du chargement initial de la page

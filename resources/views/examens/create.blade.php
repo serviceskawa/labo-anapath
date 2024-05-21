@@ -95,7 +95,7 @@
                         <div class="examenReferenceInputExterne mt-3" style="display: none !important">
                             <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
                                     style="color:red;">*</span></label>
-                            <input type="text" name="examen_reference_input" class="form-control" required  id="examen_reference_input"
+                            <input type="text" name="examen_reference_input" class="form-control"   id="examen_reference_input"
                                 placeholder="Saisir l'examen de reference" >
                         </div>
 
@@ -103,7 +103,7 @@
                             <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
                                     style="color:red;">*</span></label>
 
-                            <select class="form-select select2" data-toggle="select2"  required  id="examen_reference_select"
+                            <select class="form-select select2" data-toggle="select2"    id="examen_reference_select"
                                 name="examen_reference_select">
                                 <option value="" disabled selected>Sélectionner l'examen de Référence</option>
                                 @forelse ($test_orders as $test_order)
