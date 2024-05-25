@@ -47,6 +47,7 @@ use App\Http\Controllers\ProblemCategoryController;
 use App\Http\Controllers\ProblemeReportersController;
 use App\Http\Controllers\RefundRequestController;
 use App\Http\Controllers\EmployeeDocumentController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SettingAppController;
 use App\Http\Controllers\SettingReportTemplateController;
 use App\Http\Controllers\SignalController;
@@ -431,6 +432,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/index', [InvoiceController::class, 'getInvoiceIndexForDatable'])->name('invoice.getInvoiceIndexforDatatable');
         Route::get('/checkCode', [InvoiceController::class, 'checkCode']);
         Route::get('/getInvoice/{id}', [InvoiceController::class, 'getInvoice']);
+
+        Route::post('/payment/store', [PaymentController::class, 'store'])->name('payment.store');
+        Route::get('/payment/store/storejs', [PaymentController::class, 'storejs'])->name('payment.storejs');
+        Route::get('/payment/check/payement', [PaymentController::class, 'checkPaymentStatus'])->name('payment.checkPaymentStatus');
+
         // Route::post('/filter', [InvoiceController::class, 'filter'])->name('invoice.filter');
         // Route::get('/testchiffres', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('invoice.getInvoiceforDatatable');
     });

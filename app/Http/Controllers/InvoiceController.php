@@ -15,10 +15,15 @@ use App\Models\Setting;
 use App\Models\SettingInvoice;
 use App\Models\TestOrder;
 use Carbon\Carbon;
+use Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request as GuzzleRequest; // Renommez la classe Request de Guzzle pour éviter les conflits avec la classe Request de Laravel
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables as FacadesDataTables;
+
 
 class InvoiceController extends Controller
 {
@@ -226,6 +231,31 @@ class InvoiceController extends Controller
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }
+
+
+    // public function Payment(Request $request)
+    // {
+    //     $client = new Client();
+
+    //     $headers = [
+    //         'Content-Type' => 'application/json',
+    //         'Accept' => 'application/json',
+    //         'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZjYjU5YjU0LTIzMjAtNDM4Ny1hYzA2LTViNDUxN2JmN2Y0NyIsImlhdCI6MTcxNTg2MDEzM30.T4XlIq7YXnM06hjYIqM_5ASXKMTJv5Ore8aCWYVt-qE'
+    //     ];
+
+        // $body = json_encode([
+        //     "tel" => $request->numero_de_telephone,
+        //     "amount" => $request->amount_payer,
+        //     "description" => "Description"
+        // ]);
+
+    //     $request = new GuzzleRequest('POST', 'https://pay.sckaler.cloud/api/collection/mtn', $headers, $body);
+    //     $res = $client->send($request);
+
+    //     dd($res);
+    //     return $res->getBody()->getContents();
+
+    // }
 
     /**
      * Display the specified resource.
@@ -605,24 +635,24 @@ class InvoiceController extends Controller
     // Met à jour le statut paid pour le payement
     public function updateStatus(Request $request,$id)
     {
-
         $invoice = $this->invoices->findorfail($id);
         $settingInvoice = $this->settingInvoice->find(1);
 
         if ($invoice->paid == 1) {
-
             return redirect()->back()->with('success', "Cette facture a déjà été payé ! ");
         } else {
 
-            // if ($invoice->test_order_id) {
+                // Si facture normaliser est activé
                 if ($settingInvoice->status == 1) {
                     $invoice->fill([
                         "paid" => '1',
-                        'payment' => $request->payment
+                        "payment" => $request->payment
                     ])->save();
+
                     $cash = Cashbox::find(2);
                     $cash->current_balance += $invoice->total;
                     $cash->save();
+
                     CashboxAdd::create([
                         'cashbox_id' => 2,
                         'date' => Carbon::now(),
@@ -630,29 +660,38 @@ class InvoiceController extends Controller
                         'invoice_id' => $invoice->id,
                         'user_id' => Auth::user()->id
                     ]);
+
                     if ($invoice->contrat) {
                         if ($invoice->contrat->invoice_unique ==0) {
                             $invoice->contrat->is_close = 1;
                             $invoice->contrat->save();
                         }
                     }
-                    if ($invoice->test_order_id != null) {
-                        // return response()->json('cool');
 
+                    if ($invoice->test_order_id != null) {
                         return response()->json(invoiceNormeTest($invoice->test_order_id));
-                        // return response()->json('Pas une demande d\'examen');
                     }
+
                 } else {
+
+                 
+
+
+
+
                     $invoice->fill([
                         "paid" => '1',
                         'payment' => $request->payment,
-                        "code_normalise" => $request->code
+                        "code_normalise" => $request->code,
+                        "payment_name" => $request->payment
                         ])->save();
+
                     if ($invoice->status_invoice !=1) {
 
                         $cash = Cashbox::find(2);
                         $cash->current_balance += $invoice->total;
                         $cash->save();
+
                         CashboxAdd::create([
                             'cashbox_id' => 2,
                             'date' => Carbon::now(),
@@ -660,11 +699,9 @@ class InvoiceController extends Controller
                             'invoice_id' => $invoice->id,
                             'user_id' => Auth::user()->id
                         ]);
+
                     } else {
-                        // $refund = null;
-                        // if ($invoice->status_invoice==1) {
-                        //     $refund = RefundRequest::where('invoice_id',$invoice->reference)->first();
-                        // }
+
                         $cash = Cashbox::find(1);
                         $cash->current_balance -= $invoice->total;
                         $cash->save();
@@ -672,9 +709,9 @@ class InvoiceController extends Controller
                             'cashbox_id' => 1,
                             'date' => Carbon::now(),
                             'amount' => $invoice->total,
-                            // 'attachement' => $refund->attachment,
                             'user_id' => Auth::user()->id
                         ]);
+
                     }
 
                     if ($invoice->contrat) {
@@ -685,11 +722,7 @@ class InvoiceController extends Controller
                     }
 
                     return response()->json(['code'=> $request->code]);
-                    // return redirect()->route('invoice.show', [$invoice->id])->with('success', " Opération effectuée avec succès  ! ");
                 }
-            // } else {
-            //     return response()->json('Pas une demande d\'examen');
-            // }
 
         }
     }

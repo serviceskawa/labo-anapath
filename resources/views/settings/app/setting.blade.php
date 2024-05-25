@@ -69,6 +69,13 @@
                                 <span class="d-none d-sm-inline">Banques</span>
                             </a>
                         </li>
+
+                        <li class="side-nav-item">
+                            <a href="#basictab7" id="payment" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
+                                <i class="mdi mdi-cash-multiple me-1"></i>
+                                <span class="d-none d-sm-inline">Parametres de paiement</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
 
@@ -80,6 +87,43 @@
                     </div>
                     <div class="card">
                         <div class="card-body tab-content b-0 mb-0">
+
+                            {{-- Moyen de paiement debut --}}
+                            <div class="tab-pane" id="basictab7">
+                                <form action="{{route('settings.store')}}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="nbrform" value="7">
+                                    <div class="row">
+                                      
+                                        <div class="col-6 mb-3">
+                                            <label for="simpleinput" class="form-label">Nom du moyen de paiement</label>
+                                            <input type="text" id="simpleinput" placeholder="Nom du moyen de paiement" value="{{$payment_name->value}}" name="payment_name" class="form-control">
+                                        </div>
+
+                                        <div class="col-6 mb-3">
+                                            <label for="simpleinput" class="form-label">Cle publique</label>
+                                            <input type="text" placeholder="Cle public" value="{{$public_key->value}}" name="public_key" id="simpleinput" class="form-control">
+                                        </div>
+
+                                        <div class="col-6 mb-3">
+                                            <label for="simpleinput" class="form-label">Cle privee</label>
+                                            <input type="text" placeholder="Cle privee" value="{{$private_key->value}}" name="private_key" id="simpleinput" class="form-control">
+                                        </div>
+
+                                        <div class="col-6 mb-3">
+                                            <label for="simpleinput" class="form-label">Cle secret</label>
+                                            <input type="text" placeholder="Cle secret" value="{{$secret_key->value}}" name="secret_key" id="simpleinput" class="form-control">
+                                        </div>
+
+                                    </div> 
+                                    <div style="padding-bottom: 10px;padding-top:10px">
+                                        <button class="btn btn-primary">Enregistrer <i class="mdi mdi-check-all"></i></button>
+                                    </div>
+                                </form>
+                            </div>
+                            {{-- Moyen de paiement fin --}}
+
+
 
                             <div class="tab-pane" id="basictab1">
                                 <form action="{{route('settings.store')}}" method="post" enctype="multipart/form-data">
@@ -273,7 +317,7 @@
                                             <label for="simpleinput" class="form-label">Lien ourvoice SMS</label>
                                             <input type="text" value="{{$link_ourvoice_sms->value}}" name="link_ourvoice_sms" placeholder="Lien de l'API OURVOICE pour les SMS" id="simpleinput" class="form-control">
                                         </div>
-                                    </div> <!-- end row -->
+                                    </div> 
                                     <div style="padding-bottom: 10px;padding-top:10px">
                                         <button class="btn btn-primary">Enrégistrer <i class="mdi mdi-check-all"></i></button>
                                     </div>
@@ -359,7 +403,6 @@
 
                                     <input type="hidden" name="nbrform" value="1">
                                     <div id="basicwizard5">
-
                                         <ul class="nav nav-pills nav-justified form-wizard-header mb-4">
                                             <li class="nav-item">
                                                 <a href="#general3" id="generalcr" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
@@ -374,7 +417,6 @@
                                                 </a>
                                             </li>
                                         </ul>
-
                                         <div class="tab-content1 b-0 mb-0">
                                             <div class="tab-pane" id="general3" style="display: block">
                                                 <form action="{{route('settings.store')}}" method="post" enctype="multipart/form-data">
@@ -473,11 +515,15 @@
                                                     </div>
                                                 </div> <!-- end card-->
                                             </div>
-                                        </div> <!-- tab-content -->
-                                    </div> <!-- end #basicwizard-->
-
-
+                                        </div> 
+                                    </div>
                             </div>
+
+
+                            
+
+
+                            
 
                         </div> <!-- tab-content -->
                     </div>
@@ -504,6 +550,7 @@
     var general2 = document.getElementById('general2');
     var general3 = document.getElementById('general3');
     var general4 = document.getElementById('general4');
+    var general7 = document.getElementById('general7');
     $('#general').on('click', function(){
         titleHeader.textContent = "Général"
     })
@@ -512,6 +559,9 @@
     })
     $('#mobile').on('click', function(){
         titleHeader.textContent = "Communication mobile"
+    })
+    $('#payment').on('click', function(){
+        titleHeader.textContent = "Parametres de paiement"
     })
     $('#bank').on('click', function(){
         titleHeader.textContent = "Banques"

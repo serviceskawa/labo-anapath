@@ -24,7 +24,7 @@
 <!-- end page title -->
 
 <div class="row">
-    <div class="col-9">
+    <div class="col-12">
         <div class="card">
             <div class="card-body">
 
@@ -225,7 +225,7 @@
                                     <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
                                         value="ESPECES">ESPECES</option>
                                     <option {{ $invoice->payment == 'MOBILEMONEY' ? 'selected' : '' }}
-                                        value="MOBILEMONEY">MOBILE MONEY - MTN</option>
+                                        value="MOBILEMONEY">MOBILE MONEY</option>
 
                                     <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
                                         value="CHEQUES">CHEQUES</option>
@@ -235,7 +235,6 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="col-md-4 col-12">
                             <div class="mb-3">
                                 <label class="form-label">Code de la facture normalisée</label>
@@ -243,7 +242,6 @@
                                     maxlength="24" id="code" class="form-control">
                             </div>
                         </div>
-
                         <div class="col-md-4 col-12">
                             @if ($cashbox->statut==0)
                             <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -261,136 +259,31 @@
                         </div>
                     </div>
 
-                    {{-- Calcule du montant du avec 1,7 --}}
-                    @php
-                    $invoice_total_recuperer = $invoice->total;
-                    $total_a_payer = ($invoice_total_recuperer) + ($invoice_total_recuperer * 0.017);
-                    @endphp
+
                     <div class="row d-flex align-items-end" id="payerButton" style="visibility: hidden;">
-
-                        <div class="col-md-4 col-12">
-                            <input type="number" name="numero_de_telephone" placeholder="Numero de telephone : xxxxxxxx"
-                                id="numero_de_telephone" class="form-control" minlength="8" maxlength="8">
-                        </div>
-
-                        <div class="col-md-4 col-12" style="visibility: hidden;">
-                            <input type="number" name="amount_payer" placeholder="Montant a payer"
-                                value="{{ $total_a_payer }}" id="amount_payer" class="form-control">
-                        </div>
-
-                    </div>
-
-
-
-                    {{-- <form action="{{ route('invoice.payment_mobile_money') }}" method="post">
-                        <div class="row d-flex align-items-end" id="payerButton" style="visibility: hidden;">
+                        <form actionc="{{ route('invoice.payment_mobile_money') }}" method="post">
                             @csrf
-                            <div class="col-md-1 col-12">
-                                <button type="submit" class="btn btn-warning">Payer</button>
-                            </div>
+                            <div class="col-md-4 col-12">
 
-                            <div class="col-md-3 col-12">
-                                <input type="amount" name="numero_de_telephone"
-                                    placeholder="Numero de telephone : 229xxxxxxxx" id="numero_de_telephone"
-                                    class="form-control">
                             </div>
 
                             <div class="col-md-4 col-12">
-                                <input type="hidden" name="amount_payer" placeholder="Montant a payer"
-                                    value="{{ number_format(abs($invoice->total), 0, ',', ' ') }}" id="amount_payer"
+                                <input type="amount" name="numero_de_telephone" placeholder="Numero de telephone"
+                                    id="numero_de_telephone" class="form-control">
+                            </div>
+
+                            <div class="col-md-4 col-12">
+                                <input type="amount" name="amount_payer" placeholder="Montant a payer" id="amount_payer"
                                     class="form-control">
                             </div>
-
-                        </div>
-                    </form> --}}
-
-
-                </div>
-                @endif
-                @endif
-                @endif
-            </div>
-        </div>
-    </div>
-
-    <div class="col-3">
-        <div class="card">
-            <div class="card-body">
-
-                <div class="clearfix mb-3">
-                    <div class="text-start">
-                        <h4 class="m-0 d-print-none">Encaisser par Mobile Money</h4>
+                        </form>
                     </div>
+
+
                 </div>
-
-                @php
-                    $total_a_payer = ajouterPourcentage($invoice->total);
-                    $invoiceVerify = App\Models\Payment::where('invoice_id', $invoice->id)->first();
-                @endphp
-
-            @if($invoiceVerify && $invoiceVerify->payment_status == "SUCCESS")
-                <p style="color: green;">Paiement encaissé le {{ $invoiceVerify->updated_at }} avec le numéro de paiement {{ $invoiceVerify->payment_number }} .</p>
-            @else     
-                <div class="row mb-3">
-                    {{-- <form action="{{ route('payment.store') }}" method="post">
-                        @csrf --}}
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3 col-12">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="mtn" name="payment_method"
-                                        value="MTN">
-                                    <label class="form-check-label" for="mtn">MTN BENIN</label>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-3 col-12">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="moov" name="payment_method"
-                                        value="MOOV">
-                                    <label class="form-check-label" for="moov">Moov BENIN</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 mb-3 col-12">
-                            <input type="number" name="payment_number" placeholder="Numero de telephone : xxxxxxxx"
-                                id="payment_number" value="{{ $invoice->patient->telephone1 }}"
-                                class="form-control" minlength="8" maxlength="8">
-                        </div>
-
-
-
-                       
-                        <input type="hidden" name="amount_payer" placeholder="Montant a payer"
-                            value="{{ $total_a_payer }}" id="amount_payer" class="form-control">
-
-
-                        <input type="hidden" name="invoice_id" value="{{ $invoice->id }}" id="invoice_id"
-                            class="form-control">
-
-                        @if($invoiceVerify  && ($invoiceVerify->payment_status == "INITIATED" || $invoiceVerify->payment_status == "PENDING"))
-                       
-                        <div class="col-md-12 mb-3 col-12">
-                            <button id="checkPaymentStatusBtn" onclick="checkPaymentStatus()" class="btn btn-primary">Vérifier
-                                le statut du paiement</button>
-                        </div>
-
-                        @else
-                        <div class="col-md-12 mb-3 col-12">
-                            <button type="button" onclick="paymentMethod()" id="encaisserButton"
-                                class="btn btn-warning">Encaisser</button>
-                        </div>
-                        @endif
-
-                       
-
-                        <p id="messageinitiation"></p>
-
-                        {{--
-                    </form> --}}
-                </div>
-            @endif
+                @endif
+                @endif
+                @endif
             </div>
         </div>
     </div>
@@ -413,13 +306,11 @@
         var ROUTECONFIRMINVOICE = "{{ route('invoice.confirmInvoice') }}"
         var TOKENCONFIRMINVOICE = "{{ csrf_token() }}"
         var ROUTEINVOICEINDEX = "{{ route('invoice.index') }}"
-        var ROUTEINVOICESHOW = "{{ route('invoice.show', ':id') }}";
 </script>
 <script>
     function updateStatus(id) {
             var code = $('#code').val();
             var payment = $('#payment').val();
-        
             if (code == "") {
                 toastr.error("Code normalisé requis", 'Code normalisé');
             } else if (code.length < 24 || code.length > 24) {
@@ -439,15 +330,13 @@
                                 type: "GET",
                                 data: {
                                     code: code,
-                                    payment: payment,
-                                    amount_payer : amount_payer,
-                                    numero_de_telephone : numero_de_telephone
+                                    payment: payment
                                 },
                                 success: function(response) {
+                                    // alert(response.code);
                                     console.log(response);
-                                   
-                                        window.location.href = ROUTEINVOICEINDEX;
-                                   
+                                    window.location.href = ROUTEINVOICEINDEX;
+                                    // location.reload();
                                 },
                                 error: function(response) {
                                     console.log('error', response);
@@ -467,141 +356,25 @@
         }
 
 
-//         function togglePayerButton() {
-//             var paymentMethod = $('#payment').val();
+        function togglePayerButton() {
+    var paymentMethod = $('#payment').val();
 
-//             if (paymentMethod === "MOBILEMONEY" || paymentMethod === "MOOVMONEY") {
-//                 $('#payerButton').css('visibility', 'visible'); // Rend le bouton visible
-//             } else {
-//                 $('#payerButton').css('visibility', 'hidden'); // Rend le bouton caché
-//             }
-//         }
-
-// // Initialize the state of the payer button on page load
-// $(document).ready(function() {
-//     togglePayerButton();
-
-//     $('#payment').change(function() {
-//         togglePayerButton();
-//     });
-// });
-
-
-
-function paymentMethod()
-{
-    // Sélectionner les cases à cocher
-    const mtnCheckbox = document.getElementById('mtn');
-    const moovCheckbox = document.getElementById('moov');
-
-    // Récupérer la valeur de la case à cocher cochée
-    let paymentMethod = '';
-    if (mtnCheckbox.checked) {
-        paymentMethod = mtnCheckbox.value;
-    } else if (moovCheckbox.checked) {
-        paymentMethod = moovCheckbox.value;
+    if (paymentMethod === "MOBILEMONEY") {
+        $('#payerButton').css('visibility', 'visible'); // Rend le bouton visible
+    } else {
+        $('#payerButton').css('visibility', 'hidden'); // Rend le bouton caché
     }
-
-    var invoice_id = $('#invoice_id').val();
-    var amount_payer = $('#amount_payer').val();
-    var payment_number = $('#payment_number').val();
-    var payment_method = paymentMethod;
-
-    console.log(payment_number, payment_method, amount_payer, invoice_id);
-    
-    $.ajax({
-            url: baseUrl + "/invoices/payment/store/storejs",
-            type: "GET",
-            data: {
-                invoice_id: invoice_id,
-                amount_payer: amount_payer,
-                payment_number : payment_number,
-                payment_method : payment_method
-            },
-            success: function(response) {
-                console.log(response);
-                                    
-               // Vérifiez si la réponse contient "SUCCESS"
-                if (response.message === "INITIATED") {
-                    // Mettre à jour le paragraphe avec le message de réussite
-                    $('#messageinitiation').text("#1 - Paiement initié, en attente de confirmation du client").css('color', '#FFA500');
-                    $('#encaisserButton').css('display', 'none');
-                    $('#checkPaymentStatusBtn').css('display', 'block');
-                } else  if (response.message === "FAILURED") {
-                    // Mettre à jour le paragraphe avec le message d'échec
-                    $('#messageinitiation').text("Échec de l'initiation du paiement. Réessayez ou contactez le support.").css('color', 'red');
-                }
-                                        
-            },
-            error: function(response) {
-                console.log('error', response);
-            }
-        });
 }
 
+// Initialize the state of the payer button on page load
+$(document).ready(function() {
+    togglePayerButton();
 
-
-
-function checkPaymentStatus()
-{
-    var invoice_id = $('#invoice_id').val();
-    console.log(invoice_id);
-    $.ajax({
-            url: baseUrl + "/invoices/payment/check/payement",
-            type: "GET",
-            data: {
-                invoice_id: invoice_id,
-            },
-            success: function(response) {
-                console.log(response);
-                                    
-               // Vérifiez si la réponse contient "SUCCESS"
-                if (response.message === "PENDING") {
-                    // Mettre à jour le paragraphe avec le message de réussite
-                    $('#messageinitiation').text("#2 - Le paiement est en attente de confirmation.").css('color', '#FFA500');
-                    $('#checkPaymentStatusBtn').css('display', 'block');
-                } else  if (response.message === "SUCCESS") {
-                    // Mettre à jour le paragraphe avec le message d'échec
-                    $('#messageinitiation').text("#3 - Le paiement a été traité avec succès.").css('color', 'green');
-                    $('#checkPaymentStatusBtn').css('display', 'none');
-                    // 97819176
-                }else  if (response.message === "FAILED") {
-                    // Mettre à jour le paragraphe avec le message d'échec
-                    $('#messageinitiation').text("#3 - Le paiement a été traité avec succès.").css('color', 'green');
-                    $('#encaisserButton').css('display', 'block');
-                }
-                                        
-            },
-            error: function(response) {
-                console.log('error', response);
-            }
-        });
-}
-
-
-</script>
-
-
-<script>
-    // Sélectionner les cases à cocher
-    const mtnCheckbox = document.getElementById('mtn');
-    const moovCheckbox = document.getElementById('moov');
-
-    // Ajouter un écouteur d'événements de clic à la case à cocher MTN
-    mtnCheckbox.addEventListener('click', function() {
-        // Si la case à cocher MTN est cochée, décocher la case à cocher Moov
-        if (mtnCheckbox.checked) {
-            moovCheckbox.checked = false;
-        }
+    $('#payment').change(function() {
+        togglePayerButton();
     });
+});
 
-    // Ajouter un écouteur d'événements de clic à la case à cocher Moov
-    moovCheckbox.addEventListener('click', function() {
-        // Si la case à cocher Moov est cochée, décocher la case à cocher MTN
-        if (moovCheckbox.checked) {
-            mtnCheckbox.checked = false;
-        }
-    });
 </script>
 
 

@@ -337,18 +337,14 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+        
         $test_order = TestOrder::findorfail($id);
         $settings = Setting::find(1);
 
         if ($test_order->status) {
-
             return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
-
         } else {
-            // Ancien algorithme
-            // $code = sprintf('%04d', $test_order->id);  "DE22-" . $code
-            // dd($code);
-
+           
             $test_order->fill(["status" => '1', "code" => generateCodeExamen()])->save();
 
             $report = Report::create([

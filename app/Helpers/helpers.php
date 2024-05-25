@@ -595,6 +595,21 @@ if(!function_exists('isAffecteRefence')){
 }
 
 
+if(! function_exists('ajouterPourcentage'))
+{
+    function ajouterPourcentage($valeur) {
+        $pourcentage = 1.7;
+        $valeurAvecPourcentage = $valeur + ($valeur * ($pourcentage / 100));
+
+        // Convertir le nombre en float pour s'assurer qu'il est traité comme un nombre décimal
+        $number = floatval($valeurAvecPourcentage);
+
+        // Utiliser la fonction ceil pour arrondir au nombre entier supérieur si le nombre a une partie décimale
+        return ceil($number);
+    }
+}
+
+
 if(!function_exists('dateLimite')){
     function dateLimite($date){
         $formattedDate = Carbon::parse($date)->format('Y-m-d');

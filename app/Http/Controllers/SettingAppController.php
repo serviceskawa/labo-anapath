@@ -20,6 +20,13 @@ class SettingAppController extends Controller
         $prefixe_code_demande_examen = $this->setting->where('key','prefixe_code_demande_examen')->first();
         $devise = $this->setting->where('key','devise')->first();
         $adress = $this->setting->where('key','adress')->first();
+
+        $payment_name = $this->setting->where('key','payment_name')->first();
+        $public_key = $this->setting->where('key','public_key')->first();
+        $private_key = $this->setting->where('key','private_key')->first();
+        $secret_key = $this->setting->where('key','secret_key')->first();
+
+
         $phone = $this->setting->where('key','phone')->first();
         $email = $this->setting->where('key','email')->first();
         $web_site = $this->setting->where('key','web_site')->first();
@@ -44,6 +51,7 @@ class SettingAppController extends Controller
         $titles = TitleReport::latest()->get();
 
         return view('settings.app.setting', compact(
+            'payment_name','public_key','private_key','secret_key',
             'app_name', 'prefixe_code_demande_examen', 'devise', 'adress', 'phone', 'email', 'web_site', 'footer','banks', 'titles',
             'email_host', 'username', 'email_port', 'password', 'encryption', 'from_name', 'from_adresse','mail','service',
             'api_sms', 'link_api_sms', 'key_ourvoice', 'link_ourvoice_call', 'link_ourvoice_sms','report_footer','report_review_title'
@@ -52,9 +60,9 @@ class SettingAppController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request);
+        // dd($request->nbrform);
         // Récupérez les valeurs directement à partir de la demande HTTP
-        $nbr = $request->nbrform;
+        $nbr = intval($request->nbrform);
         $appNameValue = $request->input('app_name');
         $prefixeCodeDemandeExamenValue = $request->input('prefixe_code_demande_examen');
         $deviseValue = $request->input('devise');
@@ -80,8 +88,13 @@ class SettingAppController extends Controller
         $mails = $request->input('mails');
         $services = $request->input('services');
 
-        // Mettez à jour les enregistrements dans la base de données
+        $payment_name_value = $request->input('payment_name');
+        $public_key_value = $request->input('public_key');
+        $private_key_value = $request->input('private_key');
+        $secret_key_value = $request->input('secret_key');
 
+
+        // Mettez à jour les enregistrements dans la base de données
         switch ($nbr) {
             case 1:
                 # code...
@@ -209,6 +222,20 @@ class SettingAppController extends Controller
                 $report_review_title = $this->setting->where('key', 'report_review_title')->first();
                 $report_review_title ?  $report_review_title->update(['value' => $report_review_titleValue]): '';
                 break;
+
+            case 7 :
+
+                $payment_name = $this->setting->where('key', 'payment_name')->first();
+                $payment_name ?  $payment_name->update(['value' => $payment_name_value]): '';
+
+                $public_key = $this->setting->where('key', 'public_key')->first();
+                $public_key ?  $public_key->update(['value' => $public_key_value]): '';
+
+                $private_key = $this->setting->where('key', 'private_key')->first();
+                $private_key ?  $private_key->update(['value' => $private_key_value]): '';
+
+                $secret_key = $this->setting->where('key', 'secret_key')->first();
+                $secret_key ?  $secret_key->update(['value' => $secret_key_value]): '';
 
             default:
             break;
