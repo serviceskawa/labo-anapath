@@ -632,7 +632,13 @@ if(! function_exists('ajouterPourcentage'))
         $number = floatval($valeurAvecPourcentage);
 
         // Utiliser la fonction ceil pour arrondir au nombre entier supérieur si le nombre a une partie décimale
-        return ceil($number);
+        $roundedNumber = ceil($number);
+
+        return [
+            'number' => $number,
+            'fee' => $fee,
+            'roundedNumber' => $roundedNumber
+        ];
     }
 }
 

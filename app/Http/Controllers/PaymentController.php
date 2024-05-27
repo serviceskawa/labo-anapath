@@ -66,7 +66,7 @@ class PaymentController extends Controller
             $body = json_encode([
                 "tel" => "229".$payment_number,
                 "amount" =>  $amount_payer,
-                "description" => "Code Anapath : ". $invoice_code_examen->order->code ."Frais : "
+                "description" => "Code Anapath : ". $invoice_code_examen->order->code ." Frais : ".$request->get('fee')
             ]);
 
             
@@ -108,6 +108,7 @@ class PaymentController extends Controller
                         $payment->payment_amount = $amount_payer;
                         $payment->payment_id = $transaction_id;
                         $payment->invoice_id = $request->invoice_id;
+                        $payment->description = "Code Anapath : ". $invoice_code_examen->order->code ." Frais : ".$request->get('fee');
                         $payment->save();
                     
                         DB::commit();

@@ -216,7 +216,7 @@
                 @else
 
                 @if (getOnlineUser()->can('view-cashier'))
-                @if ($settingInvoice != null && $invoice->paid != 1)
+                @if ($settingInvoice != null && $invoice->paid != 1 && $invoiceVerify)
                 <div>
                     <div class="row d-flex align-items-end">
                         @if($invoiceVerify->payment_name != "MOBILEMONEY-MTN" && $invoiceVerify->payment_name != "MOBILEMONEY-MOOV")
@@ -356,10 +356,13 @@
                     <div class="col-md-12 mb-3 col-12">
                         <label for="">Montant a payer</label>
                         <input type="number" name="amount_payer" placeholder="Montant a payer"
-                            value="{{ $total_a_payer }}" id="amount_payer" class="form-control" readonly>
+                            value="{{ $total_a_payer['roundedNumber'] }}" id="amount_payer" class="form-control" readonly>
                     </div>
 
                     <input type="hidden" name="invoice_id" value="{{ $invoice->id }}" id="invoice_id"
+                        class="form-control">
+
+                        <input type="hidden" name="fee" value="{{ $total_a_payer['fee'] }}" id="fee"
                         class="form-control">
 
 
@@ -513,6 +516,7 @@ function paymentMethod()
     var amount_payer = $('#amount_payer').val();
     var payment_number = $('#payment_number').val();
     var payment_method = paymentMethod;
+    var fee = $('#fee').val();
 
     console.log(payment_number, payment_method, amount_payer, invoice_id);
     
@@ -523,7 +527,8 @@ function paymentMethod()
                 invoice_id: invoice_id,
                 amount_payer: amount_payer,
                 payment_number : payment_number,
-                payment_method : payment_method
+                payment_method : payment_method,
+                fee : fee,
             },
             success: function(response) {
                 console.log(response);
