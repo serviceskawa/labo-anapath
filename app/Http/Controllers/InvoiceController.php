@@ -683,7 +683,6 @@ class InvoiceController extends Controller
                         "paid" => '1',
                         'payment' => $request->payment,
                         "code_normalise" => $request->code,
-                        "payment_name" => $request->payment
                         ])->save();
 
                     if ($invoice->status_invoice !=1) {

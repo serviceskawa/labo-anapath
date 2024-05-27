@@ -597,15 +597,51 @@ if(!function_exists('isAffecteRefence')){
 
 if(! function_exists('ajouterPourcentage'))
 {
-    function ajouterPourcentage($valeur) {
-        $pourcentage = 1.7;
-        $valeurAvecPourcentage = $valeur + ($valeur * ($pourcentage / 100));
+    function ajouterPourcentage($amount_payer) {
+        if ($amount_payer >= 1 && $amount_payer <= 500) {
+            $fee = 0;
+        } elseif ($amount_payer >= 501 && $amount_payer <= 5000) {
+            $fee = 100;
+        } elseif ($amount_payer >= 5001 && $amount_payer <= 10000) {
+            $fee = 200;
+        } elseif ($amount_payer >= 10001 && $amount_payer <= 20000) {
+            $fee = 350;
+        } elseif ($amount_payer >= 20001 && $amount_payer <= 50000) {
+            $fee = 700;
+        } elseif ($amount_payer >= 50001 && $amount_payer <= 100000) {
+            $fee = 1000;
+        } elseif ($amount_payer >= 100001 && $amount_payer <= 200000) {
+            $fee = 2000;
+        } elseif ($amount_payer >= 200001 && $amount_payer <= 300000) {
+            $fee = 3000;
+        } elseif ($amount_payer >= 300001 && $amount_payer <= 500000) {
+            $fee = 3500;
+        } elseif ($amount_payer >= 500001 && $amount_payer <= 750000) {
+            $fee = 5000;
+        } elseif ($amount_payer >= 750001 && $amount_payer <= 1000000) {
+            $fee = 6000;
+        } elseif ($amount_payer >= 1000001 && $amount_payer <= 1500000) {
+            $fee = 8000;
+        } elseif ($amount_payer >= 1500001 && $amount_payer <= 2000000) {
+            $fee = 9900;
+        } 
+
+        $valeurAvecPourcentage = $amount_payer + $fee;
 
         // Convertir le nombre en float pour s'assurer qu'il est traité comme un nombre décimal
         $number = floatval($valeurAvecPourcentage);
 
         // Utiliser la fonction ceil pour arrondir au nombre entier supérieur si le nombre a une partie décimale
         return ceil($number);
+    }
+}
+
+if(!function_exists('changeMethodPayment')){
+    function changeMethodPayment($invoice_id, $methodPayment){
+        $invoice = Invoice::findOrFail(intval($invoice_id));
+
+        $invoice->payment = "ESPECES";
+        $invoice->save();
     }
 }
 

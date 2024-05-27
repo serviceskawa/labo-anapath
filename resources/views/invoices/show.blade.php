@@ -81,7 +81,10 @@
                     </div><!-- end col -->
                 </div>
                 <!-- end row -->
-
+                @php
+                $total_a_payer = ajouterPourcentage($invoice->total);
+                $invoiceVerify = App\Models\Payment::where('invoice_id', $invoice->id)->first();
+                @endphp
                 <div class="row">
                     <div class="col-12">
                         <div>
@@ -216,6 +219,7 @@
                 @if ($settingInvoice != null && $invoice->paid != 1)
                 <div>
                     <div class="row d-flex align-items-end">
+                        @if($invoiceVerify->payment_name != "MOBILEMONEY-MTN" && $invoiceVerify->payment_name != "MOBILEMONEY-MOOV")
                         <div class="col-md-4 col-12">
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">Type de
@@ -224,8 +228,12 @@
                                     value="{{ $invoice->payment }}" id="payment" required>
                                     <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
                                         value="ESPECES">ESPECES</option>
-                                    <option {{ $invoice->payment == 'MOBILEMONEY' ? 'selected' : '' }}
-                                        value="MOBILEMONEY">MOBILE MONEY - MTN</option>
+
+                                    <option {{ $invoiceVerify->payment_name == 'MOBILEMONEY-MTN' ? 'selected' : '' }}
+                                        value="MOBILEMONEY-MTN">MOBILE MONEY - MTN</option>
+
+                                    <option {{ $invoiceVerify->payment_name == 'MOBILEMONEY-MOOV' ? 'selected' : '' }}
+                                        value="MOBILEMONEY-MOOV">MOBILE MONEY - MOOV</option>
 
                                     <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
                                         value="CHEQUES">CHEQUES</option>
@@ -235,6 +243,34 @@
                                 </select>
                             </div>
                         </div>
+
+                        @elseif (($invoiceVerify->payment_name == "MOBILEMONEY-MTN") || ($invoiceVerify->payment_name == "MOBILEMONEY-MOOV"))
+
+                        <div class="col-md-4 col-12">
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">Type de
+                                    paiement</label>
+                                <select class="form-select select2" data-toggle="select2" name="payment" disabled
+                                    value="{{ $invoice->payment }}" id="payment" required>
+                                    <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
+                                        value="ESPECES">ESPECES</option>
+
+                                    <option {{ $invoiceVerify->payment_name == 'MOBILEMONEY-MTN' ? 'selected' : '' }}
+                                        value="MOBILEMONEY-MTN" >MOBILE MONEY - MTN</option>
+
+                                    <option {{ $invoiceVerify->payment_name == 'MOBILEMONEY-MOOV' ? 'selected' : '' }}
+                                        value="MOBILEMONEY-MOOV">MOBILE MONEY - MOOV</option>
+
+                                    <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
+                                        value="CHEQUES">CHEQUES</option>
+
+                                    <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
+                                        value="VIREMENT">VIREMENT</option>
+                                </select>
+                            </div>
+                        </div>
+                        @endif
+
 
                         <div class="col-md-4 col-12">
                             <div class="mb-3">
@@ -260,51 +296,6 @@
                             @endif
                         </div>
                     </div>
-
-                    {{-- Calcule du montant du avec 1,7 --}}
-                    @php
-                    $invoice_total_recuperer = $invoice->total;
-                    $total_a_payer = ($invoice_total_recuperer) + ($invoice_total_recuperer * 0.017);
-                    @endphp
-                    <div class="row d-flex align-items-end" id="payerButton" style="visibility: hidden;">
-
-                        <div class="col-md-4 col-12">
-                            <input type="number" name="numero_de_telephone" placeholder="Numero de telephone : xxxxxxxx"
-                                id="numero_de_telephone" class="form-control" minlength="8" maxlength="8">
-                        </div>
-
-                        <div class="col-md-4 col-12" style="visibility: hidden;">
-                            <input type="number" name="amount_payer" placeholder="Montant a payer"
-                                value="{{ $total_a_payer }}" id="amount_payer" class="form-control">
-                        </div>
-
-                    </div>
-
-
-
-                    {{-- <form action="{{ route('invoice.payment_mobile_money') }}" method="post">
-                        <div class="row d-flex align-items-end" id="payerButton" style="visibility: hidden;">
-                            @csrf
-                            <div class="col-md-1 col-12">
-                                <button type="submit" class="btn btn-warning">Payer</button>
-                            </div>
-
-                            <div class="col-md-3 col-12">
-                                <input type="amount" name="numero_de_telephone"
-                                    placeholder="Numero de telephone : 229xxxxxxxx" id="numero_de_telephone"
-                                    class="form-control">
-                            </div>
-
-                            <div class="col-md-4 col-12">
-                                <input type="hidden" name="amount_payer" placeholder="Montant a payer"
-                                    value="{{ number_format(abs($invoice->total), 0, ',', ' ') }}" id="amount_payer"
-                                    class="form-control">
-                            </div>
-
-                        </div>
-                    </form> --}}
-
-
                 </div>
                 @endif
                 @endif
@@ -313,6 +304,12 @@
         </div>
     </div>
 
+
+
+
+    {{-- @if ( $invoiceVerify) --}}
+
+    {{-- @endif --}}
     <div class="col-3">
         <div class="card">
             <div class="card-body">
@@ -323,74 +320,84 @@
                     </div>
                 </div>
 
-                @php
-                    $total_a_payer = ajouterPourcentage($invoice->total);
-                    $invoiceVerify = App\Models\Payment::where('invoice_id', $invoice->id)->first();
-                @endphp
 
-            @if($invoiceVerify && $invoiceVerify->payment_status == "SUCCESS")
-                <p style="color: green;">Paiement encaissé le {{ $invoiceVerify->updated_at }} avec le numéro de paiement {{ $invoiceVerify->payment_number }} .</p>
-            @else     
+
+                @if($invoiceVerify && $invoiceVerify->payment_status == "SUCCESS")
+                <p style="color: green;">Paiement encaissé le {{ $invoiceVerify->updated_at }} avec le numéro de
+                    paiement {{ $invoiceVerify->payment_number }} .</p>
+                @else
                 <div class="row mb-3">
-                    {{-- <form action="{{ route('payment.store') }}" method="post">
-                        @csrf --}}
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3 col-12">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="mtn" name="payment_method"
-                                        value="MTN">
-                                    <label class="form-check-label" for="mtn">MTN BENIN</label>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-3 col-12">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="moov" name="payment_method"
-                                        value="MOOV">
-                                    <label class="form-check-label" for="moov">Moov BENIN</label>
-                                </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3 col-12">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="mtn" name="payment_method"
+                                    value="MOBILEMONEY-MTN">
+                                <label class="form-check-label" for="mtn">MTN BENIN</label>
                             </div>
                         </div>
 
-                        <div class="col-md-12 mb-3 col-12">
-                            <input type="number" name="payment_number" placeholder="Numero de telephone : xxxxxxxx"
-                                id="payment_number" value="{{ $invoice->patient->telephone1 }}"
-                                class="form-control" minlength="8" maxlength="8">
+                        <div class="col-md-6 mb-3 col-12">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="moov" name="payment_method"
+                                    value="MOBILEMONEY-MOOV">
+                                <label class="form-check-label" for="moov">Moov BENIN</label>
+                            </div>
                         </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3 col-12">
+                        <label for="">Numero de telephone</label>
+                        <input type="number" name="payment_number" placeholder="Numero de telephone : xxxxxxxx"
+                            id="payment_number" value="{{ $invoice->patient->telephone1 }}" class="form-control"
+                            minlength="8" maxlength="8">
+                    </div>
+
+                    <div class="col-md-12 mb-3 col-12">
+                        <label for="">Montant a payer</label>
+                        <input type="number" name="amount_payer" placeholder="Montant a payer"
+                            value="{{ $total_a_payer }}" id="amount_payer" class="form-control" readonly>
+                    </div>
+
+                    <input type="hidden" name="invoice_id" value="{{ $invoice->id }}" id="invoice_id"
+                        class="form-control">
 
 
+                    <div class="col-md-12  col-12">
+                        <button id="checkPaymentStatusBtn" onclick="checkPaymentStatus()" class="btn btn-primary"
+                            style="display: none;">Vérifier
+                            le statut du paiement</button>
+                    </div>
 
-                       
-                        <input type="hidden" name="amount_payer" placeholder="Montant a payer"
-                            value="{{ $total_a_payer }}" id="amount_payer" class="form-control">
 
+                    @if($invoiceVerify && ($invoiceVerify->payment_status == "INITIATED" ||
+                    $invoiceVerify->payment_status == "PENDING"))
 
-                        <input type="hidden" name="invoice_id" value="{{ $invoice->id }}" id="invoice_id"
-                            class="form-control">
+                    <div class="col-md-12 mb-3 col-12">
+                        <button id="checkPaymentStatusBtn1"  style="display: block;" onclick="checkPaymentStatus()"
+                            class="btn btn-primary">Vérifier
+                            le statut du paiement</button>
+                    </div>
 
-                        @if($invoiceVerify  && ($invoiceVerify->payment_status == "INITIATED" || $invoiceVerify->payment_status == "PENDING"))
-                       
-                        <div class="col-md-12 mb-3 col-12">
-                            <button id="checkPaymentStatusBtn" onclick="checkPaymentStatus()" class="btn btn-primary">Vérifier
-                                le statut du paiement</button>
-                        </div>
+                    @else
+                    <div class="col-md-12 col-12"> 
+                        <button type="button" style="display: block;" onclick="paymentMethod()" id="encaisserButton"
+                        class="btn btn-warning">Encaisser</button>
+                    </div>
+                    @endif
 
-                        @else
-                        <div class="col-md-12 mb-3 col-12">
-                            <button type="button" onclick="paymentMethod()" id="encaisserButton"
-                                class="btn btn-warning">Encaisser</button>
-                        </div>
-                        @endif
+                    {{-- <div class="col-md-12 col-12"> 
+                        <button type="button" style="display: none;" onclick="paymentMethod()" id="encaisserButton1"
+                        class="btn btn-warning">Encaisser</button>
+                    </div> --}}
+                    
+                    <p id="errorMessage" style="color: red; display: none;"></p>
+                    <p id="messageinitiation1"></p>
+                    <p id="messageinitiation2"></p>
+                    <p id="messageinitiation3"></p>
 
-                       
-
-                        <p id="messageinitiation"></p>
-
-                        {{--
-                    </form> --}}
                 </div>
-            @endif
+                @endif
             </div>
         </div>
     </div>
@@ -419,7 +426,7 @@
     function updateStatus(id) {
             var code = $('#code').val();
             var payment = $('#payment').val();
-        
+
             if (code == "") {
                 toastr.error("Code normalisé requis", 'Code normalisé');
             } else if (code.length < 24 || code.length > 24) {
@@ -440,8 +447,6 @@
                                 data: {
                                     code: code,
                                     payment: payment,
-                                    amount_payer : amount_payer,
-                                    numero_de_telephone : numero_de_telephone
                                 },
                                 success: function(response) {
                                     console.log(response);
@@ -466,30 +471,32 @@
             }
         }
 
-
-//         function togglePayerButton() {
-//             var paymentMethod = $('#payment').val();
-
-//             if (paymentMethod === "MOBILEMONEY" || paymentMethod === "MOOVMONEY") {
-//                 $('#payerButton').css('visibility', 'visible'); // Rend le bouton visible
-//             } else {
-//                 $('#payerButton').css('visibility', 'hidden'); // Rend le bouton caché
-//             }
-//         }
-
-// // Initialize the state of the payer button on page load
-// $(document).ready(function() {
-//     togglePayerButton();
-
-//     $('#payment').change(function() {
-//         togglePayerButton();
-//     });
-// });
-
-
-
 function paymentMethod()
 {
+    // Code verification des informations a entree par l'utilisateur 
+    var paymentMethodChecked = $('input[name="payment_method"]:checked').length > 0;
+            var paymentNumber = $('#payment_number').val();
+            var amountPayer = $('#amount_payer').val();
+            var errorMessage = '';
+
+            if (!paymentMethodChecked) {
+                errorMessage += 'Veuillez sélectionner une méthode de paiement.\n';
+            }
+            if (paymentNumber.length !== 8) {
+                errorMessage += 'Veuillez entrer un numéro de téléphone valide de 8 chiffres.\n';
+            }
+            if (!amountPayer) {
+                errorMessage += 'Le montant à payer est requis.\n';
+            }
+
+            if (errorMessage) {
+                $('#errorMessage').text(errorMessage).show();
+            } else {
+                $('#errorMessage').hide();
+                // Soumettre le formulaire ou exécuter la logique d'encaissement
+                console.log('Form is valid. Proceed with submission.');
+            
+
     // Sélectionner les cases à cocher
     const mtnCheckbox = document.getElementById('mtn');
     const moovCheckbox = document.getElementById('moov');
@@ -524,20 +531,36 @@ function paymentMethod()
                // Vérifiez si la réponse contient "SUCCESS"
                 if (response.message === "INITIATED") {
                     // Mettre à jour le paragraphe avec le message de réussite
-                    $('#messageinitiation').text("#1 - Paiement initié, en attente de confirmation du client").css('color', '#FFA500');
+                    $('#messageinitiation1').text("#1 - Paiement initié, en attente de confirmation du client").css('color', '#FFA500');
+                    $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.").css('color', 'blue');
+                    $('#messageinitiation3').text("");
                     $('#encaisserButton').css('display', 'none');
+                    $('#encaisserButton1').css('display', 'none');
                     $('#checkPaymentStatusBtn').css('display', 'block');
-                } else  if (response.message === "FAILURED") {
+                } 
+                else  if (response.message === "FAILED") {
                     // Mettre à jour le paragraphe avec le message d'échec
                     $('#messageinitiation').text("Échec de l'initiation du paiement. Réessayez ou contactez le support.").css('color', 'red');
-                }
-                                        
+                }                     
             },
             error: function(response) {
                 console.log('error', response);
             }
         });
 }
+}
+
+
+
+
+
+$(document).ready(function() {
+            $('input[name="payment_method"]').change(function() {
+                if (this.checked) {
+                    $('input[name="payment_method"]').not(this).prop('checked', false);
+                }
+            });
+        });
 
 
 
@@ -558,19 +581,33 @@ function checkPaymentStatus()
                // Vérifiez si la réponse contient "SUCCESS"
                 if (response.message === "PENDING") {
                     // Mettre à jour le paragraphe avec le message de réussite
-                    $('#messageinitiation').text("#2 - Le paiement est en attente de confirmation.").css('color', '#FFA500');
+                    $('#messageinitiation1').text("#1 - Paiement initié, en attente de confirmation du client").css('color', '#FFA500');
+                    $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.").css('color', 'blue');
+                    $('#messageinitiation3').text("");
+                    $('#encaisserButton').css('display', 'none');
+
                     $('#checkPaymentStatusBtn').css('display', 'block');
+                    $('#checkPaymentStatusBtn1').css('display', 'none');
+                    $('#encaisserButton1').css('display', 'none');
+
+                    
                 } else  if (response.message === "SUCCESS") {
                     // Mettre à jour le paragraphe avec le message d'échec
-                    $('#messageinitiation').text("#3 - Le paiement a été traité avec succès.").css('color', 'green');
+                    $('#messageinitiation1').text("#1 - Paiement initié, en attente de confirmation du client").css('color', '#FFA500');
+                    $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.").css('color', 'blue');
+                    $('#messageinitiation3').text("#3 - Le paiement a été traité avec succès.").css('color', 'green');
                     $('#checkPaymentStatusBtn').css('display', 'none');
-                    // 97819176
+                    $('#encaisserButton1').css('display', 'none');
+
                 }else  if (response.message === "FAILED") {
                     // Mettre à jour le paragraphe avec le message d'échec
-                    $('#messageinitiation').text("#3 - Le paiement a été traité avec succès.").css('color', 'green');
+                    $('#checkPaymentStatusBtn').css('display', 'none');
+                    $('#messageinitiation1').text("#1 - Paiement initié, en attente de confirmation du client").css('color', '#FFA500');
+                    $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.").css('color', 'blue');
+                    $('#messageinitiation3').text("#3 - Le paiement a été échoué, réessayer.").css('color', 'red');
                     $('#encaisserButton').css('display', 'block');
+                    $('#encaisserButton1').css('display', 'block');
                 }
-                                        
             },
             error: function(response) {
                 console.log('error', response);
@@ -579,6 +616,10 @@ function checkPaymentStatus()
 }
 
 
+
+$(document).ready(function() {
+            checkPaymentStatus();
+        });
 </script>
 
 
