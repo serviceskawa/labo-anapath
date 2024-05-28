@@ -84,6 +84,7 @@
                 @php
                 $total_a_payer = ajouterPourcentage($invoice->total);
                 $invoiceVerify = App\Models\Payment::where('invoice_id', $invoice->id)->first();
+                $invoiceMethodPayment = $invoiceVerify ? $invoiceVerify->payment_name : '';
                 @endphp
                 <div class="row">
                     <div class="col-12">
@@ -216,10 +217,10 @@
                 @else
 
                 @if (getOnlineUser()->can('view-cashier'))
-                @if ($settingInvoice != null && $invoice->paid != 1 && $invoiceVerify)
+                @if ($settingInvoice != null && $invoice->paid != 1)
                 <div>
                     <div class="row d-flex align-items-end">
-                        @if($invoiceVerify->payment_name != "MOBILEMONEY-MTN" && $invoiceVerify->payment_name != "MOBILEMONEY-MOOV")
+                        @if($invoiceVerify == null)
                         <div class="col-md-4 col-12">
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">Type de
@@ -229,22 +230,20 @@
                                     <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
                                         value="ESPECES">ESPECES</option>
 
-                                    <option {{ $invoiceVerify->payment_name == 'MOBILEMONEY-MTN' ? 'selected' : '' }}
-                                        value="MOBILEMONEY-MTN">MOBILE MONEY - MTN</option>
+                                    <option value="MOBILEMONEY-MTN">MOBILE MONEY - MTN</option>
 
-                                    <option {{ $invoiceVerify->payment_name == 'MOBILEMONEY-MOOV' ? 'selected' : '' }}
-                                        value="MOBILEMONEY-MOOV">MOBILE MONEY - MOOV</option>
+                                    <option value="MOBILEMONEY-MOOV">MOBILE MONEY - MOOV</option>
 
-                                    <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
-                                        value="CHEQUES">CHEQUES</option>
+                                    <option value="MOBILEMONEY">MOBILE MONEY</option>
 
-                                    <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
-                                        value="VIREMENT">VIREMENT</option>
+                                    <option value="CHEQUES">CHEQUES</option>
+
+                                    <option value="VIREMENT">VIREMENT</option>
                                 </select>
                             </div>
                         </div>
 
-                        @elseif (($invoiceVerify->payment_name == "MOBILEMONEY-MTN") || ($invoiceVerify->payment_name == "MOBILEMONEY-MOOV"))
+                        @else
 
                         <div class="col-md-4 col-12">
                             <div class="mb-3">
@@ -252,20 +251,15 @@
                                     paiement</label>
                                 <select class="form-select select2" data-toggle="select2" name="payment" disabled
                                     value="{{ $invoice->payment }}" id="payment" required>
-                                    <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
-                                        value="ESPECES">ESPECES</option>
 
-                                    <option {{ $invoiceVerify->payment_name == 'MOBILEMONEY-MTN' ? 'selected' : '' }}
-                                        value="MOBILEMONEY-MTN" >MOBILE MONEY - MTN</option>
+                                    <option {{ $invoiceMethodPayment=='MOBILEMONEY-MTN' ? 'selected' : '' }}
+                                        value="MOBILEMONEY-MTN">MOBILE MONEY - MTN</option>
 
-                                    <option {{ $invoiceVerify->payment_name == 'MOBILEMONEY-MOOV' ? 'selected' : '' }}
+
+
+                                    <option {{ $invoiceMethodPayment=='MOBILEMONEY-MOOV' ? 'selected' : '' }}
                                         value="MOBILEMONEY-MOOV">MOBILE MONEY - MOOV</option>
 
-                                    <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
-                                        value="CHEQUES">CHEQUES</option>
-
-                                    <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
-                                        value="VIREMENT">VIREMENT</option>
                                 </select>
                             </div>
                         </div>
@@ -356,14 +350,14 @@
                     <div class="col-md-12 mb-3 col-12">
                         <label for="">Montant a payer</label>
                         <input type="number" name="amount_payer" placeholder="Montant a payer"
-                            value="{{ $total_a_payer['roundedNumber'] }}" id="amount_payer" class="form-control" readonly>
+                            value="{{ $total_a_payer['roundedNumber'] }}" id="amount_payer" class="form-control"
+                            readonly>
                     </div>
 
                     <input type="hidden" name="invoice_id" value="{{ $invoice->id }}" id="invoice_id"
                         class="form-control">
 
-                        <input type="hidden" name="fee" value="{{ $total_a_payer['fee'] }}" id="fee"
-                        class="form-control">
+                    <input type="hidden" name="fee" value="{{ $total_a_payer['fee'] }}" id="fee" class="form-control">
 
 
                     <div class="col-md-12  col-12">
@@ -377,23 +371,23 @@
                     $invoiceVerify->payment_status == "PENDING"))
 
                     <div class="col-md-12 mb-3 col-12">
-                        <button id="checkPaymentStatusBtn1"  style="display: block;" onclick="checkPaymentStatus()"
+                        <button id="checkPaymentStatusBtn1" style="display: block;" onclick="checkPaymentStatus()"
                             class="btn btn-primary">Vérifier
                             le statut du paiement</button>
                     </div>
 
                     @else
-                    <div class="col-md-12 col-12"> 
+                    <div class="col-md-12 col-12">
                         <button type="button" style="display: block;" onclick="paymentMethod()" id="encaisserButton"
-                        class="btn btn-warning">Encaisser</button>
+                            class="btn btn-warning">Encaisser</button>
                     </div>
                     @endif
 
-                    {{-- <div class="col-md-12 col-12"> 
+                    {{-- <div class="col-md-12 col-12">
                         <button type="button" style="display: none;" onclick="paymentMethod()" id="encaisserButton1"
-                        class="btn btn-warning">Encaisser</button>
+                            class="btn btn-warning">Encaisser</button>
                     </div> --}}
-                    
+
                     <p id="errorMessage" style="color: red; display: none;"></p>
                     <p id="messageinitiation1"></p>
                     <p id="messageinitiation2"></p>
