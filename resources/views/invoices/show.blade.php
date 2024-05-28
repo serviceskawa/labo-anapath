@@ -319,6 +319,8 @@
                 @if($invoiceVerify && $invoiceVerify->payment_status == "SUCCESS")
                 <p style="color: green;">Paiement encaissé le {{ $invoiceVerify->updated_at }} avec le numéro de
                     paiement {{ $invoiceVerify->payment_number }} .</p>
+                @elseif($invoice->paid == 1 && $invoiceVerify==null)
+                <p style="color: green;"></p>
                 @else
                 <div class="row mb-3">
 
