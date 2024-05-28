@@ -724,11 +724,12 @@ class ReportController extends Controller
                             $query->where('code', 'like', '%' . $request->get('contenu') . '%');
                         })
                         ->orwhere('description', 'like', '%' . $request->get('contenu') . '%')
-                        ->orwhereHas('patient', function ($query) use ($request) {
-                            $query
-                                ->where('firstname', 'like', '%' . $request->get('contenu') . '%')
+                        ->orwhereHas('order', function ($query) use ($request) {
+                            $query->whereHas('patient', function ($query) use ($request) {
+                               $query->where('firstname', 'like', '%' . $request->get('contenu') . '%')
                                 ->orwhere('code', 'like', '%' . $request->get('contenu') . '%')
                                 ->orwhere('lastname', 'like', '%' . $request->get('contenu') . '%');
+                            });
                         });
                 }
 
