@@ -23,23 +23,27 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables as FacadesDataTables;
+use App\Models\SettingApp;
+
 
 
 class InvoiceController extends Controller
 {
+    protected $settingApp;
     protected $invoices;
     protected $testOrders;
     protected $settingInvoice;
     protected $invoiceDetails;
     protected $setting;
 
-    public function __construct(Invoice $invoices, Setting $setting, TestOrder $testOrders, SettingInvoice $settingInvoice, InvoiceDetail $invoiceDetails)
+    public function __construct(SettingApp $settingApp, Invoice $invoices, Setting $setting, TestOrder $testOrders, SettingInvoice $settingInvoice, InvoiceDetail $invoiceDetails)
     {
         $this->invoices = $invoices;
         $this->testOrders = $testOrders;
         $this->settingInvoice = $settingInvoice;
         $this->invoiceDetails = $invoiceDetails;
         $this->setting = $setting;
+        $this->settingApp = $settingApp;
     }
     /**
      * Display a listing of the resource.
@@ -231,31 +235,6 @@ class InvoiceController extends Controller
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }
-
-
-    // public function Payment(Request $request)
-    // {
-    //     $client = new Client();
-
-    //     $headers = [
-    //         'Content-Type' => 'application/json',
-    //         'Accept' => 'application/json',
-    //         'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZjYjU5YjU0LTIzMjAtNDM4Ny1hYzA2LTViNDUxN2JmN2Y0NyIsImlhdCI6MTcxNTg2MDEzM30.T4XlIq7YXnM06hjYIqM_5ASXKMTJv5Ore8aCWYVt-qE'
-    //     ];
-
-        // $body = json_encode([
-        //     "tel" => $request->numero_de_telephone,
-        //     "amount" => $request->amount_payer,
-        //     "description" => "Description"
-        // ]);
-
-    //     $request = new GuzzleRequest('POST', 'https://pay.sckaler.cloud/api/collection/mtn', $headers, $body);
-    //     $res = $client->send($request);
-
-    //     dd($res);
-    //     return $res->getBody()->getContents();
-
-    // }
 
     /**
      * Display the specified resource.

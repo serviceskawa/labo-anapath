@@ -9,9 +9,17 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as GuzzleRequest; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\SettingApp;
+
 
 class PaymentController extends Controller
 {
+    protected $settingApp;
+
+    public function __construct(SettingApp $settingApp)
+    {
+        $this->settingApp = $settingApp;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -42,14 +50,15 @@ class PaymentController extends Controller
         $transaction_id = 'N/A';
         $response_transaction = '';
         
-        // Paiement MTN MOBILE MONEY
+            // Paiement MTN MOBILE MONEY
             $client = new Client();
-            // dd($request);
+            $token_payment = $this->settingApp->where('key','token_payment')->first();
+            
             
             $headers = [
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
-                'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZjYjU5YjU0LTIzMjAtNDM4Ny1hYzA2LTViNDUxN2JmN2Y0NyIsImlhdCI6MTcxNTg2MDEzM30.T4XlIq7YXnM06hjYIqM_5ASXKMTJv5Ore8aCWYVt-qE'
+                'Authorization' => $token_payment->value
             ];
             
             // Assurez-vous que les valeurs récupérées sont correctes

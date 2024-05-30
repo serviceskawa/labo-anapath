@@ -21,10 +21,10 @@ class SettingAppController extends Controller
         $devise = $this->setting->where('key','devise')->first();
         $adress = $this->setting->where('key','adress')->first();
 
-        $payment_name = $this->setting->where('key','payment_name')->first();
-        $public_key = $this->setting->where('key','public_key')->first();
-        $private_key = $this->setting->where('key','private_key')->first();
-        $secret_key = $this->setting->where('key','secret_key')->first();
+        $token_payment = $this->setting->where('key','token_payment')->first();
+        // $public_key = $this->setting->where('key','public_key')->first();
+        // $private_key = $this->setting->where('key','private_key')->first();
+        // $secret_key = $this->setting->where('key','secret_key')->first();
 
 
         $phone = $this->setting->where('key','phone')->first();
@@ -51,7 +51,7 @@ class SettingAppController extends Controller
         $titles = TitleReport::latest()->get();
 
         return view('settings.app.setting', compact(
-            'payment_name','public_key','private_key','secret_key',
+            'token_payment',
             'app_name', 'prefixe_code_demande_examen', 'devise', 'adress', 'phone', 'email', 'web_site', 'footer','banks', 'titles',
             'email_host', 'username', 'email_port', 'password', 'encryption', 'from_name', 'from_adresse','mail','service',
             'api_sms', 'link_api_sms', 'key_ourvoice', 'link_ourvoice_call', 'link_ourvoice_sms','report_footer','report_review_title'
@@ -88,10 +88,10 @@ class SettingAppController extends Controller
         $mails = $request->input('mails');
         $services = $request->input('services');
 
-        $payment_name_value = $request->input('payment_name');
-        $public_key_value = $request->input('public_key');
-        $private_key_value = $request->input('private_key');
-        $secret_key_value = $request->input('secret_key');
+        $token_payment_value = $request->input('token_payment');
+        // $public_key_value = $request->input('public_key');
+        // $private_key_value = $request->input('private_key');
+        // $secret_key_value = $request->input('secret_key');
 
 
         // Mettez à jour les enregistrements dans la base de données
@@ -225,17 +225,17 @@ class SettingAppController extends Controller
 
             case 7 :
 
-                $payment_name = $this->setting->where('key', 'payment_name')->first();
-                $payment_name ?  $payment_name->update(['value' => $payment_name_value]): '';
+                $token_payment = $this->setting->where('key', 'token_payment')->first();
+                $token_payment ?  $token_payment->update(['value' => $token_payment_value]): '';
 
-                $public_key = $this->setting->where('key', 'public_key')->first();
-                $public_key ?  $public_key->update(['value' => $public_key_value]): '';
+                // $public_key = $this->setting->where('key', 'public_key')->first();
+                // $public_key ?  $public_key->update(['value' => $public_key_value]): '';
 
-                $private_key = $this->setting->where('key', 'private_key')->first();
-                $private_key ?  $private_key->update(['value' => $private_key_value]): '';
+                // $private_key = $this->setting->where('key', 'private_key')->first();
+                // $private_key ?  $private_key->update(['value' => $private_key_value]): '';
 
-                $secret_key = $this->setting->where('key', 'secret_key')->first();
-                $secret_key ?  $secret_key->update(['value' => $secret_key_value]): '';
+                // $secret_key = $this->setting->where('key', 'secret_key')->first();
+                // $secret_key ?  $secret_key->update(['value' => $secret_key_value]): '';
 
             default:
             break;

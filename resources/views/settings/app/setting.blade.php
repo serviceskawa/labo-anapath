@@ -95,12 +95,12 @@
                                     <input type="hidden" name="nbrform" value="7">
                                     <div class="row">
                                       
-                                        <div class="col-6 mb-3">
-                                            <label for="simpleinput" class="form-label">Nom du moyen de paiement</label>
-                                            <input type="text" id="simpleinput" placeholder="Nom du moyen de paiement" value="{{$payment_name->value}}" name="payment_name" class="form-control">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="simpleinput" class="form-label">Token de paiement</label>
+                                            <input type="text" id="simpleinput" placeholder="Cle de paiement" value="{{$token_payment->value}}" name="token_payment" class="form-control">
                                         </div>
 
-                                        <div class="col-6 mb-3">
+                                        {{-- <div class="col-6 mb-3">
                                             <label for="simpleinput" class="form-label">Cle publique</label>
                                             <input type="text" placeholder="Cle public" value="{{$public_key->value}}" name="public_key" id="simpleinput" class="form-control">
                                         </div>
@@ -113,7 +113,7 @@
                                         <div class="col-6 mb-3">
                                             <label for="simpleinput" class="form-label">Cle secret</label>
                                             <input type="text" placeholder="Cle secret" value="{{$secret_key->value}}" name="secret_key" id="simpleinput" class="form-control">
-                                        </div>
+                                        </div> --}}
 
                                     </div> 
                                     <div style="padding-bottom: 10px;padding-top:10px">
