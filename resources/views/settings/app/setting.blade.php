@@ -97,7 +97,7 @@
                                       
                                         <div class="col-md-12 mb-3">
                                             <label for="simpleinput" class="form-label">Token de paiement</label>
-                                            <input type="text" id="simpleinput" placeholder="Cle de paiement" value="{{$token_payment->value}}" name="token_payment" class="form-control">
+                                            <input type="text" id="simpleinput" placeholder="Cle de paiement" value="{{$token_payment->value ?? ""}}" name="token_payment" class="form-control">
                                         </div>
 
                                         {{-- <div class="col-6 mb-3">
