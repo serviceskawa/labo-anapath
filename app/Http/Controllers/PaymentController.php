@@ -41,8 +41,7 @@ class PaymentController extends Controller
     }
 
     public function storejs(Request $request)
-    {
-        
+    {  
         // Code pour connaitrele moyen de paiement utilise affin d'initier le paiement par MTN MOBILE MONEY
         $res_pay = "Test" ;
         $msg = 'N/A';

@@ -301,9 +301,7 @@
 
 
 
-    {{-- @if ( $invoiceVerify) --}}
 
-    {{-- @endif --}}
     <div class="col-3">
         <div class="card">
             <div class="card-body">
@@ -514,7 +512,7 @@ function paymentMethod()
     var payment_method = paymentMethod;
     var fee = $('#fee').val();
 
-    console.log(payment_number, payment_method, amount_payer, invoice_id);
+    // console.log(payment_number, payment_method, amount_payer, invoice_id);
     
     $.ajax({
             url: baseUrl + "/invoices/payment/store/storejs",
