@@ -343,7 +343,7 @@
                     <div class="col-md-12 mb-3 col-12">
                         <label for="">Numero de telephone</label>
                         <input type="number" name="payment_number" placeholder="Numero de telephone : xxxxxxxx"
-                            id="payment_number" value="{{ $invoice->patient->telephone1  ?? ""}}" class="form-control"
+                            id="payment_number" value="{{ $invoice->patient->telephone1  ?? old('payment_number') }}" class="form-control"
                             minlength="8" maxlength="8">
                     </div>
 

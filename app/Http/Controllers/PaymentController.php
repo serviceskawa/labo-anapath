@@ -79,15 +79,20 @@ class PaymentController extends Controller
 
             
             try {
+
                 if($request->payment_method == "MOBILEMONEY-MTN")
                 {
                     $guzzleRequest = new GuzzleRequest('POST', 'https://pay.sckaler.cloud/api/collection/mtn', $headers, $body);
 
-                }elseif($request->payment_method == "MOBILEMONEY-MOOV")
+                }
+                elseif($request->payment_method == "MOBILEMONEY-MOOV")
                 {
                     $guzzleRequest = new GuzzleRequest('POST', 'https://pay.sckaler.cloud/api/collection/moov', $headers, $body);
                 }
+                
                 $response = $client->send($guzzleRequest);
+                
+                                        // return response()->json(['message' => 'OK'], 200);
                 $res_pay = $response->getBody()->getContents();
                 
                 // recuperation des messages de reponses en attente 
@@ -130,8 +135,8 @@ class PaymentController extends Controller
 
             } catch (Exception $e) {
                 // Gérer les erreurs de requête
-                $res_pay = $e->getMessage();
-                return response()->json(['error' => 'FAILURED'], 500);
+                 $res_pay = $e->getMessage();
+        return response()->json(['error' => 'FAILEDT', 'details' => $res_pay], 500);
             }
 
         }
