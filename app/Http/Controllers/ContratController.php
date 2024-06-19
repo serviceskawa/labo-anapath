@@ -10,9 +10,11 @@ use App\Models\Contrat;
 use App\Models\Details_Contrat;
 use App\Models\Invoice;
 use App\Models\Setting;
+use App\Models\Test;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\DataTables;
 
 class ContratController extends Controller
 {
@@ -24,11 +26,11 @@ class ContratController extends Controller
     protected $categoryTest;
     protected $detailsContrat;
     protected $clients;
+    protected $tests;
 
 
-    public function __construct(Contrat $contrat, Setting $setting, CategoryTest $categoryTest, Details_Contrat $detailsContrat, Client $clients, Invoice $invoice)
+    public function __construct(Contrat $contrat, Setting $setting, Test $tests, CategoryTest $categoryTest, Details_Contrat $detailsContrat, Client $clients, Invoice $invoice)
     {
-
         $this->contrat = $contrat;
         $this->clients = $clients;
         $this->setting = $setting;
@@ -41,6 +43,88 @@ class ContratController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function getContratsforDatatable(Request $request)
+    {
+        $data = $this->contrat->with(['orders', 'client', 'invoices'])->latest();
+
+        return DataTables::of($data)
+            ->addIndexColumn()
+
+            ->addColumn('date', function ($data) {
+                $date = Carbon::parse($data->created_at);
+                return $date->format('d/m/y');
+            })
+
+            ->addColumn('name', function ($data) {
+                return $data->name;
+            })
+
+            ->addColumn('order', function ($data) {
+                return $data->orders->count();
+            })
+
+            ->addColumn('status', function ($data) {
+                return $data->status;
+            })
+
+            ->addColumn('action', function ($data) {
+                $btn_eyes = '<a type="button" href="' . route('contrat_details.index', $data->id) . '" class="btn btn-warning" title="Voir détails contrat"><i class="mdi mdi-eye"></i></a>';
+                $btn_edit_delete = view('contrats.btn_edit_delete', ['data' => $data]);
+                return $btn_eyes . ' ' . $btn_edit_delete;
+            })
+
+            ->filter(function ($query) use ($request) {
+
+                if (!empty($request->get('statusquery'))) {
+                    if ($request->get('statusquery') == "ACTIF") {
+                        $query->where('status', "=", "ACTIF");
+                    } elseif ($request->get('statusquery') == "INACTIF") {
+                        $query->where('status', "=", "INACTIF");
+                    } elseif ($request->get('statusquery') == "1") {
+                        $query->where('is_close', "=", 0);
+                    }
+                }
+
+                if (!empty($request->get('cas_status'))) {
+
+                    $query->whereHas('invoices', function ($query) use ($request) {
+
+                        if ($request->get('cas_status') == 1) {
+                            $query->where('paid', 1);
+                        } elseif ($request->get('cas_status') == 0) {
+                            $query->where('paid', 0);
+                        }
+                    });
+                }
+
+                if (!empty($request->get('contenu'))) {
+                    $query
+                        ->where('name', 'like', '%' . $request->get('contenu') . '%')
+                        ->orwhere('description', 'like', '%' . $request->get('contenu') . '%')
+                        ->orwhere('type', 'like', '%' . $request->get('contenu') . '%')
+                        ->orwhereHas('client', function ($query) use ($request) {
+                            $query->where('name', 'like', '%' . $request->get('contenu') . '%')
+                                ->orwhere('adress', 'like', '%' . $request->get('contenu') . '%');
+                        });
+                }
+
+
+                if (!empty($request->get('dateBegin'))) {
+                    $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
+                    $query->whereDate('created_at', '>=', $newDate);
+                }
+
+
+                if (!empty($request->get('dateEnd'))) {
+                    $query->whereDate('created_at', '<=', $request->get('dateEnd'));
+                }
+            })
+            ->make(true);
+    }
+
+
+
     public function index()
     {
         if (!getOnlineUser()->can('view-contrats')) {
@@ -49,13 +133,13 @@ class ContratController extends Controller
 
         //récupération des contrats avec les détails
         // $contrats = $this->contrat->getWithDetail();
-        $contrats = $this->contrat->latest()->get();
+        // $contrats = $this->contrat->latest()->get();
         $clients = $this->clients->latest()->get();
 
         $setting = $this->setting->find(1);
 
         config(['app.name' => $setting->titre]);
-        return view('contrats.index', compact(['contrats','clients']));
+        return view('contrats.index', compact(['clients']));
     }
 
     public function details_index($id)
@@ -71,13 +155,17 @@ class ContratController extends Controller
         //récupérer toutes les categories d'examen
         $cateroriesTests = $this->categoryTest->all();
 
+        //récupérer toutes les categories d'examen
+        $tests = Test::all();
+
         //récupérer les détails d'un contrat
-        $details = $this->detailsContrat->where('contrat_id', $contrat->id)->get();
-        // dd($details);
+        $details = $this->detailsContrat->where('contrat_id', $contrat->id)->whereNotNull('pourcentage')->get();
+
+        $detail_tests = $this->detailsContrat->where('pourcentage', null)->get();
 
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        return view('contrats_details.index', compact(['contrat', 'details', 'cateroriesTests']));
+        return view('contrats_details.index', compact(['contrat', 'details', 'cateroriesTests', 'tests', 'detail_tests']));
     }
 
     /**
@@ -103,21 +191,23 @@ class ContratController extends Controller
         }
 
 
-        $data =[
+        $data = [
             'name' => $request->name,
             'type' => $request->type,
             'description' => $request->description,
             'nbr_tests' => $request->nbr_examen,
-            'invoice_unique' => $request->invoice_unique?0:1,
+            'invoice_unique' => $request->invoice_unique ? 0 : 1,
             'client_id' => $request->client_id,
             'status' => 'INACTIF',
         ];
 
+        // dd($request);
+
         try {
             $contrat = $this->contrat->create($data);
-            if ($contrat->invoice_unique==0) {
+            if ($contrat->invoice_unique == 0) {
                 $code_facture = generateCodeFacture();
-                 $invoice = $this->invoices->create([
+                $invoice = $this->invoices->create([
                     "date" => Carbon::now(),
                     "contrat_id" => $contrat->id,
                     "client_name" => $contrat->client->name,
@@ -133,10 +223,10 @@ class ContratController extends Controller
 
     public function details_store(ContratDetailRequest $request)
     {
-
         if (!getOnlineUser()->can('create-contrats')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+
         $data = [
             'contrat_id' => $request->contrat_id,
             'pourcentage' => $request->pourcentage,
@@ -154,6 +244,37 @@ class ContratController extends Controller
 
             DB::transaction(function () use ($data) {
                 Details_Contrat::create($data);
+            });
+
+            return back()->with('success', "Element enregistré avec succès ! ");
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
+        }
+    }
+
+
+
+    public function details_store_test(Request $request)
+    {
+        if (!getOnlineUser()->can('create-contrats')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
+        $search_test = Test::find(intval($request->test_id));
+
+        // dd($request);
+        $contrat = Contrat::findorfail($request->contrat_id);
+
+        try {
+            DB::transaction(function () use ($request, $search_test) {
+                $detail = new Details_Contrat();
+                $detail->contrat_id = intval($request->contrat_id);
+                $detail->pourcentage = $request->pourcentage;
+                $detail->test_id = intval($request->test_id);
+                $detail->amount_remise = intval($request->amount_remise);
+                $detail->category_test_id = $search_test->category_test_id;
+                $detail->amount_after_remise = $search_test->price - intval($request->amount_remise);
+                $detail = $detail->save();
             });
 
             return back()->with('success', "Element enregistré avec succès ! ");

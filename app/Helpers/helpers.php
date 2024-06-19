@@ -485,10 +485,10 @@ if (!function_exists('generateCodeExamen')) {
             ->first();
 
 
-             // Récupérer la valeur de la base de données
-            $configuration = SettingApp::where('key', 'entete')->first();
+        // Récupérer la valeur de la base de données
+        $configuration = SettingApp::where('key', 'entete')->first();
 
-           
+
 
 
 
@@ -513,7 +513,7 @@ if (!function_exists('generateCodeExamen')) {
         $codeexamen = $data['value'];
 
         // Ajoute les deux derniers chiffres de l'année au début du code
-        return $codeexamen.now()->year % 100 . "-$code";
+        return $codeexamen . now()->year % 100 . "-$code";
     }
 }
 
@@ -542,17 +542,18 @@ if (!function_exists('generateCodeTicket')) {
         }
 
         // Ajoute les deux derniers chiffres de l'année au début du code
-        return "BC".now()->year % 100 . "-$code";
+        return "BC" . now()->year % 100 . "-$code";
     }
 }
 
 
-if(!function_exists('typeExamAffecte')){
-    function typeExamAffecte($id){
+if (!function_exists('typeExamAffecte')) {
+    function typeExamAffecte($id)
+    {
         $type = TestOrder::where('id', $id)->first();
         if ($type) {
             $data = $type->type_order_id;
-        }else{
+        } else {
             $data = null;
         }
         return $data;
@@ -560,13 +561,14 @@ if(!function_exists('typeExamAffecte')){
 }
 
 
-if(!function_exists('isAffecte')){
-    function isAffecte($id){
-        $detail = TestOrderAssignmentDetail::where('test_order_id',$id)->first();
+if (!function_exists('isAffecte')) {
+    function isAffecte($id)
+    {
+        $detail = TestOrderAssignmentDetail::where('test_order_id', $id)->first();
         if ($detail) {
             $assignment = TestOrderAssignment::find($detail->test_order_assignment_id);
             $data = $assignment->user;
-        }else{
+        } else {
             $data = null;
         }
         return $data;
@@ -574,57 +576,58 @@ if(!function_exists('isAffecte')){
 }
 
 
-if(!function_exists('isAffecteRefence')){
-    function isAffecteRefence($reference_code){
+if (!function_exists('isAffecteRefence')) {
+    function isAffecteRefence($reference_code)
+    {
 
         $reference_order = TestOrder::where('code', $reference_code)->first();
-        if($reference_order)
-        {
+        if ($reference_order) {
             $detail = TestOrderAssignmentDetail::where('test_order_id', $reference_order->id)->first();
             if ($detail) {
                 $assignment = TestOrderAssignment::find($detail->test_order_assignment_id);
                 $data = $assignment->user;
-            }else{
+            } else {
                 $data = null;
             }
             return $data;
-        }else{
+        } else {
             return $data = null;
         }
     }
 }
 
 
-if(! function_exists('ajouterPourcentage'))
-{
-    function ajouterPourcentage($amount_payer) {
-        if ($amount_payer >= 1 && $amount_payer <= 500) {
-            $fee = 0;
-        } elseif ($amount_payer >= 501 && $amount_payer <= 5000) {
-            $fee = 100;
-        } elseif ($amount_payer >= 5001 && $amount_payer <= 10000) {
-            $fee = 200;
-        } elseif ($amount_payer >= 10001 && $amount_payer <= 20000) {
-            $fee = 350;
-        } elseif ($amount_payer >= 20001 && $amount_payer <= 50000) {
-            $fee = 700;
-        } elseif ($amount_payer >= 50001 && $amount_payer <= 100000) {
-            $fee = 1000;
-        } elseif ($amount_payer >= 100001 && $amount_payer <= 200000) {
-            $fee = 2000;
-        } elseif ($amount_payer >= 200001 && $amount_payer <= 300000) {
-            $fee = 3000;
-        } elseif ($amount_payer >= 300001 && $amount_payer <= 500000) {
-            $fee = 3500;
-        } elseif ($amount_payer >= 500001 && $amount_payer <= 750000) {
-            $fee = 5000;
-        } elseif ($amount_payer >= 750001 && $amount_payer <= 1000000) {
-            $fee = 6000;
-        } elseif ($amount_payer >= 1000001 && $amount_payer <= 1500000) {
-            $fee = 8000;
-        } elseif ($amount_payer >= 1500001 && $amount_payer <= 2000000) {
-            $fee = 9900;
-        } 
+if (!function_exists('ajouterPourcentage')) {
+    function ajouterPourcentage($amount_payer)
+    {
+        $fee = 0;
+        // if ($amount_payer >= 1 && $amount_payer <= 500) {
+        //     $fee = 0;
+        // } elseif ($amount_payer >= 501 && $amount_payer <= 5000) {
+        //     $fee = 100;
+        // } elseif ($amount_payer >= 5001 && $amount_payer <= 10000) {
+        //     $fee = 200;
+        // } elseif ($amount_payer >= 10001 && $amount_payer <= 20000) {
+        //     $fee = 350;
+        // } elseif ($amount_payer >= 20001 && $amount_payer <= 50000) {
+        //     $fee = 700;
+        // } elseif ($amount_payer >= 50001 && $amount_payer <= 100000) {
+        //     $fee = 1000;
+        // } elseif ($amount_payer >= 100001 && $amount_payer <= 200000) {
+        //     $fee = 2000;
+        // } elseif ($amount_payer >= 200001 && $amount_payer <= 300000) {
+        //     $fee = 3000;
+        // } elseif ($amount_payer >= 300001 && $amount_payer <= 500000) {
+        //     $fee = 3500;
+        // } elseif ($amount_payer >= 500001 && $amount_payer <= 750000) {
+        //     $fee = 5000;
+        // } elseif ($amount_payer >= 750001 && $amount_payer <= 1000000) {
+        //     $fee = 6000;
+        // } elseif ($amount_payer >= 1000001 && $amount_payer <= 1500000) {
+        //     $fee = 8000;
+        // } elseif ($amount_payer >= 1500001 && $amount_payer <= 2000000) {
+        //     $fee = 9900;
+        // }
 
         $valeurAvecPourcentage = $amount_payer + $fee;
 
@@ -642,8 +645,9 @@ if(! function_exists('ajouterPourcentage'))
     }
 }
 
-if(!function_exists('changeMethodPayment')){
-    function changeMethodPayment($invoice_id, $methodPayment){
+if (!function_exists('changeMethodPayment')) {
+    function changeMethodPayment($invoice_id, $methodPayment)
+    {
         $invoice = Invoice::findOrFail(intval($invoice_id));
 
         $invoice->payment = "ESPECES";
@@ -652,8 +656,9 @@ if(!function_exists('changeMethodPayment')){
 }
 
 
-if(!function_exists('dateLimite')){
-    function dateLimite($date){
+if (!function_exists('dateLimite')) {
+    function dateLimite($date)
+    {
         $formattedDate = Carbon::parse($date)->format('Y-m-d');
         // Ajouter 10 jours
         $newDate = Carbon::parse($formattedDate)->addDays(9);
@@ -662,27 +667,30 @@ if(!function_exists('dateLimite')){
     }
 }
 
-if(!function_exists('dateFormat')){
-    function dateFormat($date){
+if (!function_exists('dateFormat')) {
+    function dateFormat($date)
+    {
         $formattedDate = Carbon::parse($date)->format('d-m-Y');
         return $formattedDate;
     }
 }
 
-if(!function_exists('isMacro')){
-    function isMacro($id){
-        $detail = test_pathology_macro::where('id_test_pathology_order',$id)->first();
+if (!function_exists('isMacro')) {
+    function isMacro($id)
+    {
+        $detail = test_pathology_macro::where('id_test_pathology_order', $id)->first();
         if ($detail) {
             $data = true;
-        }else{
+        } else {
             $data = false;
         }
         return $data;
     }
 }
 
-if(!function_exists('getAllRoles')){
-    function getAllRoles(){
+if (!function_exists('getAllRoles')) {
+    function getAllRoles()
+    {
         return Role::latest()->get();
     }
 }
@@ -712,7 +720,7 @@ if (!function_exists('generateCodeAssignment')) {
         }
 
         // Ajoute les deux derniers chiffres de l'année au début du code
-        return "AF".now()->year % 100 . "-$code";
+        return "AF" . now()->year % 100 . "-$code";
     }
 }
 
@@ -747,7 +755,8 @@ if (!function_exists('generateCodeFacture')) {
 }
 
 if (!function_exists('getNameInitials')) {
-    function getNameInitials($fullName) {
+    function getNameInitials($fullName)
+    {
         $initials = "";
         $nameParts = explode(" ", trim($fullName));
 
@@ -757,12 +766,12 @@ if (!function_exists('getNameInitials')) {
             }
         }
         return $initials;
-
     }
 }
 
 if (!function_exists('getUnreadMessageCount')) {
-    function getUnreadMessageCount($userId) {
+    function getUnreadMessageCount($userId)
+    {
         // Remplacez "messages" par le nom de votre table de messages
         $unreadMessages = DB::table('chats')
             ->where('receve_id', $userId) // Remplacez "receve_id" par le nom de votre colonne pour l'ID du destinataire
@@ -775,7 +784,8 @@ if (!function_exists('getUnreadMessageCount')) {
 }
 
 if (!function_exists('getUnreadMessageBySenderCount')) {
-    function getUnreadMessageBySenderCount($userId,$senderID) {
+    function getUnreadMessageBySenderCount($userId, $senderID)
+    {
         // Remplacez "messages" par le nom de votre table de messages
         $unreadMessages = DB::table('chats')
             ->where('receve_id', $userId) // Remplacez "receve_id" par le nom de votre colonne pour l'ID du destinataire
@@ -789,39 +799,42 @@ if (!function_exists('getUnreadMessageBySenderCount')) {
 }
 
 if (!function_exists('getMessageUnreadBySender')) {
-    function getMessageUnreadBySender($userId,$senderID) {
+    function getMessageUnreadBySender($userId, $senderID)
+    {
 
-        $lastMessage =  Chat::where(function ($query) use ($senderID,$userId) {
+        $lastMessage =  Chat::where(function ($query) use ($senderID, $userId) {
             $query->where('sender_id', $senderID)->where('receve_id', $userId);
         })->orWhere(function ($query) use ($senderID, $userId) {
             $query->where('sender_id', $userId)->where('receve_id', $senderID);
         })->orderBy('created_at', 'desc')
-        ->first();
-        return $lastMessage->sender_id == $userId ? 'Vous: '.$lastMessage->message: $lastMessage->message;
+            ->first();
+        return $lastMessage->sender_id == $userId ? 'Vous: ' . $lastMessage->message : $lastMessage->message;
     }
 }
 
 if (!function_exists('getMessageUnreadSender')) {
-    function getMessageUnreadSender($userId,$senderID) {
+    function getMessageUnreadSender($userId, $senderID)
+    {
 
-      $lastSentMessage = chat::where('sender_id', $senderID)
-        ->where('receve_id', $userId)
-        ->orderBy('created_at', 'desc') // Triez par date d'envoi décroissante
-        ->first(); // Récupérez le premier message (le plus récent)
+        $lastSentMessage = chat::where('sender_id', $senderID)
+            ->where('receve_id', $userId)
+            ->orderBy('created_at', 'desc') // Triez par date d'envoi décroissante
+            ->first(); // Récupérez le premier message (le plus récent)
         return $lastSentMessage;
     }
 }
 
 //Récupérer le nombre de demandes d'examen en attente
 if (!function_exists('getnbrTestOrderpending')) {
-    function getnbrTestOrderpending(){
-        $nbr = TestOrder::whereHas('type', function($query) {
-            $query->where('slug','cytologie')
-                  ->orwhere('slug','histologie');
+    function getnbrTestOrderpending()
+    {
+        $nbr = TestOrder::whereHas('type', function ($query) {
+            $query->where('slug', 'cytologie')
+                ->orwhere('slug', 'histologie');
         })
-        ->whereHas('report', function($query){
-            $query->where('status',0);
-        })->count();
+            ->whereHas('report', function ($query) {
+                $query->where('status', 0);
+            })->count();
         return $nbr;
     }
 }
@@ -829,29 +842,32 @@ if (!function_exists('getnbrTestOrderpending')) {
 
 //Récupérer le nombre de demandes d'examen en attente
 if (!function_exists('getnbrTestOrderImmunopending')) {
-    function getnbrTestOrderImmunopending(){
-        $nbr = TestOrder::whereHas('type', function($query) {
-            $query->where('slug','immuno-interne')
-                  ->orwhere('slug','immuno-exterme');
+    function getnbrTestOrderImmunopending()
+    {
+        $nbr = TestOrder::whereHas('type', function ($query) {
+            $query->where('slug', 'immuno-interne')
+                ->orwhere('slug', 'immuno-exterme');
         })
-        ->whereHas('report', function($query){
-            $query->where('status',0);
-        })->count();
+            ->whereHas('report', function ($query) {
+                $query->where('status', 0);
+            })->count();
         return $nbr;
     }
 }
 
 //Récupérer le nombre de factures impayées
 if (!function_exists('getnbrInvoicepending')) {
-    function getnbrInvoicepending(){
-        $nbr = Invoice::where('paid',0)->count();
+    function getnbrInvoicepending()
+    {
+        $nbr = Invoice::where('paid', 0)->count();
         return $nbr;
     }
 }
 
 //Récupérer le nombre de stocks minimum atteint
 if (!function_exists('getnbrStockMinim')) {
-    function getnbrStockMinim(){
+    function getnbrStockMinim()
+    {
         $nbr = Article::where('quantity_in_stock', '<=', DB::raw('minimum'))->count();
         return $nbr;
     }
@@ -859,7 +875,8 @@ if (!function_exists('getnbrStockMinim')) {
 
 //Récupérer le nombre de demandes de remboursement en attente
 if (!function_exists('getnbrRefundRequestPending')) {
-    function getnbrRefundRequestPending(){
+    function getnbrRefundRequestPending()
+    {
         $nbr = $nbr = RefundRequest::where('status', 'En attente')->count();
         return $nbr;
     }
@@ -867,7 +884,8 @@ if (!function_exists('getnbrRefundRequestPending')) {
 
 //Récupérer le nombre de bon de caisse en attente
 if (!function_exists('getnbrBonCaissePending')) {
-    function getnbrBonCaissePending(){
+    function getnbrBonCaissePending()
+    {
         $nbr = $nbr = CashboxTicket::where('status', 'En attente')->count();
         return $nbr;
     }
@@ -875,14 +893,15 @@ if (!function_exists('getnbrBonCaissePending')) {
 
 //Récupérer le nombre de tickets en attente
 if (!function_exists('getnbrTicketPending')) {
-    function getnbrTicketPending($userId){
+    function getnbrTicketPending($userId)
+    {
         $user = User::find($userId);
         $is_admin = $user->userCheckRole('rootuser');
         $nbr = null;
         if ($is_admin) {
-            $nbr = Ticket::where('status','ouvert')->count();
+            $nbr = Ticket::where('status', 'ouvert')->count();
         } else {
-            $nbr = Ticket::where('user_id',$userId)->where('status','ouvert')->count();
+            $nbr = Ticket::where('user_id', $userId)->where('status', 'ouvert')->count();
         }
 
         return $nbr;
@@ -982,7 +1001,8 @@ if (!function_exists('generateCodeOpeningCashbox')) {
 
 
 
-function tronquerChaine($chaine,$nbr=50) {
+function tronquerChaine($chaine, $nbr = 50)
+{
 
     if (strlen($chaine) > $nbr) {
         // Si la chaîne est plus longue que 100 caractères, on la tronque et on ajoute les trois points de suspension
@@ -1042,8 +1062,10 @@ if (!function_exists('invoiceNormeTest')) {
         $accessToken = $settingInvoice->token;
         $ifu = $settingInvoice->ifu;
         // $ifu = "0".$settingInvoice->ifu;
-        $response = $client->request('POST','https://developper.impots.bj/sygmef-emcf/api/invoice',
-        [
+        $response = $client->request(
+            'POST',
+            'https://developper.impots.bj/sygmef-emcf/api/invoice',
+            [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $accessToken,
                     'Accept' => 'application/json',
@@ -1069,7 +1091,7 @@ if (!function_exists('invoiceNormeTest')) {
                     "client" => [
                         // "ifu"=>"0202367807403",
                         "name" => $invoice->client_name,
-                        "address" => $invoice->client_address?$invoice->client_address:'a',
+                        "address" => $invoice->client_address ? $invoice->client_address : 'a',
                     ],
                     "operator" => [
                         "id" => Auth::user()->id,
@@ -1082,11 +1104,12 @@ if (!function_exists('invoiceNormeTest')) {
                             "name" => $invoice->payment,
                             "amount" => $invoice->total,
                             // "amount" => 25000,
-                            ]
-                        ],
+                        ]
+                    ],
                 ]
-        ]);
-       $test = json_decode($response->getBody(), true);
+            ]
+        );
+        $test = json_decode($response->getBody(), true);
 
         return ["id" => $id, "uid" => $test['uid']];
     }
@@ -1239,8 +1262,7 @@ if (!function_exists('getRolesByUserDocteur')) {
         $response = 0; // Initialisation à zéro par défaut
         foreach ($rolesusers as $value) {
             $role = Role::find($value->role_id);
-            if($role->slug == "docteur")
-            {
+            if ($role->slug == "docteur") {
                 $response = 1;
                 break; // Sortir de la boucle dès qu'on trouve le rôle "docteur"
             }
@@ -1250,7 +1272,8 @@ if (!function_exists('getRolesByUserDocteur')) {
 }
 
 if (!function_exists('formatMontant')) {
-    function formatMontant($montant) {
+    function formatMontant($montant)
+    {
         $formattedMontant = number_format($montant, 0, ',', ' ');
         $formattedMontant .= ' F CFA';
         return $formattedMontant;

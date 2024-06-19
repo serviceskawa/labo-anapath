@@ -76,16 +76,35 @@
                     </div>
 
 
+                    {{-- $contrat->nbr_tests --}}
                     <div class="col-md-6">
                         <label for="exampleFormControlInput1" class="form-label">Contrat<span
                                 style="color:red;">*</span></label>
                         <select class="form-select select2" data-toggle="select2" required name="contrat_id">
                             <option value="" disabled selected>Sélectionner le contrat</option>
                             @forelse ($contrats as $contrat)
-                            <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
-                            @empty
-                            Ajouter un contrat
-                            @endforelse
+
+
+
+                            @if (($contrat->status == "ACTIF") && ($contrat->invoice_unique == 1) && ($contrat->is_close
+                            == 1))
+
+                            @php
+                            $a = App\Models\TestOrder::where('contrat_id', $contrat->id)->get();
+                            @endphp
+
+                            @if (($a->count() < $contrat->nbr_tests) || ($contrat->nbr_tests == -1))
+                                <option value="">{{ $contrat->name }}</option>
+                                @endif
+                                @endif
+
+                                {{-- @if (($contrat->status == "ACTIF"))
+                                <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
+                                @endif --}}
+
+                                @empty
+                                Ajouter un contrat
+                                @endforelse
                         </select>
                     </div>
                 </div>
@@ -95,15 +114,15 @@
                         <div class="examenReferenceInputExterne mt-3" style="display: none !important">
                             <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
                                     style="color:red;">*</span></label>
-                            <input type="text" name="examen_reference_input" class="form-control"   id="examen_reference_input"
-                                placeholder="Saisir l'examen de reference" >
+                            <input type="text" name="examen_reference_input" class="form-control"
+                                id="examen_reference_input" placeholder="Saisir l'examen de reference">
                         </div>
 
                         <div class="examenReferenceInputInterne mt-3" style="display: none !important">
                             <label for="exampleFormControlInput1" class="form-label">Examen de Référence<span
                                     style="color:red;">*</span></label>
 
-                            <select class="form-select select2" data-toggle="select2"    id="examen_reference_select"
+                            <select class="form-select select2" data-toggle="select2" id="examen_reference_select"
                                 name="examen_reference_select">
                                 <option value="" disabled selected>Sélectionner l'examen de Référence</option>
                                 @forelse ($test_orders as $test_order)

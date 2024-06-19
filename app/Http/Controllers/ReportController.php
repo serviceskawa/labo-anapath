@@ -87,26 +87,25 @@ class ReportController extends Controller
         return view('reports.index', compact('tags', 'reports', 'doctors'));
     }
 
-    public function storeTags(TagRequest $request){
+    public function storeTags(TagRequest $request)
+    {
         $data = [
             'name' => $request->name,
         ];
 
         $exist = $this->tag->where('id', $request->name)->first();
         try {
-            if ($exist === null ) {
+            if ($exist === null) {
                 $tag = $this->tag->create($data);
                 $status = "created";
-
-            }else {
+            } else {
                 $tag = [];
                 $status = "exist";
             }
 
-            return response()->json(["tag" => $tag, "status"=> $status], 200);
-
-        } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+            return response()->json(["tag" => $tag, "status" => $status], 200);
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }
 
@@ -238,20 +237,20 @@ class ReportController extends Controller
         $year = $request->year;   // Récupérez la valeur de l'année depuis le formulaire
 
         $examens = DB::table('type_orders as tos')
-        ->join('test_orders as tor', 'tos.id', '=', 'tor.type_order_id')
-        ->select(
-            DB::raw("SUM(CASE WHEN tos.title = 'Histologie' THEN 1 ELSE 0 END) AS histologie"),
-            DB::raw("SUM(CASE WHEN tos.title = 'Immuno Externe' THEN 1 ELSE 0 END) AS immuno_externe"),
-            DB::raw("SUM(CASE WHEN tos.title = 'Immuno Interne' THEN 1 ELSE 0 END) AS immuno_interne"),
-            DB::raw("SUM(CASE WHEN tos.title = 'Cytologie' THEN 1 ELSE 0 END) AS cytologie"),
-            DB::raw("COUNT(tor.id) AS total_general")
-        )
-        ->where('tor.status', 1);
+            ->join('test_orders as tor', 'tos.id', '=', 'tor.type_order_id')
+            ->select(
+                DB::raw("SUM(CASE WHEN tos.title = 'Histologie' THEN 1 ELSE 0 END) AS histologie"),
+                DB::raw("SUM(CASE WHEN tos.title = 'Immuno Externe' THEN 1 ELSE 0 END) AS immuno_externe"),
+                DB::raw("SUM(CASE WHEN tos.title = 'Immuno Interne' THEN 1 ELSE 0 END) AS immuno_interne"),
+                DB::raw("SUM(CASE WHEN tos.title = 'Cytologie' THEN 1 ELSE 0 END) AS cytologie"),
+                DB::raw("COUNT(tor.id) AS total_general")
+            )
+            ->where('tor.status', 1);
 
         if (isset($month) && isset($year)) {
-        // Filtrer par mois et année si les deux sont spécifiés
-        $examens = $examens->whereMonth('tor.created_at', $month)
-                        ->whereYear('tor.created_at', $year);
+            // Filtrer par mois et année si les deux sont spécifiés
+            $examens = $examens->whereMonth('tor.created_at', $month)
+                ->whereYear('tor.created_at', $year);
         } elseif (isset($year)) {
             $patient_called = $examens->whereYear('tor.created_at', $year);
         }
@@ -259,17 +258,17 @@ class ReportController extends Controller
 
 
         $rapports = DB::table('reports as rep')
-        ->join('test_orders as tor', 'tor.id', '=', 'rep.test_order_id')
-        ->leftJoin('test_order_assignment_details as toad', 'toad.test_order_id', '=', 'rep.test_order_id')
-        ->selectRaw("
+            ->join('test_orders as tor', 'tor.id', '=', 'rep.test_order_id')
+            ->leftJoin('test_order_assignment_details as toad', 'toad.test_order_id', '=', 'rep.test_order_id')
+            ->selectRaw("
             SUM(CASE WHEN rep.status = '0' THEN 1 ELSE 0 END) AS attente,
             SUM(CASE WHEN rep.status = '1' THEN 1 ELSE 0 END) AS termine,
             SUM(CASE WHEN toad.test_order_id IS NOT NULL THEN 1 ELSE 0 END) AS affecte
         ");
 
         if (isset($month) && isset($year)) {
-        $rapports = $rapports->whereMonth('tor.created_at', $month)
-                            ->whereYear('tor.created_at', $year);
+            $rapports = $rapports->whereMonth('tor.created_at', $month)
+                ->whereYear('tor.created_at', $year);
         } elseif (isset($year)) {
             $patient_called = $rapports->whereYear('tor.created_at', $year);
         }
@@ -277,14 +276,14 @@ class ReportController extends Controller
         $rapports = $rapports->get();
 
         $macros = DB::table('test_orders as tor')
-        ->rightJoin('test_pathology_macros as tpm', 'tpm.id_test_pathology_order', '=', 'tor.id')
-        ->selectRaw("
+            ->rightJoin('test_pathology_macros as tpm', 'tpm.id_test_pathology_order', '=', 'tor.id')
+            ->selectRaw("
             SUM(CASE WHEN tpm.id_test_pathology_order = tor.id THEN 1 ELSE 0 END) AS pathology
         ");
 
         if (isset($month) && isset($year)) {
-        $macros = $macros->whereMonth('tor.created_at', $month)
-                        ->whereYear('tor.created_at', $year);
+            $macros = $macros->whereMonth('tor.created_at', $month)
+                ->whereYear('tor.created_at', $year);
         } elseif (isset($year)) {
             $patient_called = $macros->whereYear('tor.created_at', $year);
         }
@@ -293,7 +292,7 @@ class ReportController extends Controller
         $macros = $macros->get();
 
         $patient_called = DB::table('reports')
-        ->selectRaw("
+            ->selectRaw("
             SUM(CASE WHEN reports.is_called = 1 THEN 1 ELSE 0 END) AS called,
             SUM(CASE WHEN reports.is_called = 0 THEN 1 ELSE 0 END) AS not_called,
             SUM(CASE WHEN reports.is_delivered = 1 THEN 1 ELSE 0 END) AS deliver,
@@ -301,8 +300,8 @@ class ReportController extends Controller
         ");
 
         if (isset($month) && isset($year)) {
-        $patient_called = $patient_called->whereMonth('reports.created_at', $month)
-                                ->whereYear('reports.created_at', $year);
+            $patient_called = $patient_called->whereMonth('reports.created_at', $month)
+                ->whereYear('reports.created_at', $year);
         } elseif (isset($year)) {
             $patient_called = $patient_called->whereYear('reports.created_at', $year);
         }
@@ -311,9 +310,9 @@ class ReportController extends Controller
         $patient_called = $patient_called->get();
 
         $list_years = TestOrder::select(DB::raw('YEAR(created_at) as year'))
-                   ->groupBy('year')
-                   ->orderBy('year', 'asc')
-                   ->get();
+            ->groupBy('year')
+            ->orderBy('year', 'asc')
+            ->get();
 
         return view('reports.suivi.index', compact('list_years', 'month', 'year', 'patient_called', 'macros', 'rapports', 'examens', 'reports', 'doctors', 'types_orders'));
     }
@@ -348,45 +347,44 @@ class ReportController extends Controller
                 'report_test_order' => $report->order->code
             ];
 
-            event(new AssignedReviewer($request->reviewed_by_user_id,$data));
+            event(new AssignedReviewer($request->reviewed_by_user_id, $data));
         }
 
-        if($request->status==1)
-        {
+        if ($request->status == 1) {
             $report
-            ->fill([
-                'delivery_date' => now(),
-                'description' => $request->content,
-                'comment' => $request->comment,
-                'comment_sup' => $request->comment_sup,
-                'description_micro' => $request->content_micro,
-                'signatory1' => $doctor_signataire1,
-                'signatory2' => $doctor_signataire2,
-                'signatory3' => $doctor_signataire3,
-                'reviewed_by_user_id' => $revew_by,
-                'status' => $request->status == '1' ? '1' : '0',
-                'title' => $request->title,
-                'description_supplementaire' => $request->description_supplementaire != '' ? $request->description_supplementaire : '',
-                'description_supplementaire_micro' => $request->description_supplementaire_micro != '' ? $request->description_supplementaire_micro : '',
-            ])
-            ->save();
-        }elseif($request->status==0){
+                ->fill([
+                    'delivery_date' => now(),
+                    'description' => $request->content,
+                    'comment' => $request->comment,
+                    'comment_sup' => $request->comment_sup,
+                    'description_micro' => $request->content_micro,
+                    'signatory1' => $doctor_signataire1,
+                    'signatory2' => $doctor_signataire2,
+                    'signatory3' => $doctor_signataire3,
+                    'reviewed_by_user_id' => $revew_by,
+                    'status' => $request->status == '1' ? '1' : '0',
+                    'title' => $request->title,
+                    'description_supplementaire' => $request->description_supplementaire != '' ? $request->description_supplementaire : '',
+                    'description_supplementaire_micro' => $request->description_supplementaire_micro != '' ? $request->description_supplementaire_micro : '',
+                ])
+                ->save();
+        } elseif ($request->status == 0) {
             $report
-            ->fill([
-                'description' => $request->content,
-                'comment' => $request->comment,
-                'comment_sup' => $request->comment_sup,
-                'description_micro' => $request->content_micro,
-                'signatory1' => $doctor_signataire1,
-                'signatory2' => $doctor_signataire2,
-                'signatory3' => $doctor_signataire3,
-                'reviewed_by_user_id' => $revew_by,
-                'status' => $request->status == '1' ? '1' : '0',
-                'title' => $request->title,
-                'description_supplementaire' => $request->description_supplementaire != '' ? $request->description_supplementaire : '',
-                'description_supplementaire_micro' => $request->description_supplementaire_micro != '' ? $request->description_supplementaire_micro : '',
-            ])
-            ->save();
+                ->fill([
+                    'description' => $request->content,
+                    'comment' => $request->comment,
+                    'comment_sup' => $request->comment_sup,
+                    'description_micro' => $request->content_micro,
+                    'signatory1' => $doctor_signataire1,
+                    'signatory2' => $doctor_signataire2,
+                    'signatory3' => $doctor_signataire3,
+                    'reviewed_by_user_id' => $revew_by,
+                    'status' => $request->status == '1' ? '1' : '0',
+                    'title' => $request->title,
+                    'description_supplementaire' => $request->description_supplementaire != '' ? $request->description_supplementaire : '',
+                    'description_supplementaire_micro' => $request->description_supplementaire_micro != '' ? $request->description_supplementaire_micro : '',
+                ])
+                ->save();
         }
 
         $report->order->assigned_to_user_id =  $request->doctor_signataire1;
@@ -403,8 +401,7 @@ class ReportController extends Controller
 
             return redirect()->route('report.show', $report->id)->with('success', " Utilisateur mis à jour ! ");
         } catch (\Throwable $th) {
-            return redirect()->route('report.show', $report->id)->with('error', "Échec de l'enregistrement ! " .$th->getMessage());
-
+            return redirect()->route('report.show', $report->id)->with('error', "Échec de l'enregistrement ! " . $th->getMessage());
         }
 
         $log = new LogReport();
@@ -442,7 +439,7 @@ class ReportController extends Controller
         config(['app.name' => $setting->titre]);
 
         $tags = $this->tag->all();
-        return view('reports.show', compact('test_order', 'report', 'setting', 'templates', 'titles', 'logs','cashbox', 'tags'));
+        return view('reports.show', compact('test_order', 'report', 'setting', 'templates', 'titles', 'logs', 'cashbox', 'tags'));
     }
 
     public function pdf($id)
@@ -533,11 +530,11 @@ class ReportController extends Controller
             'patient_year_or_month' => $year_month,
             'patient_genre' => $report->order->patient->genre,
             'status' => $report->status,
-            'revew_by' => $report->reviewed_by_user_id !=0 ? $reviewed_by_user->lastname . ' ' . $reviewed_by_user->firstname:'',
-            'revew_by_signature' => $report->reviewed_by_user_id !=0 ? $report->user->signature : 'Admin_Admin.png',
-            'report_review_title' => SettingApp::where('key','report_review_title')->first()->value,
-            'entete' => SettingApp::where('key','entete')->first()->value,
-            'footer' => SettingApp::where('key','report_footer')->first()->value,
+            'revew_by' => $report->reviewed_by_user_id != 0 ? $reviewed_by_user->lastname . ' ' . $reviewed_by_user->firstname : '',
+            'revew_by_signature' => $report->reviewed_by_user_id != 0 ? $report->user->signature : 'Admin_Admin.png',
+            'report_review_title' => SettingApp::where('key', 'report_review_title')->first()->value,
+            'entete' => SettingApp::where('key', 'entete')->first()->value,
+            'footer' => SettingApp::where('key', 'report_footer')->first()->value,
             'hospital_name' => $report->order ? $report->order->hospital->name : '',
             'doctor_name' => $report->order ? $report->order->doctor->name : '',
             'created_at' => date_format($report->created_at, 'd/m/Y'),
@@ -552,7 +549,7 @@ class ReportController extends Controller
             $log->report_id = $id;
             $log->user_id = $user->id;
             $log->save();
-            $content = view('pdf/canva_'.$impression_file_name->value, $data)->render();
+            $content = view('pdf/canva_' . $impression_file_name->value, $data)->render();
             $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
             $html2pdf->pdf->SetDisplayMode('fullpage');
             $html2pdf->setTestTdInOnePage(false);
@@ -584,7 +581,7 @@ class ReportController extends Controller
         $report = $this->report->findorfail($reportId);
 
         if (empty($report)) {
-           return response()->json(['error'=>"Ce compte rendu n'existe pas. Veuillez ressayer!"]);
+            return response()->json(['error' => "Ce compte rendu n'existe pas. Veuillez ressayer!"]);
         }
 
 
@@ -593,9 +590,9 @@ class ReportController extends Controller
                 'is_deliver' => 1,
             ])
             ->save();
-            // $this->pdf($reportId)';
+        // $this->pdf($reportId)';
 
-            return response()->json(['report'=>$report]);
+        return response()->json(['report' => $report]);
     }
     // Lancer un appel ou envoyer un sms
     public function callOrSendSms($reportId)
@@ -611,20 +608,19 @@ class ReportController extends Controller
                 ->with('error', "Ce compte rendu n'existe pas. Veuillez ressayer ! ");
         }
 
-        $beging = Carbon::createFromTime(8,0,0);
-        $end = Carbon::createFromTime(18,0,0);
+        $beging = Carbon::createFromTime(8, 0, 0);
+        $end = Carbon::createFromTime(18, 0, 0);
         $now = Carbon::now();
 
-                // dd($report->order);
-            if ($report->order->option) {
-                $this->sendSms($report);
+        // dd($report->order);
+        if ($report->order->option) {
+            $this->sendSms($report);
+        } else {
+            if ($now >= $beging && $now <= $end) {
+                $this->callUser($report);
+                // dd('je peux envoyer');
             }
-            else{
-                if ($now>=$beging && $now<=$end) {
-                    $this->callUser($report);
-                    // dd('je peux envoyer');
-                }
-            }
+        }
         // dd($report);
         return redirect()->back()->with('success', "Effectué avec succès ! ");
     }
@@ -717,6 +713,7 @@ class ReportController extends Controller
                         $query->where('status', 0);
                     }
                 }
+
                 if (!empty($request->get('contenu'))) {
                     $query
                         ->where('code', 'like', '%' . $request->get('contenu') . '%')
@@ -726,9 +723,9 @@ class ReportController extends Controller
                         ->orwhere('description', 'like', '%' . $request->get('contenu') . '%')
                         ->orwhereHas('order', function ($query) use ($request) {
                             $query->whereHas('patient', function ($query) use ($request) {
-                               $query->where('firstname', 'like', '%' . $request->get('contenu') . '%')
-                                ->orwhere('code', 'like', '%' . $request->get('contenu') . '%')
-                                ->orwhere('lastname', 'like', '%' . $request->get('contenu') . '%');
+                                $query->where('firstname', 'like', '%' . $request->get('contenu') . '%')
+                                    ->orwhere('code', 'like', '%' . $request->get('contenu') . '%')
+                                    ->orwhere('lastname', 'like', '%' . $request->get('contenu') . '%');
                             });
                         });
                 }
@@ -757,8 +754,10 @@ class ReportController extends Controller
 
         $updatereport->save();
 
-        return response()->json(["message" => "Operation réussie avec succès!",
-                                 'TestId' => $updatereport], 200);
+        return response()->json([
+            "message" => "Operation réussie avec succès!",
+            'TestId' => $updatereport
+        ], 200);
     }
 
 
@@ -771,8 +770,10 @@ class ReportController extends Controller
 
         $updatereport->save();
 
-        return response()->json(["message" => "Operation réussie avec succès!",
-                                 'TestId' => $updatereport], 200);
+        return response()->json([
+            "message" => "Operation réussie avec succès!",
+            'TestId' => $updatereport
+        ], 200);
     }
 
 
@@ -792,27 +793,27 @@ class ReportController extends Controller
             })
             ->editColumn('code', function ($data) {
                 if ($data->order) {
-                return  view("reports.suivi.code",['data'=>$data]);
+                    return  view("reports.suivi.code", ['data' => $data]);
                 } else {
                     return '';
                 }
             })
 
             ->addColumn('macro', function ($data) {
-                return  view("reports.suivi.btnmacro",['data'=>$data]);
+                return  view("reports.suivi.btnmacro", ['data' => $data]);
             })
 
             ->addColumn('report', function ($data) {
-                return  view("reports.suivi.btnreport",['data'=>$data]);
+                return  view("reports.suivi.btnreport", ['data' => $data]);
             })
 
             ->addColumn('call', function ($data) {
-                return  view("reports.suivi.btninforme",['data'=>$data]);
+                return  view("reports.suivi.btninforme", ['data' => $data]);
                 // return $data->is_called;
             })
 
             ->addColumn('delivery', function ($data) {
-                return  view("reports.suivi.btndelivery",['data'=>$data]);
+                return  view("reports.suivi.btndelivery", ['data' => $data]);
             })
 
             ->filter(function ($query) use ($request) {
@@ -841,17 +842,17 @@ class ReportController extends Controller
                         $query->where('is_delivered', 1);
                     } elseif ($request->get('statusquery') == 2) {
                         $query->where('is_called', 1);
-                    }elseif ($request->get('statusquery') == 3) {
+                    } elseif ($request->get('statusquery') == 3) {
                         $query->where('status', 0);
-                    }elseif ($request->get('statusquery') == 4) {
+                    } elseif ($request->get('statusquery') == 4) {
                         $query->where('status', 1);
                     }
                 }
 
                 if (!empty($request->get('contenu'))) {
                     $query->whereHas('order', function ($query) use ($request) {
-                            $query->where('code', 'like', '%' . $request->get('contenu') . '%');
-                        });
+                        $query->where('code', 'like', '%' . $request->get('contenu') . '%');
+                    });
                 }
 
                 if (!empty($request->get('dateBegin'))) {
@@ -868,9 +869,8 @@ class ReportController extends Controller
                         $query->whereDate('created_at', '<=', $newDateEnd);
                     });
                 }
-
             })
-            ->rawColumns(['date', 'code', 'delivery', 'call','report','macro'])
+            ->rawColumns(['date', 'code', 'delivery', 'call', 'report', 'macro'])
             ->make(true);
     }
 
@@ -879,7 +879,7 @@ class ReportController extends Controller
         $setting = $this->setting->find(1);
         $client = new Client();
         $accessToken = $setting->api_key_ourvoice;
-        $to = '229'.$report->patient->telephone1;
+        $to = '229' . $report->patient->telephone1;
         if ($report->patient->langue === 'fon') {
             $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/06/RESULTAT-DISPONIBLE-FON-VF.mp3';
             $audio_url_non_disponible = 'https://caap.bj/wp-content/uploads/2023/05/RESULTAT-NON-DISPONIBLE-.mp3';
@@ -890,7 +890,7 @@ class ReportController extends Controller
             $audio_url_disponible = 'https://caap.bj/wp-content/uploads/2023/06/RESULTAT-DISPONIBLE-FRANCAIS-VF.mp3';
             $audio_url_non_disponible = 'https://caap.bj/wp-content/uploads/2023/05/F.-RESULTAT-INDISPONIBLE.mp3';
         }
-        $link_ourvoice_call = SettingApp::where('key','link_ourvoice_call')->first();
+        $link_ourvoice_call = SettingApp::where('key', 'link_ourvoice_call')->first();
 
         // Pour lancer un appel 'https://staging.getourvoice.com/api/v1/calls'https://api.getourvoice.com/v1/calls
         // $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/calls', [
@@ -911,15 +911,15 @@ class ReportController extends Controller
         $report->order->status_appel = $vocal['data']['id'];
         $report->order->save();
 
-        $appel = AppelByReport::where('report_id',$report->id)->first();
+        $appel = AppelByReport::where('report_id', $report->id)->first();
         if ($appel) {
             $appel->update([
-                'appel_id'=>$vocal['data']['id'],
+                'appel_id' => $vocal['data']['id'],
             ]);
-        }else{
+        } else {
             AppelByReport::create([
-                'report_id'=>$report->id,
-                'appel_id'=>$vocal['data']['id'],
+                'report_id' => $report->id,
+                'appel_id' => $vocal['data']['id'],
             ]);
         }
 
@@ -959,10 +959,10 @@ class ReportController extends Controller
         $client = new Client();
         // $accessToken = '421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk';
         $accessToken = $setting->api_key_ourvoice;
-        $to = '229'.$report->patient->telephone1;
+        $to = '229' . $report->patient->telephone1;
         $body = 'Bonjour c\'est l cabinet medical Anathomie pathologique adechinan situé à fifadji vos résultats d\'analyse sont maintenant disponible vous pouvez venir les recupérer à tout moment pendant nos heures d\'ouvertures. Nous sommes ouvert du Lundi au vendredi de 08h à 17h Merci de votre confiance';
 
-        $link_ourvoice_sms = SettingApp::where('key','link_ourvoice_sms')->first();
+        $link_ourvoice_sms = SettingApp::where('key', 'link_ourvoice_sms')->first();
 
         // Pour lancer un appel
         // $responsevocal = $client->request('POST', 'https://api.getourvoice.com/v1/messages', [
@@ -975,7 +975,7 @@ class ReportController extends Controller
             'json' => [
                 'to' => [$to],
                 'body' => $body,
-                'sender_id'=> 'c7e219bb-aa98-49e4-a87d-71250babaf98',
+                'sender_id' => 'c7e219bb-aa98-49e4-a87d-71250babaf98',
                 // 'audio_url' => $audio_url_disponible,
             ],
         ]);

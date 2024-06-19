@@ -56,6 +56,7 @@
                         <input type="text" class="form-control" name="lastname" required>
                     </div>
                 </div>
+                
                 <div class="col-md-12 mb-3">
                     <div class="form-group">
                         <label for="exampleFormControlInput1" class="form-label">Email<span
@@ -63,12 +64,14 @@
                         <input type="email" class="form-control" name="email" required>
                     </div>
                 </div>
+
                 {{-- data-default-file="{{ $setting ? Storage::url($setting->logo) : '' }}" --}}
                 <div class="col-md-12 mb-3">
                     <label for="example-fileinput" class="form-label">Signature</label>
                     <input type="file" class="dropify" name="signature" id="signature" data-default-file=" "
                         data-max-file-size="3M" />
                 </div>
+
                 <div class="mb-3">
                     <label for="example-select" class="form-label">Roles<span style="color:red;">*</span></label>
                     <select class="form-select select2" data-toggle="select2" required name="roles[]" multiple>

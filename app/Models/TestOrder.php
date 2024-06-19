@@ -19,8 +19,8 @@ class TestOrder extends Model
 
     use HasFactory, SoftDeletes;
 
-    protected $guarded = [];    
-    
+    protected $guarded = [];
+
 
     public function getPatient()
     {
@@ -51,6 +51,11 @@ class TestOrder extends Model
         $data = Contrat::find($this->contrat_id);
         return $data;
     }
+
+    // public function contrat()
+    // {
+    //     return $this->belongsTo(Contrat::class, 'contrat_id');
+    // }
 
     public function getReport($id)
     {
@@ -127,7 +132,7 @@ class TestOrder extends Model
     }
 
 
-     /**
+    /**
      * Get the Hospital that owns the Doctor
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -164,13 +169,13 @@ class TestOrder extends Model
      */
     public function invoice()
     {
-        return $this->hasOne(Invoice::class,'test_order_id');
+        return $this->hasOne(Invoice::class, 'test_order_id');
     }
 
 
     public function macro()
     {
-        return $this->hasOne(test_pathology_macro::class,'test_order_id');
+        return $this->hasOne(test_pathology_macro::class, 'test_order_id');
     }
 
     public function attribuateToDoctor()

@@ -1,24 +1,21 @@
-$('.dropify').dropify();
+$(".dropify").dropify();
 
 Dropzone.autoDiscover = false;
 
-$(document).ready(function() {
-
-
-    console.log(invoiceTest)
-
+$(document).ready(function () {
+    console.log(invoiceTest);
 
     $.ajax({
-        url: '/examen-images/' + test_order_code,
-        method: 'GET',
-        success: function(response) {
+        url: "/examen-images/" + test_order_code,
+        method: "GET",
+        success: function (response) {
             var fileNames = response.file_names;
 
             if (fileNames && fileNames.length > 0) {
                 var dropzone = $("#image-dropzone").dropzone({
                     url: ROUTEFILEUPLOAD,
                     headers: {
-                        'X-CSRF-TOKEN': TOKENGETFILEUPDATE
+                        "X-CSRF-TOKEN": TOKENGETFILEUPDATE,
                     },
                     params: {
                         code: test_order_code, // Valeur du paramètre exam_code à envoyer avec la requête
@@ -30,22 +27,22 @@ $(document).ready(function() {
                     acceptedFiles: ".jpg, .jpeg, .png",
                     addRemoveLinks: true,
                     dictRemoveFile: "Supprimer",
-                    success: function(file, response) {
+                    success: function (file, response) {
                         console.log(response);
                     },
-                    removedfile: function(file) {
+                    removedfile: function (file) {
                         var _ref;
                         if ((_ref = file.previewElement) != null) {
                             _ref.parentNode.removeChild(file.previewElement);
                         }
                         console.log(file);
                     },
-                    error: function(error) {
+                    error: function (error) {
                         console.log(error);
-                    }
+                    },
                 });
 
-                dropzone.on('addedfile', function(file) {
+                dropzone.on("addedfile", function (file) {
                     // Supprimez le fichier ajouté par défaut
                     dropzone.removeFile(file);
                 });
@@ -53,7 +50,11 @@ $(document).ready(function() {
                 for (var i = 0; i < fileNames.length; i++) {
                     var fileName = fileNames[i];
 
-                    var imageUrl = '/storage/examen_images/' + test_order_code + '/' + fileName;
+                    var imageUrl =
+                        "/storage/examen_images/" +
+                        test_order_code +
+                        "/" +
+                        fileName;
 
                     dropzone.createThumbnailFromUrl(
                         imageUrl,
@@ -61,9 +62,9 @@ $(document).ready(function() {
                         dropzone.options.thumbnailHeight,
                         dropzone.options.thumbnailMethod,
                         true,
-                        function(thumbnail) {
-                            dropzone.emit('addedfile', thumbnail);
-                            dropzone.emit('complete', thumbnail);
+                        function (thumbnail) {
+                            dropzone.emit("addedfile", thumbnail);
+                            dropzone.emit("complete", thumbnail);
                         }
                     );
                 }
@@ -71,7 +72,7 @@ $(document).ready(function() {
                 $("#image-dropzone").dropzone({
                     url: ROUTEFILEUPLOAD,
                     headers: {
-                        'X-CSRF-TOKEN': TOKENGETFILEUPDATE
+                        "X-CSRF-TOKEN": TOKENGETFILEUPDATE,
                     },
                     params: {
                         code: test_order_code, // Valeur du paramètre exam_code à envoyer avec la requête
@@ -81,119 +82,116 @@ $(document).ready(function() {
                     acceptedFiles: ".jpg, .jpeg, .png",
                     addRemoveLinks: true,
                     dictRemoveFile: "Supprimer",
-                    success: function(file, response) {
+                    success: function (file, response) {
                         console.log(response);
                     },
-                    removedfile: function(file) {
+                    removedfile: function (file) {
                         var _ref;
                         if ((_ref = file.previewElement) != null) {
                             _ref.parentNode.removeChild(file.previewElement);
                         }
                         console.log(file);
                     },
-                    error: function(file) {
+                    error: function (file) {
                         console.log(file);
-                    }
+                    },
                 });
             }
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.log(error);
-        }
+        },
     });
 
+    var dtDetailTable = $(".detail-list-table");
 
-    var dtDetailTable = $('.detail-list-table')
-
-    var dt_basic = $('#datatable1').DataTable({
+    var dt_basic = $("#datatable1").DataTable({
         ajax: {
-            url: baseUrl + '/test_order/detailstest/' + test_order.id,
-            dataSrc: ''
+            url: baseUrl + "/test_order/detailstest/" + test_order.id,
+            dataSrc: "",
         },
         // deferRender: true,
         columns: [
             // columns according to JSON
             {
-                data: 'id'
+                data: "id",
             },
             {
-                data: 'test_name'
+                data: "test_name",
             },
             {
-                data: 'price'
+                data: "price",
             },
             {
-                data: 'discount'
+                data: "discount",
             },
             {
-                data: 'total'
+                data: "total",
             },
             {
-                data: null
-            }
+                data: null,
+            },
         ],
-        columnDefs: [{
-            "targets": -1,
-            //"targets": [0],
-            "render": function(data, type, row) {
-                // if (test_order.status != 1) {
-                //     if (row["status"] == 1) {
-                //         return (
-                //             '<button type="button" id="deleteBtn" class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i> </button>'
-                //         );
-                //     }
-                // } else {
+        columnDefs: [
+            {
+                targets: -1,
+                //"targets": [0],
+                render: function (data, type, row) {
+                    // if (test_order.status != 1) {
+                    //     if (row["status"] == 1) {
+                    //         return (
+                    //             '<button type="button" id="deleteBtn" class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i> </button>'
+                    //         );
+                    //     }
+                    // } else {
 
-                if (invoiceTest) {
-                    if (invoiceTest.paid == 1) {
-                        return (
-                            ''
-                        );
+                    if (invoiceTest) {
+                        if (invoiceTest.paid == 1) {
+                            return "";
+                        } else {
+                            return '<button type="button" id="deleteBtn" class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i> </button>';
+                        }
                     } else {
-                        return (
-                            '<button type="button" id="deleteBtn" class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i> </button>'
-                        );
+                        return '<button type="button" id="deleteBtn" class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i> </button>';
                     }
-                } else {
-                    return (
-                        '<button type="button" id="deleteBtn" class="btn btn-danger"> <i class="mdi mdi-trash-can-outline"></i> </button>'
-                    );
-                }
-                // }
+                    // }
 
-                return "";
-            }
+                    return "";
+                },
+            },
+        ],
 
-        }],
-
-        footerCallback: function(row, data, start, end, display) {
+        footerCallback: function (row, data, start, end, display) {
             var api = this.api();
 
             // Remove the formatting to get integer data for summation
-            var intVal = function(i) {
-                return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i ===
-                    'number' ? i : 0;
+            var intVal = function (i) {
+                return typeof i === "string"
+                    ? i.replace(/[\$,]/g, "") * 1
+                    : typeof i === "number"
+                    ? i
+                    : 0;
             };
 
             // Total over all pages
             total = api
                 .column(4)
                 .data()
-                .reduce(function(a, b) {
+                .reduce(function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0);
             //
             discount = api
                 .column(3)
                 .data()
-                .reduce(function(a, b) {
+                .reduce(function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0);
 
             subTotal = api
                 .column(2)
                 .data()
-                .reduce(function(a, b) {
+                .reduce(function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0);
 
@@ -206,13 +204,12 @@ $(document).ready(function() {
 
             var numRows = api.rows().count();
             if (numRows > 0) {
-                var element = document.getElementById('finalisationBtn');
+                var element = document.getElementById("finalisationBtn");
                 if (element) {
                     element.classList.remove("disabled");
                 }
             }
         },
-
     });
 
     if (invoiceTest) {
@@ -221,58 +218,56 @@ $(document).ready(function() {
         }
     }
 
-    $('.detail-list-table tbody').on('click', '#deleteBtn', function() {
-        var data = dt_basic.row($(this).parents('tr')).data();
-        var id = $(this).data('id');
-        console.log(data)
+    $(".detail-list-table tbody").on("click", "#deleteBtn", function () {
+        var data = dt_basic.row($(this).parents("tr")).data();
+        var id = $(this).data("id");
+        console.log(data);
         Swal.fire({
             title: "Voulez-vous supprimer l'élément ?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Oui ",
             cancelButtonText: "Non !",
-        }).then(function(result) {
+        }).then(function (result) {
             if (result.value) {
                 $.ajax({
                     url: baseUrl + "/test_order/detailsdelete",
                     type: "post",
                     data: {
-                        "_token": TOKENDETAILDELETE,
+                        _token: TOKENDETAILDELETE,
                         id: data.id,
                     },
-                    success: function(response) {
-
+                    success: function (response) {
                         console.log(response);
                         Swal.fire(
                             "Suppression !",
                             "En cours de traitement ...",
                             "success"
-                        )
-                        dt_basic.ajax.reload()
+                        );
+                        dt_basic.ajax.reload();
                     },
-                    error: function(response) {
+                    error: function (response) {
                         console.log(response);
-                        dt_basic.ajax.reload()
+                        dt_basic.ajax.reload();
 
                         // Command: toastr["error"]("Error")
                     },
                 });
-
             }
         });
     });
 
-    $('.detail-list-table tbody').on('click', '#editBtn', function() {
-        var data = dt_basic.row($(this).parents('tr')).data();
-        var dataline = dt_basic.row($(this).parents('tr'))
+    $(".detail-list-table tbody").on("click", "#editBtn", function () {
+        var data = dt_basic.row($(this).parents("tr")).data();
+        var dataline = dt_basic.row($(this).parents("tr"));
         console.log(dataline[0][0]);
-        $('#row_id').val(dataline[0][0]);
-        $('#test_id1').val(data.test_id);
-        $('#price1').val(data.price);
-        $('#remise1').val(data.discount);
+        $("#row_id").val(dataline[0][0]);
+        $("#test_id1").val(data.test_id);
+        $("#price1").val(data.price);
+        $("#remise1").val(data.discount);
 
-        $('#total1').val(data.total);
-        $('#editModal').modal('show');
+        $("#total1").val(data.total);
+        $("#editModal").modal("show");
     });
 
     function sendTotal(test_order_id, total, discount, subTotal) {
@@ -282,95 +277,108 @@ $(document).ready(function() {
             url: ROUTEUPDATEORDER,
             type: "POST",
             data: {
-                "_token": TOKENUPDATEORDER,
+                _token: TOKENUPDATEORDER,
                 test_order_id: test_order_id,
                 discount: discount,
                 subTotal: subTotal,
-                total: total
-
+                total: total,
             },
-            success: function(response) {
-                console.log(response)
-
+            success: function (response) {
+                console.log(response);
             },
-            error: function(response) {
-                console.log(response)
+            error: function (response) {
+                console.log(response);
             },
         });
-    };
+    }
 });
 
-$('#addDetailForm').on('submit', function(e) {
+$("#addDetailForm").on("submit", function (e) {
     e.preventDefault();
-    let test_order_id = $('#test_order_id').val();
-    let test_id = $('#test_id').val();
-    let price = $('#price').val();
-    let remise = $('#remise').val();
-    let total = $('#total').val();
+    let test_order_id = $("#test_order_id").val();
+    let test_id = $("#test_id").val();
+    let price = $("#price").val();
+    let remise = $("#remise").val();
+    let total = $("#total").val();
 
     $.ajax({
         url: ROUTESTOREDETAILTESTORDER,
         type: "POST",
         data: {
-            "_token": TOKENSTOREDETAILTESTORDER,
+            _token: TOKENSTOREDETAILTESTORDER,
             test_order_id: test_order_id,
             test_id: test_id,
             price: price,
             discount: remise,
-            total: total
-
+            total: total,
         },
-        success: function(response) {
-            $('#addDetailForm').trigger("reset")
+        success: function (response) {
+            $("#addDetailForm").trigger("reset");
 
             if (response) {
-                toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                toastr.success("Donnée ajoutée avec succès", "Ajout réussi");
             }
-            $('#datatable1').DataTable().ajax.reload();
+            $("#datatable1").DataTable().ajax.reload();
             // $('#addDetailForm').trigger("reset")
             // updateSubTotal();
         },
-        error: function(response) {
-            console.log(response)
+        error: function (response) {
+            console.log(response);
         },
     });
-
 });
 
 function getTest() {
-    var test_id = $('#test_id').val();
-
+    var test_id = $("#test_id").val();
+    console.log(test_id);
     // Importation des paramètres de getRemise
-    var contrat_id = $('#contrat_id').val();
+    var contrat_id = $("#contrat_id").val();
 
     let element = document.getElementById("test_id");
-    let category_test_id = element.options[element.selectedIndex].getAttribute("data-category_test_id");
+    let category_test_id = element.options[element.selectedIndex].getAttribute(
+        "data-category_test_id"
+    );
 
     $.ajax({
         type: "POST",
         url: ROUTEGETREMISE,
         data: {
-            "_token": TOKENGETREMISE,
+            _token: TOKENGETREMISE,
             testId: test_id,
             contratId: contrat_id,
-            categoryTestId: category_test_id
+            categoryTestId: category_test_id,
         },
-        success: function(data) {
+        success: function (data) {
+            console.log(data, data.detail);
 
-            $('#price').val(data.data.price);
+            $("#price").val(data.data.price);
 
-            var discount = $('#price').val() * data.detail / 100;
-            $('#remise').val(discount);
+            if (data.detail) {
+                if (data.detail.test_id == null) {
+                    var discount =
+                        ($("#price").val() * data.detail.pourcentage) / 100;
+                }
 
-            var total = $('#price').val() - discount;
-            $('#total').val(total);
+                if (data.detail.test_id != null) {
+                    var discount = data.detail.amount_remise;
+                }
+            }
 
+            if (data.detail == null) {
+                var discount = 0;
+            }
+
+            // var discount = ($("#price").val() * data.detail) / 100;
+
+            $("#remise").val(discount);
+
+            var total = $("#price").val() - discount;
+            $("#total").val(total);
         },
-        error: function(data) {
-            console.log('Error:', data);
-        }
+        error: function (data) {
+            console.log("Error:", data);
+        },
     });
-
 }
 
 function edit(id) {
@@ -378,43 +386,38 @@ function edit(id) {
 
     // Populate Data in Edit Modal Form
     $.ajax({
-        url: baseUrl + '/test_order/detailstest/' + e_id,
-        dataSrc: '',
-        success: function(data) {
+        url: baseUrl + "/test_order/detailstest/" + e_id,
+        dataSrc: "",
+        success: function (data) {
             console.log(data);
-            $('#test_id1').val(data.test_id);
-            $('#price1').val(data.price);
-            $('#remise1').val(data.discount);
-            $('#total1').val(data.total);
-            $('#editModal').modal('show');
+            $("#test_id1").val(data.test_id);
+            $("#price1").val(data.price);
+            $("#remise1").val(data.discount);
+            $("#total1").val(data.total);
+            $("#editModal").modal("show");
         },
-        error: function(data) {
-            console.log('Error:', data);
-        }
+        error: function (data) {
+            console.log("Error:", data);
+        },
     });
 }
-$('.datepicker').datepicker({
-    format: 'dd/mm/yyyy',
-    startDate: '-3d'
+$(".datepicker").datepicker({
+    format: "dd/mm/yyyy",
+    startDate: "-3d",
 });
 
 // SUPPRESSION
 function deleteModal(id) {
-
     Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/contrats_details/delete" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
@@ -427,103 +430,119 @@ function edit(id) {
     $.ajax({
         type: "GET",
         url: baseUrl + "/getcontratdetails" + e_id,
-        success: function(data) {
-
-            $('#category_test_id2').val(data.category_test_id).change();
-            $('#pourcentage2').val(data.pourcentage);
-            $('#contrat_id2').val(data.contrat_id);
-            $('#contrat_details_id2').val(data.id);
-
-
+        success: function (data) {
+            $("#category_test_id2").val(data.category_test_id).change();
+            $("#pourcentage2").val(data.pourcentage);
+            $("#contrat_id2").val(data.contrat_id);
+            $("#contrat_details_id2").val(data.id);
 
             console.log(data);
-            $('#editModal').modal('show');
+            $("#editModal").modal("show");
         },
-        error: function(data) {
-            console.log('Error:', data);
-        }
+        error: function (data) {
+            console.log("Error:", data);
+        },
     });
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
+    $("#doctor_id")
+        .select2({
+            placeholder: "Sélectionner le médecin traitant",
+            // theme: 'bootstrap4',
+            tags: true,
+        })
+        .on("select2:close", function () {
+            var element = $(this);
+            var new_category = $.trim(element.val());
 
-    $('#doctor_id').select2({
-        placeholder: 'Sélectionner le médecin traitant',
-        // theme: 'bootstrap4',
-        tags: true,
-    }).on('select2:close', function() {
-        var element = $(this);
-        var new_category = $.trim(element.val());
+            if (new_category != "") {
+                $.ajax({
+                    url: ROUTESTOREDOCTOR,
+                    method: "POST",
+                    data: {
+                        _token: TOKENSTOREDOCTOR,
+                        name: new_category,
+                    },
+                    success: function (data) {
+                        if (data.status === "created") {
+                            toastr.success(
+                                "Donnée ajoutée avec succès",
+                                "Ajout réussi"
+                            );
 
-        if (new_category != '') {
-            $.ajax({
-                url: ROUTESTOREDOCTOR,
-                method: "POST",
-                data: {
-                    "_token": TOKENSTOREDOCTOR,
-                    name: new_category
-                },
-                success: function(data) {
-
-                    if (data.status === "created") {
-                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-
-                        element.append('<option value="' + data.id + '">' + data.name +
-                            '</option>').val(new_category);
-                    }
-                }
-            })
-        }
-
-    });
+                            element
+                                .append(
+                                    '<option value="' +
+                                        data.id +
+                                        '">' +
+                                        data.name +
+                                        "</option>"
+                                )
+                                .val(new_category);
+                        }
+                    },
+                });
+            }
+        });
 
     // Create hopital
-    $('#hospital_id').select2({
-        placeholder: 'Sélectionner le centre hospitalier de provenance',
-        // theme: 'bootstrap4',
-        tags: true,
-    }).on('select2:close', function() {
-        var element = $(this);
-        var new_category = $.trim(element.val());
+    $("#hospital_id")
+        .select2({
+            placeholder: "Sélectionner le centre hospitalier de provenance",
+            // theme: 'bootstrap4',
+            tags: true,
+        })
+        .on("select2:close", function () {
+            var element = $(this);
+            var new_category = $.trim(element.val());
 
-        if (new_category != '') {
-            $.ajax({
-                url: ROUTESTOREHOSPITAL,
-                method: "POST",
-                data: {
-                    "_token": TOKENSTOREHOSPITAL,
-                    name: new_category
-                },
-                success: function(data) {
+            if (new_category != "") {
+                $.ajax({
+                    url: ROUTESTOREHOSPITAL,
+                    method: "POST",
+                    data: {
+                        _token: TOKENSTOREHOSPITAL,
+                        name: new_category,
+                    },
+                    success: function (data) {
+                        if (data.status === "created") {
+                            toastr.success(
+                                "Donnée ajoutée avec succès",
+                                "Ajout réussi"
+                            );
 
-                    if (data.status === "created") {
-                        toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
+                            element
+                                .append(
+                                    '<option value="' +
+                                        data.id +
+                                        '">' +
+                                        data.name +
+                                        "</option>"
+                                )
+                                .val(new_category);
+                        }
+                    },
+                });
+            }
+        });
 
-                        element.append('<option value="' + data.id + '">' + data.name +
-                            '</option>').val(new_category);
-                    }
-                }
-            })
-        }
-
-    });
-
-    $('#createPatientForm').on('submit', function(e) {
+    $("#createPatientForm").on("submit", function (e) {
         e.preventDefault();
-        let code = $('#code').val();
-        let lastname = $('#lastname').val();
-        let firstname = $('#firstname').val();
-        let age = $('#age').val();
-        let year_or_month = $('#year_or_month').val();
-        let telephone1 = $('#telephone1').val();
-        let genre = $('#genre').val();
-        let langue = $('#langue').val();
+        let code = $("#code").val();
+        let lastname = $("#lastname").val();
+        let firstname = $("#firstname").val();
+        let age = $("#age").val();
+        let year_or_month = $("#year_or_month").val();
+        let telephone1 = $("#telephone1").val();
+        let genre = $("#genre").val();
+        let langue = $("#langue").val();
         // alert(firstname);
         $.ajax({
             url: ROUTESTOREPATIENT,
             type: "POST",
             data: {
-                "_token": TOKENSTOREPATIENT,
+                _token: TOKENSTOREPATIENT,
                 code: code,
                 lastname: lastname,
                 firstname: firstname,
@@ -533,25 +552,32 @@ $(document).ready(function() {
                 genre: genre,
                 langue: langue,
             },
-            success: function(data) {
-
-                $('#createPatientForm').trigger("reset")
-                $('#standard-modal').modal('hide');
-                toastr.success("Donnée ajoutée avec succès", 'Ajout réussi');
-                $('#patient_id').append('<option value="' + data.id + '">' + data.code +
-                        ' - ' + data.firstname + ' ' + data.lastname + '</option>')
-                    .trigger('change').val(data.id);
-
+            success: function (data) {
+                $("#createPatientForm").trigger("reset");
+                $("#standard-modal").modal("hide");
+                toastr.success("Donnée ajoutée avec succès", "Ajout réussi");
+                $("#patient_id")
+                    .append(
+                        '<option value="' +
+                            data.id +
+                            '">' +
+                            data.code +
+                            " - " +
+                            data.firstname +
+                            " " +
+                            data.lastname +
+                            "</option>"
+                    )
+                    .trigger("change")
+                    .val(data.id);
             },
-            error: function(data) {
-                console.log(data)
+            error: function (data) {
+                console.log(data);
             },
             // processData: false,
         });
-
     });
 });
-
 
 // $(document).ready(function() {
 
@@ -571,7 +597,6 @@ $(document).ready(function() {
 //         //     $(".examenReferenceInput").hide();
 //         //     $(".examenReferenceSelect").hide();
 //         // }
-
 
 //         if (typeExamenOption == "Immuno Externe") {
 //             // Si "Immuno Externe" est sélectionné, masquer le champ "Examen de Référence Interne" et afficher le champ "Examen de Référence Externe"
@@ -607,20 +632,14 @@ $(document).ready(function() {
 //             $("#examen_reference_input").val('');
 //         }
 
-
-
-
 //     });
-
 
 // });
 
-
-
-$(document).ready(function() {
+$(document).ready(function () {
     // Fonction pour vérifier et mettre à jour les champs d'examen de référence au chargement de la page
     function updateExamenReferenceFields() {
-        var typeExamenOption = $('#type_examen option:selected').text();
+        var typeExamenOption = $("#type_examen option:selected").text();
 
         if (typeExamenOption == "Immuno Externe") {
             // Si "Immuno Externe" est sélectionné, masquer le champ "Examen de Référence Interne" et afficher le champ "Examen de Référence Externe"
@@ -629,10 +648,9 @@ $(document).ready(function() {
             // Désactiver le champ "Examen de Référence Interne"
             $("#examen_reference_select").prop("required", false);
             // Réinitialiser le champ "Examen de Référence Interne"
-            $("#examen_reference_select").val('');
+            $("#examen_reference_select").val("");
 
             $("#examen_reference_input").prop("required", true);
-
         } else if (typeExamenOption == "Immuno Interne") {
             // Si "Immuno Interne" est sélectionné, masquer le champ "Examen de Référence Externe" et afficher le champ "Examen de Référence Interne"
             $(".examenReferenceInputExterne").hide();
@@ -640,10 +658,9 @@ $(document).ready(function() {
             // Désactiver le champ "Examen de Référence Externe"
             $("#examen_reference_input").prop("required", false);
             // Réinitialiser le champ "Examen de Référence Externe"
-            $("#examen_reference_input").val('');
+            $("#examen_reference_input").val("");
 
             $("#examen_reference_select").prop("required", true);
-
         } else {
             // Si aucune des options spécifiques n'est sélectionnée, cacher les deux champs
             // $(".examenReferenceInputExterne").hide();
@@ -654,9 +671,11 @@ $(document).ready(function() {
             // // Réinitialiser les deux champs
             // $("#examen_reference_select").val('');
             // $("#examen_reference_input").val('');
-            $(".examenReferenceInputExterne, .examenReferenceInputInterne").hide();
-            $("#examen_reference_input").prop("required", false).val('');
-            $("#examen_reference_select").prop("required", false).val('');
+            $(
+                ".examenReferenceInputExterne, .examenReferenceInputInterne"
+            ).hide();
+            $("#examen_reference_input").prop("required", false).val("");
+            $("#examen_reference_select").prop("required", false).val("");
         }
     }
 
@@ -664,26 +683,22 @@ $(document).ready(function() {
     updateExamenReferenceFields();
 
     // Ajouter un gestionnaire d'événement pour mettre à jour les champs d'examen de référence lorsque le type d'examen change
-    $('#type_examen').on('change', function(e) {
+    $("#type_examen").on("change", function (e) {
         updateExamenReferenceFields();
     });
 });
 
-
 window.addEventListener("load", (event) => {
-    var typeExamenOption = $('#type_examen option:selected').text();
+    var typeExamenOption = $("#type_examen option:selected").text();
     // alert(typeExamenOption);
     if (typeExamenOption == "Immuno Externe") {
         $(".examenReferenceSelect").hide();
         $(".examenReferenceInput").show();
-
     } else if (typeExamenOption == "Immuno Interne") {
         $(".examenReferenceSelect").hide();
         $(".examenReferenceInput").show();
-
     } else {
         $(".examenReferenceInput").hide();
         $(".examenReferenceSelect").hide();
     }
-
 });

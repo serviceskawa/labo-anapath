@@ -42,55 +42,79 @@
 
             <div id="cardCollpase1" class="collapse pt-3 show">
 
+                <div class="row mb-3">
 
-                <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                    <div class="col-lg-4">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Rechercher</label>
+                            <input type="text" name="contenu" id="contenu" class="form-control"
+                                placeholder="Contrat ou client professionnel">
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Status</label>
+                            <select name="statusquery" id="statusquery" class="form-control">
+                                <option value="">Tous</option>
+                                <option value="ACTIF">ACTIF</option>
+                                <option value="INACTIF">INACTIF</option>
+                                <option value="1">CLÔTURER</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Status facture</label>
+                            <select name="cas_status" id="cas_status" class="form-control">
+                                <option value="">Tous</option>
+                                <option value="0">En attente</option>
+                                <option value="1">Payé</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Date Début</label>
+                            <input type="date" name="dateBegin" id="dateBegin" class="form-control">
+                        </div>
+                    </div> <!-- end col -->
+
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Date fin</label>
+                            <input type="date" name="dateEnd" id="dateEnd" class="form-control">
+                        </div>
+                    </div> <!-- end col -->
+
+                </div>
+
+
+
+
+                <table id="datatable2" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
-                            <th>Nom du contrat</th>
-                            <th>Type</th>
-                            <th>Examens</th>
+                            <th>Date</th>
+                            <th>Contrat</th>
+                            <th>Nombre d’examens</th>
                             <th>Statut</th>
                             <th>Actions</th>
-
                         </tr>
                     </thead>
 
 
                     <tbody>
 
-                        @foreach ($contrats as $item)
-                        <tr>
-                            <td>{{ $item->name }}</td>
-                            <td>{{ $item->type }}</td>
-                            <td>{{ $item->orders->count() }}</td>
-                            <td>{{ $item->status }}</td>
-
-                            <td>
-                                <a type="button" href="{{ route('contrat_details.index', $item->id) }}"
-                                    class="btn btn-warning" title="Voir détails contrat" ><i class="mdi mdi-eye"></i> </a>
-                                <button type="button" onclick="edit({{ $item->id }})" class="btn btn-primary" title="Editer contrat"><i
-                                        class="mdi mdi-lead-pencil" ></i> </button>
-                                <button type="button" onclick="deleteModal({{ $item->id }})" class="btn btn-danger" title="Supprimer contrat"><i
-                                        class="mdi mdi-trash-can-outline" ></i> </button>
-                                @if ($item->is_close != 1 )
-                                <button type="button" onclick="closeModal({{ $item->id }})" class="btn btn-secondary" title="Clôturer contrat"><i
-                                        class="mdi mdi-block-helper"></i> </button>
-                                @endif
-
-                            </td>
-
-                        </tr>
-                        @endforeach
-
-
-
-
                     </tbody>
                 </table>
 
             </div>
         </div>
-    </div> <!-- end card-->
+    </div>
 
 
 </div>
@@ -101,6 +125,7 @@
 
 <script>
     var baseUrl = "{{ url('/') }}";
+    var ROUTEGETDATATABLE = "{{ route('contrat.getContratsforDatatable') }}"
 </script>
 
 <script src="{{asset('viewjs/contrat/index.js')}}"></script>

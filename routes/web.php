@@ -107,9 +107,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/examens/categories/update', [TestCategoryController::class, 'update'])->name('examens.categories.update');
     //Fournisseur
 
-    Route::prefix('fournisseur')->group(function() {
-        Route::get('/',[SupplierController::class,'index'])->name('supplier.index');
-        Route::post('/',[SupplierController::class,'store'])->name('supplier.store');
+    Route::prefix('fournisseur')->group(function () {
+        Route::get('/', [SupplierController::class, 'index'])->name('supplier.index');
+        Route::post('/', [SupplierController::class, 'store'])->name('supplier.store');
         Route::get('/delete/{id}', [SupplierController::class, 'destroy']);
         Route::get('/get/{id}', [SupplierController::class, 'edit']);
         Route::post('/update', [SupplierController::class, 'update'])->name('supplier.update');
@@ -128,6 +128,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/gettest/{id}', [TestController::class, 'edit']);
     Route::post('/getTestAndRemise', [TestController::class, 'getTestAndRemise'])->name('examens.getTestAndRemise');
     Route::post('/examens/update', [TestController::class, 'update'])->name('examens.update');
+    Route::post('/get-exam-price/{id}', [TestController::class, 'getExamPrice'])->name('examens.getExamPrice');
     Route::get('/gettestremise/{contrat_id}/{category_test_id}', [DetailsContratController::class, 'getremise']);
 
     //PATIENTS
@@ -175,10 +176,15 @@ Route::middleware(['auth'])->group(function () {
     //CONTRAT DETAILS
     Route::get('/contrats/{id}/details', [ContratController::class, 'details_index'])->name('contrat_details.index');
     Route::post('/contrats/details/store', [ContratController::class, 'details_store'])->name('contrat_details.store');
+    Route::post('/contrats/details/store/test', [ContratController::class, 'details_store_test'])->name('contrat_details.store_test');
     Route::get('/contrats_details/delete/{id}', [ContratController::class, 'destroy_details']);
     Route::get('/getcontratdetails/{id}', [ContratController::class, 'contrat_details_edit']);
     Route::get('/updatecontratstatus/{id}', [ContratController::class, 'update_detail_status'])->name('contrat_details.update-status');
     Route::post('/contrats_details/update', [ContratController::class, 'contrat_details_update'])->name('contrat_details.update');
+    Route::get('/contrats', [ContratController::class, 'getContratsforDatatable'])->name('contrat.getContratsforDatatable');
+    Route::get('/getTestsforDatatable/test', [TestController::class, 'getTestsforDatatable'])->name('test.getTestsforDatatable');
+
+
 
     //TEST_ORDER
     Route::get('/test_order/myspace/{idDoctor}', [TestOrderController::class, 'statistique'])->name('myspace.index');
@@ -194,8 +200,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get_all_test_order', [TestOrderController::class, 'getAllTestOrders'])->name('test_order.get_all_test_order');
     Route::get('/test_order/edit/{id}', [TestOrderController::class, 'edit'])->name('test_order.edit');
     Route::post('/test_order/update/{id}', [TestOrderController::class, 'update'])->name('test_order.update');
-    Route::post('/test_order/updatetest',[TestOrderController::class, 'updateTest'])->name('test_order.updateTest');
-    Route::post('/test_order/search',[TestOrderController::class, 'search'])->name('test_order.search');
+    Route::post('/test_order/updatetest', [TestOrderController::class, 'updateTest'])->name('test_order.updateTest');
+    Route::post('/test_order/search', [TestOrderController::class, 'search'])->name('test_order.search');
     Route::get('/testOrders', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('test_order.getTestOrdersforDatatable');
     Route::get('/testOrders2', [TestOrderController::class, 'getTestOrdersforDatatable2'])->name('test_order.getTestOrdersforDatatable2');
     Route::get('/testOrders-immuno', [TestOrderController::class, 'getTestOrdersforDatatable_immuno'])->name('test_order.getTestOrdersforDatatable3');
@@ -209,14 +215,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/testOrder/myspace2', [TestOrderController::class, 'getTestOrdersforDatatableMySpace2'])->name('test_order.getTestOrdersforDatatableMySpace2');
 
 
-    Route::post('/images/upload', [TestOrderController::class , 'upload'])->name('images.upload');
-    Route::get('/examen-images/{examenCode}', [TestOrderController::class , 'getExamImages'])->name('images.getExamImages');
+    Route::post('/images/upload', [TestOrderController::class, 'upload'])->name('images.upload');
+    Route::get('/examen-images/{examenCode}', [TestOrderController::class, 'getExamImages'])->name('images.getExamImages');
 
     Route::post('/testOrders/webhook', [AppelTestOderController::class, 'store'])->name('test_order.getStatus');
     Route::get('/testOrder/webhook', [AppelTestOderController::class, 'index'])->name('webhook.index');
 
-    Route::get('/signal',[SignalController::class, 'index'])->name('signals.index');
-    Route::post('/store-signal',[SignalController::class, 'store'])->name('signal.store');
+    Route::get('/signal', [SignalController::class, 'index'])->name('signals.index');
+    Route::post('/store-signal', [SignalController::class, 'store'])->name('signal.store');
 
     // Cette la route associée aux fichiers pour la suppression des images
     Route::delete('/testOrders/delete/image-gallerie/{index}/{test_order}', [TestOrderController::class, 'deleteimagegallerie'])->name('test_order.deleteimagegallerie');
@@ -249,35 +255,35 @@ Route::middleware(['auth'])->group(function () {
     //Rapporte d'erreur
 
     //Catégories d'erreur
-    Route::get('/categorie-erreur',[ProblemCategoryController::class,'index'])->name('categorie.erreur.index');
-    Route::post('/categorie-erreur',[ProblemCategoryController::class, 'store'])->name('categorie.erreur.store');
+    Route::get('/categorie-erreur', [ProblemCategoryController::class, 'index'])->name('categorie.erreur.index');
+    Route::post('/categorie-erreur', [ProblemCategoryController::class, 'store'])->name('categorie.erreur.store');
     Route::get('/getcategorie-erreur/{id}', [ProblemCategoryController::class, 'edit'])->name('categorie.erreur.edit');
-    Route::post('/categorie-erreur/update',[ProblemCategoryController::class, 'update'])->name('categorie.erreur.update');
+    Route::post('/categorie-erreur/update', [ProblemCategoryController::class, 'update'])->name('categorie.erreur.update');
     Route::get('/categorie-erreur/delete/{id}', [ProblemCategoryController::class, 'destroy'])->name('categorie.erreur.destroy');
 
     //Problèmes signalés
-    Route::get('/problemereport',[ProblemeReportersController::class,'index'])->name('probleme.report.index');
-    Route::get('/problemereport/create',[ProblemeReportersController::class,'create'])->name('probleme.report.create');
-    Route::post('/problemereport',[ProblemeReportersController::class, 'store'])->name('probleme.report.store');
+    Route::get('/problemereport', [ProblemeReportersController::class, 'index'])->name('probleme.report.index');
+    Route::get('/problemereport/create', [ProblemeReportersController::class, 'create'])->name('probleme.report.create');
+    Route::post('/problemereport', [ProblemeReportersController::class, 'store'])->name('probleme.report.store');
     Route::get('/getproblemereport/{id}', [ProblemeReportersController::class, 'edit'])->name('probleme.report.edit');
-    Route::post('/problemereport/update',[ProblemeReportersController::class, 'update'])->name('probleme.report.update');
-    Route::post('/problemereport/send-chat-bot',[ProblemeReportersController::class, 'sendMessage'])->name('probleme.report.sendMessage');
+    Route::post('/problemereport/update', [ProblemeReportersController::class, 'update'])->name('probleme.report.update');
+    Route::post('/problemereport/send-chat-bot', [ProblemeReportersController::class, 'sendMessage'])->name('probleme.report.sendMessage');
     Route::get('/problemereport/delete/{id}', [ProblemeReportersController::class, 'destroy'])->name('probleme.report.destroy');
 
     //Demande de remboursement
-    Route::get('/refund-request',[RefundRequestController::class,'index'])->name('refund.request.index');
-    Route::get('/refund-request/create',[RefundRequestController::class,'create'])->name('refund.request.create');
-    Route::post('/refund-request',[RefundRequestController::class, 'store'])->name('refund.request.store');
+    Route::get('/refund-request', [RefundRequestController::class, 'index'])->name('refund.request.index');
+    Route::get('/refund-request/create', [RefundRequestController::class, 'create'])->name('refund.request.create');
+    Route::post('/refund-request', [RefundRequestController::class, 'store'])->name('refund.request.store');
     Route::get('/getrefund-request/{id}', [RefundRequestController::class, 'edit'])->name('refund.request.edit');
-    Route::post('/refund-request/update',[RefundRequestController::class, 'update'])->name('refund.request.update');
-    Route::post('/refund-request/updateStatus',[RefundRequestController::class, 'updateStatus'])->name('refund.request.updateStatus');
+    Route::post('/refund-request/update', [RefundRequestController::class, 'update'])->name('refund.request.update');
+    Route::post('/refund-request/updateStatus', [RefundRequestController::class, 'updateStatus'])->name('refund.request.updateStatus');
     Route::get('/refund-request/delete/{id}', [RefundRequestController::class, 'destroy'])->name('refund.request.destroy');
     //Categorie
-    Route::get('/refund-request-categorie',[RefundRequestController::class,'index_categorie'])->name('refund.request.categorie.index');
-    Route::post('/refund-request-categorie',[RefundRequestController::class,'store_categorie'])->name('refund.request.categorie.store');
-    Route::get('/refund-request-categorie/{id}',[RefundRequestController::class,'edit_categorie']);
-    Route::post('/refund-request-categorie/update',[RefundRequestController::class,'update_categorie'])->name('refund.request.categorie.update');
-    Route::get('/refund-request-categorie/delete/{id}',[RefundRequestController::class,'destroy_categorie'])->name('refund.request.categorie.destroy');
+    Route::get('/refund-request-categorie', [RefundRequestController::class, 'index_categorie'])->name('refund.request.categorie.index');
+    Route::post('/refund-request-categorie', [RefundRequestController::class, 'store_categorie'])->name('refund.request.categorie.store');
+    Route::get('/refund-request-categorie/{id}', [RefundRequestController::class, 'edit_categorie']);
+    Route::post('/refund-request-categorie/update', [RefundRequestController::class, 'update_categorie'])->name('refund.request.categorie.update');
+    Route::get('/refund-request-categorie/delete/{id}', [RefundRequestController::class, 'destroy_categorie'])->name('refund.request.categorie.destroy');
 
     // Attribuer docteur signataire
     Route::get('/attribuateDoctor/{doctorId}/{orderId}', [TestOrderController::class, 'attribuateDoctor'])->name('test_order.attribuateDoctor');
@@ -366,9 +372,9 @@ Route::middleware(['auth'])->group(function () {
     });
 
     //Historique
-    Route::get('log/report',[LogReportController::class, 'index'])->name('log.report-index');
-    Route::get('log/show/{id}',[LogReportController::class, 'show']);
-    Route::get('log/user/{id}',[LogReportController::class, 'getuser']);
+    Route::get('log/report', [LogReportController::class, 'index'])->name('log.report-index');
+    Route::get('log/show/{id}', [LogReportController::class, 'show']);
+    Route::get('log/user/{id}', [LogReportController::class, 'getuser']);
 
     Route::get('/mm', function () {
         return view('myPDF');
@@ -500,201 +506,201 @@ Route::middleware(['auth'])->group(function () {
     });
 
     //Banque et caisse
-    Route::prefix('bank')->group(function() {
-        Route::get('/', [BankController::class ,'index'])->name('bank.index');
-        Route::post('/',[BankController::class,'store'])->name('bank.store');
-        Route::get('/getBank/{id}',[BankController::class,'edit']);
-        Route::post('/update',[BankController::class, 'update'])->name('bank.update');
-        Route::get('/delete/{id}',[BankController::class,'destroy']);
+    Route::prefix('bank')->group(function () {
+        Route::get('/', [BankController::class, 'index'])->name('bank.index');
+        Route::post('/', [BankController::class, 'store'])->name('bank.store');
+        Route::get('/getBank/{id}', [BankController::class, 'edit']);
+        Route::post('/update', [BankController::class, 'update'])->name('bank.update');
+        Route::get('/delete/{id}', [BankController::class, 'destroy']);
     });
 
-    Route::prefix('cashbox')->group(function() {
-        Route::get('/vente', [CashboxController::class ,'index'])->name('cashbox.vente.index');
-        Route::post('/store-bank',[CashboxController::class,'store_bank'])->name('cashbox.vente.store.bank');
-        Route::get('/depense', [CashboxController::class ,'index_depense'])->name('cashbox.depense.index');
-        Route::get('/getcashvente/{id}',[CashboxController::class,'edit']);
-        Route::post('/vente-update',[CashboxController::class, 'update'])->name('cashbox.vente.update');
-        Route::get('/vente-delete/{id}',[CashboxController::class,'destroy']);
-        Route::post('/depense',[CashboxController::class,'store'])->name('cashbox.depense.store');
-        Route::get('tickets',[CashboxTicketController::class, 'index'])->name('cashbox.ticket.index');
-        Route::post('tickets',[CashboxTicketController::class, 'store'])->name('cashbox.ticket.store');
-        Route::post('tickets-update',[CashboxTicketController::class, 'update'])->name('cashbox.ticket.update');
-        Route::get('/ticket-detail/{id}', [CashboxTicketController::class ,'detail_index'])->name('cashbox.ticket.details.index');
-        Route::post('ticket-detail',[CashboxTicketController::class, 'detail_store'])->name('cashbox.ticket_detail.store');
-        Route::get('/ticket-delete/{id}',[CashboxTicketController::class,'destroy']);
-        Route::get('/ticket-detail-delete/{id}',[CashboxTicketController::class,'detail_destroy']);
-        Route::post('/ticket-update-status',[CashboxTicketController::class, 'updateStatus'])->name('cashbox.ticket.updateStatus');
-        Route::post('/ticket-status-update',[CashboxTicketController::class, 'updateTicketStatus'])->name('cashbox.ticket.status.update');
-        Route::post('/ticket-update-total',[CashboxTicketController::class, 'updateTotal'])->name('cashbox.ticket.updateTotal');
+    Route::prefix('cashbox')->group(function () {
+        Route::get('/vente', [CashboxController::class, 'index'])->name('cashbox.vente.index');
+        Route::post('/store-bank', [CashboxController::class, 'store_bank'])->name('cashbox.vente.store.bank');
+        Route::get('/depense', [CashboxController::class, 'index_depense'])->name('cashbox.depense.index');
+        Route::get('/getcashvente/{id}', [CashboxController::class, 'edit']);
+        Route::post('/vente-update', [CashboxController::class, 'update'])->name('cashbox.vente.update');
+        Route::get('/vente-delete/{id}', [CashboxController::class, 'destroy']);
+        Route::post('/depense', [CashboxController::class, 'store'])->name('cashbox.depense.store');
+        Route::get('tickets', [CashboxTicketController::class, 'index'])->name('cashbox.ticket.index');
+        Route::post('tickets', [CashboxTicketController::class, 'store'])->name('cashbox.ticket.store');
+        Route::post('tickets-update', [CashboxTicketController::class, 'update'])->name('cashbox.ticket.update');
+        Route::get('/ticket-detail/{id}', [CashboxTicketController::class, 'detail_index'])->name('cashbox.ticket.details.index');
+        Route::post('ticket-detail', [CashboxTicketController::class, 'detail_store'])->name('cashbox.ticket_detail.store');
+        Route::get('/ticket-delete/{id}', [CashboxTicketController::class, 'destroy']);
+        Route::get('/ticket-detail-delete/{id}', [CashboxTicketController::class, 'detail_destroy']);
+        Route::post('/ticket-update-status', [CashboxTicketController::class, 'updateStatus'])->name('cashbox.ticket.updateStatus');
+        Route::post('/ticket-status-update', [CashboxTicketController::class, 'updateTicketStatus'])->name('cashbox.ticket.status.update');
+        Route::post('/ticket-update-total', [CashboxTicketController::class, 'updateTotal'])->name('cashbox.ticket.updateTotal');
 
-        Route::get('ticket/getdetail/{id}',[CashboxTicketController::class, 'getTicketDetail'])->name('cashbox.ticket.getTicketDetail');
+        Route::get('ticket/getdetail/{id}', [CashboxTicketController::class, 'getTicketDetail'])->name('cashbox.ticket.getTicketDetail');
     });
 
 
     // Articles
     // Route::prefix('articles')->group(function () {
-        Route::get('articles', [ArticleController::class, 'index'])->name('article.index');
-        Route::get('article-create', [ArticleController::class, 'create'])->name('article.create');
-        Route::get('article-edit/{article}', [ArticleController::class, 'edit'])->name('article.edit');
-        Route::put('article-update/{article}', [ArticleController::class, 'update'])->name('article.update');
-        Route::post('article-store', [ArticleController::class, 'store'])->name('article.store');
-        Route::get('article-delete/{article}', [ArticleController::class, 'delete'])->name('article.delete');
-        Route::get('/getArticle',[ArticleController::class, 'getArticle']);
+    Route::get('articles', [ArticleController::class, 'index'])->name('article.index');
+    Route::get('article-create', [ArticleController::class, 'create'])->name('article.create');
+    Route::get('article-edit/{article}', [ArticleController::class, 'edit'])->name('article.edit');
+    Route::put('article-update/{article}', [ArticleController::class, 'update'])->name('article.update');
+    Route::post('article-store', [ArticleController::class, 'store'])->name('article.store');
+    Route::get('article-delete/{article}', [ArticleController::class, 'delete'])->name('article.delete');
+    Route::get('/getArticle', [ArticleController::class, 'getArticle']);
     // });
 
 
     // Movements
     // Route::prefix('movements')->group(function () {
-        Route::get('movements', [MovementController::class, 'index'])->name('movement.index');
-        Route::get('movement-create', [MovementController::class, 'create'])->name('movement.create');
-        Route::get('movement-edit/{mouvement}', [MovementController::class, 'edit'])->name('movement.edit');
-        Route::put('movement-update/{mouvement}', [MovementController::class, 'update'])->name('movement.update');
-        Route::post('movement-store', [MovementController::class, 'store'])->name('movement.store');
-        Route::get('movement-delete/{mouvement}', [MovementController::class, 'delete'])->name('movement.delete');
+    Route::get('movements', [MovementController::class, 'index'])->name('movement.index');
+    Route::get('movement-create', [MovementController::class, 'create'])->name('movement.create');
+    Route::get('movement-edit/{mouvement}', [MovementController::class, 'edit'])->name('movement.edit');
+    Route::put('movement-update/{mouvement}', [MovementController::class, 'update'])->name('movement.update');
+    Route::post('movement-store', [MovementController::class, 'store'])->name('movement.store');
+    Route::get('movement-delete/{mouvement}', [MovementController::class, 'delete'])->name('movement.delete');
     // });
 
 
     // UnitMeasurement
     // Route::prefix('unit_measurements')->group(function () {
-        Route::get('unit_measurements', [UnitMeasurementController::class, 'index'])->name('unit.index');
-        Route::get('unit_measurement-create', [UnitMeasurementController::class, 'create'])->name('unit.create');
-        Route::get('unit_measurement-edit/{unitMeasurement}', [UnitMeasurementController::class, 'edit'])->name('unit.edit');
-        Route::put('unit_measurement-update/{unitMeasurement}', [UnitMeasurementController::class, 'update'])->name('unit.update');
-        Route::post('unit_measurement-store', [UnitMeasurementController::class, 'store'])->name('unit.store');
-        Route::get('unit_measurement-delete/{unitMeasurement}', [UnitMeasurementController::class, 'delete'])->name('unit.delete');
+    Route::get('unit_measurements', [UnitMeasurementController::class, 'index'])->name('unit.index');
+    Route::get('unit_measurement-create', [UnitMeasurementController::class, 'create'])->name('unit.create');
+    Route::get('unit_measurement-edit/{unitMeasurement}', [UnitMeasurementController::class, 'edit'])->name('unit.edit');
+    Route::put('unit_measurement-update/{unitMeasurement}', [UnitMeasurementController::class, 'update'])->name('unit.update');
+    Route::post('unit_measurement-store', [UnitMeasurementController::class, 'store'])->name('unit.store');
+    Route::get('unit_measurement-delete/{unitMeasurement}', [UnitMeasurementController::class, 'delete'])->name('unit.delete');
     // });
 
 
     // Expense Categorie
     // Route::prefix('expense_categories')->group(function () {
-        Route::get('expense_categories', [ExpenseCategorieController::class, 'index'])->name('expense.index');
-        Route::get('expense_categorie-create', [ExpenseCategorieController::class, 'create'])->name('expense.create');
-        Route::get('expense_categorie-edit/{expenseCategorie}', [ExpenseCategorieController::class, 'edit'])->name('expense.edit');
-        Route::put('expense_categorie-update/{expenseCategorie}', [ExpenseCategorieController::class, 'update'])->name('expense.update');
-        Route::post('expense_categorie-store', [ExpenseCategorieController::class, 'store'])->name('expense.store');
-        Route::get('expense_categorie-delete/{expenseCategorie}', [ExpenseCategorieController::class, 'delete'])->name('expense.delete');
+    Route::get('expense_categories', [ExpenseCategorieController::class, 'index'])->name('expense.index');
+    Route::get('expense_categorie-create', [ExpenseCategorieController::class, 'create'])->name('expense.create');
+    Route::get('expense_categorie-edit/{expenseCategorie}', [ExpenseCategorieController::class, 'edit'])->name('expense.edit');
+    Route::put('expense_categorie-update/{expenseCategorie}', [ExpenseCategorieController::class, 'update'])->name('expense.update');
+    Route::post('expense_categorie-store', [ExpenseCategorieController::class, 'store'])->name('expense.store');
+    Route::get('expense_categorie-delete/{expenseCategorie}', [ExpenseCategorieController::class, 'delete'])->name('expense.delete');
     // });
 
 
     // Expense Expense
     // Route::prefix('expenses')->group(function () {
-        Route::get('expense', [ExpenseController::class, 'index'])->name('all_expense.index');
-        Route::get('/expense-detail/{id}', [ExpenseController::class ,'detail_index'])->name('expense.details.index');
-        Route::get('expense-create', [ExpenseController::class, 'create'])->name('all_expense.create');
-        Route::get('expense-edit/{expense}', [ExpenseController::class, 'edit'])->name('all_expense.edit');
-        Route::post('expense-update', [ExpenseController::class, 'update'])->name('all_expense.update');
-        Route::get('expense/getExpenseDetail/{id}', [ExpenseController::class, 'getExpenceDetail'])->name('expense.getDetail');
-        Route::post('/expense-update-total',[ExpenseController::class, 'updateTotal'])->name('expense.updateTotal');
-        Route::post('expense-store', [ExpenseController::class, 'store'])->name('all_expense.store');
-        Route::post('expense-detail',[ExpenseController::class, 'detail_store'])->name('expense.detail.store');
-        Route::get('expense-delete/{expense}', [ExpenseController::class, 'delete'])->name('all_expense.delete');
-        Route::get('/expense-detail-delete/{id}',[ExpenseController::class,'detail_destroy']);
-        Route::get('/expense-status/{id}',[ExpenseController::class,'expense_paid'])->name('expense.paid');
-        Route::get('/expense-detail-mouv-stock/{id}',[ExpenseController::class,'update_stock_mouv'])->name('update.stock.mouv');
+    Route::get('expense', [ExpenseController::class, 'index'])->name('all_expense.index');
+    Route::get('/expense-detail/{id}', [ExpenseController::class, 'detail_index'])->name('expense.details.index');
+    Route::get('expense-create', [ExpenseController::class, 'create'])->name('all_expense.create');
+    Route::get('expense-edit/{expense}', [ExpenseController::class, 'edit'])->name('all_expense.edit');
+    Route::post('expense-update', [ExpenseController::class, 'update'])->name('all_expense.update');
+    Route::get('expense/getExpenseDetail/{id}', [ExpenseController::class, 'getExpenceDetail'])->name('expense.getDetail');
+    Route::post('/expense-update-total', [ExpenseController::class, 'updateTotal'])->name('expense.updateTotal');
+    Route::post('expense-store', [ExpenseController::class, 'store'])->name('all_expense.store');
+    Route::post('expense-detail', [ExpenseController::class, 'detail_store'])->name('expense.detail.store');
+    Route::get('expense-delete/{expense}', [ExpenseController::class, 'delete'])->name('all_expense.delete');
+    Route::get('/expense-detail-delete/{id}', [ExpenseController::class, 'detail_destroy']);
+    Route::get('/expense-status/{id}', [ExpenseController::class, 'expense_paid'])->name('expense.paid');
+    Route::get('/expense-detail-mouv-stock/{id}', [ExpenseController::class, 'update_stock_mouv'])->name('update.stock.mouv');
     // });
 
 
 
-     // Expense CashboxDaily
+    // Expense CashboxDaily
     // Route::prefix('cashbox_dailies')->group(function () {
-        Route::get('cashbox-daily', [CashboxDailyController::class, 'index'])->name('daily.index');
-        Route::get('cashbox-daily-create', [CashboxDailyController::class, 'create'])->name('daily.create');
-        Route::get('cashbox-daily-edit/{cashboxDaily}', [CashboxDailyController::class, 'edit'])->name('daily.edit');
-        Route::put('cashbox-daily-update', [CashboxDailyController::class, 'update'])->name('daily.update');
-        Route::post('cashbox-daily-store', [CashboxDailyController::class, 'store'])->name('daily.store');
-        Route::get('cashbox-daily-delete/{cashboxDaily}', [CashboxDailyController::class, 'delete'])->name('daily.delete');
-        Route::get('cashbox-daily-print/{id}', [CashboxDailyController::class, 'print'])->name('daily.print');
-        Route::get('cashbox-daily-fermeture/{cashboxDaily}', [CashboxDailyController::class, 'detail_fermeture_caisse'])->name('daily.fermeture');
+    Route::get('cashbox-daily', [CashboxDailyController::class, 'index'])->name('daily.index');
+    Route::get('cashbox-daily-create', [CashboxDailyController::class, 'create'])->name('daily.create');
+    Route::get('cashbox-daily-edit/{cashboxDaily}', [CashboxDailyController::class, 'edit'])->name('daily.edit');
+    Route::put('cashbox-daily-update', [CashboxDailyController::class, 'update'])->name('daily.update');
+    Route::post('cashbox-daily-store', [CashboxDailyController::class, 'store'])->name('daily.store');
+    Route::get('cashbox-daily-delete/{cashboxDaily}', [CashboxDailyController::class, 'delete'])->name('daily.delete');
+    Route::get('cashbox-daily-print/{id}', [CashboxDailyController::class, 'print'])->name('daily.print');
+    Route::get('cashbox-daily-fermeture/{cashboxDaily}', [CashboxDailyController::class, 'detail_fermeture_caisse'])->name('daily.fermeture');
 
 
-        // Employees
+    // Employees
     // Route::prefix('employees')->group(function () {
-        Route::get('employees', [EmployeeController::class, 'index'])->name('employee.index');
-        Route::get('employee/details/{employee}', [EmployeeController::class, 'details'])->name('employee.detail');
-        Route::get('employee-create', [EmployeeController::class, 'create'])->name('employee.create');
-        Route::get('employee-edit/{employee}', [EmployeeController::class, 'edit'])->name('employee.edit');
-        Route::get('laborantin/{id}', [EmployeeController::class, 'edit2'])->name('employee.edit2');
-        Route::put('employee-update/{employee}', [EmployeeController::class, 'update'])->name('employee.update');
-        Route::post('employee-store', [EmployeeController::class, 'store'])->name('employee.store');
-        Route::get('employee-delete/{employee}', [EmployeeController::class, 'delete'])->name('employee.delete');
+    Route::get('employees', [EmployeeController::class, 'index'])->name('employee.index');
+    Route::get('employee/details/{employee}', [EmployeeController::class, 'details'])->name('employee.detail');
+    Route::get('employee-create', [EmployeeController::class, 'create'])->name('employee.create');
+    Route::get('employee-edit/{employee}', [EmployeeController::class, 'edit'])->name('employee.edit');
+    Route::get('laborantin/{id}', [EmployeeController::class, 'edit2'])->name('employee.edit2');
+    Route::put('employee-update/{employee}', [EmployeeController::class, 'update'])->name('employee.update');
+    Route::post('employee-store', [EmployeeController::class, 'store'])->name('employee.store');
+    Route::get('employee-delete/{employee}', [EmployeeController::class, 'delete'])->name('employee.delete');
     // });
 
 
-// Route::prefix('employee_contrats')->group(function () {
-        Route::get('employee_contrats', [EmployeeContratController::class, 'index'])->name('employee.contrat.index');
-        Route::get('employee_contrat-create', [EmployeeContratController::class, 'create'])->name('employee.contrat.create');
-        Route::get('employee_contrat-edit/{employeeContrat}', [EmployeeContratController::class, 'edit'])->name('employee.contrat.edit');
-        Route::put('employee_contrat-update/{employeeContrat}', [EmployeeContratController::class, 'update'])->name('employee.contrat.update');
-        Route::post('employee_contrat-store', [EmployeeContratController::class, 'store'])->name('employee.contrat.store');
-        Route::get('employee_contrat-delete/{employeeContrat}', [EmployeeContratController::class, 'delete'])->name('employee.contrat.delete');
+    // Route::prefix('employee_contrats')->group(function () {
+    Route::get('employee_contrats', [EmployeeContratController::class, 'index'])->name('employee.contrat.index');
+    Route::get('employee_contrat-create', [EmployeeContratController::class, 'create'])->name('employee.contrat.create');
+    Route::get('employee_contrat-edit/{employeeContrat}', [EmployeeContratController::class, 'edit'])->name('employee.contrat.edit');
+    Route::put('employee_contrat-update/{employeeContrat}', [EmployeeContratController::class, 'update'])->name('employee.contrat.update');
+    Route::post('employee_contrat-store', [EmployeeContratController::class, 'store'])->name('employee.contrat.store');
+    Route::get('employee_contrat-delete/{employeeContrat}', [EmployeeContratController::class, 'delete'])->name('employee.contrat.delete');
     // });
 
 
     // Route::prefix('employee_payrolls')->group(function () {
-        Route::get('contrat-payrolls', [EmployeePayrollController::class, 'index'])->name('employee.payroll.index');
-        Route::get('contrat-payroll-create', [EmployeePayrollController::class, 'create'])->name('employee.payroll.create');
-        Route::get('contrat-payroll-edit/{employeePayroll}', [EmployeePayrollController::class, 'edit'])->name('employee.payroll.edit');
-        Route::put('contrat-payroll-update/{employeePayroll}', [EmployeePayrollController::class, 'update'])->name('employee.payroll.update');
-        Route::post('contrat-payroll-store', [EmployeePayrollController::class, 'store'])->name('employee.payroll.store');
-        Route::get('contrat-payroll-delete/{employeePayroll}', [EmployeePayrollController::class, 'delete'])->name('employee.payroll.delete');
+    Route::get('contrat-payrolls', [EmployeePayrollController::class, 'index'])->name('employee.payroll.index');
+    Route::get('contrat-payroll-create', [EmployeePayrollController::class, 'create'])->name('employee.payroll.create');
+    Route::get('contrat-payroll-edit/{employeePayroll}', [EmployeePayrollController::class, 'edit'])->name('employee.payroll.edit');
+    Route::put('contrat-payroll-update/{employeePayroll}', [EmployeePayrollController::class, 'update'])->name('employee.payroll.update');
+    Route::post('contrat-payroll-store', [EmployeePayrollController::class, 'store'])->name('employee.payroll.store');
+    Route::get('contrat-payroll-delete/{employeePayroll}', [EmployeePayrollController::class, 'delete'])->name('employee.payroll.delete');
 
     // });
 
 
     // Route::prefix('employee_timeoffs')->group(function () {
-        Route::get('employee-timeoffs', [EmployeeTimeoffController::class, 'index'])->name('employee.timeoff.index');
-        Route::get('employee-timeoff-create', [EmployeeTimeoffController::class, 'create'])->name('employee.timeoff.create');
-        Route::get('employee-timeoff-edit/{employeeTimeoff}', [EmployeeTimeoffController::class, 'edit'])->name('employee.timeoff.edit');
-        Route::put('employee-timeoff-update/{employeeTimeoff}', [EmployeeTimeoffController::class, 'update'])->name('employee.timeoff.update');
-        Route::get('employee-timeoff-update-status', [EmployeeTimeoffController::class, 'updateStatus'])->name('employee.timeoff.update.status');
-        Route::post('employee-timeoff-store', [EmployeeTimeoffController::class, 'store'])->name('employee.timeoff.store');
-        Route::get('employee-timeoff-delete/{employeeTimeoff}', [EmployeeTimeoffController::class, 'delete'])->name('employee.timeoff.delete');
-        Route::get('employee-my-timeoff', [EmployeeTimeoffController::class, 'myTimeOff'])->name('employee.timeoff.mytime');
+    Route::get('employee-timeoffs', [EmployeeTimeoffController::class, 'index'])->name('employee.timeoff.index');
+    Route::get('employee-timeoff-create', [EmployeeTimeoffController::class, 'create'])->name('employee.timeoff.create');
+    Route::get('employee-timeoff-edit/{employeeTimeoff}', [EmployeeTimeoffController::class, 'edit'])->name('employee.timeoff.edit');
+    Route::put('employee-timeoff-update/{employeeTimeoff}', [EmployeeTimeoffController::class, 'update'])->name('employee.timeoff.update');
+    Route::get('employee-timeoff-update-status', [EmployeeTimeoffController::class, 'updateStatus'])->name('employee.timeoff.update.status');
+    Route::post('employee-timeoff-store', [EmployeeTimeoffController::class, 'store'])->name('employee.timeoff.store');
+    Route::get('employee-timeoff-delete/{employeeTimeoff}', [EmployeeTimeoffController::class, 'delete'])->name('employee.timeoff.delete');
+    Route::get('employee-my-timeoff', [EmployeeTimeoffController::class, 'myTimeOff'])->name('employee.timeoff.mytime');
     // });
 
     // Chats
-    Route::get('/chat-bot',[HomeController::class, 'chat'])->name('chat.bot');
-    Route::post('/chat-bot',[HomeController::class, 'getMessage'])->name('chat.getMessage');
-    Route::post('/send-chat-bot',[HomeController::class, 'sendMessage'])->name('chat.sendMessage');
-    Route::post('/check-chat-bot',[HomeController::class, 'checkMessage'])->name('chat.checkMessage');
+    Route::get('/chat-bot', [HomeController::class, 'chat'])->name('chat.bot');
+    Route::post('/chat-bot', [HomeController::class, 'getMessage'])->name('chat.getMessage');
+    Route::post('/send-chat-bot', [HomeController::class, 'sendMessage'])->name('chat.sendMessage');
+    Route::post('/check-chat-bot', [HomeController::class, 'checkMessage'])->name('chat.checkMessage');
 
     // Chats
-    Route::put('/update-document/{employeeDocument}',[EmployeeDocumentController::class, 'update'])->name('document.update');
-    Route::post('/store-document',[EmployeeDocumentController::class, 'store'])->name('document.store');
-    Route::get('/delete-document/{employeeDocument}',[EmployeeDocumentController::class, 'delete'])->name('document.delete');
+    Route::put('/update-document/{employeeDocument}', [EmployeeDocumentController::class, 'update'])->name('document.update');
+    Route::post('/store-document', [EmployeeDocumentController::class, 'store'])->name('document.store');
+    Route::get('/delete-document/{employeeDocument}', [EmployeeDocumentController::class, 'delete'])->name('document.delete');
 
 
 
     // Route::prefix('documentation_categories')->group(function () {
-        Route::get('/categorie-documentations', [DocumentationCategorieController::class, 'index'])->name('doc.categorie.index');
-        Route::get('/getcategorie-doc', [DocumentationCategorieController::class, 'getcategoriedocs'])->name('doc.getcategoriedocs');
-        Route::get('/get-docs-by-category/{doc_id}', [DocumentationCategorieController::class, 'getdocs'])->name('doc.getdocs');
+    Route::get('/categorie-documentations', [DocumentationCategorieController::class, 'index'])->name('doc.categorie.index');
+    Route::get('/getcategorie-doc', [DocumentationCategorieController::class, 'getcategoriedocs'])->name('doc.getcategoriedocs');
+    Route::get('/get-docs-by-category/{doc_id}', [DocumentationCategorieController::class, 'getdocs'])->name('doc.getdocs');
 
 
-        Route::get('/categorie-documentation-create', [DocumentationCategorieController::class, 'create'])->name('doc.categorie.create');
-        Route::get('/categorie-documentation-edit/{documentationCategorie}', [DocumentationCategorieController::class, 'edit'])->name('doc.categorie.edit');
-        Route::put('/categorie-documentation-update/{documentationCategorie}', [DocumentationCategorieController::class, 'update'])->name('doc.categorie.update');
-        Route::post('/categorie-documentation-store', [DocumentationCategorieController::class, 'store'])->name('doc.categorie.store');
-        Route::get('/categorie-documentation-delete/{documentationCategorie}', [DocumentationCategorieController::class, 'delete'])->name('doc.categorie.delete');
+    Route::get('/categorie-documentation-create', [DocumentationCategorieController::class, 'create'])->name('doc.categorie.create');
+    Route::get('/categorie-documentation-edit/{documentationCategorie}', [DocumentationCategorieController::class, 'edit'])->name('doc.categorie.edit');
+    Route::put('/categorie-documentation-update/{documentationCategorie}', [DocumentationCategorieController::class, 'update'])->name('doc.categorie.update');
+    Route::post('/categorie-documentation-store', [DocumentationCategorieController::class, 'store'])->name('doc.categorie.store');
+    Route::get('/categorie-documentation-delete/{documentationCategorie}', [DocumentationCategorieController::class, 'delete'])->name('doc.categorie.delete');
     // });
 
 
     // Route::prefix('docs')->group(function () {
-        Route::get('/documents-delete-files', [DocController::class, 'getfiledelete'])->name('file.doc.delete');
-        Route::get('/documents-recents', [DocController::class, 'getrecents'])->name('doc.recent');
-        Route::get('/documents', [DocController::class, 'index'])->name('doc.index');
-        Route::get('/documents/share-with-me', [DocController::class, 'doc_share'])->name('doc.share.with.me');
-        Route::get('/documents/detail/{doc}', [DocController::class, 'detail_index'])->name('doc.detail.index');
-        Route::get('/document-create', [DocController::class, 'create'])->name('doc.create');
-        Route::get('/document-edit/{doc}', [DocController::class, 'edit'])->name('doc.edit');
-        Route::post('/document-update', [DocController::class, 'update'])->name('doc.update');
-        Route::post('/document-store', [DocController::class, 'store'])->name('doc.store'); //Nouvelle version
-        Route::post('/document-store-fichier', [DocController::class, 'store_fichier'])->name('doc.file.store'); //nouveau fichier
-        Route::post('/share-docs-role', [DocController::class, 'sharedocs'])->name('doc.file.share');
-        Route::get('/document-all-version/{id}',[DocController::class, 'getAllVersion']);
-        Route::get('/document-get-user/{id}',[DocController::class, 'getUserDoc']);
-        Route::get('/document-delete/{doc}', [DocController::class, 'delete'])->name('doc.delete');
-        Route::get('/document-supprimer/{doc}', [DocController::class, 'supprimer'])->name('doc.supprimer');
+    Route::get('/documents-delete-files', [DocController::class, 'getfiledelete'])->name('file.doc.delete');
+    Route::get('/documents-recents', [DocController::class, 'getrecents'])->name('doc.recent');
+    Route::get('/documents', [DocController::class, 'index'])->name('doc.index');
+    Route::get('/documents/share-with-me', [DocController::class, 'doc_share'])->name('doc.share.with.me');
+    Route::get('/documents/detail/{doc}', [DocController::class, 'detail_index'])->name('doc.detail.index');
+    Route::get('/document-create', [DocController::class, 'create'])->name('doc.create');
+    Route::get('/document-edit/{doc}', [DocController::class, 'edit'])->name('doc.edit');
+    Route::post('/document-update', [DocController::class, 'update'])->name('doc.update');
+    Route::post('/document-store', [DocController::class, 'store'])->name('doc.store'); //Nouvelle version
+    Route::post('/document-store-fichier', [DocController::class, 'store_fichier'])->name('doc.file.store'); //nouveau fichier
+    Route::post('/share-docs-role', [DocController::class, 'sharedocs'])->name('doc.file.share');
+    Route::get('/document-all-version/{id}', [DocController::class, 'getAllVersion']);
+    Route::get('/document-get-user/{id}', [DocController::class, 'getUserDoc']);
+    Route::get('/document-delete/{doc}', [DocController::class, 'delete'])->name('doc.delete');
+    Route::get('/document-supprimer/{doc}', [DocController::class, 'supprimer'])->name('doc.supprimer');
 
     // });
 
