@@ -87,7 +87,7 @@
 
 
                             @if (($contrat->status == "ACTIF") && ($contrat->invoice_unique == 1) && ($contrat->is_close
-                            == 1))
+                            == 0))
 
                             @php
                             $a = App\Models\TestOrder::where('contrat_id', $contrat->id)->get();
@@ -98,9 +98,7 @@
                                 @endif
                                 @endif
 
-                                {{-- @if (($contrat->status == "ACTIF"))
-                                <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
-                                @endif --}}
+
 
                                 @empty
                                 Ajouter un contrat

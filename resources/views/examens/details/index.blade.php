@@ -124,18 +124,32 @@
                             id="contrat_id">
                             <option>Sélectionner le contrat</option>
                             @forelse ($contrats as $contrat)
-                            <option value="{{ $contrat->id }}" {{ $test_order->contrat_id == $contrat->id ? 'selected' :
-                                '' }}>
-                                {{ $contrat->name }}</option>
-                            @empty
-                            Ajouter un contrat
-                            @endforelse
+
+
+                            @if (($contrat->status == "ACTIF") && ($contrat->invoice_unique == 1) && ($contrat->is_close
+                            == 0))
+
+                            @php
+                            $a = App\Models\TestOrder::where('contrat_id', $contrat->id)->get();
+                            @endphp
+
+                            @if (($a->count() < $contrat->nbr_tests) || ($contrat->nbr_tests == -1))
+
+
+                                <option value="{{ $contrat->id }}" {{ $test_order->contrat_id == $contrat->id ?
+                                    'selected' :
+                                    '' }}>
+                                    {{ $contrat->name }}</option>
+
+                                @endif
+                                @endif
+                                @empty
+                                Ajouter un contrat
+                                @endforelse
                         </select>
                         @else
                         @foreach ($contrats as $contrat)
                         @if ($test_order->contrat_id == $contrat->id)
-                        {{-- <input type="text" name="contrat_id" id="contrat_id" class="form-control" readonly
-                            value="{{ $contrat->name }}"> --}}
                         <input type="text" id="contrat_id" class="form-control" readonly value="{{ $contrat->name }}">
                         <input type="text" name="contrat_id" id="contrat_id" class="form-control" readonly
                             value="{{ $contrat->id }}" hidden>
@@ -148,12 +162,27 @@
                             id="contrat_id">
                             <option>Sélectionner le contrat</option>
                             @forelse ($contrats as $contrat)
-                            <option value="{{ $contrat->id }}" {{ $test_order->contrat_id == $contrat->id ? 'selected' :
-                                '' }}>
-                                {{ $contrat->name }}</option>
-                            @empty
-                            Ajouter un contrat
-                            @endforelse
+
+                            @if (($contrat->status == "ACTIF") && ($contrat->invoice_unique == 1) && ($contrat->is_close
+                            == 0))
+
+                            @php
+                            $a = App\Models\TestOrder::where('contrat_id', $contrat->id)->get();
+                            @endphp
+
+                            @if (($a->count() < $contrat->nbr_tests) || ($contrat->nbr_tests == -1))
+
+
+                                <option value="{{ $contrat->id }}" {{ $test_order->contrat_id == $contrat->id ?
+                                    'selected' :
+                                    '' }}>
+                                    {{ $contrat->name }}</option>
+
+                                @endif
+                                @endif
+                                @empty
+                                Ajouter un contrat
+                                @endforelse
                         </select>
                         @endif
                     </div>

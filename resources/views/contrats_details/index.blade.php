@@ -14,25 +14,60 @@
             <h4 class="page-title"></h4>
         </div>
 
-        <!----MODAL---->
 
         @include('contrats_details.create')
         @include('contrats_details.create_test')
-
         @include('contrats_details.edit')
-
     </div>
 </div>
 
 
 <div class="">
-
-
     @include('layouts.alerts')
     <div class="row">
         <div class="col-md-6">
             <div class="card mt-3">
-                <h5 class="card-header">Contrat : {{ $contrat->name }}</h5>
+
+                <h5 class="card-header justify-content-between d-flex">
+
+                    <div>
+                        Contrat : {{ $contrat->name }}
+                    </div>
+
+                    <div>
+
+                        @if($contrat->status == "ACTIF")
+                        <div class="rounded"
+                            style="background-color: red; border-radius : 10px solid red; padding : 8px;">
+                            <a style="text-decoration: none; color :white; font-size : 15px;"
+                                onclick="closeModal({{ $contrat->id }})" title="Facture">Clôturer</a>
+
+                            {{-- <button type="button" onclick="closeModal({{ $contrat->id }})"
+                                class="btn btn-secondary" title="Clôturer contrat"><i class="mdi mdi-block-helper"></i>
+                            </button> --}}
+                        </div>
+                        @elseif($contrat->status == "INACTIF")
+                        <div class="rounded"
+                            style="background-color: #0ACF97; border-radius : 10px solid #0ACF97; padding : 8px;">
+
+                            <a onclick="activeContratModal({{ $contrat->id }})" color :white; font-size : 15px;"
+                                class="" title="Facture" target="_blank">Activer</a>
+
+                            {{-- <button type="button" onclick="closeModal({{ $contrat->id }})"
+                                class="btn btn-secondary" title="Clôturer contrat"><i class="mdi mdi-block-helper"></i>
+                            </button> --}}
+                        </div>
+                        @endif
+
+
+
+
+
+                    </div>
+
+
+
+                </h5>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-6">
@@ -40,9 +75,9 @@
                                 <p class="font-13"><strong>Date : </strong> {{ $contrat->created_at->format('d/m/y') }}
                                 </p>
                                 <p class="font-13"><strong>Type : </strong> {{ $contrat->type }}</p>
-                                <p class="font-13"><strong>Statut : </strong>
-                                    @if ($contrat->is_close == 0)
-                                    CLÔTURER, le {{ $contrat->created_at->format('d/m/y') }}
+                                <p class="font-13"><strong>Status : </strong>
+                                    @if ($contrat->is_close == 1)
+                                    CLÔTURER, le {{ $contrat->updated_at->format('d/m/y') }}
                                     @elseif($contrat->status == "ACTIF")
                                     ACTIF
                                     @elseif($contrat->status == "INACTIF")
@@ -70,9 +105,11 @@
             <div class="card mt-3">
                 @if($contrat->invoice_unique == 0)
                 @if ($inf_invoice)
-                <h5 class="card-header"><a href="{{ route('invoice.show', $inf_invoice->id) }}"
-                        style="text-decoration: none;" class="" title="Facture" target="_blank">Facture <i
-                            style="color: #0ACF97;" class="mdi mdi-arrow-right-box fs-4"></i></a>
+                <h5 class="card-header">
+                    <span class="text-start">Facture</span>
+                    <a href="{{ route('invoice.show', $inf_invoice->id) }}" style="text-decoration: none;"
+                        title="Facture" target="_blank"> <i style="color: #0ACF97;"
+                            class="mdi mdi-arrow-right-box fs-6">Voir plus</i></a>
                 </h5>
                 <div class="card-body">
                     <div class="row">
@@ -87,7 +124,7 @@
 
                                 <p class="font-13"><strong>Status : </strong>
                                     @if ($inf_invoice->paid == 1)
-                                    <span>Payé</span>
+                                    <span>Payé, le {{ $inf_invoice->updated_at->format('d/m/y') }}</span>
                                     @else
                                     <span>Non payé</span>
                                     @endif
@@ -114,7 +151,7 @@
     <div class="card mb-md-0 mb-3 mt-4">
         <div class="card-body">
             <div class="card-widgets">
-                @if ($contrat->is_close == 1)
+                @if ($contrat->is_close == 0)
                 <button type="button" class="btn btn-primary float-left" data-bs-toggle="modal"
                     data-bs-target="#modal3">Ajouter un nouveau examen</button>
                 @endif
@@ -155,7 +192,7 @@
                     </tbody>
                 </table>
 
-                @if ($contrat->is_close == 1)
+                @if ($contrat->is_close == 0)
                 <span class="d-inline" data-bs-toggle="popover"
                     data-bs-content="Veuillez ajouter un detail avant de sauvegarder">
 
@@ -172,7 +209,7 @@
     <div class="card mb-md-0 mb-3">
         <div class="card-body">
             <div class="card-widgets">
-                @if ($contrat->is_close == 1)
+                @if ($contrat->is_close == 0)
                 <button type="button" class="btn btn-warning float-left" data-bs-toggle="modal"
                     data-bs-target="#modal2">Ajouter une nouvelle catégorie d'examen</button>
                 @endif
@@ -195,7 +232,7 @@
 
                     <tbody>
                         @foreach ($details as $item)
-                        @if ($contrat->is_close == 1)
+                        @if ($contrat->is_close == 0)
                         <tr>
                             <td>{{ $item->categorytest() ? $item->categorytest()->name : '' }}</td>
                             <td>{{ $item->pourcentage . ' %' }}</td>
@@ -213,7 +250,7 @@
                     </tbody>
                 </table>
 
-                @if ($contrat->is_close == 1)
+                @if ($contrat->is_close == 0)
                 <span class="d-inline" data-bs-toggle="popover"
                     data-bs-content="Veuillez ajouter un detail avant de sauvegarder">
 
@@ -235,4 +272,5 @@
     var baseUrl = "{{ url('/') }}";
 </script>
 <script src="{{asset('viewjs/contrat/indexContrat.js')}}"></script>
+<script src="{{asset('viewjs/contrat/indexdetail.js')}}"></script>
 @endpush

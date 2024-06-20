@@ -196,10 +196,12 @@ class ContratController extends Controller
             'type' => $request->type,
             'description' => $request->description,
             'nbr_tests' => $request->nbr_examen,
-            'invoice_unique' => $request->invoice_unique ? 0 : 1,
+            'invoice_unique' => $request->invoice_unique == "on" ? 1 : 0,
             'client_id' => $request->client_id,
             'status' => 'INACTIF',
         ];
+
+        // dd($data['invoice_unique']);
 
         // dd($request);
 
