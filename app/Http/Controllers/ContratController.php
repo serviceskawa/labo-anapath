@@ -65,7 +65,12 @@ class ContratController extends Controller
             })
 
             ->addColumn('status', function ($data) {
-                return $data->status;
+                if ($data->is_close == 1) {
+                    $reponse = "CLÔTURER";
+                } else {
+                    $reponse = $data->status;
+                }
+                return $reponse;
             })
 
             ->addColumn('action', function ($data) {

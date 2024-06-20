@@ -35,34 +35,21 @@
                     </div>
 
                     <div>
-
                         @if($contrat->status == "ACTIF")
                         <div class="rounded"
                             style="background-color: red; border-radius : 10px solid red; padding : 8px;">
                             <a style="text-decoration: none; color :white; font-size : 15px;"
                                 onclick="closeModal({{ $contrat->id }})" title="Facture">Clôturer</a>
-
-                            {{-- <button type="button" onclick="closeModal({{ $contrat->id }})"
-                                class="btn btn-secondary" title="Clôturer contrat"><i class="mdi mdi-block-helper"></i>
-                            </button> --}}
                         </div>
                         @elseif($contrat->status == "INACTIF")
                         <div class="rounded"
                             style="background-color: #0ACF97; border-radius : 10px solid #0ACF97; padding : 8px;">
 
-                            <a onclick="activeContratModal({{ $contrat->id }})" color :white; font-size : 15px;"
-                                class="" title="Facture" target="_blank">Activer</a>
-
-                            {{-- <button type="button" onclick="closeModal({{ $contrat->id }})"
-                                class="btn btn-secondary" title="Clôturer contrat"><i class="mdi mdi-block-helper"></i>
-                            </button> --}}
+                            <a onclick="activeContratModal({{ $contrat->id }})"
+                                style="text-decoration: none; color :white; font-size : 15px;" class="" title="Facture"
+                                target="_blank">Activer</a>
                         </div>
                         @endif
-
-
-
-
-
                     </div>
 
 
@@ -103,7 +90,7 @@
 
         <div class="col-md-6">
             <div class="card mt-3">
-                @if($contrat->invoice_unique == 0)
+                @if($contrat->invoice_unique == 1)
                 @if ($inf_invoice)
                 <h5 class="card-header">
                     <span class="text-start">Facture</span>
