@@ -41,7 +41,7 @@
                             <a style="text-decoration: none; color :white; font-size : 15px;"
                                 onclick="closeModal({{ $contrat->id }})" title="Facture">Clôturer</a>
                         </div>
-                        @elseif($contrat->status == "INACTIF")
+                        @elseif($contrat->status == "INACTIF" && $contrat->status == 0)
                         <div class="rounded"
                             style="background-color: #0ACF97; border-radius : 10px solid #0ACF97; padding : 8px;">
 
