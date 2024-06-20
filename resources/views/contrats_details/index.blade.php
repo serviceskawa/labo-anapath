@@ -35,7 +35,7 @@
                     </div>
 
                     <div>
-                        @if($contrat->status == "ACTIF")
+                        @if($contrat->status == "ACTIF" && $contrat->status == 0)
                         <div class="rounded"
                             style="background-color: red; border-radius : 10px solid red; padding : 8px;">
                             <a style="text-decoration: none; color :white; font-size : 15px;"
