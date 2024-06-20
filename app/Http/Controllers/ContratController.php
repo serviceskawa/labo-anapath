@@ -61,7 +61,7 @@ class ContratController extends Controller
             })
 
             ->addColumn('order', function ($data) {
-                return $data->orders->count();
+                return $data->nbr_tests;
             })
 
             ->addColumn('status', function ($data) {

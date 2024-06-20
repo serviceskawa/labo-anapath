@@ -40,7 +40,15 @@
                                 <p class="font-13"><strong>Date : </strong> {{ $contrat->created_at->format('d/m/y') }}
                                 </p>
                                 <p class="font-13"><strong>Type : </strong> {{ $contrat->type }}</p>
-                                <p class="font-13"><strong>Statut : </strong> {{ $contrat->status }}</p>
+                                <p class="font-13"><strong>Statut : </strong>
+                                    @if ($contrat->is_close == 0)
+                                    CLÔTURER, le {{ $contrat->created_at->format('d/m/y') }}
+                                    @elseif($contrat->status == "ACTIF")
+                                    ACTIF
+                                    @elseif($contrat->status == "INACTIF")
+                                    INACTIF
+                                    @endif
+                                </p>
                                 <p class="font-13"><strong>Nombre d'examens : </strong> {{ $contrat->nbr_tests == -1 ?
                                     "Illimité" : $contrat->nbr_tests }}</p>
                                 <p class="font-13"><strong>Description : </strong> {{ $contrat->description }}</p>
@@ -49,7 +57,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
 
@@ -107,7 +114,7 @@
     <div class="card mb-md-0 mb-3 mt-4">
         <div class="card-body">
             <div class="card-widgets">
-                @if ($contrat->is_close != 1 )
+                @if ($contrat->is_close == 1)
                 <button type="button" class="btn btn-primary float-left" data-bs-toggle="modal"
                     data-bs-target="#modal3">Ajouter un nouveau examen</button>
                 @endif
@@ -148,12 +155,14 @@
                     </tbody>
                 </table>
 
+                @if ($contrat->is_close == 1)
                 <span class="d-inline" data-bs-toggle="popover"
                     data-bs-content="Veuillez ajouter un detail avant de sauvegarder">
 
                     <a type="button" href="{{ route('contrat_details.update-status', $contrat->id) }}"
                         class=" mt-3 btn btn-success w-100 @if (count($details) == 0) disabled @endif ">Sauvegarder</a>
                 </span>
+                @endif
             </div>
         </div>
     </div>
@@ -163,7 +172,7 @@
     <div class="card mb-md-0 mb-3">
         <div class="card-body">
             <div class="card-widgets">
-                @if ($contrat->is_close != 1 )
+                @if ($contrat->is_close == 1)
                 <button type="button" class="btn btn-warning float-left" data-bs-toggle="modal"
                     data-bs-target="#modal2">Ajouter une nouvelle catégorie d'examen</button>
                 @endif
@@ -186,6 +195,7 @@
 
                     <tbody>
                         @foreach ($details as $item)
+                        @if ($contrat->is_close == 1)
                         <tr>
                             <td>{{ $item->categorytest() ? $item->categorytest()->name : '' }}</td>
                             <td>{{ $item->pourcentage . ' %' }}</td>
@@ -198,16 +208,19 @@
                                 </button>
                             </td>
                         </tr>
+                        @endif
                         @endforeach
                     </tbody>
                 </table>
 
+                @if ($contrat->is_close == 1)
                 <span class="d-inline" data-bs-toggle="popover"
                     data-bs-content="Veuillez ajouter un detail avant de sauvegarder">
 
                     <a type="button" href="{{ route('contrat_details.update-status', $contrat->id) }}"
                         class=" mt-3 btn btn-success w-100 @if (count($details) == 0) disabled @endif ">Sauvegarder</a>
                 </span>
+                @endif
             </div>
         </div>
     </div>
