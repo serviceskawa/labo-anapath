@@ -87,7 +87,7 @@ class ContratController extends Controller
                     } elseif ($request->get('statusquery') == "INACTIF") {
                         $query->where('status', "=", "INACTIF");
                     } elseif ($request->get('statusquery') == "1") {
-                        $query->where('is_close', "=", 0);
+                        $query->where('is_close', "=", 1);
                     }
                 }
 
