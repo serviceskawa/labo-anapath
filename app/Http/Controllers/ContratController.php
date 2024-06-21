@@ -61,7 +61,7 @@ class ContratController extends Controller
             })
 
             ->addColumn('nbr_tests', function ($data) {
-                return $data->nbr_tests;
+                return $data->orders->count();
             })
 
             ->addColumn('status', function ($data) {
@@ -132,11 +132,7 @@ class ContratController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        //récupération des contrats avec les détails
-        // $contrats = $this->contrat->getWithDetail();
-        // $contrats = $this->contrat->latest()->get();
         $clients = $this->clients->latest()->get();
-
         $setting = $this->setting->find(1);
 
         config(['app.name' => $setting->titre]);
