@@ -60,7 +60,7 @@ class ContratController extends Controller
                 return $data->name;
             })
 
-            ->addColumn('nbre_tests', function ($data) {
+            ->addColumn('nbr_tests', function ($data) {
                 return $data->nbr_tests;
             })
 
