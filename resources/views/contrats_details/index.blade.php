@@ -28,33 +28,32 @@
         <div class="col-md-6">
             <div class="card mt-3">
 
-                <h5 class="card-header justify-content-between d-flex">
+                <div class="card-header justify-content-between align-items-center d-flex">
 
                     <div>
                         Contrat : {{ $contrat->name }}
                     </div>
 
                     <div>
-                        @if($contrat->status == "ACTIF" && $contrat->status == 0)
+                        @if($contrat->status == "ACTIF" && $contrat->is_close == 0)
                         <div class="rounded"
-                            style="background-color: red; border-radius : 10px solid red; padding : 8px;">
-                            <a style="text-decoration: none; color :white; font-size : 15px;"
-                                onclick="closeModal({{ $contrat->id }})" title="Facture">Clôturer</a>
+                            style="background-color: red; border-radius : 10px solid red; padding : 4px;">
+                            <a style="text-decoration: none; color :white; font-size : 12px;"
+                                onclick="closeModal({{ $contrat->id }})" title="Clôturer le contrat">Clôturer</a>
                         </div>
-                        @elseif($contrat->status == "INACTIF" && $contrat->status == 0)
+                        @elseif($contrat->status == "INACTIF" && $contrat->is_close == 0)
                         <div class="rounded"
-                            style="background-color: #0ACF97; border-radius : 10px solid #0ACF97; padding : 8px;">
+                            style="background-color: #0ACF97; border-radius : 10px solid #0ACF97; padding : 4px;">
 
                             <a onclick="activeContratModal({{ $contrat->id }})"
-                                style="text-decoration: none; color :white; font-size : 15px;" class="" title="Facture"
-                                target="_blank">Activer</a>
+                                style="text-decoration: none; color :white; font-size : 12px;" class=""
+                                title="Activer le contrat" target="_blank">Activer</a>
                         </div>
                         @endif
                     </div>
+                </div>
 
 
-
-                </h5>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-6">
@@ -92,12 +91,33 @@
             <div class="card mt-3">
                 @if($contrat->invoice_unique == 1)
                 @if ($inf_invoice)
-                <h5 class="card-header">
+                {{-- <h5 class="card-header">
                     <span class="text-start">Facture</span>
                     <a href="{{ route('invoice.show', $inf_invoice->id) }}" style="text-decoration: none;"
                         title="Facture" target="_blank"> <i style="color: #0ACF97;"
                             class="mdi mdi-arrow-right-box fs-6">Voir plus</i></a>
-                </h5>
+                </h5> --}}
+
+                <div class="card-header justify-content-between align-items-center d-flex">
+                    <div>
+                        Facture
+                    </div>
+
+                    <div>
+                        <div class="rounded"
+                            style="background-color: #0ACF97; border-radius : 10px solid #0ACF97; padding : 4px;">
+                            {{-- <a onclick="activeContratModal({{ $contrat->id }})"
+                                style="text-decoration: none; color :white; font-size : 15px;" class=""
+                                title="Activer le contrat" target="_blank">Activer</a> --}}
+
+                            <a href="{{ route('invoice.show', $inf_invoice->id) }}"
+                                style="text-decoration: none; color :white; font-size : 12px;" title="Voir la facture"
+                                target="_blank"> Voir plus </a>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-6">
