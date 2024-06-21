@@ -55,7 +55,7 @@
 
                     <div class="col-lg-2">
                         <div class="mb-3">
-                            <label for="example-fileinput" class="form-label">Status</label>
+                            <label for="example-fileinput" class="form-label">Status contrat</label>
                             <select name="statusquery" id="statusquery" class="form-control">
                                 <option value="">Tous</option>
                                 <option value="ACTIF">ACTIF</option>

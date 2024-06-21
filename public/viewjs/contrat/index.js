@@ -99,8 +99,8 @@ $(document).ready(function () {
                 name: "name",
             },
             {
-                data: "order",
-                name: "order",
+                data: "nbre_tests",
+                name: "nbre_tests",
             },
             {
                 data: "status",

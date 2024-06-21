@@ -60,7 +60,7 @@ class ContratController extends Controller
                 return $data->name;
             })
 
-            ->addColumn('order', function ($data) {
+            ->addColumn('nbre_tests', function ($data) {
                 return $data->nbr_tests;
             })
 
@@ -107,11 +107,7 @@ class ContratController extends Controller
                     $query
                         ->where('name', 'like', '%' . $request->get('contenu') . '%')
                         ->orwhere('description', 'like', '%' . $request->get('contenu') . '%')
-                        ->orwhere('type', 'like', '%' . $request->get('contenu') . '%')
-                        ->orwhereHas('client', function ($query) use ($request) {
-                            $query->where('name', 'like', '%' . $request->get('contenu') . '%')
-                                ->orwhere('adress', 'like', '%' . $request->get('contenu') . '%');
-                        });
+                        ->orwhere('type', 'like', '%' . $request->get('contenu') . '%');
                 }
 
 
