@@ -85,7 +85,6 @@
                             @forelse ($contrats as $contrat)
 
 
-
                             @if (($contrat->status == "ACTIF") && ($contrat->invoice_unique == 1) && ($contrat->is_close
                             == 0))
 
@@ -94,7 +93,7 @@
                             @endphp
 
                             @if (($a->count() < $contrat->nbr_tests) || ($contrat->nbr_tests == -1))
-                                <option value="">{{ $contrat->name }}</option>
+                                <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
                                 @endif
                                 @endif
 
