@@ -1,129 +1,157 @@
-
-
 // SUPPRESSION
 function deleteModal(id) {
-
     Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/contrats/delete/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
 
-$(document).ready(function() {
-
-    var table = $('#datatablesuivi').DataTable({
-        "order": [],
-        // language: {
-        //     url: "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json",
-        // },
-        "language": {
-            "lengthMenu": "Afficher _MENU_ enregistrements par page",
-            "zeroRecords": "Aucun enregistrement disponible",
-            "info": "Afficher page _PAGE_ sur _PAGES_",
-            "infoEmpty": "Aucun enregistrement disponible",
-            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-            "sSearch": "Rechercher:",
-            "paginate": {
-                "previous": "Précédent",
-                "next": "Suivant"
-            }
+$(document).ready(function () {
+    var table = $("#datatablesuivi").DataTable({
+        columnDefs: [
+            {
+                targets: [0],
+                searchable: false,
+            },
+        ],
+        bFilter: false,
+        language: {
+            lengthMenu: "Afficher _MENU_ enregistrements par page",
+            zeroRecords: "Aucun enregistrement disponible",
+            info: "Afficher page _PAGE_ sur _PAGES_",
+            infoEmpty: "Aucun enregistrement disponible",
+            infoFiltered: "(filtré à partir de _MAX_ enregistrements au total)",
+            sSearch: "Rechercher:",
+            paginate: {
+                previous: "Précédent",
+                next: "Suivant",
+            },
         },
-        initComplete: function() {
 
-        },
+        initComplete: function () {},
         processing: true,
         serverSide: true,
         ajax: {
             url: ROUTEGETDATATABLE,
-            data: function(d) {
-                d.statusquery = $('#statusquery').val()
-                d.contenu = $('#contenu').val()
-                d.dateBegin = $('#dateBegin').val()
-                d.dateEnd = $('#dateEnd').val()
-                d.type_examen = $('#type_examen').val()
-                d.cas_status = $('#cas_status').val()
-            }
+            data: function (d) {
+                d.statusquery = $("#statusquery").val();
+                d.contenu = $("#contenu").val();
+                d.dateBegin = $("#dateBegin").val();
+                d.dateEnd = $("#dateEnd").val();
+                d.type_examen = $("#type_examen").val();
+                d.cas_status = $("#cas_status").val();
+            },
         },
-        columns: [{
-                data: 'date',
-                name: 'date'
-            }, {
-                data: 'code',
-                name: 'code'
+        columns: [
+            {
+                data: "date",
+                name: "date",
             },
             {
-                data: 'macro',
-                name: 'macro'
+                data: "code",
+                name: "code",
             },
             {
-                data: 'report',
-                name: 'report',
+                data: "macro",
+                name: "macro",
             },
             {
-                data: 'call',
-                name: 'call'
+                data: "report",
+                name: "report",
             },
             {
-                data: 'delivery',
-                name: 'delivery',
-            }
+                data: "call",
+                name: "call",
+            },
+            {
+                data: "delivery",
+                name: "delivery",
+            },
         ],
-        order: [
-            [0, 'asc']
-        ],
-        dom: 'Bfrtip', // Ajoutez ce paramètre pour définir les éléments du DOM de DataTables
-        buttons: [ // Définissez les boutons que vous souhaitez
-        'csv', 'excel', 'pdf', 'print'
-    ]
+        // order: [[0, "asc"]],
+        // dom: "Bfrtip",
+        // lengthMenu: [
+        //     [10, 25, 50, 100],
+        //     [10, 25, 50, 100],
+        // ], // Options de sélection
+        // buttons: [
+        //     "csv",
+        //     "excel",
+        //     "pdf",
+        //     // "print",
+        //     {
+        //         extend: "print",
+        //         text: "Print",
+        //         exportOptions: {
+        //             modifier: {
+        //                 page: "all",
+        //             },
+        //         },
+        //     },
+        // ],
 
+        order: [[0, "asc"]],
+        dom: '<"top"lfB>rt<"bottom"ip><"clear">', // Ajout de 'l' pour afficher la longueur de la page
+        lengthMenu: [
+            [10, 25, 50, 100, 500, 1000, -1],
+            [10, 25, 50, 100, 500, 1000, "Tout"],
+        ], // Options de sélection
+        buttons: [
+            "csv",
+            "excel",
+            "pdf",
+            {
+                extend: "print",
+                text: "Imprimer",
+                exportOptions: {
+                    modifier: {
+                        page: "all",
+                    },
+                },
+            },
+        ],
     });
-    
+
     // Recherche selon les cas
-    $("#statusquery").on("change", function() {
+    $("#statusquery").on("change", function () {
         // alert(this.value)
         table.draw();
     });
 
-    $("#cas_status").on("change", function() {
+    $("#cas_status").on("change", function () {
+        // alert(this.value);
+        table.draw();
+    });
+
+    $("#type_examen").on("change", function () {
         // alert(this.value)
         table.draw();
     });
 
-    $("#type_examen").on("change", function() {
-        // alert(this.value)
+    $("#contenu").on("input", function () {
         table.draw();
     });
 
-    $('#contenu').on("input", function() {
-        table.draw();
-    });
-
-    $('#dateEnd').on('input', function() {
-        console.log($('#dateEnd').val());
+    $("#dateEnd").on("input", function () {
+        console.log($("#dateEnd").val());
         table.draw();
         //console.log(search.value);
     });
 
-    $('#dateBegin').on('input', function() {
-        console.log($('#dateBegin').val());;
+    $("#dateBegin").on("input", function () {
+        console.log($("#dateBegin").val());
         table.draw();
         //console.log(search.value);
     });
-
 });
-
 
 //EDITION
 function edit(id) {
@@ -133,20 +161,18 @@ function edit(id) {
     $.ajax({
         type: "GET",
         url: baseUrl + "/getcontrat/" + e_id,
-        success: function(data) {
-
-            $('#id2').val(data.id);
-            $('#name2').val(data.name);
-            $('#type2').val(data.type).change();
-            $('#status2').val(data.status).change();
-            $('#description2').val(data.description);
+        success: function (data) {
+            $("#id2").val(data.id);
+            $("#name2").val(data.name);
+            $("#type2").val(data.type).change();
+            $("#status2").val(data.status).change();
+            $("#description2").val(data.description);
 
             console.log(data);
-            $('#editModal').modal('show');
+            $("#editModal").modal("show");
         },
-        error: function(data) {
-            console.log('Error:', data);
-        }
+        error: function (data) {
+            console.log("Error:", data);
+        },
     });
 }
-

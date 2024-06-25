@@ -16,45 +16,70 @@ class SettingAppController extends Controller
     }
     public function index()
     {
-        $app_name = $this->setting->where('key','lab_name')->first();
-        $prefixe_code_demande_examen = $this->setting->where('key','prefixe_code_demande_examen')->first();
-        $devise = $this->setting->where('key','devise')->first();
-        $adress = $this->setting->where('key','adress')->first();
+        $app_name = $this->setting->where('key', 'lab_name')->first();
+        $prefixe_code_demande_examen = $this->setting->where('key', 'prefixe_code_demande_examen')->first();
+        $devise = $this->setting->where('key', 'devise')->first();
+        $adress = $this->setting->where('key', 'adress')->first();
 
-        $token_payment = $this->setting->where('key','token_payment')->first();
+        $token_payment = $this->setting->where('key', 'token_payment')->first();
         // $public_key = $this->setting->where('key','public_key')->first();
         // $private_key = $this->setting->where('key','private_key')->first();
         // $secret_key = $this->setting->where('key','secret_key')->first();
 
 
-        $phone = $this->setting->where('key','phone')->first();
-        $email = $this->setting->where('key','email')->first();
-        $web_site = $this->setting->where('key','web_site')->first();
-        $footer = $this->setting->where('key','footer')->first();
-        $email_host = $this->setting->where('key','email_host')->first();
-        $email_port = $this->setting->where('key','email_port')->first();
-        $username = $this->setting->where('key','username')->first();
-        $password = $this->setting->where('key','password')->first();
-        $encryption = $this->setting->where('key','encryption')->first();
-        $from_adresse = $this->setting->where('key','from_adresse')->first();
-        $from_name = $this->setting->where('key','from_name')->first();
-        $api_sms = $this->setting->where('key','api_sms')->first();
-        $link_api_sms = $this->setting->where('key','link_api_sms')->first();
-        $key_ourvoice = $this->setting->where('key','key_ourvoice')->first();
-        $link_ourvoice_call = $this->setting->where('key','link_ourvoice_call')->first();
-        $link_ourvoice_sms = $this->setting->where('key','link_ourvoice_sms')->first();
-        $report_footer = $this->setting->where('key','report_footer')->first();
-        $report_review_title = $this->setting->where('key','report_review_title')->first();
-        $mail = $this->setting->where('key','admin_mails')->first();
-        $service = $this->setting->where('key','services')->first();
+        $phone = $this->setting->where('key', 'phone')->first();
+        $email = $this->setting->where('key', 'email')->first();
+        $web_site = $this->setting->where('key', 'web_site')->first();
+        $footer = $this->setting->where('key', 'footer')->first();
+        $email_host = $this->setting->where('key', 'email_host')->first();
+        $email_port = $this->setting->where('key', 'email_port')->first();
+        $username = $this->setting->where('key', 'username')->first();
+        $password = $this->setting->where('key', 'password')->first();
+        $encryption = $this->setting->where('key', 'encryption')->first();
+        $from_adresse = $this->setting->where('key', 'from_adresse')->first();
+        $from_name = $this->setting->where('key', 'from_name')->first();
+        $api_sms = $this->setting->where('key', 'api_sms')->first();
+        $link_api_sms = $this->setting->where('key', 'link_api_sms')->first();
+        $key_ourvoice = $this->setting->where('key', 'key_ourvoice')->first();
+        $link_ourvoice_call = $this->setting->where('key', 'link_ourvoice_call')->first();
+        $link_ourvoice_sms = $this->setting->where('key', 'link_ourvoice_sms')->first();
+        $report_footer = $this->setting->where('key', 'report_footer')->first();
+        $report_review_title = $this->setting->where('key', 'report_review_title')->first();
+        $mail = $this->setting->where('key', 'admin_mails')->first();
+        $service = $this->setting->where('key', 'services')->first();
+        $email_technician = $this->setting->where('key', 'email_technician')->first();
         $banks = Bank::latest()->get();
         $titles = TitleReport::latest()->get();
 
         return view('settings.app.setting', compact(
             'token_payment',
-            'app_name', 'prefixe_code_demande_examen', 'devise', 'adress', 'phone', 'email', 'web_site', 'footer','banks', 'titles',
-            'email_host', 'username', 'email_port', 'password', 'encryption', 'from_name', 'from_adresse','mail','service',
-            'api_sms', 'link_api_sms', 'key_ourvoice', 'link_ourvoice_call', 'link_ourvoice_sms','report_footer','report_review_title'
+            'app_name',
+            'prefixe_code_demande_examen',
+            'devise',
+            'adress',
+            'phone',
+            'email',
+            'web_site',
+            'footer',
+            'banks',
+            'titles',
+            'email_host',
+            'username',
+            'email_port',
+            'password',
+            'encryption',
+            'from_name',
+            'from_adresse',
+            'mail',
+            'service',
+            'api_sms',
+            'link_api_sms',
+            'key_ourvoice',
+            'link_ourvoice_call',
+            'link_ourvoice_sms',
+            'report_footer',
+            'report_review_title',
+            'email_technician'
         ));
     }
 
@@ -73,6 +98,7 @@ class SettingAppController extends Controller
         $footerValue = $request->input('footer');
         $email_hostValue = $request->input('email_host');
         $email_portValue = $request->input('email_port');
+        $email_technicianValue = $request->input('email_technician');
         $usernameValue = $request->input('username');
         $passwordValue = $request->input('password');
         $encryptionValue = $request->input('encryption');
@@ -99,41 +125,39 @@ class SettingAppController extends Controller
             case 1:
                 # code...
                 $app_name = $this->setting->where('key', 'lab_name')->first();
-                $app_name ? $app_name->update(['value' => $appNameValue]):'';
+                $app_name ? $app_name->update(['value' => $appNameValue]) : '';
 
                 $devise = $this->setting->where('key', 'devise')->first();
-                $devise ? $devise->update(['value' => $deviseValue]):'';
+                $devise ? $devise->update(['value' => $deviseValue]) : '';
 
                 $adress = $this->setting->where('key', 'adress')->first();
-                $adress ? $adress->update(['value' => $adresseValue]):'';
+                $adress ? $adress->update(['value' => $adresseValue]) : '';
 
                 $telephone = $this->setting->where('key', 'phone')->first();
-                $telephone ? $telephone->update(['value' => $telephoneValue]):'';
+                $telephone ? $telephone->update(['value' => $telephoneValue]) : '';
 
                 $email = $this->setting->where('key', 'email')->first();
-                $email ? $email->update(['value' => $emailValue]):'';
+                $email ? $email->update(['value' => $emailValue]) : '';
 
                 $web_site = $this->setting->where('key', 'web_site')->first();
-                $web_site ? $web_site->update(['value' => $webSiteValue]):'';
+                $web_site ? $web_site->update(['value' => $webSiteValue]) : '';
 
                 $footer = $this->setting->where('key', 'footer')->first();
                 $footer ? $footer->update(['value' => $footerValue]) : '';
 
-                if ($request->file('logo') ) {
+                if ($request->file('logo')) {
 
                     $logo = time() . '_settings_app_logo.' . $request->file('logo')->extension();
 
                     $path_logo = $request->file('logo')->storeAs('settings/app', $logo, 'public');
-
                 }
-                if ($request->file('favicon') ) {
+                if ($request->file('favicon')) {
 
                     $favicon = time() . '_settings_app_favicon.' . $request->file('favicon')->extension();
 
                     $path_favicon = $request->file('favicon')->storeAs('settings/app', $favicon, 'public');
-
                 }
-                if ($request->file('logo_white') ) {
+                if ($request->file('logo_white')) {
 
                     $img3 = time() . '_settings_app_blanc.' . $request->file('logo_white')->extension();
 
@@ -152,93 +176,86 @@ class SettingAppController extends Controller
             case 2:
 
                 $email_host = $this->setting->where('key', 'email_host')->first();
-                $email_host ? $email_host->update(['value' => $email_hostValue]):'';
+                $email_host ? $email_host->update(['value' => $email_hostValue]) : '';
 
                 $email_port = $this->setting->where('key', 'email_port')->first();
-                $email_port ? $email_port->update(['value' => $email_portValue]): '';
+                $email_port ? $email_port->update(['value' => $email_portValue]) : '';
+
+                $email_technician = $this->setting->where('key', 'email_technician')->first();
+                $email_technician ? $email_technician->update(['value' => $email_technicianValue]) : '';
 
                 $username = $this->setting->where('key', 'username')->first();
-                $username ? $username->update(['value' => $usernameValue]):'';
+                $username ? $username->update(['value' => $usernameValue]) : '';
 
                 $password = $this->setting->where('key', 'password')->first();
-                $password ? $password->update(['value' => $passwordValue]):'';
+                $password ? $password->update(['value' => $passwordValue]) : '';
 
                 $encryption = $this->setting->where('key', 'encryption')->first();
-                $encryption ? $encryption->update(['value' => $encryptionValue]):'';
+                $encryption ? $encryption->update(['value' => $encryptionValue]) : '';
 
                 $from_adresse = $this->setting->where('key', 'from_adresse')->first();
-                $from_adresse ? $from_adresse->update(['value' => $from_adresseValue]):'';
+                $from_adresse ? $from_adresse->update(['value' => $from_adresseValue]) : '';
 
                 $from_name = $this->setting->where('key', 'from_name')->first();
-                $from_name ? $from_name->update(['value' => $from_nameValue]):'';
+                $from_name ? $from_name->update(['value' => $from_nameValue]) : '';
 
-                $mail = $this->setting->where('key','admin_mails')->first();
-                $mail ? $mail->update(['value' => implode('|',$mails)]):'';
+                // $mail = $this->setting->where('key', 'admin_mails')->first();
+                // $mail ? $mail->update(['value' => implode('|', $mails)]) : '';
 
-                $service = $this->setting->where('key','services')->first();
-                $service ? $service->update(['value' => implode('|',$services)]):'';
+                $service = $this->setting->where('key', 'services')->first();
+                $service ? $service->update(['value' => implode('|', $services)]) : '';
                 break;
 
             case 3:
                 $api_sms = $this->setting->where('key', 'api_sms')->first();
-                $api_sms ?  $api_sms->update(['value' => $api_smsValue]): '';
+                $api_sms ?  $api_sms->update(['value' => $api_smsValue]) : '';
 
                 $link_api_sms = $this->setting->where('key', 'link_api_sms')->first();
-                $link_api_sms ? $link_api_sms->update(['value' => $link_api_smsValue]): '';
+                $link_api_sms ? $link_api_sms->update(['value' => $link_api_smsValue]) : '';
 
                 $key_ourvoice = $this->setting->where('key', 'key_ourvoice')->first();
-                $key_ourvoice ? $key_ourvoice->update(['value' => $key_ourvoiceValue]):'';
+                $key_ourvoice ? $key_ourvoice->update(['value' => $key_ourvoiceValue]) : '';
 
                 $link_ourvoice_call = $this->setting->where('key', 'link_ourvoice_call')->first();
-                $link_ourvoice_call ? $link_ourvoice_call->update(['value' => $link_ourvoice_callValue]): '';
+                $link_ourvoice_call ? $link_ourvoice_call->update(['value' => $link_ourvoice_callValue]) : '';
 
                 $link_ourvoice_sms = $this->setting->where('key', 'link_ourvoice_sms')->first();
-                $link_ourvoice_sms ? $link_ourvoice_sms->update(['value' => $link_ourvoice_smsValue]):'';
+                $link_ourvoice_sms ? $link_ourvoice_sms->update(['value' => $link_ourvoice_smsValue]) : '';
                 break;
 
             case 4:
                 if ($request->file('entete')) {
-                    
-                    // debut 
-                        $imageFile = $request->file('entete');
-                        // Obtenez le nom d'origine du fichier
-                        $namefichier = "entete_pdf_cr.".$imageFile->getClientOriginalExtension();
-                       
-                        // Enregistrez le fichier image dans le dossier public
-                        $re = $request->file('entete')->move(public_path('adminassets/images'), $namefichier);
+
+                    // debut
+                    $imageFile = $request->file('entete');
+                    // Obtenez le nom d'origine du fichier
+                    $namefichier = "entete_pdf_cr." . $imageFile->getClientOriginalExtension();
+
+                    // Enregistrez le fichier image dans le dossier public
+                    $re = $request->file('entete')->move(public_path('adminassets/images'), $namefichier);
                     // fin
 
                 }
 
                 $report_footer = $this->setting->where('key', 'report_footer')->first();
-                $report_footer ?  $report_footer->update(['value' => $report_footerValue]): '';
+                $report_footer ?  $report_footer->update(['value' => $report_footerValue]) : '';
 
                 $prefixe_code_demande_examen = $this->setting->where('key', 'prefixe_code_demande_examen')->first();
-                $prefixe_code_demande_examen ?  $prefixe_code_demande_examen->update(['value' => $prefixeCodeDemandeExamenValue]): '';
+                $prefixe_code_demande_examen ?  $prefixe_code_demande_examen->update(['value' => $prefixeCodeDemandeExamenValue]) : '';
 
                 $entete = $this->setting->where('key', 'entete')->first();
                 $entete ? $entete->update(['value' => $namefichier]) : '';
 
                 $report_review_title = $this->setting->where('key', 'report_review_title')->first();
-                $report_review_title ?  $report_review_title->update(['value' => $report_review_titleValue]): '';
+                $report_review_title ?  $report_review_title->update(['value' => $report_review_titleValue]) : '';
                 break;
 
-            case 7 :
+            case 7:
 
                 $token_payment = $this->setting->where('key', 'token_payment')->first();
-                $token_payment ?  $token_payment->update(['value' => $token_payment_value]): '';
-
-                // $public_key = $this->setting->where('key', 'public_key')->first();
-                // $public_key ?  $public_key->update(['value' => $public_key_value]): '';
-
-                // $private_key = $this->setting->where('key', 'private_key')->first();
-                // $private_key ?  $private_key->update(['value' => $private_key_value]): '';
-
-                // $secret_key = $this->setting->where('key', 'secret_key')->first();
-                // $secret_key ?  $secret_key->update(['value' => $secret_key_value]): '';
-
+                $token_payment ?  $token_payment->update(['value' => $token_payment_value]) : '';
             default:
-            break;
+                break;
         }
 
         return back()->with('success', "Mise à jour effectuée avec succès");

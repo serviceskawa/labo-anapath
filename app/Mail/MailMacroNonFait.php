@@ -3,24 +3,25 @@
 namespace App\Mail;
 
 use App\Models\SettingApp;
+use App\Models\TestOrder;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class NotificationAdminTimeOffMail extends Mailable
+class MailMacroNonFait extends Mailable
 {
     use Queueable, SerializesModels;
-    public $employeTimeOff;
 
+    protected $testOrder;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($employeTimeOff)
+    public function __construct(TestOrder $testOrder)
     {
-        $this->employeTimeOff = $employeTimeOff;
+        $this->testOrder = $testOrder;
     }
 
     /**
@@ -35,16 +36,14 @@ class NotificationAdminTimeOffMail extends Mailable
         $lab_name = SettingApp::where('key', 'lab_name')->first();
 
         $data = [
-            'user_name' => $this->employeTimeOff->employee->first_name . ' ' . $this->employeTimeOff->employee->last_name,
-            'start_date' => $this->employeTimeOff->start_date,
-            'end_date' => $this->employeTimeOff->end_date,
+            'test_order' => $this->testOrder->code,
+            'doctorName' => $this->testOrder->doctor->name,
+            'date_create' => $this->testOrder->created_at,
         ];
 
-
-        $this->from($from_adresse->value, $from_name->value) // L'expéditeur
-            ->subject('Notification : Une demande de congé')
-            ->view('emails.admin_employe_notification')
-            // ->attachFromStorage($this->path)
+        $this->from($from_adresse->value, $from_name->value)
+            ->subject("Rappel de macro - Demande [{$this->testOrder->code}]")
+            ->view('emails.macro_non_fait')
             ->with(['data' => $data, 'lab' => $lab_name]);
     }
 }

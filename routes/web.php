@@ -172,6 +172,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contrats/close/{id}', [ContratController::class, 'close'])->name('contrats.close');
     Route::get('/getcontrat/{id}', [ContratController::class, 'edit']);
     Route::post('/contrats/update', [ContratController::class, 'update'])->name('contrats.update');
+    Route::get('/contrats/create/{contrat}/examen', [ContratController::class, 'create_examen_reduction'])->name('contrats.create_examen_reduction');
+    Route::get('/contrats/edit/{detail_contrat}/examen', [ContratController::class, 'edit_examen_reduction'])->name('contrats.edit_examen_reduction');
+    Route::put('/contrats/update/{detail_contrat}/examen', [ContratController::class, 'update_examen_reduction'])->name('contrats.update_examen_reduction');
 
     //CONTRAT DETAILS
     Route::get('/contrats/{id}/details', [ContratController::class, 'details_index'])->name('contrat_details.index');
@@ -179,10 +182,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/contrats/details/store/test', [ContratController::class, 'details_store_test'])->name('contrat_details.store_test');
     Route::get('/contrats_details/delete/{id}', [ContratController::class, 'destroy_details']);
     Route::get('/getcontratdetails/{id}', [ContratController::class, 'contrat_details_edit']);
-    Route::get('/updatecontratstatus/{id}', [ContratController::class, 'update_detail_status'])->name('contrat_details.update-status');
     Route::post('/contrats_details/update', [ContratController::class, 'contrat_details_update'])->name('contrat_details.update');
     Route::get('/contrats', [ContratController::class, 'getContratsforDatatable'])->name('contrat.getContratsforDatatable');
     Route::get('/getTestsforDatatable/test', [TestController::class, 'getTestsforDatatable'])->name('test.getTestsforDatatable');
+    Route::get('/updatecontratstatus/{id}', [ContratController::class, 'update_detail_status'])->name('contrat_details.update-status');
 
 
 
@@ -352,6 +355,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/reports/storeTags', [ReportController::class, 'storeTags'])->name('report.storeTags'); //Enregistrement tags depuis select2
 
         Route::get('/suivi/index', [ReportController::class, 'indexsuivi'])->name('report.index.suivi');
+        Route::get('/report/suivi/index', [ReportController::class, 'indexsuivistatistique'])->name('report.statistique.index.suivi');
         Route::post('/suivi/store/informe', [ReportController::class, 'UpdateInformePatient'])->name('report.UpdateInformePatient');
         Route::post('/suivi/store/livrer', [ReportController::class, 'UpdateLivrePatient'])->name('report.UpdateLivrePatient');
     });

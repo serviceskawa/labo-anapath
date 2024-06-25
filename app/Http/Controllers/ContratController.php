@@ -44,6 +44,40 @@ class ContratController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function create_examen_reduction(Contrat $contrat)
+    {
+        $tests = Test::latest()->get();
+        return view('contrats_details.create_examen_reduction', compact('tests', 'contrat'));
+    }
+
+
+    public function edit_examen_reduction(Details_Contrat $detail_contrat)
+    {
+        $tests = Test::latest()->get();
+        return view('contrats_details.edit_examen_reduction', compact('tests', 'detail_contrat'));
+    }
+
+    public function update_examen_reduction(Request $request, Details_Contrat $detail_contrat)
+    {
+        $search_test = Test::find(intval($request->test_id));
+        $contrat = Contrat::findorfail($request->contrat_id);
+        try {
+            // dd(intval($request->test_id));
+            $detail_contrat->contrat_id = intval($request->contrat_id);
+            $detail_contrat->test_id = intval($request->test_id);
+            // dd($detail_contrat->test_id);
+            $detail_contrat->amount_remise = intval($request->amount_remise);
+            $detail_contrat->category_test_id = $search_test->category_test_id;
+            $detail_contrat->amount_after_remise = $search_test->price - intval($request->amount_remise);
+            $detail = $detail_contrat->save();
+            // dd('ok');
+            return redirect()->route('contrat_details.index', $detail_contrat->contrat_id)->with('success', "Element enregistré avec succès ! ");
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
+        }
+    }
+
+
     public function getContratsforDatatable(Request $request)
     {
         $data = $this->contrat->with(['orders', 'client', 'invoices'])->latest();
@@ -258,29 +292,64 @@ class ContratController extends Controller
         if (!getOnlineUser()->can('create-contrats')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-
+        // dd($request);
         $search_test = Test::find(intval($request->test_id));
 
-        // dd($request);
         $contrat = Contrat::findorfail($request->contrat_id);
 
         try {
+            // DB::transaction(function () use ($request, $search_test) {
+            //     $detail = new Details_Contrat();
+            //     $detail->contrat_id = intval($request->contrat_id);
+            //     $detail->pourcentage = $request->pourcentage;
+            //     $detail->test_id = intval($request->test_id);
+            //     $detail->amount_remise = intval($request->amount_remise);
+            //     $detail->category_test_id = $search_test->category_test_id;
+            //     $detail->amount_after_remise = $search_test->price - intval($request->amount_remise);
+            //     $detail = $detail->save();
+            // });
+
+
             DB::transaction(function () use ($request, $search_test) {
                 $detail = new Details_Contrat();
                 $detail->contrat_id = intval($request->contrat_id);
                 $detail->pourcentage = $request->pourcentage;
                 $detail->test_id = intval($request->test_id);
-                $detail->amount_remise = intval($request->amount_remise);
+                $detail->amount_remise = intval($request->remise);
                 $detail->category_test_id = $search_test->category_test_id;
-                $detail->amount_after_remise = $search_test->price - intval($request->amount_remise);
+                // $detail->amount_after_remise = $search_test->price - intval($request->remise);
+                $detail->amount_after_remise = intval($request->total);
                 $detail = $detail->save();
             });
 
-            return back()->with('success', "Element enregistré avec succès ! ");
+            return redirect()->route('contrat_details.index', $request->contrat_id)->with('success', "Element enregistré avec succès ! ");
         } catch (\Throwable $ex) {
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }
+
+    public function delete_detail($detail_contrat)
+    {
+        // Rechercher le détail du contrat
+        $detail = $this->detailsContrat->find($detail_contrat);
+
+        // Vérifier si le détail du contrat a été trouvé
+        if ($detail) {
+            // Tenter de supprimer le détail du contrat
+            try {
+                $detail->delete();
+                // Rediriger avec un message de succès
+                return back()->with('success', "Élément supprimé avec succès !");
+            } catch (\Exception $e) {
+                // Capturer les exceptions et afficher un message d'erreur
+                return back()->with('error', "Erreur lors de la suppression : " . $e->getMessage());
+            }
+        } else {
+            // Rediriger avec un message d'erreur si le détail n'a pas été trouvé
+            return back()->with('error', "Élément non trouvé !");
+        }
+    }
+
 
     /**
      * Display the specified resource.
@@ -332,7 +401,7 @@ class ContratController extends Controller
         $data = [
             'name' => $request->name,
             'type' => $request->type,
-            'status' => $request->statis,
+            'status' => $request->status,
             'id' => $request->id,
             'description' => $request->description,
             'nbr_examen' => $request->nbr_examen,

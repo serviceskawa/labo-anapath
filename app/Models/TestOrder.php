@@ -182,4 +182,9 @@ class TestOrder extends Model
     {
         return $this->belongsTo(User::class, 'attribuate_doctor_id');
     }
+
+    public function assignmentDetails()
+    {
+        return $this->hasMany(TestOrderAssignmentDetail::class, 'test_order_id');
+    }
 }

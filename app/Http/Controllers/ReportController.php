@@ -24,6 +24,7 @@ use Spipu\Html2Pdf\Html2Pdf;
 use App\Models\SettingReportTemplate;
 use App\Models\Tag;
 use App\Models\TestOrder;
+use App\Models\TestOrderAssignment;
 use App\Models\TitleReport;
 use App\Models\TypeOrder;
 use App\Models\User;
@@ -73,19 +74,90 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if (!getOnlineUser()->can('view-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+        // dd($request);
         $reports = $this->report->orderBy('created_at', 'DESC')->get();
         $doctors = $this->doctor->all();
         $tags = $this->tag->all();
 
         $user = Auth::user();
 
-        return view('reports.index', compact('tags', 'reports', 'doctors'));
+
+        // Code debut pour le filtre
+        $month = $request->month; // Récupérez la valeur du mois depuis le formulaire
+        $year = $request->year;   // Récupérez la valeur de l'année depuis le formulaire
+        $doctor = intval($request->doctor);   // Récupérez la valeur de l'année depuis le formulaire
+        // dd($doctor);
+        $list_years = Report::select(DB::raw('YEAR(created_at) as year'))
+            ->groupBy('year')
+            ->orderBy('year', 'desc')
+            ->get();
+
+        $testOrderIds = TestOrderAssignment::where('user_id', $doctor)
+            ->with('details:test_order_id,test_order_assignment_id') // Charger uniquement les champs nécessaires
+            ->get()
+            ->pluck('details.*.test_order_id')
+            ->flatten()
+            ->unique()
+            ->values();
+
+        // Filtrer les enregistrements de la table reports en fonction des test_order_id, du status et de la date
+        $report_req = Report::whereIn('test_order_id', $testOrderIds)
+            ->where('status', 1)
+            ->whereMonth('signature_date', intval($month))
+            ->whereYear('signature_date', intval($year))
+            ->get();
+
+        $report_nbres = $report_req->count();
+
+
+        // Initialiser les compteurs
+        $withinDeadlineCount = 0;
+        $beyondDeadlineCount = 0;
+
+
+        // Effectuer la requête avec des jointures et des filtres
+        $results = DB::table('reports')
+            ->join('test_order_assignment_details', 'reports.test_order_id', '=', 'test_order_assignment_details.test_order_id')
+            ->join('test_order_assignments', 'test_order_assignment_details.test_order_assignment_id', '=', 'test_order_assignments.id')
+            ->where('test_order_assignments.user_id', $doctor)
+            ->where('reports.status', 1)
+            ->whereMonth('reports.signature_date', $month)
+            ->whereYear('reports.signature_date', $year)
+            ->select(
+                DB::raw('SUM(CASE WHEN DATEDIFF(reports.signature_date, test_order_assignments.date) <= 11 THEN 1 ELSE 0 END) as within_deadline'),
+                DB::raw('SUM(CASE WHEN DATEDIFF(reports.signature_date, test_order_assignments.date) > 11 THEN 1 ELSE 0 END) as beyond_deadline')
+            )
+            ->first();
+
+        $in_deadline = intval($results->within_deadline);
+        $over_deadline = intval($results->beyond_deadline);
+
+        // Calcul de la somme totale
+        $total = $in_deadline + $over_deadline;
+
+        // Calcul des pourcentages
+        $percentageIn_Deadline = $in_deadline == 0 ? 0 : number_format(($in_deadline / $total) * 100, 1);
+        $percentageOver_Deadline = $over_deadline == 0 ? 0 : number_format(($over_deadline / $total) * 100, 1);
+        // dd($percentageOver_Deadline, $percentageIn_Deadline);
+
+        return view('reports.index', compact('doctor', 'percentageOver_Deadline', 'percentageIn_Deadline', 'report_nbres', 'list_years', 'year', 'month', 'tags', 'reports', 'doctors'));
     }
+
+    // public function indexsuivistatistique(Request $request)
+    // {
+    //     dd($request);
+    //     if (!getOnlineUser()->can('view-reports')) {
+    //         return back()->with('error', "Vous n'êtes pas autorisé");
+    //     }
+
+    //     return view('reports.index', compact('list_years', 'month', 'year'));
+    // }
+
 
     public function storeTags(TagRequest $request)
     {
@@ -316,6 +388,9 @@ class ReportController extends Controller
 
         return view('reports.suivi.index', compact('list_years', 'month', 'year', 'patient_called', 'macros', 'rapports', 'examens', 'reports', 'doctors', 'types_orders'));
     }
+
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -641,13 +716,9 @@ class ReportController extends Controller
 
             ->addColumn('codepatient', function ($data) {
                 return $data->order->patient->code;
-
-                // return Invoice::whereMonth('updated_at', )->sum('total');
             })
             ->addColumn('patient', function ($data) {
                 return $data->order->patient->firstname . ' ' . $data->order->patient->lastname;
-
-                // return Invoice::whereMonth('updated_at', )->sum('total');
             })
             ->addColumn('telephone', function ($data) {
                 return $data->order->patient->telephone1;
@@ -664,45 +735,12 @@ class ReportController extends Controller
             })
             ->addColumn('action', function ($data) {
                 $btnVoir = '<a type="button" href="' . route('report.show', $data->id) . '"class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>';
-                // $btnVoir = '<a type="button" href="' . route('details_test_order.index', $data->id) . '" class="btn btn-primary" title="Voir les détails"><i class="mdi mdi-eye"></i></a>';
-                // $btnEdit = ' <a type="button" href="' . route('test_order.edit', $data->id) . '" class="btn btn-primary" title="Mettre à jour examen"><i class="mdi mdi-lead-pencil"></i></a>';
                 if ($data->order) {
                     $btnReport = ' <a type="button" href="' . route('details_test_order.index', $data->order->id) . '" class="btn btn-warning" title="Demande ' . $data->order->code . '"><i class="uil-file-medical"></i> </a>';
-                    // $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
-                    // $btnreport = "";
                 } else {
                     $btnReport = ' ';
                 }
 
-                // if(!empty($data->order->invoice->paid) && $data->order->invoice->paid == 1)
-                // {
-                //     // $btnInvoice = "Payee";
-                //     if ($data->status == 1) {
-                //         if ($data->is_deliver == 1) {
-                //             $btnInvoice = ' <a type="button" href="' . route('report.updateDeliver', $data->id) . '" class="btn btn-success">Imprimer </a>';
-                //         } else {
-                //             $btnInvoice = ' <a type="button" href="' . route('report.updateDeliver', $data->id) . '" class="btn btn-warning">Imprimer </a>';
-                //         }
-                //     } else {
-                //         $btnInvoice = '';
-                //     }
-
-                // }else{
-                //     $btnInvoice = "";
-                // }
-
-
-                // if ($data->status == 1) {
-                //     if ($data->is_deliver == 1) {
-                //         $btnInvoice = ' <a type="button" href="' . route('report.updateDeliver', $data->id) . '" class="btn btn-success">Imprimer </a>';
-                //     } else {
-                //         $btnInvoice = ' <a type="button" href="' . route('report.updateDeliver', $data->id) . '" class="btn btn-warning">Imprimer </a>';
-                //     }
-                // } else {
-                //     $btnInvoice = '';
-                // }
-
-                // return $btnVoir . $btnReport . $btnInvoice;
                 return $btnVoir . $btnReport;
             })
             ->filter(function ($query) use ($request) {
@@ -731,7 +769,6 @@ class ReportController extends Controller
                 }
 
                 if (!empty($request->get('dateBegin'))) {
-                    //dd($request);
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
                     $query->whereDate('created_at', '>', $newDate);
                 }
@@ -825,17 +862,19 @@ class ReportController extends Controller
                 }
 
                 if (!empty($request->get('cas_status'))) {
+                    if ($request->get('cas_status') == 'Retard') {
+                        $threeWeeksAgo = now()->subDays(21);
+                        $query->where('created_at', '<=', $threeWeeksAgo)
+                            ->where('status', 0);
+                    }
+
+
                     $query->whereHas('order', function ($query) use ($request) {
                         if ($request->cas_status == 'Urgent') {
                             $query->where('is_urgent', 0);
-                        } elseif ($request->cas_status == 'Retard') {
-                            // Assurez-vous que la colonne `created_at` est correctement nommée et indexée
-                            $threeWeeksAgo = now()->subWeeks(3);
-                            $query->where('created_at', '"<', $threeWeeksAgo);
                         }
                     });
                 }
-
 
                 if (!empty($request->get('statusquery'))) {
                     if ($request->get('statusquery') == 1) {
