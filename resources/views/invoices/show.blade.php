@@ -24,61 +24,109 @@
 <!-- end page title -->
 
 <div class="row">
-    <div class="col-9">
+    <div class="col-12">
         <div class="card">
             <div class="card-body">
 
                 <!-- Invoice Logo-->
                 <div class="clearfix">
                     <div class="float-start mb-3">
-                        <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt="" height="18">
+                        <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt="" height="75">
                     </div>
-                    <div class="float-end">
-                        <h4 class="m-0 d-print-none">{{$invoice->status_invoice !=1 ?'Reçu de paiement':'Facture
-                            d\'avoir'}}</h4>
-                    </div>
+                </div>
+
+                <div class="row">
+                    <hr>
                 </div>
 
                 <!-- Invoice Detail-->
                 <div class="row">
                     <div class="col-sm-6">
-                        <div class="float-left mt-3">
-                            <h4>Informations du Patient</h4>
-                            <address>
-                                <strong>Nom: </strong> {{ $invoice->client_name }}<br>
-                                <strong>Adresse: </strong> {{ $invoice->client_address }}<br>
-                            </address>
+                        <div class="float-sm-start">
+                            <p>
+                                <strong> {{$invoice->status_invoice !=1 ?'Facture de vente':'Facture
+                                    d\'avoir'}}
+                                </strong>
+                            </p>
                         </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="float-sm-start">
+                            <p>
+                                <strong> Adressée à:
+                                </strong>
+                            </p>
+                        </div>
+                    </div>
 
-                    </div><!-- end col -->
-                    <div class="col-sm-4 offset-sm-2">
-                        <div class="mt-3 float-sm-end">
+                    <div class="col-sm-6">
+                        <div class="float-sm-start">
                             <p class="font-13"><strong>Date: </strong> {{ $invoice->created_at }}</p>
-                            <p class="font-13"><strong>Status: </strong>
+
+                            </p>
+                            <p class="font-13"><strong>Code: </strong> <span class="">{{
+                                    $invoice->status_invoice !=1 ? $invoice->code : $refund->code }}</span>
                                 <span class="bg-{{ $invoice->paid != 1 ? 'danger' : 'success' }} badge
-                                    float-end">{{ $invoice->paid == 1
+                                        ">{{ $invoice->paid == 1
                                     ? 'Payé'
                                     : "En
                                     attente" }}
                                 </span>
                             </p>
-                            <p class="font-13"><strong>Code: </strong> <span class="float-end">{{
-                                    $invoice->status_invoice !=1 ? $invoice->code : $refund->code }}</span>
-                            </p>
-                            {{-- @if ($invoice->order != null) --}}
+
                             @if ($invoice->status_invoice!=1)
-                            <p class="font-13"><strong>Contrat: </strong> <span class="float-end">{{ $invoice->contrat ?
+                            <p class="font-13"><strong>Contrat: </strong> <span class="">{{ $invoice->contrat ?
                                     $invoice->contrat->name : ($invoice->order ? ($invoice->order->contrat ?
                                     $invoice->order->contrat->name : ''):'') }}</span>
                             </p>
                             @else
-                            <p class="font-13"><strong>Référence: </strong> <span class="float-end">{{ $refund->invoice
+                            <p class="font-13"><strong>Référence: </strong> <span class="">{{ $refund->invoice
                                     ? $refund->invoice->code : '' }}</span>
                             </p>
                             @endif
-                            {{-- @endif --}}
+                            <p class="font-13"><strong>CODE MECeF / DGI: </strong> <span class=""
+                                    style="text-transform: uppercase;">&nbsp;{{
+                                    $invoice->code_normalise ??
+                                    "" }}</span>
+                            </p>
                         </div>
-                    </div><!-- end col -->
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="float-sm-start">
+                            <p class="font-13"><strong>Nom: </strong> {{ $invoice->client_name }}</p>
+
+                            </p>
+                            <p class="font-13"><strong>Adresse: </strong> <span class="">{{ $invoice->client_address ??
+                                    ""
+                                    }}</span>
+                            </p>
+
+                            <p class="font-13"><strong>Code client: </strong> <span class="">{{ $invoice->patient->code
+                                    ?? ""
+                                    }}</span>
+                            </p>
+
+                            <p class="font-13"><strong>Contact client: </strong> <span class="">{{
+                                    $invoice->telephone1 ? $invoice->telephone1 ." ".$invoice->telephone2 : " "
+                                    }}</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- <div class="col-sm-6">
+                        <div class="float-sm-end mt-3">
+                            <p class="font-13"><strong>Nom: </strong> <span class="">{{ $invoice->client_name }}</span>
+                            </p>
+                            <p class="font-13"><strong>Adresse: </strong> <span class="">{{ $invoice->client_address
+                                    }}</span></p>
+                            <p class="font-13"><strong>Code client: </strong> <span class="">{{ $invoice->client_address
+                                    }}</span></p>
+                            <p class="font-13"><strong>Contact client: </strong> <span class="">{{
+                                    $invoice->client_address }}</span></p>
+                        </div>
+                    </div> --}}
+
                 </div>
                 <!-- end row -->
                 @php
@@ -91,18 +139,15 @@
                         <div>
                         </div>
                         <div class="table-responsive">
-
-
-
                             <table class="table mt-4">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Designation</th>
+                                        <th>Désignation</th>
                                         <th>Quantité</th>
-                                        <th>Prix(F CFA)</th>
-                                        <th>Remise(F CFA)</th>
-                                        <th class="text-end">Total(F CFA)</th>
+                                        <th>Prix</th>
+                                        <th>Remise</th>
+                                        <th class="text-end">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -114,7 +159,7 @@
                                         <td>1</td>
                                         <td>{{ $refund ? $refund->montant :'' }}</td>
                                         <td>0.0 </td>
-                                        <td>{{ $refund ? $refund->montant:'' }}</td>
+                                        <td class="text-end">{{ $refund ? $refund->montant:'' }}</td>
                                     </tr>
                                     @else
 
@@ -143,10 +188,10 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="float-end mt-3 mt-sm-0">
-                            <p><b>Sous-total: </b>
+                            <p><b>Sous-total : </b>
                                 <span class="float-end">{{ number_format(abs($invoice->subtotal), 0, ',', ' ') }}</span>
                             </p>
-                            <h3><b>Total: </b>{{ number_format(abs($invoice->total), 0, ',', ' ') }}</h3>
+                            <p><b>Montant TTC : </b>{{ number_format(abs($invoice->total), 0, ',', ' ') }} FCFA</p>
                         </div>
                         <div class="clearfix"></div>
                     </div>
@@ -294,6 +339,19 @@
                 @endif
                 @endif
                 @endif
+
+                <div class="row mt-2">
+                    <div style="border: 1px solid black;">
+                        <p class="m-0 p-1">
+                            <b>Note importante :</b>
+                            Les résultats de vos analyses seront disponibles dans un délai de 3 semaines. Selon la
+                            complexité du cas, les résultats peuvent être disponibles plus tôt ou plus tard. Vous serez
+                            notifiés dès que les résultats seront prêts. Nous vous remercions de votre compréhension et
+                            de
+                            votre patience.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -302,7 +360,7 @@
 
 
 
-    <div class="col-3">
+    {{-- <div class="col-3">
         <div class="card">
             <div class="card-body">
 
@@ -343,8 +401,8 @@
                     <div class="col-md-12 mb-3 col-12">
                         <label for="">Numero de telephone</label>
                         <input type="number" name="payment_number" placeholder="Numero de telephone : xxxxxxxx"
-                            id="payment_number" value="{{ $invoice->patient->telephone1  ?? old('payment_number') }}" class="form-control"
-                            minlength="8" maxlength="8">
+                            id="payment_number" value="{{ $invoice->patient->telephone1  ?? old('payment_number') }}"
+                            class="form-control" minlength="8" maxlength="8">
                     </div>
 
                     <div class="col-md-12 mb-3 col-12">
@@ -383,11 +441,6 @@
                     </div>
                     @endif
 
-                    {{-- <div class="col-md-12 col-12">
-                        <button type="button" style="display: none;" onclick="paymentMethod()" id="encaisserButton1"
-                            class="btn btn-warning">Encaisser</button>
-                    </div> --}}
-
                     <p id="errorMessage" style="color: red; display: none;"></p>
                     <p id="messageinitiation1"></p>
                     <p id="messageinitiation2"></p>
@@ -397,7 +450,7 @@
                 @endif
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 
@@ -447,9 +500,9 @@
                                 },
                                 success: function(response) {
                                     console.log(response);
-                                   
+
                                         window.location.href = ROUTEINVOICEINDEX;
-                                   
+
                                 },
                                 error: function(response) {
                                     console.log('error', response);
@@ -470,7 +523,7 @@
 
 function paymentMethod()
 {
-    // Code verification des informations a entree par l'utilisateur 
+    // Code verification des informations a entree par l'utilisateur
     var paymentMethodChecked = $('input[name="payment_method"]:checked').length > 0;
             var paymentNumber = $('#payment_number').val();
             var amountPayer = $('#amount_payer').val();
@@ -492,7 +545,7 @@ function paymentMethod()
                 $('#errorMessage').hide();
                 // Soumettre le formulaire ou exécuter la logique d'encaissement
                 console.log('Form is valid. Proceed with submission.');
-            
+
 
     // Sélectionner les cases à cocher
     const mtnCheckbox = document.getElementById('mtn');
@@ -513,7 +566,7 @@ function paymentMethod()
     var fee = $('#fee').val();
 
     // console.log(payment_number, payment_method, amount_payer, invoice_id);
-    
+
     $.ajax({
             url: baseUrl + "/invoices/payment/store/storejs",
             type: "GET",
@@ -526,7 +579,7 @@ function paymentMethod()
             },
             success: function(response) {
                 console.log(response);
-                                    
+
                // Vérifiez si la réponse contient "SUCCESS"
                 if (response.message === "INITIATED") {
                     // Mettre à jour le paragraphe avec le message de réussite
@@ -536,11 +589,11 @@ function paymentMethod()
                     $('#encaisserButton').css('display', 'none');
                     $('#encaisserButton1').css('display', 'none');
                     $('#checkPaymentStatusBtn').css('display', 'block');
-                } 
+                }
                 else  if (response.message === "FAILED") {
                     // Mettre à jour le paragraphe avec le message d'échec
                     $('#messageinitiation').text("Échec de l'initiation du paiement. Réessayez ou contactez le support.").css('color', 'red');
-                }                     
+                }
             },
             error: function(response) {
                 console.log('error', response);
@@ -576,7 +629,7 @@ function checkPaymentStatus()
             },
             success: function(response) {
                 console.log(response);
-                                    
+
                // Vérifiez si la réponse contient "SUCCESS"
                 if (response.message === "PENDING") {
                     // Mettre à jour le paragraphe avec le message de réussite
@@ -589,7 +642,7 @@ function checkPaymentStatus()
                     $('#checkPaymentStatusBtn1').css('display', 'none');
                     $('#encaisserButton1').css('display', 'none');
 
-                    
+
                 } else  if (response.message === "SUCCESS") {
                     // Mettre à jour le paragraphe avec le message d'échec
                     $('#messageinitiation1').text("#1 - Paiement initié, en attente de confirmation du client").css('color', '#FFA500');
