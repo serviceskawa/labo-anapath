@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\Contrat;
 use App\Models\Details_Contrat;
 use App\Models\Invoice;
+use App\Models\InvoiceDetail;
 use App\Models\Setting;
 use App\Models\Test;
 use Carbon\Carbon;
@@ -317,9 +318,26 @@ class ContratController extends Controller
                 $detail->test_id = intval($request->test_id);
                 $detail->amount_remise = intval($request->remise);
                 $detail->category_test_id = $search_test->category_test_id;
-                // $detail->amount_after_remise = $search_test->price - intval($request->remise);
                 $detail->amount_after_remise = intval($request->total);
                 $detail = $detail->save();
+
+                // Recuperées le la ligne du invoice_id
+                $invoice = Invoice::where('contrat_id', $request->contrat_id)->first();
+                $invoice_detail = new InvoiceDetail();
+                $invoice_detail->invoice_id = $invoice->id;
+                $invoice_detail->test_name =  $search_test->name;
+                $invoice_detail->test_id = $request->id;
+                $invoice_detail->price = $request->price;
+                $invoice_detail->discount =  $request->remise;
+                $invoice_detail->total = $request->total;
+                $invoice_detail = $invoice_detail->save();
+
+                // Update facture
+                $invoice = Invoice::findOrFail($invoice->id);
+                $invoice->discount = $invoice->discount + $request->remise;
+                $invoice->subtotal = $invoice->total + $request->total;
+                $invoice->total = $invoice->total + $invoice->subtotal;
+                $invoice->save();
             });
 
             return redirect()->route('contrat_details.index', $request->contrat_id)->with('success', "Element enregistré avec succès ! ");

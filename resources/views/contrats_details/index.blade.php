@@ -254,7 +254,6 @@
                                 <input type="text" name="total" id="total" class="form-control" required readonly>
                             </div>
                         </div>
-
                         @if ($contrat->is_close == 0)
                         <div class="col-md-2 col-12">
                             <div class="mb-3">
@@ -450,10 +449,6 @@
             }
 
             location.reload();
-
-            // $("#datatable1").DataTable().ajax.reload();
-            // $('#addDetailForm').trigger("reset")
-            // updateSubTotal();
         },
         error: function (response) {
             console.log(response);
