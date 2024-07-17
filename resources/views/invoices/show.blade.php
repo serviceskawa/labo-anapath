@@ -66,12 +66,11 @@
                             </p>
                             <p class="font-13"><strong>Code: </strong> <span class="">{{
                                     $invoice->status_invoice !=1 ? $invoice->code : $refund->code }}</span>
-                                <span class="bg-{{ $invoice->paid != 1 ? 'danger' : 'success' }} badge
-                                        ">{{ $invoice->paid == 1
-                                    ? 'Payé'
-                                    : "En
-                                    attente" }}
-                                </span>
+                                @if($invoice->paid == 1)
+                                <span style="text-transform: uppercase; font-weight: bold;">[Payé]</span>
+                                @else
+                                <span style="text-transform: uppercase; font-weight: bold;">[En attente]</span>
+                                @endif
                             </p>
 
                             @if ($invoice->status_invoice!=1)
@@ -102,8 +101,9 @@
                                     }}</span>
                             </p>
 
-                            <p class="font-13"><strong>Code client: </strong> <span class="">{{ $invoice->patient->code
-                                    ?? ""
+                            <p class="font-13"><strong>Code client: </strong> <span class=""
+                                    style="text-transform:uppercase;">{{ $invoice->patient ?$invoice->patient->code
+                                    : ""
                                     }}</span>
                             </p>
 
@@ -111,24 +111,16 @@
                                     $invoice->telephone1 ? $invoice->telephone1 ." ".$invoice->telephone2 : " "
                                     }}</span>
                             </p>
+
+                            <p class="font-13"><strong>Demande d'examen: </strong> <span class="font-weight:bold;">{{
+                                    $invoice->order ? remove_hyphen($invoice->order->code) : ""
+                                    }}</span>
+                            </p>
                         </div>
                     </div>
 
-                    {{-- <div class="col-sm-6">
-                        <div class="float-sm-end mt-3">
-                            <p class="font-13"><strong>Nom: </strong> <span class="">{{ $invoice->client_name }}</span>
-                            </p>
-                            <p class="font-13"><strong>Adresse: </strong> <span class="">{{ $invoice->client_address
-                                    }}</span></p>
-                            <p class="font-13"><strong>Code client: </strong> <span class="">{{ $invoice->client_address
-                                    }}</span></p>
-                            <p class="font-13"><strong>Contact client: </strong> <span class="">{{
-                                    $invoice->client_address }}</span></p>
-                        </div>
-                    </div> --}}
-
                 </div>
-                <!-- end row -->
+
                 @php
                 $total_a_payer = ajouterPourcentage($invoice->total);
                 $invoiceVerify = App\Models\Payment::where('invoice_id', $invoice->id)->first();

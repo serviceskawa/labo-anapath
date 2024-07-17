@@ -234,11 +234,11 @@ class ContratController extends Controller
 
         // dd($data['invoice_unique']);
 
-        // dd($request);
+        // dd($request, $data['invoice_unique']);
 
         try {
             $contrat = $this->contrat->create($data);
-            if ($contrat->invoice_unique == 0) {
+            if ($contrat->invoice_unique == 1) {
                 $code_facture = generateCodeFacture();
                 $invoice = $this->invoices->create([
                     "date" => Carbon::now(),

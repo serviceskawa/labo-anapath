@@ -474,6 +474,19 @@ if (!function_exists('getOnlineUser')) {
     }
 }
 
+if (!function_exists('remove_hyphen')) {
+    /**
+     * Remove hyphen from a string.
+     *
+     * @param string $code
+     * @return string
+     */
+    function remove_hyphen($code)
+    {
+        return str_replace('-', '', $code);
+    }
+}
+
 // generate code examen
 if (!function_exists('generateCodeExamen')) {
     function generateCodeExamen()
