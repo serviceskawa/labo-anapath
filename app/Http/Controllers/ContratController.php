@@ -191,7 +191,7 @@ class ContratController extends Controller
         //récupérer les détails d'un contrat
         // $details = $this->detailsContrat->where('contrat_id', $contrat->id)->whereNotNull('pourcentage')->get();
 
-        $detail_tests = $this->detailsContrat->where('pourcentage', null)->where('contrat_id', $contrat->id)->get();
+        $detail_tests = $this->detailsContrat->where('pourcentage', null)->where('contrat_id', $id)->get();
 
         // dd($detail_tests);
 
