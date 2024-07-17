@@ -77,8 +77,6 @@
                 </div>
             </div>
         </div>
-
-
         @php
         $inf_invoice = App\Models\Invoice::where('contrat_id', $contrat->id)->first();
         @endphp
@@ -215,7 +213,6 @@
 
             <h4 class="card-title mb-0">Ajouter des examens</h4>
 
-
             <div id="cardCollpase1" class="collapse pt-3 show">
                 <form method="POST" id="addDetailForm" autocomplete="off">
                     @csrf
@@ -278,13 +275,6 @@
         <div class="card-body">
 
             <div class="page-title-box">
-                {{-- <div class="page-title-right mr-3">
-                    @if ($contrat->is_close == 0)
-                    <a href="{{ route('contrats.create_examen_reduction',$contrat->id) }}"
-                        class="btn btn-primary">Ajouter
-                        un nouveau examen</a>
-                    @endif
-                </div> --}}
                 <h4 class="page-title">Examens prises en compte</h4>
             </div>
 
@@ -322,7 +312,7 @@
                 <span class="d-inline" data-bs-toggle="popover"
                     data-bs-content="Veuillez ajouter un detail avant de sauvegarder">
                     <a type="button" href="{{ route('contrat_details.update-status', $contrat->id) }}"
-                        class=" mt-3 btn btn-success w-100 @if (count($details) == 0) disabled @endif ">Sauvegarder</a>
+                        class=" mt-3 btn btn-success w-100 @if (count($detail_tests) == 0) disabled @endif ">Sauvegarder</a>
                 </span>
                 @endif
             </div>

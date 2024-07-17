@@ -175,7 +175,6 @@ class ContratController extends Controller
 
     public function details_index($id)
     {
-
         //si l'utilisateur connecté n'a pas les permissions nécessaires
         if (!getOnlineUser()->can('view-contrats')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
@@ -190,13 +189,15 @@ class ContratController extends Controller
         $tests = Test::all();
 
         //récupérer les détails d'un contrat
-        $details = $this->detailsContrat->where('contrat_id', $contrat->id)->whereNotNull('pourcentage')->get();
+        // $details = $this->detailsContrat->where('contrat_id', $contrat->id)->whereNotNull('pourcentage')->get();
 
-        $detail_tests = $this->detailsContrat->where('pourcentage', null)->get();
+        $detail_tests = $this->detailsContrat->where('pourcentage', null)->where('contrat_id', $contrat->id)->get();
+
+        // dd($detail_tests);
 
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        return view('contrats_details.index', compact(['contrat', 'details', 'cateroriesTests', 'tests', 'detail_tests']));
+        return view('contrats_details.index', compact(['contrat', 'cateroriesTests', 'tests', 'detail_tests']));
     }
 
     /**
@@ -220,7 +221,6 @@ class ContratController extends Controller
         if (!getOnlineUser()->can('create-contrats')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-
 
         $data = [
             'name' => $request->name,

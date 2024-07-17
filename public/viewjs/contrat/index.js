@@ -196,7 +196,7 @@ function edit(id) {
             $("#description2").val(data.description);
             $("#nbr_examen").val(data.nbr_tests);
 
-            if (data.invoice_unique == 0) {
+            if (data.invoice_unique == 1) {
                 checkbox2.checked = true;
                 textField2.style.display = "block";
                 $("#client_id1").val(data.client_id).change();
