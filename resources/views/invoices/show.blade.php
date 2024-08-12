@@ -48,7 +48,7 @@
                                         {{ $invoice->status_invoice != 1
                                             ? 'Facture de vente'
                                             : 'Facture
-                                                                                                                                                                                                                                                                                                                                                                    d\'avoir' }}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    d\'avoir' }}
                                     </strong>
                                 </p>
                             </div>
@@ -124,7 +124,7 @@
                         </div>
 
                         <div class="col-sm-4">
-                            @if ($invoice->code_normalise)
+                            @if ($invoice->code_normalise != '')
                                 <img src="data:image/png;base64,{{ $qrCodeBase }}" alt="QR Code" width="150"
                                     height="150">
                             @endif

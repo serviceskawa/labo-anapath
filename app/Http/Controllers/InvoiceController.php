@@ -255,7 +255,7 @@ class InvoiceController extends Controller
         // Génération du code QRCode
         $qrCode = Builder::create()
             ->writer(new PngWriter())
-            ->data($invoice->code_normalise)
+            ->data($invoice->code_normalise ?? "Centre ADECHINA Anatomie Pathologique")
             ->size(300)
             ->margin(10)
             ->build();
