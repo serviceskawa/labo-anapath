@@ -293,23 +293,10 @@ class ContratController extends Controller
         if (!getOnlineUser()->can('create-contrats')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        // dd($request);
         $search_test = Test::find(intval($request->test_id));
-
         $contrat = Contrat::findorfail($request->contrat_id);
 
         try {
-            // DB::transaction(function () use ($request, $search_test) {
-            //     $detail = new Details_Contrat();
-            //     $detail->contrat_id = intval($request->contrat_id);
-            //     $detail->pourcentage = $request->pourcentage;
-            //     $detail->test_id = intval($request->test_id);
-            //     $detail->amount_remise = intval($request->amount_remise);
-            //     $detail->category_test_id = $search_test->category_test_id;
-            //     $detail->amount_after_remise = $search_test->price - intval($request->amount_remise);
-            //     $detail = $detail->save();
-            // });
-
 
             DB::transaction(function () use ($request, $search_test) {
                 $detail = new Details_Contrat();
@@ -322,22 +309,22 @@ class ContratController extends Controller
                 $detail = $detail->save();
 
                 // Recuperées le la ligne du invoice_id
-                $invoice = Invoice::where('contrat_id', $request->contrat_id)->first();
-                $invoice_detail = new InvoiceDetail();
-                $invoice_detail->invoice_id = $invoice->id;
-                $invoice_detail->test_name =  $search_test->name;
-                $invoice_detail->test_id = $request->id;
-                $invoice_detail->price = $request->price;
-                $invoice_detail->discount =  $request->remise;
-                $invoice_detail->total = $request->total;
-                $invoice_detail = $invoice_detail->save();
+                // $invoice = Invoice::where('contrat_id', $request->contrat_id)->first();
+                // $invoice_detail = new InvoiceDetail();
+                // $invoice_detail->invoice_id = $invoice->id;
+                // $invoice_detail->test_name =  $search_test->name;
+                // $invoice_detail->test_id = $request->id;
+                // $invoice_detail->price = $request->price;
+                // $invoice_detail->discount =  $request->remise;
+                // $invoice_detail->total = $request->total;
+                // $invoice_detail = $invoice_detail->save();
 
-                // Update facture
-                $invoice = Invoice::findOrFail($invoice->id);
-                $invoice->discount = $invoice->discount + $request->remise;
-                $invoice->subtotal = $invoice->total + $request->total;
-                $invoice->total = $invoice->total + $invoice->subtotal;
-                $invoice->save();
+                // // Update facture
+                // $invoice = Invoice::findOrFail($invoice->id);
+                // $invoice->discount = $invoice->discount + $request->remise;
+                // $invoice->subtotal = $invoice->total + $request->total;
+                // $invoice->total = $invoice->total + $invoice->subtotal;
+                // $invoice->save();
             });
 
             return redirect()->route('contrat_details.index', $request->contrat_id)->with('success', "Element enregistré avec succès ! ");
