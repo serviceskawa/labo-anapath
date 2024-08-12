@@ -41,35 +41,31 @@
 
                     <!-- Invoice Detail-->
                     <div class="row">
+                        {{-- <div class="col-sm-4">
+                            <div class="float-sm-start">
+
+                            </div>
+                        </div>
                         <div class="col-sm-4">
                             <div class="float-sm-start">
-                                <p>
-                                    <strong>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+
+                        </div> --}}
+
+                        <div class="col-sm-4">
+                            <div class="float-sm-start">
+                                <p><strong>
                                         {{ $invoice->status_invoice != 1
                                             ? 'Facture de vente'
                                             : 'Facture
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    d\'avoir' }}
-                                    </strong>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="float-sm-start">
-                                <p>
-                                    <strong> Adressée à:
-                                    </strong>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            d\'avoir' }}
+                                    </strong></p>
 
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="float-sm-start">
                                 <p class="font-15"><strong>Date: </strong> {{ $invoice->created_at }}</p>
 
-                                </p>
                                 <p class="font-15"><strong>Code: </strong> <span
                                         class="">{{ $invoice->status_invoice != 1 ? $invoice->code : $refund->code }}</span>
                                     @if ($invoice->paid == 1)
@@ -102,9 +98,13 @@
 
                         <div class="col-sm-4">
                             <div class="float-sm-start">
+                                <p>
+                                    <strong> Adressée à:
+                                    </strong>
+                                </p>
+
                                 <p class="font-15"><strong>Nom: </strong> {{ $invoice->client_name }}</p>
 
-                                </p>
                                 <p class="font-15"><strong>Adresse: </strong> <span
                                         class="">{{ $invoice->client_address ?? '' }}</span>
                                 </p>
@@ -124,10 +124,12 @@
                         </div>
 
                         <div class="col-sm-4">
-                            @if ($invoice->code_normalise != '')
-                                <img src="data:image/png;base64,{{ $qrCodeBase }}" alt="QR Code" width="150"
-                                    height="150">
-                            @endif
+                            <div class="float-sm-end">
+                                @if ($invoice->code_normalise != '')
+                                    <img src="data:image/png;base64,{{ $qrCodeBase }}" alt="QR Code" width="150"
+                                        height="150">
+                                @endif
+                            </div>
                         </div>
 
                     </div>
@@ -274,9 +276,8 @@
                                                 <div class="mb-3">
                                                     <label for="exampleFormControlInput1" class="form-label">Type de
                                                         paiement</label>
-                                                    <select class="form-select select2" data-toggle="select2"
-                                                        name="payment" value="{{ $invoice->payment }}" id="payment"
-                                                        required>
+                                                    <select class="form-select select2" data-toggle="select2" name="payment"
+                                                        value="{{ $invoice->payment }}" id="payment" required>
                                                         <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
                                                             value="ESPECES">ESPECES</option>
 
