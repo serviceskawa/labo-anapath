@@ -24,8 +24,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables as FacadesDataTables;
 use App\Models\SettingApp;
-
-
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 
 class InvoiceController extends Controller
 {
@@ -55,25 +55,25 @@ class InvoiceController extends Controller
         $invoices = $this->invoices->latest()->get();
         $setting = $this->setting->find(1);
         $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'->whereRaw('Date(updated_at) = ?', [now()->toDateString()])
-        $closecashbox = CashboxDaily::where('status',1)->orderBy('updated_at','desc')->first();
+        $closecashbox = CashboxDaily::where('status', 1)->orderBy('updated_at', 'desc')->first();
         if ($closecashbox) {
             $annuletotalToday = $this->invoices
-                            ->whereDate('updated_at', $today)
-                            ->where('paid','=',1)
-                            ->where(['status_invoice'=>1])
-                            ->where('updated_at','>', $closecashbox->updated_at)->sum('total');
+                ->whereDate('updated_at', $today)
+                ->where('paid', '=', 1)
+                ->where(['status_invoice' => 1])
+                ->where('updated_at', '>', $closecashbox->updated_at)->sum('total');
             $totalToday = $this->invoices
-                            ->whereDate('updated_at', $today)
-                            ->where('paid','=',1)
-                            ->where(['status_invoice'=>0])
-                            ->where('updated_at','>', $closecashbox->updated_at)
-                            ->sum('total') - $annuletotalToday;
+                ->whereDate('updated_at', $today)
+                ->where('paid', '=', 1)
+                ->where(['status_invoice' => 0])
+                ->where('updated_at', '>', $closecashbox->updated_at)
+                ->sum('total') - $annuletotalToday;
             $vente = $this->invoices
-                            ->where('status_invoice','=',0)
-                            ->count();
+                ->where('status_invoice', '=', 0)
+                ->count();
             $avoir = $this->invoices
-                            ->where('status_invoice','=',1)
-                            ->count();
+                ->where('status_invoice', '=', 1)
+                ->count();
         } else {
             $totalToday = 0;
             $vente = 0;
@@ -85,78 +85,78 @@ class InvoiceController extends Controller
         config(['app.name' => $setting->titre]);
 
         $list_years = TestOrder::select(DB::raw('YEAR(created_at) as year'))
-        ->groupBy('year')
-        ->orderBy('year', 'asc')
-        ->get();
+            ->groupBy('year')
+            ->orderBy('year', 'asc')
+            ->get();
 
         $sales = DB::table('invoices')
-        ->selectRaw("
+            ->selectRaw("
             SUM(total) AS total_sales
         ")->where('status_invoice', '0');
 
         if (isset($month) && isset($year)) {
             // Filtrer par mois et année si les deux sont spécifiés
             $sales = $sales->whereMonth('invoices.created_at', $month)
-                            ->whereYear('invoices.created_at', $year);
-            }elseif (isset($year)) {
-                $sales = $sales->whereYear('invoices.created_at', $year);
-            }
-            $sales = $sales->get();
+                ->whereYear('invoices.created_at', $year);
+        } elseif (isset($year)) {
+            $sales = $sales->whereYear('invoices.created_at', $year);
+        }
+        $sales = $sales->get();
 
 
 
         $credits = DB::table('invoices')
-        ->selectRaw("
+            ->selectRaw("
             SUM(total) AS total_credits
         ")
-        ->where('status_invoice', '1');
+            ->where('status_invoice', '1');
 
         if (isset($month) && isset($year)) {
             // Filtrer par mois et année si les deux sont spécifiés
             $credits = $credits->whereMonth('invoices.created_at', $month)
-                            ->whereYear('invoices.created_at', $year);
-            }elseif (isset($year)) {
-                $credits = $credits->whereYear('invoices.created_at', $year);
-            }
-            $credits = $credits->get();
+                ->whereYear('invoices.created_at', $year);
+        } elseif (isset($year)) {
+            $credits = $credits->whereYear('invoices.created_at', $year);
+        }
+        $credits = $credits->get();
 
 
 
         $payments = DB::table('cashbox_adds')
-        ->selectRaw("
+            ->selectRaw("
             SUM(amount) AS total_payments
         ");
 
         if (isset($month) && isset($year)) {
             // Filtrer par mois et année si les deux sont spécifiés
             $payments = $payments->whereMonth('cashbox_adds.created_at', $month)
-                            ->whereYear('cashbox_adds.created_at', $year);
-            }elseif (isset($year)) {
-                $payments = $payments->whereYear('cashbox_adds.created_at', $year);
-            }
-            $payments = $payments->get();
+                ->whereYear('cashbox_adds.created_at', $year);
+        } elseif (isset($year)) {
+            $payments = $payments->whereYear('cashbox_adds.created_at', $year);
+        }
+        $payments = $payments->get();
 
 
 
 
-            $salesByContracts = DB::table('invoices')
-                ->select('contrat_id', DB::raw("SUM(total) as total_contracts"))
-                ->groupBy('contrat_id');
+        $salesByContracts = DB::table('invoices')
+            ->select('contrat_id', DB::raw("SUM(total) as total_contracts"))
+            ->groupBy('contrat_id');
 
-                if (isset($month) && isset($year)) {
-                    // Filtrer par mois et année si les deux sont spécifiés
-                    $salesByContracts = $salesByContracts->whereMonth('invoices.created_at', $month)
-                                    ->whereYear('invoices.created_at', $year);
-                    }elseif (isset($year)) {
-                        $salesByContracts = $salesByContracts->whereYear('invoices.created_at', $year);
-                    }
-                    $paymensalesByContracts = $salesByContracts->get();
+        if (isset($month) && isset($year)) {
+            // Filtrer par mois et année si les deux sont spécifiés
+            $salesByContracts = $salesByContracts->whereMonth('invoices.created_at', $month)
+                ->whereYear('invoices.created_at', $year);
+        } elseif (isset($year)) {
+            $salesByContracts = $salesByContracts->whereYear('invoices.created_at', $year);
+        }
+        $paymensalesByContracts = $salesByContracts->get();
 
-// dd($paymensalesByContracts);
+        // dd($paymensalesByContracts);
 
 
 
-        return view('invoices.index', compact('paymensalesByContracts', 'payments', 'credits', 'sales', 'list_years', 'month', 'year', 'invoices','totalToday','vente', 'avoir'));
+        return view('invoices.index', compact('paymensalesByContracts', 'payments', 'credits', 'sales', 'list_years', 'month', 'year', 'invoices', 'totalToday', 'vente', 'avoir'));
     }
 
     /**
@@ -198,7 +198,7 @@ class InvoiceController extends Controller
 
 
         // $invoiceExist = $testOrder->invoice()->first();
-        $invoiceExist = $this->invoices->where('test_order_id',$testOrder->id)->where('status_invoice',0)->first();
+        $invoiceExist = $this->invoices->where('test_order_id', $testOrder->id)->where('status_invoice', 0)->first();
 
         if (!empty($invoiceExist)) {
             return back()->with('error', "Il existe deja une facture pour cette demande. Veuillez réessayer! ");
@@ -248,9 +248,19 @@ class InvoiceController extends Controller
         // dd($cashbox);
         $invoice = $this->invoices->findorfail($id);
         $refund = null;
-        if ($invoice->status_invoice==1) {
-            $refund = RefundRequest::where('invoice_id',$invoice->reference)->first();
+        if ($invoice->status_invoice == 1) {
+            $refund = RefundRequest::where('invoice_id', $invoice->reference)->first();
         }
+
+        // Génération du code QRCode
+        $qrCode = Builder::create()
+            ->writer(new PngWriter())
+            ->data($invoice->code_normalise)
+            ->size(300)
+            ->margin(10)
+            ->build();
+
+        $qrCodeBase = base64_encode($qrCode->getString());
 
         $settingInvoice = $this->settingInvoice->find(1);
         $setting = $this->setting->find(1);
@@ -259,7 +269,7 @@ class InvoiceController extends Controller
         }
 
         config(['app.name' => $setting->titre]);
-        return view('invoices.show', compact('cashbox','invoice', 'setting', 'settingInvoice','refund'));
+        return view('invoices.show', compact('qrCodeBase', 'cashbox', 'invoice', 'setting', 'settingInvoice', 'refund'));
     }
 
     public function getInvoiceforDatatable(Request $request)
@@ -289,21 +299,21 @@ class InvoiceController extends Controller
             ->addColumn('avoirs', function ($periode) {
                 $monthIndex = array_search($periode, ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']);
 
-                return $chiffre = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where('paid', '1')->where(['status_invoice'=>1])->sum('total');
+                return $chiffre = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where('paid', '1')->where(['status_invoice' => 1])->sum('total');
             })
             ->addColumn('chiffres', function ($periode) {
 
                 $monthIndex = array_search($periode, ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']);
 
-                $chiffre = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where(['status_invoice'=>0])->where('paid', '1')->sum('total');
+                $chiffre = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where(['status_invoice' => 0])->where('paid', '1')->sum('total');
                 return $chiffre ? $chiffre : 'Néant';
             })
             ->addColumn('encaissements', function ($periode) {
                 $monthIndex = array_search($periode, ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']);
 
-                $vente = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where(['status_invoice'=>0])->where('paid', '1')->sum('total');
-                $avoir = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where(['status_invoice'=>1])->where('paid', '1')->sum('total');
-                $resultat = $vente-$avoir;
+                $vente = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where(['status_invoice' => 0])->where('paid', '1')->sum('total');
+                $avoir = $this->invoices->whereMonth('updated_at', $monthIndex + 1)->where(['status_invoice' => 1])->where('paid', '1')->sum('total');
+                $resultat = $vente - $avoir;
                 return $resultat ? $resultat : 'Néant';
             })
             ->filter(function ($query) use ($request) {
@@ -331,7 +341,7 @@ class InvoiceController extends Controller
             })
 
             ->setRowClass(function ($data) use ($request) {
-                if($data->status_invoice == 1){
+                if ($data->status_invoice == 1) {
                     return 'table-danger';
                 }
             })
@@ -341,7 +351,7 @@ class InvoiceController extends Controller
                 $code = 0;
                 if ($data->test_order_id) {
                     $code = getTestOrderData($data->test_order_id)->code;
-                }else{
+                } else {
                     $code = $data->code;
                 }
                 return $code;
@@ -352,8 +362,8 @@ class InvoiceController extends Controller
 
                 $patient = "";
                 if ($data->test_order_id) {
-                    $patient = getTestOrderData($data->test_order_id)->patient->firstname.' '.getTestOrderData($data->test_order_id)->patient->lastname;
-                }else{
+                    $patient = getTestOrderData($data->test_order_id)->patient->firstname . ' ' . getTestOrderData($data->test_order_id)->patient->lastname;
+                } else {
                     $patient = $data->client_name;
                 }
                 return $patient;
@@ -376,7 +386,7 @@ class InvoiceController extends Controller
             ->addColumn('code', function ($data) {
 
                 // $inputCode = '<input type="text" name="code" id="code" class="form-control" style="margin-right: 20px;"/>';
-                return $data->codeMecef?$data->codeMecef:$data->code_normalise;
+                return $data->codeMecef ? $data->codeMecef : $data->code_normalise;
                 // return $inputCode;
 
 
@@ -385,20 +395,20 @@ class InvoiceController extends Controller
             ->addColumn('type', function ($data) {
                 $selector = '
                     <div class="mb-3">
-                        <select class="form-select select2" data-toggle="select2" name="payment" value="'.$data->payment.'" id="payment" required>
-                            <option '.$data->payment.' == '.'ESPECES'.' ? '.'selected'.' : '.''.'
+                        <select class="form-select select2" data-toggle="select2" name="payment" value="' . $data->payment . '" id="payment" required>
+                            <option ' . $data->payment . ' == ' . 'ESPECES' . ' ? ' . 'selected' . ' : ' . '' . '
                                 value="ESPECES">ESPECES</option>
-                            <option '.$data->payment.' == '.'CHEQUES'.' ? '.'selected'.' : '.''.'
+                            <option ' . $data->payment . ' == ' . 'CHEQUES' . ' ? ' . 'selected' . ' : ' . '' . '
                                 value="CHEQUES">CHEQUES</option>
-                            <option '.$data->payment.' == '.'MOBILEMONEY'.' ? '.'selected'.' : '.''.'
+                            <option ' . $data->payment . ' == ' . 'MOBILEMONEY' . ' ? ' . 'selected' . ' : ' . '' . '
                                 value="MOBILEMONEY">MOBILE MONEY</option>
-                            <option '.$data->payment.' == '.'CARTEBANCAIRE'.' ? '.'selected'.' : '.''.'
+                            <option ' . $data->payment . ' == ' . 'CARTEBANCAIRE' . ' ? ' . 'selected' . ' : ' . '' . '
                                 value="CARTEBANCAIRE">CARTE BANQUAIRE</option>
-                            <option '.$data->payment.' == '.'VIREMENT'.' ? '.'selected'.' : '.''.'
+                            <option ' . $data->payment . ' == ' . 'VIREMENT' . ' ? ' . 'selected' . ' : ' . '' . '
                                 value="VIREMENT">VIREMENT</option>
-                            <option '.$data->payment.' == '.'CREDIT'.' ? '.'selected'.' : '.''.'
+                            <option ' . $data->payment . ' == ' . 'CREDIT' . ' ? ' . 'selected' . ' : ' . '' . '
                                 value="CREDIT">CREDIT</option>
-                            <option '.$data->payment.' == '.'AUTRE'.' ? '.'selected'.' : '.''.'
+                            <option ' . $data->payment . ' == ' . 'AUTRE' . ' ? ' . 'selected' . ' : ' . '' . '
                             value="AUTRE">AUTRE</option>
                         </select>
                     </div>
@@ -409,24 +419,23 @@ class InvoiceController extends Controller
             })
             ->addColumn('status', function ($data) {
 
-                    switch ($data->paid == 1) {
-                        case 1:
-                            $btn = '<span class="badge bg-success rounded-pill p-1"> Payé </span>';
-                            break;
+                switch ($data->paid == 1) {
+                    case 1:
+                        $btn = '<span class="badge bg-success rounded-pill p-1"> Payé </span>';
+                        break;
 
-                        default:
-                            $btn = '<span class="badge bg-warning rounded-pill p-1"> En attente </span>';
-                            break;
-                    }
-                        // if($data->paid == 0)
-                        // {
-                        //     $btn = '<span class="badge bg-warning rounded-pill p-1"> En attente </span>';
-                        // }elseif($data->paid == 1){
-                        //     $btn = '<span class="badge bg-warning rounded-pill p-1"> En attente </span>';
-                        // }
+                    default:
+                        $btn = '<span class="badge bg-warning rounded-pill p-1"> En attente </span>';
+                        break;
+                }
+                // if($data->paid == 0)
+                // {
+                //     $btn = '<span class="badge bg-warning rounded-pill p-1"> En attente </span>';
+                // }elseif($data->paid == 1){
+                //     $btn = '<span class="badge bg-warning rounded-pill p-1"> En attente </span>';
+                // }
 
                 return $btn;
-
             })
 
             ->addColumn('action', function ($data) {
@@ -437,9 +446,9 @@ class InvoiceController extends Controller
                     // $testOrderId = getTestOrderData($data->test_order_id)->id;
                     // $btnVoir = '<button type="button" class="btn btn-primary" title="Voir les détails" onclick="afficherDetails(' . $testOrderId . ')"><i class="mdi mdi-eye"></i></button>';
                 } else {
-                    $btnVoir ='';
+                    $btnVoir = '';
                 }
-                $btnVoir ='';
+                $btnVoir = '';
 
                 $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
 
@@ -447,63 +456,59 @@ class InvoiceController extends Controller
             })
             ->filter(function ($query) use ($request) {
 
-                 if (!empty($request->get('cas_status'))) {
-                     if ($request->get('cas_status') == 1) {
-                         $query->where('paid', 1);
-                        }else {
-                         $query;
-                     }
-                 }else{
+                if (!empty($request->get('cas_status'))) {
+                    if ($request->get('cas_status') == 1) {
+                        $query->where('paid', 1);
+                    } else {
+                        $query;
+                    }
+                } else {
                     if ($request->get('cas_status') == 0) {
                         $query->where('paid', 0);
-                    }else {
+                    } else {
                         $query->where('paid', 1);
                     }
-                 }
+                }
 
 
 
                 if (!empty($request->get('status_invoice'))) {
                     if (!$request->get('status_invoice')) {
                         $query->where('status_invoice', 0);
-                    }else {
+                    } else {
                         $query->where('status_invoice', 1);
                     }
                 }
 
 
-                if(!empty($request->get('contenu')))
-                {
-                    $query->whereHas('order', function($query) use ($request){
-                        $query->where('code','like','%'.$request->get('contenu').'%');
+                if (!empty($request->get('contenu'))) {
+                    $query->whereHas('order', function ($query) use ($request) {
+                        $query->where('code', 'like', '%' . $request->get('contenu') . '%');
                     })
-                        ->orwhereHas('patient', function ($query) use ($request){
-                            $query->where('firstname','like', '%'.$request->get('contenu').'%')
-                            ->orwhere('lastname', 'like', '%'.$request->get('contenu').'%');
-                    })
-                        ->orwhereHas('contrat', function ($query) use ($request){
-                            $query->where('name','like', '%'.$request->get('contenu').'%')
-                           ;
-                    })
+                        ->orwhereHas('patient', function ($query) use ($request) {
+                            $query->where('firstname', 'like', '%' . $request->get('contenu') . '%')
+                                ->orwhere('lastname', 'like', '%' . $request->get('contenu') . '%');
+                        })
+                        ->orwhereHas('contrat', function ($query) use ($request) {
+                            $query->where('name', 'like', '%' . $request->get('contenu') . '%');
+                        })
 
                     ;
                 }
 
 
-                if(!empty($request->get('dateBegin'))){
+                if (!empty($request->get('dateBegin'))) {
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
-                    $query->whereDate('created_at','>=',$newDate);
+                    $query->whereDate('created_at', '>=', $newDate);
                 }
 
 
-                if(!empty($request->get('dateEnd'))){
-                    $query->whereDate('created_at','<=',$request->get('dateEnd'));
+                if (!empty($request->get('dateEnd'))) {
+                    $query->whereDate('created_at', '<=', $request->get('dateEnd'));
                 }
-
             })
-            ->rawColumns(['demande', 'total', 'remise','patient','type','status','action'])
+            ->rawColumns(['demande', 'total', 'remise', 'patient', 'type', 'status', 'action'])
             ->make(true);
-
     }
 
 
@@ -537,15 +542,14 @@ class InvoiceController extends Controller
         $start = Carbon::createFromFormat('Y-m-d', $request->starting_date);
         $end = Carbon::createFromFormat('Y-m-d', $request->ending_date);
 
-        $vente = $this->invoices->whereDate('updated_at','>=',$start)->whereDate('updated_at','<=',$end)->where(['status_invoice'=>0])->where('paid', '1')->sum('total');
-        $avoir = $this->invoices->whereDate('updated_at','>=',$start)->whereDate('updated_at','<=',$end)->where(['status_invoice'=>1])->where('paid', '1')->sum('total');
-        $total = $vente-$avoir;
-        $facture = $this->invoices->whereDate('updated_at','>=',$start)->whereDate('updated_at','<=',$end)->sum('total');
+        $vente = $this->invoices->whereDate('updated_at', '>=', $start)->whereDate('updated_at', '<=', $end)->where(['status_invoice' => 0])->where('paid', '1')->sum('total');
+        $avoir = $this->invoices->whereDate('updated_at', '>=', $start)->whereDate('updated_at', '<=', $end)->where(['status_invoice' => 1])->where('paid', '1')->sum('total');
+        $total = $vente - $avoir;
+        $facture = $this->invoices->whereDate('updated_at', '>=', $start)->whereDate('updated_at', '<=', $end)->sum('total');
 
 
         // $invoice = Invoice::where('paid',1)->where('updated_at','>=',$start)->where('updated_at','<=',$end)->get();
-        return response()->json(['ca'=>$vente,'avoir'=>$avoir,'facture'=>$facture,'encaissement'=>$total]);
-
+        return response()->json(['ca' => $vente, 'avoir' => $avoir, 'facture' => $facture, 'encaissement' => $total]);
     }
 
     function print($id)
@@ -612,7 +616,7 @@ class InvoiceController extends Controller
     }
 
     // Met à jour le statut paid pour le payement
-    public function updateStatus(Request $request,$id)
+    public function updateStatus(Request $request, $id)
     {
         $invoice = $this->invoices->findorfail($id);
         $settingInvoice = $this->settingInvoice->find(1);
@@ -621,12 +625,49 @@ class InvoiceController extends Controller
             return redirect()->back()->with('success', "Cette facture a déjà été payé ! ");
         } else {
 
-                // Si facture normaliser est activé
-                if ($settingInvoice->status == 1) {
-                    $invoice->fill([
-                        "paid" => '1',
-                        "payment" => $request->payment
-                    ])->save();
+            // Si facture normaliser est activé
+            if ($settingInvoice->status == 1) {
+                $invoice->fill([
+                    "paid" => '1',
+                    "payment" => $request->payment
+                ])->save();
+
+                $cash = Cashbox::find(2);
+                $cash->current_balance += $invoice->total;
+                $cash->save();
+
+                CashboxAdd::create([
+                    'cashbox_id' => 2,
+                    'date' => Carbon::now(),
+                    'amount' => $invoice->total,
+                    'invoice_id' => $invoice->id,
+                    'user_id' => Auth::user()->id
+                ]);
+
+                if ($invoice->contrat) {
+                    if ($invoice->contrat->invoice_unique == 0) {
+                        $invoice->contrat->is_close = 1;
+                        $invoice->contrat->save();
+                    }
+                }
+
+                if ($invoice->test_order_id != null) {
+                    return response()->json(invoiceNormeTest($invoice->test_order_id));
+                }
+            } else {
+
+
+
+
+
+
+                $invoice->fill([
+                    "paid" => '1',
+                    'payment' => $request->payment,
+                    "code_normalise" => $request->code,
+                ])->save();
+
+                if ($invoice->status_invoice != 1) {
 
                     $cash = Cashbox::find(2);
                     $cash->current_balance += $invoice->total;
@@ -639,81 +680,39 @@ class InvoiceController extends Controller
                         'invoice_id' => $invoice->id,
                         'user_id' => Auth::user()->id
                     ]);
-
-                    if ($invoice->contrat) {
-                        if ($invoice->contrat->invoice_unique ==0) {
-                            $invoice->contrat->is_close = 1;
-                            $invoice->contrat->save();
-                        }
-                    }
-
-                    if ($invoice->test_order_id != null) {
-                        return response()->json(invoiceNormeTest($invoice->test_order_id));
-                    }
-
                 } else {
 
-                 
-
-
-
-
-                    $invoice->fill([
-                        "paid" => '1',
-                        'payment' => $request->payment,
-                        "code_normalise" => $request->code,
-                        ])->save();
-
-                    if ($invoice->status_invoice !=1) {
-
-                        $cash = Cashbox::find(2);
-                        $cash->current_balance += $invoice->total;
-                        $cash->save();
-
-                        CashboxAdd::create([
-                            'cashbox_id' => 2,
-                            'date' => Carbon::now(),
-                            'amount' => $invoice->total,
-                            'invoice_id' => $invoice->id,
-                            'user_id' => Auth::user()->id
-                        ]);
-
-                    } else {
-
-                        $cash = Cashbox::find(1);
-                        $cash->current_balance -= $invoice->total;
-                        $cash->save();
-                        CashboxAdd::create([
-                            'cashbox_id' => 1,
-                            'date' => Carbon::now(),
-                            'amount' => $invoice->total,
-                            'user_id' => Auth::user()->id
-                        ]);
-
-                    }
-
-                    if ($invoice->contrat) {
-                        if ($invoice->contrat->invoice_unique ==0) {
-                            $invoice->contrat->is_close = 1;
-                            $invoice->contrat->save();
-                        }
-                    }
-
-                    return response()->json(['code'=> $request->code]);
+                    $cash = Cashbox::find(1);
+                    $cash->current_balance -= $invoice->total;
+                    $cash->save();
+                    CashboxAdd::create([
+                        'cashbox_id' => 1,
+                        'date' => Carbon::now(),
+                        'amount' => $invoice->total,
+                        'user_id' => Auth::user()->id
+                    ]);
                 }
 
+                if ($invoice->contrat) {
+                    if ($invoice->contrat->invoice_unique == 0) {
+                        $invoice->contrat->is_close = 1;
+                        $invoice->contrat->save();
+                    }
+                }
+
+                return response()->json(['code' => $request->code]);
+            }
         }
     }
 
     public function checkCode(Request $request)
     {
-        $invoice = $this->invoices->where('code_normalise','=',$request->code)->orwhere('codeMecef','=',$request->code)->first();
+        $invoice = $this->invoices->where('code_normalise', '=', $request->code)->orwhere('codeMecef', '=', $request->code)->first();
         if (!empty($invoice)) {
-            return response()->json(['code'=>1]);
+            return response()->json(['code' => 1]);
         } else {
-            return response()->json(['code'=>0]);
+            return response()->json(['code' => 0]);
         }
-
     }
 
     public function updatePayment(Request $request)
@@ -756,10 +755,10 @@ class InvoiceController extends Controller
                 "dategenerate" => $test['dateTime'],
                 "nim" => $test['nim'],
                 "qrcode" => $test['qrCode']
-                ])->save();
-            }
+            ])->save();
+        }
 
-            // return response()->json(['status' => 200, 'type' => "confirm",'response'=>$request->uid]);
+        // return response()->json(['status' => 200, 'type' => "confirm",'response'=>$request->uid]);
         return response()->json(['status' => 200, 'type' => "confirm", "invoice" => $invoice]);
     }
 
@@ -785,5 +784,4 @@ class InvoiceController extends Controller
         $test = json_decode($response->getBody(), true);
         return response()->json(['status' => 200, 'type' => "cancel", 'response' => $test]);
     }
-
 }
