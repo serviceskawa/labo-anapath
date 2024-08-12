@@ -645,7 +645,7 @@ class InvoiceController extends Controller
                 ]);
 
                 if ($invoice->contrat) {
-                    if ($invoice->contrat->invoice_unique == 0) {
+                    if ($invoice->contrat->invoice_unique == 1) {
                         $invoice->contrat->is_close = 1;
                         $invoice->contrat->save();
                     }
@@ -694,7 +694,7 @@ class InvoiceController extends Controller
                 }
 
                 if ($invoice->contrat) {
-                    if ($invoice->contrat->invoice_unique == 0) {
+                    if ($invoice->contrat->invoice_unique == 1) {
                         $invoice->contrat->is_close = 1;
                         $invoice->contrat->save();
                     }
