@@ -22,6 +22,7 @@ class SettingAppController extends Controller
         $adress = $this->setting->where('key', 'adress')->first();
 
         $token_payment = $this->setting->where('key', 'token_payment')->first();
+        $show_signator_invoice = $this->setting->where('key', 'show_signator_invoice')->first();
         // $public_key = $this->setting->where('key','public_key')->first();
         // $private_key = $this->setting->where('key','private_key')->first();
         // $secret_key = $this->setting->where('key','secret_key')->first();
@@ -79,7 +80,8 @@ class SettingAppController extends Controller
             'link_ourvoice_sms',
             'report_footer',
             'report_review_title',
-            'email_technician'
+            'email_technician',
+            'show_signator_invoice'
         ));
     }
 
@@ -115,6 +117,7 @@ class SettingAppController extends Controller
         $services = $request->input('services');
 
         $token_payment_value = $request->input('token_payment');
+        $show_signator_invoice_value = $request->input('show_signator_invoice');
         // $public_key_value = $request->input('public_key');
         // $private_key_value = $request->input('private_key');
         // $secret_key_value = $request->input('secret_key');
@@ -254,6 +257,11 @@ class SettingAppController extends Controller
 
                 $token_payment = $this->setting->where('key', 'token_payment')->first();
                 $token_payment ?  $token_payment->update(['value' => $token_payment_value]) : '';
+
+            case 8:
+
+                $show_signator_invoice = $this->setting->where('key', 'show_signator_invoice')->first();
+                $show_signator_invoice ?  $show_signator_invoice->update(['value' => $show_signator_invoice_value]) : '';
             default:
                 break;
         }

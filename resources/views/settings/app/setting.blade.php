@@ -79,7 +79,15 @@
                             <a href="#basictab7" id="payment" data-bs-toggle="tab" data-toggle="tab"
                                 class="nav-link rounded-0 pt-2 pb-2">
                                 <i class="mdi mdi-cash-multiple me-1"></i>
-                                <span class="d-none d-sm-inline">Parametres de paiement</span>
+                                <span class="d-none d-sm-inline">Paramètres de paiements</span>
+                            </a>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="#basictab8" id="payment" data-bs-toggle="tab" data-toggle="tab"
+                                class="nav-link rounded-0 pt-2 pb-2">
+                                <i class="mdi mdi-cash-multiple me-1"></i>
+                                <span class="d-none d-sm-inline">Paramètres de factures</span>
                             </a>
                         </li>
                     </ul>
@@ -94,8 +102,35 @@
                     </div>
                     <div class="card">
                         <div class="card-body tab-content b-0 mb-0">
-
                             {{-- Moyen de paiement debut --}}
+                            <div class="tab-pane" id="basictab8">
+                                <form action="{{route('settings.store')}}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="nbrform" value="8">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="simpleinput" class="form-label">Afficher le signateur sur le report<span
+                                                style="color:red;">*</span></label>
+                                            {{-- <input type="text" id="simpleinput" placeholder="Cle de paiement"
+                                                value="{{$show_signator_invoice->value ?? ""}}" name="show_signator_invoice"
+                                                class="form-control"> --}}
+
+                                        <select class="form-select select2" data-toggle="select2" name="show_signator_invoice">
+                                            <option>Sélectionner un statut</option>
+                                            <option value="OUI" {{ $show_signator_invoice->value=="OUI" ? 'selected' : '' }}>OUI</option>
+                                            <option value="NON" {{ $show_signator_invoice->value=="NON" ? 'selected' : '' }}>NON</option>
+                                        </select>
+                                    </div>
+
+                                    </div>
+                                    <div style="padding-bottom: 10px;padding-top:10px">
+                                        <button class="btn btn-primary">Enregistrer <i
+                                                class="mdi mdi-check-all"></i></button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            {{-- Paramètres moyen de paiement debut --}}
                             <div class="tab-pane" id="basictab7">
                                 <form action="{{route('settings.store')}}" method="post" enctype="multipart/form-data">
                                     @csrf

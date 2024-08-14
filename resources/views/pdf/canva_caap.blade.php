@@ -19,12 +19,14 @@ date_default_timezone_set('Europe/Paris');
 <page backbottom="10mm" style="margin: 0px;">
 
     <div style="display:inline-block; margin-top:-50px; padding:0;">
-        <span style="display: inline-block; margin:0; padding:0;"><img src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}"
-                width="100%;" style="margin:0; padding:0;" alt=""></span>
+        <span style="display: inline-block; margin:0; padding:0;"><img
+                src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}" width="100%;" style="margin:0; padding:0;"
+                alt=""></span>
     </div>
 
     <div class="row" style="margin-top: 110px;">
-        <div style="display: inline-block; margin-top:100px; position: absolute; left: 0; padding: 10px; text-align: left;">
+        <div
+            style="display: inline-block; margin-top:100px; position: absolute; left: 0; padding: 10px; text-align: left;">
             <p>
                 <b>N° ANAPTH :</b> {{ $test_order_code }}
                 <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
@@ -35,17 +37,19 @@ date_default_timezone_set('Europe/Paris');
                 <b>Date impression:</b> {{ $current_date }}
             </p>
         </div>
-    
+
         <div
             style="display: inline-block; position: absolute; margin-top: 100px; right: 0; width: 50px; padding: 10px; text-align: right;">
-            <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}" style="width: 65px;" alt="" srcset="">
+            <img src="{{ asset('storage/settings/app/' . $code . '_qrcode.png') }}" style="width: 65px;" alt=""
+                srcset="">
         </div>
     </div>
 
-    <div style="background-color:#0070C1; width:100%; padding:15px; color:white; text-align:center;font-size:16px; text-transform: uppercase; margin-top:-40px;">
+    <div
+        style="background-color:#0070C1; width:100%; padding:15px; color:white; text-align:center;font-size:16px; text-transform: uppercase; margin-top:-40px;">
         <b> {{ $title }} </b>
     </div>
-    
+
     <div>
         <span
             style="padding-left: 10px; padding-right: 5px; margin-top:15px; border:none; background-color:rgb(255,255,255); font-size:16px; text-transform: uppercase; ">
@@ -95,13 +99,13 @@ date_default_timezone_set('Europe/Paris');
     {!! $content_micro !!}
 
     @if ($content_supplementaire != '')
-    {!! $content_supplementaire !!}
-    {!! $content_supplementaire_micro !!}
+        {!! $content_supplementaire !!}
+        {!! $content_supplementaire_micro !!}
     @endif
 
     <div style="margin-top:30px;">
         <table style="width: 100%;">
-            {{-- @if ($status ==1)
+            {{-- @if ($status == 1)
             <tr>
                 <td style="text-align: left; width: 33%; vertical-align: bottom;">
                     @if ($signator)
@@ -130,23 +134,28 @@ date_default_timezone_set('Europe/Paris');
             </tr>
             @endif --}}
 
+            @php
+                $report_review_title = App\Models\SettingApp::where('key', 'report_review_title')->first()->value;
+            @endphp
 
             @if ($status == 1)
-            <tr>
-                <td style="text-align: left; width: 33%; vertical-align: bottom;">
-                    <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
+                <tr>
+                    <td style="text-align: left; width: 33%; vertical-align: bottom;">
+                        @if ($report_review_title == 'OUI')
+                            <img width="85" src="{{ asset('adminassets/images/' . $signature1) }}" alt="">
 
-                    <br><br>{{ $signator }}
-                </td>
+                            <br><br>{{ $signator }}
+                        @endif
+                    </td>
 
 
-                <td style="text-align: right; width: 34%; vertical-align: bottom;">
-                    @if ($revew_by != null)
-                    {{ $report_review_title }}
-                    <br><strong>{{ $revew_by }}</strong>
-                    @endif
-                </td>
-            </tr>
+                    <td style="text-align: right; width: 34%; vertical-align: bottom;">
+                        @if ($revew_by != null)
+                            {{ $report_review_title }}
+                            <br><strong>{{ $revew_by }}</strong>
+                        @endif
+                    </td>
+                </tr>
             @endif
 
 
