@@ -109,14 +109,14 @@
                                     <input type="hidden" name="nbrform" value="8">
                                     <div class="row">
                                         <div class="col-md-12 mb-3">
-                                            <label for="simpleinput" class="form-label">Afficher le signateur sur le report<span
+                                            <label for="simpleinput" class="form-label">Afficher la signature<span
                                                 style="color:red;">*</span></label>
                                             {{-- <input type="text" id="simpleinput" placeholder="Cle de paiement"
                                                 value="{{$show_signator_invoice->value ?? ""}}" name="show_signator_invoice"
                                                 class="form-control"> --}}
 
                                         <select class="form-select select2" data-toggle="select2" name="show_signator_invoice">
-                                            <option>Sélectionner un statut</option>
+                                            <option>OUI/NON</option>
                                             <option value="OUI" {{ $show_signator_invoice->value=="OUI" ? 'selected' : '' }}>OUI</option>
                                             <option value="NON" {{ $show_signator_invoice->value=="NON" ? 'selected' : '' }}>NON</option>
                                         </select>
