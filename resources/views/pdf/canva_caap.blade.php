@@ -135,13 +135,13 @@ date_default_timezone_set('Europe/Paris');
             @endif --}}
 
             @php
-                $report_review_title = App\Models\SettingApp::where('key', 'report_review_title')->first()->value;
+                $show_signator_invoice = App\Models\SettingApp::where('key', 'show_signator_invoice')->first()->value;
             @endphp
 
             @if ($status == 1)
                 <tr>
                     <td style="text-align: left; width: 33%; vertical-align: bottom;">
-                        @if ($report_review_title == 'OUI')
+                        @if ($show_signator_invoice == 'OUI')
                             <img width="85" src="{{ asset('adminassets/images/' . $signature1) }}" alt="">
 
                             <br><br>{{ $signator }}
