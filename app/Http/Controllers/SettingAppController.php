@@ -246,8 +246,11 @@ class SettingAppController extends Controller
                 $prefixe_code_demande_examen = $this->setting->where('key', 'prefixe_code_demande_examen')->first();
                 $prefixe_code_demande_examen ?  $prefixe_code_demande_examen->update(['value' => $prefixeCodeDemandeExamenValue]) : '';
 
-                $entete = $this->setting->where('key', 'entete')->first();
-                $entete ? $entete->update(['value' => $namefichier]) : '';
+                // $entete = $this->setting->where('key', 'entete')->first();
+                // $entete ? $entete->update(['value' => $namefichier]) : '';
+
+                $show_signator_invoice = $this->setting->where('key', 'show_signator_invoice')->first();
+                $show_signator_invoice ?  $show_signator_invoice->update(['value' => $show_signator_invoice_value]) : '';
 
                 $report_review_title = $this->setting->where('key', 'report_review_title')->first();
                 $report_review_title ?  $report_review_title->update(['value' => $report_review_titleValue]) : '';
@@ -257,11 +260,6 @@ class SettingAppController extends Controller
 
                 $token_payment = $this->setting->where('key', 'token_payment')->first();
                 $token_payment ?  $token_payment->update(['value' => $token_payment_value]) : '';
-
-            case 8:
-
-                $show_signator_invoice = $this->setting->where('key', 'show_signator_invoice')->first();
-                $show_signator_invoice ?  $show_signator_invoice->update(['value' => $show_signator_invoice_value]) : '';
             default:
                 break;
         }
