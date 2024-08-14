@@ -37,7 +37,7 @@ date_default_timezone_set('Europe/Paris');
 
     <div
         style="display: inline-block; position: absolute; margin-top: 150px; right: 0; width: 50px; padding: 10px; text-align: right;">
-        <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}" style="width: 65px; alt="" srcset="">
+        <img src="{{ asset('storage/settings/app/' . $code . '_qrcode.png') }}" style="width: 65px; alt="" srcset="">
     </div>
 
     <div
@@ -94,13 +94,13 @@ date_default_timezone_set('Europe/Paris');
     {!! $content_micro !!}
 
     @if ($content_supplementaire != '')
-    {!! $content_supplementaire !!}
-    {!! $content_supplementaire_micro !!}
+        {!! $content_supplementaire !!}
+        {!! $content_supplementaire_micro !!}
     @endif
 
     <div style="margin-top:30px;">
         <table style="width: 100%;">
-            {{-- @if ($status ==1)
+            {{-- @if ($status == 1)
             <tr>
                 <td style="text-align: left; width: 33%; vertical-align: bottom;">
                     @if ($signator)
@@ -130,30 +130,28 @@ date_default_timezone_set('Europe/Paris');
             @endif --}}
 
 
+            @php
+                $show_signator_invoice = App\Models\SettingApp::where('key', 'show_signator_invoice')->first()->value;
+            @endphp
+
             @if ($status == 1)
-            <tr>
-                @if ($signator1 != null)
-                <td style="text-align: left; width: 33%; vertical-align: bottom;">
-                    <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
+                <tr>
+                    <td style="text-align: left; width: 33%; vertical-align: bottom;">
+                        @if ($show_signator_invoice == 'OUI')
+                            <img width="85" src="{{ asset('adminassets/images/' . $signature1) }}" alt="">
 
-                    <br><br>{{ $signator }}
-                </td>
-                @endif
+                            <br><br>{{ $signator }}
+                        @endif
+                    </td>
 
 
-                @if ($revew_by != null)
-                <td style="text-align: right; width: 34%; vertical-align: bottom;">
-                    
-                    {{ $report_review_title }}
-
-                    @if ($revew_by_signature != null)
-                    <img width="85" src="{{ asset('adminassets/images/'.$revew_by_signature) }}" alt="">
-                    @endif
-                    
-                    <br><strong>{{ $revew_by }}</strong>
-                </td>
-                @endif
-            </tr>
+                    <td style="text-align: right; width: 34%; vertical-align: bottom;">
+                        @if ($revew_by != null)
+                            {{ $report_review_title }}
+                            <br><strong>{{ $revew_by }}</strong>
+                        @endif
+                    </td>
+                </tr>
             @endif
 
 
