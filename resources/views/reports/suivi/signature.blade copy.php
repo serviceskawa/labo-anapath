@@ -24,7 +24,7 @@
     <style>
         .kbw-signature {
             width: 100%;
-            height: 300px;
+            height: 200px;
         }
 
         #sig canvas {
@@ -56,7 +56,11 @@
 
                 <div class="col-md-12 ">
 
+
                     <div class="card mb-md-0 mb-3">
+                        {{-- <div style="text-align:right;" class="m-2 p-2"><span style="color:red;">*</span>champs
+                            obligatoires
+                        </div> --}}
 
                         <div class="col-md-12 justify-content-between d-flex p-3">
                             <div class="col-md-6 text-start">
@@ -70,7 +74,7 @@
                         </div>
 
                         <div class="card-body">
-                            <div class="col-md-12 mb-2">
+                            <div class="col-md-6 mb-2">
                                 <label for="simpleinput" class="form-label">Nom du récupérateur <span
                                         style="color:red;">*</span></label>
                                 <div class="input-group">
@@ -85,7 +89,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <label class="" for="">Signature<span style="color:red;">*</span></label>
                                 <div id="sig"></div>
                                 <br><br>
@@ -119,11 +123,15 @@
         });
     </script>
 
+    {{-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="http://keith-wood.name/js/jquery.signature.js"></script> --}}
 
     <script type="text/javascript" src="{{ asset('/upload/js/jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/upload/js/jquery-ui.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/upload/js/jquery.signature.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/upload/js/jquery.ui.touch-punch.js') }}"></script>
     <script type="text/javascript">
         var sig = $('#sig').signature({
             syncField: '#signature',

@@ -809,6 +809,54 @@ class ReportController extends Controller
         return view('reports.suivi.signature', compact('report'));
     }
 
+    // public function storeSignature(Request $request)
+    // {
+    //     dd($request);
+    //     // Validation des champs 'retriever_name' et 'retriever_signature'
+    //     $request->validate([
+    //         'retriever_name' => 'required|string|max:255',
+    //         'retriever_signature' => 'required|string', // La signature est encodée en base64, donc c'est une string
+    //     ], [
+    //         'retriever_name.required' => 'Le nom du récupérateur est obligatoire.',
+    //         'retriever_signature.required' => 'La signature est obligatoire.',
+    //     ]);
+
+    //     // Récupérer le report à mettre à jour
+    //     $updated_report = Report::find(intval($request->report_id));
+
+    //     if (!$updated_report) {
+    //         return redirect()->back()->withErrors('Le rapport n\'a pas été trouvé.');
+    //     }
+
+    //     // Décoder la signature en base64 et sauvegarder le fichier
+    //     $imageParts = explode(";base64,", $request->retriever_signature);
+    //     $imageType = explode("image/", $imageParts[0])[1];
+    //     $imageBase64 = base64_decode($imageParts[1]);
+
+    //     $folderPath = public_path('upload/');
+    //     $fileName = uniqid() . '.' . $imageType;
+    //     $filePath = $folderPath . $fileName;
+
+    //     // Assurez-vous que le dossier 'upload' existe
+    //     if (!file_exists($folderPath)) {
+    //         mkdir($folderPath, 0777, true);
+    //     }
+
+    //     file_put_contents($filePath, $imageBase64);
+
+    //     // Mettre à jour les champs du report
+    //     $updated_report->is_delivered = 1;
+    //     $updated_report->delivery_date = now();
+    //     $updated_report->retriever_name = $request->retriever_name;
+    //     $updated_report->retriever_signature = $fileName; // Sauvegarder seulement le nom du fichier
+
+    //     // Sauvegarder les modifications
+    //     $updated_report->save();
+
+    //     return redirect(route('report.index.suivi'))->with('success', 'Operation réussie avec succès!');
+    // }
+
+
     public function storeSignature(Request $request)
     {
         // Validation des champs 'retriever_name' et 'retriever_signature'
