@@ -181,117 +181,6 @@ class ReportController extends Controller
         }
     }
 
-    // public function getReportsRapportsforDatatable(Request $request) {
-
-
-    //     // $data = DB::table(DB::raw(
-    //     //         "(SELECT
-    //     //         SUM(CASE WHEN tos.title = 'Histologie' THEN 1 ELSE 0 END) AS histologie,
-    //     //         SUM(CASE WHEN tos.title = 'Immuno Externe' THEN 1 ELSE 0 END) AS immuno_externe,
-    //     //         SUM(CASE WHEN tos.title = 'Immuno Interne' THEN 1 ELSE 0 END) AS immuno_interne,
-    //     //         SUM(CASE WHEN tos.title = 'Cytologie' THEN 1 ELSE 0 END) AS cytologie,
-    //     //         COUNT(tor.id) AS total_general,
-    //     //         0 AS attente,
-    //     //         0 AS termine,
-    //     //         0 AS affecte
-    //     //     FROM
-    //     //         type_orders AS tos
-    //     //     LEFT JOIN
-    //     //         test_orders AS tor ON tos.id = tor.type_order_id
-
-    //     //        UNION ALL
-
-    //     //       SELECT
-    //     //           0 AS histologie,
-    //     //         0 AS immuno_externe,
-    //     //         0 AS immuno_interne,
-    //     //         0 AS cytologie,
-    //     //         0 AS total_general,
-    //     //         SUM(CASE WHEN rep.status = '0' THEN 1 ELSE 0 END) AS attente,
-    //     //         SUM(CASE WHEN rep.status = '1' THEN 1 ELSE 0 END) AS termine,
-    //     //         SUM(CASE WHEN toad.test_order_id = rep.test_order_id THEN 1 ELSE 0 END) AS affecte
-    //     //     FROM
-    //     //         reports AS rep
-    //     //     LEFT JOIN
-    //     //         test_order_assignment_details AS toad ON toad.test_order_id = rep.test_order_id;
-    //     //     ) AS subquery"))
-    //     //     ->select([
-    //     //         DB::raw('SUM(subquery.histologie) AS histologie'),
-    //     //         DB::raw('SUM(subquery.immuno_externe) AS immuno_externe'),
-    //     //         DB::raw('SUM(subquery.immuno_interne) AS immuno_interne'),
-    //     //         DB::raw('SUM(subquery.cytologie) AS cytologie'),
-    //     //         DB::raw('SUM(subquery.total_general) AS total_general'),
-    //     //         DB::raw('SUM(subquery.attente) AS attente'),
-    //     //         DB::raw('SUM(subquery.termine) AS termine'),
-    //     //         DB::raw('SUM(subquery.affecte) AS affecte')
-    //     //     ])
-    //     //     ->groupBy('subquery.histologie', 'subquery.immuno_externe', 'subquery.immuno_interne', 'subquery.cytologie', 'subquery.total_general', 'subquery.attente', 'subquery.termine', 'subquery.affecte');
-
-
-    //     return DataTables::of($data)
-    //         ->addIndexColumn()
-    //         ->editColumn('total_general', function ($data) {
-    //             return '';
-    //         })
-
-    //         ->addColumn('exam_request', function ($data) {
-    //             return 'Total : '. $data->total_general. ' | '. 'Histologie : '. $data->histologie. '| Immuno Externe : '.$data->immuno_externe . '| Immuno Interne : '.$data->immuno_interne . '| Cytologie : '. $data->cytologie;
-
-    //         })
-
-    //         ->addColumn('macro', function ($data) {
-    //             // return $data->type_name;
-    //             return 'En attente : '. $data->attente. ' | '. 'Affecté : '. $data->affecte. '| Terminée : '.$data->termine;
-
-    //         })
-
-    //         ->addColumn('test_report', function ($data) {
-
-    //         })
-
-    //         ->addColumn('patient_informed', function ($data) {
-    //         })
-
-    //         ->addColumn('patient_delivered', function ($data) {
-
-    //         })
-
-    //         // ->filter(function ($query) use ($request) {
-    //         //     if (!empty($request->get('statusquery'))) {
-    //         //         if ($request->get('statusquery') == 1) {
-    //         //             $query->where('status', 1);
-    //         //         } else {
-    //         //             $query->where('status', 0);
-    //         //         }
-    //         //     }
-    //         //     if (!empty($request->get('contenu'))) {
-    //         //         $query
-    //         //             ->where('code', 'like', '%' . $request->get('contenu') . '%')
-    //         //             ->orwhereHas('order', function ($query) use ($request) {
-    //         //                 $query->where('code', 'like', '%' . $request->get('contenu') . '%');
-    //         //             })
-    //         //             ->orwhere('description', 'like', '%' . $request->get('contenu') . '%')
-    //         //             ->orwhereHas('patient', function ($query) use ($request) {
-    //         //                 $query
-    //         //                     ->where('firstname', 'like', '%' . $request->get('contenu') . '%')
-    //         //                     ->orwhere('code', 'like', '%' . $request->get('contenu') . '%')
-    //         //                     ->orwhere('lastname', 'like', '%' . $request->get('contenu') . '%');
-    //         //             });
-    //         //     }
-
-    //         //     if (!empty($request->get('dateBegin'))) {
-    //         //         //dd($request);
-    //         //         $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
-    //         //         $query->whereDate('created_at', '>', $newDate);
-    //         //     }
-
-    //         //     if (!empty($request->get('dateEnd'))) {
-    //         //         $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
-    //         //         $query->whereDate('created_at', '<', $newDate);
-    //         //     }
-    //         // })
-    //         ->make(true);
-    // }
 
     public function indexsuivi(Request $request)
     {
@@ -388,8 +277,6 @@ class ReportController extends Controller
 
         return view('reports.suivi.index', compact('list_years', 'month', 'year', 'patient_called', 'macros', 'rapports', 'examens', 'reports', 'doctors', 'types_orders'));
     }
-
-
 
 
     /**
@@ -850,7 +737,6 @@ class ReportController extends Controller
 
             ->addColumn('call', function ($data) {
                 return  view("reports.suivi.btninforme", ['data' => $data]);
-                // return $data->is_called;
             })
 
             ->addColumn('delivery', function ($data) {
@@ -915,6 +801,38 @@ class ReportController extends Controller
             })
             ->rawColumns(['date', 'code', 'delivery', 'call', 'report', 'macro'])
             ->make(true);
+    }
+
+
+    public function deliveredPatient(Report $report)
+    {
+        return view('reports.suivi.signature', compact('report'));
+    }
+
+    public function storeSignature(Request $request)
+    {
+        // Validation des champs 'retriever_name' et 'retriever_signature'
+        $request->validate([
+            'retriever_name' => 'required|string|max:255',
+            'retriever_signature' => 'required|string', // La signature est encodée en base64, donc c'est une string
+        ], [
+            'retriever_name.required' => 'Le nom du récupérateur est obligatoire.',
+            'retriever_signature.required' => 'La signature est obligatoire.',
+        ]);
+
+        // Récupérer le report à mettre à jour
+        $updated_report = Report::find(intval($request->report_id));
+
+        // Mettre à jour les champs du report
+        $updated_report->is_delivered = 1;
+        $updated_report->delivery_date = now();
+        $updated_report->retriever_name = $request->retriever_name;
+        $updated_report->retriever_signature = $request->retriever_signature;
+
+        // Sauvegarder les modifications
+        $updated_report->save();
+
+        return redirect(route('report.index.suivi'))->with('success', 'Operation réussie avec succès!');
     }
 
     public function callUser($report)

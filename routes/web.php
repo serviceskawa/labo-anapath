@@ -352,6 +352,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('callOrSendSms/{id}', [ReportController::class, 'callOrSendSms'])->name('report.callOrSendSms');
 
         Route::get('/dataTable/suivi', [ReportController::class, 'getTestOrdersforDatatableSuivi'])->name('report.getTestOrdersforDatatableSuivi');
+        Route::get('/suivi/patient-livrer/{report}', [ReportController::class, 'deliveredPatient'])->name('report.delivered.patient');
+        Route::post('/suivi/store/signature', [ReportController::class, 'storeSignature'])->name('suivi.report.signature.store');
         Route::post('/reports/storeTags', [ReportController::class, 'storeTags'])->name('report.storeTags'); //Enregistrement tags depuis select2
 
         Route::get('/suivi/index', [ReportController::class, 'indexsuivi'])->name('report.index.suivi');

@@ -76,27 +76,6 @@ $(document).ready(function () {
                 name: "delivery",
             },
         ],
-        // order: [[0, "asc"]],
-        // dom: "Bfrtip",
-        // lengthMenu: [
-        //     [10, 25, 50, 100],
-        //     [10, 25, 50, 100],
-        // ], // Options de sélection
-        // buttons: [
-        //     "csv",
-        //     "excel",
-        //     "pdf",
-        //     // "print",
-        //     {
-        //         extend: "print",
-        //         text: "Print",
-        //         exportOptions: {
-        //             modifier: {
-        //                 page: "all",
-        //             },
-        //         },
-        //     },
-        // ],
 
         order: [[0, "asc"]],
         dom: '<"top"lfB>rt<"bottom"ip><"clear">', // Ajout de 'l' pour afficher la longueur de la page
