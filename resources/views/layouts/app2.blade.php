@@ -32,8 +32,8 @@
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
 
-    <link href="{{ asset('/upload/js/jquery.signature.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('/upload/js/jquery-ui.css') }}" rel="stylesheet" type="text/css">
+    {{-- <link href="{{ asset('/upload/js/jquery.signature.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('/upload/js/jquery-ui.css') }}" rel="stylesheet" type="text/css"> --}}
     {{-- <link rel="stylesheet" type="text/css" href="http://keith-wood.name/css/jquery.signature.css"> --}}
     {{-- <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/south-street/jquery-ui.css" rel="stylesheet"> --}}
 
@@ -923,9 +923,9 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script type="text/javascript" src="http://keith-wood.name/js/jquery.signature.js"></script> --}}
 
-    <script type="text/javascript" src="{{ asset('/upload/js/jquery.signature.js') }}"></script>
+    {{-- <script type="text/javascript" src="{{ asset('/upload/js/jquery.signature.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/upload/js/jquery-ui.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/upload/js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/upload/js/jquery.min.js') }}"></script> --}}
 
     @stack('extra-js')
     <script>
