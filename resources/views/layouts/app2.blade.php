@@ -3,13 +3,13 @@
 
 <head>
     <meta charset="utf-8">
-    <title>@yield('title') | {{ App\Models\SettingApp::where('key','lab_name')->first()->value }}</title>
+    <title>@yield('title') | {{ App\Models\SettingApp::where('key', 'lab_name')->first()->value }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
-    $setting = \App\Models\Setting::orderBy('id', 'desc')->first();
-    $logo = \App\Models\SettingApp::where('key', 'logo')->first();
-    $favicon = \App\Models\SettingApp::where('key', 'favicon')->first();
+        $setting = \App\Models\Setting::orderBy('id', 'desc')->first();
+        $logo = \App\Models\SettingApp::where('key', 'logo')->first();
+        $favicon = \App\Models\SettingApp::where('key', 'favicon')->first();
     @endphp
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ $favicon ? Storage::url($favicon->value) : '' }}">
@@ -31,6 +31,9 @@
 
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
+
+    <link rel="stylesheet" type="text/css" href="http://keith-wood.name/css/jquery.signature.css">
+    <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/south-street/jquery-ui.css" rel="stylesheet">
     @yield('css')
 
 </head>
@@ -67,9 +70,10 @@
                     </li>
 
                     <li class="side-nav-item">
-                        <a href="{{ route('chat.bot')}}" class="side-nav-link">
+                        <a href="{{ route('chat.bot') }}" class="side-nav-link">
                             <i class="uil-comments-alt"></i>
-                            <span class="badge bg-warning float-end">{{ getUnreadMessageCount(Auth::user()->id) ? getUnreadMessageCount(Auth::user()->id) :'' }}</span>
+                            <span
+                                class="badge bg-warning float-end">{{ getUnreadMessageCount(Auth::user()->id) ? getUnreadMessageCount(Auth::user()->id) : '' }}</span>
                             <span> Messages </span>
                         </a>
                     </li>
@@ -84,89 +88,92 @@
                     {{-- Examens --}}
                     <li class="side-nav-title side-nav-item">EXAMENS</li>
                     @if (getOnlineUser()->can('view-tests'))
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false"
-                            aria-controls="sidebarEcommerce" class="side-nav-link">
-                            <i class="uil-files-landscapes"></i>
-                            <span> Catalogue d'examen </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="sidebarEcommerce">
-                            <ul class="side-nav-second-level">
-                                @if (getOnlineUser()->can('view-tests'))
-                                <li>
-                                    <a href="{{ route('examens.index') }}">Tous les examens</a>
-                                </li>
-                                @endif
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false"
+                                aria-controls="sidebarEcommerce" class="side-nav-link">
+                                <i class="uil-files-landscapes"></i>
+                                <span> Catalogue d'examen </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce">
+                                <ul class="side-nav-second-level">
+                                    @if (getOnlineUser()->can('view-tests'))
+                                        <li>
+                                            <a href="{{ route('examens.index') }}">Tous les examens</a>
+                                        </li>
+                                    @endif
 
-                                @if (getOnlineUser()->can('view-category-tests'))
-                                <li>
-                                    <a href="{{ route('examens.categories.index') }}">Catégories</a>
-                                </li>
-                                @endif
+                                    @if (getOnlineUser()->can('view-category-tests'))
+                                        <li>
+                                            <a href="{{ route('examens.categories.index') }}">Catégories</a>
+                                        </li>
+                                    @endif
 
-                            </ul>
-                        </div>
-                    </li>
+                                </ul>
+                            </div>
+                        </li>
                     @endif
 
                     @if (getOnlineUser()->can('view-test-orders'))
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarEcommerce1" aria-expanded="false"
-                            aria-controls="sidebarEcommerce1" class="side-nav-link">
-                            <i class="uil-syringe"></i>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarEcommerce1"
+                                aria-expanded="false" aria-controls="sidebarEcommerce1" class="side-nav-link">
+                                <i class="uil-syringe"></i>
 
-                            <span> Demandes d'examen  </span>
-                            <span class="menu-arrow"></span>
-                            <span class="badge bg-success mb-1">new</span>
-                            @if (getnbrTestOrderpending()!=0)
-
-                                <span class="badge bg-warning mb-1" style="margin-left: 25px;">{{getnbrTestOrderpending()}}</span>
-                                {{-- <span class="" style="background: green; border-radius: 50%; height: 10px; width:10px;"></span> --}}
-                            @endif
-                        </a>
-                        <div class="collapse" id="sidebarEcommerce1">
-                            <ul class="side-nav-second-level">
-                                @if (getRolesByUserDocteur(Auth::user()->id)==1)
-                                  <li>
-                                    <a href="{{ route('myspace.index', Auth::user()->id) }}">Mon espace <span class="badge bg-success mb-1">new</span></a>
-                                  </li>
+                                <span> Demandes d'examen </span>
+                                <span class="menu-arrow"></span>
+                                <span class="badge bg-success mb-1">new</span>
+                                @if (getnbrTestOrderpending() != 0)
+                                    <span class="badge bg-warning mb-1"
+                                        style="margin-left: 25px;">{{ getnbrTestOrderpending() }}</span>
+                                    {{-- <span class="" style="background: green; border-radius: 50%; height: 10px; width:10px;"></span> --}}
                                 @endif
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce1">
+                                <ul class="side-nav-second-level">
+                                    @if (getRolesByUserDocteur(Auth::user()->id) == 1)
+                                        <li>
+                                            <a href="{{ route('myspace.index', Auth::user()->id) }}">Mon espace <span
+                                                    class="badge bg-success mb-1">new</span></a>
+                                        </li>
+                                    @endif
 
-                                <li>
-                                    <a href="{{ route('test_order.index') }}">Toutes les demandes  </a>
-                                </li>
+                                    <li>
+                                        <a href="{{ route('test_order.index') }}">Toutes les demandes </a>
+                                    </li>
 
 
-                                {{-- @if (getOnlineUser()->can('create-test-orders'))
+                                    {{-- @if (getOnlineUser()->can('create-test-orders'))
                                 <li>
                                     <a href="{{ route('test_order.create') }}">Ajouter</a>
                                 </li>
                                 @endif --}}
 
 
-                                @if (getOnlineUser()->can('view-test-order-assignments'))
-                                <li>
-                                    <a href="{{ route('macro.index') }}">Macroscopie <span class="badge bg-success mb-1">new</span></a>
-                                </li>
-                                @endif
+                                    @if (getOnlineUser()->can('view-test-order-assignments'))
+                                        <li>
+                                            <a href="{{ route('macro.index') }}">Macroscopie <span
+                                                    class="badge bg-success mb-1">new</span></a>
+                                        </li>
+                                    @endif
 
-                                @if (getOnlineUser()->can('view-test-order-assignments'))
-                                <li>
-                                    <a href="{{ route('report.assignment.index') }}">Affectation </a>
-                                </li>
-                                @endif
+                                    @if (getOnlineUser()->can('view-test-order-assignments'))
+                                        <li>
+                                            <a href="{{ route('report.assignment.index') }}">Affectation </a>
+                                        </li>
+                                    @endif
 
-                                @if (getOnlineUser()->can('view-test-order-assignments'))
-                                <li>
-                                    <a href="{{ route('report.index.suivi') }}">Suivi des demandes <span class="badge bg-success mb-1">new</span></a>
-                                </li>
-                                @endif
+                                    @if (getOnlineUser()->can('view-test-order-assignments'))
+                                        <li>
+                                            <a href="{{ route('report.index.suivi') }}">Suivi des demandes <span
+                                                    class="badge bg-success mb-1">new</span></a>
+                                        </li>
+                                    @endif
 
 
-                            </ul>
-                        </div>
-                    </li>
+                                </ul>
+                            </div>
+                        </li>
                     @endif
 
                     @if (getOnlineUser()->can('view-test-orders'))
@@ -174,77 +181,78 @@
                             <a href="{{ route('test_order.immuno.index') }}" class="side-nav-link">
                                 <i class="uil-syringe"></i>
                                 <span> Immuno</span>
-                                @if (getnbrTestOrderImmunopending()!=0)
-                                    <span class="badge bg-warning mb-1" style="margin-left: 15px;">{{getnbrTestOrderImmunopending()}}</span>
+                                @if (getnbrTestOrderImmunopending() != 0)
+                                    <span class="badge bg-warning mb-1"
+                                        style="margin-left: 15px;">{{ getnbrTestOrderImmunopending() }}</span>
                                 @endif
                             </a>
                         </li>
                     @endif
 
                     @if (getOnlineUser()->can('view-reports'))
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarForms" aria-expanded="false"
-                            aria-controls="sidebarForms" class="side-nav-link">
-                            <i class="dripicons-gear noti-icon"></i>
-                            <span>Comptes rendu</span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="sidebarForms">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href="{{ route('report.index') }}">Tous les comptes rendu</a>
-                                </li>
-                                @if (Route::current()->getName() == 'report.show')
-                                <a style="display:none" href="">show</a>
-                                @endif
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarForms" aria-expanded="false"
+                                aria-controls="sidebarForms" class="side-nav-link">
+                                <i class="dripicons-gear noti-icon"></i>
+                                <span>Comptes rendu</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarForms">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{{ route('report.index') }}">Tous les comptes rendu</a>
+                                    </li>
+                                    @if (Route::current()->getName() == 'report.show')
+                                        <a style="display:none" href="">show</a>
+                                    @endif
 
-                                @if (getOnlineUser()->can('view-setting-report-templates'))
-                                <li>
-                                    <a href="{{ route('template.report-index') }}">
-                                        Templates
-                                    </a>
-                                </li>
-                                @endif
+                                    @if (getOnlineUser()->can('view-setting-report-templates'))
+                                        <li>
+                                            <a href="{{ route('template.report-index') }}">
+                                                Templates
+                                            </a>
+                                        </li>
+                                    @endif
 
-                                {{-- <li>
+                                    {{-- <li>
                                     <a href="{{ route('log.report-index') }}">
                                         <span> Historiques</span>
                                     </a>
                                 </li> --}}
-                                <li>
-                                    <a href="{{ route('settings.report-index') }}">Paramètres </a>
-                                </li>
+                                    <li>
+                                        <a href="{{ route('settings.report-index') }}">Paramètres </a>
+                                    </li>
 
-                            </ul>
-                        </div>
-                    </li>
+                                </ul>
+                            </div>
+                        </li>
                     @endif
 
                     @if (getOnlineUser()->can('view-hospitals'))
-                    <li class="side-nav-item">
-                        <a href="{{ route('hopitals.index') }}" class="side-nav-link">
-                            <i class="uil-building"></i>
-                            <span> Hopitaux</span>
-                        </a>
-                    </li>
+                        <li class="side-nav-item">
+                            <a href="{{ route('hopitals.index') }}" class="side-nav-link">
+                                <i class="uil-building"></i>
+                                <span> Hopitaux</span>
+                            </a>
+                        </li>
                     @endif
 
                     @if (getOnlineUser()->can('view-doctors'))
-                    <li class="side-nav-item">
-                        <a href="{{ route('doctors.index') }}" class="side-nav-link">
-                            <i class="uil-users-alt"></i>
-                            <span> Médecins traitants </span>
-                        </a>
-                    </li>
+                        <li class="side-nav-item">
+                            <a href="{{ route('doctors.index') }}" class="side-nav-link">
+                                <i class="uil-users-alt"></i>
+                                <span> Médecins traitants </span>
+                            </a>
+                        </li>
                     @endif
 
                     @if (getOnlineUser()->can('view-patients'))
-                    <li class="side-nav-item">
-                        <a href="{{ route('patients.index') }}" class="side-nav-link">
-                            <i class="uil-user-square"></i>
-                            <span> Patients </span>
-                        </a>
-                    </li>
+                        <li class="side-nav-item">
+                            <a href="{{ route('patients.index') }}" class="side-nav-link">
+                                <i class="uil-user-square"></i>
+                                <span> Patients </span>
+                            </a>
+                        </li>
                     @endif
 
 
@@ -268,233 +276,239 @@
                     <li class="side-nav-title side-nav-item">COMPTABILITÉS</li>
                     {{-- Facture --}}
                     @if (getOnlineUser()->can('view-invoices'))
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarProjects" aria-expanded="false"
-                            aria-controls="sidebarProjects" class="side-nav-link">
-                            <i class="uil-user-check"></i>
-                            <span> Factures </span>
-                            <span class="menu-arrow"></span>
-                            @if (getnbrInvoicepending() !=0)
-                                <span class="badge bg-warning" style="margin-left: 105px"> {{getnbrInvoicepending()}} </span>
-                            @endif
-                        </a>
-                        <div class="collapse" id="sidebarProjects">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href="{{ route('invoice.index') }}">Toutes les Factures</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('invoice.create') }}">Créer</a>
-                                </li>
-                                @if (getOnlineUser()->can('view-setting-invoice'))
-                                <li>
-                                    <a href="{{ route('invoice.business') }}">Rapports</a>
-                                </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarProjects"
+                                aria-expanded="false" aria-controls="sidebarProjects" class="side-nav-link">
+                                <i class="uil-user-check"></i>
+                                <span> Factures </span>
+                                <span class="menu-arrow"></span>
+                                @if (getnbrInvoicepending() != 0)
+                                    <span class="badge bg-warning" style="margin-left: 105px">
+                                        {{ getnbrInvoicepending() }} </span>
                                 @endif
-                                @if (getOnlineUser()->can('view-setting-invoice'))
-                                <li>
-                                    <a href="{{ route('invoice.setting.index') }}">Paramètre</a>
-                                </li>
-                                @endif
-                            </ul>
-                        </div>
-                    </li>
+                            </a>
+                            <div class="collapse" id="sidebarProjects">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{{ route('invoice.index') }}">Toutes les Factures</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('invoice.create') }}">Créer</a>
+                                    </li>
+                                    @if (getOnlineUser()->can('view-setting-invoice'))
+                                        <li>
+                                            <a href="{{ route('invoice.business') }}">Rapports</a>
+                                        </li>
+                                    @endif
+                                    @if (getOnlineUser()->can('view-setting-invoice'))
+                                        <li>
+                                            <a href="{{ route('invoice.setting.index') }}">Paramètre</a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </div>
+                        </li>
                     @endif
 
                     {{-- Caisses --}}
                     @if (getOnlineUser()->can('view-cashboxes'))
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarEcommerce9" aria-expanded="false"
-                            aria-controls="sidebarEcommerce9" class="side-nav-link">
-                            <i class="uil-balance-scale"></i>
-                            <span> Caisses </span>
-                            <span class="menu-arrow"></span>
-                            @if (getnbrBonCaissePending())
-                                <span class="badge bg-warning" style="margin-left:110px" > {{getnbrBonCaissePending()}} </span>
-                            @endif
-                        </a>
-                        <div class="collapse" id="sidebarEcommerce9">
-                            <ul class="side-nav-second-level">
-                                @if (getOnlineUser()->can('view-cashbox-adds'))
-                                <li>
-                                    <a href="{{ route('cashbox.vente.index') }}">Caisse de vente</a>
-                                </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarEcommerce9"
+                                aria-expanded="false" aria-controls="sidebarEcommerce9" class="side-nav-link">
+                                <i class="uil-balance-scale"></i>
+                                <span> Caisses </span>
+                                <span class="menu-arrow"></span>
+                                @if (getnbrBonCaissePending())
+                                    <span class="badge bg-warning" style="margin-left:110px">
+                                        {{ getnbrBonCaissePending() }} </span>
                                 @endif
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce9">
+                                <ul class="side-nav-second-level">
+                                    @if (getOnlineUser()->can('view-cashbox-adds'))
+                                        <li>
+                                            <a href="{{ route('cashbox.vente.index') }}">Caisse de vente</a>
+                                        </li>
+                                    @endif
 
-                                @if (getOnlineUser()->can('view-cashbox-adds'))
-                                <li>
-                                    <a href="{{ route('cashbox.depense.index') }}">Caisse de dépense</a>
-                                </li>
-                                @endif
+                                    @if (getOnlineUser()->can('view-cashbox-adds'))
+                                        <li>
+                                            <a href="{{ route('cashbox.depense.index') }}">Caisse de dépense</a>
+                                        </li>
+                                    @endif
 
-                                @if (getOnlineUser()->can('view-cashbox-tickets'))
-                                <li>
-                                    <a href="{{ route('cashbox.ticket.index') }}">
-                                        Bon de caisse
-                                        @if (getnbrBonCaissePending())
-                                            <span class="badge bg-warning float-end" > {{getnbrBonCaissePending()}} </span>
-                                        @endif
-                                    </a>
-                                </li>
-                                @endif
+                                    @if (getOnlineUser()->can('view-cashbox-tickets'))
+                                        <li>
+                                            <a href="{{ route('cashbox.ticket.index') }}">
+                                                Bon de caisse
+                                                @if (getnbrBonCaissePending())
+                                                    <span class="badge bg-warning float-end">
+                                                        {{ getnbrBonCaissePending() }} </span>
+                                                @endif
+                                            </a>
+                                        </li>
+                                    @endif
 
-                                @if (getOnlineUser()->can('view-cashbox-dailies'))
-                                <li>
-                                    <a href="{{ route('daily.index') }}">Ouverture et fermeture</a>
-                                </li>
-                                @endif
+                                    @if (getOnlineUser()->can('view-cashbox-dailies'))
+                                        <li>
+                                            <a href="{{ route('daily.index') }}">Ouverture et fermeture</a>
+                                        </li>
+                                    @endif
 
-                            </ul>
-                        </div>
-                    </li>
+                                </ul>
+                            </div>
+                        </li>
                     @endif
 
                     {{-- Contrats --}}
                     @if (getOnlineUser()->can('view-contrats'))
-                    <li class="side-nav-item">
-                        <a href="{{ route('contrats.index') }}" class="side-nav-link">
-                            <i class="uil-folder-heart"></i>
-                            <span>Contrats </span>
-                        </a>
-                    </li>
+                        <li class="side-nav-item">
+                            <a href="{{ route('contrats.index') }}" class="side-nav-link">
+                                <i class="uil-folder-heart"></i>
+                                <span>Contrats </span>
+                            </a>
+                        </li>
                     @endif
 
                     {{-- Dépenses --}}
                     @if (getOnlineUser()->can('view-expenses'))
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarForms-expense" aria-expanded="false"
-                            aria-controls="sidebarForms" class="side-nav-link">
-                            <i class="uil-balance-scale"></i>
-                            <span>Dépenses</span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="sidebarForms-expense">
-                            <ul class="side-nav-second-level">
-                                <li class="side-nav-item">
-                                    <a href="{{ route('all_expense.index') }}">
-                                        <span>Toutes les dépenses</span>
-                                    </a>
-                                </li>
-                                <li class="side-nav-item">
-                                    <a href="{{ route('expense.index') }}">
-                                        <span>Catégories</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarForms-expense" aria-expanded="false"
+                                aria-controls="sidebarForms" class="side-nav-link">
+                                <i class="uil-balance-scale"></i>
+                                <span>Dépenses</span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarForms-expense">
+                                <ul class="side-nav-second-level">
+                                    <li class="side-nav-item">
+                                        <a href="{{ route('all_expense.index') }}">
+                                            <span>Toutes les dépenses</span>
+                                        </a>
+                                    </li>
+                                    <li class="side-nav-item">
+                                        <a href="{{ route('expense.index') }}">
+                                            <span>Catégories</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
                     @endif
 
                     {{-- Articles --}}
                     @if (getOnlineUser()->can('view-articles'))
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarForms-articles" aria-expanded="false"
-                            aria-controls="sidebarForms" class="side-nav-link">
-                            <i class="uil-shop"></i>
-                            <span>Stocks</span>
-                            <span class="menu-arrow"></span>
-                            @if (getnbrStockMinim() !=0)
-                                <span class="badge bg-warning" style="margin-left: 105px"> {{getnbrStockMinim()}} </span>
-                            @endif
-                        </a>
-                        <div class="collapse" id="sidebarForms-articles">
-                            <ul class="side-nav-second-level">
-                                @if (getOnlineUser()->can('view-movements'))
-                                <li class="side-nav-item">
-                                    <a href="{{ route('movement.index') }}">
-                                        <span>Historique des stocks</span>
-                                    </a>
-                                </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarForms-articles"
+                                aria-expanded="false" aria-controls="sidebarForms" class="side-nav-link">
+                                <i class="uil-shop"></i>
+                                <span>Stocks</span>
+                                <span class="menu-arrow"></span>
+                                @if (getnbrStockMinim() != 0)
+                                    <span class="badge bg-warning" style="margin-left: 105px">
+                                        {{ getnbrStockMinim() }} </span>
                                 @endif
-                                <li class="side-nav-item">
-                                    <a href="{{ route('article.index') }}">
-                                        <span>Tous les articles</span>
-                                    </a>
-                                </li>
-                                <li class="side-nav-item">
-                                    <a href="{{ route('unit.index') }}">
-                                        <span>Unité de mesure</span>
-                                    </a>
-                                </li>
+                            </a>
+                            <div class="collapse" id="sidebarForms-articles">
+                                <ul class="side-nav-second-level">
+                                    @if (getOnlineUser()->can('view-movements'))
+                                        <li class="side-nav-item">
+                                            <a href="{{ route('movement.index') }}">
+                                                <span>Historique des stocks</span>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    <li class="side-nav-item">
+                                        <a href="{{ route('article.index') }}">
+                                            <span>Tous les articles</span>
+                                        </a>
+                                    </li>
+                                    <li class="side-nav-item">
+                                        <a href="{{ route('unit.index') }}">
+                                            <span>Unité de mesure</span>
+                                        </a>
+                                    </li>
 
-                            </ul>
-                        </div>
-                    </li>
+                                </ul>
+                            </div>
+                        </li>
                     @endif
 
                     {{-- Fournisseurs --}}
                     @if (getOnlineUser()->can('view-suppliers'))
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerce8" aria-expanded="false"
-                            aria-controls="sidebarEcommerce8" class="side-nav-link">
-                            <i class="uil-files-landscapes"></i>
-                            <span> Fournisseurs </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="sidebarEcommerce8">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href="{{ route('supplier.index') }}">Tous les fournisseurs</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('supplier.categories.index') }}">Catégories</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEcommerce8" aria-expanded="false"
+                                aria-controls="sidebarEcommerce8" class="side-nav-link">
+                                <i class="uil-files-landscapes"></i>
+                                <span> Fournisseurs </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce8">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{{ route('supplier.index') }}">Tous les fournisseurs</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('supplier.categories.index') }}">Catégories</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
                     @endif
 
                     {{-- Remboursements --}}
                     @if (getOnlineUser()->can('view-refund-requests'))
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarEcommerce5" style="padding-right: 2px;" aria-expanded="false"
-                            aria-controls="sidebarEcommerce5" class="side-nav-link">
-                            <i class="uil-balance-scale"></i>
-                            <span> Remboursements</span>
-                            <span class="menu-arrow"></span>
-                            @if (getnbrRefundRequestPending() !=0)
-                                <span class="badge bg-warning" style="margin-left: 50px"> {{getnbrRefundRequestPending()}} </span>
-                            @endif
-                        </a>
-                        <div class="collapse" id="sidebarEcommerce5">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href="{{ route('refund.request.index') }}">Historiques</a>
-                                </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEcommerce5" style="padding-right: 2px;"
+                                aria-expanded="false" aria-controls="sidebarEcommerce5" class="side-nav-link">
+                                <i class="uil-balance-scale"></i>
+                                <span> Remboursements</span>
+                                <span class="menu-arrow"></span>
+                                @if (getnbrRefundRequestPending() != 0)
+                                    <span class="badge bg-warning" style="margin-left: 50px">
+                                        {{ getnbrRefundRequestPending() }} </span>
+                                @endif
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce5">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{{ route('refund.request.index') }}">Historiques</a>
+                                    </li>
 
-                                <li>
-                                    <a href="{{ route('refund.request.create') }}">Ajouter</a>
-                                </li>
+                                    <li>
+                                        <a href="{{ route('refund.request.create') }}">Ajouter</a>
+                                    </li>
 
-                                <li>
-                                    <a href="{{ route('refund.request.categorie.index') }}">Paramètres</a>
-                                </li>
+                                    <li>
+                                        <a href="{{ route('refund.request.categorie.index') }}">Paramètres</a>
+                                    </li>
 
-                            </ul>
-                        </div>
-                    </li>
+                                </ul>
+                            </div>
+                        </li>
                     @endif
 
                     @if (getOnlineUser()->can('view-clients'))
-                    <li class="side-nav-item">
-                        <a href="{{ route('clients.index') }}" class="side-nav-link">
-                            <i class="uil-users-alt"></i>
-                            <span>Clients Professionnels</span>
-                        </a>
-                    </li>
+                        <li class="side-nav-item">
+                            <a href="{{ route('clients.index') }}" class="side-nav-link">
+                                <i class="uil-users-alt"></i>
+                                <span>Clients Professionnels</span>
+                            </a>
+                        </li>
                     @endif
 
                     {{-- Administration --}}
                     <li class="side-nav-title side-nav-item">ADMINISTRATIONS</li>
 
                     <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarEcommerce3" aria-expanded="false"
-                            aria-controls="sidebarEcommerce3" class="side-nav-link">
+                        <a data-bs-toggle="collapse" style="padding-right: 2px;" href="#sidebarEcommerce3"
+                            aria-expanded="false" aria-controls="sidebarEcommerce3" class="side-nav-link">
                             <i class="uil-question-circle"></i>
                             <span> Signaler un problème</span>
                             <span class="menu-arrow"></span>
-                            @if (getnbrTicketPending(Auth::user()->id) !=0)
-                                <span class="badge bg-warning" style="margin-left: 20px"> {{getnbrTicketPending(Auth::user()->id)}} </span>
+                            @if (getnbrTicketPending(Auth::user()->id) != 0)
+                                <span class="badge bg-warning" style="margin-left: 20px">
+                                    {{ getnbrTicketPending(Auth::user()->id) }} </span>
                             @endif
                         </a>
                         <div class="collapse" id="sidebarEcommerce3">
@@ -513,74 +527,74 @@
 
 
                     @if (getOnlineUser()->can('edit-users'))
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarProjects2" aria-expanded="false"
-                            aria-controls="sidebarProjects2" class="side-nav-link">
-                            <i class="uil-user-check"></i>
-                            <span> Utilisateurs </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="sidebarProjects2">
-                            <ul class="side-nav-second-level">
-                                @if (getOnlineUser()->can('view-permissions'))
-                                <li>
-                                    <a href="{{ route('user.permission-index') }}">Permissions</a>
-                                </li>
-                                @endif
-                                @if (getOnlineUser()->can('view-roles'))
-                                <li class="side-nav-item" style="margin-left: 38px">
-                                    <a href="{{ route('user.role-index') }}" class="side-nav-link">
-                                        <span> Rôles </span>
-                                    </a>
-                                    <div class="collapse">
-                                        <ul class="side-nav-second-level">
-                                            @if (Route::current()->getName() == 'user.role-create')
-                                            <li style="display:none">
-                                                <a href="">show</a>
-                                            </li>
-                                            @endif
-                                            @if (Route::current()->getName() == 'user.role-show')
-                                            <li style="display:none">
-                                                <a href="">show</a>
-                                            </li>
-                                            @endif
-                                        </ul>
-                                    </div>
-                                </li>
-                                @endif
-                                @if (getOnlineUser()->can('view-users'))
-                                <li class="side-nav-item" style="margin-left: 38px">
-                                    <a href="{{ route('user.index') }}" class="side-nav-link">
-                                        <span> Tous les utilisateurs </span>
-                                    </a>
-                                    <div class="collapse">
-                                        <ul class="side-nav-second-level">
-                                            @if (Route::current()->getName() == 'user.edit')
-                                            <li style="display:none">
-                                                <a href="">show</a>
-                                            </li>
-                                            @endif
-                                            @if (Route::current()->getName() == 'user.create')
-                                            <li style="display:none">
-                                                <a href="">show</a>
-                                            </li>
-                                            @endif
-                                        </ul>
-                                    </div>
-                                </li>
-                                @endif
-                            </ul>
-                        </div>
-                    </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProjects2" aria-expanded="false"
+                                aria-controls="sidebarProjects2" class="side-nav-link">
+                                <i class="uil-user-check"></i>
+                                <span> Utilisateurs </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProjects2">
+                                <ul class="side-nav-second-level">
+                                    @if (getOnlineUser()->can('view-permissions'))
+                                        <li>
+                                            <a href="{{ route('user.permission-index') }}">Permissions</a>
+                                        </li>
+                                    @endif
+                                    @if (getOnlineUser()->can('view-roles'))
+                                        <li class="side-nav-item" style="margin-left: 38px">
+                                            <a href="{{ route('user.role-index') }}" class="side-nav-link">
+                                                <span> Rôles </span>
+                                            </a>
+                                            <div class="collapse">
+                                                <ul class="side-nav-second-level">
+                                                    @if (Route::current()->getName() == 'user.role-create')
+                                                        <li style="display:none">
+                                                            <a href="">show</a>
+                                                        </li>
+                                                    @endif
+                                                    @if (Route::current()->getName() == 'user.role-show')
+                                                        <li style="display:none">
+                                                            <a href="">show</a>
+                                                        </li>
+                                                    @endif
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    @endif
+                                    @if (getOnlineUser()->can('view-users'))
+                                        <li class="side-nav-item" style="margin-left: 38px">
+                                            <a href="{{ route('user.index') }}" class="side-nav-link">
+                                                <span> Tous les utilisateurs </span>
+                                            </a>
+                                            <div class="collapse">
+                                                <ul class="side-nav-second-level">
+                                                    @if (Route::current()->getName() == 'user.edit')
+                                                        <li style="display:none">
+                                                            <a href="">show</a>
+                                                        </li>
+                                                    @endif
+                                                    @if (Route::current()->getName() == 'user.create')
+                                                        <li style="display:none">
+                                                            <a href="">show</a>
+                                                        </li>
+                                                    @endif
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </div>
+                        </li>
                     @endif
 
                     @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
-                    <li class="side-nav-item">
-                        <a href="{{ route('settings.index') }}" class="side-nav-link">
-                            <i class="uil-document-layout-right"></i>
-                            <span>Paramètres</span>
-                        </a>
-                    </li>
+                        <li class="side-nav-item">
+                            <a href="{{ route('settings.index') }}" class="side-nav-link">
+                                <i class="uil-document-layout-right"></i>
+                                <span>Paramètres</span>
+                            </a>
+                        </li>
                     @endif
                     {{-- @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
                     <li class="side-nav-item">
@@ -655,17 +669,17 @@
                         <div class="collapse" id="sidebarProjects6">
                             <ul class="side-nav-second-level">
                                 @if (getOnlineUser()->can('view-employees'))
-                                <li>
-                                    <a href="{{ route('employee.index') }}">Tous les employés</a>
-                                </li>
+                                    <li>
+                                        <a href="{{ route('employee.index') }}">Tous les employés</a>
+                                    </li>
                                 @endif
                                 <li>
 
                                     <a href="#"data-bs-toggle="modal"
-                                    data-bs-target="#bs-example-modal-lg-timeoffs-create2">Demande de congé</a>
+                                        data-bs-target="#bs-example-modal-lg-timeoffs-create2">Demande de congé</a>
 
                                     <a href="#"data-bs-toggle="modal"
-                                    data-bs-target="#bs-example-modal-lg-timeoffs-see">Toutes les demandes</a>
+                                        data-bs-target="#bs-example-modal-lg-timeoffs-see">Toutes les demandes</a>
                                 </li>
                             </ul>
                         </div>
@@ -746,9 +760,9 @@
                         <div class="collapse" id="sidebarProjects66">
                             <ul class="side-nav-second-level">
                                 @if (getOnlineUser()->can('view-docs'))
-                                <li>
-                                    <a href="{{ route('doc.index') }}">Tous les documents</a>
-                                </li>
+                                    <li>
+                                        <a href="{{ route('doc.index') }}">Tous les documents</a>
+                                    </li>
                                 @endif
                                 <li>
                                     <a href="{{ route('doc.share.with.me') }}">Partagé avec moi</a>
@@ -823,7 +837,8 @@
                                     <span>Se déconnecter</span>
                                 </a>
 
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                    class="d-none">
                                     @csrf
                                 </form>
 
@@ -857,7 +872,8 @@
                             {{-- <script>
                                 document.write(new Date().getFullYear())
                             </script> © Labocaap --}}
-                            {{ Carbon\Carbon::now()->formatLocalized('%G') }} © {{ App\Models\SettingApp::where('key','footer')->first()->value }}
+                            {{ Carbon\Carbon::now()->formatLocalized('%G') }} ©
+                            {{ App\Models\SettingApp::where('key', 'footer')->first()->value }}
                         </div>
 
                     </div>
@@ -900,6 +916,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"
         integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="http://keith-wood.name/js/jquery.signature.js"></script>
     @stack('extra-js')
     <script>
         toastr.options = {
@@ -923,7 +942,7 @@
             minutes = minutes < 10 ? '0' + minutes : minutes;
             seconds = seconds < 10 ? '0' + seconds : seconds;
 
-            return year + '-' + month + '-' + day ;
+            return year + '-' + month + '-' + day;
         }
 
 
@@ -964,19 +983,18 @@
                         cell1.textContent = formatTime(item.start_date);
                         cell2.textContent = formatTime(item.end_date);
                         cell3.textContent = item.message;
-                         var span = document.createElement('span');
-                         var style = 'badge badge-outline-';
-                         style +=item.status != 'active' ? 'warning' : 'success';
+                        var span = document.createElement('span');
+                        var style = 'badge badge-outline-';
+                        style += item.status != 'active' ? 'warning' : 'success';
 
-                         span.className = style;
-                         span.textContent = item.status;
-                         cell4.appendChild(span);
+                        span.className = style;
+                        span.textContent = item.status;
+                        cell4.appendChild(span);
 
                     })
                 }
             })
         })
-
     </script>
 </body>
 
