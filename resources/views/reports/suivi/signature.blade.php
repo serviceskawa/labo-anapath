@@ -18,6 +18,8 @@
     <script type="text/javascript" src="http://keith-wood.name/js/jquery.signature.js"></script>
     <link rel="stylesheet" type="text/css" href="http://keith-wood.name/css/jquery.signature.css"> --}}
 
+    <link href="{{ asset('/upload/js/jquery-ui.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('/upload/js/jquery.signature.css') }}" rel="stylesheet" type="text/css">
 
     <style>
         .kbw-signature {
@@ -126,6 +128,10 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
         integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="http://keith-wood.name/js/jquery.signature.js"></script> --}}
+
+    <script type="text/javascript" src="{{ asset('/upload/js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/upload/js/jquery-ui.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/upload/js/jquery.signature.js') }}"></script>
     <script type="text/javascript">
         var sig = $('#sig').signature({
             syncField: '#signature',
