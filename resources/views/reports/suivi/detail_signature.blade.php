@@ -29,7 +29,7 @@
                         <div class="mb-3 col-lg-12">
                             <label for="simpleinput" class="form-label">Signature :</label><br>
                             <div>
-                                <img src="{{ $data->retriever_signature }}"
+                                <img src="{{ $data->retriever_signature }}" style="width: 700px; height:300px;"
                                     alt="Signature de {{ $data->retriever_name }}">
                             </div>
                         </div>
