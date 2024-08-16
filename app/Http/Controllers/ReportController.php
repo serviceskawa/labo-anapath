@@ -874,6 +874,8 @@ class ReportController extends Controller
         // Mettre à jour les champs du report
         $updated_report->is_delivered = 1;
         $updated_report->delivery_date = now();
+        $updated_report->is_called = 1;
+        $updated_report->call_date = now();
         $updated_report->retriever_name = $request->retriever_name;
         $updated_report->retriever_signature = $request->retriever_signature;
 
