@@ -40,8 +40,8 @@ date_default_timezone_set('Europe/Paris');
 
         <div
             style="display: inline-block; position: absolute; margin-top: 100px; right: 0; width: 50px; padding: 10px; text-align: right;">
-            <img src="{{ asset('storage/settings/app/' . $code . '_qrcode.png') }}" style="width: 65px;" alt=""
-                srcset="">
+            {{-- <img src="{{ asset('storage/settings/app/' . $code . '_qrcode.png') }}" style="width: 65px;" alt=""
+                srcset=""> --}}
         </div>
     </div>
 

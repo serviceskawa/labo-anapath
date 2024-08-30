@@ -529,7 +529,7 @@ class ReportController extends Controller
             dd($formatter->getHtmlMessage());
 
             // Message d'erreur explicite pour l'utilisateur
-            return redirect()->back()->with('error', "Une erreur est survenue lors de la génération du PDF. Veuillez vérifier que les polices et réessayez.");
+            return redirect()->back()->with('error', $formatter->getHtmlMessage());
         }
     }
 
