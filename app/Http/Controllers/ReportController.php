@@ -515,7 +515,7 @@ class ReportController extends Controller
             $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
             $html2pdf->pdf->SetDisplayMode('fullpage');
             $html2pdf->setTestTdInOnePage(false);
-            $html2pdf->pdf->SetFont('Arial');
+            // $html2pdf->pdf->SetFont('Arial');
             $html2pdf->__construct($orientation = 'P', $format = 'A4', $lang = 'fr', $unicode = true, $encoding = 'UTF-8', $margins = [8, 20, 8, 8], $pdfa = false);
             $html2pdf->writeHTML($content);
             $newname = 'CO-' . $report->order->code . '.pdf';
