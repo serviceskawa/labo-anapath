@@ -27,6 +27,9 @@ class SettingAppController extends Controller
         // $private_key = $this->setting->where('key','private_key')->first();
         // $secret_key = $this->setting->where('key','secret_key')->first();
 
+        $whatsapp_number = $this->setting->where('key', 'whatsapp_number')->first();
+        $ifu = $this->setting->where('key', 'ifu')->first();
+        $rccm = $this->setting->where('key', 'rccm')->first();
 
         $phone = $this->setting->where('key', 'phone')->first();
         $email = $this->setting->where('key', 'email')->first();
@@ -81,13 +84,15 @@ class SettingAppController extends Controller
             'report_footer',
             'report_review_title',
             'email_technician',
-            'show_signator_invoice'
+            'show_signator_invoice',
+            'whatsapp_number',
+            'ifu',
+            'rccm',
         ));
     }
 
     public function store(Request $request)
     {
-        // dd($request->nbrform);
         // Récupérez les valeurs directement à partir de la demande HTTP
         $nbr = intval($request->nbrform);
         $appNameValue = $request->input('app_name');
@@ -96,6 +101,9 @@ class SettingAppController extends Controller
         $adresseValue = $request->input('adress');
         $telephoneValue = $request->input('phone');
         $emailValue = $request->input('email');
+        $whatsapp_numberValue = $request->input('whatsapp_number');
+        $rccmValue = $request->input('rccm');
+        $ifuValue = $request->input('ifu');
         $webSiteValue = $request->input('web_site');
         $footerValue = $request->input('footer');
         $email_hostValue = $request->input('email_host');
@@ -126,12 +134,23 @@ class SettingAppController extends Controller
         // Mettez à jour les enregistrements dans la base de données
         switch ($nbr) {
             case 1:
-                # code...
                 $app_name = $this->setting->where('key', 'lab_name')->first();
                 $app_name ? $app_name->update(['value' => $appNameValue]) : '';
 
                 $devise = $this->setting->where('key', 'devise')->first();
                 $devise ? $devise->update(['value' => $deviseValue]) : '';
+
+
+
+                $ifu = $this->setting->where('key', 'ifu')->first();
+                $ifu ? $ifu->update(['value' => $ifuValue]) : '';
+
+                $whatsapp_number = $this->setting->where('key', 'whatsapp_number')->first();
+                $whatsapp_number ? $whatsapp_number->update(['value' => $whatsapp_numberValue]) : '';
+
+                $rccm = $this->setting->where('key', 'rccm')->first();
+                $rccm ? $whatsapp_number->update(['value' => $rccmValue]) : '';
+
 
                 $adress = $this->setting->where('key', 'adress')->first();
                 $adress ? $adress->update(['value' => $adresseValue]) : '';

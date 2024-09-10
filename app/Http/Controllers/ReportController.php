@@ -501,6 +501,9 @@ class ReportController extends Controller
             'doctor_name' => $report->order ? $report->order->doctor->name : '',
             'created_at' => date_format($report->created_at, 'd/m/Y'),
             'date' => date('d/m/Y'),
+            'ifu' => SettingApp::where('key', 'ifu')->first(),
+            'whatsapp_number' => SettingApp::where('key', 'whatsapp_number')->first(),
+            'rccm' => SettingApp::where('key', 'rccm')->first(),
         ];
 
 
@@ -760,7 +763,6 @@ class ReportController extends Controller
                             ->where('status', 0);
                     }
 
-
                     $query->whereHas('order', function ($query) use ($request) {
                         if ($request->cas_status == 'Urgent') {
                             $query->where('is_urgent', 0);
@@ -777,17 +779,42 @@ class ReportController extends Controller
                         $query->where('status', 0);
                     } elseif ($request->get('statusquery') == 4) {
                         $query->where('status', 1);
+                    } elseif ($request->get('statusquery') == 5) {
+                        $query->where('status', 1)->where('is_delivered', 0);
                     }
                 }
 
+                // if (!empty($request->get('contenu'))) {
+                //     $query->whereHas('order', function ($query) use ($request) {
+                //         $query->where('code', 'like', '%' . $request->get('contenu') . '%')
+                //             ->orwhereHas('patient', function ($query) use ($request) {
+                //                 $query->where('firstname', 'like', '%' . $request->get('contenu') . '%')
+                //                     ->orwhere('lastname', 'like', '%' . $request->get('contenu') . '%');
+                //             })
+                //             ->orwhereHas('doctor', function ($query) use ($request) {
+                //                 $query->where('name', 'like', '%' . $request->get('contenu') . '%');
+                //             })
+                //         ;
+                //     });
+                // }
+
                 if (!empty($request->get('contenu'))) {
                     $query->whereHas('order', function ($query) use ($request) {
-                        $query->where('code', 'like', '%' . $request->get('contenu') . '%');
+                        $searchTerm = '%' . $request->get('contenu') . '%';
+
+                        $query->where('code', 'like', $searchTerm)
+                            ->orWhereHas('patient', function ($query) use ($searchTerm) {
+                                $query->where('firstname', 'like', $searchTerm)
+                                    ->orWhere('lastname', 'like', $searchTerm);
+                            })
+                            ->orWhereHas('doctor', function ($query) use ($searchTerm) {
+                                $query->where('name', 'like', $searchTerm);
+                            });
                     });
                 }
 
-                if (!empty($request->get('dateBegin'))) {
 
+                if (!empty($request->get('dateBegin'))) {
                     $query->whereHas('order', function ($query) use ($request) {
                         $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
                         $query->whereDate('created_at', '>=', $newDate);

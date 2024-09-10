@@ -66,6 +66,7 @@
                             <select name="statusquery" id="statusquery" class="form-control">
                                 <option value="">Tous</option>
                                 <option value="1">Livrée</option>
+                                <option value="5">Non livrée</option>
                                 <option value="2">Informée</option>
                                 <option value="3">En attente</option>
                                 <option value="4">Terminée</option>
@@ -255,11 +256,10 @@
 
 @push('extra-js')
 <script>
-    var baseUrl = "{{url('/')}}"
-       var ROUTEGETDATATABLE = "{{ route('report.getTestOrdersforDatatableSuivi') }}"
-       var ROUTEREPORTRAPPORTDATATABLE = "{{ route('report.getReportsRapportsforDatatable') }}"
-       var TOKENSTOREDOCTOR = "{{ csrf_token() }}"
-
+var baseUrl = "{{url('/')}}"
+var ROUTEGETDATATABLE = "{{ route('report.getTestOrdersforDatatableSuivi') }}"
+var ROUTEREPORTRAPPORTDATATABLE = "{{ route('report.getReportsRapportsforDatatable') }}"
+var TOKENSTOREDOCTOR = "{{ csrf_token() }}"
 </script>
 <script src="{{asset('viewjs/report/suivi.js')}}"></script>
 <script src="{{asset('viewjs/report/rapport.js')}}"></script>

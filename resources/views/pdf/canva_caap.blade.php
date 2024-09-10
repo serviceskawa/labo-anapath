@@ -5,23 +5,23 @@ date_default_timezone_set('Europe/Paris');
 
 
 <style>
-    .border_b {
-        border-bottom: 2px solid rgb(0, 0, 0, 0);
-        border-radius: 5px;
-    }
+.border_b {
+    border-bottom: 2px solid rgb(0, 0, 0, 0);
+    border-radius: 5px;
+}
 
-    .border_t {
-        border-top: 2px solid rgb(0, 0, 0, 0);
-        border-radius: 5px;
-    }
+.border_t {
+    border-top: 2px solid rgb(0, 0, 0, 0);
+    border-radius: 5px;
+}
 </style>
 
 <page backbottom="10mm" style="margin: 0px;">
 
     <div style="display:inline-block; margin-top:-50px; padding:0;">
         <span style="display: inline-block; margin:0; padding:0;"><img
-                src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}" width="100%;" style="margin:0; padding:0;"
-                alt=""></span>
+                src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}" width="100%;"
+                style="margin:0; padding:0;" alt=""></span>
     </div>
 
     <div class="row" style="margin-top: 110px;">
@@ -41,7 +41,7 @@ date_default_timezone_set('Europe/Paris');
         <div
             style="display: inline-block; position: absolute; margin-top: 100px; right: 0; width: 50px; padding: 10px; text-align: right;">
             {{-- <img src="{{ asset('storage/settings/app/' . $code . '_qrcode.png') }}" style="width: 65px;" alt=""
-                srcset=""> --}}
+            srcset=""> --}}
         </div>
     </div>
 
@@ -99,8 +99,8 @@ date_default_timezone_set('Europe/Paris');
     {!! $content_micro !!}
 
     @if ($content_supplementaire != '')
-        {!! $content_supplementaire !!}
-        {!! $content_supplementaire_micro !!}
+    {!! $content_supplementaire !!}
+    {!! $content_supplementaire_micro !!}
     @endif
 
     <div style="margin-top:30px;">
@@ -111,19 +111,43 @@ date_default_timezone_set('Europe/Paris');
                     @if ($signator)
                     @if ($signature1)
                     <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
-                    @endif
+            @endif
+            <br><br>{{ $signator }}
+            @endif
+            </td>
+
+            <td style="text-align: center; width: 33%; vertical-align: bottom;">
+                @if ($signatory2 != null)
+                @if ($signature2 != null)
+                <img width="85" src="{{ asset('storage/' . $signature2) }}" alt="">
+                @endif
+                <br><br>{{ $signatory2 }}
+                @endif
+            </td>
+
+            <td style="text-align: right; width: 34%; vertical-align: bottom;">
+                @if ($revew_by != null)
+                {{ $report_review_title }}
+                <br><strong>{{ $revew_by }}</strong>
+                @endif
+            </td>
+            </tr>
+            @endif --}}
+
+            @php
+            $show_signator_invoice = App\Models\SettingApp::where('key', 'show_signator_invoice')->first()->value;
+            @endphp
+
+            @if ($status == 1)
+            <tr>
+                <td style="text-align: left; width: 33%; vertical-align: bottom;">
+                    @if ($show_signator_invoice == 'OUI')
+                    <img width="85" src="{{ asset('adminassets/images/' . $signature1) }}" alt="">
+
                     <br><br>{{ $signator }}
                     @endif
                 </td>
 
-                <td style="text-align: center; width: 33%; vertical-align: bottom;">
-                    @if ($signatory2 != null)
-                    @if ($signature2 != null)
-                    <img width="85" src="{{ asset('storage/' . $signature2) }}" alt="">
-                    @endif
-                    <br><br>{{ $signatory2 }}
-                    @endif
-                </td>
 
                 <td style="text-align: right; width: 34%; vertical-align: bottom;">
                     @if ($revew_by != null)
@@ -132,36 +156,21 @@ date_default_timezone_set('Europe/Paris');
                     @endif
                 </td>
             </tr>
-            @endif --}}
-
-            @php
-                $show_signator_invoice = App\Models\SettingApp::where('key', 'show_signator_invoice')->first()->value;
-            @endphp
-
-            @if ($status == 1)
-                <tr>
-                    <td style="text-align: left; width: 33%; vertical-align: bottom;">
-                        @if ($show_signator_invoice == 'OUI')
-                            <img width="85" src="{{ asset('adminassets/images/' . $signature1) }}" alt="">
-
-                            <br><br>{{ $signator }}
-                        @endif
-                    </td>
-
-
-                    <td style="text-align: right; width: 34%; vertical-align: bottom;">
-                        @if ($revew_by != null)
-                            {{ $report_review_title }}
-                            <br><strong>{{ $revew_by }}</strong>
-                        @endif
-                    </td>
-                </tr>
             @endif
 
 
         </table>
     </div>
     <br><br>
+
+    <div style="margin-top:30px;">
+        <p>Numéro whatsapp : <b>{{ $whatsapp_number }}</b></p>
+        <p>RCCM : <b>{{ $rccm }}</b></p>
+        <p>Ifu : <b>{{ $ifu }}</b></p>
+    </div>
+    <br>
+    <br>
+
     <page_footer>
         <table style="width: 100%; margin-top:1em !important">
             <tr>
