@@ -356,9 +356,9 @@
                 </div>
 
                 <page_footer>
-                    <table style="width: 100%; margin-top:1em !important">
+                    <table style="width: 100%; margin-top:1em !important; text-align :center; justify-content:center;">
                         <tr>
-                            <td style="text-align: left; width: 100%; font-size:12px;">
+                            <td style="width: 100%; font-size:12px; text-align :center; justify-content:center;">
                                 {{ App\Models\SettingApp::where('key', 'report_footer')->first()->value }}
                             </td>
                         </tr>
