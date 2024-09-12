@@ -163,14 +163,6 @@ date_default_timezone_set('Europe/Paris');
     </div>
     <br><br>
 
-    <div style="margin-top:30px;">
-        <p>Numéro whatsapp : <b>{{ $whatsapp_number }}</b></p>
-        <p>RCCM : <b>{{ $rccm }}</b></p>
-        <p>Ifu : <b>{{ $ifu }}</b></p>
-    </div>
-    <br>
-    <br>
-
     <page_footer>
         <table style="width: 100%; margin-top:1em !important">
             <tr>

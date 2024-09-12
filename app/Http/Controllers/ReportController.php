@@ -501,9 +501,6 @@ class ReportController extends Controller
             'doctor_name' => $report->order ? $report->order->doctor->name : '',
             'created_at' => date_format($report->created_at, 'd/m/Y'),
             'date' => date('d/m/Y'),
-            'ifu' => SettingApp::where('key', 'ifu')->first(),
-            'whatsapp_number' => SettingApp::where('key', 'whatsapp_number')->first(),
-            'rccm' => SettingApp::where('key', 'rccm')->first(),
         ];
 
 

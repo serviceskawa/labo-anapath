@@ -609,6 +609,10 @@ class InvoiceController extends Controller
                 }
             }
 
+            $ifu = SettingApp::where('key', 'ifu')->first();
+            $whatsapp_number = SettingApp::where('key', 'whatsapp_number')->first();
+            $rccm = SettingApp::where('key', 'rccm')->first();
+
             return redirect()->route('invoice.show', [$invoice->id])->with('success', " Facture crée avec succès  ! ");
         } catch (\Throwable $ex) {
             return back()->with('error', "Échec de l'enregistrement. Veuillez réessayer svp ! " . $ex->getMessage());
