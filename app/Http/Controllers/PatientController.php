@@ -18,7 +18,8 @@ class PatientController extends Controller
     protected $testOrders;
     protected $invoices;
 
-    public function __construct(Patient $patients, Setting $setting, Invoice $invoices , TestOrder $testOrders){
+    public function __construct(Patient $patients, Setting $setting, Invoice $invoices, TestOrder $testOrders)
+    {
         $this->patients  = $patients;
         $this->setting = $setting;
         $this->invoices = $invoices;
@@ -37,8 +38,7 @@ class PatientController extends Controller
         $patients = $this->patients->latest()->get();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        return view('patients.index',compact(['patients']));
-
+        return view('patients.index', compact(['patients']));
     }
 
 
@@ -72,9 +72,8 @@ class PatientController extends Controller
         try {
             $this->patients->create($data);
             return back()->with('success', "Un patient enregistré ! ");
-
-        } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }
 
@@ -98,9 +97,8 @@ class PatientController extends Controller
             $patient = $this->patients->create($data);
 
             return response()->json($patient, 200);
-
-        } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }
 
@@ -131,7 +129,7 @@ class PatientController extends Controller
         if (!getOnlineUser()->can('edit-patients')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data=[
+        $data = [
             'id' => $request->id,
             'code' => $request->code,
             'firstname' => $request->firstname,
@@ -142,7 +140,7 @@ class PatientController extends Controller
             'genre' => $request->genre,
             'year_or_month' => $request->year_or_month,
             'age' => $request->age,
-            'langue' =>$request->langue,
+            'langue' => $request->langue,
             'profession' => $request->profession,
             'birthday' => $request->birthday
         ];
@@ -162,13 +160,20 @@ class PatientController extends Controller
             $patient->year_or_month = $data['year_or_month'];
             $patient->profession = $data['profession'];
             $patient->langue = $data['langue'];
-
             $patient->save();
 
-            return back()->with('success', "Un patient mis à jour ! ");
+            // rechercher le nom du patient dans le invoices et corrigé
+            $invoice = Invoice::where('patient_id', $data['id'])->first();
+            if ($invoice) {
+                $invoice->client_name = $data['firstname'] . ' ' . $data['lastname'];
+                $invoice->adresse = $data['adresse'];
+                $invoice->save();
+            }
 
-        } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+
+            return back()->with('success', "Un patient mis à jour ! ");
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }
 
@@ -194,7 +199,7 @@ class PatientController extends Controller
 
     public function getPatients()
     {
-        $patients = $this->patients->orderBy('id','desc')->get();
+        $patients = $this->patients->orderBy('id', 'desc')->get();
         return response()->json($patients);
     }
 
@@ -202,21 +207,21 @@ class PatientController extends Controller
     {
 
 
-        $invoices =$this->invoices->where('patient_id','=',$id)->latest()->get();
+        $invoices = $this->invoices->where('patient_id', '=', $id)->latest()->get();
         $patient = $this->patients->find($id);
 
-        $total = $this->invoices->where('patient_id','=',$id)->sum('total');
-        
-        $nopaye = $this->invoices->where(['patient_id'=>$id,'paid'=>0])->where(['status_invoice'=>0])->sum('total');
+        $total = $this->invoices->where('patient_id', '=', $id)->sum('total');
 
-        $annule = $this->invoices->where(['patient_id'=>$id,'paid'=>1])->where(['status_invoice'=>1])->sum('total');
+        $nopaye = $this->invoices->where(['patient_id' => $id, 'paid' => 0])->where(['status_invoice' => 0])->sum('total');
 
-        $paye = $this->invoices->where(['patient_id'=>$id,'paid'=>1])->where(['status_invoice'=>0])->sum('total')-$annule;
+        $annule = $this->invoices->where(['patient_id' => $id, 'paid' => 1])->where(['status_invoice' => 1])->sum('total');
 
-        $testorders =$this->testOrders->where('patient_id','=',$id)->latest()->get();
+        $paye = $this->invoices->where(['patient_id' => $id, 'paid' => 1])->where(['status_invoice' => 0])->sum('total') - $annule;
+
+        $testorders = $this->testOrders->where('patient_id', '=', $id)->latest()->get();
 
         $setting = Setting::find(1);
         config(['app.name' => $setting->titre]);
-        return view('patients.profil', compact(['invoices', 'testorders', 'patient','total','nopaye','paye']));
+        return view('patients.profil', compact(['invoices', 'testorders', 'patient', 'total', 'nopaye', 'paye']));
     }
 }
