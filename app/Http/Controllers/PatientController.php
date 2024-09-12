@@ -166,7 +166,7 @@ class PatientController extends Controller
             $invoice = Invoice::where('patient_id', $data['id'])->first();
             if ($invoice) {
                 $invoice->client_name = $data['firstname'] . ' ' . $data['lastname'];
-                $invoice->adresse = $data['adresse'];
+                $invoice->client_address = $data['adresse'];
                 $invoice->save();
             }
 
