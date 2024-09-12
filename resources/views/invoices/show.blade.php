@@ -473,10 +473,9 @@
 @push('extra-js')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-var invoice = {
-    !!json_encode($invoice) !!
-}
-var baseUrl = "{{ url('/') }}";
+var invoice = @json($invoice);
+
+
 var ROUTEVALIDATEPAYMENT = "{{ route('invoice.updatePayment') }}"
 var TOKENVALIDATEPAYMENT = "{{ csrf_token() }}"
 var ROUTECANCELINVOICE = "{{ route('invoice.cancelInvoice') }}"
@@ -490,6 +489,7 @@ var ROUTEINVOICESHOW = "{{ route('invoice.show', ':id') }}";
 function updateStatus(id) {
     var code = $('#code').val();
     var payment = $('#payment').val();
+    var baseUrl = "{{ url('/') }}";
 
     if (code == "") {
         toastr.error("Code normalisé requis", 'Code normalisé');

@@ -239,6 +239,20 @@ class ContratController extends Controller
 
         try {
             $contrat = $this->contrat->create($data);
+
+            // $contrat = DB::table('contrats')->insert([
+            //     'name' => $request->name,
+            //     'type' => $request->type,
+            //     'description' => $request->description,
+            //     'nbr_tests' => $request->nbr_examen,
+            //     'invoice_unique' => $request->invoice_unique == "on" ? 1 : 0,
+            //     'client_id' => $request->client_id,
+            //     'status' => 'INACTIF',
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            // ]);
+
+            // dd($contrat);
             if ($contrat->invoice_unique == 1) {
                 $code_facture = generateCodeFacture();
                 $invoice = $this->invoices->create([
