@@ -358,13 +358,13 @@
                 <div class="row mt-2">
 
                     <p class="m-0 p-1">RCCM :
-                        <b>{{ App\Models\SettingApp::where('key', 'rccm')->pluck('value')->first() }}</b>
+                        <b>{{ App\Models\SettingApp::where('key', 'rccm')->pluck('value')->first() ?? "-" }}</b>
                     </p>
                     <p class="m-0 p-1">IFU :
-                        <b>{{ App\Models\SettingApp::where('key', 'ifu')->pluck('value')->first() }}</b>
+                        <b>{{ App\Models\SettingApp::where('key', 'ifu')->pluck('value')->first() ?? "-" }}</b>
                     </p>
                     <p class="m-0 p-1">Numéro whatsapp :
-                        <b>{{ App\Models\SettingApp::where('key', 'whatsapp_number')->pluck('value')->first() }}</b>
+                        <b>{{ App\Models\SettingApp::where('key', 'whatsapp_number')->pluck('value')->first() ?? "-" }}</b>
                     </p>
 
                 </div>
