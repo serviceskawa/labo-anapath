@@ -355,19 +355,15 @@
                     </div>
                 </div>
 
-                <div class="row mt-2">
-
-                    <p class="m-0 p-1">RCCM :
-                        <b>{{ App\Models\SettingApp::where('key', 'rccm')->pluck('value')->first() ?? "-" }}</b>
-                    </p>
-                    <p class="m-0 p-1">IFU :
-                        <b>{{ App\Models\SettingApp::where('key', 'ifu')->pluck('value')->first() ?? "-" }}</b>
-                    </p>
-                    <p class="m-0 p-1">Numéro whatsapp :
-                        <b>{{ App\Models\SettingApp::where('key', 'whatsapp_number')->pluck('value')->first() ?? "-" }}</b>
-                    </p>
-
-                </div>
+                <page_footer>
+                    <table style="width: 100%; margin-top:1em !important">
+                        <tr>
+                            <td style="text-align: left; width: 100%; font-size:12px;">
+                                {{ App\Models\SettingApp::where('key', 'report_footer')->first()->value }}
+                            </td>
+                        </tr>
+                    </table>
+                </page_footer>
 
 
             </div>
