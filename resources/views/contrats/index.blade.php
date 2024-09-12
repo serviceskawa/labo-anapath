@@ -13,23 +13,14 @@
             <h4 class="page-title">Contrats</h4>
         </div>
 
-        <!----MODAL---->
-
         @include('contrats.create')
-
         @include('contrats.edit')
-
     </div>
 </div>
 
 
 <div class="">
-
-
     @include('layouts.alerts')
-
-
-
     <div class="card mb-md-0 mb-3">
         <div class="card-body">
             <div class="card-widgets">
@@ -124,8 +115,8 @@
 @push('extra-js')
 
 <script>
-    var baseUrl = "{{ url('/') }}";
-    var ROUTEGETDATATABLE = "{{ route('contrat.getContratsforDatatable') }}"
+var baseUrl = "{{ url('/') }}";
+var ROUTEGETDATATABLE = "{{ route('contrat.getContratsforDatatable') }}"
 </script>
 
 <script src="{{asset('viewjs/contrat/index.js')}}"></script>
