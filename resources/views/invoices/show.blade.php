@@ -3,10 +3,10 @@
 @section('title', 'Factures')
 @section('content')
 <style>
-    .payerButton {
-        visibility: hidden;
-        /* Applique la visibilité cachée */
-    }
+.payerButton {
+    visibility: hidden;
+    /* Applique la visibilité cachée */
+}
 </style>
 
 
@@ -106,7 +106,7 @@
                             <p class="font-15"><strong>Nom: </strong> {{ $invoice->client_name }}</p>
 
                             <p class="font-15"><strong>Adresse: </strong> <span
-                                    class="">{{ $invoice->client_address ?? '' }}</span>
+                                    class="">{{ $invoice->patient ? $invoice->patient->firstname.' '.$invoice->patient->lastname : $invoice->client_address }}</span>
                             </p>
 
                             <p class="font-15"><strong>Code client: </strong> <span class=""
@@ -473,219 +473,143 @@
 @push('extra-js')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-    var invoice = @json($invoice);
+var invoice = @json($invoice);
 
 
-    var ROUTEVALIDATEPAYMENT = "{{ route('invoice.updatePayment') }}"
-    var TOKENVALIDATEPAYMENT = "{{ csrf_token() }}"
-    var ROUTECANCELINVOICE = "{{ route('invoice.cancelInvoice') }}"
-    var TOKENCANCELINVOICE = "{{ csrf_token() }}"
-    var ROUTECONFIRMINVOICE = "{{ route('invoice.confirmInvoice') }}"
-    var TOKENCONFIRMINVOICE = "{{ csrf_token() }}"
-    var ROUTEINVOICEINDEX = "{{ route('invoice.index') }}"
-    var ROUTEINVOICESHOW = "{{ route('invoice.show', ':id') }}";
+var ROUTEVALIDATEPAYMENT = "{{ route('invoice.updatePayment') }}"
+var TOKENVALIDATEPAYMENT = "{{ csrf_token() }}"
+var ROUTECANCELINVOICE = "{{ route('invoice.cancelInvoice') }}"
+var TOKENCANCELINVOICE = "{{ csrf_token() }}"
+var ROUTECONFIRMINVOICE = "{{ route('invoice.confirmInvoice') }}"
+var TOKENCONFIRMINVOICE = "{{ csrf_token() }}"
+var ROUTEINVOICEINDEX = "{{ route('invoice.index') }}"
+var ROUTEINVOICESHOW = "{{ route('invoice.show', ':id') }}";
 </script>
 <script>
-    function updateStatus(id) {
-        var code = $('#code').val();
-        var payment = $('#payment').val();
-        var baseUrl = "{{ url('/') }}";
+function updateStatus(id) {
+    var code = $('#code').val();
+    var payment = $('#payment').val();
+    var baseUrl = "{{ url('/') }}";
 
-        if (code == "") {
-            toastr.error("Code normalisé requis", 'Code normalisé');
-        } else if (code.length < 24 || code.length > 24) {
-            toastr.error("Code normalisé doit être 24 caractères", 'Code normalisé');
-        } else {
-            $.ajax({
-                url: baseUrl + "/invoices/checkCode/",
-                type: "GET",
-                data: {
-                    code: code,
-                },
-                success: function(response) {
-                    console.log(response);
-                    if (response.code == 0) {
-                        $.ajax({
-                            url: baseUrl + "/invoices/updateStatus/" + invoice.id,
-                            type: "GET",
-                            data: {
-                                code: code,
-                                payment: payment,
-                            },
-                            success: function(response) {
-                                console.log(response);
-
-                                window.location.href = ROUTEINVOICEINDEX;
-
-                            },
-                            error: function(response) {
-                                console.log('error', response);
-                            }
-                        })
-                    } else {
-                        toastr.error("Ce Code normalisé existe déjà", 'Code normalisé')
-                    }
-                },
-                error: function(response) {
-                    console.log('error', response);
-                }
-            })
-
-
-        }
-    }
-
-    function paymentMethod() {
-        // Code verification des informations a entree par l'utilisateur
-        var paymentMethodChecked = $('input[name="payment_method"]:checked').length > 0;
-        var paymentNumber = $('#payment_number').val();
-        var amountPayer = $('#amount_payer').val();
-        var errorMessage = '';
-
-        if (!paymentMethodChecked) {
-            errorMessage += 'Veuillez sélectionner une méthode de paiement.\n';
-        }
-        if (paymentNumber.length !== 8) {
-            errorMessage += 'Veuillez entrer un numéro de téléphone valide de 8 chiffres.\n';
-        }
-        if (!amountPayer) {
-            errorMessage += 'Le montant à payer est requis.\n';
-        }
-
-        if (errorMessage) {
-            $('#errorMessage').text(errorMessage).show();
-        } else {
-            $('#errorMessage').hide();
-            // Soumettre le formulaire ou exécuter la logique d'encaissement
-            console.log('Form is valid. Proceed with submission.');
-
-
-            // Sélectionner les cases à cocher
-            const mtnCheckbox = document.getElementById('mtn');
-            const moovCheckbox = document.getElementById('moov');
-
-            // Récupérer la valeur de la case à cocher cochée
-            let paymentMethod = '';
-            if (mtnCheckbox.checked) {
-                paymentMethod = mtnCheckbox.value;
-            } else if (moovCheckbox.checked) {
-                paymentMethod = moovCheckbox.value;
-            }
-
-            var invoice_id = $('#invoice_id').val();
-            var amount_payer = $('#amount_payer').val();
-            var payment_number = $('#payment_number').val();
-            var payment_method = paymentMethod;
-            var fee = $('#fee').val();
-
-            // console.log(payment_number, payment_method, amount_payer, invoice_id);
-
-            $.ajax({
-                url: baseUrl + "/invoices/payment/store/storejs",
-                type: "GET",
-                data: {
-                    invoice_id: invoice_id,
-                    amount_payer: amount_payer,
-                    payment_number: payment_number,
-                    payment_method: payment_method,
-                    fee: fee,
-                },
-                success: function(response) {
-                    console.log(response);
-
-                    // Vérifiez si la réponse contient "SUCCESS"
-                    if (response.message === "INITIATED") {
-                        // Mettre à jour le paragraphe avec le message de réussite
-                        $('#messageinitiation1').text(
-                            "#1 - Paiement initié, en attente de confirmation du client").css('color',
-                            '#FFA500');
-                        $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.")
-                            .css('color', 'blue');
-                        $('#messageinitiation3').text("");
-                        $('#encaisserButton').css('display', 'none');
-                        $('#encaisserButton1').css('display', 'none');
-                        $('#checkPaymentStatusBtn').css('display', 'block');
-                    } else if (response.message === "FAILED") {
-                        // Mettre à jour le paragraphe avec le message d'échec
-                        $('#messageinitiation').text(
-                                "Échec de l'initiation du paiement. Réessayez ou contactez le support.")
-                            .css('color', 'red');
-                    }
-                },
-                error: function(response) {
-                    console.log('error', response);
-                }
-            });
-        }
-    }
-
-
-
-
-
-    $(document).ready(function() {
-        $('input[name="payment_method"]').change(function() {
-            if (this.checked) {
-                $('input[name="payment_method"]').not(this).prop('checked', false);
-            }
-        });
-    });
-
-
-
-
-    function checkPaymentStatus() {
-        var invoice_id = $('#invoice_id').val();
-        console.log(invoice_id);
+    if (code == "") {
+        toastr.error("Code normalisé requis", 'Code normalisé');
+    } else if (code.length < 24 || code.length > 24) {
+        toastr.error("Code normalisé doit être 24 caractères", 'Code normalisé');
+    } else {
         $.ajax({
-            url: baseUrl + "/invoices/payment/check/payement",
+            url: baseUrl + "/invoices/checkCode/",
+            type: "GET",
+            data: {
+                code: code,
+            },
+            success: function(response) {
+                console.log(response);
+                if (response.code == 0) {
+                    $.ajax({
+                        url: baseUrl + "/invoices/updateStatus/" + invoice.id,
+                        type: "GET",
+                        data: {
+                            code: code,
+                            payment: payment,
+                        },
+                        success: function(response) {
+                            console.log(response);
+
+                            window.location.href = ROUTEINVOICEINDEX;
+
+                        },
+                        error: function(response) {
+                            console.log('error', response);
+                        }
+                    })
+                } else {
+                    toastr.error("Ce Code normalisé existe déjà", 'Code normalisé')
+                }
+            },
+            error: function(response) {
+                console.log('error', response);
+            }
+        })
+
+
+    }
+}
+
+function paymentMethod() {
+    // Code verification des informations a entree par l'utilisateur
+    var paymentMethodChecked = $('input[name="payment_method"]:checked').length > 0;
+    var paymentNumber = $('#payment_number').val();
+    var amountPayer = $('#amount_payer').val();
+    var errorMessage = '';
+
+    if (!paymentMethodChecked) {
+        errorMessage += 'Veuillez sélectionner une méthode de paiement.\n';
+    }
+    if (paymentNumber.length !== 8) {
+        errorMessage += 'Veuillez entrer un numéro de téléphone valide de 8 chiffres.\n';
+    }
+    if (!amountPayer) {
+        errorMessage += 'Le montant à payer est requis.\n';
+    }
+
+    if (errorMessage) {
+        $('#errorMessage').text(errorMessage).show();
+    } else {
+        $('#errorMessage').hide();
+        // Soumettre le formulaire ou exécuter la logique d'encaissement
+        console.log('Form is valid. Proceed with submission.');
+
+
+        // Sélectionner les cases à cocher
+        const mtnCheckbox = document.getElementById('mtn');
+        const moovCheckbox = document.getElementById('moov');
+
+        // Récupérer la valeur de la case à cocher cochée
+        let paymentMethod = '';
+        if (mtnCheckbox.checked) {
+            paymentMethod = mtnCheckbox.value;
+        } else if (moovCheckbox.checked) {
+            paymentMethod = moovCheckbox.value;
+        }
+
+        var invoice_id = $('#invoice_id').val();
+        var amount_payer = $('#amount_payer').val();
+        var payment_number = $('#payment_number').val();
+        var payment_method = paymentMethod;
+        var fee = $('#fee').val();
+
+        // console.log(payment_number, payment_method, amount_payer, invoice_id);
+
+        $.ajax({
+            url: baseUrl + "/invoices/payment/store/storejs",
             type: "GET",
             data: {
                 invoice_id: invoice_id,
+                amount_payer: amount_payer,
+                payment_number: payment_number,
+                payment_method: payment_method,
+                fee: fee,
             },
             success: function(response) {
                 console.log(response);
 
                 // Vérifiez si la réponse contient "SUCCESS"
-                if (response.message === "PENDING") {
+                if (response.message === "INITIATED") {
                     // Mettre à jour le paragraphe avec le message de réussite
                     $('#messageinitiation1').text(
                         "#1 - Paiement initié, en attente de confirmation du client").css('color',
                         '#FFA500');
-                    $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.").css(
-                        'color', 'blue');
+                    $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.")
+                        .css('color', 'blue');
                     $('#messageinitiation3').text("");
                     $('#encaisserButton').css('display', 'none');
-
+                    $('#encaisserButton1').css('display', 'none');
                     $('#checkPaymentStatusBtn').css('display', 'block');
-                    $('#checkPaymentStatusBtn1').css('display', 'none');
-                    $('#encaisserButton1').css('display', 'none');
-
-
-                } else if (response.message === "SUCCESS") {
-                    // Mettre à jour le paragraphe avec le message d'échec
-                    $('#messageinitiation1').text(
-                        "#1 - Paiement initié, en attente de confirmation du client").css('color',
-                        '#FFA500');
-                    $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.").css(
-                        'color', 'blue');
-                    $('#messageinitiation3').text("#3 - Le paiement a été traité avec succès.").css('color',
-                        'green');
-                    $('#checkPaymentStatusBtn').css('display', 'none');
-                    $('#encaisserButton1').css('display', 'none');
-
                 } else if (response.message === "FAILED") {
                     // Mettre à jour le paragraphe avec le message d'échec
-                    $('#checkPaymentStatusBtn').css('display', 'none');
-                    $('#messageinitiation1').text(
-                        "#1 - Paiement initié, en attente de confirmation du client").css('color',
-                        '#FFA500');
-                    $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.").css(
-                        'color', 'blue');
-                    $('#messageinitiation3').text("#3 - Le paiement a été échoué, réessayer.").css('color',
-                        'red');
-                    $('#encaisserButton').css('display', 'block');
-                    $('#encaisserButton1').css('display', 'block');
+                    $('#messageinitiation').text(
+                            "Échec de l'initiation du paiement. Réessayez ou contactez le support.")
+                        .css('color', 'red');
                 }
             },
             error: function(response) {
@@ -693,35 +617,111 @@
             }
         });
     }
+}
 
 
 
-    $(document).ready(function() {
-        checkPaymentStatus();
+
+
+$(document).ready(function() {
+    $('input[name="payment_method"]').change(function() {
+        if (this.checked) {
+            $('input[name="payment_method"]').not(this).prop('checked', false);
+        }
     });
+});
+
+
+
+
+function checkPaymentStatus() {
+    var invoice_id = $('#invoice_id').val();
+    console.log(invoice_id);
+    $.ajax({
+        url: baseUrl + "/invoices/payment/check/payement",
+        type: "GET",
+        data: {
+            invoice_id: invoice_id,
+        },
+        success: function(response) {
+            console.log(response);
+
+            // Vérifiez si la réponse contient "SUCCESS"
+            if (response.message === "PENDING") {
+                // Mettre à jour le paragraphe avec le message de réussite
+                $('#messageinitiation1').text(
+                    "#1 - Paiement initié, en attente de confirmation du client").css('color',
+                    '#FFA500');
+                $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.").css(
+                    'color', 'blue');
+                $('#messageinitiation3').text("");
+                $('#encaisserButton').css('display', 'none');
+
+                $('#checkPaymentStatusBtn').css('display', 'block');
+                $('#checkPaymentStatusBtn1').css('display', 'none');
+                $('#encaisserButton1').css('display', 'none');
+
+
+            } else if (response.message === "SUCCESS") {
+                // Mettre à jour le paragraphe avec le message d'échec
+                $('#messageinitiation1').text(
+                    "#1 - Paiement initié, en attente de confirmation du client").css('color',
+                    '#FFA500');
+                $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.").css(
+                    'color', 'blue');
+                $('#messageinitiation3').text("#3 - Le paiement a été traité avec succès.").css('color',
+                    'green');
+                $('#checkPaymentStatusBtn').css('display', 'none');
+                $('#encaisserButton1').css('display', 'none');
+
+            } else if (response.message === "FAILED") {
+                // Mettre à jour le paragraphe avec le message d'échec
+                $('#checkPaymentStatusBtn').css('display', 'none');
+                $('#messageinitiation1').text(
+                    "#1 - Paiement initié, en attente de confirmation du client").css('color',
+                    '#FFA500');
+                $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.").css(
+                    'color', 'blue');
+                $('#messageinitiation3').text("#3 - Le paiement a été échoué, réessayer.").css('color',
+                    'red');
+                $('#encaisserButton').css('display', 'block');
+                $('#encaisserButton1').css('display', 'block');
+            }
+        },
+        error: function(response) {
+            console.log('error', response);
+        }
+    });
+}
+
+
+
+$(document).ready(function() {
+    checkPaymentStatus();
+});
 </script>
 
 
 <script>
-    // Sélectionner les cases à cocher
-    const mtnCheckbox = document.getElementById('mtn');
-    const moovCheckbox = document.getElementById('moov');
+// Sélectionner les cases à cocher
+const mtnCheckbox = document.getElementById('mtn');
+const moovCheckbox = document.getElementById('moov');
 
-    // Ajouter un écouteur d'événements de clic à la case à cocher MTN
-    mtnCheckbox.addEventListener('click', function() {
-        // Si la case à cocher MTN est cochée, décocher la case à cocher Moov
-        if (mtnCheckbox.checked) {
-            moovCheckbox.checked = false;
-        }
-    });
+// Ajouter un écouteur d'événements de clic à la case à cocher MTN
+mtnCheckbox.addEventListener('click', function() {
+    // Si la case à cocher MTN est cochée, décocher la case à cocher Moov
+    if (mtnCheckbox.checked) {
+        moovCheckbox.checked = false;
+    }
+});
 
-    // Ajouter un écouteur d'événements de clic à la case à cocher Moov
-    moovCheckbox.addEventListener('click', function() {
-        // Si la case à cocher Moov est cochée, décocher la case à cocher MTN
-        if (moovCheckbox.checked) {
-            mtnCheckbox.checked = false;
-        }
-    });
+// Ajouter un écouteur d'événements de clic à la case à cocher Moov
+moovCheckbox.addEventListener('click', function() {
+    // Si la case à cocher Moov est cochée, décocher la case à cocher MTN
+    if (moovCheckbox.checked) {
+        mtnCheckbox.checked = false;
+    }
+});
 </script>
 
 

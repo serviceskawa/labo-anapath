@@ -1330,8 +1330,8 @@ class TestOrderController extends Controller
                     "discount" => $test_order->discount,
                     "total" => $test_order->total,
                 ]);
-                $tests = $test_order->details()->get();
 
+                $tests = $test_order->details()->get();
                 foreach ($tests as $value) {
                     if ($value->status == 1) {
                         $this->invoiceDetail->create([
@@ -1346,7 +1346,6 @@ class TestOrderController extends Controller
                         $value->save();
                     }
                 }
-
 
                 return redirect()->route('invoice.show', [$invoiceTestOrder->id])->with('success', " Opération effectuée avec succès  ! ");
             } else {
