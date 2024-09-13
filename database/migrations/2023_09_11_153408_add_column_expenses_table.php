@@ -14,9 +14,9 @@ class AddColumnExpensesTable extends Migration
     public function up()
     {
         Schema::table('expenses', function (Blueprint $table) {
-            $table->foreignId('supplier_id')->nullable()
-            ->constrained('suppliers')
-            ->onUpdate('cascade');
+            // $table->foreignId('supplier_id')->nullable()
+            // ->constrained('suppliers')
+            // ->onUpdate('cascade');
         });
     }
 

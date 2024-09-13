@@ -501,10 +501,6 @@ if (!function_exists('generateCodeExamen')) {
         // Récupérer la valeur de la base de données
         $configuration = SettingApp::where('key', 'entete')->first();
 
-
-
-
-
         // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
         if (!$lastTestOrder || $lastTestOrder->created_at->year != now()->year) {
             $code = "0001";
@@ -742,25 +738,56 @@ if (!function_exists('generateCodeAssignment')) {
 if (!function_exists('generateCodeFacture')) {
     function generateCodeFacture()
     {
-        //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
-        $invoice = Invoice::whereYear('created_at', '=', now()->year)
+        // //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
+        // $invoice = Invoice::whereYear('created_at', '=', now()->year)
+        //     ->whereNotNull('code')
+        //     ->orderByRaw('RIGHT(code, 4) DESC')
+        //     ->first();
+
+        // // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
+        // if (!$invoice || $invoice->created_at->year != now()->year) {
+        //     $code = "0001";
+        // }
+        // // Sinon, incrémente le dernier code de 1
+        // else {
+        //     // Récupère les quatre derniers caractères du code
+        //     $lastCode = substr($invoice->code, -4);
+
+        //     // Convertit la chaîne en entier et l'incrémente de 1
+        //     $code = intval($lastCode) + 1;
+        //     $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+        // }
+
+
+        // ======================================================================
+        // Récupérer tous les enregistrements pour l'année actuelle avec un code non null
+        $invoices = Invoice::whereYear('created_at', now()->year)
             ->whereNotNull('code')
             ->orderByRaw('RIGHT(code, 4) DESC')
-            ->first();
+            ->get();
 
-        // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
-        if (!$invoice || $invoice->created_at->year != now()->year) {
+        // Filtrer pour exclure les codes de type REGULARISATION
+        $filteredInvoices = $invoices->filter(function ($invoice) {
+            return $invoice->code !== 'REGULARISATION';
+        });
+
+        // Si la collection filtrée est vide, cela signifie que soit il n'y a pas de codes, soit tous les codes sont des régularisations
+        if ($filteredInvoices->isEmpty()) {
             $code = "0001";
-        }
-        // Sinon, incrémente le dernier code de 1
-        else {
-            // Récupère les quatre derniers caractères du code
-            $lastCode = substr($invoice->code, -4);
+        } else {
+            // Récupérer le dernier code valide dans la liste filtrée
+            $latestInvoice = $filteredInvoices->first();
 
-            // Convertit la chaîne en entier et l'incrémente de 1
+            // Récupérer les quatre derniers caractères du code
+            $lastCode = substr($latestInvoice->code, -4);
+
+            // Convertir la chaîne en entier et l'incrémenter de 1
             $code = intval($lastCode) + 1;
+
+            // Formater le code avec des zéros à gauche pour qu'il ait toujours 4 chiffres
             $code = str_pad($code, 4, '0', STR_PAD_LEFT);
         }
+        //  =====================================================================
 
         // Ajoute les deux derniers chiffres de l'année au début du code
         return "FA" . now()->year % 100 . "$code";

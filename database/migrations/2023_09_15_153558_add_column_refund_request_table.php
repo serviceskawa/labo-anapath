@@ -29,7 +29,7 @@ class AddColumnRefundRequestTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
             // $table->dropColumn('status');
-            $table->enum('status',['En attente','Aprouvé','Rejeté','Clôturé'])->default('En attente');
+            // $table->enum('status',['En attente','Aprouvé','Rejeté','Clôturé'])->default('En attente');
             $table->text('refund_method')->nullable();
             $table->text('note')->nullable();
             $table->text('attachment')->nullable();

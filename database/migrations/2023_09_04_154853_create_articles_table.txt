@@ -23,7 +23,7 @@ class CreateArticlesTable extends Migration
             $table->integer('lot_number')->nullable();
             $table->bigInteger('minimum')->default(1);
             $table->unsignedBigInteger('unit_measurement_id');
-            $table->foreign('unit_measurement_id')->references('id')->on('unit_Measurements')->onUpdate('cascade')->onDelete('restrict');
+            $table->foreign('unit_measurement_id')->references('id')->on('unit_measurements')->onUpdate('cascade')->onDelete('restrict');
             $table->softDeletes();
             $table->timestamps();
         });

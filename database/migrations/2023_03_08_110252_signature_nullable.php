@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNewNewInvoiceTable extends Migration
+class SignatureNullable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddNewNewInvoiceTable extends Migration
      */
     public function up()
     {
-        Schema::table('invoices', function (Blueprint $table) {
-            $table->boolean('status_invoice')->default(0);
+        Schema::table('reports', function (Blueprint $table) {
+            // $table->integer('signatory1')->nullable();
+            // $table->integer('signatory2')->nullable();
+            // $table->integer('signatory3')->nullable();
         });
     }
 
@@ -25,7 +27,7 @@ class AddNewNewInvoiceTable extends Migration
      */
     public function down()
     {
-        Schema::table('invoices', function (Blueprint $table) {
+        Schema::table('reports', function (Blueprint $table) {
             //
         });
     }

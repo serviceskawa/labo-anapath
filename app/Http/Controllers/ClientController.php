@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Models\Client;
+use App\Models\Invoice;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,7 @@ class ClientController extends Controller
 {
     protected $client;
     protected $setting;
-    public function __construct( Client $client, Setting $setting)
+    public function __construct(Client $client, Setting $setting)
     {
         $this->middleware('auth');
         $this->client = $client;
@@ -35,8 +36,7 @@ class ClientController extends Controller
 
         $setting = $this->setting::find(1);
         config(['app.name' => $setting->titre]);
-        return view('clients.index',compact(['clients']));
-
+        return view('clients.index', compact(['clients']));
     }
 
     /**
@@ -65,9 +65,8 @@ class ClientController extends Controller
         try {
             Client::create($clientData);
             return back()->with('success', "Un client enregistré ! ");
-
-        } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }
 
@@ -101,6 +100,14 @@ class ClientController extends Controller
 
 
         try {
+            // Le code pour modifier le nom du client professionnel
+            $client = Client::where('id', $request->id)->first();
+            $invoice = Invoice::where('client_name', $client->name)->first();
+            if ($invoice) {
+                $invoice->client_name = $request->name;
+                $invoice->client_address = $request->adress;
+                $invoice->save();
+            }
 
             $doctor = Client::find($clientData['id']);
             $doctor->name = $clientData['name'];
@@ -110,13 +117,12 @@ class ClientController extends Controller
             $doctor->save();
 
             return back()->with('success', "Un client a été mis à jour ! ");
-
-        } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }
 
-     /**
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
