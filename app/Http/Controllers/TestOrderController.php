@@ -1312,7 +1312,7 @@ class TestOrderController extends Controller
         $log->save();
 
         $code_facture = generateCodeFacture();
-
+dd($code_facture);
         // Si la demande est sur un contrat individuel
         if ($test_order->contrat->invoice_unique != 1) {
             $invoiceTestOrder = $this->invoice->where('test_order_id', $test_order->id)->first();
@@ -1383,7 +1383,7 @@ class TestOrderController extends Controller
             //si la demande est sur un contrat à facturation groupée
             //Recherché la facture de ce contrat
             $invoiceTestOrder = $this->invoice->where('contrat_id', $test_order->contrat->id)->first();
-            dd($invoiceTestOrder);
+            // dd($invoiceTestOrder);
             if ($invoiceTestOrder) {
                 if ($invoiceTestOrder->paid != 1) {
                     $invoiceTestOrder->update([
@@ -1416,7 +1416,7 @@ class TestOrderController extends Controller
 
                 return redirect()->route('invoice.show', [$invoiceTestOrder->id])->with('success', " Opération effectuée avec succès  ! ");
             } else {
-                dd('facture existe pas');
+                // dd('facture existe pas');
                 return back()->with('error', " Aucune facture n'est associé à se contrat ! ");
             }
         }
