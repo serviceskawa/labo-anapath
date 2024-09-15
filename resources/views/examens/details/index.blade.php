@@ -9,21 +9,21 @@
 <!-- Inclure les fichiers CSS de Dropzone.js via CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/dropzone.min.css" />
 <style>
-    .simple-button {
-        background-color: transparent;
-        border: none;
-        color: #dc3545;
-        /* Couleur du texte pour les boutons de suppression */
-        cursor: pointer;
-    }
+.simple-button {
+    background-color: transparent;
+    border: none;
+    color: #dc3545;
+    /* Couleur du texte pour les boutons de suppression */
+    cursor: pointer;
+}
 
-    .simple-link-button {
-        background-color: transparent;
-        border: none;
-        color: #0d6efd;
-        /* Couleur du texte pour les boutons de lien */
-        cursor: pointer;
-    }
+.simple-link-button {
+    background-color: transparent;
+    border: none;
+    color: #0d6efd;
+    /* Couleur du texte pour les boutons de lien */
+    cursor: pointer;
+}
 </style>
 @endsection
 
@@ -118,7 +118,21 @@
                         <label for="exampleFormControlInput1" class="form-label">Contrat<span
                                 style="color:red;">*</span></label>
 
-                        @if ($report_search)
+                        @if ($contrat->status == 'ACTIF' && $contrat->is_close == 0)
+                        @php
+                        $a = App\Models\TestOrder::where('contrat_id', $contrat->id)->get();
+                        @endphp
+
+                        @if ($a->count() < $contrat->nbr_tests || $contrat->nbr_tests == -1)
+                            <option>Tvfff</option>
+                            <option value="{{ $contrat->id }}"
+                                {{ $test_order->contrat_id == $contrat->id ? 'selected' : '' }}>{{ $contrat->name }}
+                            </option>
+                            @endif
+                            @endif
+
+
+                            <!-- @if ($report_search)
                         @if ($report_search->status == 0)
                         <select class="form-select select2" data-toggle="select2" required name="contrat_id"
                             id="contrat_id">
@@ -173,7 +187,7 @@
                                 Ajouter un contrat
                                 @endforelse
                         </select>
-                        @endif
+                        @endif -->
                     </div>
                 </div>
                 <div class="col-md-12 my-3">
@@ -813,29 +827,29 @@ $code_testInvoice = $test_order->invoice;
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
 <script>
-    var test_order = @json($test_order);
-    var test_order_code = @json($code_testOrder);
-    var invoiceTest = @json($code_testInvoice);
-    var ROUTESTOREDETAILTESTORDER = "{{ route('details_test_order.store') }}";
+var test_order = @json($test_order);
+var test_order_code = @json($code_testOrder);
+var invoiceTest = @json($code_testInvoice);
+var ROUTESTOREDETAILTESTORDER = "{{ route('details_test_order.store') }}";
 
-    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 
-    var baseUrl = "{{ url('/') }}"
-    var TOKENDETAILDELETE = "{{ csrf_token() }}"
-    var ROUTEUPDATEORDER = "{{ route('test_order.updateorder') }}"
-    var TOKENUPDATEORDER = "{{ csrf_token() }}"
-    var ROUTESTOREDETAILTESTORDER = "{{ route('details_test_order.store') }}"
-    var TOKENSTOREDETAILTESTORDER = "{{ csrf_token() }}"
-    var ROUTEGETREMISE = "{{ route('examens.getTestAndRemise') }}"
-    var TOKENGETREMISE = "{{ csrf_token() }}"
-    var ROUTESTOREPATIENT = "{{ route('patients.storePatient') }}"
-    var TOKENSTOREPATIENT = "{{ csrf_token() }}"
-    var ROUTESTOREHOSPITAL = "{{ route('hopitals.storeHospital') }}"
-    var TOKENSTOREHOSPITAL = "{{ csrf_token() }}"
-    var ROUTESTOREDOCTOR = "{{ route('doctors.storeDoctor') }}"
-    var TOKENSTOREDOCTOR = "{{ csrf_token() }}"
-    var ROUTEFILEUPLOAD = "{{ route('images.upload') }}"
-    var TOKENGETFILEUPDATE = $('meta[name="csrf-token"]').attr('content')
+var baseUrl = "{{ url('/') }}"
+var TOKENDETAILDELETE = "{{ csrf_token() }}"
+var ROUTEUPDATEORDER = "{{ route('test_order.updateorder') }}"
+var TOKENUPDATEORDER = "{{ csrf_token() }}"
+var ROUTESTOREDETAILTESTORDER = "{{ route('details_test_order.store') }}"
+var TOKENSTOREDETAILTESTORDER = "{{ csrf_token() }}"
+var ROUTEGETREMISE = "{{ route('examens.getTestAndRemise') }}"
+var TOKENGETREMISE = "{{ csrf_token() }}"
+var ROUTESTOREPATIENT = "{{ route('patients.storePatient') }}"
+var TOKENSTOREPATIENT = "{{ csrf_token() }}"
+var ROUTESTOREHOSPITAL = "{{ route('hopitals.storeHospital') }}"
+var TOKENSTOREHOSPITAL = "{{ csrf_token() }}"
+var ROUTESTOREDOCTOR = "{{ route('doctors.storeDoctor') }}"
+var TOKENSTOREDOCTOR = "{{ csrf_token() }}"
+var ROUTEFILEUPLOAD = "{{ route('images.upload') }}"
+var TOKENGETFILEUPDATE = $('meta[name="csrf-token"]').attr('content')
 </script>
 <script src="{{ asset('viewjs/test/order/detail.js') }}"></script>
 <!-- Inclure les fichiers JavaScript de Dropzone.js via CDN -->
@@ -844,28 +858,28 @@ $code_testInvoice = $test_order->invoice;
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const deleteButtons = document.querySelectorAll("[data-confirm]");
-        deleteButtons.forEach(button => {
-            button.addEventListener("click", function(event) {
-                event.preventDefault();
-                const confirmMessage = this.getAttribute("data-confirm");
-                Swal.fire({
-                    title: 'Confirmation',
-                    text: confirmMessage,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Oui, supprimer!',
-                    cancelButtonText: 'Annuler' // Ici, nous changeons le texte du bouton "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        this.closest("form").submit();
-                    }
-                });
+document.addEventListener("DOMContentLoaded", function() {
+    const deleteButtons = document.querySelectorAll("[data-confirm]");
+    deleteButtons.forEach(button => {
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            const confirmMessage = this.getAttribute("data-confirm");
+            Swal.fire({
+                title: 'Confirmation',
+                text: confirmMessage,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Oui, supprimer!',
+                cancelButtonText: 'Annuler' // Ici, nous changeons le texte du bouton "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.closest("form").submit();
+                }
             });
         });
     });
+});
 </script>
 @endpush
