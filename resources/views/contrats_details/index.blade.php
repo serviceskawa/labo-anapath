@@ -67,7 +67,7 @@
                                     @endif
                                 </p>
                                 <p class="font-13"><strong>Nombre d'examens : </strong> {{ $contrat->nbr_tests == -1 ?
-                                    "Illimité" : $contrat->orders->count() }}</p>
+                                    "Illimité" : $contrat->orders->count()."/".$contrat->nbr_tests }}</p>
                                 <p class="font-13"><strong>Description : </strong> {{ $contrat->description }}</p>
                             </div>
                         </div>
