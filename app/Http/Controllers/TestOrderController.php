@@ -1034,7 +1034,6 @@ class TestOrderController extends Controller
 
     public function edit($id)
     {
-
         if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
@@ -1282,8 +1281,6 @@ class TestOrderController extends Controller
         $settings = $this->setting->find(1);
         $user = Auth::user();
 
-
-
         // Génère un code unique
         $code_unique = generateCodeExamen();
 
@@ -1308,7 +1305,6 @@ class TestOrderController extends Controller
         }
 
         $reportnow = Report::latest()->first();
-
         $log = new LogReport();
         $log->operation = "Créer un nouveau report";
         $log->report_id = $reportnow->id;
@@ -1387,6 +1383,7 @@ class TestOrderController extends Controller
             //si la demande est sur un contrat à facturation groupée
             //Recherché la facture de ce contrat
             $invoiceTestOrder = $this->invoice->where('contrat_id', $test_order->contrat->id)->first();
+            dd($invoiceTestOrder);
             if ($invoiceTestOrder) {
                 if ($invoiceTestOrder->paid != 1) {
                     $invoiceTestOrder->update([
@@ -1419,7 +1416,7 @@ class TestOrderController extends Controller
 
                 return redirect()->route('invoice.show', [$invoiceTestOrder->id])->with('success', " Opération effectuée avec succès  ! ");
             } else {
-                // dd('facture existe pas');
+                dd('facture existe pas');
                 return back()->with('error', " Aucune facture n'est associé à se contrat ! ");
             }
         }
