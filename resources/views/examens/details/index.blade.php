@@ -117,6 +117,7 @@
                     <div class="col-md-6">
                         <label for="exampleFormControlInput1" class="form-label">Contrat<span
                                 style="color:red;">*</span></label>
+                        @forelse ($contrats as $contrat)
 
                         @if ($contrat->status == 'ACTIF' && $contrat->is_close == 0)
                         @php
@@ -130,7 +131,9 @@
                             </option>
                             @endif
                             @endif
-
+                            @empty
+                            Ajouter un contrat
+                            @endforelse
 
                             <!-- @if ($report_search)
                         @if ($report_search->status == 0)
