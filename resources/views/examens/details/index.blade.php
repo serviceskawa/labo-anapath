@@ -125,7 +125,6 @@
                         @endphp
 
                         @if ($a->count() < $contrat->nbr_tests || $contrat->nbr_tests == -1)
-                            <option>Tvfff</option>
                             <option value="{{ $contrat->id }}"
                                 {{ $test_order->contrat_id == $contrat->id ? 'selected' : '' }}>{{ $contrat->name }}
                             </option>
