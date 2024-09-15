@@ -1312,7 +1312,7 @@ class TestOrderController extends Controller
         $log->save();
 
         $code_facture = generateCodeFacture();
-dd($code_facture);
+
         // Si la demande est sur un contrat individuel
         if ($test_order->contrat->invoice_unique != 1) {
             $invoiceTestOrder = $this->invoice->where('test_order_id', $test_order->id)->first();
