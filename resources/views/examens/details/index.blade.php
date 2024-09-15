@@ -117,24 +117,26 @@
                     <div class="col-md-6">
                         <label for="exampleFormControlInput1" class="form-label">Contrat<span
                                 style="color:red;">*</span></label>
-                        @forelse ($contrats as $contrat)
+                        <select class="form-select select2" data-toggle="select2" required name="contrat_id"
+                            id="contrat_id">
+                            @forelse ($contrats as $contrat)
 
-                        @if ($contrat->status == 'ACTIF' && $contrat->is_close == 0)
-                        @php
-                        $a = App\Models\TestOrder::where('contrat_id', $contrat->id)->get();
-                        @endphp
+                            @if ($contrat->status == 'ACTIF' && $contrat->is_close == 0)
+                            @php
+                            $a = App\Models\TestOrder::where('contrat_id', $contrat->id)->get();
+                            @endphp
 
-                        @if ($a->count() < $contrat->nbr_tests || $contrat->nbr_tests == -1)
-                            <option value="{{ $contrat->id }}"
-                                {{ $test_order->contrat_id == $contrat->id ? 'selected' : '' }}>{{ $contrat->name }}
-                            </option>
-                            @endif
-                            @endif
-                            @empty
-                            Ajouter un contrat
-                            @endforelse
-
-                            <!-- @if ($report_search)
+                            @if ($a->count() < $contrat->nbr_tests || $contrat->nbr_tests == -1)
+                                <option value="{{ $contrat->id }}"
+                                    {{ $test_order->contrat_id == $contrat->id ? 'selected' : '' }}>{{ $contrat->name }}
+                                </option>
+                                @endif
+                                @endif
+                                @empty
+                                Ajouter un contrat
+                                @endforelse
+                        </select>
+                        <!-- @if ($report_search)
                         @if ($report_search->status == 0)
                         <select class="form-select select2" data-toggle="select2" required name="contrat_id"
                             id="contrat_id">
