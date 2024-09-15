@@ -42,20 +42,6 @@
 
                 <!-- Invoice Detail-->
                 <div class="row">
-                    {{-- <div class="col-sm-4">
-                            <div class="float-sm-start">
-
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="float-sm-start">
-
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-
-                        </div> --}}
-
                     <div class="col-sm-4">
                         <div class="float-sm-start">
                             <p><strong>
