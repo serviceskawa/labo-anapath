@@ -709,7 +709,7 @@ class ReportController extends Controller
 
     public function getTestOrdersforDatatableSuivi(Request $request)
     {
-        $data = $this->report->with('order')->latest();
+        $data = $this->report->with(['order.assignmentTestOrder'])->latest();
 
         return DataTables::of($data)
             ->addIndexColumn()

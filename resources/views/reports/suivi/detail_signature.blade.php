@@ -29,8 +29,27 @@
                         <div class="mb-3 col-lg-12">
                             <label for="simpleinput" class="form-label">Signature :</label><br>
                             <div>
-                                <img src="{{ $data->retriever_signature }}" style="width: 700px; height:300px;"
-                                    alt="Signature de {{ $data->retriever_name }}">
+                                {{-- <img src="{{ $data->retriever_signature }}" style="width: 700px; height:300px;"
+                                    alt="Signature de {{ $data->retriever_name }}"> --}}
+
+                                {{-- {!! $data->retriever_signature !!} --}}
+
+
+
+                                @if (str_starts_with($data->retriever_signature, 'data:image/png;base64,'))
+                                    <!-- Affichage pour PNG en base64 -->
+                                    <img src="{{ $data->retriever_signature }}" style="width: 700px; height:auto;"
+                                    alt="Signature de {{ $data->retriever_name }}" />
+                                @elseif (str_starts_with($data->retriever_signature, '<?xml version="1.0"?>') || str_starts_with($data->retriever_signature, '<svg'))
+                                    <!-- Affichage pour SVG -->
+                                    <div class="col-md-5"  style="width: auto; height:200px;">
+                                        {!! $data->retriever_signature !!}
+                                    </div>
+                                @else
+                                    <!-- Gérer le cas où le format est inconnu -->
+                                    <p>Signature non disponible</p>
+                                @endif
+
                             </div>
                         </div>
                     </div>

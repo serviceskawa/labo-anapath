@@ -599,14 +599,6 @@
                             </a>
                         </li>
                     @endif
-                    {{-- @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
-                    <li class="side-nav-item">
-                        <a href="{{ route('settings.app-index') }}" class="side-nav-link">
-                            <i class="uil-document-layout-right"></i>
-                            <span>Paramètres</span>
-                        </a>
-                    </li>
-                    @endif --}}
 
 
 
@@ -746,12 +738,6 @@
 
 
                     {{-- Documentations --}}
-                    {{-- <li class="side-nav-item">
-                        <a href="{{ route('doc.categorie.index') }}" class="side-nav-link">
-                            <i class="uil-document-layout-right"></i>
-                            <span>Documentations</span>
-                        </a>
-                    </li> --}}
                     <li class="side-nav-title side-nav-item">DOCUMENTATIONS</li>
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarProjects66" aria-expanded="false"
@@ -919,14 +905,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"
         integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    {{-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="http://keith-wood.name/js/jquery.signature.js"></script> --}}
-
-    {{-- <script type="text/javascript" src="{{ asset('/upload/js/jquery.signature.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/upload/js/jquery-ui.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/upload/js/jquery.min.js') }}"></script> --}}
-
     @stack('extra-js')
     <script>
         toastr.options = {
