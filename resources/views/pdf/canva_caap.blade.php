@@ -142,7 +142,7 @@ date_default_timezone_set('Europe/Paris');
             <tr>
                 <td style="text-align: left; width: 33%; vertical-align: bottom;">
                     @if ($show_signator_invoice == 'OUI')
-                    <img width="85" src="{{ asset('adminassets/images/' . $signature1) }}" alt="">
+                    {{-- <img width="85" src="{{ asset('adminassets/images/' . $signature1) }}" alt=""> --}}
 
                     <br><br>{{ $signator }}
                     @endif
