@@ -79,24 +79,15 @@
                             </div>
 
                             <div class="col-md-12">
-                                {{-- <label class="" for="">Signature<span style="color:red;">*</span></label>
+                                <label class="" for="">Signature<span style="color:red;">*</span></label>
                                 <div id="sig"></div>
                                 <br><br>
-                                <textarea id="signature" name="retriever_signature" style="display: none"></textarea> --}}
-
-                                <div style="text-align:">
-                                    <label class="" for="">Signature<span style="color:red;">*</span></label>
-                                    <canvas id="signature-pad"
-                                        style="border:1px solid #000000; width: 100%; height: 200px;"></canvas>
-                                    {{-- <button type="button" onclick="clearSignature()">Effacer</button>
-                                    <button type="button" onclick="saveSignature()">Enregistrer</button> --}}
-                                </div>
-
+                                <textarea id="signature" name="retriever_signature" style="display: none"></textarea>
                             </div>
 
                             <div class="col-md-6">
-                                <button id="clear" class="btn btn-danger" onclick="clearSignature()">Effacer</button>
-                                <button class="btn btn-primary" onclick="saveSignature()">Enregistrer</button>
+                                <button id="clear" class="btn btn-danger">Effacer</button>
+                                <button class="btn btn-primary" type="submit">Enregistrer</button>
                             </div>
                         </div>
                     </div>
@@ -123,100 +114,10 @@
 
 
     <script type="text/javascript" src="{{ asset('/upload/js/jquery.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/2.3.2/signature_pad.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.3.4/signature_pad.js"></script>
-
-     {{-- <script>
-        var canvas = document.getElementById('signature-pad');
-        var signaturePad = new SignaturePad(canvas);
-
-        function clearSignature() {
-            signaturePad.clear();
-        }
-
-        function saveSignature() {
-            if (!signaturePad.isEmpty()) {
-                var signatureData = signaturePad.toDataURL('image/png');
-
-                // Envoyer la signature encodée en base64 vers le backend Laravel
-                fetch('/save-signature', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            signature: signatureData
-                        })
-                    }).then(response => response.json())
-                    .then(data => {
-                        console.log('Signature enregistrée avec succès:', data);
-                    }).catch(error => console.error('Erreur:', error));
-            } else {
-                alert("Veuillez signer avant d'enregistrer.");
-            }
-        }
-    </script> --}}
-
-    <script>
-        var canvas = document.getElementById('signature-pad');
-        var signaturePad = new SignaturePad(canvas);
-
-        function resizeCanvas() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            signaturePad.clear(); // Effacer la signature après redimensionnement
-        }
-
-        window.addEventListener("resize", resizeCanvas);
-        resizeCanvas();
-
-        function clearSignature() {
-            signaturePad.clear();
-        }
-
-        function saveSignature() {
-            if (!signaturePad.isEmpty()) {
-                var signatureData = signaturePad.toDataURL('image/png');
-                // Envoyer signatureData au backend pour sauvegarde
-            } else {
-                alert("Veuillez signer avant d'enregistrer.");
-            }
-        }
-
-        // Désactiver le défilement sur canvas lors de la signature
-        document.body.addEventListener("touchstart", function(e) {
-            if (e.target === canvas) {
-                e.preventDefault();
-            }
-        }, {
-            passive: false
-        });
-
-        document.body.addEventListener("touchmove", function(e) {
-            if (e.target === canvas) {
-                e.preventDefault();
-            }
-        }, {
-            passive: false
-        });
-    </script>
-
-
-
-
-
-
-
-
-
-
-
-    {{-- <script type="text/javascript" src="{{ asset('/upload/js/jquery-ui.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/upload/js/jquery-ui.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/upload/js/jquery.signature.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/upload/js/jquery.ui.touch-punch.js') }}"></script> --}}
-
-    {{-- <script type="text/javascript">
+    <script type="text/javascript" src="{{ asset('/upload/js/jquery.ui.touch-punch.js') }}"></script>
+    <script type="text/javascript">
         var sig = $('#sig').signature({
             syncField: '#signature',
             syncFormat: 'SVG'
@@ -250,5 +151,5 @@
                 }
             });
         });
-    </script> --}}
+    </script>
 @endpush
