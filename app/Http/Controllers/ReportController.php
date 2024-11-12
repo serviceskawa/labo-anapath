@@ -643,7 +643,7 @@ class ReportController extends Controller
         } else {
             $year_month = 'ans';
         }
-     
+
         $data = [
             'fileUrl' => $fileUrl,
             'code' => $report->code,
@@ -703,7 +703,7 @@ class ReportController extends Controller
             // } catch (Html2PdfException $e) {
         } catch (Exception $e) {
             Log::info($e->getMessage());
-           $message = 'Erreur lors de la génération du PDF';
+            $message = 'Erreur lors de la génération du PDF';
             // Message d'erreur explicite pour l'utilisateur
             return redirect()->back()->with('error', $message);
         }
@@ -997,30 +997,27 @@ class ReportController extends Controller
 
     public function storeSignature(Request $request)
     {
-        // Validation des champs 'retriever_name' et 'retriever_signature'
-        $request->validate([
-            'retriever_name' => 'required|string|max:255',
-            'retriever_signature' => 'required|string', // La signature est encodée en base64, donc c'est une string
-        ], [
-            'retriever_name.required' => 'Le nom du récupérateur est obligatoire.',
-            'retriever_signature.required' => 'La signature est obligatoire.',
-        ]);
+        Log::info($request->all());
+        try {
+            // Récupérer le report à mettre à jour
+            $updated_report = Report::findOrFail(intval($request->reportId));
 
-        // Récupérer le report à mettre à jour
-        $updated_report = Report::findOrFail(intval($request->report_id));
+            // Mettre à jour les champs du report
+            $updated_report->is_delivered = 1;
+            $updated_report->delivery_date = now();
+            $updated_report->is_called = 1;
+            $updated_report->call_date = now();
+            $updated_report->retriever_name = $request->signatorName;
+            $updated_report->retriever_signature = $request->signature;
 
-        // Mettre à jour les champs du report
-        $updated_report->is_delivered = 1;
-        $updated_report->delivery_date = now();
-        $updated_report->is_called = 1;
-        $updated_report->call_date = now();
-        $updated_report->retriever_name = $request->retriever_name;
-        $updated_report->retriever_signature = $request->retriever_signature;
+            // Sauvegarder les modifications
+            $updated_report->save();
+            return response()->json(['message' => 'Signature enregistrée avec succès']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erreur lors de l\'enregistrement de la signature'], 500);
+        }
 
-        // Sauvegarder les modifications
-        $updated_report->save();
-
-        return redirect(route('report.index.suivi'))->with('success', 'Operation réussie avec succès!');
+        // return redirect(route('report.index.suivi'))->with('success', 'Operation réussie avec succès!');
     }
 
     public function callUser($report)
