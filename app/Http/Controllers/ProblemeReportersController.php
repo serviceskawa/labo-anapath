@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NotificationCreateNewTicket;
 use App\Models\ProblemCategory;
 use App\Models\ProblemReport;
 use App\Models\Setting;
@@ -9,8 +10,11 @@ use App\Models\TestOrder;
 use App\Models\Ticket;
 use App\Models\TicketComment;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class ProblemeReportersController extends Controller
 {
@@ -85,16 +89,21 @@ class ProblemeReportersController extends Controller
 
         // $test_order = TestOrder::where('code',$data['test_order_code'])->first();
         try {
+            DB::beginTransaction();
             $this->tickets->create([
                 'subject'=>$data['subject'],
                 'user_id'=>Auth::user()->id,
                 'ticket_code'=>$code,
                 'description'=>$data['description'],
-                
+
             ]);
+            Mail::to('serviceskawa@gmail.com')->send(new NotificationCreateNewTicket());
+            DB::commit();
             return redirect()->route('probleme.report.index')->with('success',"Ticket enregistrée avec success");
-        } catch (\Throwable $th) {
-            return back()->with('error',"Un problème est suvenu lors de l'enrégistrement".$th);
+        } catch (Exception $th) {
+            DB::rollBack();
+            dd($th->getMessage());
+            return back()->with('error',"Un problème est suvenu lors de l'enrégistrement".$th->getMessage());
         }
     }
 
