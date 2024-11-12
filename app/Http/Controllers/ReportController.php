@@ -699,7 +699,7 @@ class ReportController extends Controller
             Storage::disk('public')->put($filename, $pdf->output());
 
             // Lancement du téléchargement du fichier PDF
-            return $pdf->stream(time() . ".pdf");
+            return $pdf->stream($report->code . ".pdf");
             // } catch (Html2PdfException $e) {
         } catch (Exception $e) {
             Log::info($e->getMessage());
