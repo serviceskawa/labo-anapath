@@ -8,10 +8,12 @@
 
     @php
         $setting = \App\Models\Setting::orderBy('id', 'desc')->first();
+        $logo = \App\Models\SettingApp::where('key', 'logo')->first();
+        $favicon = \App\Models\SettingApp::where('key', 'favicon')->first();
     @endphp
     <meta content="Coderthemes" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ $setting ? Storage::url($setting->favicon) : '' }}">
+    <link rel="shortcut icon" href="{{ $favicon ? Storage::url($favicon->value) : '' }}">
 
     <!-- App css -->
     <link href="{{ asset('/adminassets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
@@ -32,11 +34,11 @@
                         <div class="card-header pt-2 pb-2 text-center ">
                             <a href="#">
                                 <span>
-                                    <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt="" width="250px"></span>
+                                    <img src="{{ $logo ? Storage::url($logo->value) : '' }}" alt="" width="250px"></span>
                             </a>
                         </div>
 
-
+                        <!--@include('layouts.alerts')-->
                         <div class="card-body p-4">
 
                             <form method="POST" action="{{ route('login') }}">

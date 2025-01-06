@@ -13,23 +13,14 @@
             <h4 class="page-title">Contrats</h4>
         </div>
 
-        <!----MODAL---->
-
         @include('contrats.create')
-
         @include('contrats.edit')
-
     </div>
 </div>
 
 
 <div class="">
-
-
     @include('layouts.alerts')
-
-
-
     <div class="card mb-md-0 mb-3">
         <div class="card-body">
             <div class="card-widgets">
@@ -42,55 +33,79 @@
 
             <div id="cardCollpase1" class="collapse pt-3 show">
 
+                <div class="row mb-3">
 
-                <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
+                    <div class="col-lg-4">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Rechercher</label>
+                            <input type="text" name="contenu" id="contenu" class="form-control"
+                                placeholder="Contrat ou client professionnel">
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Status contrat</label>
+                            <select name="statusquery" id="statusquery" class="form-control">
+                                <option value="">Tous</option>
+                                <option value="ACTIF">ACTIF</option>
+                                <option value="INACTIF">INACTIF</option>
+                                <option value="1">CLÔTURER</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Status facture</label>
+                            <select name="cas_status" id="cas_status" class="form-control">
+                                <option value="">Tous</option>
+                                <option value="0">En attente</option>
+                                <option value="1">Payé</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Date Début</label>
+                            <input type="date" name="dateBegin" id="dateBegin" class="form-control">
+                        </div>
+                    </div> <!-- end col -->
+
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label for="example-fileinput" class="form-label">Date fin</label>
+                            <input type="date" name="dateEnd" id="dateEnd" class="form-control">
+                        </div>
+                    </div> <!-- end col -->
+
+                </div>
+
+
+
+
+                <table id="datatable2" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
-                            <th>Nom du contrat</th>
-                            <th>Type</th>
-                            <th>Examens</th>
+                            <th>Date</th>
+                            <th>Contrat</th>
+                            <th>Nombre d’examens</th>
                             <th>Statut</th>
                             <th>Actions</th>
-
                         </tr>
                     </thead>
 
 
                     <tbody>
 
-                        @foreach ($contrats as $item)
-                        <tr>
-                            <td>{{ $item->name }}</td>
-                            <td>{{ $item->type }}</td>
-                            <td>{{ $item->orders->count() }}</td>
-                            <td>{{ $item->status }}</td>
-
-                            <td>
-                                <a type="button" href="{{ route('contrat_details.index', $item->id) }}"
-                                    class="btn btn-warning"><i class="mdi mdi-eye"></i> </a>
-                                <button type="button" onclick="edit({{ $item->id }})" class="btn btn-primary"><i
-                                        class="mdi mdi-lead-pencil"></i> </button>
-                                <button type="button" onclick="deleteModal({{ $item->id }})" class="btn btn-danger"><i
-                                        class="mdi mdi-trash-can-outline"></i> </button>
-                                @if ($item->is_close != 1 )
-                                <button type="button" onclick="closeModal({{ $item->id }})" class="btn btn-secondary"><i
-                                        class="mdi mdi-block-helper"></i> </button>
-                                @endif
-
-                            </td>
-
-                        </tr>
-                        @endforeach
-
-
-
-
                     </tbody>
                 </table>
 
             </div>
         </div>
-    </div> <!-- end card-->
+    </div>
 
 
 </div>
@@ -98,99 +113,11 @@
 
 
 @push('extra-js')
+
 <script>
-    // SUPPRESSION
-    function deleteModal(id) {
-
-        Swal.fire({
-            title: "Voulez-vous supprimer l'élément ?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Oui ",
-            cancelButtonText: "Non !",
-        }).then(function(result) {
-            if (result.value) {
-                window.location.href = "{{ url('contrats/delete') }}" + "/" + id;
-                Swal.fire(
-                    "Suppression !",
-                    "En cours de traitement ...",
-                    "success"
-                )
-            }
-        });
-    }
-    
-    function closeModal(id) {
-
-        Swal.fire({
-            title: "Voulez-vous clôturer l'élément ?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Oui ",
-            cancelButtonText: "Non !",
-        }).then(function(result) {
-            if (result.value) {
-                window.location.href = "{{ url('contrats/close') }}" + "/" + id;
-                Swal.fire(
-                    "Suppression !",
-                    "En cours de traitement ...",
-                    "success"
-                )
-            }
-        });
-    }
-
-
-    /* DATATABLE */
-    $(document).ready(function() {
-
-        $('#datatable1').DataTable({
-            "order": [
-                [0, "asc"]
-            ],
-            "columnDefs": [{
-                "targets": [0],
-                "searchable": false
-            }],
-            "language": {
-                "lengthMenu": "Afficher _MENU_ enregistrements par page",
-                "zeroRecords": "Aucun enregistrement disponible",
-                "info": "Afficher page _PAGE_ sur _PAGES_",
-                "infoEmpty": "Aucun enregistrement disponible",
-                "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-                "sSearch": "Rechercher:",
-                "paginate": {
-                    "previous": "Précédent",
-                    "next": "Suivant"
-                }
-            },
-        });
-    });
-
-
-    //EDITION
-    function edit(id) {
-        var e_id = id;
-
-        // Populate Data in Edit Modal Form
-        $.ajax({
-            type: "GET",
-            url: "{{ url('getcontrat') }}" + '/' + e_id,
-            success: function(data) {
-
-                $('#id2').val(data.id);
-                $('#name2').val(data.name);
-                $('#type2').val(data.type).change();
-                $('#status2').val(data.status).change();
-                $('#description2').val(data.description);
-                $('#nbr_examen').val(data.nbr_tests);
-
-                $('#editModal').modal('show');
-            },
-            error: function(data) {
-                console.log('Error:', data);
-            }
-        });
-    }
+var baseUrl = "{{ url('/') }}";
+var ROUTEGETDATATABLE = "{{ route('contrat.getContratsforDatatable') }}"
 </script>
+
+<script src="{{asset('viewjs/contrat/index.js')}}"></script>
 @endpush

@@ -1,12 +1,24 @@
 @extends('layouts.app2')
 
+@section('title', 'Utilisateurs')
+
 @section('content')
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="page-title-right mr-3">
+                    <a href="{{ route('user.role-index') }}" type="button" class="btn btn-primary"> <i class="dripicons-reply"></i> Retour</a>
+                </div>
+                <h4 class="page-title">Rôles</h4>
+            </div>
+        </div>
+    </div>
     <div class="">
 
         @include('layouts.alerts')
-        <div class="card my-3">
+        <div class="card my-2">
             <div class="card-header">
-
+                Ajouter un nouveau rôle
             </div>
             <div class="card-body">
 
@@ -16,7 +28,7 @@
 
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="exampleFormControlInput1" class="form-label">Titre du role</label>
+                                <label for="exampleFormControlInput1" class="form-label">Nom</label>
                                 <input type="text" class="form-control" name="titre">
                             </div>
                         </div>
@@ -26,7 +38,7 @@
                                     <tbody>
                                         <tr>
                                             <td class="text-nowrap fw-bolder">
-                                                Tout les droits
+                                                Tous les droits
                                                 <span data-bs-toggle="tooltip" data-bs-placement="top"
                                                     title="Attribuer toutes les permissions">
                                                     <i data-feather="info"></i>
@@ -35,7 +47,7 @@
                                             <td>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="selectAll" />
-                                                    <label class="form-check-label" for="selectAll"> Tout </label>
+                                                    <label class="form-check-label" for="selectAll"> Tous </label>
                                                 </div>
                                             </td>
                                         </tr>
@@ -71,7 +83,8 @@
 
             <div class="modal-footer">
                 <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-primary">Creer</button>
+                <button type="submit" class="btn btn-primary">Ajouter un nouveau rôle
+</button>
             </div>
 
 
@@ -88,14 +101,5 @@
 
 
 @push('extra-js')
-    <script>
-        // Select All checkbox click
-        const selectAll = document.querySelector('#selectAll'),
-            checkboxList = document.querySelectorAll('[type="checkbox"]');
-        selectAll.addEventListener('change', t => {
-            checkboxList.forEach(e => {
-                e.checked = t.target.checked;
-            });
-        });
-    </script>
+    <script src="{{asset('viewjs/user/roleshow.js')}}"></script>
 @endpush

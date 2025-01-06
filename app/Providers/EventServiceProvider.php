@@ -2,6 +2,14 @@
 
 namespace App\Providers;
 
+use App\Events\AssignedReviewer;
+use App\Events\NotificationAdminTimeOffEvent;
+use App\Events\NotificationEmployeTimeOffEvent;
+use App\Events\ShareDocEvent;
+use App\Listeners\NotificationAdminTimeOffListener;
+use App\Listeners\NotificationEmployeTimeOffListener;
+use App\Listeners\SendAssignedReviewerNotification;
+use App\Listeners\ShareDocListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,6 +26,22 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+
+        AssignedReviewer::class => [
+            SendAssignedReviewerNotification::class,
+        ],
+
+        ShareDocEvent::class => [
+            ShareDocListener::class
+        ],
+
+        NotificationEmployeTimeOffEvent::class => [
+            NotificationEmployeTimeOffListener::class
+        ],
+
+        NotificationAdminTimeOffEvent::class => [
+            NotificationAdminTimeOffListener::class
+        ]
     ];
 
     /**

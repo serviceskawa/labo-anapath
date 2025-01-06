@@ -4,26 +4,6 @@
 
 @section('content')
 <div class="row">
-    <div class="col-12">
-        <div class="page-title-box">
-            {{-- <div class="page-title-right mr-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#standard-modal">Nouveau</button>
-            </div>
-            <h4 class="page-title">Gérer les demandes d'examen</h4>
-        </div>
-
-        <!----MODAL---->
-
-        {{-- @include('examens.create') --}}
-
-        {{-- @include('doctors.edit') --}}
-
-    </div>
-</div>
-
-
-<div class="">
 
     <div class="page-title-box">
         <div class="page-title-right mr-3">
@@ -33,51 +13,37 @@
         <h4 class="page-title">Demandes d'examen</h4>
     </div>
 
-    <!----MODAL---->
-    @include('layouts.alerts')
+    <div class="">
 
-    <div class="card mb-md-0 mb-3">
-        <div class="card-body">
-            <div class="card-widgets">
-                <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
-                <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false"
-                    aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
-                <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
-            </div>
-            <h5 class="card-title mb-0">Liste des demandes d'examen </h5>
+        <!----MODAL---->
+        @include('layouts.alerts')
+        @include('examens.signals.create')
 
-            <div id="cardCollpase1" class="collapse pt-3 show">
+        <div class="card mb-md-0 mb-3">
+            <div class="card-body">
+                <div class="card-widgets">
+                    <a href="javascript:;" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
+                    <a data-bs-toggle="collapse" href="#cardCollpase1" role="button" aria-expanded="false"
+                        aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
+                    <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                </div>
+                <h5 class="card-title mb-0">Liste des demandes d'examen</h5>
 
-                <form method="post" id="filter_form">
-                    @csrf
+                <div id="cardCollpase1" class="show collapse pt-3">
+
                     <div class="row mb-3">
-
-                        {{-- <div class="col-lg-3">
-
-                            <div class="mb-3">
-                                <label for="example-fileinput" class="form-label">Date</label>
-                                <input type="text" id="reportrange" class="form-control">
-                            </div>
-
-
-                        </div> <!-- end col --> --}}
-
                         <div class="col-lg-3">
-
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Contrat</label>
                                 <select name="contrat_id" id="contrat_id" class="form-control">
                                     <option value="">Tous les contrats</option>
                                     @forelse ($contrats as $contrat)
-                                    <option value="{{$contrat->name}}">{{$contrat->name}}</option>
+                                    <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
                                     @empty
-
                                     @endforelse
                                 </select>
                             </div>
-
-
-                        </div> <!-- end col -->
+                        </div>
 
                         <div class="col-lg-3">
 
@@ -85,13 +51,14 @@
                                 <label for="example-fileinput" class="form-label">Status</label>
                                 <select name="status" id="exams_status" class="form-control">
                                     <option value="">Tous</option>
-                                    <option value="Valider">Valider</option>
-                                    <option value="En attente">En attente</option>
+                                    <option value="1">Valider</option>
+                                    <option value="0">En attente</option>
+                                    <option value="livrer">Livrer</option>
+                                    <option value="non_livrer">Non Livrer</option>
                                 </select>
                             </div>
 
-
-                        </div> <!-- end col -->
+                        </div>
 
                         <div class="col-lg-3">
 
@@ -100,270 +67,117 @@
                                 <select name="type_examen" id="type_examen" class="form-control">
                                     <option value="">Tous</option>
                                     @forelse ($types_orders as $type)
-                                    <option value="{{ $type->title }}">{{ $type->title }}</option>
+                                    <option value="{{ $type->id }}">{{ $type->title }}</option>
                                     @empty
                                     Ajouter un Type d'examen
                                     @endforelse
                                 </select>
                             </div>
 
+                        </div>
 
-                        </div> <!-- end col -->
                         <div class="col-lg-3">
-
                             <div class="mb-3">
                                 <label for="example-fileinput" class="form-label">Urgent</label>
                                 <select name="cas_status" id="cas_status" class="form-control">
                                     <option value="">Tous</option>
                                     <option value="1">Urgent</option>
+                                    <option value="">Retard</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-3">
+
+                            <div class="mb-3">
+                                <label for="example-fileinput" class="form-label">Docteur</label>
+                                <select name="" id="doctor_signataire" class="form-control">
+                                    <option value="">Tous</option>
+                                    @foreach (getUsersByRole('docteur') as $item)
+                                    <option value="{{ $item->id }}">
+                                        {{ $item->lastname }} {{ $item->firstname }}
+                                    </option>
+                                    @endforeach
                                 </select>
                             </div>
 
+                        </div>
 
-                        </div> <!-- end col -->
+                        <div class="col-lg-3">
+                            <div class="mb-3">
+                                <label for="example-fileinput" class="form-label">Rechercher</label>
+                                <input type="text" name="contenu" id="contenu" class="form-control">
+                            </div>
+                        </div>
 
+                        <div class="col-lg-3">
+                            <div class="mb-3">
+                                <label for="example-fileinput" class="form-label">Date Début</label>
+                                <input type="date" name="dateBegin" id="dateBegin" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3">
+                            <div class="mb-3">
+                                <label for="example-fileinput" class="form-label">Date fin</label>
+                                <input type="date" name="dateEnd" id="dateEnd" class="form-control">
+                            </div>
+                        </div>
                     </div>
-                </form>
 
-                <table id="datatable1" class="table dt-responsive nowrap w-100">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Date</th>
-                            <th>Code</th>
-                            <th>Patient</th>
-                            <th>Examens</th>
-                            <th>Contrat</th>
-                            {{-- <th>Pièce jointe</th> --}}
-                            {{-- <th>Examens demandés</th> --}}
-                            <th>Montant</th>
-                            <th>Compte rendu</th>
-                            {{-- <th>Type examen</th> --}}
-                            <th>Affecter à</th>
-                            <th>Urgent</th>
-                            <th>Actions</th>
+                    <div class="row mb-3">
+                        <div class="col-lg-2 p-1 alert alert-success rounded-pill"
+                            style="margin-right: 5px; text-align:center;">
+                            Livrer : {{$finishTest}}
+                        </div>
+                        <div class="col-lg-2 p-1 alert alert-warning rounded-pill"
+                            style="margin-right: 5px; text-align:center;">
+                            Valider : {{$noFinishTest}}
+                        </div>
+                        <div class="col-lg-2 p-1 ml-3 alert alert-danger rounded-pill"
+                            style="margin-right: 5px; text-align:center;">
+                            Cas urgent : {{$is_urgent}}
+                        </div>
+                    </div>
 
-                        </tr>
-                    </thead>
+                    <table id="datatable1" class="dt-responsive nowrap w-100 table">
+                        <thead>
+                            <tr>
+                                <th>Actions</th>
+                                {{-- <th>Appel</th> --}}
+                                <th>Date</th>
+                                <th>Code</th>
+                                <th>Affecter à</th>
+                                <th>Patient</th>
+                                <th>Examens</th>
+                                <th>Contrat</th>
+                                {{-- <th>Pièce jointe</th> --}}
+                                {{-- <th>Examens demandés</th> --}}
+                                <th>Montant</th>
+                                <th>Compte rendu</th>
+                                {{-- <th>Type examen</th> --}}
+                                <th>Urgent</th>
+                            </tr>
+                        </thead>
 
+                    </table>
 
-                </table>
-
+                </div>
             </div>
         </div>
-    </div> <!-- end card-->
 
-
+    </div>
 </div>
 @endsection
 
-
 @push('extra-js')
 <script>
-    // SUPPRESSION
-    function deleteModal(id) {
-
-        Swal.fire({
-            title: "La supression d'un examen entraine la suppression du Rapport. Voulez-vous continuez?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Oui ",
-            cancelButtonText: "Non !",
-        }).then(function(result) {
-            if (result.value) {
-                window.location.href = "{{ url('test_order/delete') }}" + "/" + id;
-                Swal.fire(
-                    "Suppression !",
-                    "En cours de traitement ...",
-                    "success"
-                )
-            }
-        });
-    }
-
-    /* DATATABLE */
-    $(document).ready(function() {
-
-        var table = $('#datatable1').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('test_order.getTestOrdersforDatatable') }}",
-            columns: [
-                {
-                    data: 'id',
-                    name: 'id'
-                },
-                {
-                    data: 'created_at',
-                    name: 'created_at'
-                },{
-                    data: 'code',
-                    name: 'code'
-                },{
-                    data: 'patient',
-                    name: 'patient'
-                },
-                {
-                    data: 'details',
-                    name: 'examens'
-                },
-                {
-                    data: 'contrat',
-                    name: 'contrat'
-                }, 
-                {
-                    data: 'total',
-                    name: 'total'
-                },
-                {
-                    data: 'rendu',
-                    name: 'rendu'
-                },
-                {
-                    data: 'dropdown',
-                    name: 'dropdown'
-                },
-                {
-                    data: 'urgence',
-                    name: 'urgence',
-                    visible: false,
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
-                },
-            ],
-            order: [
-                [0, 'desc']
-            ],
-            
-        });
-        // var table = $('#datatable1').DataTable({
-        //     "createdRow": function( row, data, dataIndex ) {
-            
-        //         var urgent = $(row).data('mytag');
-        //             if ( urgent == 1 ) {        
-        //             $(row).addClass('table-danger');  
-        //         }
-        //     },
-        //     "order": [
-        //         [0, "desc"]
-        //     ],
-        //     "columnDefs": [
-        //         {
-        //             "targets": [0],
-        //             "searchable": false
-        //         }
-        //     ],
-        //     "language": {
-        //         "lengthMenu": "Afficher _MENU_ enregistrements par page",
-        //         "zeroRecords": "Aucun enregistrement disponible",
-        //         "info": "Afficher page _PAGE_ sur _PAGES_",
-        //         "infoEmpty": "Aucun enregistrement disponible",
-        //         "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-        //         "sSearch": "Rechercher:",
-        //         "paginate": {
-        //             "previous": "Précédent",
-        //             "next": "Suivant"
-        //         }
-        //     },
-        // });
-  
-        // Recherche dans la colonne  contrat
-        $("#contrat_id").on("change", function() {
-            table
-            .columns(4)
-            .search(this.value)
-            .draw();
-        });
-        
-        // Recherche dans la colonne  compte rendu
-        $("#exams_status").on("change", function() {
-            table
-            .columns(8)
-            .search(this.value)
-            .draw();
-        });
-        
-        // Recherche dans la colonne  type d'examen
-        $("#type_examen").on("change", function() {
-            table
-            .columns(9)
-            .search(this.value)
-            .draw();
-        });
-        
-        // Recherche selon les cas
-        $("#cas_status").on("change", function() {
-            table
-            .columns(10)
-            .search(this.value)
-            .draw();
-        });
-        $.fn.dataTable.ext.search.push(
-            function( settings, searchData, index, rowData, counter ) 
-            {
-                var row = table.row(index).node();
-                // var filterValue = $(row).data('mytag');
-                var e = document.getElementById("cas_status");
-                var filter = e.options[e.selectedIndex].value;
-
-                if (filterValue == filter) {
-                    return true;
-                } else if (filter == "") {
-                    return true;
-                } else {
-                    return false;
-                }
-
-            }
-        );
-        
-    });
-
-
-    //EDITION
-    function edit(id) {
-        var e_id = id;
-
-        // Populate Data in Edit Modal Form
-        $.ajax({
-            type: "GET",
-            url: "{{ url('getdoctor') }}" + '/' + e_id,
-            success: function(data) {
-
-                $('#id2').val(data.id);
-                $('#name').val(data.name);
-                $('#telephone').val(data.telephone);
-                $('#email').val(data.email);
-                $('#role').val(data.role);
-                $('#commission').val(data.commission);
-
-
-
-                console.log(data);
-                $('#editModal').modal('show');
-            },
-            error: function(data) {
-                console.log('Error:', data);
-            }
-        });
-        $.ajax({
-            type: "GET",
-            url: "{{ url('gettest') }}" + '/' + test_id,
-            success: function(data) {
-
-
-        $('#price').val(data.price);
-
-            },
-            error: function(data) {
-                console.log('Error:', data);
-            }
-        });
-    }
-    
+    var baseUrl = "{{ url('/') }}"
+            var ROUTETESTORDERDATATABLE = "{{ route('test_order.getTestOrdersforDatatable') }}"
+            var ROUTETESTORDERDATATABLE2 = "{{ route('test_order.getTestOrdersforDatatable2') }}"
+            var URLupdateAttribuate = "{{ url('attribuateDoctor') }}" + '/' + doctor_id + '/' + order_id
+            var URLUPDATEDELIVER = "{{ route('report.updateDeliver',"+id+") }}"
 </script>
+<script src="{{ asset('viewjs/test/order/index.js') }}"></script>
 @endpush

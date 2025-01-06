@@ -3,6 +3,7 @@ setlocale(LC_TIME, 'fr_FR');
 date_default_timezone_set('Europe/Paris');
 ?>
 
+
 <style>
     .border_b {
         border-bottom: 2px solid rgb(0, 0, 0, 0);
@@ -14,125 +15,148 @@ date_default_timezone_set('Europe/Paris');
         border-radius: 5px;
     }
 </style>
+
 <page backbottom="10mm">
 
-    <div style="display:inline-block; ">
-        <span style="display: inline-block;padding-top: 5px; font-size:25px; margin-top:-50px "><img
-                src="{{ public_path('adminassets/images/Logo_long_CAAP@4x.png') }}" width="200px;" alt=""></span>
-        <div
-            style="display: inline-block; padding: 5px; position: absolute; top:20px; right: 0px; padding: 10px; text-align:right;">
-            <b><span style="font-size:17px; text-align:right;"> CENTRE ADECHINA ANATOMIE PATHOLOGIQUE</span></b>
-            <br><span style="font-size:10px; text-align:right;">Laboratoire d’Anatomie Pathologique</span>
-        </div>
+    <div style="display:inline-block; margin:0; padding:0;">
+        <span style="display: inline-block;"><img src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}"
+                width="100%;" alt=""></span>
     </div>
-    <div style="display: inline-block; position: absolute; right: 0px;width: 200px;padding: 10px;  margin-top:-20px">
+
+    <div style="display: inline-block; margin-top:150px; position: absolute; left: 0; padding: 10px; text-align: left;">
         <p>
-            <b>N° ANAPTH :</b> {{$code}}
+            <b>N° ANAPTH :</b> {{ $test_order_code }}
+            <b>{{ $test_affiliate != null ? '| Examen reference : ' : '' }}</b>
+            {{ $test_affiliate != null ? $test_affiliate : '' }}
             <br>
-            <b>Date :</b> {{$current_date}}
+            <b>Date validation:</b> {{ $signature_date }}
+            <br>
+            <b>Date impression:</b> {{ $current_date }}
         </p>
     </div>
+
     <div
-        style="margin-top:20px; background-color:#0070C1; width:100%; height:50px;color:rgb(255,255,255); text-align: center; padding-top:19px;font-size:25px;">
-        <b>COMPTE RENDU HISTOPATHOLOGIQUE</b>
+        style="display: inline-block; position: absolute; margin-top: 150px; right: 0; width: 50px; padding: 10px; text-align: right;">
+        <img src="{{ asset('storage/settings/app/' . $code .'_qrcode.png') }}" style="width: 65px; alt="" srcset="">
     </div>
-    <br><br>
+
+    <div
+        style=" margin-top:90px; background-color:#292929; width:100%; padding:15px; color:white; text-align:
+            center;font-size:16px; text-transform: uppercase;">
+        <b> {{ $title }} </b>
+    </div>
     <div>
-        <legend
-            style="font-size: 1.5em; padding-bottom: 10px; padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255); ">
+        <span
+            style="padding-left: 10px; padding-right: 5px; margin-top:15px; border:none; background-color:rgb(255,255,255); font-size:16px; text-transform: uppercase; ">
             <b>Informations prélèvement</b>
-        </legend>
-        <fieldset style="border: solid rgb(0,0,0,0)">
+        </span>
 
-            <p style="margin-left:10px; margin-right:10px; display:block; width: 100%;">
+        <p style="margin-left:10px; margin-right:10px; display:block; width: 100%;">
 
+        <table style="max-width: 100%;width: 500px; margin-top:5px;">
+            <tbody>
+                <tr>
+                    <th width="30%">Nom :</th>
+                    <td width="50%;">{{ $patient_lastname }}</td>
+                    <th width="30%;">Date prélèvement : </th>
+                    <td width="50%;">{{ $prelevement_date }} </td>
+                </tr>
 
-            <table style="max-width: 100%;width: 500px ">
-                <tbody>
-                    <tr>
-                        <th width="25%;">Nom :</th>
-                        <td width="25%;">{{ $patient_firstname }} </td>
-                        <th width="40%;">Date prélèvement : </th>
-                        <td width="20%;">{{$prelevement_date}} </td>
-                    </tr>
-                    <tr>
-                        <th>Prénoms :</th>
-                        <td>{{ $patient_lastname }} </td>
-                        <th>Date d’arrivée labo : </th>
-                        <td> {{ $created_at }} </td>
-                    </tr>
-                    <tr>
-                        <th>Age :</th>
-                        <td>{{ $patient_age }} </td>
-                        <th>Service demandeur :</th>
-                        <td>{{ $hospital_name }} </td>
-                    </tr>
-                    <tr>
-                        <th>Sexe :</th>
-                        <td>{{ $patient_genre }} </td>
-                        <th>Médecin prescripteur : </th>
-                        <td> {{ $doctor_name }} </td>
-                    </tr>
-                </tbody>
-            </table>
-            </p>
-            <br>
-        </fieldset>
+                <tr>
+                    <th>Prénoms :</th>
+                    <td>{{ $patient_firstname }}</td>
+                    <th>Date d’arrivée labo : </th>
+                    <td> {{ $created_at }} </td>
+                </tr>
+
+                <tr>
+                    <th>Age :</th>
+                    <td>{{ $patient_age }} {{ $patient_year_or_month }} </td>
+                    <th>Service demandeur :</th>
+                    <td>{{ $hospital_name }} </td>
+                </tr>
+
+                <tr>
+                    <th>Sexe :</th>
+                    <td>{{ $patient_genre }} </td>
+                    <th>Médecin prescripteur : </th>
+                    <td> {{ $doctor_name }} </td>
+                </tr>
+            </tbody>
+        </table>
+
+        </p>
     </div>
-    <br><br>
+    <hr style="height:1px; margin-top:5px;">
 
-    <legend
-        style="font-size: 1.5em; padding-left: 5px; padding-right: 5px; border:none; background-color:rgb(255,255,255);">
-        <b>Récapitulatifs</b>
-    </legend>
-    <br>
-    <div class="border_t"></div>
 
-    <div style="text-align: justify;">
-        <div>
-            {!! $content !!}
-        </div>
-    </div>
-    <br><br><br>
+    {!! $content !!}
+    {!! $content_micro !!}
 
-    <div class="border_b"></div>
+    @if ($content_supplementaire != '')
+    {!! $content_supplementaire !!}
+    {!! $content_supplementaire_micro !!}
+    @endif
 
-    <div style="">
+    <div style="margin-top:30px;">
         <table style="width: 100%;">
+            {{-- @if ($status ==1)
             <tr>
-                <!-- <td style="text-align: left;    width: 10%"></td> -->
-
-                <td style="text-align: center;    width: 33%">
-                    @if ($signatory1 != null)
-                    <img width="100" src="{{ storage_path('app/public/' . $signature1) }}" alt=""><br><br>{{
-                    $signatory1 }}
+                <td style="text-align: left; width: 33%; vertical-align: bottom;">
+                    @if ($signator)
+                    @if ($signature1)
+                    <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
+                    @endif
+                    <br><br>{{ $signator }}
                     @endif
                 </td>
-                <td style="text-align: center;    width: 33%">
+
+                <td style="text-align: center; width: 33%; vertical-align: bottom;">
                     @if ($signatory2 != null)
-                    <img width="200" src="{{ storage_path('app/public/' . $signature2) }}" alt=""><br><br>{{
-                    $signatory2 }}
+                    @if ($signature2 != null)
+                    <img width="85" src="{{ asset('storage/' . $signature2) }}" alt="">
                     @endif
-
+                    <br><br>{{ $signatory2 }}
+                    @endif
                 </td>
-                <td style="text-align: center;    width: 33%">
-                    @if ($signatory3 != null)
-                    <img width="85" src="{{ storage_path('app/public/' . $signature3) }}" alt=""><br><br>{{
-                    $signatory3 }}
+
+                <td style="text-align: right; width: 34%; vertical-align: bottom;">
+                    @if ($revew_by != null)
+                    {{ $report_review_title }}
+                    <br><strong>{{ $revew_by }}</strong>
                     @endif
                 </td>
             </tr>
-        </table>
+            @endif --}}
 
+
+            @if ($status == 1)
+            <tr>
+                <td style="text-align: left; width: 33%; vertical-align: bottom;">
+                    <img width="85" src="{{ asset('adminassets/images/'.$signature1) }}" alt="">
+
+                    <br><br>{{ $signator }}
+                </td>
+
+
+                <td style="text-align: right; width: 34%; vertical-align: bottom;">
+                    @if ($revew_by != null)
+                    {{ $report_review_title }}
+                    <br><strong>{{ $revew_by }}</strong>
+                    @endif
+                </td>
+            </tr>
+            @endif
+
+
+        </table>
     </div>
     <br><br>
     <page_footer>
         <table style="width: 100%; margin-top:1em !important">
             <tr>
-                <td style="text-align: left; width: 100%; font-size:12px;"> Centre ADECHINA Anatomie Pathologique • <br>
-                    Adresse : Carre 1915 "G" Fifadji, 072 BP 059 Cotonou, Benin • Téléphone : (+229)96110311 • RCCM
-                    RB/COT/18 B22364<br>
-                    Contact@caap.bj • Ouvert du Lundi au Vendredi de 08:00 - 17:00 • www.caap.bj
+                <td style="text-align: left; width: 100%; font-size:12px;">
+                    {{ $footer }}
                 </td>
             </tr>
         </table>

@@ -3,6 +3,7 @@ namespace App\Permissions;
 
 use App\Models\Permission;
 use App\Models\Role;
+use App\Models\Tag;
 
 trait HasPermissionsTrait {
 
@@ -75,7 +76,8 @@ trait HasPermissionsTrait {
   protected function getAllPermissions(array $permissions) {
 
     return Permission::whereIn('slug',$permissions)->get();
-    
+
   }
+
 
 }

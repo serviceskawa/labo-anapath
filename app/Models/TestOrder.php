@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\User;
+use App\Models\Doctor;
 use App\Models\Report;
 use App\Models\Contrat;
 use App\Models\Invoice;
@@ -18,6 +20,7 @@ class TestOrder extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
 
     public function getPatient()
     {
@@ -49,6 +52,11 @@ class TestOrder extends Model
         return $data;
     }
 
+    // public function contrat()
+    // {
+    //     return $this->belongsTo(Contrat::class, 'contrat_id');
+    // }
+
     public function getReport($id)
     {
         $data = Report::where('test_order_id', $id)->first();
@@ -62,7 +70,7 @@ class TestOrder extends Model
     {
         $data = Report::where('test_order_id', $id)->first();
         if (is_null($data)) {
-            return null; 
+            return null;
         } else {
             return $data->id;
         }
@@ -85,7 +93,7 @@ class TestOrder extends Model
      */
     public function doctor()
     {
-        return $this->belongsTo(Doctor::class, );
+        return $this->belongsTo(Doctor::class, 'doctor_id');
     }
 
     /**
@@ -108,6 +116,11 @@ class TestOrder extends Model
         return $this->hasMany(DetailTestOrder::class, 'test_order_id');
     }
 
+    public function testOrderMacro()
+    {
+        return $this->hasMany(test_pathology_macro::class, 'id_test_pathology_order');
+    }
+
     /**
      * Get the Hospital that owns the TestOrder
      *
@@ -116,6 +129,17 @@ class TestOrder extends Model
     public function hospital()
     {
         return $this->belongsTo(Hospital::class);
+    }
+
+
+    /**
+     * Get the Hospital that owns the Doctor
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function doctorExamen()
+    {
+        return $this->belongsTo(Doctor::class, 'doctor_id');
     }
 
     /**
@@ -138,7 +162,6 @@ class TestOrder extends Model
         return $this->belongsTo(TypeOrder::class, 'type_order_id');
     }
 
-    
     /**
      * Get the invoice associated with the TestOrder
      *
@@ -146,7 +169,27 @@ class TestOrder extends Model
      */
     public function invoice()
     {
-        return $this->hasOne(Invoice::class);
+        return $this->hasOne(Invoice::class, 'test_order_id');
     }
 
+
+    public function macro()
+    {
+        return $this->hasOne(test_pathology_macro::class, 'test_order_id');
+    }
+
+    public function attribuateToDoctor()
+    {
+        return $this->belongsTo(User::class, 'attribuate_doctor_id');
+    }
+
+    public function assignmentDetails()
+    {
+        return $this->hasMany(TestOrderAssignmentDetail::class, 'test_order_id');
+    }
+
+    public function assignmentTestOrder()
+    {
+        return $this->belongsTo(TestOrderAssignmentDetail::class, 'test_order_id');
+    }
 }

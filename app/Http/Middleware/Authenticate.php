@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Setting;
+use Carbon\Carbon;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class Authenticate extends Middleware

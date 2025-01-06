@@ -1,5 +1,7 @@
 @extends('layouts.app2')
 
+@section('title', 'Utilisateurs')
+
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -25,7 +27,7 @@
                         aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                     <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                 </div>
-                <h5 class="card-title mb-0">Liste des Utilisateurs</h5>
+                <h5 class="card-title mb-0">Liste des utilisateurs</h5>
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
 
@@ -36,7 +38,7 @@
                             <tr>
                                 <th>Nom</th>
                                 <th>Email</th>
-                                <th>Roles</th>
+                                <th>Rôles</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -57,8 +59,12 @@
 
                                     </td>
 
-                                    <td> <a type="button" href="{{ route('user.edit', $item->id) }} "
+                                    <td>
+                                        <a type="button" href="{{ route('user.edit', $item->id) }} "
                                             class="btn btn-primary"><i class="mdi mdi-eye"></i> </a>
+                                        <a type="button" href="{{ route('user.delete', $item->id) }} "
+                                            class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </a>
+                                        <a type="button" href="{{ route('user.statusActive', $item->id)}}" class="btn btn-secondary"> {{$item->is_active !=1 ? 'Actif':'Inactif'}} </a>
                                     </td>
 
                                 </tr>

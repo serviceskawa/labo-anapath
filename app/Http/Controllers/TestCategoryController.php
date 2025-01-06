@@ -2,37 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TestCategoryRequest;
 use App\Models\CategoryTest;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TestCategoryController extends Controller
 {
-    public function __construct()
+    protected $categoryTest;
+    protected $setting;
+    public function __construct(CategoryTest $categoryTest, Setting $setting)
     {
-        $this->middleware('auth'); 
+        $this->middleware('auth');
+        $this->categoryTest = $categoryTest;
+        $this->setting = $setting;
     }
-        
+
     public function index(){
-        if (!getOnlineUser()->can('view-examens-categories')) {
+        if (!getOnlineUser()->can('view-category-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $testcategories = CategoryTest::with(['tests'])->get();
+        $testcategories = $this->categoryTest->with(['tests'])->latest()->get();
+        $setting = $this->setting->find(1);
+        config(['app.name' => $setting->titre]);
         // dd($testcategories);
         return view('tests.category.index',compact(['testcategories']));
     }
 
-    public function store(Request $request){
-        if (!getOnlineUser()->can('create-examens-categories')) {
+    public function store(TestCategoryRequest $request){
+        if (!getOnlineUser()->can('create-category-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data=$this->validate($request, [
-            'code' => 'required',
-            'name' => 'required |unique:category_tests,name',          
-        ]);
+        $data= [
+            'code' => $request->code,
+            'name' => $request->name,
+        ];
 
         try {
-            CategoryTest::create($data);
+            $category = $this->categoryTest->create($data);
             return back()->with('success', " Opération effectuée avec succès  ! ");
 
         } catch(\Throwable $ex){
@@ -41,22 +49,22 @@ class TestCategoryController extends Controller
     }
 
 
-    public function update(Request $request){
-        if (!getOnlineUser()->can('edit-examens-categories')) {
+    public function update(TestCategoryRequest $request){
+        if (!getOnlineUser()->can('edit-category-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data=$this->validate($request, [
-            'id2' => 'required',
-            'code2' => 'required',
-            'name2' => 'required',          
-        ]);
+        $data= [
+            'id' => $request->id,
+            'code' => $request->code,
+            'name' => $request->name,
+        ];
 
         try {
-           $categorie = CategoryTest::find($data['id2']);
-           $categorie->code = $data['code2'];
-           $categorie->name = $data['name2'];
+           $categorie = $this->categoryTest->find($data['id']);
+           $categorie->code = $data['code'];
+           $categorie->name = $data['name'];
            $categorie->save();
-           
+
             return back()->with('success', " Mise à jour effectuée avec succès  ! ");
 
         } catch(\Throwable $ex){
@@ -66,10 +74,10 @@ class TestCategoryController extends Controller
 
 
     public function destroy($id){
-        if (!getOnlineUser()->can('delete-examens-categories')) {
+        if (!getOnlineUser()->can('delete-category-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $categorytest = CategoryTest::find($id)->delete();
+        $categorytest = $this->categoryTest->find($id)->delete();
 
         if ($categorytest) {
             return back()->with('success', "    Un élement a été supprimé ! ");
@@ -80,10 +88,10 @@ class TestCategoryController extends Controller
 
 
     public function edit($id){
-        if (!getOnlineUser()->can('edit-examens-categories')) {
+        if (!getOnlineUser()->can('edit-category-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $data = CategoryTest::find($id);
+        $data = $this->categoryTest->find($id);
         return response()->json($data);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Models;
 
 //use App\Models\Contrat;
-use App\Models\Contrat;
+//use App\Models\Contrat;
 use App\Models\TestOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,7 +18,7 @@ class Contrat extends Model
     {
         parent::boot();
 
-        static::deleting(function($contrat) {
+        static::deleting(function ($contrat) {
             // verifie s'il a des relations
             if ($contrat->detail()->count() > 0 || $contrat->orders()->count() > 0) {
                 return false;
@@ -55,5 +55,20 @@ class Contrat extends Model
     public function detail()
     {
         return $this->hasOne(Details_Contrat::class);
+    }
+
+    public function getWithDetail()
+    {
+        return $this->with(['orders', 'detail'])->get();
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id');
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
     }
 }

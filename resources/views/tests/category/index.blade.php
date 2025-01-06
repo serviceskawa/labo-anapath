@@ -1,5 +1,7 @@
 @extends('layouts.app2')
 
+@section('title', 'Examens | categorie')
+
 @section('content')
 
 <div class="row">
@@ -25,7 +27,6 @@
 
 
     @include('layouts.alerts')
-
 
 
     <div class="card mb-md-0 mb-3">
@@ -82,80 +83,8 @@
 
 @push('extra-js')
 <script>
-
-// SUPPRESSION
-function deleteModal(id) {
-
-Swal.fire({
-        title: "Voulez-vous supprimer l'élément ?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Oui ",
-        cancelButtonText: "Non !",
-    }).then(function(result) {
-        if (result.value) {
-            window.location.href="{{url('categorytest/delete')}}"+"/"+id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
-        }
-    });
-}
-
-
-/* DATATABLE */
-$(document).ready(function() {
-
-    $('#datatable1').DataTable({
-        "order": [[ 0, "desc" ]],
-        "columnDefs": [
-            {
-                "targets": [ 0 ],
-                "searchable": false
-            }],
-        "language": {
-            "lengthMenu": "Afficher _MENU_ enregistrements par page",
-            "zeroRecords": "Aucun enregistrement disponible",
-            "info": "Afficher page _PAGE_ sur _PAGES_",
-            "infoEmpty": "Aucun enregistrement disponible",
-            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-            "sSearch": "Rechercher:",
-            "paginate": {
-            "previous": "Précédent",
-            "next": "Suivant"
-            }
-        },
-    });
-} );
-
-
-//EDITION
-function edit(id){
-    var e_id = id;
-
-
-    // Populate Data in Edit Modal Form
-    $.ajax({
-        type: "GET",
-        url: "{{url('getcategorytest')}}" + '/' + e_id,
-        success: function (data) {
-
-            $('#id2').val(data.id);
-            $('#code2').val(data.code);
-            $('#name2').val(data.name);
-
-            // $('#lignebudgetaire_id2').val(data.lignebudgetaire_id).change();
-
-            $('#editModal').modal('show');
-        },
-        error: function (data) {
-            console.log('Error:', data);
-        }
-    });
-}
-
+    var baseUrl = "{{url('/')}}"
 </script>
+<script src="{{asset('viewjs/test/category.js')}}"></script>
 
 @endpush

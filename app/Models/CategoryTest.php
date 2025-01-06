@@ -16,9 +16,9 @@ class CategoryTest extends Model
     {
         parent::boot();
 
-        static::deleting(function($categorie_test) {
+        static::deleting(function($categorieTest) {
             // verifie s'il a des relations
-            if ($categorie_test->tests()->count() > 0) {
+            if ($categorieTest->tests()->count() > 0) {
                 return false;
             }
         });

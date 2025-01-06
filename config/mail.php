@@ -34,16 +34,36 @@ return [
     */
 
     'mailers' => [
+        // 'smtp' => [
+        //     'transport' => 'smtp',
+        //     'host' => 'node10-ca.n0c.com',
+        //     'port' => 587,
+        //     'encryption' => 'tls',
+        //     'username' => 'mail@caap.bj',
+        //     'password' => '_zZk)969:Zr9ZTS_!T',
+        //     'timeout' => null,
+        //     'auth_mode' => null,
+        // ],
         'smtp' => [
             'transport' => 'smtp',
-            'host' => 'mail.caap.bj',
-            'port' => 26,
-            'encryption' => 'tls',
-            'username' => 'admin@caap.bj',
-            'password' => 'h&qa4D@l7J',
+            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+            'port' => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
-            'auth_mode' => null,
+            'local_domain' => env('MAIL_EHLO_DOMAIN'),
         ],
+        // 'smtp' => [
+        //     'transport' => 'smtp',
+        //     'host' => 'smtp.googlemail.com',
+        //     'port' => 465,
+        //     'encryption' => 'ssl',
+        //     'username' => 'bmac82745@gmail.com',
+        //     'password' => 'szzmetbppekhiscq',
+        //     'timeout' => null,
+        //     'auth_mode' => null,
+        // ],
 
         'ses' => [
             'transport' => 'ses',
@@ -92,7 +112,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'address' => env('MAIL_FROM_ADDRESS', 'bmac82745@gmail.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 

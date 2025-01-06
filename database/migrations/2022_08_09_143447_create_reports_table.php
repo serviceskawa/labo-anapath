@@ -17,10 +17,12 @@ class CreateReportsTable extends Migration
             $table->id();
             $table->string('code')->nullable()->unique();
             $table->string('title')->nullable();
+            
             $table->foreignId('patient_id')->nullable()
                 ->constrained('patients')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+
             $table->foreignId('test_order_id')->nullable()
                 ->constrained('test_orders')
                 ->onUpdate('cascade')

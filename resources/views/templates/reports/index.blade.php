@@ -1,5 +1,7 @@
 @extends('layouts.app2')
 
+@section('title', 'Template')
+
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -97,12 +99,10 @@
         $(document).ready(function() {
 
             $('#datatable1').DataTable({
-                "order": [
-                    [0, "asc"]
-                ],
+                "order": [],
                 "columnDefs": [{
                     "targets": [0],
-                    "searchable": false
+                    "searchable": true
                 }],
                 "language": {
                     "lengthMenu": "Afficher _MENU_ enregistrements par page",

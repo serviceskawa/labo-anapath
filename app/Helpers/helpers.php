@@ -1,11 +1,34 @@
 <?php
 
-use App\Models\Patient;
+use App\Models\Article;
+use App\Models\CashboxDaily;
+use App\Models\CashboxTicket;
+use App\Models\chat;
 use App\Models\Role;
+use App\Models\Doctor;
+use App\Models\Patient;
 use App\Models\Setting;
 use App\Models\TestOrder;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use App\Models\Consultation;
+use App\Models\Employee;
+use App\Models\Invoice;
+use App\Models\RefundRequest;
+use App\Models\Report;
+use App\Models\SettingApp;
+use App\Models\SettingInvoice;
+use App\Models\test_pathology_macro;
+use App\Models\TestOrderAssignment;
+use App\Models\TestOrderAssignmentDetail;
+use App\Models\Ticket;
+use App\Models\TypeConsultation;
+use App\Models\User;
+use App\Models\UserRole;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 
 define("SERVER", "http://sms.wallyskak.com");
 define("API_KEY", "cd571010a5549230264e74b9c89349fdcf5ed81c");
@@ -26,7 +49,8 @@ define("USE_ALL_SIMS", 2);
  * @return array     Returns The array containing information about the message.
  * @throws Exception If there is an error while sending a message.
  */
-function sendSingleMessage($number, $message, $device = 0, $schedule = null, $isMMS = false, $attachments = null, $prioritize = false)
+// Fonction pour envoyer un message SMS
+function sendSingleSMS($number, $message, $device = 0, $schedule = null, $prioritize = false)
 {
     $url = SERVER . "/services/send.php";
     $postData = array(
@@ -35,12 +59,29 @@ function sendSingleMessage($number, $message, $device = 0, $schedule = null, $is
         'schedule' => $schedule,
         'key' => API_KEY,
         'devices' => $device,
-        'type' => $isMMS ? "mms" : "sms",
+        'type' => "sms",
+        'prioritize' => $prioritize ? 1 : 0,
+    );
+    return sendRequest($url, $postData)["messages"][0];
+}
+
+// Fonction pour envoyer un message MMS
+function sendSingleMMS($number, $message, $device = 0, $schedule = null, $attachments = null, $prioritize = false)
+{
+    $url = SERVER . "/services/send.php";
+    $postData = array(
+        'number' => $number,
+        'message' => $message,
+        'schedule' => $schedule,
+        'key' => API_KEY,
+        'devices' => $device,
+        'type' => "mms",
         'attachments' => $attachments,
         'prioritize' => $prioritize ? 1 : 0,
     );
     return sendRequest($url, $postData)["messages"][0];
 }
+
 
 /**
  * @param array  $messages        The array containing numbers and messages.
@@ -403,18 +444,22 @@ if (!function_exists('getPermission')) {
 }
 
 if (!function_exists('getSignatory1')) {
-    function getSignatory1()
+    function getSignatory1($signatory_id)
     {
-        $setting = Setting::findorfail(1);
-        return $setting->signatory1;
+        $users = getUsersByRole('docteur');
+        $signatory = $users->find($signatory_id);
+        if ($signatory)
+            return $signatory->lastname . " " . $signatory->firstname;
     }
-}if (!function_exists('getSignatory2')) {
-    function getSignatory2()
+}
+if (!function_exists('getSignatory2')) {
+    function getSignatory2($signatory_id)
     {
         $setting = Setting::findorfail(1);
         return $setting->signatory2;
     }
-}if (!function_exists('getSignatory3')) {
+}
+if (!function_exists('getSignatory3')) {
     function getSignatory3()
     {
         $setting = Setting::findorfail(1);
@@ -429,12 +474,64 @@ if (!function_exists('getOnlineUser')) {
     }
 }
 
+if (!function_exists('remove_hyphen')) {
+    /**
+     * Remove hyphen from a string.
+     *
+     * @param string $code
+     * @return string
+     */
+    function remove_hyphen($code)
+    {
+        return str_replace('-', '', $code);
+    }
+}
+
 // generate code examen
 if (!function_exists('generateCodeExamen')) {
     function generateCodeExamen()
     {
         //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
         $lastTestOrder = TestOrder::whereYear('created_at', '=', now()->year)
+            ->whereNotNull('code')
+            ->orderByRaw('RIGHT(code, 4) DESC')
+            ->first();
+
+
+        // Récupérer la valeur de la base de données
+        $configuration = SettingApp::where('key', 'entete')->first();
+
+        // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
+        if (!$lastTestOrder || $lastTestOrder->created_at->year != now()->year) {
+            $code = "0001";
+        }
+        // Sinon, incrémente le dernier code de 1
+        else {
+            // Récupère les quatre derniers caractères du code
+            $lastCode = substr($lastTestOrder->code, -4);
+
+            // Convertit la chaîne en entier et l'incrémente de 1
+            $code = intval($lastCode) + 1;
+            $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+        }
+
+        $configuration = SettingApp::where('key', 'prefixe_code_demande_examen')->first();
+        // Décoder la chaîne JSON en un tableau associatif
+        $data = json_decode($configuration, true);
+
+        $codeexamen = $data['value'];
+
+        // Ajoute les deux derniers chiffres de l'année au début du code
+        return $codeexamen . now()->year % 100 . "-$code";
+    }
+}
+
+// generate code cashbox ticket
+if (!function_exists('generateCodeTicket')) {
+    function generateCodeTicket()
+    {
+        //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
+        $lastTestOrder = CashboxTicket::whereYear('created_at', '=', now()->year)
             ->whereNotNull('code')
             ->orderByRaw('RIGHT(code, 4) DESC')
             ->first();
@@ -454,9 +551,509 @@ if (!function_exists('generateCodeExamen')) {
         }
 
         // Ajoute les deux derniers chiffres de l'année au début du code
-        return now()->year % 100 . "-$code";
+        return "BC" . now()->year % 100 . "-$code";
     }
 }
+
+
+if (!function_exists('typeExamAffecte')) {
+    function typeExamAffecte($id)
+    {
+        $type = TestOrder::where('id', $id)->first();
+        if ($type) {
+            $data = $type->type_order_id;
+        } else {
+            $data = null;
+        }
+        return $data;
+    }
+}
+
+
+if (!function_exists('isAffecte')) {
+    function isAffecte($id)
+    {
+        $detail = TestOrderAssignmentDetail::where('test_order_id', $id)->first();
+        if ($detail) {
+            $assignment = TestOrderAssignment::find($detail->test_order_assignment_id);
+            $data = $assignment->user;
+        } else {
+            $data = null;
+        }
+        return $data;
+    }
+}
+
+
+if (!function_exists('isAffecteRefence')) {
+    function isAffecteRefence($reference_code)
+    {
+
+        $reference_order = TestOrder::where('code', $reference_code)->first();
+        if ($reference_order) {
+            $detail = TestOrderAssignmentDetail::where('test_order_id', $reference_order->id)->first();
+            if ($detail) {
+                $assignment = TestOrderAssignment::find($detail->test_order_assignment_id);
+                $data = $assignment->user;
+            } else {
+                $data = null;
+            }
+            return $data;
+        } else {
+            return $data = null;
+        }
+    }
+}
+
+
+if (!function_exists('ajouterPourcentage')) {
+    function ajouterPourcentage($amount_payer)
+    {
+        $fee = 0;
+        // if ($amount_payer >= 1 && $amount_payer <= 500) {
+        //     $fee = 0;
+        // } elseif ($amount_payer >= 501 && $amount_payer <= 5000) {
+        //     $fee = 100;
+        // } elseif ($amount_payer >= 5001 && $amount_payer <= 10000) {
+        //     $fee = 200;
+        // } elseif ($amount_payer >= 10001 && $amount_payer <= 20000) {
+        //     $fee = 350;
+        // } elseif ($amount_payer >= 20001 && $amount_payer <= 50000) {
+        //     $fee = 700;
+        // } elseif ($amount_payer >= 50001 && $amount_payer <= 100000) {
+        //     $fee = 1000;
+        // } elseif ($amount_payer >= 100001 && $amount_payer <= 200000) {
+        //     $fee = 2000;
+        // } elseif ($amount_payer >= 200001 && $amount_payer <= 300000) {
+        //     $fee = 3000;
+        // } elseif ($amount_payer >= 300001 && $amount_payer <= 500000) {
+        //     $fee = 3500;
+        // } elseif ($amount_payer >= 500001 && $amount_payer <= 750000) {
+        //     $fee = 5000;
+        // } elseif ($amount_payer >= 750001 && $amount_payer <= 1000000) {
+        //     $fee = 6000;
+        // } elseif ($amount_payer >= 1000001 && $amount_payer <= 1500000) {
+        //     $fee = 8000;
+        // } elseif ($amount_payer >= 1500001 && $amount_payer <= 2000000) {
+        //     $fee = 9900;
+        // }
+
+        $valeurAvecPourcentage = $amount_payer + $fee;
+
+        // Convertir le nombre en float pour s'assurer qu'il est traité comme un nombre décimal
+        $number = floatval($valeurAvecPourcentage);
+
+        // Utiliser la fonction ceil pour arrondir au nombre entier supérieur si le nombre a une partie décimale
+        $roundedNumber = ceil($number);
+
+        return [
+            'number' => $number,
+            'fee' => $fee,
+            'roundedNumber' => $roundedNumber
+        ];
+    }
+}
+
+if (!function_exists('changeMethodPayment')) {
+    function changeMethodPayment($invoice_id, $methodPayment)
+    {
+        $invoice = Invoice::findOrFail(intval($invoice_id));
+
+        $invoice->payment = "ESPECES";
+        $invoice->save();
+    }
+}
+
+
+if (!function_exists('dateLimite')) {
+    function dateLimite($date)
+    {
+        $formattedDate = Carbon::parse($date)->format('Y-m-d');
+        // Ajouter 10 jours
+        $newDate = Carbon::parse($formattedDate)->addDays(9);
+        $newDate = Carbon::parse($newDate)->format('Y-m-d');
+        return $newDate;
+    }
+}
+
+if (!function_exists('dateFormat')) {
+    function dateFormat($date)
+    {
+        $formattedDate = Carbon::parse($date)->format('d-m-Y');
+        return $formattedDate;
+    }
+}
+
+if (!function_exists('isMacro')) {
+    function isMacro($id)
+    {
+        $detail = test_pathology_macro::where('id_test_pathology_order', $id)->first();
+        if ($detail) {
+            $data = true;
+        } else {
+            $data = false;
+        }
+        return $data;
+    }
+}
+
+if (!function_exists('getAllRoles')) {
+    function getAllRoles()
+    {
+        return Role::latest()->get();
+    }
+}
+
+// generate code affectation
+if (!function_exists('generateCodeAssignment')) {
+    function generateCodeAssignment()
+    {
+        //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
+        $lastTestOrder = TestOrderAssignment::whereYear('created_at', '=', now()->year)
+            ->whereNotNull('code')
+            ->orderByRaw('RIGHT(code, 4) DESC')
+            ->first();
+
+        // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
+        if (!$lastTestOrder || $lastTestOrder->created_at->year != now()->year) {
+            $code = "0001";
+        }
+        // Sinon, incrémente le dernier code de 1
+        else {
+            // Récupère les quatre derniers caractères du code
+            $lastCode = substr($lastTestOrder->code, -4);
+
+            // Convertit la chaîne en entier et l'incrémente de 1
+            $code = intval($lastCode) + 1;
+            $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+        }
+
+        // Ajoute les deux derniers chiffres de l'année au début du code
+        return "AF" . now()->year % 100 . "-$code";
+    }
+}
+
+
+// generate code facture
+if (!function_exists('generateCodeFacture')) {
+    function generateCodeFacture()
+    {
+        // //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
+        // $invoice = Invoice::whereYear('created_at', '=', now()->year)
+        //     ->whereNotNull('code')
+        //     ->orderByRaw('RIGHT(code, 4) DESC')
+        //     ->first();
+
+        // // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
+        // if (!$invoice || $invoice->created_at->year != now()->year) {
+        //     $code = "0001";
+        // }
+        // // Sinon, incrémente le dernier code de 1
+        // else {
+        //     // Récupère les quatre derniers caractères du code
+        //     $lastCode = substr($invoice->code, -4);
+
+        //     // Convertit la chaîne en entier et l'incrémente de 1
+        //     $code = intval($lastCode) + 1;
+        //     $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+        // }
+
+
+        // ======================================================================
+        // Récupérer tous les enregistrements pour l'année actuelle avec un code non null
+        $invoices = Invoice::whereYear('created_at', now()->year)
+            ->whereNotNull('code')
+            ->orderByRaw('RIGHT(code, 4) DESC')
+            ->get();
+
+        // Filtrer pour exclure les codes de type REGULARISATION
+        $filteredInvoices = $invoices->filter(function ($invoice) {
+            return $invoice->code !== 'REGULARISATION';
+        });
+
+        // Si la collection filtrée est vide, cela signifie que soit il n'y a pas de codes, soit tous les codes sont des régularisations
+        if ($filteredInvoices->isEmpty()) {
+            $code = "0001";
+        } else {
+            // Récupérer le dernier code valide dans la liste filtrée
+            $latestInvoice = $filteredInvoices->first();
+
+            // Récupérer les quatre derniers caractères du code
+            $lastCode = substr($latestInvoice->code, -4);
+
+            // Convertir la chaîne en entier et l'incrémenter de 1
+            $code = intval($lastCode) + 1;
+
+            // Formater le code avec des zéros à gauche pour qu'il ait toujours 4 chiffres
+            $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+        }
+        //  =====================================================================
+
+        // Ajoute les deux derniers chiffres de l'année au début du code
+        return "FA" . now()->year % 100 . "$code";
+    }
+}
+
+if (!function_exists('getNameInitials')) {
+    function getNameInitials($fullName)
+    {
+        $initials = "";
+        $nameParts = explode(" ", trim($fullName));
+
+        foreach ($nameParts as $namePart) {
+            if (!empty($namePart)) {
+                $initials .= strtoupper($namePart[0]);
+            }
+        }
+        return $initials;
+    }
+}
+
+if (!function_exists('getUnreadMessageCount')) {
+    function getUnreadMessageCount($userId)
+    {
+        // Remplacez "messages" par le nom de votre table de messages
+        $unreadMessages = DB::table('chats')
+            ->where('receve_id', $userId) // Remplacez "receve_id" par le nom de votre colonne pour l'ID du destinataire
+            ->where('status', 1) // Les messages non lus ont lu = 0
+            ->where('read', 0) // Les messages non lus ont lu = 0
+            ->count();
+
+        return $unreadMessages;
+    }
+}
+
+if (!function_exists('getUnreadMessageBySenderCount')) {
+    function getUnreadMessageBySenderCount($userId, $senderID)
+    {
+        // Remplacez "messages" par le nom de votre table de messages
+        $unreadMessages = DB::table('chats')
+            ->where('receve_id', $userId) // Remplacez "receve_id" par le nom de votre colonne pour l'ID du destinataire
+            ->where('sender_id', $senderID) // Remplacez "receve_id" par le nom de votre colonne pour l'ID du destinataire
+            ->where('status', 1) // Les messages non lus ont lu = 0
+            ->where('read', 0) // Les messages non lus ont lu = 0
+            ->count();
+
+        return $unreadMessages;
+    }
+}
+
+if (!function_exists('getMessageUnreadBySender')) {
+    function getMessageUnreadBySender($userId, $senderID)
+    {
+
+        $lastMessage =  Chat::where(function ($query) use ($senderID, $userId) {
+            $query->where('sender_id', $senderID)->where('receve_id', $userId);
+        })->orWhere(function ($query) use ($senderID, $userId) {
+            $query->where('sender_id', $userId)->where('receve_id', $senderID);
+        })->orderBy('created_at', 'desc')
+            ->first();
+        return $lastMessage->sender_id == $userId ? 'Vous: ' . $lastMessage->message : $lastMessage->message;
+    }
+}
+
+if (!function_exists('getMessageUnreadSender')) {
+    function getMessageUnreadSender($userId, $senderID)
+    {
+
+        $lastSentMessage = chat::where('sender_id', $senderID)
+            ->where('receve_id', $userId)
+            ->orderBy('created_at', 'desc') // Triez par date d'envoi décroissante
+            ->first(); // Récupérez le premier message (le plus récent)
+        return $lastSentMessage;
+    }
+}
+
+//Récupérer le nombre de demandes d'examen en attente
+if (!function_exists('getnbrTestOrderpending')) {
+    function getnbrTestOrderpending()
+    {
+        $nbr = TestOrder::whereHas('type', function ($query) {
+            $query->where('slug', 'cytologie')
+                ->orwhere('slug', 'histologie');
+        })
+            ->whereHas('report', function ($query) {
+                $query->where('status', 0);
+            })->count();
+        return $nbr;
+    }
+}
+
+
+//Récupérer le nombre de demandes d'examen en attente
+if (!function_exists('getnbrTestOrderImmunopending')) {
+    function getnbrTestOrderImmunopending()
+    {
+        $nbr = TestOrder::whereHas('type', function ($query) {
+            $query->where('slug', 'immuno-interne')
+                ->orwhere('slug', 'immuno-exterme');
+        })
+            ->whereHas('report', function ($query) {
+                $query->where('status', 0);
+            })->count();
+        return $nbr;
+    }
+}
+
+//Récupérer le nombre de factures impayées
+if (!function_exists('getnbrInvoicepending')) {
+    function getnbrInvoicepending()
+    {
+        $nbr = Invoice::where('paid', 0)->count();
+        return $nbr;
+    }
+}
+
+//Récupérer le nombre de stocks minimum atteint
+if (!function_exists('getnbrStockMinim')) {
+    function getnbrStockMinim()
+    {
+        $nbr = Article::where('quantity_in_stock', '<=', DB::raw('minimum'))->count();
+        return $nbr;
+    }
+}
+
+//Récupérer le nombre de demandes de remboursement en attente
+if (!function_exists('getnbrRefundRequestPending')) {
+    function getnbrRefundRequestPending()
+    {
+        $nbr = $nbr = RefundRequest::where('status', 'En attente')->count();
+        return $nbr;
+    }
+}
+
+//Récupérer le nombre de bon de caisse en attente
+if (!function_exists('getnbrBonCaissePending')) {
+    function getnbrBonCaissePending()
+    {
+        $nbr = $nbr = CashboxTicket::where('status', 'En attente')->count();
+        return $nbr;
+    }
+}
+
+//Récupérer le nombre de tickets en attente
+if (!function_exists('getnbrTicketPending')) {
+    function getnbrTicketPending($userId)
+    {
+        $user = User::find($userId);
+        $is_admin = $user->userCheckRole('rootuser');
+        $nbr = null;
+        if ($is_admin) {
+            $nbr = Ticket::where('status', 'ouvert')->count();
+        } else {
+            $nbr = Ticket::where('user_id', $userId)->where('status', 'ouvert')->count();
+        }
+
+        return $nbr;
+    }
+}
+
+
+
+// generate code facture
+if (!function_exists('generateCodeFactureAvoir')) {
+    function generateCodeFactureAvoir()
+    {
+        //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
+        $invoice = RefundRequest::whereYear('created_at', '=', now()->year)
+            ->whereNotNull('code')
+            ->orderByRaw('RIGHT(code, 4) DESC')
+            ->first();
+
+        // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
+        if (!$invoice || $invoice->created_at->year != now()->year) {
+            $code = "0001";
+        }
+        // Sinon, incrémente le dernier code de 1
+        else {
+            // Récupère les quatre derniers caractères du code
+            $lastCode = substr($invoice->code, -4);
+
+            // Convertit la chaîne en entier et l'incrémente de 1
+            $code = intval($lastCode) + 1;
+            $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+        }
+
+        // Ajoute les deux derniers chiffres de l'année au début du code
+        return "DER" . now()->year % 100 . "$code";
+    }
+}
+
+
+// generate code tickets
+if (!function_exists('generateCodeBillet')) {
+    function generateCodeBillet()
+    {
+        //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
+        $billet = Ticket::whereYear('created_at', '=', now()->year)
+            ->whereNotNull('ticket_code')
+            ->orderByRaw('RIGHT(ticket_code, 4) DESC')
+            ->first();
+
+        // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
+        if (!$billet || $billet->created_at->year != now()->year) {
+            $code = "0001";
+        }
+        // Sinon, incrémente le dernier code de 1
+        else {
+            // Récupère les quatre derniers caractères du code
+            $lastCode = substr($billet->ticket_code, -4);
+
+            // Convertit la chaîne en entier et l'incrémente de 1
+            $code = intval($lastCode) + 1;
+            $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+        }
+
+        // Ajoute les deux derniers chiffres de l'année au début du code
+        return "TI-" . now()->year % 100 . "$code";
+    }
+}
+
+
+// generate code facture
+if (!function_exists('generateCodeOpeningCashbox')) {
+    function generateCodeOpeningCashbox()
+    {
+        //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
+        $invoice = CashboxDaily::whereYear('created_at', '=', now()->year)
+            ->whereNotNull('code')
+            ->orderByRaw('RIGHT(code, 4) DESC')
+            ->first();
+
+        // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
+        if (!$invoice || $invoice->created_at->year != now()->year) {
+            $code = "0001";
+        }
+        // Sinon, incrémente le dernier code de 1
+        else {
+            // Récupère les quatre derniers caractères du code
+            $lastCode = substr($invoice->code, -4);
+
+            // Convertit la chaîne en entier et l'incrémente de 1
+            $code = intval($lastCode) + 1;
+            $code = str_pad($code, 4, '0', STR_PAD_LEFT);
+        }
+
+        // Ajoute les deux derniers chiffres de l'année au début du code
+        return "OC" . now()->year % 100 . "$code";
+    }
+}
+
+
+
+function tronquerChaine($chaine, $nbr = 50)
+{
+
+    if (strlen($chaine) > $nbr) {
+        // Si la chaîne est plus longue que 100 caractères, on la tronque et on ajoute les trois points de suspension
+        $chaine_tronquee = substr($chaine, 0, $nbr) . '...';
+        return $chaine_tronquee;
+    } else {
+        // Sinon, on retourne la chaîne telle quelle
+        return $chaine;
+    }
+}
+
 
 // recupère les informations d'une demande d'examen
 if (!function_exists('getTestOrderData')) {
@@ -471,6 +1068,94 @@ if (!function_exists('getTestOrderData')) {
     }
 }
 
+
+if (!function_exists('invoiceNormeTest')) {
+    function invoiceNormeTest($id)
+    {
+        $client = new Client();
+        $testOrderModel = new TestOrder();
+        $invoiceModel = new Invoice();
+
+        $testOrder = $testOrderModel->find($id);
+        $invoice = $invoiceModel->where('test_order_id', '=', $id)->first();
+
+        $item = [];
+        $items = [];
+
+        $details = $testOrder->details()->get();
+
+        if (!empty($details)) {
+            foreach ($details as  $value) { {
+                    $item['name'] = $value->test_name;
+                    $item['price'] = $value->total;
+                    $item['quantity'] = 1;
+                    $item['taxGroup'] = "B";
+                    $items[] = $item;
+                }
+            }
+        }
+
+        // $accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAyMDIzNjc4MDc0MDN8VFMwMTAwNTQ2NyIsInJvbGUiOiJUYXhwYXllciIsIm5iZiI6MTY3OTU1OTk2OCwiZXhwIjoxNjk1NDU3NTY4LCJpYXQiOjE2Nzk1NTk5NjgsImlzcyI6ImltcG90cy5iaiIsImF1ZCI6ImltcG90cy5iaiJ9.g80Hdsm2VInc7WBfiSvc7MVC34ZEXbwqyJX_66ePDGQ';
+        // $ifu = "0202367807403";
+        $settingInvoiceModel = new SettingInvoice();
+        $settingInvoice = $settingInvoiceModel->find(1);
+        $accessToken = $settingInvoice->token;
+        $ifu = $settingInvoice->ifu;
+        // $ifu = "0".$settingInvoice->ifu;
+        $response = $client->request(
+            'POST',
+            'https://developper.impots.bj/sygmef-emcf/api/invoice',
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json'
+                ],
+                'json' => [
+                    'ifu' => $ifu,
+                    'type' => "FV",
+                    // 'aib' => "B",
+                    'items' => $items,
+                    // 'items' => [
+                    //     //    [ "name"=>"Jus d'orange",
+                    //     //     "price"=>5000,
+                    //     //     "quantity"=>2,
+                    //     //     "taxGroup"=>"A"],
+                    //         [ "name"=>"Jus de mangue",
+                    //         "price"=>5000,
+                    //         "quantity"=>3,
+                    //         "taxGroup"=>"B",
+                    //         "taxSpecific" => 230]
+                    // ],
+
+                    "client" => [
+                        // "ifu"=>"0202367807403",
+                        "name" => $invoice->client_name,
+                        "address" => $invoice->client_address ? $invoice->client_address : 'a',
+                    ],
+                    "operator" => [
+                        "id" => Auth::user()->id,
+                        "name" => Auth::user()->lastname,
+                    ],
+                    // "reference" => "TEST-QWMW-F22F-GOA5-45BB-S6PF",
+                    // "taxSpecific" => 230,
+                    "payment" => [
+                        [
+                            "name" => $invoice->payment,
+                            "amount" => $invoice->total,
+                            // "amount" => 25000,
+                        ]
+                    ],
+                ]
+            ]
+        );
+        $test = json_decode($response->getBody(), true);
+
+        return ["id" => $id, "uid" => $test['uid']];
+    }
+}
+
+
 // recupère les informations d'un patient
 if (!function_exists('getPatientData')) {
     function getPatientData(int $patientId = null)
@@ -481,5 +1166,180 @@ if (!function_exists('getPatientData')) {
             $result = $patient;
         }
         return $result;
+    }
+}
+
+// recupère les informations d'un utilisateur
+if (!function_exists('getUsertData')) {
+    function getUserData(int $userId = null)
+    {
+        $result = "";
+        if (!empty($userId)) {
+            $user = User::find($userId);
+            $result = $user;
+        }
+        return $result;
+    }
+}
+
+if (!function_exists('getDoctorData')) {
+    function getDoctorData(int $doctorId = null)
+    {
+        $result = "";
+        if (!empty($doctorId)) {
+            $doctor = Doctor::find($doctorId);
+            $result = $doctor;
+        }
+        return $result;
+    }
+}
+
+if (!function_exists('randColor')) {
+    function randColor($priority)
+    {
+        $data = [
+            "normal" => 'bg-info',
+            "urgent" => 'bg-warning',
+            "tres urgent" => 'bg-danger',
+        ];
+
+        return $data[$priority];
+    }
+}
+
+if (!function_exists('convertDate')) {
+    function convertDateTime($date)
+    {
+        $date_input = date('Y-m-d H:i:s', strtotime($date));
+        return $date_input;
+    }
+}
+
+if (!function_exists('getAllUsers')) {
+    function getAllUsers()
+    {
+        return User::all();
+    }
+}
+
+if (!function_exists('getAllEmployees')) {
+    function getAllEmployees()
+    {
+        return Employee::all();
+    }
+}
+
+if (!function_exists('randColorStatus')) {
+    function randColorStatus($priority)
+    {
+        $data = [
+            "pending" => 'bg-warning',
+            "approved" => 'bg-success',
+            "cancel" => 'bg-danger',
+        ];
+
+        return $data[$priority];
+    }
+}
+
+
+if (!function_exists('checkTypeConsultationFile')) {
+    function checkTypeConsultationFile($typeConsultationFileId, $typeConsultationId)
+    {
+        $typeConsultation = TypeConsultation::findorfail($typeConsultationId);
+        $type_files = $typeConsultation->type_files();
+
+        $data = $typeConsultation->type_files()->where('type_file_id', $typeConsultationFileId)->exists();
+
+        return $data;
+    }
+}
+
+if (!function_exists('getConsultationTypeFiles')) {
+    function getConsultationTypeFiles($ConsultationId, $typeConsultationFileId)
+    {
+        $Consultation = Consultation::findorfail($ConsultationId);
+
+        $data = $Consultation->type_files()->where('type_file_id', $typeConsultationFileId)->first();
+
+        return $data;
+    }
+}
+
+if (!function_exists('getUsersByRole')) {
+    function getUsersByRole($roleSlug)
+    {
+        $users = [];
+        $role = Role::whereSlug($roleSlug)->first();
+
+        if (!empty($role)) {
+            $users = $role->users;
+        }
+
+        return $users;
+    }
+}
+
+if (!function_exists('getRolesByUser')) {
+    function getRolesByUser($userID)
+    {
+        $roles = [];
+        $rolesusers = UserRole::where('user_id', $userID)->get();
+        foreach ($rolesusers as $value) {
+            $role = Role::find($value->role_id);
+            $roles[] = $role;
+        }
+        return $roles;
+    }
+}
+
+
+
+if (!function_exists('getRolesByUserDocteur')) {
+    function getRolesByUserDocteur($userID)
+    {
+        $rolesusers = UserRole::where('user_id', $userID)->get();
+        $response = 0; // Initialisation à zéro par défaut
+        foreach ($rolesusers as $value) {
+            $role = Role::find($value->role_id);
+            if ($role->slug == "docteur") {
+                $response = 1;
+                break; // Sortir de la boucle dès qu'on trouve le rôle "docteur"
+            }
+        }
+        return $response;
+    }
+}
+
+if (!function_exists('formatMontant')) {
+    function formatMontant($montant)
+    {
+        $formattedMontant = number_format($montant, 0, ',', ' ');
+        $formattedMontant .= ' F CFA';
+        return $formattedMontant;
+    }
+}
+
+if (!function_exists('getTotalByPatient')) {
+    function getTotalByPatient($id)
+    {
+        $total = Invoice::where('patient_id', '=', $id)->sum('total');
+        return $total;
+    }
+}
+
+if (!function_exists('getNoPaidByPatient')) {
+    function getNoPaidByPatient($id)
+    {
+        $nopaye = Invoice::where(['patient_id' => $id, 'paid' => 0])->sum('total');
+        return $nopaye;
+    }
+}
+
+if (!function_exists('getPaidByPatient')) {
+    function getPaidByPatient($id)
+    {
+        $paye = Invoice::where(['patient_id' => $id, 'paid' => 1])->sum('total');
+        return $paye;
     }
 }
