@@ -48,6 +48,7 @@ use App\Http\Controllers\ProblemeReportersController;
 use App\Http\Controllers\RefundRequestController;
 use App\Http\Controllers\EmployeeDocumentController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SettingAppController;
 use App\Http\Controllers\SettingReportTemplateController;
 use App\Http\Controllers\SignalController;
@@ -164,6 +165,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/getclient/{id}', [ClientController::class, 'edit']);
     Route::post('/clients/update', [ClientController::class, 'update'])->name('clients.update');
     // Route::post('/clients/storeDoctor', [ClientController::class, 'storeDoctor'])->name('clients.storeDoctor'); //Enregistrement docteur depuis select2
+ 
+    // SEARCH 
+    Route::get('/search/index', [SearchController::class, 'index'])->name('search.index');
+    Route::get('/dataTable/search', [SearchController::class, 'getDataforDatatableSearchGlobal'])->name('search.getDataforDatatableSearchGlobal');
+
 
     //CONTRATS
     Route::get('/contrats/index', [ContratController::class, 'index'])->name('contrats.index');

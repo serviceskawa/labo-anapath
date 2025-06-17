@@ -4,6 +4,7 @@ $('.dropify').dropify();
         placeholder: "Choose event type",
         tags: true
     });
+    
     console.log(vals)
 
     vals.forEach(function(e) {

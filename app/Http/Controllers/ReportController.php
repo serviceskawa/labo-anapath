@@ -772,7 +772,6 @@ class ReportController extends Controller
     public function getReportsforDatatable(Request $request)
     {
         $data = $this->report->with('order')->latest();
-
         return DataTables::of($data)
             ->addIndexColumn()
             ->editColumn('code', function ($data) {
@@ -782,7 +781,6 @@ class ReportController extends Controller
                     return '';
                 }
             })
-
             ->addColumn('codepatient', function ($data) {
                 return $data->order->patient->code;
             })
