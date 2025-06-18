@@ -263,7 +263,7 @@ class SearchController extends Controller
                             $query->where('code', 'like', '%' . $request->get('content') . '%')
                             // ->orwhere('prelevement_date', 'like', '%' . $request->get('content') . '%')
                             ;
-                        })
+                        });
 
                         // ->orwhereHas('order', function ($query) use ($request) {
                         //     $query->whereHas('patient', function ($query) use ($request) {
