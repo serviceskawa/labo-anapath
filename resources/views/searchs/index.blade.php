@@ -34,10 +34,12 @@
 
                 <div id="cardCollpase1" class="show collapse pt-3">
 
+                    
+
                     <div class="row mb-3">
                         <div class="col-lg-3 mb-3">
                             <label for="exampleFormControlInput1" class="form-label">Type d'examen</label>
-                            <select class="form-select select2" data-toggle="select2" id="type_examen_ids"
+                            <select class="form-select select2 filter-field" data-toggle="select2" id="type_examen_ids"
                                 name="type_examen_ids[]" multiple>
                                 <option disabled>Sélectionner le type d'examen</option>
                                 @forelse ($types_orders as $type)
@@ -50,7 +52,8 @@
 
                         <div class="col-lg-3 mb-3">
                             <label for="exampleFormControlInput1" class="form-label">Contrat</label>
-                            <select class="form-select select2" data-toggle="select2" name="contrat_ids[]" id="contrat_ids" multiple>
+                            <select class="form-select select2 filter-field" data-toggle="select2" name="contrat_ids[]"
+                                id="contrat_ids" multiple>
                                 <option disabled>Sélectionner le contrat</option>
                                 @forelse ($contrats as $contrat)
                                     <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
@@ -62,7 +65,8 @@
 
                         <div class="col-lg-3 mb-3">
                             <label for="exampleFormControlInput1" class="form-label">Patient</label>
-                            <select class="form-select select2" data-toggle="select2" name="patient_ids[]" id="patient_ids" multiple>
+                            <select class="form-select select2 filter-field" data-toggle="select2" name="patient_ids[]"
+                                id="patient_ids" multiple>
                                 <option disabled>Sélectionner le nom du patient</option>
                                 @forelse ($patients as $patient)
                                     <option value="{{ $patient->id }}">{{ $patient->code }} - {{ $patient->firstname }}
@@ -75,8 +79,8 @@
 
                         <div class="col-lg-3 mb-3">
                             <label for="exampleFormControlInput3" class="form-label">Médecin traitant</label>
-                            <select class="form-select select2" data-toggle="select2" name="doctor_ids[]" id="doctor_ids"
-                                multiple>
+                            <select class="form-select select2 filter-field" data-toggle="select2" name="doctor_ids[]"
+                                id="doctor_ids" multiple>
                                 <option disabled>Sélectionner le médecin traitant</option>
                                 @foreach ($doctors as $doctor)
                                     <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
@@ -86,7 +90,8 @@
 
                         <div class="col-lg-3 mb-3">
                             <label for="exampleFormControlInput1" class="form-label">Hôpital de provenance</label>
-                            <select class="form-select select2" data-toggle="select2" name="hospital_ids[]" id="hospital_ids" multiple>
+                            <select class="form-select select2 filter-field" data-toggle="select2" name="hospital_ids[]"
+                                id="hospital_ids" multiple>
                                 <option>Sélectionner le centre hospitalier de provenance</option>
                                 @foreach ($hopitals as $hopital)
                                     <option value="{{ $hopital->id }}">{{ $hopital->name }}</option>
@@ -97,8 +102,8 @@
                         <div class="col-lg-3 mb-3">
                             <div class="form-group">
                                 <label for="exampleFormControlInput1" class="form-label">Référence hôpital</label>
-                                <input type="text" class="form-control" name="reference_hopital" id="reference_hopital"
-                                    placeholder="">
+                                <input type="text" class="form-control filter-field" name="reference_hopital"
+                                    id="reference_hopital" placeholder="">
                             </div>
                         </div>
 
@@ -109,28 +114,47 @@
 
                         <div class="col-lg-3 mb-3">
                             <label for="example-fileinput" class="form-label">Date fin</label>
-                            <input type="date" name="dateEnd" id="dateEnd" class="form-control">
+                            <input type="date" name="dateEnd" id="dateEnd" class="form-control filter-field">
                         </div>
 
                         <div class="col-lg-3 mb-3">
                             <div class="form-group">
                                 <label for="exampleFormControlInput1" class="form-label">Recherche générale</label>
-                                <input type="text" class="form-control" name="content" id="content"
+                                <input type="text" class="form-control filter-field" name="content" id="content"
                                     placeholder="">
                             </div>
                         </div>
 
                         <div class="col-lg-3 mb-3">
-                                <label for="example-fileinput" class="form-label">Urgent</label>
-                                <select name="status_urgence_test_order_id" id="status_urgence_test_order_id" class="form-control">
-                                    <option value="">Tous</option>
-                                    <option value="1">Urgent</option>
-                                    <option value="0">Retard</option>
-                                </select>
-                            </div>
+                            <label for="example-fileinput" class="form-label">Urgent</label>
+                            <select name="status_urgence_test_order_id" id="status_urgence_test_order_id"
+                                class="form-control filter-field">
+                                <option value="">Tous</option>
+                                <option value="1">Urgent</option>
+                                <option value="0">Retard</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            {{-- <button type="button" id="btn-export" class="btn btn-success">Exporter Excel</button> --}}
+                            <a href="#" id="exportBtn" class="btn btn-success">Exporter Excel</a>
+
+                        </div>
                     </div>
 
 
+<form id="exportForm" method="GET" action="{{ route('reports.export') }}" target="_blank">
+    <input type="hidden" name="type_examen_ids[]" id="export_type_examen_ids">
+    <input type="hidden" name="contrat_ids[]" id="export_contrat_ids">
+    <input type="hidden" name="patient_ids[]" id="export_patient_ids">
+    <input type="hidden" name="doctor_ids[]" id="export_doctor_ids">
+    <input type="hidden" name="hospital_ids[]" id="export_hospital_ids">
+    <input type="hidden" name="reference_hopital" id="export_reference_hopital">
+    <input type="hidden" name="dateBegin" id="export_dateBegin">
+    <input type="hidden" name="dateEnd" id="export_dateEnd">
+    <input type="hidden" name="content" id="export_content">
+    <input type="hidden" name="status_urgence_test_order_id" id="export_status_urgence_test_order_id">
+</form>
 
 
 

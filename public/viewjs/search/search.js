@@ -125,31 +125,31 @@ $(document).ready(function () {
     // Recherche selon les cas
     $("#type_examen_ids").on("change", function () {
         console.log($("#type_examen_ids").val());
-        alert(this.value);
+        // alert(this.value);
         table.draw();
     });
 
     $("#contrat_ids").on("change", function () {
         console.log($("#contrat_ids").val());
-        alert(this.value);
+        // alert(this.value);
         table.draw();
     });
 
     $("#patient_ids").on("change", function () {
         console.log($("#patient_ids").val());
-        alert(this.value);
+        // alert(this.value);
         table.draw();
     });
 
     $("#doctor_ids").on("change", function () {
         console.log($("#doctor_ids").val());
-        alert(this.value);
+        // alert(this.value);
         table.draw();
     });
 
     $("#hospital_ids").on("change", function () {
         console.log($("#hospital_ids").val());
-        alert(this.value);
+        // alert(this.value);
         table.draw();
     });
 
@@ -175,7 +175,64 @@ $(document).ready(function () {
         table.draw();
     });
 
-    // $("#contenu").on("input", function () {
-    //     table.draw();
-    // });
 });
+
+
+$('#exportBtn').on('click', function () {
+    $('#export_type_examen_ids').val($('#type_examen_ids').val());
+    $('#export_contrat_ids').val($('#contrat_ids').val());
+    $('#export_patient_ids').val($('#patient_ids').val());
+    $('#export_doctor_ids').val($('#doctor_ids').val());
+    $('#export_hospital_ids').val($('#hospital_ids').val());
+
+    $('#export_reference_hopital').val($('#reference_hopital').val());
+    $('#export_dateBegin').val($('#dateBegin').val());
+    $('#export_dateEnd').val($('#dateEnd').val());
+    $('#export_content').val($('#content').val());
+    $('#export_status_urgence_test_order_id').val($('#status_urgence_test_order_id').val());
+
+    $('#exportForm').submit();
+});
+
+
+
+// $('#export-excel').on('click', function (e) {
+//     e.preventDefault();
+
+//     const params = {
+//         type_examen_ids: $('#type_examen_ids').val(),
+//         contrat_ids: $('#contrat_ids').val(),
+//         patient_ids: $('#patient_ids').val(),
+//         doctor_ids: $('#doctor_ids').val(),
+//         hospital_ids: $('#hospital_ids').val(),
+//         reference_hopital: $('#reference_hopital').val(),
+//         dateBegin: $('#dateBegin').val(),
+//         dateEnd: $('#dateEnd').val(),
+//         content: $('#content').val(),
+//         status_urgence_test_order_id: $('#status_urgence_test_order_id').val(),
+//     };
+
+//     console.log(hospital_ids);
+    
+
+//     fetch('/export-reports', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+//         },
+//         body: JSON.stringify(params),
+//     })
+//     .then(response => response.blob())
+//     .then(blob => {
+//         const url = window.URL.createObjectURL(blob);
+//         const a = document.createElement('a');
+//         a.href = url;
+//         a.download = "rapports.xlsx";
+//         document.body.appendChild(a);
+//         a.click();
+//         a.remove();
+//         window.URL.revokeObjectURL(url);
+//     });
+// });
+

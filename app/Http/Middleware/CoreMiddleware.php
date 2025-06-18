@@ -18,10 +18,20 @@ class CoreMiddleware
     {
         // Set the allowed domains to receive CORS requests
         // If the request origin is in the allowed domains, set the CORS headers
-        return $next($request)
-            ->header('Access-Control-Allow-Origin', '*')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
         // // Otherwise, return an error response
         // return response('Unauthorized', 401);
+
+        // =================================
+        // return $next($request)
+        //     ->header('Access-Control-Allow-Origin', '*')
+        //     ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+
+            // ===============================
+
+            $response = $next($request);
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+
+            return $response;
     }
 }
