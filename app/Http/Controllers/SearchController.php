@@ -257,7 +257,7 @@ class SearchController extends Controller
                         ->orwhere('title', 'like', '%' . $request->get('content') . '%')
                         ->orwhere('delivery_date', 'like', '%' . $request->get('content') . '%')
                         ->orwhere('signature_date', 'like', '%' . $request->get('content') . '%')
-                        ->orwhere('retriever_date', 'like', '%' . $request->get('content') . '%')
+                        // ->orwhere('retriever_date', 'like', '%' . $request->get('content') . '%')
 
                         ->orwhereHas('order', function ($query) use ($request) {
                             $query->where('code', 'like', '%' . $request->get('content') . '%')
