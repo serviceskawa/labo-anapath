@@ -255,40 +255,41 @@ class SearchController extends Controller
                         ->orwhere('description', 'like', '%' . $request->get('content') . '%')
                         ->orwhere('description_supplementaire', 'like', '%' . $request->get('content') . '%')
                         ->orwhere('title', 'like', '%' . $request->get('content') . '%')
-                        ->orwhere('delivery_date', 'like', '%' . $request->get('content') . '%')
-                        ->orwhere('signature_date', 'like', '%' . $request->get('content') . '%')
+                        // ->orwhere('delivery_date', 'like', '%' . $request->get('content') . '%')
+                        // ->orwhere('signature_date', 'like', '%' . $request->get('content') . '%')
                         // ->orwhere('retriever_date', 'like', '%' . $request->get('content') . '%')
 
                         ->orwhereHas('order', function ($query) use ($request) {
                             $query->where('code', 'like', '%' . $request->get('content') . '%')
-                            ->orwhere('prelevement_date', 'like', '%' . $request->get('content') . '%');
+                            // ->orwhere('prelevement_date', 'like', '%' . $request->get('content') . '%')
+                            ;
                         })
 
-                        ->orwhereHas('order', function ($query) use ($request) {
-                            $query->whereHas('patient', function ($query) use ($request) {
-                                $query->where('firstname', 'like', '%' . $request->get('content') . '%')
-                                    ->orwhere('code', 'like', '%' . $request->get('content') . '%')
-                                    ->orwhere('lastname', 'like', '%' . $request->get('content') . '%');
-                            })
+                        // ->orwhereHas('order', function ($query) use ($request) {
+                        //     $query->whereHas('patient', function ($query) use ($request) {
+                        //         $query->where('firstname', 'like', '%' . $request->get('content') . '%')
+                        //             ->orwhere('code', 'like', '%' . $request->get('content') . '%')
+                        //             ->orwhere('lastname', 'like', '%' . $request->get('content') . '%');
+                        //     })
 
-                            ->orwhereHas('hospital', function ($query) use ($request) {
-                                $query->where('name', 'like', '%' . $request->get('content') . '%')
-                                ->orWhere('email', 'like', '%' . $request->get('content') . '%')
-                                ->orWhere('telephone', 'like', '%' . $request->get('content') . '%')
-                                ->orWhere('adresse', 'like', '%' . $request->get('content') . '%');
-                            })
+                        //     ->orwhereHas('hospital', function ($query) use ($request) {
+                        //         $query->where('name', 'like', '%' . $request->get('content') . '%')
+                        //         ->orWhere('email', 'like', '%' . $request->get('content') . '%')
+                        //         ->orWhere('telephone', 'like', '%' . $request->get('content') . '%')
+                        //         ->orWhere('adresse', 'like', '%' . $request->get('content') . '%');
+                        //     })
 
-                            ->orwhereHas('doctorExamen', function ($query) use ($request) {
-                                $query->where('name', 'like', '%' . $request->get('content') . '%');
-                            })
+                        //     ->orwhereHas('doctorExamen', function ($query) use ($request) {
+                        //         $query->where('name', 'like', '%' . $request->get('content') . '%');
+                        //     })
 
-                            ->orwhereHas('contrat', function ($query) use ($request) {
-                                $query->where('name', 'like', '%' . $request->get('content') . '%')
-                                ->orWhere('type', 'like', '%' . $request->get('content') . '%')
-                                ->orWhere('description', 'like', '%' . $request->get('content') . '%');
-                            })
-                            ;
-                        });
+                        //     ->orwhereHas('contrat', function ($query) use ($request) {
+                        //         $query->where('name', 'like', '%' . $request->get('content') . '%')
+                        //         ->orWhere('type', 'like', '%' . $request->get('content') . '%')
+                        //         ->orWhere('description', 'like', '%' . $request->get('content') . '%');
+                        //     })
+                        //     ;
+                        // });
                 }
 
                 if (!empty($request->get('dateBegin'))) {
