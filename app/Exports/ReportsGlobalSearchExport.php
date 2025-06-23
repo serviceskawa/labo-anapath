@@ -14,7 +14,7 @@ use Carbon\Carbon;
 
 class ReportsGlobalSearchExport implements FromCollection, WithHeadings
 {
-     protected $request;
+    protected $request;
 
     public function __construct(Request $request)
     {
@@ -88,38 +88,12 @@ class ReportsGlobalSearchExport implements FromCollection, WithHeadings
             $content = $req->get('content');
             $query->where(function ($q) use ($content) {
                 $q->where('code', 'like', "%$content%")
-                  ->orWhere('description', 'like', "%$content%")
-                  ->orWhere('description_supplementaire', 'like', "%$content%")
-                  ->orWhere('title', 'like', "%$content%")
-                  ->orWhere('delivery_date', 'like', "%$content%")
-                  ->orWhere('signature_date', 'like', "%$content%")
-                  ->orWhere('retriever_date', 'like', "%$content%")
-                  ->orWhere('description_micro', 'like', "%$content%")
-                  ->orWhere('description_supplementaire_micro', 'like', "%$content%")
-                  ->orWhere('comment', 'like', "%$content%")
-                  ->orWhere('comment_sup', 'like', "%$content%")
-                  ->orWhereHas('order', function ($q) use ($content) {
-                      $q->where('code', 'like', "%$content%")
-                        ->orWhere('prelevement_date', 'like', "%$content%")
-                        ->orWhereHas('patient', function ($q) use ($content) {
-                            $q->where('firstname', 'like', "%$content%")
-                              ->orWhere('lastname', 'like', "%$content%")
-                              ->orWhere('code', 'like', "%$content%");
-                        })
-                        ->orWhereHas('hospital', function ($q) use ($content) {
-                            $q->where('name', 'like', "%$content%")
-                              ->orWhere('email', 'like', "%$content%")
-                              ->orWhere('telephone', 'like', "%$content%")
-                              ->orWhere('adresse', 'like', "%$content%");
-                        })
-                        ->orWhereHas('doctorExamen', fn($q) =>
-                            $q->where('name', 'like', "%$content%"))
-                        ->orWhereHas('contrat', function ($q) use ($content) {
-                            $q->where('name', 'like', "%$content%")
-                              ->orWhere('type', 'like', "%$content%")
-                              ->orWhere('description', 'like', "%$content%");
-                        });
-                  });
+                    ->orWhere('description', 'like', "%$content%")
+                    ->orWhere('description_supplementaire', 'like', "%$content%")
+                    ->orWhere('title', 'like', "%$content%")
+                    ->orWhereHas('order', function ($q) use ($content) {
+                        $q->where('code', 'like', "%$content%");
+                    });
             });
         }
 
@@ -139,7 +113,7 @@ class ReportsGlobalSearchExport implements FromCollection, WithHeadings
                 $report?->order?->code,
                 $report?->order?->type?->name,
                 $report?->order?->contrat?->name,
-                $report?->order?->patient?->firstname . ' '. $report?->order?->patient?->lastname,
+                $report?->order?->patient?->firstname . ' ' . $report?->order?->patient?->lastname,
                 $report?->order?->doctorExamen?->name,
                 $report?->order?->hospital?->name,
                 $report?->order?->reference_hopital,
@@ -169,7 +143,7 @@ class ReportsGlobalSearchExport implements FromCollection, WithHeadings
             'Hôpital de Référence',
             'Date de création',
             'Statut d\'urgence',
-            
+
             'Description',
             'Description supplémentaire',
             'Description micro',
