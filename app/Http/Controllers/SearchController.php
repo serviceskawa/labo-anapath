@@ -202,35 +202,35 @@ class SearchController extends Controller
                 if (!empty($request->get('type_examen_ids'))) {
                     $query
                         ->whereHas('order', function ($query) use ($request) {
-                            $query->where('type_order_id', $request->get('type_examen_ids', []));
+                            $query->whereIn('type_order_id', $request->get('type_examen_ids', []));
                         });
                 }
 
                 if (!empty($request->get('contrat_ids'))) {
                     $query
                         ->whereHas('order', function ($query) use ($request) {
-                            $query->where('contrat_id', $request->get('contrat_ids', []));
+                            $query->whereIn('contrat_id', $request->get('contrat_ids', []));
                         });
                 }
 
                 if (!empty($request->get('patient_ids'))) {
                     $query
                         ->whereHas('order', function ($query) use ($request) {
-                            $query->where('patient_id', $request->get('patient_ids', []));
+                            $query->whereIn('patient_id', $request->get('patient_ids', []));
                         });
                 }
 
                 if (!empty($request->get('doctor_ids'))) {
                     $query
                         ->whereHas('order', function ($query) use ($request) {
-                            $query->where('doctor_id', $request->get('doctor_ids', []));
+                            $query->whereIn('doctor_id', $request->get('doctor_ids', []));
                         });
                 }
 
                 if (!empty($request->get('hospital_ids'))) {
                     $query
                         ->whereHas('order', function ($query) use ($request) {
-                            $query->where('hospital_id', $request->get('hospital_ids', []));
+                            $query->whereIn('hospital_id', $request->get('hospital_ids', []));
                         });
                 }
 
