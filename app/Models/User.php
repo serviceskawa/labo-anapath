@@ -167,4 +167,19 @@ class User extends Authenticatable
         return $this->hasMany(AssignmentDoctor::class,'doctor_id');
     }
 
+    // 🔁 Relation vers la branche principale (colonne branch_id dans users)
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
+        // Renvoie la branche principale ou actuelle associée à l'utilisateur
+    }
+
+    // 🔁 Relation vers toutes les branches associées via la table pivot
+    public function branches()
+    {
+        return $this->belongsToMany(Branch::class)
+                    ->withPivot('is_default')
+                    ->withTimestamps();
+        // Renvoie toutes les branches liées à l'utilisateur
+    }
 }
