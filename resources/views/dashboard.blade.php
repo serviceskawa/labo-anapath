@@ -143,7 +143,7 @@
                 <div class="card">
                     <div class="card-body">
 
-                        <h4 class="header-title mb-3">Comptes rendu dsponible aujourd'hui</h4>
+                        <h4 class="header-title mb-3">Comptes rendu disponible aujourd'hui</h4>
 
                         <div class="table-responsive">
                             <table table id="datatable1" class="table table-hover table-centered mb-0">

@@ -173,7 +173,11 @@
                                         </li>
                                     @endif
 
-
+                                    {{-- @if (getOnlineUser()->can('view-test-order-assignments')) --}}
+                                        <li>
+                                            <a href="{{ route('search.index') }}">Rechercher</a>
+                                        </li>
+                                    {{-- @endif --}}
                                 </ul>
                             </div>
                         </li>
