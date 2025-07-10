@@ -17,10 +17,12 @@ class CreateBranchUserTable extends Migration
             $table->id(); // Clé primaire
             // $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->comment('ID de l’utilisateur lié'); // Clé étrangère vers users
               $table->foreignId('user_id')->nullable()
-                ->constrained('users')
-                ->onUpdate('cascade')
-                ->onDelete('restrict')
-                ->comment('ID de l’utilisateur lié'); // Clé étrangère vers users
+                ->comment('ID de l’utilisateur lié')
+                // ->constrained('users')
+                // ->onUpdate('cascade')
+                // ->onDelete('restrict')
+                ; // Clé étrangère vers users
+
             $table->foreignId('branch_id')->constrained('branches')->onDelete('cascade')->comment('ID de la branche liée'); // Clé étrangère vers branches
             $table->boolean('is_default')->default(true)->comment('Indique si cette branche est la branche par défaut de l’utilisateur'); // Détermine la branche par défaut
             $table->timestamps(); // Horodatage
