@@ -23,10 +23,9 @@ class TestOrderController extends Controller
                 ->orwhere('slug', 'pièce-opératoire')
                 ->where('status', 1) // Statut différent de 0
                 ->whereNull('deleted_at'); // deleted_at doit être NULL;
-        })->get();
+        })->limit(100)->get();
 
         return new TestOrderCollection($orders);
-
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Resources\TestPathologyMacro;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Employee\EmployeeResource;
 
 class TestPathologyMacroResource extends JsonResource
 {
@@ -22,7 +23,7 @@ class TestPathologyMacroResource extends JsonResource
             "mounting" => $this->mounting,
             "created_at" => $this->created_at,
             "user" => $this->user->fullname(),
-            "employee" => $this->employee->fullname(),
+            "employee" => new EmployeeResource($this->employee),
             "employee_id" => $this->employee->id,
         ];
     }

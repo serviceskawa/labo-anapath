@@ -35,7 +35,7 @@ class LoginRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success' => false,
-            'message' => __('messages.given_data_was_invalid'),
+            'message' => 'Email ou mot de passe incorrect',
             'errors' => $validator->errors()
         ], 422));
     }
