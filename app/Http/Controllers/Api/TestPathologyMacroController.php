@@ -38,7 +38,7 @@ class TestPathologyMacroController extends Controller
             $macro = new test_pathology_macro();
             $macro->id_employee = $request->id_employee;
             $macro->date = $request->date;
-            $macro->id_test_pathology_order = $order;
+            $macro->id_test_pathology_order = $order['id'];
             $macro->user_id = Auth::user()->id;
             $macro->save();
             $macros[] = $macro;
