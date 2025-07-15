@@ -14,7 +14,7 @@ class UserController extends Controller
     protected $role;
     protected $setting;
     protected $user;
-    public function __construct(Role $role, Setting $setting, User $user )
+    public function __construct(Role $role, Setting $setting, User $user)
     {
         $this->middleware('auth');
         $this->role = $role;
@@ -39,7 +39,7 @@ class UserController extends Controller
 
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        return view('users.index', compact('users','roles'));
+        return view('users.index', compact('users', 'roles'));
     }
 
     /**
@@ -56,7 +56,7 @@ class UserController extends Controller
         $roles = $this->role->all();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        return view('users.create', compact('users','roles'));
+        return view('users.create', compact('users', 'roles'));
     }
 
     /**
@@ -70,22 +70,34 @@ class UserController extends Controller
         if (!getOnlineUser()->can('create-users')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        // dd($request);
 
-        if ($request->file('signature') ) {
-            $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();
+        // if ($request->file('signature') ) {
+        //     $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();
 
-            $path_signature = $request->file('signature')->storeAs('settings/app', $signature, 'public');
+        //     $path_signature = $request->file('signature')->storeAs('settings/app', $signature, 'public');
+        // }
+
+        if ($request->hasFile('signature')) {
+            $signature = time() . '_' . $request->firstname . '_signature.' . $request->file('signature')->extension();
+
+            // Chemin absolu vers public/adminassets/images
+            $destinationPath = public_path('adminassets/images');
+
+            // Déplacer le fichier vers le dossier public
+            $request->file('signature')->move($destinationPath, $signature);
+
+            // Optionnel : chemin relatif pour enregistrement en BDD
+            // $path_signature = 'adminassets/images/' . $signature;
         }
 
         try {
-           // dd($path_signature);
-            $user = $this->user->firstOrCreate(["email" =>$request->email],[
+            $user = $this->user->firstOrCreate(["email" => $request->email], [
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
                 "password" => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-                "signature" => $request->file('signature') ? $path_signature:'',
+                "signature" => $request->file('signature') ? $signature : '',
             ]);
+
             $user->roles()->attach($request->roles);
 
             $permsTab = [];
@@ -94,13 +106,13 @@ class UserController extends Controller
                 foreach ($role->permissions as $key => $perms) {
                     $permsTab[] = $perms->id;
                 }
-
             }
+
             $user->permissions()->attach($permsTab);
 
             return redirect()->route('user.index')->with('success', " Utilisateur crée ! ");
         } catch (\Throwable $th) {
-            return redirect()->route('user.index')->with('error', "Échec de l'enregistrement ! " .$th->getMessage());
+            return redirect()->route('user.index')->with('error', "Échec de l'enregistrement ! " . $th->getMessage());
 
         }
 
@@ -147,71 +159,47 @@ class UserController extends Controller
             'email' => 'required',
         ]);
 
-        // if ($request->file('signature') ) {
-        //     $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();
-        //     $path_signature = $request->file('signature')->storeAs('settings/app', $signature, 'public');
-        // }
-
-        // $imageFile = $request->file('signature');
-
-        // Déterminez le nom de fichier (avec son extension)
-        // $imageName = $imageFile->getClientOriginalName();
-
-             // Récupérez uniquement l'extension du fichier
-            //  $name = Auth::user()->firstname."_".Auth::user()->lastname.".".$imageFile->getClientOriginalExtension();
-
-        // dd($name);
-
         // Vérifiez si un fichier image a été envoyé via la requête
-    if ($request->hasFile('signature')) {
-        $imageFile = $request->file('signature');
-        // Obtenez le nom d'origine du fichier
-        $namefichier = Auth::user()->firstname."_".Auth::user()->lastname.".".$imageFile->getClientOriginalExtension();
+        $namefichier = "";
+        if ($request->hasFile('signature')) {
+            $imageFile = $request->file('signature');
+            // Obtenez le nom d'origine du fichier
+            $namefichier = Auth::user()->firstname . "_" . Auth::user()->lastname . "." . $imageFile->getClientOriginalExtension();
 
-        // Enregistrez le fichier image dans le dossier public
-        $re = $request->file('signature')->move(public_path('adminassets/images'), $namefichier);
-    }else{
-        $user= $this->user->find($data['id']);
-        $namefichier = $user->signature;
-    }
-
-    // dd($re);
+            // Enregistrez le fichier image dans le dossier public
+            $request->file('signature')->move(public_path('adminassets/images'), $namefichier);
+        } else {
+            $user = $this->user->find($data['id']);
+            $namefichier = $user->signature;
+        }
 
         try {
-
-
             $user = $this->user->find($data['id']);
-
-
-            $user = $this->user->updateorcreate(["id" =>$request->id],[
-                "email" =>$request->email,
+            $user = $this->user->updateorcreate(["id" => $request->id], [
+                "email" => $request->email,
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
-                "signature" => $namefichier ? $namefichier : '',
+                "signature" => $namefichier,
             ]);
-            
+
             $user->roles()->sync([]);
             $user->roles()->attach($request->roles);
 
             $permsTab = [];
             foreach ($request->roles as $key => $role_id) {
                 $role = $this->role->findorfail($role_id);
-
                 foreach ($role->permissions as $key => $perms) {
                     $permsTab[] = $perms->id;
                 }
-
             }
-            $user->permissions()->sync([]);
 
+            $user->permissions()->sync([]);
             $user->permissions()->attach($permsTab);
 
             return redirect()->route('user.index')->with('success', " Utilisateur mis à jour ! ");
         } catch (\Throwable $th) {
-            return redirect()->route('user.index')->with('error', "Échec de l'enregistrement ! " .$th->getMessage());
-
+            return redirect()->route('user.index')->with('error', "Échec de l'enregistrement ! " . $th->getMessage());
         }
-
     }
 
     /**
@@ -233,15 +221,14 @@ class UserController extends Controller
     {
         $user = $this->user->find($id);
 
-        $status ="";
-       try
-       {
+        $status = "";
+        try {
 
-            if($user->is_active ==1){
+            if ($user->is_active == 1) {
 
                 $user->is_active = 0;
                 $user->is_connect = 0;
-            $user->two_factor_enabled =0;
+                $user->two_factor_enabled = 0;
                 $user->two_factor_enabled = 0;
                 $user->save();
                 $status = "désactivé";
@@ -250,16 +237,16 @@ class UserController extends Controller
                 //     Auth::logout();
                 // }
 
-            }else{
+            } else {
                 $user->is_active = 1;
                 $user->save();
                 $status = "activé";
             }
             // dd($user);
-            return back()->with('success','Le compte a été '.$status);
-       }catch (\Throwable $th) {
-        back()->with('error','Une erreur est subvenue'.$th);
-       }
+            return back()->with('success', 'Le compte a été ' . $status);
+        } catch (\Throwable $th) {
+            back()->with('error', 'Une erreur est subvenue' . $th);
+        }
     }
 
     public function checkrole($id)
