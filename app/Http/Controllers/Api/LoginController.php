@@ -45,19 +45,19 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (!auth()->attempt($credentials)) {
-                return $this->respondFailedLogin(false, true);
+            return $this->respondFailedLogin(false, true);
         } else {
             $user = auth()->user();
 
             $tokenResult = $user->createToken('auth_token');
-            
+
 
             return $this->respondWithToken($tokenResult, $user);
         }
-        
     }
 
-    protected function respondFailedLogin() {
+    protected function respondFailedLogin()
+    {
         return response()->json([
             'errors' => [
                 'message' => 'email or password is invalid'
@@ -69,7 +69,7 @@ class LoginController extends Controller
     {
         return response()->json([
             'access_token' => $tokenResult->plainTextToken,
-            'expires_at' => now()->addMonth(12),
+            'expires_at' => null,
             'token_type' => 'bearer',
             'user' => new UserResource($user)
         ], 200);
