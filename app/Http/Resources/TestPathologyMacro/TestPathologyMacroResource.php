@@ -25,6 +25,7 @@ class TestPathologyMacroResource extends JsonResource
             "user" => $this->user->fullname(),
             "employee" => new EmployeeResource($this->employee),
             "employee_id" => $this->employee->id,
+            "branch_id" => $this->branch_id,
         ];
     }
 }

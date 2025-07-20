@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\test_pathology_macro;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\TestPathologyMacro\TestPathologyMacroCollection;
+use Illuminate\Support\Facades\Log;
 
 class TestPathologyMacroController extends Controller
 {
@@ -39,6 +40,27 @@ class TestPathologyMacroController extends Controller
             $macro->id_employee = $request->id_employee;
             $macro->date = $request->date;
             $macro->id_test_pathology_order = $order['id'];
+            $macro->branch_id = $request->branch_id;
+            $macro->user_id = Auth::user()->id;
+            $macro->save();
+            $macros[] = $macro;
+        }
+
+        return new TestPathologyMacroCollection($macros);
+    }
+
+    public function bulkStore(Request $request)
+    {
+        $orders = $request->orders;
+
+        $macros = [];
+        foreach ($orders as $order) {
+            $macro = new test_pathology_macro();
+            $macro->id = $order['id'];
+            $macro->id_employee = $order['employee_id'];
+            $macro->date = Carbon::parse($order['date'])->toDateString();
+            $macro->id_test_pathology_order = $order['order_id'];
+            $macro->branch_id = $order['branch_id'];
             $macro->user_id = Auth::user()->id;
             $macro->save();
             $macros[] = $macro;
