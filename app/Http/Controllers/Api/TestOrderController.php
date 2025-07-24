@@ -24,7 +24,7 @@ class TestOrderController extends Controller
                 ->orwhere('slug', 'pièce-opératoire')
                 ->where('status', 1) // Statut différent de 0
                 ->whereNull('deleted_at'); // deleted_at doit être NULL;
-        })->where('created_at', '>=', Carbon::now()->subMonths(12))
+        })->where('created_at', '>=', Carbon::now()->subMonths(3))
             ->orderByDesc('created_at')->get();
 
         return new TestOrderCollection($orders);
