@@ -24,7 +24,7 @@ class TestPathologyMacroController extends Controller
                     ->whereNull('deleted_at');
             });
         })
-            ->where('created_at', '>=', Carbon::now()->subMonths(3))
+            ->where('created_at', '>=', Carbon::now()->subMonths(2))
             ->orderByDesc('created_at')
             ->get();
         return new TestPathologyMacroCollection($macros);
