@@ -17,7 +17,7 @@ class TestOrderController extends Controller
      */
     public function index()
     {
-        $orders = TestOrder::whereHas('type', function ($query) {
+        $orders = TestOrder::whereNotNull('code')->whereHas('type', function ($query) {
             $query->where('slug', 'cytologie')
                 ->orwhere('slug', 'histologie')
                 ->orwhere('slug', 'biopsie')
@@ -32,7 +32,7 @@ class TestOrderController extends Controller
 
     public function searchTestOrder(Request $request)
     {
-        $orders = TestOrder::whereHas('type', function ($query) {
+        $orders = TestOrder::whereNotNull('code')->whereHas('type', function ($query) {
             $query->where('slug', 'cytologie')
                 ->orwhere('slug', 'histologie')
                 ->orwhere('slug', 'biopsie')
