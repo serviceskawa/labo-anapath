@@ -17,14 +17,14 @@ class TestOrderController extends Controller
      */
     public function index()
     {
-        $orders = TestOrder::whereHas('type', function ($query) {
+        $orders = TestOrder::whereNotNull('code')->whereHas('type', function ($query) {
             $query->where('slug', 'cytologie')
                 ->orwhere('slug', 'histologie')
                 ->orwhere('slug', 'biopsie')
                 ->orwhere('slug', 'pièce-opératoire')
                 ->where('status', 1) // Statut différent de 0
                 ->whereNull('deleted_at'); // deleted_at doit être NULL;
-        })->where('created_at', '>=', Carbon::now()->subMonths(12))
+        })->where('created_at', '>=', Carbon::now()->subMonths(2))
             ->orderByDesc('created_at')->get();
 
         return new TestOrderCollection($orders);
@@ -32,7 +32,7 @@ class TestOrderController extends Controller
 
     public function searchTestOrder(Request $request)
     {
-        $orders = TestOrder::whereHas('type', function ($query) {
+        $orders = TestOrder::whereNotNull('code')->whereHas('type', function ($query) {
             $query->where('slug', 'cytologie')
                 ->orwhere('slug', 'histologie')
                 ->orwhere('slug', 'biopsie')

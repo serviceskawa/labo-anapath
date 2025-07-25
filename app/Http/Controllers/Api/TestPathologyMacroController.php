@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use App\Models\test_pathology_macro;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\TestPathologyMacro\TestPathologyMacroCollection;
-use Illuminate\Support\Facades\Log;
 
 class TestPathologyMacroController extends Controller
 {
@@ -25,7 +24,7 @@ class TestPathologyMacroController extends Controller
                     ->whereNull('deleted_at');
             });
         })
-            ->where('created_at', '>=', Carbon::now()->subMonths(12))
+            ->where('created_at', '>=', Carbon::now()->subMonths(2))
             ->orderByDesc('created_at')
             ->get();
         return new TestPathologyMacroCollection($macros);
@@ -42,6 +41,7 @@ class TestPathologyMacroController extends Controller
             $macro->id_test_pathology_order = $order['id'];
             $macro->branch_id = $request->branch_id;
             $macro->user_id = Auth::user()->id;
+            $macro->created_at = Carbon::now();
             $macro->save();
             $macros[] = $macro;
         }
@@ -62,6 +62,7 @@ class TestPathologyMacroController extends Controller
             $macro->id_test_pathology_order = $order['order_id'];
             $macro->branch_id = $order['branch_id'];
             $macro->user_id = Auth::user()->id;
+            $macro->created_at = $order['created_at'];
             $macro->save();
             $macros[] = $macro;
         }
