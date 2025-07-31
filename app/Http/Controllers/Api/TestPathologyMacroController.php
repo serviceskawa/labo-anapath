@@ -69,4 +69,32 @@ class TestPathologyMacroController extends Controller
 
         return new TestPathologyMacroCollection($macros);
     }
+
+    public function searchMacro(Request $request)
+    {
+        $slugs = ['cytologie', 'histologie', 'biopsie', 'pièce-opératoire'];
+
+        $macros = test_pathology_macro::with(['order', 'employee', 'user', 'testOrder'])
+            ->whereHas('order', function ($query) use ($slugs) {
+                $query->whereHas('type', function ($query) use ($slugs) {
+                    $query->whereIn('slug', $slugs)
+                        ->where('status', 1)
+                        ->whereNull('deleted_at');
+                });
+            })
+            ->where(function ($q) use ($request) {
+                $q->whereHas('order', function ($sub) use ($request) {
+                    $sub->where('code', 'like', '%' . $request->search . '%');
+                })
+                    ->orWhereHas('user', function ($sub) use ($request) {
+                        $sub->where('firstname', 'like', '%' . $request->search . '%')
+                            ->orWhere('lastname', 'like', '%' . $request->search . '%');
+                    })
+                    ->orWhere('date', 'like', '%' . $request->search . '%');
+            })
+            ->orderByDesc('created_at')
+            ->get();
+
+        return new TestPathologyMacroCollection($macros);
+    }
 }

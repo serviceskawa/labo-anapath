@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('/testorders', [TestOrderController::class, 'index']);
     Route::get('/search-test-order', [TestOrderController::class, 'searchTestOrder']);
     Route::get('/employees', [EmployeeController::class, 'index']);
+    Route::get('/search-macro', [TestPathologyMacroController::class, 'searchMacro']);
     Route::get('/macros', [TestPathologyMacroController::class, 'index']);
     Route::post('/macros', [TestPathologyMacroController::class, 'store']);
     Route::post('/bulk-macros', [TestPathologyMacroController::class, 'bulkStore']);
