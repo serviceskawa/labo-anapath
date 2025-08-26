@@ -7,11 +7,7 @@
     <div class="col-12">
         <div class="page-title-box">
             <h4 class="page-title">Comptes rendu</h4>
-
         </div>
-
-        <!----MODAL---->
-
     </div>
 </div>
 
@@ -162,7 +158,6 @@
                             </select>
                         </div>
 
-
                         <div class="col-lg-3">
                             <label for="example-fileinput" class="form-label">Doctor</label>
                             <select name="doctor" id="doctor" class="form-control">
@@ -174,11 +169,6 @@
                                 @endforeach
                             </select>
                         </div>
-
-
-
-
-
                         <div class="col-lg-3" style="margin-top : 25px;">
                             <button type="submit" class="btn btn-success">Filtrer</button>
                         </div>
@@ -210,9 +200,6 @@
             </div>
         </div>
     </div>
-
-
-
 
 </div>
 @endsection
