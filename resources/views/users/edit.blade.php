@@ -24,27 +24,61 @@
                     <div class="row mb-3">
                         <div class="col-md-12 mb-3">
                             <div class="form-group">
-                                <label for="exampleFormControlInput1" class="form-label">Nom<span style="color:red;">*</span></label>
-                                <input type="text" class="form-control" name="firstname" required value="{{ $user->firstname }}">
+                                <label for="exampleFormControlInput1" class="form-label">Nom<span
+                                        style="color:red;">*</span></label>
+                                <input type="text" class="form-control" name="firstname" required
+                                    value="{{ $user->firstname }}">
                                 <input type="hidden" class="form-control" name="id" value="{{ $user->id }}">
                             </div>
                         </div>
                         <div class="col-md-12 mb-3">
                             <div class="form-group">
-                                <label for="exampleFormControlInput1" class="form-label">Lastname<span style="color:red;">*</span></label>
-                                <input type="text" class="form-control" name="lastname" required value="{{ $user->lastname }}">
+                                <label for="exampleFormControlInput1" class="form-label">Lastname<span
+                                        style="color:red;">*</span></label>
+                                <input type="text" class="form-control" name="lastname" required
+                                    value="{{ $user->lastname }}">
                             </div>
                         </div>
                         <div class="col-md-12 mb-3">
                             <div class="form-group">
-                                <label for="exampleFormControlInput1" class="form-label">Email<span style="color:red;">*</span></label>
-                                <input type="email" class="form-control" name="email" required value="{{ $user->email }}">
+                                <label for="exampleFormControlInput1" class="form-label">Email<span
+                                        style="color:red;">*</span></label>
+                                <input type="email" class="form-control" name="email" required
+                                    value="{{ $user->email }}">
+                            </div>
+                        </div>
+
+                        <!-- Commission Field -->
+                        <div class="col-md-12 mb-3">
+                            <div class="form-group">
+                                <label for="commission" class="form-label">Commission (%)</label>
+                                <input type="number" class="form-control" name="commission" id="commission" min="0"
+                                    max="100" step="0.01" placeholder="0.00" value="{{ $user->commission }}">
+                            </div>
+                        </div>
+
+                        <!-- WhatsApp Field -->
+                        <div class="col-md-12 mb-3">
+                            <div class="form-group">
+                                <label for="whatsapp" class="form-label">WhatsApp</label>
+                                <input type="text" class="form-control" name="whatsapp" id="whatsapp"
+                                    placeholder="+2290120202222" value="{{ $user->whatsapp }}">
+                            </div>
+                        </div>
+
+                        <!-- Telephone Field -->
+                        <div class="col-md-12 mb-3">
+                            <div class="form-group">
+                                <label for="telephone" class="form-label">Telephone</label>
+                                <input type="text" class="form-control" name="telephone" id="telephone"
+                                    placeholder="+2290120202222" value="{{ $user->telephone }}">
                             </div>
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label for="example-fileinput" class="form-label">Signature</label>
-                            <input type="file" class="dropify" name="signature" data-default-file="{{ $user->signature ? asset('adminassets/images/'.$user->signature) : '' }}"
+                            <input type="file" class="dropify" name="signature"
+                                data-default-file="{{ $user->signature ? asset('adminassets/images/' . $user->signature) : '' }}"
                                 data-max-file-size="3M" />
                         </div>
 
@@ -54,7 +88,8 @@
                                 multiple>
                                 <option>Sélectionner les roles</option>
                                 @forelse ($roles as $role)
-                                    <option value="{{ $role->id }}" {{ $user->hasRole($role->slug) ? 'selected' : '' }}>
+                                    <option value="{{ $role->id }}"
+                                        {{ $user->hasRole($role->slug) ? 'selected' : '' }}>
                                         {{ $role->name }}</option>
 
                                 @empty
@@ -84,12 +119,11 @@
 
 
 @push('extra-js')
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
         integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         var vals = <?= isset($user->roles) ? json_encode($user->roles) : '' ?>
     </script>
-    <script src="{{asset('viewjs/user/edit.js')}}"></script>
+    <script src="{{ asset('viewjs/user/edit.js') }}"></script>
 @endpush

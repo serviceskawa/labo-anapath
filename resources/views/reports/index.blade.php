@@ -185,14 +185,19 @@
                                 <th>Comptes sortis</th>
                                 <th>Délai respecté</th>
                                 <th>Hors Délai</th>
+                                <th>Chiffre d'Affaire</th>
+                                <th>Valeur</th>
                             </tr>
                         </thead>
+
                         <tfoot>
                             <tr>
                                 <td>{{ $month }} - {{ $year }}</td>
                                 <td>{{ $report_nbres }}</td>
                                 <td>{{ $percentageIn_Deadline }}%</td>
                                 <td>{{ $percentageOver_Deadline }}%</td>
+                                <td>{{ 10 * 10 }}%</td>
+                                <td>{{ $activeDoctorCommission * 10 }}%</td>
                             </tr>
                         </tfoot>
                     </table>

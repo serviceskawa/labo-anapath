@@ -81,9 +81,9 @@ class ReportController extends Controller
         if (!getOnlineUser()->can('view-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        // dd('ok');
+
         $reports = $this->report->orderBy('created_at', 'DESC')->get();
-        $doctors = $this->doctor->all();
+        // $doctors = $this->doctor->all();
         $tags = $this->tag->all();
         $user = Auth::user();
 
@@ -142,7 +142,9 @@ class ReportController extends Controller
         $percentageIn_Deadline = $in_deadline == 0 ? 0 : number_format(($in_deadline / $total) * 100, 1);
         $percentageOver_Deadline = $over_deadline == 0 ? 0 : number_format(($over_deadline / $total) * 100, 1);
 
-        return view('reports.index', compact('doctor', 'percentageOver_Deadline', 'percentageIn_Deadline', 'report_nbres', 'list_years', 'year', 'month', 'tags', 'reports', 'doctors'));
+        $activeDoctorCommission = User::where('id',$doctor)->first()->value('commission') ?: 0;
+
+        return view('reports.index', compact('activeDoctorCommission','doctor', 'percentageOver_Deadline', 'percentageIn_Deadline', 'report_nbres', 'list_years', 'year', 'month', 'tags', 'reports'));
     }
 
     // public function indexsuivistatistique(Request $request)

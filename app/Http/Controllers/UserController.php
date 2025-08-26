@@ -94,6 +94,9 @@ class UserController extends Controller
             $user = $this->user->firstOrCreate(["email" => $request->email], [
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
+                "commission" => $request->commission,
+                "whatsapp" => $request->whatsapp,
+                "telephone" => $request->telephone,
                 "password" => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
                 "signature" => $request->file('signature') ? $signature : '',
             ]);
@@ -179,6 +182,9 @@ class UserController extends Controller
                 "email" => $request->email,
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
+                "commission" => $request->commission,
+                "whatsapp" => $request->whatsapp,
+                "telephone" => $request->telephone,
                 "signature" => $namefichier,
             ]);
 
