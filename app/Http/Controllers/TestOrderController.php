@@ -751,16 +751,15 @@ class TestOrderController extends Controller
     // Utilise yanjra pour le tableau
     public function index2()
     {
-
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
         $examens = $this->testOrder->with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
         $contrats = $this->contrat->all();
-        $patients = $this->patient->all();
+        // $patients = $this->patient->all();
+        // $hopitals = $this->hospital->all();
         $doctors = $this->doctor->all();
-        $hopitals = $this->hospital->all();
         $types_orders = $this->typeOrder->all();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
@@ -772,8 +771,6 @@ class TestOrderController extends Controller
             ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
             ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.voice_id')
             ->Where('ato.event', '!=', 'voice.completed')->count();
-
-
         $testOrders = $this->testOrder->all();
 
         foreach ($testOrders as $key => $testOrder) {
@@ -782,15 +779,33 @@ class TestOrderController extends Controller
                 $testOrder->save();
             }
         }
-
         $testStats = $this->getTestStats($testOrders);
 
-        return view('examens.index2', array_merge(compact('examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders', 'testStats', 'totalAppel'), [
+        return view('examens.index2', array_merge(compact('examens', 'contrats',  'doctors', 'types_orders', 'testStats', 'totalAppel'), [
             'finishTest' => $testStats['finishTest'],
             'noFinishTest' => $testStats['noFinishTest'],
             'is_urgent' => $testStats['is_urgent'],
         ]));
     }
+
+    public function searchContrats(Request $request)
+    {
+        $search = $request->get('search', '');
+        $limit = $request->get('limit', 10);
+
+        $contrats = Contrat::select('id', 'name')
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'LIKE', "%{$search}%");
+            })
+            ->orderBy('name')
+            ->paginate($limit);
+
+        return response()->json([
+            'data' => $contrats->items(),
+            'has_more' => $contrats->hasMorePages()
+        ]);
+    }
+
     // Utilise yanjra pour le tableau
     public function index_immuno()
     {

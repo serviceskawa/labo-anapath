@@ -554,12 +554,7 @@
                     title: 'Confirmer la mise à jour',
                     html: `
                         <div style="text-align: left; padding: 10px;">
-                            <p><strong>Vous êtes sur le point de mettre à jour ce compte rendu.</strong></p>
-                            <hr style="margin: 15px 0;">
-                            <p><strong>Titre :</strong> ${title}</p>
-                            <p><strong>État :</strong> <span style="color: ${status == 1 ? '#28a745' : '#ffc107'}; font-weight: bold;">${statusText}</span></p>
-                            <hr style="margin: 15px 0;">
-                            <p>Cette action modifiera définitivement les données du rapport et sera irréversible.</p>
+                            <p><strong>Vous êtes sur le point de marquer ce compte rendu comme terminer et cette action est irréversible.</strong></p>
                         </div>`,
                     icon: 'question',
                     showCancelButton: true,

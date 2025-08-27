@@ -112,8 +112,19 @@ class ReportController extends Controller
             ->whereYear('signature_date', intval($year))
             ->get();
 
-        $report_nbres = $report_req->count();
+        //Somme du total du chiffre d'affaire generer par le medecin
+        $totalSum = 0;
+        $totalSum = TestOrder::whereIn('id', $testOrderIds)
+            ->whereHas('report', function ($query) use ($month, $year) {
+                $query->where('status', 1)
+                    ->whereMonth('signature_date', intval($month))
+                    ->whereYear('signature_date', intval($year));
+            })
+            ->sum('total');
 
+        // dd($report_req, $testOrderIds, $totalSum);
+
+        $report_nbres = $report_req->count();
         // Initialiser les compteurs
         $withinDeadlineCount = 0;
         $beyondDeadlineCount = 0;
@@ -142,9 +153,10 @@ class ReportController extends Controller
         $percentageIn_Deadline = $in_deadline == 0 ? 0 : number_format(($in_deadline / $total) * 100, 1);
         $percentageOver_Deadline = $over_deadline == 0 ? 0 : number_format(($over_deadline / $total) * 100, 1);
 
-        $activeDoctorCommission = User::where('id',$doctor)->first()->value('commission') ?: 0;
+        $activeDoctorCommission = $doctor ? User::where('id', $doctor)->first() : 0;
+        // dd($doctor, $activeDoctorCommission);
 
-        return view('reports.index', compact('activeDoctorCommission','doctor', 'percentageOver_Deadline', 'percentageIn_Deadline', 'report_nbres', 'list_years', 'year', 'month', 'tags', 'reports'));
+        return view('reports.index', compact('totalSum', 'activeDoctorCommission', 'doctor', 'percentageOver_Deadline', 'percentageIn_Deadline', 'report_nbres', 'list_years', 'year', 'month', 'tags', 'reports'));
     }
 
     // public function indexsuivistatistique(Request $request)

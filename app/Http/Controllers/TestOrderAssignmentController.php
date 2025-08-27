@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\Setting;
 use App\Models\test_pathology_macro;
 use App\Models\TestOrder;
@@ -20,7 +21,7 @@ class TestOrderAssignmentController extends Controller
     protected $user;
     protected $details;
 
-    public function __construct(TestOrder $order,TestOrderAssignment $assignment, User $user, TestOrderAssignmentDetail $details)
+    public function __construct(TestOrder $order, TestOrderAssignment $assignment, User $user, TestOrderAssignmentDetail $details)
     {
         $this->order = $order;
         $this->assignment = $assignment;
@@ -30,38 +31,139 @@ class TestOrderAssignmentController extends Controller
 
     public function index()
     {
-        $assignments = $this->assignment->whereHas('details', function($query) {
-            $query->whereHas('order', function($query){
-                $query->whereHas('type', function($query){
-                    $query->where('slug','like','cytologie')
-                            ->orwhere('slug','!=','histologie');
+        $assignments = $this->assignment->whereHas('details', function ($query) {
+            $query->whereHas('order', function ($query) {
+                $query->whereHas('type', function ($query) {
+                    $query->where('slug', 'like', 'cytologie')
+                        ->orwhere('slug', '!=', 'histologie');
                 })->where('status', 1) // Statut différent de 0
-                ->whereNull('deleted_at'); // deleted_at doit être NULL
+                    ->whereNull('deleted_at'); // deleted_at doit être NULL
             });
         })->latest()->get();
 
         $orders = $this->order->all();
 
-        return view('reports.assignment.index',compact('assignments','orders'));
+        return view('reports.assignment.index', compact('assignments', 'orders'));
+    }
+
+    public function searchOrders(Request $request)
+    {
+        $search = $request->get('search', '');
+        $limit = $request->get('limit', 20);
+
+        $orders = TestOrder::query()
+            ->select('id', 'code', 'test_affiliate')
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('code', 'LIKE', "%{$search}%")
+                        // ->orWhere('test_affiliate', 'LIKE', "%{$search}%")
+                    ;
+                });
+            })
+            ->orderBy('code')
+            ->paginate($limit);
+
+        return response()->json([
+            'data' => $orders->items(),
+            'has_more' => $orders->hasMorePages()
+        ]);
+    }
+
+    public function searchDoctors(Request $request)
+    {
+        $search = $request->get('search', '');
+        $limit = $request->get('limit', 20);
+
+        // getUsersByRole retourne une Collection
+        $allDoctors = collect(getUsersByRole('docteur'));
+
+        $filteredDoctors = $allDoctors->when($search, function ($collection, $search) {
+            return $collection->filter(function ($doctor) use ($search) {
+                $fullname = $doctor->firstname . ' ' . $doctor->lastname;
+                return stripos($doctor->firstname, $search) !== false ||
+                    stripos($doctor->lastname, $search) !== false ||
+                    stripos($fullname, $search) !== false;
+            });
+        });
+
+        $doctorsWithFullName = $filteredDoctors->map(function ($doctor) {
+            return [
+                'id' => $doctor->id,
+                'fullname' => $doctor->firstname . ' ' . $doctor->lastname // Corrigé : firstname/lastname au lieu de first_name/last_name
+            ];
+        })->take($limit);
+
+        return response()->json([
+            'data' => $doctorsWithFullName->values(),
+            'has_more' => $filteredDoctors->count() > $limit
+        ]);
+    }
+
+        public function searchTestOrdersAssignment(Request $request)
+    {
+        $search = $request->get('search', '');
+        $limit = $request->get('limit', 20);
+
+        $testOrders = TestOrder::select('id', 'code', 'test_affiliate')
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('code', 'LIKE', "%{$search}%")
+                        ->orWhere('test_affiliate', 'LIKE', "%{$search}%");
+                });
+            })
+            ->orderBy('code')
+            ->paginate($limit);
+
+        $ordersWithDisplayText = $testOrders->getCollection()->map(function ($order) {
+            $displayText = $order->code;
+
+            // Ajouter les informations d'affectation
+            $affecte = isAffecte($order->id);
+            if ($affecte) {
+                $displayText .= ' (' . $affecte->fullname() . ')';
+            }
+
+            // Gérer les types d'examen
+            $typeExam = typeExamAffecte($order->id);
+            if ($typeExam == 3) {
+                $displayText .= ' / ' . $order->test_affiliate;
+                $affecteRef = isAffecteRefence($order->test_affiliate);
+                if ($affecteRef) {
+                    $displayText .= ' (' . $affecteRef->fullname() . ')';
+                }
+            } elseif ($typeExam == 2) {
+                $displayText .= ' / ' . $order->test_affiliate;
+            }
+
+            return [
+                'id' => $order->id,
+                'display_text' => $displayText
+            ];
+        });
+
+        return response()->json([
+            'data' => $ordersWithDisplayText,
+            'has_more' => $testOrders->hasMorePages()
+        ]);
     }
 
     public function index_immuno()
     {
-        $assignments = $this->assignment->whereHas('details', function($query) {
-            $query->whereHas('order', function($query){
-                $query->whereHas('type', function($query){
-                    $query->where('slug','immuno-interne')
-                            ->orwhere('slug','immuno-exterme');
+        $assignments = $this->assignment->whereHas('details', function ($query) {
+            $query->whereHas('order', function ($query) {
+                $query->whereHas('type', function ($query) {
+                    $query->where('slug', 'immuno-interne')
+                        ->orwhere('slug', 'immuno-exterme');
                 })->where('status', 1) // Statut différent de 0
-                ->whereNull('deleted_at'); // deleted_at doit être NULL
+                    ->whereNull('deleted_at'); // deleted_at doit être NULL
             });
         })->latest()->get();
-        $orders = $this->order->whereHas('type', function($query){
-            $query->where('slug','immuno-interne')
-                    ->orwhere('slug','immuno-exterme');
+        $orders = $this->order->whereHas('type', function ($query) {
+            $query->where('slug', 'immuno-interne')
+                ->orwhere('slug', 'immuno-exterme');
         })->latest()->get();
 
-        return view('reports.assignment.index',compact('assignments','orders'));
+        return view('reports.assignment.index', compact('assignments', 'orders'));
     }
 
     public function getdetail($id)
@@ -76,25 +178,26 @@ class TestOrderAssignmentController extends Controller
     public function index_detail($id)
     {
         $assignment = $this->assignment->find($id);
-        $testOrders = $this->order
-                    ->where('status', 1) // Statut différent de 0
-                    ->whereNull('deleted_at') // deleted_at doit être NULL
-        ->latest()->get();
 
-        return view('reports.assignment.create',compact('assignment','testOrders'));
+        $testOrders = $this->order
+            ->where('status', 1) // Statut différent de 0
+            ->whereNull('deleted_at') // deleted_at doit être NULL
+            ->latest()->get();
+
+        return view('reports.assignment.create', compact('assignment', 'testOrders'));
     }
 
     public function index_immuno_detail($id)
     {
         $assignment = $this->assignment->find($id);
-        $testOrders = $this->order->whereHas('type', function($query){
-                    $query->where('slug','immuno-interne')
-                            ->orwhere('slug','immuno-exterme')
-                            ->where('status', 1) // Statut différent de 0
-                            ->whereNull('deleted_at'); // deleted_at doit être NULL
-                })->latest()->get();
+        $testOrders = $this->order->whereHas('type', function ($query) {
+            $query->where('slug', 'immuno-interne')
+                ->orwhere('slug', 'immuno-exterme')
+                ->where('status', 1) // Statut différent de 0
+                ->whereNull('deleted_at'); // deleted_at doit être NULL
+        })->latest()->get();
 
-        return view('reports.assignment.create',compact('assignment','testOrders'));
+        return view('reports.assignment.create', compact('assignment', 'testOrders'));
     }
 
     public function store(Request $request)
@@ -106,9 +209,9 @@ class TestOrderAssignmentController extends Controller
                 'code' => $code,
                 'user_id' => $request->user_id
             ]);
-            return redirect()->route('report.assignment.detail.index',$assignment->id);
+            return redirect()->route('report.assignment.detail.index', $assignment->id);
         } catch (\Throwable $th) {
-            return back()->with('error', "Erreur de'enregistrement".$th->getMessage());
+            return back()->with('error', "Erreur de'enregistrement" . $th->getMessage());
         }
     }
 
@@ -122,10 +225,10 @@ class TestOrderAssignmentController extends Controller
                 'note' => $request->note_assignment,
                 'date' => $request->date
             ]);
-            return back()->with('success',"Mise à jour effectuée aves succès");
+            return back()->with('success', "Mise à jour effectuée aves succès");
         } catch (\Throwable $th) {
             //throw $th;
-            return back()->with('success',"Erreur lors de la mise à jour ". $th->getMessage());
+            return back()->with('success', "Erreur lors de la mise à jour " . $th->getMessage());
         }
     }
 
@@ -135,35 +238,34 @@ class TestOrderAssignmentController extends Controller
             'test_order_assignment_id' => $request->test_order_assignment_id,
             'test_order_id' => $request->test_order_id,
             'note' => $request->note,
-            'confirmation' => $request->confirm
+            'confirmation' => $request->confirm,
         ];
+
         $order = $this->order->find($request->test_order_id);
 
-
         try {
-            // isAffecte($data['test_order_id']) ? $data['confirmation'] = false : true;
             if (!isAffecte($data['test_order_id'])) {
-                $detail = TestOrderAssignmentDetail::where('test_order_id',$data['test_order_id'])->first();
-
+                $detail = TestOrderAssignmentDetail::where('test_order_id', $data['test_order_id'])->first();
                 $detail ? $detail->delete() : '';
 
-                DB::transaction(function () use ($data,$order) {
+                DB::transaction(function () use ($data, $order) {
                     $details = new TestOrderAssignmentDetail();
                     $details->test_order_assignment_id = $data['test_order_assignment_id'];
                     $details->test_order_id = $data['test_order_id'];
-                    $details->note = $data['note']?$data['note']:null;
+                    $details->note = $data['note'] ? $data['note'] : null;
                     $details->test_order_code = $order->code;
                     $details->save();
                 });
+
                 if (isMacro($data['test_order_id'])) {
-                    $detailMacro = test_pathology_macro::where('id_test_pathology_order',$data['test_order_id'])->first();
+                    $detailMacro = test_pathology_macro::where('id_test_pathology_order', $data['test_order_id'])->first();
                     $detailMacro->circulation = true;
                     $detailMacro->embedding = true;
                     $detailMacro->microtomy_spreading = true;
                     $detailMacro->staining = true;
                     $detailMacro->mounting = true;
                     $detailMacro->save();
-                }else {
+                } else {
                     $macro = new test_pathology_macro();
                     $macro->id_employee = 1;
                     $macro->date = $request->date;
@@ -177,22 +279,22 @@ class TestOrderAssignmentController extends Controller
                     $macro->save();
                 }
 
-                return response()->json(['data'=>$data,'status'=>200],200);
+                return response()->json(['data' => $data, 'status' => 200], 200);
             } else {
-                $detail = TestOrderAssignmentDetail::where('test_order_id',$data['test_order_id'])->first();
+                $detail = TestOrderAssignmentDetail::where('test_order_id', $data['test_order_id'])->first();
                 if (isMacro($data['test_order_id'])) {
-                    $detailMacro = test_pathology_macro::where('id_test_pathology_order',$data['test_order_id'])->first();
+                    $detailMacro = test_pathology_macro::where('id_test_pathology_order', $data['test_order_id'])->first();
                     $detailMacro->circulation = true;
                     $detailMacro->embedding = true;
                     $detailMacro->microtomy_spreading = true;
                     $detailMacro->staining = true;
                     $detailMacro->mounting = true;
                     $detailMacro->save();
-                }else {
+                } else {
                     $macro = new test_pathology_macro();
                     $macro->id_employee = 1;
                     $macro->date = $request->date;
-                    $macro->id_test_pathology_order =$data['test_order_id'];
+                    $macro->id_test_pathology_order = $data['test_order_id'];
                     $macro->user_id = Auth::user()->id;
                     $macro->circulation = true;
                     $macro->embedding = true;
@@ -201,12 +303,10 @@ class TestOrderAssignmentController extends Controller
                     $macro->mounting = true;
                     $macro->save();
                 }
-                return response()->json( ['status'=> 201,'detail'=>$detail], 201);
+                return response()->json(['status' => 201, 'detail' => $detail], 201);
             }
-
-
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage(),500);
+            return response()->json($th->getMessage(), 500);
             //throw $th;
         }
     }
@@ -248,46 +348,45 @@ class TestOrderAssignmentController extends Controller
                 },
             ])
             ->setRowClass(function ($data) use ($request) {
-                if($data->is_urgent == 1){
-                        if (!empty($data->report)) {
-                            if($data->report->is_deliver ==1){
-                                return 'table-success';
-                            }else {
-                                if($data->report->status == 1){
-                                    return 'table-warning';
-                                }
+                if ($data->is_urgent == 1) {
+                    if (!empty($data->report)) {
+                        if ($data->report->is_deliver == 1) {
+                            return 'table-success';
+                        } else {
+                            if ($data->report->status == 1) {
+                                return 'table-warning';
                             }
-
                         }
-                        return 'table-danger urgent';
-                }elseif (!empty($data->report)) {
-                    if($data->report->is_deliver ==1){
+                    }
+                    return 'table-danger urgent';
+                } elseif (!empty($data->report)) {
+                    if ($data->report->is_deliver == 1) {
                         return 'table-success';
-                    }else {
-                        if($data->report->status == 1){
+                    } else {
+                        if ($data->report->status == 1) {
                             return 'table-warning';
                         }
                     }
-                }else {
+                } else {
                     return '';
                 }
             })
 
             ->addColumn('action', function ($data) {
                 $detail =
-                '<a class="btn btn-primary" href="'.route('report.assignment.detail.index',$data->id).'">
+                    '<a class="btn btn-primary" href="' . route('report.assignment.detail.index', $data->id) . '">
                     <i class="uil-eye"></i>
                 </a>';
                 $deleteBtn = "";
 
-            if ($data->details()->count()>=1) {
-                $deleteBtn = '<a class="btn btn-warning" href="'.route('report.assignment.print',$data->id).'">
+                if ($data->details()->count() >= 1) {
+                    $deleteBtn = '<a class="btn btn-warning" href="' . route('report.assignment.print', $data->id) . '">
                     <i class="mdi mdi-printer"></i>
                 </a>';
-            }
+                }
 
 
-                return $detail.' '.$deleteBtn ;
+                return $detail . ' ' . $deleteBtn;
             })
             ->addColumn('code', function ($data) {
                 return $data->code;
@@ -299,29 +398,27 @@ class TestOrderAssignmentController extends Controller
                 return dateFormat($data->date);
             })
             ->addColumn('nbr_assignment', function ($data) {
-               return $data->details()->count();
+                return $data->details()->count();
             })
-            ->filter(function ($query) use ($request,$data) {
+            ->filter(function ($query) use ($request, $data) {
 
                 if (!empty($request->get('id_test_pathology_order'))) {
                     // $query->whereHas('id_test_pathology_order', $request->get('id_test_pathology_order'));
-                    $query->whereHas('details', function($query) use ($request) {
-                        $query->where('test_order_id',$request->get('id_test_pathology_order'));
+                    $query->whereHas('details', function ($query) use ($request) {
+                        $query->where('test_order_id', $request->get('id_test_pathology_order'));
                     });
                 }
                 if (!empty($request->get('id_doctor'))) {
                     $query->where('user_id', $request->get('id_doctor'));
                 }
 
-                if(!empty($request->get('contenu')))
-                {
-                    $query->whereHas('details', function($query) use ($request) {
-                        $query->where('note','like','%'.$request->get('contenu').'%');
-                    })->orwhere('note','like','%'.$request->get('contenu').'%');   
+                if (!empty($request->get('contenu'))) {
+                    $query->whereHas('details', function ($query) use ($request) {
+                        $query->where('note', 'like', '%' . $request->get('contenu') . '%');
+                    })->orwhere('note', 'like', '%' . $request->get('contenu') . '%');
                 }
-
             })
-            ->rawColumns(['action','code', 'doctor', 'date_assignment', 'nbr_assignment'])
+            ->rawColumns(['action', 'code', 'doctor', 'date_assignment', 'nbr_assignment'])
             ->make(true);
     }
 
@@ -330,13 +427,13 @@ class TestOrderAssignmentController extends Controller
     {
 
 
-        $data = $this->assignment->whereHas('details', function($query) {
-            $query->whereHas('order', function($query){
-                $query->whereHas('type', function($query){
-                    $query->where('slug','immuno-interne')
-                            ->orwhere('slug','immuno-exterme')
-                            ->where('status', 1) // Statut différent de 0
-                            ->whereNull('deleted_at'); // deleted_at doit être NULL
+        $data = $this->assignment->whereHas('details', function ($query) {
+            $query->whereHas('order', function ($query) {
+                $query->whereHas('type', function ($query) {
+                    $query->where('slug', 'immuno-interne')
+                        ->orwhere('slug', 'immuno-exterme')
+                        ->where('status', 1) // Statut différent de 0
+                        ->whereNull('deleted_at'); // deleted_at doit être NULL
                 });
             });
         })->latest();
@@ -355,47 +452,45 @@ class TestOrderAssignmentController extends Controller
                 },
             ])
             ->setRowClass(function ($data) use ($request) {
-                if($data->is_urgent == 1){
-                        if (!empty($data->report)) {
-                            if($data->report->is_deliver ==1){
-                                return 'table-success';
-                            }else {
-                                if($data->report->status == 1){
-                                    return 'table-warning';
-                                }
+                if ($data->is_urgent == 1) {
+                    if (!empty($data->report)) {
+                        if ($data->report->is_deliver == 1) {
+                            return 'table-success';
+                        } else {
+                            if ($data->report->status == 1) {
+                                return 'table-warning';
                             }
-
                         }
-                            return 'table-danger urgent';
-
-                }elseif (!empty($data->report)) {
-                    if($data->report->is_deliver ==1){
+                    }
+                    return 'table-danger urgent';
+                } elseif (!empty($data->report)) {
+                    if ($data->report->is_deliver == 1) {
                         return 'table-success';
-                    }else {
-                        if($data->report->status == 1){
+                    } else {
+                        if ($data->report->status == 1) {
                             return 'table-warning';
                         }
                     }
-                }else {
+                } else {
                     return '';
                 }
             })
 
             ->addColumn('action', function ($data) {
                 $detail =
-                '<a class="btn btn-primary" href="'.route('report.assignment.detail.index',$data->id).'">
+                    '<a class="btn btn-primary" href="' . route('report.assignment.detail.index', $data->id) . '">
                     <i class="uil-eye"></i>
                 </a>';
                 $deleteBtn = "";
 
-            if ($data->details()->count()>=1) {
-                $deleteBtn = '<a class="btn btn-warning" href="'.route('report.assignment.print',$data->id).'">
+                if ($data->details()->count() >= 1) {
+                    $deleteBtn = '<a class="btn btn-warning" href="' . route('report.assignment.print', $data->id) . '">
                     <i class="mdi mdi-printer"></i>
                 </a>';
-            }
+                }
 
 
-                return $detail.' '.$deleteBtn ;
+                return $detail . ' ' . $deleteBtn;
             })
             ->addColumn('code', function ($data) {
                 return $data->code;
@@ -407,21 +502,21 @@ class TestOrderAssignmentController extends Controller
                 return dateFormat($data->created_at);
             })
             ->addColumn('nbr_assignment', function ($data) {
-               return $data->details()->count();
+                return $data->details()->count();
             })
-            ->filter(function ($query) use ($request,$data) {
+            ->filter(function ($query) use ($request, $data) {
 
                 if (!empty($request->get('id_test_pathology_order'))) {
                     // $query->whereHas('id_test_pathology_order', $request->get('id_test_pathology_order'));
-                    $query->whereHas('details', function($query) use ($request) {
-                        $query->where('test_order_id',$request->get('id_test_pathology_order'));
+                    $query->whereHas('details', function ($query) use ($request) {
+                        $query->where('test_order_id', $request->get('id_test_pathology_order'));
                     });
                 }
                 if (!empty($request->get('id_doctor'))) {
                     $query->where('user_id', $request->get('id_doctor'));
                 }
             })
-            ->rawColumns(['action','code', 'doctor', 'date_assignment', 'nbr_assignment'])
+            ->rawColumns(['action', 'code', 'doctor', 'date_assignment', 'nbr_assignment'])
             ->make(true);
     }
 }

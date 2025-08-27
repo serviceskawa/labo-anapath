@@ -196,6 +196,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     //TEST_ORDER
+    Route::get('/contrats/search', [TestOrderController::class, 'searchContrats'])->name('search.contrat.test-order');
     Route::get('/test_order/myspace/{idDoctor}', [TestOrderController::class, 'statistique'])->name('myspace.index');
     Route::get('/test_order/index', [TestOrderController::class, 'index2'])->name('test_order.index');
     Route::get('/test_order/index-immuno', [TestOrderController::class, 'index_immuno'])->name('test_order.immuno.index');
@@ -240,6 +241,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     //Macro
+    Route::get('/pathology-orders/search', [TestPathologyMacroController::class, 'searchPathologyOrders'])->name('macro.search.orders');
     Route::get('/macro/index', [TestPathologyMacroController::class, 'index'])->name('macro.index');
     Route::get('/macro/index-immuno', [TestPathologyMacroController::class, 'index_immuno'])->name('macro.immuno.index');
     Route::get('/macro/dataTable', [TestPathologyMacroController::class, 'getTestOrdersforDatatable'])->name('macro.getTestOrdersforDatatable');
@@ -346,6 +348,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('assignment/print/{id}', [TestOrderAssignmentController::class, 'print'])->name('report.assignment.print');
         Route::get('/assignmen/dataTable', [TestOrderAssignmentController::class, 'getTestOrdersforDatatable'])->name('assignment.getTestOrdersforDatatable');
         // Route::get('assignment/pdf/{id}', [AssignmentDoctorController::class, 'pdf'])->name('report.assignment.pdf');
+        Route::get('orders/search', [TestOrderAssignmentController::class, 'searchOrders'])->name('search.orders.assignment');
+        Route::get('doctors/search', [TestOrderAssignmentController::class, 'searchDoctors'])->name('search.doctors.assignment');
+        Route::get('/assignment/test-orders/search', [TestOrderAssignmentController::class, 'searchTestOrdersAssignment'])->name('test-orders.search.assignment');
 
         Route::get('/azerty', [ReportController::class, 'getReportsforDatatable'])->name('report.getReportsforDatatable');
         Route::get('/report/rapport', [ReportController::class, 'getReportsRapportsforDatatable'])->name('report.getReportsRapportsforDatatable');
