@@ -47,6 +47,7 @@ class SettingAppController extends Controller
         $key_ourvoice = $this->setting->where('key', 'key_ourvoice')->first();
         $link_ourvoice_call = $this->setting->where('key', 'link_ourvoice_call')->first();
         $link_ourvoice_sms = $this->setting->where('key', 'link_ourvoice_sms')->first();
+        $token_fluid_sender = $this->setting->where('key', 'token_fluid_sender')->first();
         $report_footer = $this->setting->where('key', 'report_footer')->first();
         $report_review_title = $this->setting->where('key', 'report_review_title')->first();
         $mail = $this->setting->where('key', 'admin_mails')->first();
@@ -81,6 +82,7 @@ class SettingAppController extends Controller
             'key_ourvoice',
             'link_ourvoice_call',
             'link_ourvoice_sms',
+            'token_fluid_sender',
             'report_footer',
             'report_review_title',
             'email_technician',
@@ -119,6 +121,7 @@ class SettingAppController extends Controller
         $key_ourvoiceValue = $request->input('key_ourvoice');
         $link_ourvoice_callValue = $request->input('link_ourvoice_call');
         $link_ourvoice_smsValue = $request->input('link_ourvoice_sms');
+        $token_fluid_senderValue = $request->input('token_fluid_sender');
         $report_footerValue = $request->input('report_footer');
         $report_review_titleValue = $request->input('report_review_title');
         $mails = $request->input('mails');
@@ -126,10 +129,6 @@ class SettingAppController extends Controller
 
         $token_payment_value = $request->input('token_payment');
         $show_signator_invoice_value = $request->input('show_signator_invoice');
-        // $public_key_value = $request->input('public_key');
-        // $private_key_value = $request->input('private_key');
-        // $secret_key_value = $request->input('secret_key');
-
 
         // Mettez à jour les enregistrements dans la base de données
         switch ($nbr) {
@@ -243,6 +242,9 @@ class SettingAppController extends Controller
 
                 $link_ourvoice_sms = $this->setting->where('key', 'link_ourvoice_sms')->first();
                 $link_ourvoice_sms ? $link_ourvoice_sms->update(['value' => $link_ourvoice_smsValue]) : '';
+
+                $token_fluid_sender = $this->setting->where('key', 'token_fluid_sender')->first();
+                $token_fluid_sender ? $token_fluid_sender->update(['value' => $token_fluid_senderValue]) : '';
                 break;
 
             case 4:
