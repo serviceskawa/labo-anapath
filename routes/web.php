@@ -140,6 +140,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/getpatient/{id}', [PatientController::class, 'edit']);
     Route::get('/profil/{id}', [PatientController::class, 'profil'])->name('patients.profil');
     Route::post('/patients/update', [PatientController::class, 'update'])->name('patients.update');
+    Route::get('/patient-getDataTables', [PatientController::class, 'getPatientsforDatatable'])->name('patient.getPatientsforDatatable');
 
     //HOSPITAL
     Route::get('/hopitals/index', [HospitalController::class, 'index'])->name('hopitals.index');

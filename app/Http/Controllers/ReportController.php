@@ -122,8 +122,6 @@ class ReportController extends Controller
             })
             ->sum('total');
 
-        // dd($report_req, $testOrderIds, $totalSum);
-
         $report_nbres = $report_req->count();
         // Initialiser les compteurs
         $withinDeadlineCount = 0;
@@ -154,21 +152,9 @@ class ReportController extends Controller
         $percentageOver_Deadline = $over_deadline == 0 ? 0 : number_format(($over_deadline / $total) * 100, 1);
 
         $activeDoctorCommission = $doctor ? User::where('id', $doctor)->first() : 0;
-        // dd($doctor, $activeDoctorCommission);
 
         return view('reports.index', compact('totalSum', 'activeDoctorCommission', 'doctor', 'percentageOver_Deadline', 'percentageIn_Deadline', 'report_nbres', 'list_years', 'year', 'month', 'tags', 'reports'));
     }
-
-    // public function indexsuivistatistique(Request $request)
-    // {
-    //     dd($request);
-    //     if (!getOnlineUser()->can('view-reports')) {
-    //         return back()->with('error', "Vous n'êtes pas autorisé");
-    //     }
-
-    //     return view('reports.index', compact('list_years', 'month', 'year'));
-    // }
-
 
     public function storeTags(TagRequest $request)
     {

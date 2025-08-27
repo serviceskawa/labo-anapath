@@ -1,247 +1,179 @@
 // SUPPRESSION
 function deleteModal(id) {
-
     Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/patients/delete/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
-
 
 // SUPPRESSION
 function deleteModalEmployee(id) {
-
     Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/employee-delete/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
-
-
 
 // SUPPRESSION
 function deleteModalTimeoff(id) {
-
     Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/employee-timeoff-delete/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
-
 
 // SUPPRESSION
 function deleteModalPayroll(id) {
-
     Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/contrat-payroll-delete/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
 
-
 // SUPPRESSION
 function deleteModalEmployeeContrat(id) {
-
     Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/employee_contrat-delete/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
 
 // SUPPRESSION
 function deleteModalUnit(id) {
-
     Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/unit_measurement-delete/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
-
-
 
 // SUPPRESSION
 function deleteModalArticle(id) {
-
     Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/article-delete/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
-
 
 // SUPPRESSION
 function deleteModalExpense(id) {
-
     Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/expense_categorie-delete/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
-
-
 
 // SUPPRESSION
 function deleteModalEx(id) {
-
     Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/expense-delete/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
-
 
 // SUPPRESSION de documents
 function deleteModalDocument(id) {
-
     Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/delete-document/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
-
 
 // suppression documentation
 function deleteModalDocCategorie(id) {
-
     Swal.fire({
         title: "Voulez-vous supprimer l'élément ?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
-            window.location.href = baseUrl + "/categorie-documentation-delete/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            window.location.href =
+                baseUrl + "/categorie-documentation-delete/" + id;
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
-
-
 
 // suppression documentation
 function deleteModalDoc(id) {
@@ -251,88 +183,142 @@ function deleteModalDoc(id) {
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/document-delete/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
 
-
 /* DATATABLE */
-$(document).ready(function() {
+$(document).ready(function () {
+    var table = $("#datatable1").DataTable({
+        order: [],
+        language: {
+            lengthMenu: "Afficher _MENU_ enregistrements par page",
+            zeroRecords: "Aucun enregistrement disponible",
+            info: "Afficher page _PAGE_ sur _PAGES_",
+            infoEmpty: "Aucun enregistrement disponible",
+            infoFiltered: "(filtré à partir de _MAX_ enregistrements au total)",
+            sSearch: "Rechercher:",
+            paginate: {
+                previous: "Précédent",
+                next: "Suivant",
+            },
+        },
+        initComplete: function () {},
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: ROUTEGETDATATABLE,
+            data: function (d) {
+                // d.statusquery = $("#statusquery").val();
+                // d.contenu = $("#contenu").val();
+                // d.dateBegin = $("#dateBegin").val();
+                // d.dateEnd = $("#dateEnd").val();
+            },
+        },
+        columns: [
+            {
+                data: "code",
+                name: "code",
+            },
+            {
+                data: "patient",
+                name: "patient",
+            },
+            {
+                data: "telephone",
+                name: "telephone",
+            },
+            {
+                data: "total",
+                name: "total",
+            },
+            {
+                data: "paid",
+                name: "paid",
+            },
+            {
+                data: "due",
+                name: "due",
+            },
+            {
+                data: "action",
+                name: "action",
+            },
+        ],
+        order: [[0, "asc"]],
+    });
 
-    $('#datatable1').DataTable({
-        "order": [],
-        "columnDefs": [{
-            "targets": [0],
-            "searchable": false
-        }],
-        "language": {
-            "lengthMenu": "Afficher _MENU_ enregistrements par page",
-            "zeroRecords": "Aucun enregistrement disponible",
-            "info": "Afficher page _PAGE_ sur _PAGES_",
-            "infoEmpty": "Aucun enregistrement disponible",
-            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-            "sSearch": "Rechercher:",
-            "paginate": {
-                "previous": "Précédent",
-                "next": "Suivant"
-            }
+    // Recherche selon les cas
+    // $("#statusquery").on("change", function () {
+    //     // alert(this.value)
+    //     table.draw();
+    // });
+
+    // $("#contenu").on("input", function () {
+    //     table.draw();
+    // });
+
+    // $("#dateEnd").on("input", function () {
+    //     console.log($("#dateEnd").val());
+    //     table.draw();
+    //     //console.log(search.value);
+    // });
+
+    // $("#dateBegin").on("input", function () {
+    //     console.log($("#dateBegin").val());
+    //     table.draw();
+    //     //console.log(search.value);
+    // });
+});
+
+$(document).ready(function () {
+    $("#datatable2").DataTable({
+        order: [[0, "desc"]],
+        columnDefs: [
+            {
+                targets: [0],
+                searchable: false,
+            },
+        ],
+        language: {
+            lengthMenu: "Afficher _MENU_ enregistrements par page",
+            zeroRecords: "Aucun enregistrement disponible",
+            info: "Afficher page _PAGE_ sur _PAGES_",
+            infoEmpty: "Aucun enregistrement disponible",
+            infoFiltered: "(filtré à partir de _MAX_ enregistrements au total)",
+            sSearch: "Rechercher:",
+            paginate: {
+                previous: "Précédent",
+                next: "Suivant",
+            },
         },
     });
-    });
-    $(document).ready(function() {
+});
 
-    $('#datatable2').DataTable({
-        "order": [
-            [0, "desc"]
+$(document).ready(function () {
+    $("#datatable3").DataTable({
+        order: [[0, "asc"]],
+        columnDefs: [
+            {
+                targets: [0],
+                searchable: false,
+            },
         ],
-        "columnDefs": [{
-            "targets": [0],
-            "searchable": false
-        }],
-        "language": {
-            "lengthMenu": "Afficher _MENU_ enregistrements par page",
-            "zeroRecords": "Aucun enregistrement disponible",
-            "info": "Afficher page _PAGE_ sur _PAGES_",
-            "infoEmpty": "Aucun enregistrement disponible",
-            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-            "sSearch": "Rechercher:",
-            "paginate": {
-                "previous": "Précédent",
-                "next": "Suivant"
-            }
-        },
-    });
-    });
-    
-    $(document).ready(function() {
-
-    $('#datatable3').DataTable({
-        "order": [
-            [0, "asc"]
-        ],
-        "columnDefs": [{
-            "targets": [0],
-            "searchable": false
-        }],
-        "language": {
-            "lengthMenu": "Afficher _MENU_ enregistrements par page",
-            "zeroRecords": "Aucun enregistrement disponible",
-            "info": "Afficher page _PAGE_ sur _PAGES_",
-            "infoEmpty": "Aucun enregistrement disponible",
-            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-            "sSearch": "Rechercher:",
-            "paginate": {
-                "previous": "Précédent",
-                "next": "Suivant"
-            }
+        language: {
+            lengthMenu: "Afficher _MENU_ enregistrements par page",
+            zeroRecords: "Aucun enregistrement disponible",
+            info: "Afficher page _PAGE_ sur _PAGES_",
+            infoEmpty: "Aucun enregistrement disponible",
+            infoFiltered: "(filtré à partir de _MAX_ enregistrements au total)",
+            sSearch: "Rechercher:",
+            paginate: {
+                previous: "Précédent",
+                next: "Suivant",
+            },
         },
     });
 });
@@ -344,29 +330,29 @@ function edit(id) {
     // Populate Data in Edit Modal Form
     $.ajax({
         type: "GET",
-        url: bases = baseUrl + "/getpatient/" + e_id,
-        success: function(data) {
+        url: (bases = baseUrl + "/getpatient/" + e_id),
+        success: function (data) {
             console.log(data);
-            $('#id2').val(data.id);
-            $('#code2').val(data.code);
-            $('#genre2').val(data.genre).change();
-            $('#name2').val(data.firstname);
-            $('#lastname').val(data.lastname);
-            $('#age2').val(data.age);
-            $('#year_or_month2').val(data.year_or_month);
-            $('#profession2').val(data.profession);
-            $('#adresse2').val(data.adresse);
-            $('#langue2').val(data.langue);
-            $('#telephone1_2').val(data.telephone1);
-            $('#telephone2_2').val(data.telephone2);
+            $("#id2").val(data.id);
+            $("#code2").val(data.code);
+            $("#genre2").val(data.genre).change();
+            $("#name2").val(data.firstname);
+            $("#lastname").val(data.lastname);
+            $("#age2").val(data.age);
+            $("#year_or_month2").val(data.year_or_month);
+            $("#profession2").val(data.profession);
+            $("#adresse2").val(data.adresse);
+            $("#langue2").val(data.langue);
+            $("#telephone1_2").val(data.telephone1);
+            $("#telephone2_2").val(data.telephone2);
 
             //
 
             console.log(data);
-            $('#editModal').modal('show');
+            $("#editModal").modal("show");
         },
-        error: function(data) {
-            console.log('Error:', data);
-        }
+        error: function (data) {
+            console.log("Error:", data);
+        },
     });
 }

@@ -37,10 +37,10 @@
                                     <select name="contrat_id" id="contrat_id" class="form-select select2"
                                         data-toggle="select2">
                                         <option value="">Tous les contrats</option>
-                                        {{-- @forelse ($contrats as $contrat)
-                                    <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
-                                    @empty
-                                    @endforelse --}}
+                                        @forelse ($contrats as $contrat)
+                                            <option value="{{ $contrat->id }}">{{ $contrat->name }}</option>
+                                        @empty
+                                        @endforelse
                                     </select>
                                 </div>
                             </div>
@@ -86,13 +86,13 @@
                             <div class="col-lg-3">
                                 <div class="mb-3">
                                     <label for="example-fileinput" class="form-label">Docteur</label>
-                                    <select name="" id="doctor_signataire" class="form-control">
+                                    <select name="doctor_signataire" id="doctor_signataire" class="form-control select2" data-toggle="select2">
                                         <option value="">Tous</option>
-                                        @foreach (getUsersByRole('docteur') as $item)
+                                        {{-- @foreach (getUsersByRole('docteur') as $item)
                                             <option value="{{ $item->id }}">
                                                 {{ $item->lastname }} {{ $item->firstname }}
                                             </option>
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                 </div>
                             </div>
@@ -164,20 +164,17 @@
 
 @push('extra-js')
     <script>
-        var baseUrl = "{{ url('/') }}"
-        var ROUTETESTORDERDATATABLE = "{{ route('test_order.getTestOrdersforDatatable') }}"
-        var ROUTETESTORDERDATATABLE2 = "{{ route('test_order.getTestOrdersforDatatable2') }}"
-        var URLupdateAttribuate = "{{ url('attribuateDoctor') }}" + '/' + doctor_id + '/' + order_id
-        var URLUPDATEDELIVER = "{{ route('report.updateDeliver', '+id+') }}"
         var CONTRATTESTORDER = "{{ route('search.contrat.test-order') }}"
-    </script>
+        var ROUTESEARCHDORCTORS = "{{ route('search.doctors.assignment') }}"
 
-    <script>
         $('#contrat_id').select2({
             ajax: {
                 url: CONTRATTESTORDER,
                 dataType: 'json',
                 delay: 250,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Ajouter CSRF token
+                },
                 data: function(params) {
                     return {
                         search: params.term,
@@ -203,6 +200,46 @@
             placeholder: 'Tapez pour rechercher un contrat...',
             allowClear: true
         });
+
+        $('#doctor_signataire').select2({
+            ajax: {
+                url: ROUTESEARCHDORCTORS,
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        search: params.term,
+                        page: params.page || 1,
+                        limit: 20
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data.data.map(function(doctor) {
+                            return {
+                                id: doctor.id,
+                                text: doctor.fullname
+                            };
+                        }),
+                        pagination: {
+                            more: data.has_more
+                        }
+                    };
+                }
+            },
+            minimumInputLength: 2,
+            placeholder: 'Tapez pour rechercher un docteur...',
+            allowClear: true
+        });
+    </script>
+
+    <script>
+        var baseUrl = "{{ url('/') }}"
+        var ROUTETESTORDERDATATABLE = "{{ route('test_order.getTestOrdersforDatatable') }}"
+        var ROUTETESTORDERDATATABLE2 = "{{ route('test_order.getTestOrdersforDatatable2') }}"
+        var URLupdateAttribuate = "{{ url('attribuateDoctor') }}" + '/' + doctor_id + '/' + order_id
+        var URLUPDATEDELIVER = "{{ route('report.updateDeliver', '+id+') }}"
+        var TOKENSTOREDETAILTICKET = "{{ csrf_token() }}"
     </script>
 
     <script src="{{ asset('viewjs/test/order/index.js') }}"></script>

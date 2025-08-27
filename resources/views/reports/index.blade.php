@@ -77,8 +77,6 @@
                     </div>
                 </div>
 
-
-
                 <table id="datatable1" class="table-striped dt-responsive nowrap w-100 table">
                     <thead>
                         <tr>
@@ -92,23 +90,14 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-
-
                 </table>
-
             </div>
         </div>
-    </div> <!-- end card-->
-
-
-
-
+    </div>
 
     <div class="card mb-md-0 mt-5">
         <div class="card-body">
-
             <div class="d-flex justify-content-between mb-3">
-
                 <div class="">
                     <button type="button" class="btn btn-primary" id="deleteSelectedRows"
                         style="display: none;">Terminer la Macroscopie</button>
@@ -212,8 +201,7 @@
 @push('extra-js')
 <script>
     var baseUrl = "{{url('/')}}"
-       var ROUTEGETDATATABLE = "{{ route('report.getReportsforDatatable') }}"
-
+    var ROUTEGETDATATABLE = "{{ route('report.getReportsforDatatable') }}"
 </script>
 <script src="{{asset('viewjs/report/index.js')}}"></script>
 @endpush
