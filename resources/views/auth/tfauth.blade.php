@@ -115,12 +115,23 @@
                 "_token": "{{ csrf_token() }}",
                 code: code,
             },
+            // success: function(data) {
+            //     console.log(data);
+            //     if (data == 200) {
+            //         window.location.href = "{{ url('/home') }}";
+            //     } else {
+            //         toastr.error("Le code saisi est incorecte", 'Code incorrecte');
+            //     }
+            // },
             success: function(data) {
                 console.log(data);
                 if (data == 200) {
                     window.location.href = "{{ url('/home') }}";
+                } else if (data == 'branch_select') {
+                    // NOUVELLE REDIRECTION
+                    window.location.href = "{{ route('select.branch') }}";
                 } else {
-                    toastr.error("Le code saisi est incorecte", 'Code incorrecte');
+                    toastr.error("Le code saisi est incorrect", 'Code incorrect');
                 }
             },
             error: function(data) {

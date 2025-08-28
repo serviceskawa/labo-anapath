@@ -23,9 +23,9 @@ class TFAuthController extends Controller
     public function show()
     {
         $user = $this->userConnect;
-        if ($user->is_active ==0) {
+        if ($user->is_active == 0) {
             return redirect()->route('login')->with('error', 'Votre compte est désactivé. Veuillez contacter l\'administrateur.');
-        }else {
+        } else {
             $userEmail = $user->email;
             $this->sendEmail($user);
             $error = "";
@@ -33,16 +33,32 @@ class TFAuthController extends Controller
         }
     }
 
+    // public function postAuth(Request $request)
+    // {
+
+    //     $user = $this->user->findorfail($this->userConnect->id);
+    //     if ($request->code == $this->caesar_decipher_int($user->opt, 3)) {
+    //         $user->two_factor_enabled = 1;
+    //         $user->opt = NULL;
+    //         $user->save();
+    //         Session::put('user_2fa', auth()->user()->id);
+    //         return response()->json('200');
+    //     } else {
+    //         return response()->json(['error' => 'Le code saisi est incorrecte']);
+    //     }
+    // }
+
     public function postAuth(Request $request)
     {
-
         $user = $this->user->findorfail($this->userConnect->id);
         if ($request->code == $this->caesar_decipher_int($user->opt, 3)) {
             $user->two_factor_enabled = 1;
             $user->opt = NULL;
             $user->save();
             Session::put('user_2fa', auth()->user()->id);
-            return response()->json('200');
+
+            // REDIRECTION VERS LA SÉLECTION DE BRANCHE AU LIEU DU DASHBOARD
+            return response()->json('branch_select');
         } else {
             return response()->json(['error' => 'Le code saisi est incorrecte']);
         }

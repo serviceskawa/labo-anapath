@@ -1343,3 +1343,18 @@ if (!function_exists('getPaidByPatient')) {
         return $paye;
     }
 }
+
+if (!function_exists('getCurrentBranch')) {
+    function getCurrentBranch() {
+        return [
+            'id' => session('selected_branch_id'),
+            'name' => session('selected_branch_name')
+        ];
+    }
+}
+
+if (!function_exists('getCurrentBranchId')) {
+    function getCurrentBranchId() {
+        return session('selected_branch_id');
+    }
+}

@@ -11,6 +11,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -186,6 +187,10 @@ class LoginController extends Controller
         $user->is_connect = 0;
         $user->two_factor_enabled = 0;
         $user->save(); // déconnecte l'utilisateur
+
+        // NETTOYER TOUTES LES SESSIONS LIÉES AUX BRANCHES
+        Session::forget(['user_2fa', 'selected_branch_id', 'selected_branch_name']);
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('login');

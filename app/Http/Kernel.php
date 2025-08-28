@@ -40,6 +40,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\BranchRequired::class,
         ],
 
         'api' => [
@@ -74,5 +75,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'role' => \App\Http\Middleware\RoleMiddleware::class,
         'pdf' => \App\Http\Middleware\AuthorizeGeneratePDF::class,
+        'branch.required' => \App\Http\Middleware\BranchRequired::class,
     ];
 }

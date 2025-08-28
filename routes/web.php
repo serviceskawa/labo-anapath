@@ -87,14 +87,14 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware(['tfauth']);
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware(['tfauth','branch.required']);
 // Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->name('dashboard');
 
 Route::middleware(['web'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','branch.required'])->group(function () {
     Route::get('/select-branch', [TFAuthController::class, 'selectBranch'])->name('select.branch');
     Route::post('/select-branch', [TFAuthController::class, 'storeBranch'])->name('store.branch');
 
