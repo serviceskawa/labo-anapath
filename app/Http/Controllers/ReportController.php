@@ -10,6 +10,7 @@ use App\Models\Report;
 
 //use App\Models\Contrat;
 use App\Models\Doctor;
+use App\Models\Invoice;
 use App\Models\LogReport;
 use App\Models\Setting;
 use App\Models\SettingApp;
@@ -122,6 +123,17 @@ class ReportController extends Controller
             })
             ->sum('total');
 
+        // $totalSum = Invoice::whereIn('test_order_id', $testOrderIds)
+        // ->whereHas('report', function ($query) use ($month, $year) {
+        //     $query->where('paid', 1)
+        //         ->whereMonth('signature_date', intval($month))
+        //         ->whereYear('signature_date', intval($year));
+        // })
+        // ->sum('total')
+        // ->get()
+        // ;
+        // dd($totalSum, $testOrderIds);
+
         $report_nbres = $report_req->count();
         // Initialiser les compteurs
         $withinDeadlineCount = 0;
@@ -151,9 +163,8 @@ class ReportController extends Controller
         $percentageIn_Deadline = $in_deadline == 0 ? 0 : number_format(($in_deadline / $total) * 100, 1);
         $percentageOver_Deadline = $over_deadline == 0 ? 0 : number_format(($over_deadline / $total) * 100, 1);
 
-        $activeDoctorCommission = $doctor ? User::where('id', $doctor)->first() : 0;
-
-        return view('reports.index', compact('totalSum', 'activeDoctorCommission', 'doctor', 'percentageOver_Deadline', 'percentageIn_Deadline', 'report_nbres', 'list_years', 'year', 'month', 'tags', 'reports'));
+        $commission = $doctor ? User::findOrFail($doctor)->value('commission') : 0;
+        return view('reports.index', compact('totalSum', 'commission', 'doctor', 'percentageOver_Deadline', 'percentageIn_Deadline', 'report_nbres', 'list_years', 'year', 'month', 'tags', 'reports'));
     }
 
     public function storeTags(TagRequest $request)

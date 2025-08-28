@@ -37,10 +37,12 @@
             <div class="card-header">
                 Ajouter un nouvel utilisateur
             </div>
-            <div class="card-body">
 
-                <form action="{{ route('user.store') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('user.store') }}" method="post" enctype="multipart/form-data">
+                <div class="card-body">
+
                     @csrf
+
                     <div class="col-md-12 mb-3">
                         <div class="form-group">
                             <label for="exampleFormControlInput1" class="form-label">Nom<span
@@ -51,7 +53,7 @@
 
                     <div class="col-md-12 mb-3">
                         <div class="form-group">
-                            <label for="exampleFormControlInput1" class="form-label">Prenom<span
+                            <label for="exampleFormControlInput1" class="form-label">Prénoms<span
                                     style="color:red;">*</span></label>
                             <input type="text" class="form-control" name="lastname" required>
                         </div>
@@ -92,7 +94,6 @@
                         </div>
                     </div>
 
-                    {{-- data-default-file="{{ $setting ? Storage::url($setting->logo) : '' }}" --}}
                     <div class="col-md-12 mb-3">
                         <label for="example-fileinput" class="form-label">Signature</label>
                         <input type="file" class="dropify" name="signature" id="signature" data-default-file=" "
@@ -111,30 +112,32 @@
                         </select>
                     </div>
 
-            </div>
+                    <div class="mb-3">
+                        <label for="example-select" class="form-label">Branches</label>
+                        <select class="form-select select2" data-toggle="select2" required name="branches[]" multiple>
+                            <option>Sélectionner les branches</option>
+                            @forelse ($branches as $branch)
+                                <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                            @empty
+                                Ajouter une branche
+                            @endforelse
+                        </select>
+                    </div>
 
-            <div class="modal-footer">
-                <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-primary">Ajouter un nouvel utilisateur</button>
-            </div>
-
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Ajouter un nouvel utilisateur</button>
+                    </div>
+                </div>
+            </form>
         </div>
 
         {{-- <div class="modal-footer">
             <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
             <button type="submit" class="btn btn-primary">Creer</button>
         </div> --}}
-
-
-        </form>
-    </div>
-
-
-    </div>
-
     </div>
 @endsection
-
 
 @push('extra-js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"

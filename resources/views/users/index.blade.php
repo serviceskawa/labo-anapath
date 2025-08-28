@@ -35,6 +35,7 @@
                                 <th>Nom</th>
                                 <th>Email</th>
                                 <th>Rôles</th>
+                                <th>Branches</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -43,10 +44,20 @@
                             @foreach ($users as $item)
                                 <tr>
                                     <td>{{ $item->firstname }} {{ $item->lastname }}</td>
+                                    
                                     <td>{{ $item->email }} </td>
+
                                     <td>
                                         @forelse ($item->roles as $role)
                                             <span class="badge bg-primary">{{ $role->name }} </span>
+                                        @empty
+                                            Aucun
+                                        @endforelse
+                                    </td>
+
+                                    <td>
+                                        @forelse ($item->branches as $branch)
+                                            <span class="badge bg-primary">{{ $branch->name }} </span>
                                         @empty
                                             Aucun
                                         @endforelse

@@ -186,7 +186,7 @@
                                 <td>{{ $percentageIn_Deadline }}%</td>
                                 <td>{{ $percentageOver_Deadline }}%</td>
                                 <td>{{ $totalSum }}</td>
-                                <td>{{ $totalSum * ($activeDoctorCommission->commission / 100) }}</td>
+                                <td>{{ $totalSum * ($commission / 100) }}</td>
                             </tr>
                         </tfoot>
                     </table>

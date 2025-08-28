@@ -10,15 +10,13 @@
 
 @section('content')
     <div class="">
-
         @include('layouts.alerts')
-
         <div class="card my-3">
             <div class="card-header">
                 Modifier l'utilisateur {{ $user->name }}
             </div>
-            <div class="card-body">
 
+            <div class="card-body">
                 <form action="{{ route('user.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row mb-3">
@@ -91,39 +89,41 @@
                                     <option value="{{ $role->id }}"
                                         {{ $user->hasRole($role->slug) ? 'selected' : '' }}>
                                         {{ $role->name }}</option>
-
                                 @empty
                                     Ajouter un role
                                 @endforelse
                             </select>
                         </div>
 
+                        <div class="mb-3">
+                            <label for="example-select" class="form-label">Branches</label>
+                            <select class="form-select select2" data-toggle="select2" required name="branches[]" multiple>
+                                <option>Sélectionner les branches</option>
+                                @forelse ($branches as $branch)
+                                    <option value="{{ $branch->id }}" {{ $user->branches->contains('id', $branch->id) ? 'selected' : '' }}>{{ $branch->name }}</option>
+                                @empty
+                                    Ajouter une branche
+                                @endforelse
+                            </select>
+                        </div>
                     </div>
 
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-warning">Mettre à jour</button>
+                    </div>
+                </form>
             </div>
-
-            <div class="modal-footer">
-                <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-                <button type="submit" class="btn btn-warning">Mettre à jour</button>
-            </div>
-
-
-            </form>
         </div>
-
-
-    </div>
-
     </div>
 @endsection
-
 
 @push('extra-js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
         integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
+    {{-- <script>
         var vals = <?= isset($user->roles) ? json_encode($user->roles) : '' ?>
-    </script>
+    </script> --}}
     <script src="{{ asset('viewjs/user/edit.js') }}"></script>
 @endpush

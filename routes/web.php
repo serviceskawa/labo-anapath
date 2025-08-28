@@ -95,6 +95,9 @@ Route::middleware(['web'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/select-branch', [TFAuthController::class, 'selectBranch'])->name('select.branch');
+    Route::post('/select-branch', [TFAuthController::class, 'storeBranch'])->name('store.branch');
+
     Route::get('/home/invoiceByDay', [App\Http\Controllers\HomeController::class, 'invoiceByDay'])->name('home.invoiceByDay');
     Route::get('/home/testOrderByStatus', [App\Http\Controllers\HomeController::class, 'testorderStatus'])->name('home.testorderStatus');
 

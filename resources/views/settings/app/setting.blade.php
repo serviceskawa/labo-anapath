@@ -449,6 +449,13 @@
                                             </div>
 
                                             <div class="col-6 mb-3">
+                                                <label for="simpleinput" class="form-label">Session name</label>
+                                                <input type="text" value="{{ $session_name?->value }}"
+                                                    name="session_name" placeholder="Session name de FluidSender"
+                                                    id="simpleinput" class="form-control">
+                                            </div>
+
+                                            <div class="col-6 mb-3">
                                                 <label for="simpleinput" class="form-label">Token FluidSender</label>
                                                 <input type="password" value="{{ $token_fluid_sender?->value }}"
                                                     name="token_fluid_sender" placeholder="Lien du token de FluidSender"
@@ -720,25 +727,32 @@
         var general3 = document.getElementById('general3');
         var general4 = document.getElementById('general4');
         var general7 = document.getElementById('general7');
+        
         $('#general').on('click', function() {
             titleHeader.textContent = "Général"
         })
+
         $('#email').on('click', function() {
             titleHeader.textContent = "Email"
         })
+
         $('#mobile').on('click', function() {
             titleHeader.textContent = "Communication mobile"
         })
+
         $('#payment').on('click', function() {
             titleHeader.textContent = "Parametres de paiement"
         })
+
         $('#bank').on('click', function() {
             titleHeader.textContent = "Banques"
         })
+
         $('#generalLi').on('click', function() {
             general2.style.display = "none"
             general1.style.display = "block";
         })
+
         $('#logo').on('click', function() {
             general1.style.display = "none"
             general2.style.display = "block";
@@ -748,6 +762,7 @@
             general4.style.display = "none"
             general3.style.display = "block";
         })
+
         $('#titre').on('click', function() {
             general3.style.display = "none"
             general4.style.display = "block";
