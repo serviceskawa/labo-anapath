@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Role;
 use App\Permissions\HasPermissionsTrait;
+use App\Traits\BranchScopeTrait;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use PragmaRX\Google2FA\Google2FA;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasPermissionsTrait;
+    use HasApiTokens, HasFactory, Notifiable, HasPermissionsTrait, BranchScopeTrait;
 
     /**
      * The attributes that are mass assignable.

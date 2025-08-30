@@ -8,6 +8,7 @@ return [
     ],
 
     'excluded_models' => [
+        'App\Models\Patient',
         'App\Models\User',
         'App\Models\Role',
         'App\Models\Permission',

@@ -11,6 +11,7 @@ use App\Models\Setting;
 use App\Models\TestOrder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
 class PatientController extends Controller
@@ -37,7 +38,27 @@ class PatientController extends Controller
         if (!getOnlineUser()->can('view-patients')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        // $patients = $this->patients->latest()->get();
+
+        // dd(app()->getLoadedProviders());
+
+        // $query = DB::table('patients')->get();
+        // dd([
+        //     'auth_check' => auth()->check(),
+        //     'selected_branch_id' => session('selected_branch_id'),
+        //     'user_id' => auth()->id(),
+        //     'all_sessions' => session()->all(),
+        //     'sql' => $query->toSql(),
+        //     'bindings' => $query->getBindings()
+        // ]);
+
+        // dd(DB::table('patients')->toSql());
+
+        // dd([
+        //     'sql' => DB::table('patients')->toSql(),
+        //     'bindings' => DB::table('patients')->getBindings(),
+        //     'count' => DB::table('patients')->count()
+        // ]);
+
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         return view('patients.index');

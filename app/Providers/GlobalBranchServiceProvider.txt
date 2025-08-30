@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
+
+class GlobalBranchServiceProvider extends ServiceProvider
+{
+    public function boot()
+    {
+        // Liste des modèles à filtrer
+        $modelsToFilter = [
+            \App\Models\Patient::class,
+            \App\Models\Report::class,
+            // \App\Models\Order::class,
+            // Ajoutez tous vos autres modèles avec branch_id ici
+        ];
+
+        // Appliquer le scope à chaque modèle spécifiquement
+        foreach ($modelsToFilter as $modelClass) {
+            if (class_exists($modelClass)) {
+                $modelClass::addGlobalScope('branch_filter', function ($builder) {
+                    Log::info("=== SCOPE APPLIED TO: " . get_class($builder->getModel()) . " ===");
+
+                    if (auth()->check() && session('selected_branch_id')) {
+                        Log::info("=== ADDING WHERE CLAUSE ===");
+                        $builder->where('branch_id', session('selected_branch_id'));
+                    } else {
+                        Log::info("=== NO AUTH OR SESSION ===");
+                    }
+                });
+
+                // Auto-assignation à la création
+                $modelClass::creating(function ($model) {
+                    if (!$model->branch_id && session('selected_branch_id')) {
+                        $model->branch_id = session('selected_branch_id');
+                    }
+                });
+            }
+        }
+    }
+}
