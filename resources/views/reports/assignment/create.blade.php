@@ -23,7 +23,11 @@
                             <label for="example-select" class="form-label">Docteur</label>
                             <select class="form-select select2" data-toggle="select2" name="user_id" id="user_id"
                                 required>
-                                <option value="">Sélectionner le docteur</option>
+                                @if ($assignment->user_id && $assignment->user)
+                                    <option value="{{ $assignment->user_id }}" selected>{{ $assignment->user->fullname() }}
+                                    </option>
+                                @endif
+                                {{-- <option value="">Sélectionner le docteur</option> --}}
                                 {{-- @foreach (getUsersByRole('docteur') as $doctor)
                                     <option value="{{ $doctor->id }}"
                                         {{ $assignment->user_id == $doctor->id ? 'selected' : '' }}>{{ $doctor->fullname() }}
@@ -199,6 +203,8 @@
             allowClear: true
         });
     </script>
+
+    <script></script>
 
     <script src="{{ asset('viewjs/report/assignment.js') }}"></script>
 @endpush
