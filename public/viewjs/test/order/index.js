@@ -287,10 +287,10 @@ $(document).ready(function () {
                 data: "code",
                 name: "code",
             },
-            {
-                data: "dropdown",
-                name: "dropdown",
-            },
+            // {
+            //     data: "dropdown",
+            //     name: "dropdown",
+            // },
             {
                 data: "patient",
                 name: "patient",

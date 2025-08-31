@@ -749,43 +749,119 @@ class TestOrderController extends Controller
     }
 
     // Utilise yanjra pour le tableau
+    // public function index2()
+    // {
+    //     if (!getOnlineUser()->can('view-test-orders')) {
+    //         return back()->with('error', "Vous n'êtes pas autorisé");
+    //     }
+
+    //     $examens = $this->testOrder->with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
+    //     $contrats = $this->contrat->all();
+    //     // $patients = $this->patient->all();
+    //     // $hopitals = $this->hospital->all();
+    //     $doctors = $this->doctor->all();
+    //     $types_orders = $this->typeOrder->all();
+    //     $setting = $this->setting->find(1);
+    //     config(['app.name' => $setting->titre]);
+
+    //     $totalAppel =  $this->testOrder
+    //         ->with(['patient', 'contrat', 'type', 'details', 'report'])
+    //         ->with(['patient', 'contrat', 'type', 'details', 'report'])
+    //         ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
+    //         ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
+    //         ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.voice_id')
+    //         ->Where('ato.event', '!=', 'voice.completed')->count();
+    //     $testOrders = $this->testOrder->all();
+
+    //     foreach ($testOrders as $key => $testOrder) {
+    //         if (!empty($testOrder->attribuate_doctor_id) && empty($testOrder->assigned_to_user_id)) {
+    //             $testOrder->assigned_to_user_id = $testOrder->attribuate_doctor_id;
+    //             $testOrder->save();
+    //         }
+    //     }
+    //     $testStats = $this->getTestStats($testOrders);
+
+    //     return view('examens.index2', array_merge(compact('examens', 'contrats',  'doctors', 'types_orders', 'testStats', 'totalAppel'), [
+    //         'finishTest' => $testStats['finishTest'],
+    //         'noFinishTest' => $testStats['noFinishTest'],
+    //         'is_urgent' => $testStats['is_urgent'],
+    //     ]));
+    // }
+
     public function index2()
     {
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $examens = $this->testOrder->with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
-        $contrats = $this->contrat->all();
+        $examens = $this->testOrder->with(['patient', 'contrat', 'type', 'report'])->orderBy('id', 'desc')->get();
         // $patients = $this->patient->all();
         // $hopitals = $this->hospital->all();
+        $contrats = $this->contrat->all();
         $doctors = $this->doctor->all();
         $types_orders = $this->typeOrder->all();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
-        $totalAppel =  $this->testOrder
-            ->with(['patient', 'contrat', 'type', 'details', 'report'])
-            ->with(['patient', 'contrat', 'type', 'details', 'report'])
-            ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
-            ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
-            ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.voice_id')
-            ->Where('ato.event', '!=', 'voice.completed')->count();
-        $testOrders = $this->testOrder->all();
+        // 4. OPTIMISATION: Mise à jour en lot + requête conditionnelle
+        $needsUpdate = $this->testOrder
+            ->whereNotNull('attribuate_doctor_id')
+            ->whereNull('assigned_to_user_id')
+            ->exists();
 
-        foreach ($testOrders as $key => $testOrder) {
-            if (!empty($testOrder->attribuate_doctor_id) && empty($testOrder->assigned_to_user_id)) {
-                $testOrder->assigned_to_user_id = $testOrder->attribuate_doctor_id;
-                $testOrder->save();
+        if ($needsUpdate) {
+            // Mise à jour en lot plutôt que boucle
+            DB::table('test_orders')
+                ->whereNotNull('attribuate_doctor_id')
+                ->whereNull('assigned_to_user_id')
+                ->update([
+                    'assigned_to_user_id' => DB::raw('attribuate_doctor_id'),
+                    'updated_at' => now()
+                ]);
+        }
+
+        // 5. OPTIMISATION: Calculer les stats avec des requêtes spécialisées
+        $testStats = $this->getOptimizedTestStats($examens);
+
+        return view('examens.index2', array_merge(
+            compact( 'contrats',  'doctors', 'types_orders'),
+            [
+                'finishTest' => $testStats['finishTest'],
+                'noFinishTest' => $testStats['noFinishTest'],
+                'is_urgent' => $testStats['is_urgent'],
+            ]
+        ));
+    }
+
+
+    /**
+     * Version optimisée du calcul des statistiques
+     */
+    private function getOptimizedTestStats($testOrders)
+    {
+        // Utilise les relations déjà chargées au lieu de faire des requêtes individuelles
+        $stats = [
+            'finishTest' => 0,
+            'noFinishTest' => 0,
+            'is_urgent' => 0
+        ];
+
+        foreach ($testOrders as $testOrder) {
+            // Le report est déjà chargé via eager loading
+            if ($testOrder->report) {
+                if ($testOrder->report->is_deliver == 0) {
+                    $stats['noFinishTest']++;
+                } else {
+                    $stats['finishTest']++;
+                }
+            }
+
+            if ($testOrder->is_urgent == 1) {
+                $stats['is_urgent']++;
             }
         }
-        $testStats = $this->getTestStats($testOrders);
 
-        return view('examens.index2', array_merge(compact('examens', 'contrats',  'doctors', 'types_orders', 'testStats', 'totalAppel'), [
-            'finishTest' => $testStats['finishTest'],
-            'noFinishTest' => $testStats['noFinishTest'],
-            'is_urgent' => $testStats['is_urgent'],
-        ]));
+        return $stats;
     }
 
     public function searchContrats(Request $request)
@@ -884,6 +960,7 @@ class TestOrderController extends Controller
 
         return compact('finishTest', 'noFinishTest', 'is_urgent');
     }
+
     private function getTestStats_immuno($testOrders)
     {
         $noFinishTest = 0;
