@@ -1754,7 +1754,6 @@ class TestOrderController extends Controller
                         $btnReport = "";
                         $btnPrintReport = "";
                     }
-
                     $btnDelete = "";
                     $btnPrintReport = "";
                 }
@@ -1763,7 +1762,6 @@ class TestOrderController extends Controller
                     if (!empty($data->invoice->id)) {
                         $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->invoice->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
                     } else {
-
                         $btnInvoice = ' <a type="button" href="' . route('invoice.storeFromOrder', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
                     }
                 } else {
@@ -1772,7 +1770,6 @@ class TestOrderController extends Controller
 
                 if (!empty($data->report)) {
                     if ($data->report->status == 1) {
-
                         $icon = $data->option ? '<i class="uil-message"></i>' : '<i class="uil-calling"></i>';
 
                         if ($data->report->is_deliver == 0) {
@@ -1782,9 +1779,6 @@ class TestOrderController extends Controller
                             } elseif (!empty($data->invoice->test_order_id) && $data->invoice->paid == 0) {
                                 $btnPrintReport = ' <a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
                             }
-                            // btncompterendu
-                            // $btnPrintReport = view('examens.btncompterendu',['data' => $data, 'rep' => $data->report]);
-
                         } else {
                             $btnreport = "";
                             $btnPrintReport = "";
@@ -1803,10 +1797,6 @@ class TestOrderController extends Controller
 
                 return $btnVoir .  $btnReport  . $btnreport . $btnDelete . $btncalling . $btnPrintReport;
             })
-
-
-
-
 
             ->editColumn('created_at', function ($data) {
                 return $data->created_at;
@@ -2373,12 +2363,12 @@ class TestOrderController extends Controller
             ->addColumn('urgence', function ($data) {
                 return $data->is_urgent;
             })
-            ->addColumn('dropdown', function ($data) {
-                $order = $data;
-                $setting = $this->setting->find(1);
-                config(['app.name' => $setting->titre]);
-                return view('examens.datatables.attribuate', compact('order'));
-            })
+            // ->addColumn('dropdown', function ($data) {
+            //     $order = $data;
+            //     $setting = $this->setting->find(1);
+            //     config(['app.name' => $setting->titre]);
+            //     return view('examens.datatables.attribuate', compact('order'));
+            // })
             ->filter(function ($query) use ($request, $data) {
 
                 if (!empty($request->get('attribuate_doctor_id'))) {
