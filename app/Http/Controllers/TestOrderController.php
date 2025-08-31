@@ -1848,13 +1848,12 @@ class TestOrderController extends Controller
                 return $data->is_urgent;
             })
 
-            // ->addColumn('dropdown', function ($data) {
-            //     $order = $data;
-            //     $setting = $this->setting->find(1);
-            //     config(['app.name' => $setting->titre]);
-            //     return view('examens.datatables.attribuate', compact('order'));
-            // })
-
+            ->addColumn('dropdown', function ($data) {
+                $order = $data;
+                $setting = $this->setting->find(1);
+                config(['app.name' => $setting->titre]);
+                return view('examens.datatables.attribuate', compact('order'));
+            })
 
             ->filter(function ($query) use ($request, $data) {
 
@@ -2363,12 +2362,12 @@ class TestOrderController extends Controller
             ->addColumn('urgence', function ($data) {
                 return $data->is_urgent;
             })
-            // ->addColumn('dropdown', function ($data) {
-            //     $order = $data;
-            //     $setting = $this->setting->find(1);
-            //     config(['app.name' => $setting->titre]);
-            //     return view('examens.datatables.attribuate', compact('order'));
-            // })
+            ->addColumn('dropdown', function ($data) {
+                $order = $data;
+                $setting = $this->setting->find(1);
+                config(['app.name' => $setting->titre]);
+                return view('examens.datatables.attribuate', compact('order'));
+            })
             ->filter(function ($query) use ($request, $data) {
 
                 if (!empty($request->get('attribuate_doctor_id'))) {

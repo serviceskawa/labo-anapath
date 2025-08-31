@@ -141,7 +141,7 @@
                                     {{-- <th>Appel</th> --}}
                                     <th>Date</th>
                                     <th>Code</th>
-                                    {{-- <th>Affecter à</th> --}}
+                                    <th>Affecter à</th>
                                     <th>Patient</th>
                                     <th>Examens</th>
                                     <th>Contrat</th>
