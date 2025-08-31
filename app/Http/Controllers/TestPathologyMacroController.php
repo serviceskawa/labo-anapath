@@ -177,11 +177,11 @@ class TestPathologyMacroController extends Controller
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
 
-        $orders = $this->testOrder->whereHas('type', function ($query) {
-            $query->where('slug', 'immuno-interne')
-                ->orwhere('slug', 'immuno-exterme')->where('status', 1) // Statut différent de 0
-                ->whereNull('deleted_at'); // deleted_at doit être NULL;
-        })->get();
+        // $orders = $this->testOrder->whereHas('type', function ($query) {
+        //     $query->where('slug', 'immuno-interne')
+        //         ->orwhere('slug', 'immuno-exterme')->where('status', 1) // Statut différent de 0
+        //         ->whereNull('deleted_at'); // deleted_at doit être NULL;
+        // })->get();
         $employees = $this->employees->all();
 
         $setting = $this->setting->find(1);
@@ -222,13 +222,42 @@ class TestPathologyMacroController extends Controller
             ->orderBy('test_orders.created_at')
             ->get();
 
-        return view('macro.index_immuno', array_merge(compact('orders', 'employees', 'results')));
+        return view('macro.index_immuno', array_merge(compact('employees', 'results')));
+    }
+
+    public function searchMacro(Request $request)
+    {
+        $search = $request->get('search', '');
+        $limit = $request->get('limit', 20);
+
+        // $orders = TestOrder::select('id', 'code')
+        //     ->whereDoesntHave('macros') // Remplace !isMacro($order->id)
+        //     ->when($search, function ($query, $search) {
+        //         $query->where('code', 'LIKE', "%{$search}%");
+        //     })
+        //     ->orderBy('code')
+        //     ->paginate($limit);
+
+        $orders = $this->testOrder->whereHas('type', function ($query) {
+            $query->where('slug', 'immuno-interne')
+                ->orwhere('slug', 'immuno-exterme')->where('status', 1) // Statut différent de 0
+                ->whereNull('deleted_at'); // deleted_at doit être NULL;
+        })->orderBy('code')->paginate($limit);
+
+         // Filtrer côté serveur si isMacro() nécessite une logique complexe
+    $filteredOrders = $orders->getCollection()->filter(function($order) {
+        return !isMacro($order->id);
+    })->values();
+
+        return response()->json([
+            'data' => $orders->items(),
+            'has_more' => $orders->hasMorePages()
+        ]);
     }
 
     // Debut
     public function getTestOrdersforDatatable(Request $request)
     {
-
         $data = $this->macro->with(['order', 'employee', 'user', 'testOrder'])
             ->whereHas('order', function ($query) {
                 $query->whereHas('type', function ($query) {
@@ -396,6 +425,7 @@ class TestPathologyMacroController extends Controller
             ->rawColumns(['action', 'code', 'add_by', 'state', 'date_macro', 'date_montage', 'created'])
             ->make(true);
     }
+
     // Debut
     public function getTestOrdersforDatatable2(Request $request)
     {
@@ -528,7 +558,6 @@ class TestPathologyMacroController extends Controller
             ->make(true);
     }
 
-
     public function getTestOrdersforDatatable3(Request $request)
     {
         $data = DB::table('test_orders')
@@ -660,9 +689,6 @@ class TestPathologyMacroController extends Controller
             ->rawColumns(['action', 'code', 'date', 'state', 'created', 'dateLim'])
             ->make(true);
     }
-    // Debut
-
-
 
     // Histoligie Piece Operatoire
     public function getTestOrdersforDatatableHistologie(Request $request)
@@ -787,8 +813,6 @@ class TestPathologyMacroController extends Controller
             ->make(true);
     }
 
-
-
     // Histoligie Piece Operatoire
     public function getTestOrdersforDatatablePieceOperatoire(Request $request)
     {
@@ -906,9 +930,6 @@ class TestPathologyMacroController extends Controller
             ->rawColumns(['action', 'code', 'date', 'state', 'created', 'dateLim'])
             ->make(true);
     }
-
-
-
 
     // Histoligie Cytologie
     public function getTestOrdersforDatatableCytologie(Request $request)
@@ -1031,10 +1052,6 @@ class TestPathologyMacroController extends Controller
             ->rawColumns(['action', 'code', 'date', 'state', 'created', 'dateLim'])
             ->make(true);
     }
-
-
-
-
 
     public function getTestOrdersforDatatable_immuno(Request $request)
     {
@@ -1181,8 +1198,6 @@ class TestPathologyMacroController extends Controller
     // Debut
     public function getTestOrdersforDatatable2_immuno(Request $request)
     {
-
-
         $data = DB::table('test_orders')
             ->select(
                 'test_orders.id as test_order',
@@ -1302,10 +1317,9 @@ class TestPathologyMacroController extends Controller
             ->rawColumns(['action', 'code', 'date', 'state', 'created', 'dateLim'])
             ->make(true);
     }
+
     public function getTestOrdersforDatatable3_immuno(Request $request)
     {
-
-
         $data = DB::table('test_orders')
             ->select(
                 'test_orders.id as test_order',
@@ -1511,8 +1525,6 @@ class TestPathologyMacroController extends Controller
     }
     public function store2(Request $request)
     {
-        // dd($request);
-
         $macro = new test_pathology_macro();
         $macro->id_employee = $request->id_employee;
         $macro->date = Carbon::now();
@@ -1558,9 +1570,9 @@ class TestPathologyMacroController extends Controller
 
         return response()->json($macro);
     }
+
     public function destroy($id)
     {
-
         $macro = $this->macro->find($id);
         $macro->delete();
         return redirect()->route('macro.index')->with('sucess', "Enregistrement effectué avec succès");
