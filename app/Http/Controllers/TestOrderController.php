@@ -1858,12 +1858,12 @@ class TestOrderController extends Controller
                 return $data->is_urgent;
             })
 
-            ->addColumn('dropdown', function ($data) {
-                $order = $data;
-                $setting = $this->setting->find(1);
-                config(['app.name' => $setting->titre]);
-                return view('examens.datatables.attribuate', compact('order'));
-            })
+            // ->addColumn('dropdown', function ($data) {
+            //     $order = $data;
+            //     $setting = $this->setting->find(1);
+            //     config(['app.name' => $setting->titre]);
+            //     return view('examens.datatables.attribuate', compact('order'));
+            // })
 
 
             ->filter(function ($query) use ($request, $data) {
