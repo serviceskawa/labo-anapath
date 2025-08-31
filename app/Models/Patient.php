@@ -3,14 +3,12 @@
 namespace App\Models;
 
 use App\Models\TestOrder;
+use App\Traits\BranchScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 class Patient extends Model
 {
-
-    use HasFactory;
-
+    use HasFactory, BranchScopeTrait;
     protected $guarded = [];
 
     protected static function boot()

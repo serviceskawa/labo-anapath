@@ -20,7 +20,7 @@ class CashboxController extends Controller
     protected $banks;
     protected $cash;
 
-    public function __construct(Setting $setting, CashboxAdd $cashadd,Cashbox $cash,Bank $banks)
+    public function __construct(Setting $setting, CashboxAdd $cashadd, Cashbox $cash, Bank $banks)
     {
         $this->setting = $setting;
         $this->cashadd = $cashadd;
@@ -36,21 +36,30 @@ class CashboxController extends Controller
     public function index()
     {
         if (!getOnlineUser()->can('view-cashboxes')) {
-            return back()->with('error',"Vous n\'êtes pas autorisé");
+            return back()->with('error', "Vous n\'êtes pas autorisé");
         }
 
-        $cashadds = $this->cashadd->where('cashbox_id',2)->latest()->get();
-        $totalToday = $this->cash->find(2)->current_balance;
+        // $cashadds = $this->cashadd->where('cashbox_id',2)->latest()->get();
+        // $totalToday = $this->cash->find(2)->current_balance;
+        // $banks = $this->banks->all();
+        // $cashboxDailys = CashboxDaily::latest()->get();
+        // $cashboxs = Cashbox::find(2);
+        // $cashboxtest = Cashbox::find(2);
+        $cashadds = $this->cashadd->where('type', 'vente')->latest()->get();
+        $totalToday = $this->cash->where('type', 'vente')->current_balance;
         $banks = $this->banks->all();
         $cashboxDailys = CashboxDaily::latest()->get();
-        $cashboxs = Cashbox::find(2);
-        $cashboxtest = Cashbox::find(2);
+        $cashboxs = Cashbox::where('type', 'vente')->first();
+        $cashboxtest = Cashbox::where('type', 'vente')->first();
 
 
         // Point en temps reel sur le cashboxadd
-        $entree = CashboxAdd::where('cashbox_id', 2)
-        ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-        ->sum('amount');
+        // $entree = CashboxAdd::where('cashbox_id', 2)
+        //     ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+        //     ->sum('amount');
+        $entree = CashboxAdd::where('type', 'vente')
+            ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+            ->sum('amount');
 
         // $sortie = CashboxAdd::where('cashbox_id', 1)
         // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
@@ -61,20 +70,21 @@ class CashboxController extends Controller
         // dd($sortie);
 
         // dd($cashadds);
-        $setting = $this->setting->find(1);
-        config(['app.name'=>$setting->titre]);
-        return view('cashbox.vente.index',compact(['sortie','entree','cashadds','totalToday','banks','cashboxDailys','cashboxs','cashboxtest']));
+        $setting = $this->setting;
+        dd($setting);
+        config(['app.name' => $setting->titre]);
+        return view('cashbox.vente.index', compact(['sortie', 'entree', 'cashadds', 'totalToday', 'banks', 'cashboxDailys', 'cashboxs', 'cashboxtest']));
     }
 
     public function index_depense()
     {
-         if (!getOnlineUser()->can('view-cashboxes')) {
-            return back()->with('error',"Vous n\'êtes pas autorisé");
+        if (!getOnlineUser()->can('view-cashboxes')) {
+            return back()->with('error', "Vous n\'êtes pas autorisé");
         }
-                // Point en temps reel sur le cashboxadd
+        // Point en temps reel sur le cashboxadd
         $sortie = CashboxAdd::where('cashbox_id', 1)
-        ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-        ->sum('amount');
+            ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+            ->sum('amount');
 
         // $sortie = CashboxAdd::where('cashbox_id', 1)
         // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
@@ -84,14 +94,14 @@ class CashboxController extends Controller
         $total = $entree + $sortie;
         // dd($sortie);
 
-        $cashadds = $this->cashadd->where('cashbox_id',1)->latest()->get();
+        $cashadds = $this->cashadd->where('cashbox_id', 1)->latest()->get();
 
         $totalToday = $this->cash->find(1)->current_balance;
 
         $banks = $this->banks->all();
         $setting = $this->setting->find(1);
-        config(['app.name'=>$setting->titre]);
-        return view('cashbox.depense.index',compact(['sortie','entree','cashadds','totalToday','banks']));
+        config(['app.name' => $setting->titre]);
+        return view('cashbox.depense.index', compact(['sortie', 'entree', 'cashadds', 'totalToday', 'banks']));
     }
 
     /**
@@ -103,7 +113,7 @@ class CashboxController extends Controller
     public function store(Request $request)
     {
         if (!getOnlineUser()->can('create-cashboxes')) {
-            return back()->with('error',"vous n'êtes pas autorisé");
+            return back()->with('error', "vous n'êtes pas autorisé");
         }
 
         $cashboxAddData = [
@@ -136,20 +146,18 @@ class CashboxController extends Controller
             $cash->current_balance += $cashboxAddData['amount'];
             $cash->save();
             return back()->with('success', "Les informations de la caisse de vente ont été mis à jour ! ");
-
-        } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
-
     }
 
     public function store_bank(Request $request)
     {
         if (!getOnlineUser()->can('create-banks')) {
-            return back()->with('error',"vous n'êtes pas autorisé");
+            return back()->with('error', "vous n'êtes pas autorisé");
         }
 
-    //    dd( $request->file('bank_file')->store('tickets', 'public'));
+        //    dd( $request->file('bank_file')->store('tickets', 'public'));
 
         $cashboxAddData = [
             'bank_id' => $request->bank_id,
@@ -164,7 +172,7 @@ class CashboxController extends Controller
         try {
             $cash = $this->cash->find(2);
 
-            if ($cash->current_balance>$cashboxAddData['amount']) {
+            if ($cash->current_balance > $cashboxAddData['amount']) {
                 // $cashboxAdd = CashboxAdd::find($cashboxAddData['id']);
                 $cashboxAdd = $this->cashadd->create([
                     'amount' => $cashboxAddData['amount'],
@@ -183,12 +191,9 @@ class CashboxController extends Controller
             } else {
                 return back()->with('error', "Le montant du dépôt ne peut pas être supérieur au montant de la caisse");
             }
-
-
-        } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
-
     }
 
     /**
@@ -215,9 +220,9 @@ class CashboxController extends Controller
         }
 
         $cashData = $this->cashadd->find($id);
-        $invoice = $cashData->invoice ? ($cashData->invoice->order ? $cashData->invoice->order->code:''):'';
-        $bank = $cashData->bank ? $cashData->bank->name:'';
-        return response()->json(['data' => $cashData,'invoice' => $invoice,'bank' => $bank]);
+        $invoice = $cashData->invoice ? ($cashData->invoice->order ? $cashData->invoice->order->code : '') : '';
+        $bank = $cashData->bank ? $cashData->bank->name : '';
+        return response()->json(['data' => $cashData, 'invoice' => $invoice, 'bank' => $bank]);
     }
 
     /**
@@ -230,7 +235,7 @@ class CashboxController extends Controller
     public function update(Request $request)
     {
         if (!getOnlineUser()->can('edit-cashboxes')) {
-            return back()->with('error',"Vous n\'êtes pas autorisé");
+            return back()->with('error', "Vous n\'êtes pas autorisé");
         }
 
         $cashboxAddData = [
@@ -256,9 +261,8 @@ class CashboxController extends Controller
             $cashboxAdd->save();
 
             return back()->with('success', "Les informations de la caisse de vente ont été mis à jour ! ");
-
-        } catch(\Throwable $ex){
-            return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }
 
@@ -280,7 +284,7 @@ class CashboxController extends Controller
             $cash->current_balance -= $add->amount;
             $cash->save();
             return back()->with('success', "    Un élement a été supprimé ! ");
-        } catch(\Throwable $ex){
+        } catch (\Throwable $ex) {
             return back()->with('error', "Impossible de supprimer cet élément !  Celui-ci est lié à d'autres éléments. Pour effectuer cette suppression, vous devez d'abord supprimer ou mettre à jour les éléments liés dans d'autres tables.");
         }
     }

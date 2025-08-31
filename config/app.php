@@ -178,7 +178,7 @@ return [
         // Service Provider DomPDF
         Barryvdh\DomPDF\ServiceProvider::class,
         Elibyy\TCPDF\ServiceProvider::class,
-        App\Providers\GlobalBranchServiceProvider::class,
+        // App\Providers\GlobalBranchServiceProvider::class,
     ],
 
     /*

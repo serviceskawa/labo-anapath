@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasPermissionsTrait, BranchScopeTrait;
+    use HasApiTokens, HasFactory, Notifiable, HasPermissionsTrait;
 
     /**
      * The attributes that are mass assignable.

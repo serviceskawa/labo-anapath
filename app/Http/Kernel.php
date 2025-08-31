@@ -75,6 +75,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'role' => \App\Http\Middleware\RoleMiddleware::class,
         'branch.required' => \App\Http\Middleware\BranchRequired::class,
-        'pdf' => \App\Http\Middleware\AuthorizeGeneratePDF::class,
+        // 'pdf' => \App\Http\Middleware\AuthorizeGeneratePDF::class,
     ];
 }
