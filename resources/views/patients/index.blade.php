@@ -54,26 +54,7 @@
 
                             </tr>
                         </thead>
-                        {{-- <tbody>
-                            @foreach ($patients as $item)
-                                <tr>
-                                    <td>{{ $item->code }}</td>
-                                    <td>{{ $item->firstname }} {{ $item->lastname }}</td>
-                                    <td>{{ $item->telephone1 . ' / ' . $item->telephone2 }}</td>
-                                    <td>{{ getTotalByPatient($item->id) }}</td>
-                                    <td>{{ getPaidByPatient($item->id) }}</td>
-                                    <td>{{ getNoPaidByPatient($item->id) }}</td>
-                                    <td>
-                                        <button type="button" onclick="edit({{ $item->id }})"
-                                            class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
-                                        <button type="button" onclick="deleteModal({{ $item->id }})"
-                                            class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
-                                        <a type="button" href="{{ route('patients.profil', $item->id) }}"
-                                            class="btn btn-secondary"><i class="mdi mdi-eye"></i> </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody> --}}
+                        
                     </table>
                 </div>
             </div>
