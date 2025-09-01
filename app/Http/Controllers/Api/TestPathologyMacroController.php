@@ -24,7 +24,7 @@ class TestPathologyMacroController extends Controller
                     ->whereNull('deleted_at');
             });
         })
-            ->where('created_at', '>=', Carbon::now()->subMonths(12))
+            ->where('created_at', '>=', Carbon::now()->subMonths(2))
             ->orderByDesc('created_at')
             ->get();
         return new TestPathologyMacroCollection($macros);
@@ -39,10 +39,61 @@ class TestPathologyMacroController extends Controller
             $macro->id_employee = $request->id_employee;
             $macro->date = $request->date;
             $macro->id_test_pathology_order = $order['id'];
+            $macro->branch_id = $request->branch_id;
             $macro->user_id = Auth::user()->id;
+            $macro->created_at = Carbon::now();
             $macro->save();
             $macros[] = $macro;
         }
+
+        return new TestPathologyMacroCollection($macros);
+    }
+
+    public function bulkStore(Request $request)
+    {
+        $orders = $request->orders;
+
+        $macros = [];
+        foreach ($orders as $order) {
+            $macro = new test_pathology_macro();
+            $macro->id = $order['id'];
+            $macro->id_employee = $order['employee_id'];
+            $macro->date = Carbon::parse($order['date'])->toDateString();
+            $macro->id_test_pathology_order = $order['order_id'];
+            $macro->branch_id = $order['branch_id'];
+            $macro->user_id = Auth::user()->id;
+            $macro->created_at = $order['created_at'];
+            $macro->save();
+            $macros[] = $macro;
+        }
+
+        return new TestPathologyMacroCollection($macros);
+    }
+
+    public function searchMacro(Request $request)
+    {
+        $slugs = ['cytologie', 'histologie', 'biopsie', 'pièce-opératoire'];
+
+        $macros = test_pathology_macro::with(['order', 'employee', 'user', 'testOrder'])
+            ->whereHas('order', function ($query) use ($slugs) {
+                $query->whereHas('type', function ($query) use ($slugs) {
+                    $query->whereIn('slug', $slugs)
+                        ->where('status', 1)
+                        ->whereNull('deleted_at');
+                });
+            })
+            ->where(function ($q) use ($request) {
+                $q->whereHas('order', function ($sub) use ($request) {
+                    $sub->where('code', 'like', '%' . $request->search . '%');
+                })
+                    ->orWhereHas('user', function ($sub) use ($request) {
+                        $sub->where('firstname', 'like', '%' . $request->search . '%')
+                            ->orWhere('lastname', 'like', '%' . $request->search . '%');
+                    })
+                    ->orWhere('date', 'like', '%' . $request->search . '%');
+            })
+            ->orderByDesc('created_at')
+            ->get();
 
         return new TestPathologyMacroCollection($macros);
     }

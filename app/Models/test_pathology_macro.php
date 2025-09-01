@@ -4,11 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class test_pathology_macro extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    // Si la clé primaire est maintenant un UUID
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+    // Event pour générer l'UUID avant la création
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = (string) Str::uuid();
+            }
+        });
+    }
 
     public function user()
     {

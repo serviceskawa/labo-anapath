@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Carbon\Carbon;
 use App\Models\TestOrder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -16,24 +17,33 @@ class TestOrderController extends Controller
      */
     public function index()
     {
-        $orders = TestOrder::whereHas('type', function ($query) {
+        $orders = TestOrder::whereNotNull('code')->whereHas('type', function ($query) {
             $query->where('slug', 'cytologie')
                 ->orwhere('slug', 'histologie')
                 ->orwhere('slug', 'biopsie')
                 ->orwhere('slug', 'pièce-opératoire')
                 ->where('status', 1) // Statut différent de 0
                 ->whereNull('deleted_at'); // deleted_at doit être NULL;
-        })->limit(100)->get();
+        })->where('created_at', '>=', Carbon::now()->subMonths(2))
+            ->orderByDesc('created_at')->get();
 
         return new TestOrderCollection($orders);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    public function searchTestOrder(Request $request)
+    {
+        $orders = TestOrder::whereNotNull('code')->whereHas('type', function ($query) {
+            $query->where('slug', 'cytologie')
+                ->orwhere('slug', 'histologie')
+                ->orwhere('slug', 'biopsie')
+                ->orwhere('slug', 'pièce-opératoire')
+                ->where('status', 1) // Statut diferente de 0
+                ->whereNull('deleted_at'); // deleted_at doit etre NULL;
+        })->where('code', 'like', '%' . $request->search . '%')
+            ->orderByDesc('created_at')->get();
+
+        return new TestOrderCollection($orders);
+    }
     public function store(Request $request)
     {
         //
