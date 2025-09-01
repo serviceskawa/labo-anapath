@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\BranchScopeTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class AppelByReport extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScopeTrait;
     protected $guarded = [];
-    
+
     public function appel_event()
     {
         return $this->belongsTo(AppelTestOder::class, 'appel_id');

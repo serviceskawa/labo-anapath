@@ -360,7 +360,6 @@ Route::middleware(['auth','branch.required'])->group(function () {
         Route::get('/azerty', [ReportController::class, 'getReportsforDatatable'])->name('report.getReportsforDatatable');
         Route::get('/report/rapport', [ReportController::class, 'getReportsRapportsforDatatable'])->name('report.getReportsRapportsforDatatable');
 
-
         Route::post('report-gettemplate', [ReportController::class, 'getTemplate'])->name('template.report-getTemplate');
 
         // Mis à jour du statut livré
@@ -416,7 +415,7 @@ Route::middleware(['auth','branch.required'])->group(function () {
         Route::post('permissions-store', [PermissionController::class, 'store'])->name('user.permission-store');
 
         // Users
-        Route::get('', [UserController::class, 'index'])->name('user.index');
+        Route::get('/', [UserController::class, 'index'])->name('user.index');
         Route::get('user-create', [UserController::class, 'create'])->name('user.create');
         Route::post('user-store', [UserController::class, 'store'])->name('user.store');
         Route::get('role-edit/{id}', [UserController::class, 'edit'])->name('user.edit');

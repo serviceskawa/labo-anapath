@@ -51,10 +51,8 @@
                                 <th>Paye</th>
                                 <th>Due</th>
                                 <th>Actions</th>
-
                             </tr>
                         </thead>
-                        
                     </table>
                 </div>
             </div>

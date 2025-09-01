@@ -395,8 +395,6 @@ class HomeController extends Controller
     }
     public function testorderStatus()
     {
-
-
         $invoicePaid = Invoice::where('status_invoice',0)->where('paid',1)->count();
         $invoiceTotalPaid = Invoice::where('status_invoice',0)->where('paid',1)->sum('total');
 
@@ -415,8 +413,6 @@ class HomeController extends Controller
             'invoiceTotalPaid'=>(int)$invoiceTotalPaid,'invoiceTotalNoPaid'=>(int)$invoiceTotalNoPaid,
             'refundTotalPaid'=>(int)$refundTotalPaid,'refundTotalNoPaid'=>(int)$refundTotalNoPaid
         ]);
-
-
     }
 
     public function dashboard()
@@ -433,7 +429,6 @@ class HomeController extends Controller
 
         $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'
         $totalToday = Invoice::whereDate('created_at', $today)->sum('total');
-
 
         $testOrdersCount = $this->testOrders->all()->count();
         $testOrders = TestOrder::all();

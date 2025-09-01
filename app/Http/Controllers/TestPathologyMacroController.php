@@ -244,10 +244,10 @@ class TestPathologyMacroController extends Controller
                 ->whereNull('deleted_at'); // deleted_at doit être NULL;
         })->orderBy('code')->paginate($limit);
 
-         // Filtrer côté serveur si isMacro() nécessite une logique complexe
-    $filteredOrders = $orders->getCollection()->filter(function($order) {
-        return !isMacro($order->id);
-    })->values();
+        // Filtrer côté serveur si isMacro() nécessite une logique complexe
+        $filteredOrders = $orders->getCollection()->filter(function ($order) {
+            return !isMacro($order->id);
+        })->values();
 
         return response()->json([
             'data' => $orders->items(),
@@ -332,9 +332,6 @@ class TestPathologyMacroController extends Controller
                 return $data->order->code . " " . $reponse;
             })
 
-
-
-
             // ->addColumn('code', function ($data) {
             //     return $data->order->code;
             // })
@@ -342,7 +339,8 @@ class TestPathologyMacroController extends Controller
                 return $data->employee->fullname();
             })
             ->addColumn('date_macro', function ($data) {
-                return dateFormat($data->date);
+                // return dateFormat($data->date);
+                return $data?->date ? Carbon::parse($data->date)->format('d-m-Y') : '';
             })
             ->addColumn('date_montage', function ($data) {
                 if ($data->mounting) {
@@ -404,9 +402,6 @@ class TestPathologyMacroController extends Controller
                     });
                 }
 
-
-
-
                 if (!empty($request->get('dateBegin2'))) {
                     $query->whereHas('testOrder', function ($queryModel) use ($request) {
 
@@ -414,7 +409,6 @@ class TestPathologyMacroController extends Controller
                         $queryModel->whereDate('created_at', '>=', $newDate);
                     });
                 }
-
 
                 if (!empty($request->get('date'))) {
                     //dd($request);
@@ -560,6 +554,36 @@ class TestPathologyMacroController extends Controller
 
     public function getTestOrdersforDatatable3(Request $request)
     {
+        // $data = DB::table('test_orders')
+        //     ->select(
+        //         'test_orders.id as test_order',
+        //         'test_orders.code as code',
+        //         'test_orders.created_at',
+        //         'test_orders.type_order_id as type_order_id',
+        //         'test_orders.is_urgent',
+        //         'test_orders.test_affiliate',
+        //         'reports.status as report_status',
+        //         'test_pathology_macros.id as test_pathology_macro_id'
+        //     )
+        //     // Jointure entre la table test-orders et reports
+        //     ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+        //     ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
+        //     ->leftJoin('test_pathology_macros', 'test_orders.id', '=', 'test_pathology_macros.id_test_pathology_order')
+        //     ->whereNull('test_pathology_macros.id')
+        //     // Filtrage des compte rendu en attente
+        //     ->where('reports.status', 0)
+        //     ->whereYear('reports.created_at', '!=', 2022)
+        //     ->whereYear('reports.created_at', '!=', 2023)
+        //     // Filtrage histologie ou biopsie
+        //     ->where(function ($query) {
+        //         $query
+        //             ->where('type_order_id', 1)
+        //             ->orwhere('type_order_id', 5)
+        //             ->orwhere('type_order_id', 6)
+        //             ->orwhere('type_order_id', 4);
+        //     })->where('test_orders.is_urgent', 1)
+        //     ;
+
         $data = DB::table('test_orders')
             ->select(
                 'test_orders.id as test_order',
@@ -571,29 +595,18 @@ class TestPathologyMacroController extends Controller
                 'reports.status as report_status',
                 'test_pathology_macros.id as test_pathology_macro_id'
             )
-            // Jointure entre la table test-orders et reports
             ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
             ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
             ->leftJoin('test_pathology_macros', 'test_orders.id', '=', 'test_pathology_macros.id_test_pathology_order')
+            ->where('test_orders.branch_id', session('selected_branch_id'))
             ->whereNull('test_pathology_macros.id')
-            // Filtrage des compte rendu en attente
             ->where('reports.status', 0)
-            ->whereYear('reports.created_at', '!=', 2022)
-            ->whereYear('reports.created_at', '!=', 2023)
-
-            // Filtrage histologie ou biopsie
-            ->where(function ($query) {
-                $query
-                    ->where('type_order_id', 1)
-                    ->orwhere('type_order_id', 5)
-                    ->orwhere('type_order_id', 6)
-                    ->orwhere('type_order_id', 4);
-            })->where('test_orders.is_urgent', 1);
-
+            ->whereNotIn(DB::raw('YEAR(reports.created_at)'), [2022, 2023])
+            ->whereIn('type_order_id', [1, 4, 5, 6])
+            ->where('test_orders.is_urgent', 1);
 
         $employees = $this->employees->all();
         return DataTables::of($data)->addIndexColumn()
-
             ->setRowData([
                 'data-mytag' => function ($data) {
                     if ($data->is_urgent == 1) {
@@ -693,6 +706,34 @@ class TestPathologyMacroController extends Controller
     // Histoligie Piece Operatoire
     public function getTestOrdersforDatatableHistologie(Request $request)
     {
+        // $data = DB::table('test_orders')
+        //     ->select(
+        //         'test_orders.id as test_order',
+        //         'test_orders.code as code',
+        //         'test_orders.created_at',
+        //         'test_orders.type_order_id as type_order_id',
+        //         'test_orders.is_urgent',
+        //         'test_orders.test_affiliate',
+        //         'reports.status as report_status',
+        //         'test_pathology_macros.id as test_pathology_macro_id'
+        //     )
+        //     // Jointure entre la table test-orders et reports
+        //     ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+        //     ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
+        //     ->leftJoin('test_pathology_macros', 'test_orders.id', '=', 'test_pathology_macros.id_test_pathology_order')
+        //     ->whereNull('test_pathology_macros.id')
+        //     // Filtrage des compte rendu en attente
+        //     ->where('reports.status', 0)
+        //     ->whereYear('reports.created_at', '!=', 2022)
+        //     ->whereYear('reports.created_at', '!=', 2023)
+
+        //     // Filtrage histologie ou biopsie
+        //     ->where(function ($query) {
+        //         $query
+        //             ->where('type_order_id', 1)
+        //             ->orwhere('type_order_id', 5);
+        //     });
+
         $data = DB::table('test_orders')
             ->select(
                 'test_orders.id as test_order',
@@ -704,28 +745,20 @@ class TestPathologyMacroController extends Controller
                 'reports.status as report_status',
                 'test_pathology_macros.id as test_pathology_macro_id'
             )
-            // Jointure entre la table test-orders et reports
             ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
             ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
             ->leftJoin('test_pathology_macros', 'test_orders.id', '=', 'test_pathology_macros.id_test_pathology_order')
+            ->where('test_orders.branch_id', session('selected_branch_id'))
             ->whereNull('test_pathology_macros.id')
-            // Filtrage des compte rendu en attente
             ->where('reports.status', 0)
-            ->whereYear('reports.created_at', '!=', 2022)
-            ->whereYear('reports.created_at', '!=', 2023)
-
-            // Filtrage histologie ou biopsie
-            ->where(function ($query) {
-                $query
-                    ->where('type_order_id', 1)
-                    ->orwhere('type_order_id', 5);
-            });
-
-
+            // ->whereYear('reports.created_at', '!=', 2022)
+            // ->whereYear('reports.created_at', '!=', 2023)
+            ->whereNotIn(DB::raw('YEAR(reports.created_at)'), [2022, 2023])
+            ->whereIn('type_order_id', [1, 5])
+            ->get();
 
         $employees = $this->employees->all();
         return DataTables::of($data)->addIndexColumn()
-
             ->setRowData([
                 'data-mytag' => function ($data) {
                     if ($data->is_urgent == 1) {
@@ -827,6 +860,7 @@ class TestPathologyMacroController extends Controller
                 'reports.status as report_status',
                 'test_pathology_macros.id as test_pathology_macro_id'
             )
+            ->where('test_orders.branch_id', session('selected_branch_id'))
             // Jointure entre la table test-orders et reports
             ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
             ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
@@ -836,7 +870,6 @@ class TestPathologyMacroController extends Controller
             ->where('reports.status', 0)
             ->whereYear('reports.created_at', '!=', 2022)
             ->whereYear('reports.created_at', '!=', 2023)
-
             // Filtrage histologie ou biopsie
             ->where(function ($query) {
                 $query
@@ -845,7 +878,6 @@ class TestPathologyMacroController extends Controller
 
         $employees = $this->employees->all();
         return DataTables::of($data)->addIndexColumn()
-
             ->setRowData([
                 'data-mytag' => function ($data) {
                     if ($data->is_urgent == 1) {
@@ -853,7 +885,6 @@ class TestPathologyMacroController extends Controller
                     } else {
                         $result = "";
                     }
-
                     return 'mytag=' . $result;
                 },
             ])
@@ -954,7 +985,7 @@ class TestPathologyMacroController extends Controller
             ->where('reports.status', 0)
             ->whereYear('reports.created_at', '!=', 2022)
             ->whereYear('reports.created_at', '!=', 2023)
-
+            ->where('test_orders.branch_id', session('selected_branch_id'))
             // Filtrage histologie ou biopsie
             ->where(function ($query) {
                 $query

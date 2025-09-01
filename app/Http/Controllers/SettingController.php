@@ -20,10 +20,10 @@ class SettingController extends Controller
     public function __construct(Setting $setting, SettingInvoice $settingInvoice, TitleReport $titleReport, Bank $banks)
     {
         $this->middleware('auth');
-         $this->setting = $setting;
-         $this->settingInvoice = $settingInvoice;
-         $this->titleReport = $titleReport;
-         $this->banks = $banks;
+        $this->setting = $setting;
+        $this->settingInvoice = $settingInvoice;
+        $this->titleReport = $titleReport;
+        $this->banks = $banks;
     }
 
     public function report_index()
@@ -31,10 +31,11 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('view-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
+
         config(['app.name' => $setting->titre]);
         $titles = $this->titleReport->latest()->get();
-        return view('settings.report.index' , compact('titles','setting'));
+        return view('settings.report.index', compact('titles', 'setting'));
     }
 
     public function report_store(TitleReportRequest $request)
@@ -44,20 +45,18 @@ class SettingController extends Controller
         }
         $data = [
             'title' => strtoupper($request->title),
-            'status' => $request->status ?1:0
+            'status' => $request->status ? 1 : 0
         ];
 
         try {
-            $title=$this->titleReport->create($data);
+            $title = $this->titleReport->create($data);
 
-            if ($title->status ==1) {
+            if ($title->status == 1) {
                 $titles = $this->titleReport->all();
-                foreach($titles as $item)
-                {
-                    if($item->id != $title->id)
-                    {
+                foreach ($titles as $item) {
+                    if ($item->id != $title->id) {
                         $item->update([
-                            'status'=>0
+                            'status' => 0
                         ]);
                     }
                 }
@@ -85,7 +84,7 @@ class SettingController extends Controller
         $data = [
             'id' => $request->id,
             'title' => strtoupper($request->title),
-            'status' => $request->status ?1:0
+            'status' => $request->status ? 1 : 0
         ];
 
         //dd($request);
@@ -98,14 +97,12 @@ class SettingController extends Controller
             $titleReport->status = $data['status'];
             $titleReport->save();
 
-            if ($titleReport->status ==1) {
+            if ($titleReport->status == 1) {
                 $titles = $this->titleReport->all();
-                foreach($titles as $item)
-                {
-                    if($item->id != $titleReport->id)
-                    {
+                foreach ($titles as $item) {
+                    if ($item->id != $titleReport->id) {
                         $item->update([
-                            'status'=>0
+                            'status' => 0
                         ]);
                     }
                 }
@@ -133,10 +130,10 @@ class SettingController extends Controller
 
     public function report_store_placeholder(Request $request)
     {
-        if (!getOnlineUser()->can('create-settings') ) {
+        if (!getOnlineUser()->can('create-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        if (!getOnlineUser()->can('edit-settings') ) {
+        if (!getOnlineUser()->can('edit-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $setting = $this->setting->find(1);
@@ -146,8 +143,7 @@ class SettingController extends Controller
             $setting->fill([
                 "placeholder" => $request->placeholder
             ])->save();
-
-        }else {
+        } else {
             $setting = $this->setting->create([
                 "placeholder" => $request->placeholder
             ]);
@@ -157,10 +153,10 @@ class SettingController extends Controller
 
     public function report_store_footer(Request $request)
     {
-        if (!getOnlineUser()->can('create-settings') ) {
+        if (!getOnlineUser()->can('create-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        if (!getOnlineUser()->can('edit-settings') ) {
+        if (!getOnlineUser()->can('edit-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $setting = $this->setting->find(1);
@@ -170,8 +166,7 @@ class SettingController extends Controller
             $setting->fill([
                 "footer" => $request->footer
             ])->save();
-
-        }else {
+        } else {
             $setting = $this->setting->create([
                 "footer" => $request->footer
             ]);
@@ -201,26 +196,23 @@ class SettingController extends Controller
 
         $setting = $this->setting->find(1);
 
-        if ($request->file('logo') ) {
+        if ($request->file('logo')) {
 
             $logo = time() . '_settings_app_logo.' . $request->file('logo')->extension();
 
             $path_logo = $request->file('logo')->storeAs('settings/app', $logo, 'public');
-
         }
-        if ($request->file('favicon') ) {
+        if ($request->file('favicon')) {
 
             $favicon = time() . '_settings_app_favicon.' . $request->file('favicon')->extension();
 
             $path_favicon = $request->file('favicon')->storeAs('settings/app', $favicon, 'public');
-
         }
-        if ($request->file('img3') ) {
+        if ($request->file('img3')) {
 
             $img3 = time() . '_settings_app_blanc.' . $request->file('img3')->extension();
 
             $path_img3 = $request->file('img3')->storeAs('settings/app', $img3, 'public');
-
         }
 
         if ($setting) {
@@ -236,8 +228,7 @@ class SettingController extends Controller
                 "api_key_sms" => $request->api_key_sms,
                 "api_key_ourvoice" => $request->api_key_ourvoice,
             ])->save();
-
-        }else {
+        } else {
             $setting = $this->setting->create([
                 "titre" => $request->titre,
                 "begining_date" => $request->begining_date,
@@ -265,7 +256,7 @@ class SettingController extends Controller
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
         $settingInvoice = SettingInvoice::find(1);
-        return view('invoices.setting' , compact('settingInvoice'));
+        return view('invoices.setting', compact('settingInvoice'));
     }
 
     public function invoice_update(SettingInvoiceRequest $request)
@@ -285,7 +276,7 @@ class SettingController extends Controller
             $settingInvoice = $this->settingInvoice->find(1);
             $settingInvoice->ifu = $data['ifu'];
             $settingInvoice->token = $data['token'];
-            $settingInvoice->status = $request->status?1:0;
+            $settingInvoice->status = $request->status ? 1 : 0;
             $settingInvoice->save();
 
             return back()->with('success', "Mise à jour éffectué avec success ");

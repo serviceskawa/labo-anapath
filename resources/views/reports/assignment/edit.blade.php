@@ -32,7 +32,6 @@
                         </thead>
 
                         <tbody>
-
                             @foreach ($doctor->assignment as $key => $assignment)
                                 <tr>
                                     <td>{{ $key+1}}</td>
@@ -41,7 +40,6 @@
                                     <td>{{ $assignment->created_at->format('d-m-Y (H:i)') }}</td>
                                 </tr>
                             @endforeach
-
                         </tbody>
                     </table>
                 </div>

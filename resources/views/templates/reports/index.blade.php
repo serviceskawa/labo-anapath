@@ -12,20 +12,13 @@
                 </div>
                 <h4 class="page-title">Templates compte rendu</h4>
             </div>
-
-            <!----MODAL---->
-
             @include('doctors.create')
-
             @include('doctors.edit')
-
         </div>
     </div>
 
-
     <div class="">
         @include('layouts.alerts')
-
         <div class="card mb-md-0 mb-3">
             <div class="card-body">
                 <div class="card-widgets">
@@ -37,8 +30,6 @@
                 <h5 class="card-title mb-0">Liste des templates</h5>
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
-
-
                     <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                         <thead>
                             <tr>
@@ -46,7 +37,6 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-
 
                         <tbody>
                             @foreach ($templates as $item)
@@ -64,18 +54,14 @@
                     </table>
                 </div>
             </div>
-        </div> <!-- end card-->
-
-
+        </div>
     </div>
 @endsection
-
 
 @push('extra-js')
     <script>
         // SUPPRESSION
         function deleteModal(id) {
-
             Swal.fire({
                 title: "Voulez-vous supprimer l'élément ?",
                 icon: "warning",
@@ -93,7 +79,6 @@
                 }
             });
         }
-
 
         /* DATATABLE */
         $(document).ready(function() {
@@ -119,27 +104,20 @@
             });
         });
 
-
         //EDITION
         function edit(id) {
             var e_id = id;
-
             // Populate Data in Edit Modal Form
             $.ajax({
                 type: "GET",
                 url: "{{ url('getdoctor') }}" + '/' + e_id,
                 success: function(data) {
-
                     $('#id2').val(data.id);
                     $('#name').val(data.name);
                     $('#telephone').val(data.telephone);
                     $('#email').val(data.email);
                     $('#role').val(data.role);
                     $('#commission').val(data.commission);
-
-
-
-                    console.log(data);
                     $('#editModal').modal('show');
                 },
                 error: function(data) {

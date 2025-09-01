@@ -1,10 +1,6 @@
 @extends('layouts.app2')
-
 @section('title', 'Reports')
-
-
 @section('css')
-
     <style>
         @media print {
             .no-print {
@@ -12,29 +8,21 @@
             }
         }
     </style>
-
 @endsection
 
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                {{-- <div class="page-title-right mr-3">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#standard-modal">Affecter des comptes rendu</button>
-                </div> --}}
                 <h4 class="page-title">Affectation des comptes rendu</h4>
             </div>
         </div>
     </div>
 
     <div class="">
-
         @include('layouts.alerts')
-
         <div class="card mb-md-0 mb-3">
             <div class="card-body">
-
                 <form method="POST" action="{{ route('report.assignment.store') }}" autocomplete="off">
                     @csrf
                     <div class="row d-flex align-items-end">
@@ -101,11 +89,8 @@
                 </div>
 
                 <h5 class="card-title mb-0">Liste des affectations</h5>
-
                 <div id="cardCollpase1" class="show collapse pt-3">
-
                     <table id="datatable2" class="table-striped dt-responsive nowrap w-100 table">
-
                         <thead>
                             <tr>
                                 {{-- <th>#</th> --}}
@@ -139,12 +124,10 @@
                                 </tr>
                             @endforeach
                         </tbody> --}}
-
                     </table>
-
                 </div>
             </div>
-        </div> 
+        </div>
     </div>
 @endsection
 
@@ -254,9 +237,7 @@
     <script>
         /* DATATABLE */
         $(document).ready(function() {
-
             var table = $('#datatable2').DataTable({
-
                 "columnDefs": [{
                     "targets": [0],
                     "searchable": false

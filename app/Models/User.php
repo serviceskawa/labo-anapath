@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
 
@@ -71,14 +72,16 @@ class User extends Authenticatable
         return $this->hasMany(Expense::class);
     }
 
-    public function daily(){
+    public function daily()
+    {
         return $this->hasMany(CashboxDaily::class);
     }
 
     /**
      * Set attribute $isconnect value
      */
-    public function setIsConnect($etat){
+    public function setIsConnect($etat)
+    {
         $this->isconnect = $etat;
     }
 
@@ -150,7 +153,7 @@ class User extends Authenticatable
 
     public function fullname()
     {
-        return $this->firstname .' '.$this->lastname ;
+        return $this->firstname . ' ' . $this->lastname;
     }
 
 
@@ -161,14 +164,14 @@ class User extends Authenticatable
 
     public function userCheckRole($id)
     {
-       $access = UserRole::where('user_id',$this->id)->where('role_id',$id)->first();
+        $access = UserRole::where('user_id', $this->id)->where('role_id', $id)->first();
 
-        return $access ? true: false;
+        return $access ? true : false;
     }
 
     public function assignment()
     {
-        return $this->hasMany(AssignmentDoctor::class,'doctor_id');
+        return $this->hasMany(AssignmentDoctor::class, 'doctor_id');
     }
 
     // 🔁 Relation vers la branche principale (colonne branch_id dans users)
@@ -179,11 +182,30 @@ class User extends Authenticatable
     }
 
     // 🔁 Relation vers toutes les branches associées via la table pivot
+    // public function branches()
+    // {
+    //     return $this->belongsToMany(Branch::class)
+    //                 ->withPivot('is_default')
+    //                 ->withTimestamps();
+    //     // Renvoie toutes les branches liées à l'utilisateur
+    // }
+
+    // ✅ Relation many-to-many avec la table branch_user
     public function branches()
     {
-        return $this->belongsToMany(Branch::class)
-                    ->withPivot('is_default')
-                    ->withTimestamps();
-        // Renvoie toutes les branches liées à l'utilisateur
+        return $this->belongsToMany(Branch::class, 'branch_user', 'user_id', 'branch_id');
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('branch_filter', function ($builder) {
+            if (session()->has('selected_branch_id')) {
+                $selectedBranchId = session()->get('selected_branch_id');
+
+                $builder->whereHas('branches', function ($query) use ($selectedBranchId) {
+                    $query->where('branch_id', $selectedBranchId);
+                });
+            }
+        });
     }
 }

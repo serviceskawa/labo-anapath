@@ -121,25 +121,25 @@ class ReportController extends Controller
                     ->whereMonth('signature_date', intval($month))
                     ->whereYear('signature_date', intval($year));
             })
-            ->whereHas('contrat', function($query){
-                $query->where('name','ORDINAIRE')
-                ->where('type','ORDINAIRE')
-                ->where('status','ACTIF');
+            ->whereHas('contrat', function ($query) {
+                $query->where('name', 'ORDINAIRE')
+                    ->where('type', 'ORDINAIRE')
+                    ->where('status', 'ACTIF');
             })
             ->sum('total');
 
-         $totalSum1 = TestOrder::whereIn('id', $testOrderIds)
-            ->whereHas('report', function ($query) use ($month, $year) {
-                $query->where('status', 1)
-                    ->whereMonth('signature_date', intval($month))
-                    ->whereYear('signature_date', intval($year));
-            })
-            ->whereHas('contrat', function($query){
-                $query->where('name','ORDINAIRE')
-                ->where('type','ORDINAIRE')
-                ->where('status','ACTIF');
-            })
-            ->get();
+        // $totalSum1 = TestOrder::whereIn('id', $testOrderIds)
+        //     ->whereHas('report', function ($query) use ($month, $year) {
+        //         $query->where('status', 1)
+        //             ->whereMonth('signature_date', intval($month))
+        //             ->whereYear('signature_date', intval($year));
+        //     })
+        //     ->whereHas('contrat', function ($query) {
+        //         $query->where('name', 'ORDINAIRE')
+        //             ->where('type', 'ORDINAIRE')
+        //             ->where('status', 'ACTIF');
+        //     })
+        //     ->get();
 
         $report_nbres = $report_req->count();
         // Initialiser les compteurs
@@ -196,7 +196,6 @@ class ReportController extends Controller
         }
     }
 
-
     public function indexsuivi(Request $request)
     {
         if (!getOnlineUser()->can('view-reports')) {
@@ -207,7 +206,6 @@ class ReportController extends Controller
         $doctors = $this->doctor->all();
         $user = Auth::user();
         $types_orders = $this->typeOrder->all();
-
         $month = $request->month; // Récupérez la valeur du mois depuis le formulaire
         $year = $request->year;   // Récupérez la valeur de l'année depuis le formulaire
 
@@ -219,8 +217,8 @@ class ReportController extends Controller
                 DB::raw("SUM(CASE WHEN tos.title = 'Immuno Interne' THEN 1 ELSE 0 END) AS immuno_interne"),
                 DB::raw("SUM(CASE WHEN tos.title = 'Cytologie' THEN 1 ELSE 0 END) AS cytologie"),
                 DB::raw("COUNT(tor.id) AS total_general")
-            )
-            ->where('tor.status', 1);
+            )->where('tor.status', 1)
+            ->where('tos.branch_id', session('selected_branch_id'));
 
         if (isset($month) && isset($year)) {
             // Filtrer par mois et année si les deux sont spécifiés
@@ -231,7 +229,6 @@ class ReportController extends Controller
         }
         $examens = $examens->get();
 
-
         $rapports = DB::table('reports as rep')
             ->join('test_orders as tor', 'tor.id', '=', 'rep.test_order_id')
             ->leftJoin('test_order_assignment_details as toad', 'toad.test_order_id', '=', 'rep.test_order_id')
@@ -239,7 +236,7 @@ class ReportController extends Controller
             SUM(CASE WHEN rep.status = '0' THEN 1 ELSE 0 END) AS attente,
             SUM(CASE WHEN rep.status = '1' THEN 1 ELSE 0 END) AS termine,
             SUM(CASE WHEN toad.test_order_id IS NOT NULL THEN 1 ELSE 0 END) AS affecte
-        ");
+        ")->where('rep.branch_id', session('selected_branch_id'));
 
         if (isset($month) && isset($year)) {
             $rapports = $rapports->whereMonth('tor.created_at', $month)
@@ -247,14 +244,13 @@ class ReportController extends Controller
         } elseif (isset($year)) {
             $patient_called = $rapports->whereYear('tor.created_at', $year);
         }
-
         $rapports = $rapports->get();
 
         $macros = DB::table('test_orders as tor')
             ->rightJoin('test_pathology_macros as tpm', 'tpm.id_test_pathology_order', '=', 'tor.id')
             ->selectRaw("
             SUM(CASE WHEN tpm.id_test_pathology_order = tor.id THEN 1 ELSE 0 END) AS pathology
-        ");
+        ")->where('tor.branch_id', session('selected_branch_id'));
 
         if (isset($month) && isset($year)) {
             $macros = $macros->whereMonth('tor.created_at', $month)
@@ -262,17 +258,16 @@ class ReportController extends Controller
         } elseif (isset($year)) {
             $patient_called = $macros->whereYear('tor.created_at', $year);
         }
-
-
         $macros = $macros->get();
 
         $patient_called = DB::table('reports')
-            ->selectRaw("
-            SUM(CASE WHEN reports.is_called = 1 THEN 1 ELSE 0 END) AS called,
-            SUM(CASE WHEN reports.is_called = 0 THEN 1 ELSE 0 END) AS not_called,
-            SUM(CASE WHEN reports.is_delivered = 1 THEN 1 ELSE 0 END) AS deliver,
-            SUM(CASE WHEN reports.is_delivered = 0 THEN 1 ELSE 0 END) AS not_deliver
-        ");
+        ->selectRaw("
+        SUM(CASE WHEN reports.is_called = 1 THEN 1 ELSE 0 END) AS called,
+        SUM(CASE WHEN reports.is_called = 0 THEN 1 ELSE 0 END) AS not_called,
+        SUM(CASE WHEN reports.is_delivered = 1 THEN 1 ELSE 0 END) AS deliver,
+        SUM(CASE WHEN reports.is_delivered = 0 THEN 1 ELSE 0 END) AS not_deliver
+        ")
+        ->where('reports.branch_id', session('selected_branch_id'));
 
         if (isset($month) && isset($year)) {
             $patient_called = $patient_called->whereMonth('reports.created_at', $month)
@@ -281,9 +276,7 @@ class ReportController extends Controller
             $patient_called = $patient_called->whereYear('reports.created_at', $year);
         }
 
-
         $patient_called = $patient_called->get();
-
         $list_years = TestOrder::select(DB::raw('YEAR(created_at) as year'))
             ->groupBy('year')
             ->orderBy('year', 'asc')
@@ -371,10 +364,8 @@ class ReportController extends Controller
         }
 
         try {
-
             $report->tags()->sync([]);
             $report->tags()->attach($request->tags);
-
             return redirect()->route('report.show', $report->id)->with('success', " Utilisateur mis à jour ! ");
         } catch (\Throwable $th) {
             return redirect()->route('report.show', $report->id)->with('error', "Échec de l'enregistrement ! " . $th->getMessage());
@@ -403,7 +394,6 @@ class ReportController extends Controller
 
         $report = $this->report->findorfail($id);
         $test_order = $this->testOrder->findorfail($report->test_order_id);
-
         $templates = $this->settingReportTemplate->all();
         $titles = $this->titleReport->all();
         $logs = $this->logReport
@@ -468,6 +458,7 @@ class ReportController extends Controller
         if ($report->signatory3 != 0) {
             $signatory3 = $this->user->findorfail($report->signatory3);
         }
+
         $year_month = '';
         if ($report->order->patient->year_or_month != 1) {
             $year_month = 'mois';
@@ -543,7 +534,6 @@ class ReportController extends Controller
     public function getTemplate(Request $request)
     {
         $template = $this->settingReportTemplate->findorfail($request->id);
-
         return response()->json($template, 200);
     }
 
@@ -559,14 +549,11 @@ class ReportController extends Controller
             return response()->json(['error' => "Ce compte rendu n'existe pas. Veuillez ressayer!"]);
         }
 
-
         $report
             ->fill([
                 'is_deliver' => 1,
             ])
             ->save();
-        // $this->pdf($reportId)';
-
         return response()->json(['report' => $report]);
     }
     // Lancer un appel ou envoyer un sms
@@ -717,15 +704,13 @@ class ReportController extends Controller
         $data = $this->report->with(['order.assignmentTestOrder'])->latest();
         return DataTables::of($data)
             ->addIndexColumn()
-
             ->addColumn('date', function ($data) {
                 if ($data->order) {
-                    return dateFormat($data->order->created_at);
+                    return dateFormat($data?->order?->created_at);
                 } else {
                     return '';
                 }
             })
-
             ->editColumn('code', function ($data) {
                 if ($data->order) {
                     return  view("reports.suivi.code", ['data' => $data]);
@@ -733,23 +718,18 @@ class ReportController extends Controller
                     return '';
                 }
             })
-
             ->addColumn('macro', function ($data) {
                 return  view("reports.suivi.btnmacro", ['data' => $data]);
             })
-
             ->addColumn('report', function ($data) {
                 return  view("reports.suivi.btnreport", ['data' => $data]);
             })
-
             ->addColumn('call', function ($data) {
                 return  view("reports.suivi.btninforme", ['data' => $data]);
             })
-
             ->addColumn('delivery', function ($data) {
                 return  view("reports.suivi.btndelivery", ['data' => $data]);
             })
-
             ->filter(function ($query) use ($request) {
                 if (!empty($request->get('type_examen'))) {
                     $query->whereHas('order', function ($query) use ($request) {

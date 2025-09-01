@@ -1,6 +1,5 @@
 @php
-    $response = App\Models\test_pathology_macro::where('id_test_pathology_order',$data->test_order_id)->exists();
-    // dd($response);
+    $response = App\Models\test_pathology_macro::where('id_test_pathology_order',$data?->test_order_id)->exists();
 @endphp
 
 @if($response)

@@ -268,8 +268,6 @@
                     <div class="col-md-6">
                         <label for="exampleFormControlInput1" class="form-label">Médecin traitant<span
                                 style="color:red;">*</span></label>
-
-
                         @if ($report_search)
                         @if ($report_search->status == 0)
                         <select class="form-select select2" data-toggle="select2" name="doctor_id" id="doctor_id"
@@ -285,9 +283,6 @@
                         @else
                         @foreach ($doctors as $doctor)
                         @if ($test_order->doctor_id == $doctor->id)
-                        {{-- <input type="text" name="doctor_id" id="doctor_id" class="form-control"
-                                                value="{{ $doctor->name }}"> --}}
-
                         <select class="form-select select2" data-toggle="select2" name="doctor_id" id="doctor_id"
                             required>
                             <option>Sélectionner le médecin traitant</option>
@@ -548,9 +543,7 @@
         <h5 class="card-title mb-0"></h5>
 
         <div class="card-body">
-
             <!-- Ajouter un examen | si le statut de la demande est 1 alors on peut plus ajouter de nouveau examen dans la demande-->
-
             @if ($test_order->invoice)
             @if ($test_order->invoice->paid != 1)
             <form method="POST" id="addDetailForm" autocomplete="off">
@@ -559,7 +552,6 @@
                     <div class="col-md-4 col-12">
                         <input type="hidden" name="test_order_id" id="test_order_id" value="{{ $test_order->id }}"
                             class="form-control">
-
                         <div class="mb-3">
                             <label for="example-select" class="form-label">Examen</label>
                             <select class="form-select select2" data-toggle="select2" id="test_id" name="test_id"
@@ -570,23 +562,24 @@
                                     {{ $test->name }}
                                 </option>
                                 @endforeach
-
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-2 col-12">
 
+                    <div class="col-md-2 col-12">
                         <div class="mb-3">
                             <label for="simpleinput" class="form-label">Prix</label>
                             <input type="text" name="price" id="price" class="form-control" required readonly>
                         </div>
                     </div>
+
                     <div class="col-md-2 col-12">
                         <div class="mb-3">
                             <label for="simpleinput" class="form-label">Remise</label>
                             <input type="text" name="remise" id="remise" class="form-control" required readonly>
                         </div>
                     </div>
+
                     <div class="col-md-2 col-12">
                         <div class="mb-3">
                             <label for="example-select" class="form-label">Total</label>
@@ -610,7 +603,6 @@
                     <div class="col-md-4 col-12">
                         <input type="hidden" name="test_order_id" id="test_order_id" value="{{ $test_order->id }}"
                             class="form-control">
-
                         <div class="mb-3">
                             <label for="example-select" class="form-label">Examen</label>
                             <select class="form-select select2" data-toggle="select2" id="test_id" name="test_id"
@@ -655,7 +647,6 @@
             @endif
 
             <div id="cardCollpase1" class="show collapse pt-3">
-
                 <table id="datatable1" class="detail-list-table table-striped dt-responsive nowrap w-100 table">
                     <thead class="table-light">
                         <tr>
@@ -667,7 +658,6 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-
                     <tfoot>
                         <tr>
                             <td colspan="1" class="text-right">
@@ -676,7 +666,6 @@
                             <td></td>
                             <td></td>
                             <td></td>
-
                             <td id="val">
                                 <input type="number" id="estimated_ammount" class="estimated_ammount" value="0"
                                     readonly>
@@ -700,13 +689,10 @@
                     <a type="submit" href="{{ route('test_order.updatestatus', $test_order->id) }}" id="finalisationBtn"
                         class="btn btn-info disabled w-full">ENREGISTRER</a>
                     @endif
-
                 </div>
             </div>
-
         </div>
     </div>
-
 
     <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel"
         aria-hidden="true">
@@ -817,8 +803,8 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
-
 </div>
+
 @php
 $code_testOrder = $test_order->code;
 $code_testInvoice = $test_order->invoice;

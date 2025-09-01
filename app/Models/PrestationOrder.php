@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Patient;
 use App\Models\Prestation;
+use App\Traits\BranchScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class PrestationOrder extends Model
 {
-    use HasFactory;
-    
+    use HasFactory, BranchScopeTrait;
+
     protected $guarded = [];
 
     public function patient()

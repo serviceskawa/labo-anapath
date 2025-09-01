@@ -16,9 +16,12 @@
                         <label for="example-select" class="form-label">Catégorie parente</label>
                         <select class="form-select" id="category_test_id2" name="category_test_id" required>
                             <option value="">Sélectionner une catégorie</option>
-                            @foreach ($categories as $categorie)
+
+                            @forelse ($categories as $categorie)
                             <option value="{{ $categorie->id }}">{{ $categorie->name }}</option>
-                            @endforeach
+                            @empty
+
+                            @endforelse
                         </select>
                     </div>
 

@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Models\Contrat;
+use App\Traits\BranchScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CategoryTest extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScopeTrait;
 
     protected $guarded = [];
 

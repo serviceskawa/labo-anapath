@@ -244,8 +244,8 @@ class InvoiceController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $cashbox = Cashbox::find(2);
-        // dd($cashbox);
+        // $cashbox = Cashbox::find(2);
+        $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
         $invoice = $this->invoices->findorfail($id);
         $refund = null;
         if ($invoice->status_invoice == 1) {

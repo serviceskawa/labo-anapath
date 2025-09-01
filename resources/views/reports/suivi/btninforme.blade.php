@@ -1,15 +1,15 @@
 @if ($data->is_called == 0 || $data->is_called == null)
 @if ($data->status == 1)
 <button class="btn btn-danger" id="informe-{{ $data->id }}" data-id="{{ $data->id }}"
-    data-code={{ $data->order->code }}>Non</button>
-<br> <small style="text-transform: uppercase;"><b>{{ $data?->order?->patient->telephone1 }}</b></small>
+    data-code={{ $data?->order?->code }}>Non</button>
+<br> <small style="text-transform: uppercase;"><b>{{ $data?->order?->patient?->telephone1 }}</b></small>
 @else
 <button class="btn btn-danger" disabled>Non</button>
-<br> <small style="text-transform: uppercase;"><b>{{ $data?->order?->patient->telephone1 }}</b></small>
+<br> <small style="text-transform: uppercase;"><b>{{ $data?->order?->patient?->telephone1 }}</b></small>
 @endif
 @elseif($data->is_called == 1)
 <button class="btn btn-success">Oui</button>
-<br> <small style="text-transform: uppercase;"><b>{{ $data?->order?->patient->telephone1 }}</b></small>
+<br> <small style="text-transform: uppercase;"><b>{{ $data?->order?->patient?->telephone1 }}</b></small>
 @endif
 
 

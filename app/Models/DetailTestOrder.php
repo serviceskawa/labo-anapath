@@ -3,22 +3,20 @@
 namespace App\Models;
 
 use App\Models\TestOrder;
+use App\Traits\BranchScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class DetailTestOrder extends Model
 {
-    use HasFactory;
-
+    use HasFactory, BranchScopeTrait;
     protected $guarded = [];
-
 
     public function test_order()
     {
         $data = TestOrder::where('id', $this->test_order_id)->first();
         return $data;
     }
-
 
     public function test()
     {

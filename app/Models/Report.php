@@ -4,13 +4,14 @@ namespace App\Models;
 
 use App\Models\Patient;
 use App\Models\TestOrder;
+use App\Traits\BranchScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Report extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, BranchScopeTrait;
 
     protected $guarded = [];
 

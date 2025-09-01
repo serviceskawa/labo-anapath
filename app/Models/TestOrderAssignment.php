@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\BranchScopeTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Guid\Guid;
 
 class TestOrderAssignment extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScopeTrait;
     public $guarded = [];
 
     public function testOrderAssignmentDetails()

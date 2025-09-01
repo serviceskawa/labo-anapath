@@ -8,6 +8,4 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Operation extends Model
 {
     use HasFactory;
-
-   
 }

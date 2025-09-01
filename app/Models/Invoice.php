@@ -4,13 +4,13 @@ namespace App\Models;
 
 use App\Models\TestOrder;
 use App\Models\InvoiceDetail;
+use App\Traits\BranchScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Invoice extends Model
 {
-    use HasFactory;
-
+    use HasFactory, BranchScopeTrait;
     protected $guarded = [];
 
     /**
@@ -38,7 +38,7 @@ class Invoice extends Model
         return $this->belongsTo(Patient::class, 'patient_id');
     }
 
-   
+
     public function contrat()
     {
         return $this->belongsTo(Contrat::class, 'contrat_id');

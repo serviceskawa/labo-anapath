@@ -175,11 +175,9 @@ $(document).ready(function() {
                 // d.id_test_pathology_order = $('#id_test_pathology_order').val()
                 // d.id_employee = $('#id_employee').val()
                 // d.date = $('#date').val()
-
             }
         },
         columns: [
-
             {
                 data: 'created',
                 name: 'created'
@@ -204,6 +202,7 @@ $(document).ready(function() {
         order: [],
 
     });
+    
     var table3 = $('#datatable3').DataTable({
 
         "columnDefs": [{

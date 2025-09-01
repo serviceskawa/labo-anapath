@@ -1,7 +1,5 @@
 @if ($data->is_delivered == 0)
     @if ($data->status == 1)
-        {{-- <button class="btn btn-danger" id="delivery-{{ $data->id }}" data-id="{{ $data->id }}"
-            data-code={{ $data->order->code }}>Non</button> --}}
         <a class="btn btn-danger" href="{{ route('report.delivered.patient', $data->id) }}">Non</a>
     @else
         <button class="btn btn-danger" disabled>Non</button>

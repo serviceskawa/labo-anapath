@@ -1,33 +1,16 @@
 @extends('layouts.app2')
-
 @section('title', 'Reports')
-
-{{-- @section('css')
-<style>
-    .top {
-        margin-bottom: 10px;
-        /* Ajustez la valeur selon votre préférence */
-    }
-</style>
-@endsection --}}
-
 @section('content')
 <div class="row">
     <div class="col-12">
         <div class="page-title-box">
             <h4 class="page-title">Suivi des demandes</h4>
-
         </div>
-
-        <!----MODAL---->
-
     </div>
 </div>
 
 <div class="">
-
     @include('layouts.alerts')
-
     <div class="card mb-md-0 mb-3" id="demandes">
         <div class="card-body">
             <div class="card-widgets">
@@ -36,7 +19,6 @@
                     aria-controls="cardCollpase1"><i class="mdi mdi-minus"></i></a>
                 <a href="#" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
             </div>
-            {{-- <h5 class="card-title mb-0">Liste des demandes suivi</h5> --}}
 
             <div class="row d-flex">
                 <div class="col-lg-3 p-1 ml-3 alert alert-success rounded-pill"
@@ -51,7 +33,6 @@
             </div>
 
             <div id="cardCollpase1" class="show collapse pt-3">
-
                 <div class="row mb-3">
                     <div class="col-lg-3">
                         <div class="mb-3">
@@ -99,7 +80,6 @@
                         </div>
                     </div>
 
-
                     <div class="col-lg-3">
                         <div class="mb-3">
                             <label for="example-fileinput" class="form-label">Date début</label>
@@ -134,9 +114,7 @@
     {{-- Deuxieme DataTables Histologie et Biopsie --}}
     <div class="card mb-md-0 mt-5">
         <div class="card-body">
-
             <div class="d-flex justify-content-between mb-3">
-
                 <div class="">
                     <button type="button" class="btn btn-primary" id="deleteSelectedRows"
                         style="display: none;">Terminer la Macroscopie</button>
@@ -249,10 +227,8 @@
             </div>
         </div>
     </div>
-
 </div>
 @endsection
-
 
 @push('extra-js')
 <script>

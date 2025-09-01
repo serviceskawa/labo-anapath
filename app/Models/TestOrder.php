@@ -10,6 +10,7 @@ use App\Models\Invoice;
 use App\Models\Hospital;
 use App\Models\TypeOrder;
 use App\Models\DetailTestOrder;
+use App\Traits\BranchScopeTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class TestOrder extends Model
 {
 
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, BranchScopeTrait;
 
     protected $guarded = [];
 

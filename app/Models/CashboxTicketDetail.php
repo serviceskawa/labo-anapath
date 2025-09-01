@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class CashboxTicketDetail extends Model
 {
-    use HasFactory, BranchScopeTrait;
+    use HasFactory, BranchScopeTrait, BranchScopeTrait;
     protected $guarded = [];
 }

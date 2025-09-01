@@ -9,11 +9,12 @@ use App\Models\Prestation;
 use App\Models\TypeConsultation;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ConsultationTypeConsultationFiles;
+use App\Traits\BranchScopeTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Consultation extends Model
 {
-    use HasFactory;
+    use HasFactory, BranchScopeTrait;
 
     protected $guarded = [];
 

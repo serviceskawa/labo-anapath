@@ -812,6 +812,7 @@ class TestOrderController extends Controller
         if ($needsUpdate) {
             // Mise à jour en lot plutôt que boucle
             DB::table('test_orders')
+                ->where('branch_id', session()->get('selected_branch_id'))
                 ->whereNotNull('attribuate_doctor_id')
                 ->whereNull('assigned_to_user_id')
                 ->update([
@@ -824,7 +825,7 @@ class TestOrderController extends Controller
         $testStats = $this->getOptimizedTestStats($examens);
 
         return view('examens.index2', array_merge(
-            compact( 'contrats',  'doctors', 'types_orders'),
+            compact('contrats',  'doctors', 'types_orders'),
             [
                 'finishTest' => $testStats['finishTest'],
                 'noFinishTest' => $testStats['noFinishTest'],
@@ -885,7 +886,6 @@ class TestOrderController extends Controller
     // Utilise yanjra pour le tableau
     public function index_immuno()
     {
-
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
@@ -897,6 +897,7 @@ class TestOrderController extends Controller
                     ->orwhere('slug', 'immuno-exterme');
             })
             ->orderBy('id', 'desc')->get();
+
         $contrats = $this->contrat->all();
         $patients = $this->patient->all();
         $doctors = $this->doctor->all();
@@ -905,18 +906,35 @@ class TestOrderController extends Controller
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
-        $totalAppel =  $this->testOrder
-            ->with(['patient', 'contrat', 'type', 'details', 'report'])
-            ->with(['patient', 'contrat', 'type', 'details', 'report'])
-            ->whereHas('type', function ($query) {
-                $query->where('slug', 'immuno-interne')
-                    ->orwhere('slug', 'immuno-exterme');
+        // $totalAppel =  $this->testOrder
+        //     ->with(['patient', 'contrat', 'type', 'details', 'report'])
+        //     ->with(['patient', 'contrat', 'type', 'details', 'report'])
+        //     ->whereHas('type', function ($query) {
+        //         $query->where('slug', 'immuno-interne')
+        //             ->orwhere('slug', 'immuno-exterme');
+        //     })
+        //     ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
+        //     ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
+        //     ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.voice_id')
+        //     ->Where('ato.event', '!=', 'voice.completed')->count();
+
+        $totalAppel = DB::table('test_orders as to')
+            ->join('type_orders as t', function ($join) {
+                $join->on('to.type_order_id', '=', 't.id')
+                    ->where(function ($query) {
+                        $query->where('t.slug', 'immuno-interne')
+                            ->orWhere('t.slug', 'immuno-exterme');
+                    });
             })
-            ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
+            ->join('reports as r', 'to.id', '=', 'r.test_order_id')
             ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
             ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.voice_id')
-            ->Where('ato.event', '!=', 'voice.completed')->count();
-
+            ->join('users as u', 'to.assigned_to_user_id', '=', 'u.id')
+            ->join('branch_user as bu', 'u.id', '=', 'bu.user_id')
+            ->where('ato.event', '!=', 'voice.completed')
+            ->where('bu.branch_id', session('selected_branch_id'))
+            ->whereNull('to.deleted_at')
+            ->count();
 
         $testOrders = $this->testOrder->whereHas('type', function ($query) {
             $query->where('slug', 'immuno-interne')
@@ -1045,7 +1063,8 @@ class TestOrderController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $cashbox = Cashbox::find(2);
+        // $cashbox = Cashbox::find(2);
+        $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
         $patients = $this->patient->all();
         $doctors = $this->doctor->all();
         $test_orders = $this->testOrder->all();
@@ -1156,17 +1175,12 @@ class TestOrderController extends Controller
 
     public function details_index($id)
     {
-
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = $this->testOrder->find($id);
-
         $tests = $this->test->all();
-
         $details = $this->detailTestOrder->where('test_order_id', $test_order->id)->get();
-
-
         $types_orders = $this->typeOrder->all();
 
         // fusion update et read
@@ -1194,6 +1208,7 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('create-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+
         $data = $this->validate($request, [
             'test_order_id' => 'required',
             'test_id' => 'required',
@@ -1204,11 +1219,10 @@ class TestOrderController extends Controller
 
         $test = $this->test->find($data['test_id']);
         $test_order = $this->testOrder->findorfail($data['test_order_id']);
-
         $test_order_exit = $test_order->details()->whereTestId($data['test_id'])->exists();
 
         if ($test_order_exit) {
-            return response()->json(['success' => "Examin deja ajouté"]);
+            return response()->json(['success' => "Examen déjà ajouté"]);
         } else {
             try {
                 DB::transaction(function () use ($data, $test) {
@@ -1808,11 +1822,11 @@ class TestOrderController extends Controller
             })
 
             ->addColumn('patient', function ($data) {
-                return $data->patient->firstname . ' ' . $data->patient->lastname;
+                return $data?->patient?->firstname . ' ' . $data?->patient?->lastname;
             })
 
             ->addColumn('contrat', function ($data) {
-                return $data->contrat->name;
+                return $data?->contrat?->name;
             })
 
             ->addColumn('details', function (TestOrder $testOrder) {
@@ -1948,20 +1962,20 @@ class TestOrderController extends Controller
             ->setRowClass(function ($data) use ($request) {
                 if ($data->is_urgent == 1) {
                     if (!empty($data->report)) {
-                        if ($data->report->is_deliver == 1) {
+                        if ($data?->report?->is_deliver == 1) {
                             return 'table-success';
                         } else {
-                            if ($data->report->status == 1) {
+                            if ($data?->report?->status == 1) {
                                 return 'table-warning';
                             }
                         }
                     }
                     return 'table-danger urgent';
                 } elseif (!empty($data->report)) {
-                    if ($data->report->is_deliver == 1) {
+                    if ($data?->report?->is_deliver == 1) {
                         return 'table-success';
                     } else {
-                        if ($data->report->status == 1) {
+                        if ($data?->report?->status == 1) {
                             return 'table-warning';
                         }
                     }
@@ -2045,7 +2059,7 @@ class TestOrderController extends Controller
             })
 
             ->addColumn('patient', function ($data) {
-                return $data->patient->firstname . ' ' . $data->patient->lastname;
+                return $data?->patient?->firstname . ' ' . $data?->patient?->lastname;
             })
             ->addColumn('contrat', function ($data) {
                 return $data->contrat->name;
@@ -2055,12 +2069,12 @@ class TestOrderController extends Controller
                     return Str::limit($detail->test_name, 30, '...');
                     // return '<strong>' . $detail->order->type->title . '</strong>: ' . Str::limit($detail->test_name, 30, '...');
                 })->implode('<br>');
-                return '<strong>' . $testOrder->type_order_id != 0 ? ($testOrder->type ? $testOrder->type->title : '') : '' . '</strong>: ' . $a;
+                return '<strong>' . $testOrder->type_order_id != 0 ? ($testOrder->type ? $testOrder?->type?->title : '') : '' . '</strong>: ' . $a;
             })
             ->addColumn('rendu', function ($data) {
                 if (!empty($data->report)) {
                     // $btn = $data->getReport($data->id);
-                    switch ($data->report->status) {
+                    switch ($data?->report?->status) {
                         case 1:
                             $btn = 'Valider';
                             break;
@@ -2076,7 +2090,7 @@ class TestOrderController extends Controller
                 return $span;
             })
             ->addColumn('type', function ($data) {
-                return $data->type_order_id != 0 ? $data->type->title : '';
+                return $data->type_order_id != 0 ? $data?->type?->title : '';
             })
             ->addColumn('urgence', function ($data) {
                 return $data->is_urgent;
@@ -2168,17 +2182,15 @@ class TestOrderController extends Controller
             ->rawColumns(['action', 'appel', 'patient', 'contrat', 'details', 'rendu', 'type', 'dropdown'])
             ->make(true);
     }
+
     // Debut
     public function getTestOrdersforDatatable2(Request $request)
     {
-
         $data = $this->testOrder
             ->with(['patient', 'contrat', 'type', 'details', 'report'])
             ->whereHas('type', function ($query) {
                 $query->where('slug', '!=', 'immuno-interne')
                     ->orwhere('slug', '!=', 'immuno-exterme');
-                //   ->where('status', 1) // Statut différent de 0
-                // ->whereNull('deleted_at'); // deleted_at doit être NULL;
             })
             ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
             ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
@@ -2186,10 +2198,6 @@ class TestOrderController extends Controller
             ->Where('ato.event', '!=', 'voice.completed')
             ->orderBy('test_orders.created_at', 'desc')
             ->select('test_orders.*');
-
-
-
-        // $data = $this->testOrder->with(['patient', 'contrat', 'type', 'details', 'report'])->orderBy('created_at', 'desc');
 
         return Datatables::of($data)->addIndexColumn()
             ->editColumn('created_at', function ($data) {

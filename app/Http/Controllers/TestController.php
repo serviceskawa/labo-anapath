@@ -45,7 +45,7 @@ class TestController extends Controller
             })
 
             ->addColumn('category_name', function ($data) {
-                return $data->category->name;
+                return $data?->category?->name;
             })
 
             ->addColumn('price', function ($data) {
@@ -64,7 +64,6 @@ class TestController extends Controller
             })
 
             ->filter(function ($query) use ($request) {
-
                 if (!empty($request->get('statusquery'))) {
                     if ($request->get('statusquery') == "ACTIF") {
                         $query->where('status', "=", "ACTIF");
@@ -72,7 +71,6 @@ class TestController extends Controller
                         $query->where('status', "=", "INACTIF");
                     }
                 }
-
 
                 if (!empty($request->get('contenu'))) {
                     $query
@@ -91,13 +89,10 @@ class TestController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        // $tests = $this->test->latest()->get();
-
         $categories = $this->categoryTest->latest()->get();
-
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-
+        
         return view('tests.index', compact(['categories']));
     }
 
@@ -137,6 +132,7 @@ class TestController extends Controller
         if (!getOnlineUser()->can('edit-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+
         $data = $this->test->find($id);
         return response()->json($data);
     }
@@ -185,19 +181,13 @@ class TestController extends Controller
         if (!getOnlineUser()->can('delete-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        // $test = $this->test->find($id)->delete();
 
         try {
             $test = $this->test->find($id)->delete();
-
             return back()->with('success', " Suppression effectuée avec succès  ! ");
         } catch (\Throwable $ex) {
             return back()->with('error', "Opération échouée ! ");
         }
-
-
-
-
 
         return back()->with('success', " Elément supprimé avec succès  ! ");
     }
@@ -231,11 +221,9 @@ class TestController extends Controller
         return response()->json(["data" => $data, "detail" => $detail]);
     }
 
-
     public function getExamPrice($id)
     {
         $exam = Test::find($id);
-
         if (!$exam) {
             return response()->json(['error' => 'Examen non trouvé'], 404);
         }

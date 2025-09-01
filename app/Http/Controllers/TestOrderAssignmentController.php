@@ -350,20 +350,20 @@ class TestOrderAssignmentController extends Controller
             ->setRowClass(function ($data) use ($request) {
                 if ($data->is_urgent == 1) {
                     if (!empty($data->report)) {
-                        if ($data->report->is_deliver == 1) {
+                        if ($data?->report?->is_deliver == 1) {
                             return 'table-success';
                         } else {
-                            if ($data->report->status == 1) {
+                            if ($data?->report?->status == 1) {
                                 return 'table-warning';
                             }
                         }
                     }
                     return 'table-danger urgent';
                 } elseif (!empty($data->report)) {
-                    if ($data->report->is_deliver == 1) {
+                    if ($data?->report?->is_deliver == 1) {
                         return 'table-success';
                     } else {
-                        if ($data->report->status == 1) {
+                        if ($data?->report?->status == 1) {
                             return 'table-warning';
                         }
                     }
@@ -371,7 +371,6 @@ class TestOrderAssignmentController extends Controller
                     return '';
                 }
             })
-
             ->addColumn('action', function ($data) {
                 $detail =
                     '<a class="btn btn-primary" href="' . route('report.assignment.detail.index', $data->id) . '">
@@ -384,24 +383,21 @@ class TestOrderAssignmentController extends Controller
                     <i class="mdi mdi-printer"></i>
                 </a>';
                 }
-
-
                 return $detail . ' ' . $deleteBtn;
             })
             ->addColumn('code', function ($data) {
                 return $data->code;
             })
             ->addColumn('doctor', function ($data) {
-                return $data->user->fullname();
+                return $data?->user?->fullname();
             })
             ->addColumn('date_assignment', function ($data) {
                 return dateFormat($data->date);
             })
             ->addColumn('nbr_assignment', function ($data) {
-                return $data->details()->count();
+                return $data?->details()->count();
             })
             ->filter(function ($query) use ($request, $data) {
-
                 if (!empty($request->get('id_test_pathology_order'))) {
                     // $query->whereHas('id_test_pathology_order', $request->get('id_test_pathology_order'));
                     $query->whereHas('details', function ($query) use ($request) {
@@ -411,7 +407,6 @@ class TestOrderAssignmentController extends Controller
                 if (!empty($request->get('id_doctor'))) {
                     $query->where('user_id', $request->get('id_doctor'));
                 }
-
                 if (!empty($request->get('contenu'))) {
                     $query->whereHas('details', function ($query) use ($request) {
                         $query->where('note', 'like', '%' . $request->get('contenu') . '%');
@@ -425,8 +420,6 @@ class TestOrderAssignmentController extends Controller
     // Debut
     public function getTestOrdersforDatatable_immuno(Request $request)
     {
-
-
         $data = $this->assignment->whereHas('details', function ($query) {
             $query->whereHas('order', function ($query) {
                 $query->whereHas('type', function ($query) {

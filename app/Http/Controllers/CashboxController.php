@@ -45,21 +45,21 @@ class CashboxController extends Controller
         // $cashboxDailys = CashboxDaily::latest()->get();
         // $cashboxs = Cashbox::find(2);
         // $cashboxtest = Cashbox::find(2);
+
         $cashadds = $this->cashadd->where('type', 'vente')->latest()->get();
         $totalToday = $this->cash->where('type', 'vente')->current_balance;
         $banks = $this->banks->all();
         $cashboxDailys = CashboxDaily::latest()->get();
-        $cashboxs = Cashbox::where('type', 'vente')->first();
-        $cashboxtest = Cashbox::where('type', 'vente')->first();
-
+        $cashboxs = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
+        $cashboxtest = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
 
         // Point en temps reel sur le cashboxadd
-        // $entree = CashboxAdd::where('cashbox_id', 2)
-        //     ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-        //     ->sum('amount');
-        $entree = CashboxAdd::where('type', 'vente')
+        $entree = CashboxAdd::where('cashbox_id', 2)
             ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
             ->sum('amount');
+        // $entree = CashboxAdd::where('type', 'vente')
+        //     ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+        //     ->sum('amount');
 
         // $sortie = CashboxAdd::where('cashbox_id', 1)
         // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])

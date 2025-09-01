@@ -128,8 +128,6 @@
                         </div>
                     </div>
 
-
-
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="exampleFormControlInput1" class="form-label">Patient<span
@@ -144,9 +142,6 @@
                                 @endforeach
                             </select>
                         </div>
-
-
-
 
                         <div class="col-md-6">
                             <label for="exampleFormControlInput3" class="form-label">Médecin traitant<span
@@ -218,17 +213,13 @@
                     </div> --}}
                     </div>
 
-
-
                     <div class="modal-footer">
                         <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
                         <button type="submit" class="btn btn-primary">Ajouter une nouvelle demande d'examen</button>
                     </div>
-
                 </form>
             </div>
         </div>
-
 
         <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel"
             aria-hidden="true">
@@ -241,7 +232,6 @@
                     <form action="{{ route('patients.store') }}" method="POST" autocomplete="off">
                         @csrf
                         <div class="modal-body">
-
                             <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
                             <div class="mb-3">
                                 <label for="simpleinput" class="form-label">Code</label>
@@ -338,7 +328,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 @endsection
 
