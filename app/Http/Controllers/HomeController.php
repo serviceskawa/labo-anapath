@@ -67,7 +67,7 @@ class HomeController extends Controller
     {
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        
+
         if (!getOnlineUser()->can('view-dashboard')) {
             return view('home');
         } else {
@@ -261,7 +261,7 @@ class HomeController extends Controller
 
             //Fin données
 
-           
+
 
             //Nombre de examen demandé & CA
                 $mois_souhaite = Carbon::now()->format('m'); // Le mois actuel.
@@ -270,13 +270,13 @@ class HomeController extends Controller
                 $nombreTests = TestOrder::whereMonth('test_orders.created_at', $mois_souhaite)
                     ->join('detail_test_orders', 'test_orders.id', '=', 'detail_test_orders.test_order_id')
                     ->count();
-            
+
                 // Calculer le chiffre d'affaires pour le mois donné
                 $c_a_tests = TestOrder::whereMonth('test_orders.created_at', $mois_souhaite)
                     ->join('detail_test_orders', 'test_orders.id', '=', 'detail_test_orders.test_order_id')
                     ->join('tests', 'detail_test_orders.test_id', '=', 'tests.id')
                     ->sum('tests.price');
-                // Compter le total de patients par examen demandés pour le mois donné 
+                // Compter le total de patients par examen demandés pour le mois donné
                 $totalPatientTest = TestOrder::whereMonth('test_orders.created_at', $mois_souhaite)
                     ->join('patients', 'test_orders.patient_id', '=', 'patients.id')
                     ->count();
@@ -291,7 +291,7 @@ class HomeController extends Controller
                     ->get();
                     // dd($totalPatientTest,$totalPatientsParTest);
 
-            //Fin 
+            //Fin
 
             // Total patient
                 $totalDemandesParHopitalCount = TestOrder::whereMonth('test_orders.created_at', $mois_souhaite)
@@ -481,6 +481,7 @@ class HomeController extends Controller
                 DB::table('chats')
                     ->select('receve_id')
                     ->where('sender_id', Auth::user()->id)
+                    // ->where('branch_id', session()->get('selected_branch_id'))
                     ->whereNotNull('receve_id')
                     ->distinct()
             );
