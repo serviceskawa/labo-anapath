@@ -18,7 +18,7 @@ class TestPathologyMacroResource extends JsonResource
         return [
             "id" => $this->id,
             "code" => $this->order->code,
-            "date" => $this->date,
+            "date" => $this->date ? $this->date : now(),
             "observation" => $this->observation,
             "mounting" => $this->mounting,
             "created_at" => $this->created_at,
