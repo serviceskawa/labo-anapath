@@ -32,6 +32,15 @@
                 <h5 class="card-title mb-0">Liste des patients</h5>
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
+                    <div class="row mb-3">
+                        <div class="col-lg-3">
+                            <div class="mb-3">
+                                <label for="example-fileinput" class="form-label">Rechercher</label>
+                                <input type="text" name="contenu" id="contenu" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
                     <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                         <thead>
                             <tr>

@@ -254,7 +254,8 @@
                                 <div class="row">
                                     <div class="col-5 form-check-inline">
                                         <label for="example-fileinput" class="form-label">Signé par</label>
-                                        <select name="doctor_signataire1" id="doctor_signataire1" class="form-control">
+                                        <select name="doctor_signataire1" id="doctor_signataire1" class="form-control"
+                                            @if ($report->status == 1 && $report->signature_date) readonly @endif>
                                             <option value="">Sélectionner un docteur</option>
                                             @foreach (getUsersByRole('docteur') as $item)
                                                 <option value="{{ $item->id }}"
@@ -263,6 +264,10 @@
                                                 </option>
                                             @endforeach
                                         </select>
+                                        @if ($report->status == 1 && $report->signature_date)
+                                            <input type="hidden" name="doctor_signataire1"
+                                                value="{{ $report->signatory1 }}">
+                                        @endif
                                     </div>
 
                                     <div class="col-5 form-check-inline">
@@ -270,7 +275,8 @@
                                             et validé par :</label>
                                         <select name="reviewed_by_user_id"
                                             {{ App\Models\SettingApp::where('key', 'report_review_title')->first()->value == '' ? 'disabled' : '' }}
-                                            id="reviewed_by_user_id" class="form-control">
+                                            id="reviewed_by_user_id" class="form-control"
+                                            @if ($report->status == 1 && $report->signature_date) readonly @endif>
                                             <option value="">Sélectionner un docteur</option>
                                             @foreach (getUsersByRole('docteur') as $item)
                                                 @if ($report->order->assigned_to_user_id != $item->id)
@@ -281,6 +287,11 @@
                                                 @endif
                                             @endforeach
                                         </select>
+
+                                        @if ($report->status == 1 && $report->signature_date)
+                                            <input type="hidden" name="reviewed_by_user_id"
+                                                value="{{ $report->reviewed_by_user_id }}">
+                                        @endif
                                     </div>
                                 </div>
 
@@ -297,23 +308,26 @@
                                     <div class="mb-3 mt-3">
                                         <label for="simpleinput" class="form-label mb-3">Etat du compte rendu<span
                                                 style="color:red;">*</span></label>
-                                        <select class="form-select" name="status">
+                                        <select class="form-select" name="status"
+                                            @if ($report->status == 1 && $report->signature_date) disabled @endif>
                                             <option value="0" {{ $report->status == 0 ? 'selected' : '' }}>En attente
                                                 de
                                                 relecture</option>
                                             <option value="1" {{ $report->status == 1 ? 'selected' : '' }}>Terminé
                                             </option>
                                         </select>
+
+                                        @if ($report->status == 1 && $report->signature_date)
+                                            <input type="hidden" name="status" value="{{ $report->status }}">
+                                        @endif
+
                                     </div>
                                 </div>
-
-                                <button type="submit" @if ($report->status === 1 && $report->signature_date) disabled @endif
-                                    class="btn btn-warning w-100 mt-3">Mettre à jour</button>
+                                <button type="submit" class="btn btn-warning w-100 mt-3">Mettre à jour</button>
                             </div>
                         </div>
                     @else
-                        <button type="submit" @if ($report->status === 1 && $report->signature_date) disabled @endif
-                            class="btn btn-warning w-100 mt-3">Mettre à jour</button>
+                        <button type="submit" class="btn btn-warning w-100 mt-3">Mettre à jour</button>
                     @endif
                 </div>
 

@@ -90,21 +90,14 @@ class PatientController extends Controller
                 //     }
                 // }
 
-                // if (!empty($request->get('contenu'))) {
-                //     $query
-                //         ->where('code', 'like', '%' . $request->get('contenu') . '%')
-                //         ->orwhereHas('order', function ($query) use ($request) {
-                //             $query->where('code', 'like', '%' . $request->get('contenu') . '%');
-                //         })
-                //         ->orwhere('description', 'like', '%' . $request->get('contenu') . '%')
-                //         ->orwhereHas('order', function ($query) use ($request) {
-                //             $query->whereHas('patient', function ($query) use ($request) {
-                //                 $query->where('firstname', 'like', '%' . $request->get('contenu') . '%')
-                //                     ->orwhere('code', 'like', '%' . $request->get('contenu') . '%')
-                //                     ->orwhere('lastname', 'like', '%' . $request->get('contenu') . '%');
-                //             });
-                //         });
-                // }
+                if (!empty($request->get('contenu'))) {
+                    $query
+                        ->where('firstname', 'like', '%' . $request->get('contenu') . '%')
+                        ->orwhere('lastname', 'like', '%' . $request->get('contenu') . '%')
+                        ->orwhere('telephone1', 'like', '%' . $request->get('contenu') . '%')
+                        ->orwhere('telephone2', 'like', '%' . $request->get('contenu') . '%')
+                    ;
+                }
 
                 // if (!empty($request->get('dateBegin'))) {
                 //     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));

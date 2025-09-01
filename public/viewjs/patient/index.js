@@ -214,7 +214,7 @@ $(document).ready(function () {
             url: ROUTEGETDATATABLE,
             data: function (d) {
                 // d.statusquery = $("#statusquery").val();
-                // d.contenu = $("#contenu").val();
+                d.contenu = $("#contenu").val();
                 // d.dateBegin = $("#dateBegin").val();
                 // d.dateEnd = $("#dateEnd").val();
             },
@@ -258,9 +258,9 @@ $(document).ready(function () {
     //     table.draw();
     // });
 
-    // $("#contenu").on("input", function () {
-    //     table.draw();
-    // });
+    $("#contenu").on("input", function () {
+        table.draw();
+    });
 
     // $("#dateEnd").on("input", function () {
     //     console.log($("#dateEnd").val());
