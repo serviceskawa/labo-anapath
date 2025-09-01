@@ -259,6 +259,7 @@ Route::middleware(['auth','branch.required'])->group(function () {
     Route::get('/macro/dataTable2-immuno', [TestPathologyMacroController::class, 'getTestOrdersforDatatable2_immuno'])->name('macro.immuno.getTestOrdersforDatatable2');
     Route::get('/macro/dataTable3-immuno', [TestPathologyMacroController::class, 'getTestOrdersforDatatable3_immuno'])->name('macro.immuno.getTestOrdersforDatatable3');
 
+    Route::get('/macro/search', [TestPathologyMacroController::class, 'searchMacro'])->name('search.macroscopie');
     Route::get('/macro/create', [TestPathologyMacroController::class, 'create'])->name('macro.create');
     Route::get('/macro/create-immuno', [TestPathologyMacroController::class, 'create_immuno'])->name('macro.immuno.create');
     Route::get('/macro/countData', [TestPathologyMacroController::class, 'countData'])->name('macro.countData');

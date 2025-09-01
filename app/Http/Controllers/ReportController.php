@@ -121,18 +121,25 @@ class ReportController extends Controller
                     ->whereMonth('signature_date', intval($month))
                     ->whereYear('signature_date', intval($year));
             })
+            ->whereHas('contrat', function($query){
+                $query->where('name','ORDINAIRE')
+                ->where('type','ORDINAIRE')
+                ->where('status','ACTIF');
+            })
             ->sum('total');
 
-        // $totalSum = Invoice::whereIn('test_order_id', $testOrderIds)
-        // ->whereHas('report', function ($query) use ($month, $year) {
-        //     $query->where('paid', 1)
-        //         ->whereMonth('signature_date', intval($month))
-        //         ->whereYear('signature_date', intval($year));
-        // })
-        // ->sum('total')
-        // ->get()
-        // ;
-        // dd($totalSum, $testOrderIds);
+         $totalSum1 = TestOrder::whereIn('id', $testOrderIds)
+            ->whereHas('report', function ($query) use ($month, $year) {
+                $query->where('status', 1)
+                    ->whereMonth('signature_date', intval($month))
+                    ->whereYear('signature_date', intval($year));
+            })
+            ->whereHas('contrat', function($query){
+                $query->where('name','ORDINAIRE')
+                ->where('type','ORDINAIRE')
+                ->where('status','ACTIF');
+            })
+            ->get();
 
         $report_nbres = $report_req->count();
         // Initialiser les compteurs
@@ -163,7 +170,7 @@ class ReportController extends Controller
         $percentageIn_Deadline = $in_deadline == 0 ? 0 : number_format(($in_deadline / $total) * 100, 1);
         $percentageOver_Deadline = $over_deadline == 0 ? 0 : number_format(($over_deadline / $total) * 100, 1);
 
-        $commission = $doctor ? User::findOrFail($doctor)->value('commission') : 0;
+        $commission = User::find($doctor)?->commission ?? 0;
         return view('reports.index', compact('totalSum', 'commission', 'doctor', 'percentageOver_Deadline', 'percentageIn_Deadline', 'report_nbres', 'list_years', 'year', 'month', 'tags', 'reports'));
     }
 
