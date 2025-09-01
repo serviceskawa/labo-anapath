@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\Role;
 use App\Models\Setting;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Input\Input;
 
 class UserController extends Controller
@@ -52,11 +55,14 @@ class UserController extends Controller
         if (!getOnlineUser()->can('create-users')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+
         $users = $this->user->latest()->get();
         $roles = $this->role->all();
+        $branches = Branch::latest()->get();
+
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        return view('users.create', compact('users', 'roles'));
+        return view('users.create', compact('users', 'roles', 'branches'));
     }
 
     /**
@@ -71,12 +77,6 @@ class UserController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        // if ($request->file('signature') ) {
-        //     $signature = time() . '_'. $request->firstname .'_signature.' . $request->file('signature')->extension();
-
-        //     $path_signature = $request->file('signature')->storeAs('settings/app', $signature, 'public');
-        // }
-
         if ($request->hasFile('signature')) {
             $signature = time() . '_' . $request->firstname . '_signature.' . $request->file('signature')->extension();
 
@@ -85,21 +85,21 @@ class UserController extends Controller
 
             // Déplacer le fichier vers le dossier public
             $request->file('signature')->move($destinationPath, $signature);
-
-            // Optionnel : chemin relatif pour enregistrement en BDD
-            // $path_signature = 'adminassets/images/' . $signature;
         }
 
         try {
             $user = $this->user->firstOrCreate(["email" => $request->email], [
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
+                "commission" => $request->commission,
+                "whatsapp" => $request->whatsapp,
+                "telephone" => $request->telephone,
                 "password" => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
                 "signature" => $request->file('signature') ? $signature : '',
+                // "signature" => $request->file('signature') ? $signature : '',
             ]);
 
             $user->roles()->attach($request->roles);
-
             $permsTab = [];
             foreach ($request->roles as $key => $role_id) {
                 $role = $this->role->findorfail($role_id);
@@ -107,15 +107,23 @@ class UserController extends Controller
                     $permsTab[] = $perms->id;
                 }
             }
-
             $user->permissions()->attach($permsTab);
+
+            // Enregistrement des branches
+            foreach ($request->branches as $branchId) {
+                DB::table('branch_user')->insert([
+                    'user_id'    => $user->id,             // L'ID de l'utilisateur
+                    'branch_id'  => intval($branchId),     // L'ID de la branche à associer
+                    'is_default' => true,                         // Marque comme branche par défaut
+                    'created_at' => Carbon::now(),                // Timestamp de création
+                    'updated_at' => Carbon::now(),                // Timestamp de mise à jour
+                ]);
+            }
 
             return redirect()->route('user.index')->with('success', " Utilisateur crée ! ");
         } catch (\Throwable $th) {
             return redirect()->route('user.index')->with('error', "Échec de l'enregistrement ! " . $th->getMessage());
-
         }
-
         return redirect()->back()->with('success', "   Examen finalisé ! ");
     }
 
@@ -133,10 +141,11 @@ class UserController extends Controller
 
         $user = $this->user->findorfail($id);
         $roles = $this->role->all();
+        $branches = Branch::latest()->get();
 
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        return view('users.edit', compact('user', 'roles'));
+        return view('users.edit', compact('user', 'roles', 'branches'));
     }
 
     /**
@@ -179,6 +188,9 @@ class UserController extends Controller
                 "email" => $request->email,
                 "firstname" => $request->firstname,
                 "lastname" => $request->lastname,
+                "commission" => $request->commission,
+                "whatsapp" => $request->whatsapp,
+                "telephone" => $request->telephone,
                 "signature" => $namefichier,
             ]);
 
@@ -192,9 +204,23 @@ class UserController extends Controller
                     $permsTab[] = $perms->id;
                 }
             }
-
             $user->permissions()->sync([]);
             $user->permissions()->attach($permsTab);
+
+            // Suppression des branches associées à l'utilisateur
+            if ($request->branches) {
+                DB::table('branch_user')->where('user_id', $user->id)->delete();
+                // Enregistrement des branches
+                foreach ($request->branches as $branchId) {
+                    DB::table('branch_user')->insert([
+                        'user_id'    => $user->id,             // L'ID de l'utilisateur
+                        'branch_id'  => intval($branchId),     // L'ID de la branche à associer
+                        'is_default' => true,                         // Marque comme branche par défaut
+                        'created_at' => Carbon::now(),                // Timestamp de création
+                        'updated_at' => Carbon::now(),                // Timestamp de mise à jour
+                    ]);
+                }
+            }
 
             return redirect()->route('user.index')->with('success', " Utilisateur mis à jour ! ");
         } catch (\Throwable $th) {

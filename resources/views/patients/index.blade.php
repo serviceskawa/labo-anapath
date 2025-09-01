@@ -13,23 +13,14 @@
                 <h4 class="page-title">Patients</h4>
             </div>
 
-            <!----MODAL---->
-
             @include('patients.create')
 
             @include('patients.edit')
-
         </div>
     </div>
 
-
     <div class="">
-
-
         @include('layouts.alerts')
-
-
-
         <div class="card mb-md-0 mb-3">
             <div class="card-body">
                 <div class="card-widgets">
@@ -41,7 +32,14 @@
                 <h5 class="card-title mb-0">Liste des patients</h5>
 
                 <div id="cardCollpase1" class="collapse pt-3 show">
-
+                    <div class="row mb-3">
+                        <div class="col-lg-3">
+                            <div class="mb-3">
+                                <label for="example-fileinput" class="form-label">Rechercher</label>
+                                <input type="text" name="contenu" id="contenu" class="form-control">
+                            </div>
+                        </div>
+                    </div>
 
                     <table id="datatable1" class="table table-striped dt-responsive nowrap w-100">
                         <thead>
@@ -56,50 +54,18 @@
 
                             </tr>
                         </thead>
-
-
-                        <tbody>
-
-                            @foreach ($patients as $item)
-                                <tr>
-                                    <td>{{ $item->code }}</td>
-                                    <td>{{ $item->firstname }} {{ $item->lastname }}</td>
-
-                                    <td>{{ $item->telephone1 . ' / ' . $item->telephone2 }}</td>
-                                    <td>{{ getTotalByPatient($item->id) }}</td>
-                                    <td>{{ getPaidByPatient($item->id) }}</td>
-                                    <td>{{ getNoPaidByPatient($item->id) }}</td>
-                                    <td>
-                                        <button type="button" onclick="edit({{ $item->id }})"
-                                            class="btn btn-primary"><i class="mdi mdi-lead-pencil"></i> </button>
-                                        <button type="button" onclick="deleteModal({{ $item->id }})"
-                                            class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i> </button>
-                                        <a type="button" href="{{ route('patients.profil', $item->id) }}"
-                                            class="btn btn-secondary"><i class="mdi mdi-eye"></i> </a>
-                                    </td>
-
-                                </tr>
-                            @endforeach
-
-
-
-
-                        </tbody>
+                        
                     </table>
-
                 </div>
             </div>
-        </div> <!-- end card-->
-
-
+        </div>
     </div>
 @endsection
 
-
 @push('extra-js')
     <script>
-        var baseUrl = "{{url('/')}}";
+        var baseUrl = "{{ url('/') }}";
+        var ROUTEGETDATATABLE = "{{ route('patient.getPatientsforDatatable') }}"
     </script>
-
-    <script src="{{asset('viewjs/patient/index.js')}}"></script>
+    <script src="{{ asset('viewjs/patient/index.js') }}"></script>
 @endpush

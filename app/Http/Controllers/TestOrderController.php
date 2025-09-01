@@ -749,48 +749,139 @@ class TestOrderController extends Controller
     }
 
     // Utilise yanjra pour le tableau
+    // public function index2()
+    // {
+    //     if (!getOnlineUser()->can('view-test-orders')) {
+    //         return back()->with('error', "Vous n'êtes pas autorisé");
+    //     }
+
+    //     $examens = $this->testOrder->with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
+    //     $contrats = $this->contrat->all();
+    //     // $patients = $this->patient->all();
+    //     // $hopitals = $this->hospital->all();
+    //     $doctors = $this->doctor->all();
+    //     $types_orders = $this->typeOrder->all();
+    //     $setting = $this->setting->find(1);
+    //     config(['app.name' => $setting->titre]);
+
+    //     $totalAppel =  $this->testOrder
+    //         ->with(['patient', 'contrat', 'type', 'details', 'report'])
+    //         ->with(['patient', 'contrat', 'type', 'details', 'report'])
+    //         ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
+    //         ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
+    //         ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.voice_id')
+    //         ->Where('ato.event', '!=', 'voice.completed')->count();
+    //     $testOrders = $this->testOrder->all();
+
+    //     foreach ($testOrders as $key => $testOrder) {
+    //         if (!empty($testOrder->attribuate_doctor_id) && empty($testOrder->assigned_to_user_id)) {
+    //             $testOrder->assigned_to_user_id = $testOrder->attribuate_doctor_id;
+    //             $testOrder->save();
+    //         }
+    //     }
+    //     $testStats = $this->getTestStats($testOrders);
+
+    //     return view('examens.index2', array_merge(compact('examens', 'contrats',  'doctors', 'types_orders', 'testStats', 'totalAppel'), [
+    //         'finishTest' => $testStats['finishTest'],
+    //         'noFinishTest' => $testStats['noFinishTest'],
+    //         'is_urgent' => $testStats['is_urgent'],
+    //     ]));
+    // }
+
     public function index2()
     {
-
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $examens = $this->testOrder->with(['patient', 'contrat', 'type'])->orderBy('id', 'desc')->get();
+        $examens = $this->testOrder->with(['patient', 'contrat', 'type', 'report'])->orderBy('id', 'desc')->get();
+        // $patients = $this->patient->all();
+        // $hopitals = $this->hospital->all();
         $contrats = $this->contrat->all();
-        $patients = $this->patient->all();
         $doctors = $this->doctor->all();
-        $hopitals = $this->hospital->all();
         $types_orders = $this->typeOrder->all();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
-        $totalAppel =  $this->testOrder
-            ->with(['patient', 'contrat', 'type', 'details', 'report'])
-            ->with(['patient', 'contrat', 'type', 'details', 'report'])
-            ->join('reports as r', 'test_orders.id', '=', 'r.test_order_id')
-            ->join('appel_by_reports as abr', 'r.id', '=', 'abr.report_id')
-            ->join('appel_test_oders as ato', 'abr.appel_id', '=', 'ato.voice_id')
-            ->Where('ato.event', '!=', 'voice.completed')->count();
+        // 4. OPTIMISATION: Mise à jour en lot + requête conditionnelle
+        $needsUpdate = $this->testOrder
+            ->whereNotNull('attribuate_doctor_id')
+            ->whereNull('assigned_to_user_id')
+            ->exists();
+
+        if ($needsUpdate) {
+            // Mise à jour en lot plutôt que boucle
+            DB::table('test_orders')
+                ->whereNotNull('attribuate_doctor_id')
+                ->whereNull('assigned_to_user_id')
+                ->update([
+                    'assigned_to_user_id' => DB::raw('attribuate_doctor_id'),
+                    'updated_at' => now()
+                ]);
+        }
+
+        // 5. OPTIMISATION: Calculer les stats avec des requêtes spécialisées
+        $testStats = $this->getOptimizedTestStats($examens);
+
+        return view('examens.index2', array_merge(
+            compact( 'contrats',  'doctors', 'types_orders'),
+            [
+                'finishTest' => $testStats['finishTest'],
+                'noFinishTest' => $testStats['noFinishTest'],
+                'is_urgent' => $testStats['is_urgent'],
+            ]
+        ));
+    }
 
 
-        $testOrders = $this->testOrder->all();
+    /**
+     * Version optimisée du calcul des statistiques
+     */
+    private function getOptimizedTestStats($testOrders)
+    {
+        // Utilise les relations déjà chargées au lieu de faire des requêtes individuelles
+        $stats = [
+            'finishTest' => 0,
+            'noFinishTest' => 0,
+            'is_urgent' => 0
+        ];
 
-        foreach ($testOrders as $key => $testOrder) {
-            if (!empty($testOrder->attribuate_doctor_id) && empty($testOrder->assigned_to_user_id)) {
-                $testOrder->assigned_to_user_id = $testOrder->attribuate_doctor_id;
-                $testOrder->save();
+        foreach ($testOrders as $testOrder) {
+            // Le report est déjà chargé via eager loading
+            if ($testOrder->report) {
+                if ($testOrder->report->is_deliver == 0) {
+                    $stats['noFinishTest']++;
+                } else {
+                    $stats['finishTest']++;
+                }
+            }
+
+            if ($testOrder->is_urgent == 1) {
+                $stats['is_urgent']++;
             }
         }
 
-        $testStats = $this->getTestStats($testOrders);
-
-        return view('examens.index2', array_merge(compact('examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders', 'testStats', 'totalAppel'), [
-            'finishTest' => $testStats['finishTest'],
-            'noFinishTest' => $testStats['noFinishTest'],
-            'is_urgent' => $testStats['is_urgent'],
-        ]));
+        return $stats;
     }
+
+    public function searchContrats(Request $request)
+    {
+        $search = $request->get('search', '');
+        $limit = $request->get('limit', 10);
+
+        $contrats = Contrat::select('id', 'name')
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'LIKE', "%{$search}%");
+            })
+            ->orderBy('name')
+            ->paginate($limit);
+
+        return response()->json([
+            'data' => $contrats->items(),
+            'has_more' => $contrats->hasMorePages()
+        ]);
+    }
+
     // Utilise yanjra pour le tableau
     public function index_immuno()
     {
@@ -869,6 +960,7 @@ class TestOrderController extends Controller
 
         return compact('finishTest', 'noFinishTest', 'is_urgent');
     }
+
     private function getTestStats_immuno($testOrders)
     {
         $noFinishTest = 0;
@@ -1662,7 +1754,6 @@ class TestOrderController extends Controller
                         $btnReport = "";
                         $btnPrintReport = "";
                     }
-
                     $btnDelete = "";
                     $btnPrintReport = "";
                 }
@@ -1671,7 +1762,6 @@ class TestOrderController extends Controller
                     if (!empty($data->invoice->id)) {
                         $btnInvoice = ' <a type="button" href="' . route('invoice.show', $data->invoice->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
                     } else {
-
                         $btnInvoice = ' <a type="button" href="' . route('invoice.storeFromOrder', $data->id) . '" class="btn btn-success" title="Facture"><i class="mdi mdi-printer"></i> </a>';
                     }
                 } else {
@@ -1680,7 +1770,6 @@ class TestOrderController extends Controller
 
                 if (!empty($data->report)) {
                     if ($data->report->status == 1) {
-
                         $icon = $data->option ? '<i class="uil-message"></i>' : '<i class="uil-calling"></i>';
 
                         if ($data->report->is_deliver == 0) {
@@ -1690,9 +1779,6 @@ class TestOrderController extends Controller
                             } elseif (!empty($data->invoice->test_order_id) && $data->invoice->paid == 0) {
                                 $btnPrintReport = ' <a  target="_blank" rel="noopener noreferrer" class="btn btn-secondary" href="' . route('report.pdf', $data->report->id) . '" title="Imprimer compte rendu"><i class="mdi mdi-printer"></i> </a>';
                             }
-                            // btncompterendu
-                            // $btnPrintReport = view('examens.btncompterendu',['data' => $data, 'rep' => $data->report]);
-
                         } else {
                             $btnreport = "";
                             $btnPrintReport = "";
@@ -1711,10 +1797,6 @@ class TestOrderController extends Controller
 
                 return $btnVoir .  $btnReport  . $btnreport . $btnDelete . $btncalling . $btnPrintReport;
             })
-
-
-
-
 
             ->editColumn('created_at', function ($data) {
                 return $data->created_at;
@@ -1772,7 +1854,6 @@ class TestOrderController extends Controller
                 config(['app.name' => $setting->titre]);
                 return view('examens.datatables.attribuate', compact('order'));
             })
-
 
             ->filter(function ($query) use ($request, $data) {
 

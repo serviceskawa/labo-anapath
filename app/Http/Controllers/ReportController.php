@@ -10,6 +10,7 @@ use App\Models\Report;
 
 //use App\Models\Contrat;
 use App\Models\Doctor;
+use App\Models\Invoice;
 use App\Models\LogReport;
 use App\Models\Setting;
 use App\Models\SettingApp;
@@ -81,19 +82,17 @@ class ReportController extends Controller
         if (!getOnlineUser()->can('view-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        // dd($request);
+
         $reports = $this->report->orderBy('created_at', 'DESC')->get();
-        $doctors = $this->doctor->all();
+        // $doctors = $this->doctor->all();
         $tags = $this->tag->all();
-
         $user = Auth::user();
-
 
         // Code debut pour le filtre
         $month = $request->month; // Récupérez la valeur du mois depuis le formulaire
         $year = $request->year;   // Récupérez la valeur de l'année depuis le formulaire
         $doctor = intval($request->doctor);   // Récupérez la valeur de l'année depuis le formulaire
-        // dd($doctor);
+
         $list_years = Report::select(DB::raw('YEAR(created_at) as year'))
             ->groupBy('year')
             ->orderBy('year', 'desc')
@@ -114,13 +113,38 @@ class ReportController extends Controller
             ->whereYear('signature_date', intval($year))
             ->get();
 
+        //Somme du total du chiffre d'affaire generer par le medecin
+        $totalSum = 0;
+        $totalSum = TestOrder::whereIn('id', $testOrderIds)
+            ->whereHas('report', function ($query) use ($month, $year) {
+                $query->where('status', 1)
+                    ->whereMonth('signature_date', intval($month))
+                    ->whereYear('signature_date', intval($year));
+            })
+            ->whereHas('contrat', function($query){
+                $query->where('name','ORDINAIRE')
+                ->where('type','ORDINAIRE')
+                ->where('status','ACTIF');
+            })
+            ->sum('total');
+
+         $totalSum1 = TestOrder::whereIn('id', $testOrderIds)
+            ->whereHas('report', function ($query) use ($month, $year) {
+                $query->where('status', 1)
+                    ->whereMonth('signature_date', intval($month))
+                    ->whereYear('signature_date', intval($year));
+            })
+            ->whereHas('contrat', function($query){
+                $query->where('name','ORDINAIRE')
+                ->where('type','ORDINAIRE')
+                ->where('status','ACTIF');
+            })
+            ->get();
+
         $report_nbres = $report_req->count();
-
-
         // Initialiser les compteurs
         $withinDeadlineCount = 0;
         $beyondDeadlineCount = 0;
-
 
         // Effectuer la requête avec des jointures et des filtres
         $results = DB::table('reports')
@@ -145,21 +169,10 @@ class ReportController extends Controller
         // Calcul des pourcentages
         $percentageIn_Deadline = $in_deadline == 0 ? 0 : number_format(($in_deadline / $total) * 100, 1);
         $percentageOver_Deadline = $over_deadline == 0 ? 0 : number_format(($over_deadline / $total) * 100, 1);
-        // dd($percentageOver_Deadline, $percentageIn_Deadline);
 
-        return view('reports.index', compact('doctor', 'percentageOver_Deadline', 'percentageIn_Deadline', 'report_nbres', 'list_years', 'year', 'month', 'tags', 'reports', 'doctors'));
+        $commission = User::find($doctor)?->commission ?? 0;
+        return view('reports.index', compact('totalSum', 'commission', 'doctor', 'percentageOver_Deadline', 'percentageIn_Deadline', 'report_nbres', 'list_years', 'year', 'month', 'tags', 'reports'));
     }
-
-    // public function indexsuivistatistique(Request $request)
-    // {
-    //     dd($request);
-    //     if (!getOnlineUser()->can('view-reports')) {
-    //         return back()->with('error', "Vous n'êtes pas autorisé");
-    //     }
-
-    //     return view('reports.index', compact('list_years', 'month', 'year'));
-    // }
-
 
     public function storeTags(TagRequest $request)
     {
@@ -193,7 +206,6 @@ class ReportController extends Controller
         $reports = $this->report->orderBy('created_at', 'DESC')->get();
         $doctors = $this->doctor->all();
         $user = Auth::user();
-
         $types_orders = $this->typeOrder->all();
 
         $month = $request->month; // Récupérez la valeur du mois depuis le formulaire
@@ -318,16 +330,16 @@ class ReportController extends Controller
             $report
                 ->fill([
                     'delivery_date' => now(),
-                    'description' => $request->content,
-                    'comment' => $request->comment,
-                    'comment_sup' => $request->comment_sup,
-                    'description_micro' => $request->content_micro,
-                    'signatory1' => $doctor_signataire1,
-                    'signatory2' => $doctor_signataire2,
-                    'signatory3' => $doctor_signataire3,
-                    'reviewed_by_user_id' => $revew_by,
-                    'status' => $request->status == '1' ? '1' : '0',
-                    'title' => $request->title,
+                    'description' => $request->content ?? $report->description,
+                    'comment' => $request->comment ?? $report->comment,
+                    'comment_sup' => $request->comment_sup ?? $report->comment_sup,
+                    'description_micro' => $request->content_micro ?? $report->description_micro,
+                    'signatory1' => $doctor_signataire1 ?? $report->signatory1,
+                    'signatory2' => $doctor_signataire2 ?? $report->signatory2,
+                    'signatory3' => $doctor_signataire3 ?? $report->signatory3,
+                    'reviewed_by_user_id' => $revew_by ?? $report->reviewed_by_user_id,
+                    'status' => 1,
+                    'title' => $request->title ?? $report->title,
                     'description_supplementaire' => $request->description_supplementaire != '' ? $request->description_supplementaire : '',
                     'description_supplementaire_micro' => $request->description_supplementaire_micro != '' ? $request->description_supplementaire_micro : '',
                 ])
@@ -343,7 +355,7 @@ class ReportController extends Controller
                     'signatory2' => $doctor_signataire2,
                     'signatory3' => $doctor_signataire3,
                     'reviewed_by_user_id' => $revew_by,
-                    'status' => $request->status == '1' ? '1' : '0',
+                    'status' => 0,
                     'title' => $request->title,
                     'description_supplementaire' => $request->description_supplementaire != '' ? $request->description_supplementaire : '',
                     'description_supplementaire_micro' => $request->description_supplementaire_micro != '' ? $request->description_supplementaire_micro : '',
@@ -405,187 +417,6 @@ class ReportController extends Controller
         $tags = $this->tag->all();
         return view('reports.show', compact('test_order', 'report', 'setting', 'templates', 'titles', 'logs', 'cashbox', 'tags'));
     }
-
-
-    // public function pdf($id)
-    // {
-    //     // dd($id);
-    //     if (!getOnlineUser()->can('edit-reports')) {
-    //         return back()->with('error', "Vous n'êtes pas autorisé");
-    //     }
-    //     $report = $this->report->find($id);
-    //     $setting = $this->setting->find(1);
-    //     $text = $report->order ? $report->order->code : '';
-    //     $user = Auth::user();
-
-    //     // Chemin de sauvegarde
-    //     $path = 'settings/app/';
-    //     $qrPng = $report->code . '_qrcode.png';
-
-    //     // Vérifier et créer le chemin s'il n'existe pas
-    //     if (!Storage::exists('public/' . $path)) {
-    //         Storage::makeDirectory('public/' . $path);
-    //     }
-
-    //     $qrCode = new QrCode($text);
-    //     $qrCode->setSize(300);
-    //     $writer = new PngWriter();
-    //     $result = $writer->write($qrCode);
-    //     $qrPng = $report->code . '_qrcode.png';
-
-    //     // Save it to a file {{ asset('storage/' . $signature1) }}
-    //     // $result->saveToFile();
-    //     // Enregistrer le fichier
-    //     $result->saveToFile(storage_path('app/public/' . $path . $qrPng));
-
-    //     // Generate a data URI to include image data inline (i.e. inside an <img> tag)
-    //     $dataUri = $result->getDataUri();
-    //     // dd($result, $dataUri);
-
-    //     // $qrCodeDataUri = $qrCode->writeDataUri();
-
-    //     if ($report->signatory1 != 0) {
-    //         $signatory1 = $this->user->findorfail($report->signatory1);
-    //     }
-
-    //     if ($report->reviewed_by_user_id != 0) {
-    //         $reviewed_by_user = $this->user->findorfail($report->reviewed_by_user_id);
-    //     }
-
-    //     if ($report->signatory2 != 0) {
-    //         $signatory2 = $this->user->findorfail($report->signatory2);
-    //     }
-
-    //     if ($report->signatory3 != 0) {
-    //         $signatory3 = $this->user->findorfail($report->signatory3);
-    //     }
-    //     $year_month = '';
-    //     if ($report->order->patient->year_or_month != 1) {
-    //         $year_month = 'mois';
-    //     } else {
-    //         $year_month = 'ans';
-    //     }
-
-    //     setlocale(LC_TIME, 'fr_FR');
-    //     date_default_timezone_set('Africa/Porto-Novo');
-    //     //date_format($report->updated_at,"d/m/Y");
-
-    //     $data = [
-    //         'code' => $report->code,
-    //         'test_order_code' => $report->order->code,
-    //         'current_date' => utf8_encode(strftime('%d/%m/%Y')),
-    //         'signature_date' => date('d/m/Y', strtotime($report->signature_date)),
-    //         'prelevement_date' => $report->order ? date('d/m/Y', strtotime($report->order->prelevement_date)) : '',
-    //         'test_affiliate' => $report->order ? $report->order->test_affiliate : '',
-    //         'qrcode' => $dataUri,
-    //         'title' => $report->title,
-    //         'content' => $report->description,
-    //         'content_micro' => $report->description_micro,
-    //         'content_supplementaire' => $report->description_supplementaire != '' ? $report->description_supplementaire : '',
-    //         'content_supplementaire_micro' => $report->description_supplementaire_micro != '' ? $report->description_supplementaire_micro : '',
-
-    //         // 'signatory1' => $report->signatory1 != 0 ? $signatory1->lastname . ' ' . $signatory1->firstname : '',
-    //         // 'signature1' => $report->signatory1 != 0 ? $signatory1->signature : '',
-
-    //         'signator' => $report->signateur  ? $report->signateur->lastname . ' ' . $report->signateur->firstname : '',
-
-    //         'signature1' => $report->signateur ? $report->signateur->signature : '',
-    //         'signator1' => $report->signatory1 ? $report->signatory1 : null,
-
-
-    //         'signatory2' => $report->signatory2 != 0 ? $signatory2->lastname . ' ' . $signatory2->firstname : '',
-    //         'signature2' => $report->signatory2 != 0 ? $signatory2->signature : '',
-
-    //         'signatory3' => $report->signatory3 != 0 ? $signatory3->lastname . ' ' . $signatory3->firstname : '',
-    //         'signature3' => $report->signatory3 != 0 ? $signatory3->signature : '',
-
-    //         'patient_firstname' => $report->order->patient->firstname,
-    //         'patient_lastname' => $report->order->patient->lastname,
-    //         'patient_age' => $report->order->patient->age,
-    //         'patient_year_or_month' => $year_month,
-    //         'patient_genre' => $report->order->patient->genre,
-    //         'status' => $report->status,
-    //         'revew_by' => $report->reviewed_by_user_id != 0 ? $reviewed_by_user->lastname . ' ' . $reviewed_by_user->firstname : '',
-    //         'revew_by_signature' => $report->reviewed_by_user_id != 0 ? $report->user->signature : 'Admin_Admin.png',
-    //         'report_review_title' => SettingApp::where('key', 'report_review_title')->first()->value,
-    //         'entete' => SettingApp::where('key', 'entete')->first()->value,
-    //         'footer' => SettingApp::where('key', 'report_footer')->first()->value,
-    //         'hospital_name' => $report->order ? $report->order->hospital->name : '',
-    //         'doctor_name' => $report->order ? $report->order->doctor->name : '',
-    //         'created_at' => date_format($report->created_at, 'd/m/Y'),
-    //         'date' => date('d/m/Y'),
-    //     ];
-
-
-    //     try {
-    //         $impression_file_name = SettingApp::where('key', 'impression_file_name')->first();
-    //         $log = new LogReport();
-    //         $log->operation = 'Imprimer';
-    //         $log->report_id = $id;
-    //         $log->user_id = $user->id;
-    //         $log->save();
-    //         // $content = view('pdf/canva_' . $impression_file_name->value, $data)->render();
-    //         // $html2pdf = new Html2Pdf('P', 'A4', 'fr', true, 'UTF-8', 0);
-    //         // $html2pdf->pdf->SetDisplayMode('fullpage');
-    //         // $html2pdf->setTestTdInOnePage(false);
-    //         // // $html2pdf->pdf->SetFont('Arial');
-    //         // $html2pdf->__construct($orientation = 'P', $format = 'A4', $lang = 'fr', $unicode = true, $encoding = 'UTF-8', $margins = [8, 20, 8, 8], $pdfa = false);
-    //         // $html2pdf->writeHTML($content);
-    //         // $newname = 'CO-' . $report->order->code . '.pdf';
-    //         // $html2pdf->output($newname);
-
-
-    //         // Dom pdf code
-    //         // L'instance PDF avec la vue resources/views/posts/show.blade.php
-    //         // $pdf = PDF::loadView('pdf.canva_caap', compact('data'))
-    //         //     ->setPaper('a4', 'landscape')
-    //         //     ->setWarnings(false)
-    //         //     ->save(public_path("storage/app/public/documents/" . time() . ".pdf"))
-    //         //     ->stream();
-
-
-    //         // $pdf = PDF::loadView('pdf.canva_caap', compact('data'))
-    //         //     ->setPaper('a4', 'portrait')
-    //         //     ->setWarnings(false);
-
-    //         // // Enregistrer directement dans le dossier storage/app/public
-    //         // $filename = "documents/" . time() . ".pdf";
-    //         // Storage::disk('public')->put($filename, $pdf->output());
-
-    //         // // Lancement du téléchargement du fichier PDF
-    //         // return $pdf->download(time() . ".pdf");
-
-    //         $filename = 'demo.pdf';
-    //         $html = view()->make('pdf.canva_caap', ['data' => $data])->render();
-
-    //         $pdf = new TCPDF;
-
-    //         $pdf->SetTitle('Hello World');
-
-    //         $pdf->AddPage();
-
-    //         $pdf->writeHTML($html, true, false, true, false, '');
-
-    //         // $pdf->Output(public_path($filename), 'F');
-    //         // Sauvegarder le fichier PDF sur le disque
-    //         $pdf->Output(public_path('ggg/' . $filename), 'F'); // 'F' signifie qu'on sauvegarde le fichier
-
-    //         return response()->download(public_path($filename));
-
-    //         // } catch (Html2PdfException $e) {
-    //     } catch (Exception $e) {
-    //         // $html2pdf->clean();
-
-    //         // $formatter = new ExceptionFormatter($e);
-    //         // echo $formatter->getHtmlMessage();
-
-    //         dd($e->getMessage());
-
-    //         // Message d'erreur explicite pour l'utilisateur
-    //         return redirect()->back()->with('error', $formatter->getHtmlMessage());
-    //     }
-    // }
-
 
     public function pdf($id)
     {

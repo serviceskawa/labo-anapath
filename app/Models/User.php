@@ -29,6 +29,9 @@ class User extends Authenticatable
         'signature',
         'two_factor_enabled',
         'is_connect',
+        'commission',
+        'whatsapp',
+        'telephone',
     ];
 
     /**

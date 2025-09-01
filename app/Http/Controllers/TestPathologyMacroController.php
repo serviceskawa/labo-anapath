@@ -43,64 +43,58 @@ class TestPathologyMacroController extends Controller
     protected $employees;
     protected $macro;
 
-public function __construct(
-    Test $test,
-    TestOrder $testOrder,
-    Doctor $doctor,
-    Report $report,
-    Contrat $contrat,
-    Invoice $invoice,
-    Patient $patient,
-    Setting $setting,
-    Hospital $hospital,
-    TypeOrder $typeOrder,
-    InvoiceDetail $invoiceDetail,
-    DetailTestOrder $detailTestOrder,
-    LogReport $logReport,
-    Employee $employee,
-    test_pathology_macro $macro
-) {
-    $this->middleware('auth');
-    $this->test = $test;
-    $this->testOrder = $testOrder;
-    $this->doctor = $doctor;
-    $this->report = $report;
-    $this->contrat = $contrat;
-    $this->invoice = $invoice;
-    $this->patient = $patient;
-    $this->setting = $setting;
-    $this->hospital = $hospital;
-    $this->typeOrder = $typeOrder;
-    $this->invoiceDetail = $invoiceDetail;
-    $this->detailTestOrder = $detailTestOrder;
-    $this->logReport = $logReport;
-    $this->employees = $employee;
-    $this->macro = $macro;
-
-}
+    public function __construct(
+        Test $test,
+        TestOrder $testOrder,
+        Doctor $doctor,
+        Report $report,
+        Contrat $contrat,
+        Invoice $invoice,
+        Patient $patient,
+        Setting $setting,
+        Hospital $hospital,
+        TypeOrder $typeOrder,
+        InvoiceDetail $invoiceDetail,
+        DetailTestOrder $detailTestOrder,
+        LogReport $logReport,
+        Employee $employee,
+        test_pathology_macro $macro
+    ) {
+        $this->middleware('auth');
+        $this->test = $test;
+        $this->testOrder = $testOrder;
+        $this->doctor = $doctor;
+        $this->report = $report;
+        $this->contrat = $contrat;
+        $this->invoice = $invoice;
+        $this->patient = $patient;
+        $this->setting = $setting;
+        $this->hospital = $hospital;
+        $this->typeOrder = $typeOrder;
+        $this->invoiceDetail = $invoiceDetail;
+        $this->detailTestOrder = $detailTestOrder;
+        $this->logReport = $logReport;
+        $this->employees = $employee;
+        $this->macro = $macro;
+    }
 
     //
     public function index()
     {
-
         // if (!getOnlineUser()->can('view-test-orders')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
 
-
-        $orders = $this->testOrder->whereHas('type', function($query) {
-            $query->where('slug','like','cytologie')
-                  ->orwhere('slug','like','histologie')
-                  ->orwhere('slug','like','biopsie')
-                  ->orwhere('slug','like','pièce-opératoire')
-                  ->where('status', 1) // Statut différent de 0
-                  ->whereNull('deleted_at'); // deleted_at doit être NULL;
-            })->get();
-
+        $orders = $this->testOrder->whereHas('type', function ($query) {
+            $query->where('slug', 'like', 'cytologie')
+                ->orwhere('slug', 'like', 'histologie')
+                ->orwhere('slug', 'like', 'biopsie')
+                ->orwhere('slug', 'like', 'pièce-opératoire')
+                ->where('status', 1) // Statut différent de 0
+                ->whereNull('deleted_at'); // deleted_at doit être NULL;
+        })->get();
 
         $employees = $this->employees->all();
-
-
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
@@ -117,10 +111,10 @@ public function __construct(
             ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
             ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
             ->where(function ($query) {
-                $query->where('test_orders.type_order_id', '=' , 1)
-                ->orwhere('test_orders.type_order_id', '=' , 4)
-                ->orwhere('test_orders.type_order_id', '=' , 5)
-                ->orwhere('test_orders.type_order_id', '=' , 6)
+                $query->where('test_orders.type_order_id', '=', 1)
+                    ->orwhere('test_orders.type_order_id', '=', 4)
+                    ->orwhere('test_orders.type_order_id', '=', 5)
+                    ->orwhere('test_orders.type_order_id', '=', 6)
                 ;
             })
             ->where(function ($query) {
@@ -128,16 +122,16 @@ public function __construct(
                     ->where('reports.status', 0)
                     ->whereNotExists(function ($subquery) {
                         $subquery->select(DB::raw(1))
-                                ->from('test_pathology_macros')
-                                ->whereRaw('id_test_pathology_order = test_orders.id');
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
                     });
             })
             ->orWhere(function ($query) {
                 $query->where('reports.status', 0)
                     ->whereNotExists(function ($subquery) {
                         $subquery->select(DB::raw(1))
-                                ->from('test_pathology_macros')
-                                ->whereRaw('id_test_pathology_order = test_orders.id');
+                            ->from('test_pathology_macros')
+                            ->whereRaw('id_test_pathology_order = test_orders.id');
                     })
                     ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
             })
@@ -145,117 +139,137 @@ public function __construct(
             ->orderBy('test_orders.created_at')
             ->get();
 
-            // dd($results);
-
-            $type_orders = TypeOrder::latest()->get();
-
-
-
-            // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-            // $data = TestOrder::with(['patient', 'contrat', 'type', 'details', 'report'])
-            // ->whereHas('type', function($query) {
-            //     $query->whereIn('slug', ['histologie', 'cytologie', 'biopsie', 'pièce-opératoire'])
-            //         ->whereNull('deleted_at');
-            // })
-            // ->where('is_urgent',1)
-            //     // Left  Join sur test_pathology_order avec test_orders
-            //     ->whereDoesntHave('testOrderMacro')
-            //     // Fin
-            // ->whereHas('report', function($query) {
-            //     $query->where('status', 0);
-            // })
-            // ->whereDate('created_at', '<=', now()->addDay(11))
-            // ->orderBy('created_at', 'asc')
-            // ->get()
-            // ;
-
-            // dd($data);
-            // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-        // $testOrders = $this->testOrder->all();
-
-        // foreach ($testOrders as $key => $testOrder) {
-        //     if (!empty($testOrder->attribuate_doctor_id) && empty($testOrder->assigned_to_user_id)) {
-        //         $testOrder->assigned_to_user_id = $testOrder->attribuate_doctor_id;
-        //         $testOrder->save();
-        //     }
-        // }
-
-        return view('macro.index', array_merge(compact('type_orders','orders', 'employees', 'results')));
+        $type_orders = TypeOrder::latest()->get();
+        return view('macro.index', array_merge(compact('type_orders', 'orders', 'employees', 'results')));
     }
+
+    public function searchPathologyOrders(Request $request)
+    {
+        $search = $request->get('search', '');
+        $limit = $request->get('limit', 20);
+
+        $orders = TestOrder::select('id', 'code')
+            ->whereHas('type', function ($query) {
+                $query->where('status', 1)
+                    ->whereNull('deleted_at')
+                    ->where(function ($q) {
+                        $q->where('slug', 'like', '%cytologie%')
+                            ->orWhere('slug', 'like', '%histologie%')
+                            ->orWhere('slug', 'like', '%biopsie%')
+                            ->orWhere('slug', 'like', '%pièce-opératoire%');
+                    });
+            })
+            ->when($search, function ($query, $search) {
+                $query->where('code', 'LIKE', "%{$search}%");
+            })
+            ->orderBy('code')
+            ->paginate($limit);
+
+        return response()->json([
+            'data' => $orders->items(),
+            'has_more' => $orders->hasMorePages()
+        ]);
+    }
+
     public function index_immuno()
     {
-
         // if (!getOnlineUser()->can('view-test-orders')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
 
-
-        $orders = $this->testOrder->whereHas('type', function($query) {
-            $query->where('slug','immuno-interne')
-                  ->orwhere('slug','immuno-exterme')->where('status', 1) // Statut différent de 0
-                  ->whereNull('deleted_at'); // deleted_at doit être NULL;
-            })->get();
+        // $orders = $this->testOrder->whereHas('type', function ($query) {
+        //     $query->where('slug', 'immuno-interne')
+        //         ->orwhere('slug', 'immuno-exterme')->where('status', 1) // Statut différent de 0
+        //         ->whereNull('deleted_at'); // deleted_at doit être NULL;
+        // })->get();
         $employees = $this->employees->all();
-
 
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
 
         $results = DB::table('test_orders')
-        ->select(
-            'test_orders.id as test_order',
-            'test_orders.code as code',
-            'test_orders.created_at',
-            'test_orders.is_urgent',
-            'reports.status as report_status',
-            'test_pathology_macros.id as test_pathology_macro_id'
-        )
-        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
-        ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
-        ->where(function ($query) {
-            $query->where(function ($subquery) {
-                $subquery->where('test_orders.is_urgent', 1)
-                    ->where('reports.status', 0)
-                    ->whereNotExists(function ($subquery) {
-                        $subquery->select(DB::raw(1))
-                            ->from('test_pathology_macros')
-                            ->whereRaw('id_test_pathology_order = test_orders.id');
+            ->select(
+                'test_orders.id as test_order',
+                'test_orders.code as code',
+                'test_orders.created_at',
+                'test_orders.is_urgent',
+                'reports.status as report_status',
+                'test_pathology_macros.id as test_pathology_macro_id'
+            )
+            ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+            ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
+            ->where(function ($query) {
+                $query->where(function ($subquery) {
+                    $subquery->where('test_orders.is_urgent', 1)
+                        ->where('reports.status', 0)
+                        ->whereNotExists(function ($subquery) {
+                            $subquery->select(DB::raw(1))
+                                ->from('test_pathology_macros')
+                                ->whereRaw('id_test_pathology_order = test_orders.id');
+                        });
+                })
+                    ->orWhere(function ($subquery) {
+                        $subquery->where('reports.status', 0)
+                            ->whereNotExists(function ($subquery) {
+                                $subquery->select(DB::raw(1))
+                                    ->from('test_pathology_macros')
+                                    ->whereRaw('id_test_pathology_order = test_orders.id');
+                            })
+                            ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
                     });
             })
-            ->orWhere(function ($subquery) {
-                $subquery->where('reports.status', 0)
-                    ->whereNotExists(function ($subquery) {
-                        $subquery->select(DB::raw(1))
-                            ->from('test_pathology_macros')
-                            ->whereRaw('id_test_pathology_order = test_orders.id');
-                    })
-                    ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
-            });
-        })
-        ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderBy('test_orders.created_at')
-        ->get();
+            ->whereYear('test_orders.created_at', '!=', 2022)
+            ->orderBy('test_orders.created_at')
+            ->get();
 
-        return view('macro.index_immuno', array_merge(compact('orders', 'employees', 'results')));
+        return view('macro.index_immuno', array_merge(compact('employees', 'results')));
+    }
+
+    public function searchMacro(Request $request)
+    {
+        $search = $request->get('search', '');
+        $limit = $request->get('limit', 20);
+
+        // $orders = TestOrder::select('id', 'code')
+        //     ->whereDoesntHave('macros') // Remplace !isMacro($order->id)
+        //     ->when($search, function ($query, $search) {
+        //         $query->where('code', 'LIKE', "%{$search}%");
+        //     })
+        //     ->orderBy('code')
+        //     ->paginate($limit);
+
+        $orders = $this->testOrder->whereHas('type', function ($query) {
+            $query->where('slug', 'immuno-interne')
+                ->orwhere('slug', 'immuno-exterme')->where('status', 1) // Statut différent de 0
+                ->whereNull('deleted_at'); // deleted_at doit être NULL;
+        })->orderBy('code')->paginate($limit);
+
+         // Filtrer côté serveur si isMacro() nécessite une logique complexe
+    $filteredOrders = $orders->getCollection()->filter(function($order) {
+        return !isMacro($order->id);
+    })->values();
+
+        return response()->json([
+            'data' => $orders->items(),
+            'has_more' => $orders->hasMorePages()
+        ]);
     }
 
     // Debut
     public function getTestOrdersforDatatable(Request $request)
     {
-
-        $data = $this->macro->with(['order','employee','user','testOrder'])
-        ->whereHas('order', function ($query) {
-            $query->whereHas('type', function($query) {
-                $query->where('slug','like','cytologie')
-                      ->orwhere('slug','like','histologie')
-                      ->orwhere('slug','like','biopsie')
-                      ->orwhere('slug','like','pièce-opératoire')
-                      ->where('status', 1) // Statut différent de 0
-                      ->whereNull('deleted_at'); // deleted_at doit être NULL;
+        $data = $this->macro->with(['order', 'employee', 'user', 'testOrder'])
+            ->whereHas('order', function ($query) {
+                $query->whereHas('type', function ($query) {
+                    $query->where('slug', 'like', 'cytologie')
+                        ->orwhere('slug', 'like', 'histologie')
+                        ->orwhere('slug', 'like', 'biopsie')
+                        ->orwhere('slug', 'like', 'pièce-opératoire')
+                        ->where('status', 1) // Statut différent de 0
+                        ->whereNull('deleted_at'); // deleted_at doit être NULL;
                 });
-        })
-        ->orderBy('created_at', 'desc');
+            })
+            ->orderBy('created_at', 'desc');
 
         return DataTables::of($data)->addIndexColumn()
 
@@ -271,28 +285,26 @@ public function __construct(
                 },
             ])
             ->setRowClass(function ($data) use ($request) {
-                if($data->is_urgent == 1){
-                        if (!empty($data->report)) {
-                            if($data->report->is_deliver ==1){
-                                return 'table-success';
-                            }else {
-                                if($data->report->status == 1){
-                                    return 'table-warning';
-                                }
+                if ($data->is_urgent == 1) {
+                    if (!empty($data->report)) {
+                        if ($data->report->is_deliver == 1) {
+                            return 'table-success';
+                        } else {
+                            if ($data->report->status == 1) {
+                                return 'table-warning';
                             }
-
                         }
-                            return 'table-danger urgent';
-
-                }elseif (!empty($data->report)) {
-                    if($data->report->is_deliver ==1){
+                    }
+                    return 'table-danger urgent';
+                } elseif (!empty($data->report)) {
+                    if ($data->report->is_deliver == 1) {
                         return 'table-success';
-                    }else {
-                        if($data->report->status == 1){
+                    } else {
+                        if ($data->report->status == 1) {
                             return 'table-warning';
                         }
                     }
-                }else {
+                } else {
                     return '';
                 }
             })
@@ -300,23 +312,23 @@ public function __construct(
             ->addColumn('created', function ($data) {
                 $checkbox = "
                  <div class='form-check'>
-                     <input type='checkbox' class='form-check-input'id='custom".$data->test_order."'>
-                     // <input type='checkbox' class='form-check-input'id='custom".$data->test_order."'>
+                     <input type='checkbox' class='form-check-input'id='custom" . $data->test_order . "'>
+                     // <input type='checkbox' class='form-check-input'id='custom" . $data->test_order . "'>
                  </div>
                 ";
                 return $checkbox;
-             })
+            })
 
             ->addColumn('action', function ($data) {
-               $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
+                $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
 
-                return !isAffecte($data->order->id) ? $btnDelete :'';
+                return !isAffecte($data->order->id) ? $btnDelete : '';
             })
 
 
 
             ->addColumn('code', function ($data) {
-                $reponse = $data->order->test_affiliate ? "/ ".$data->order->test_affiliate : "";
+                $reponse = $data->order->test_affiliate ? "/ " . $data->order->test_affiliate : "";
                 return $data->order->code . " " . $reponse;
             })
 
@@ -352,7 +364,7 @@ public function __construct(
                     // Utilisation de htmlspecialchars pour échapper les caractères spéciaux
                     $escapedCode = htmlspecialchars($data->order->code, ENT_QUOTES, 'UTF-8');
                     $select .= "
-                        <select name='id_test_pathology_order".$data->id."' onchange='changeState(".$data->id.",\"".$escapedCode."\")' id='id_test_pathology_order".$data->id."' class='form-select select2' data-toggle='select2'>
+                        <select name='id_test_pathology_order" . $data->id . "' onchange='changeState(" . $data->id . ",\"" . $escapedCode . "\")' id='id_test_pathology_order" . $data->id . "' class='form-select select2' data-toggle='select2'>
                             <option value=''>Sélectionner un étape</option>";
 
                     if (!$data->circulation) {
@@ -387,79 +399,79 @@ public function __construct(
                 }
 
                 if (!empty($request->get('contenu'))) {
-                    $query->whereHas('order', function($query) use($request) {
-                        $query->where('code','like','%'.$request->get('contenu').'%');
+                    $query->whereHas('order', function ($query) use ($request) {
+                        $query->where('code', 'like', '%' . $request->get('contenu') . '%');
                     });
                 }
 
 
 
 
-                if(!empty($request->get('dateBegin2'))){
-                    $query->whereHas('testOrder', function($queryModel) use($request) {
+                if (!empty($request->get('dateBegin2'))) {
+                    $query->whereHas('testOrder', function ($queryModel) use ($request) {
 
-                    $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin2'));
-                    $queryModel->whereDate('created_at','>=',$newDate);
+                        $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin2'));
+                        $queryModel->whereDate('created_at', '>=', $newDate);
                     });
                 }
 
 
-                if(!empty($request->get('date'))){
+                if (!empty($request->get('date'))) {
                     //dd($request);
-                    $query->whereDate('created_at','like',$request->get('date'))
-                    ->orwhereDate('updated_at','like',$request->get('date'));
+                    $query->whereDate('created_at', 'like', $request->get('date'))
+                        ->orwhereDate('updated_at', 'like', $request->get('date'));
                 }
-
             })
-            ->rawColumns(['action','code', 'add_by', 'state', 'date_macro', 'date_montage','created'])
+            ->rawColumns(['action', 'code', 'add_by', 'state', 'date_macro', 'date_montage', 'created'])
             ->make(true);
     }
+
     // Debut
     public function getTestOrdersforDatatable2(Request $request)
     {
         $data = DB::table('test_orders')
-        ->select(
-            'test_orders.id as test_order',
-            'test_orders.code as code',
-            'test_orders.created_at',
-            'test_orders.is_urgent',
-            'reports.status as report_status',
-            'test_pathology_macros.id as test_pathology_macro_id'
-        )
-        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
-        ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
-        ->where(function ($query) {
-            $query->where('test_orders.is_urgent', 1)
-                ->where('reports.status', 0)
-                ->whereNotExists(function ($subquery) {
-                    $subquery->select(DB::raw(1))
+            ->select(
+                'test_orders.id as test_order',
+                'test_orders.code as code',
+                'test_orders.created_at',
+                'test_orders.is_urgent',
+                'reports.status as report_status',
+                'test_pathology_macros.id as test_pathology_macro_id'
+            )
+            ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+            ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
+            ->where(function ($query) {
+                $query->where('test_orders.is_urgent', 1)
+                    ->where('reports.status', 0)
+                    ->whereNotExists(function ($subquery) {
+                        $subquery->select(DB::raw(1))
                             ->from('test_pathology_macros')
                             ->whereRaw('id_test_pathology_order = test_orders.id');
-                });
-        })
-        ->where(function ($query) {
-            $query->where('test_orders.status', 1)
-                ->where('type_orders.slug','like','histologie')
-                ->orwhere('type_orders.slug','like','cytologie');
-        })
-        ->orWhere(function ($query) {
-            $query->where('reports.status', 0)
-                ->whereNotExists(function ($subquery) {
-                    $subquery->select(DB::raw(1))
+                    });
+            })
+            ->where(function ($query) {
+                $query->where('test_orders.status', 1)
+                    ->where('type_orders.slug', 'like', 'histologie')
+                    ->orwhere('type_orders.slug', 'like', 'cytologie');
+            })
+            ->orWhere(function ($query) {
+                $query->where('reports.status', 0)
+                    ->whereNotExists(function ($subquery) {
+                        $subquery->select(DB::raw(1))
                             ->from('test_pathology_macros')
                             ->whereRaw('id_test_pathology_order = test_orders.id');
-                })
-                ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
-        })
-        ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
-        ->orderBy('test_orders.created_at')
-        ->get();
+                    })
+                    ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+            })
+            ->whereYear('test_orders.created_at', '!=', 2022)
+            ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
+            ->orderBy('test_orders.created_at')
+            ->get();
 
 
 
-                $employees = $this->employees->all();
-            return DataTables::of($data)->addIndexColumn()
+        $employees = $this->employees->all();
+        return DataTables::of($data)->addIndexColumn()
 
             ->setRowData([
                 'data-mytag' => function ($data) {
@@ -473,28 +485,26 @@ public function __construct(
                 },
             ])
             ->setRowClass(function ($data) use ($request) {
-                if($data->is_urgent == 1){
-                        if (!empty($data->report)) {
-                            if($data->report->is_deliver ==1){
-                                return 'table-success';
-                            }else {
-                                if($data->report->status == 1){
-                                    return 'table-warning';
-                                }
+                if ($data->is_urgent == 1) {
+                    if (!empty($data->report)) {
+                        if ($data->report->is_deliver == 1) {
+                            return 'table-success';
+                        } else {
+                            if ($data->report->status == 1) {
+                                return 'table-warning';
                             }
-
                         }
-                            return 'table-danger urgent';
-
-                }elseif (!empty($data->report)) {
-                    if($data->report->is_deliver ==1){
+                    }
+                    return 'table-danger urgent';
+                } elseif (!empty($data->report)) {
+                    if ($data->report->is_deliver == 1) {
                         return 'table-success';
-                    }else {
-                        if($data->report->status == 1){
+                    } else {
+                        if ($data->report->status == 1) {
                             return 'table-warning';
                         }
                     }
-                }else {
+                } else {
                     return '';
                 }
             })
@@ -523,7 +533,7 @@ public function __construct(
             // })
 
             ->addColumn('code', function ($data) {
-                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                $reponse = $data->test_affiliate ? "/ " . $data->test_affiliate : "";
                 return $data->code . " " . $reponse;
             })
 
@@ -531,7 +541,7 @@ public function __construct(
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
-                    <select name='id_employee' id='{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>
+                    <select name='id_employee' id='{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(" . $data->test_order . ",\"" . $escapedCode . "\")'>
                         <option value=''>Tous les laborantins</option>";
 
                 foreach ($employees as $employee) {
@@ -543,49 +553,46 @@ public function __construct(
 
                 return $select;
             })
-            ->filter(function ($query) use ($request,$data) {
-
-            })
-            ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
+            ->filter(function ($query) use ($request, $data) {})
+            ->rawColumns(['action', 'code', 'date', 'state', 'created', 'dateLim'])
             ->make(true);
     }
 
-
-     public function getTestOrdersforDatatable3(Request $request)
+    public function getTestOrdersforDatatable3(Request $request)
     {
         $data = DB::table('test_orders')
-        ->select(
-            'test_orders.id as test_order',
-            'test_orders.code as code',
-            'test_orders.created_at',
-            'test_orders.type_order_id as type_order_id',
-            'test_orders.is_urgent',
-            'test_orders.test_affiliate',
-            'reports.status as report_status',
-            'test_pathology_macros.id as test_pathology_macro_id'
-        )
-        // Jointure entre la table test-orders et reports
-        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
-        ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
-        ->leftJoin('test_pathology_macros', 'test_orders.id', '=', 'test_pathology_macros.id_test_pathology_order')
-        ->whereNull('test_pathology_macros.id')
-        // Filtrage des compte rendu en attente
-        ->where('reports.status', 0)
-        ->whereYear('reports.created_at', '!=', 2022)
-        ->whereYear('reports.created_at', '!=', 2023)
+            ->select(
+                'test_orders.id as test_order',
+                'test_orders.code as code',
+                'test_orders.created_at',
+                'test_orders.type_order_id as type_order_id',
+                'test_orders.is_urgent',
+                'test_orders.test_affiliate',
+                'reports.status as report_status',
+                'test_pathology_macros.id as test_pathology_macro_id'
+            )
+            // Jointure entre la table test-orders et reports
+            ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+            ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
+            ->leftJoin('test_pathology_macros', 'test_orders.id', '=', 'test_pathology_macros.id_test_pathology_order')
+            ->whereNull('test_pathology_macros.id')
+            // Filtrage des compte rendu en attente
+            ->where('reports.status', 0)
+            ->whereYear('reports.created_at', '!=', 2022)
+            ->whereYear('reports.created_at', '!=', 2023)
 
-        // Filtrage histologie ou biopsie
-        ->where(function ($query) {
-            $query
-            ->where('type_order_id', 1)
-            ->orwhere('type_order_id', 5)
-            ->orwhere('type_order_id', 6)
-            ->orwhere('type_order_id', 4);
-        })->where('test_orders.is_urgent',1);
+            // Filtrage histologie ou biopsie
+            ->where(function ($query) {
+                $query
+                    ->where('type_order_id', 1)
+                    ->orwhere('type_order_id', 5)
+                    ->orwhere('type_order_id', 6)
+                    ->orwhere('type_order_id', 4);
+            })->where('test_orders.is_urgent', 1);
 
 
-                $employees = $this->employees->all();
-            return DataTables::of($data)->addIndexColumn()
+        $employees = $this->employees->all();
+        return DataTables::of($data)->addIndexColumn()
 
             ->setRowData([
                 'data-mytag' => function ($data) {
@@ -599,40 +606,38 @@ public function __construct(
                 },
             ])
             ->setRowClass(function ($data) use ($request) {
-                if($data->is_urgent == 1){
-                        if (!empty($data->report)) {
-                            if($data->report->is_deliver ==1){
-                                return 'table-success';
-                            }else {
-                                if($data->report->status == 1){
-                                    return 'table-warning';
-                                }
+                if ($data->is_urgent == 1) {
+                    if (!empty($data->report)) {
+                        if ($data->report->is_deliver == 1) {
+                            return 'table-success';
+                        } else {
+                            if ($data->report->status == 1) {
+                                return 'table-warning';
                             }
-
                         }
-                            return 'table-danger urgent';
-
-                }elseif (!empty($data->report)) {
-                    if($data->report->is_deliver ==1){
+                    }
+                    return 'table-danger urgent';
+                } elseif (!empty($data->report)) {
+                    if ($data->report->is_deliver == 1) {
                         return 'table-success';
-                    }else {
-                        if($data->report->status == 1){
+                    } else {
+                        if ($data->report->status == 1) {
                             return 'table-warning';
                         }
                     }
-                }else {
+                } else {
                     return '';
                 }
             })
 
             ->addColumn('created', function ($data) {
-               $checkbox = "
+                $checkbox = "
                 <div class='form-check'>
                     <input type='checkbox' class='form-check-input'id='customCheck'>
-                    // <input type='checkbox' class='form-check-input'id='customCheck".$data->test_order."'>
+                    // <input type='checkbox' class='form-check-input'id='customCheck" . $data->test_order . "'>
                 </div>
                ";
-               return $checkbox;
+                return $checkbox;
             })
             ->addColumn('dateLim', function ($data) {
                 $formattedDate = Carbon::parse($data->created_at)->format('d-m-Y');
@@ -647,14 +652,14 @@ public function __construct(
             // })
 
             ->addColumn('code', function ($data) {
-                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                $reponse = $data->test_affiliate ? "/ " . $data->test_affiliate : "";
                 return $data->code . " " . $reponse;
             })
 
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
-                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>";
+                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(" . $data->test_order . ",\"" . $escapedCode . "\")'>";
 
                 foreach ($employees as $employee) {
                     $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
@@ -681,48 +686,45 @@ public function __construct(
             // })
 
 
-            ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
+            ->rawColumns(['action', 'code', 'date', 'state', 'created', 'dateLim'])
             ->make(true);
     }
-    // Debut
-
-
 
     // Histoligie Piece Operatoire
     public function getTestOrdersforDatatableHistologie(Request $request)
     {
         $data = DB::table('test_orders')
-        ->select(
-            'test_orders.id as test_order',
-            'test_orders.code as code',
-            'test_orders.created_at',
-            'test_orders.type_order_id as type_order_id',
-            'test_orders.is_urgent',
-            'test_orders.test_affiliate',
-            'reports.status as report_status',
-            'test_pathology_macros.id as test_pathology_macro_id'
-        )
-        // Jointure entre la table test-orders et reports
-        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
-        ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
-        ->leftJoin('test_pathology_macros', 'test_orders.id', '=', 'test_pathology_macros.id_test_pathology_order')
-        ->whereNull('test_pathology_macros.id')
-        // Filtrage des compte rendu en attente
-        ->where('reports.status', 0)
-        ->whereYear('reports.created_at', '!=', 2022)
-        ->whereYear('reports.created_at', '!=', 2023)
+            ->select(
+                'test_orders.id as test_order',
+                'test_orders.code as code',
+                'test_orders.created_at',
+                'test_orders.type_order_id as type_order_id',
+                'test_orders.is_urgent',
+                'test_orders.test_affiliate',
+                'reports.status as report_status',
+                'test_pathology_macros.id as test_pathology_macro_id'
+            )
+            // Jointure entre la table test-orders et reports
+            ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+            ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
+            ->leftJoin('test_pathology_macros', 'test_orders.id', '=', 'test_pathology_macros.id_test_pathology_order')
+            ->whereNull('test_pathology_macros.id')
+            // Filtrage des compte rendu en attente
+            ->where('reports.status', 0)
+            ->whereYear('reports.created_at', '!=', 2022)
+            ->whereYear('reports.created_at', '!=', 2023)
 
-        // Filtrage histologie ou biopsie
-        ->where(function ($query) {
-            $query
-            ->where('type_order_id', 1)
-            ->orwhere('type_order_id', 5);
-        });
+            // Filtrage histologie ou biopsie
+            ->where(function ($query) {
+                $query
+                    ->where('type_order_id', 1)
+                    ->orwhere('type_order_id', 5);
+            });
 
 
 
-            $employees = $this->employees->all();
-            return DataTables::of($data)->addIndexColumn()
+        $employees = $this->employees->all();
+        return DataTables::of($data)->addIndexColumn()
 
             ->setRowData([
                 'data-mytag' => function ($data) {
@@ -735,40 +737,38 @@ public function __construct(
                 },
             ])
             ->setRowClass(function ($data) use ($request) {
-                if($data->is_urgent == 1){
-                        if (!empty($data->report)) {
-                            if($data->report->is_deliver ==1){
-                                return 'table-success';
-                            }else {
-                                if($data->report->status == 1){
-                                    return 'table-warning';
-                                }
+                if ($data->is_urgent == 1) {
+                    if (!empty($data->report)) {
+                        if ($data->report->is_deliver == 1) {
+                            return 'table-success';
+                        } else {
+                            if ($data->report->status == 1) {
+                                return 'table-warning';
                             }
-
                         }
-                            return 'table-danger urgent';
-
-                }elseif (!empty($data->report)) {
-                    if($data->report->is_deliver ==1){
+                    }
+                    return 'table-danger urgent';
+                } elseif (!empty($data->report)) {
+                    if ($data->report->is_deliver == 1) {
                         return 'table-success';
-                    }else {
-                        if($data->report->status == 1){
+                    } else {
+                        if ($data->report->status == 1) {
                             return 'table-warning';
                         }
                     }
-                }else {
+                } else {
                     return '';
                 }
             })
 
             ->addColumn('created', function ($data) {
-               $checkbox = "
+                $checkbox = "
                 <div class='form-check'>
                     <input type='checkbox' class='form-check-input'id='customCheck'>
-                    // <input type='checkbox' class='form-check-input'id='customCheck".$data->test_order."'>
+                    // <input type='checkbox' class='form-check-input'id='customCheck" . $data->test_order . "'>
                 </div>
                ";
-               return $checkbox;
+                return $checkbox;
             })
 
             ->addColumn('dateLim', function ($data) {
@@ -784,14 +784,14 @@ public function __construct(
             // })
 
             ->addColumn('code', function ($data) {
-                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                $reponse = $data->test_affiliate ? "/ " . $data->test_affiliate : "";
                 return $data->code . " " . $reponse;
             })
 
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
-                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>";
+                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(" . $data->test_order . ",\"" . $escapedCode . "\")'>";
 
                 foreach ($employees as $employee) {
                     $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
@@ -809,44 +809,42 @@ public function __construct(
                 }
             })
 
-            ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
+            ->rawColumns(['action', 'code', 'date', 'state', 'created', 'dateLim'])
             ->make(true);
     }
-
-
 
     // Histoligie Piece Operatoire
     public function getTestOrdersforDatatablePieceOperatoire(Request $request)
     {
         $data = DB::table('test_orders')
-        ->select(
-            'test_orders.id as test_order',
-            'test_orders.code as code',
-            'test_orders.created_at',
-            'test_orders.type_order_id as type_order_id',
-            'test_orders.is_urgent',
-            'test_orders.test_affiliate',
-            'reports.status as report_status',
-            'test_pathology_macros.id as test_pathology_macro_id'
-        )
-        // Jointure entre la table test-orders et reports
-        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
-        ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
-        ->leftJoin('test_pathology_macros', 'test_orders.id', '=', 'test_pathology_macros.id_test_pathology_order')
-        ->whereNull('test_pathology_macros.id')
-        // Filtrage des compte rendu en attente
-        ->where('reports.status', 0)
-        ->whereYear('reports.created_at', '!=', 2022)
-        ->whereYear('reports.created_at', '!=', 2023)
+            ->select(
+                'test_orders.id as test_order',
+                'test_orders.code as code',
+                'test_orders.created_at',
+                'test_orders.type_order_id as type_order_id',
+                'test_orders.is_urgent',
+                'test_orders.test_affiliate',
+                'reports.status as report_status',
+                'test_pathology_macros.id as test_pathology_macro_id'
+            )
+            // Jointure entre la table test-orders et reports
+            ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+            ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
+            ->leftJoin('test_pathology_macros', 'test_orders.id', '=', 'test_pathology_macros.id_test_pathology_order')
+            ->whereNull('test_pathology_macros.id')
+            // Filtrage des compte rendu en attente
+            ->where('reports.status', 0)
+            ->whereYear('reports.created_at', '!=', 2022)
+            ->whereYear('reports.created_at', '!=', 2023)
 
-        // Filtrage histologie ou biopsie
-        ->where(function ($query) {
-            $query
-            ->where('type_order_id', 6);
-        });
+            // Filtrage histologie ou biopsie
+            ->where(function ($query) {
+                $query
+                    ->where('type_order_id', 6);
+            });
 
-            $employees = $this->employees->all();
-            return DataTables::of($data)->addIndexColumn()
+        $employees = $this->employees->all();
+        return DataTables::of($data)->addIndexColumn()
 
             ->setRowData([
                 'data-mytag' => function ($data) {
@@ -860,39 +858,37 @@ public function __construct(
                 },
             ])
             ->setRowClass(function ($data) use ($request) {
-                if($data->is_urgent == 1){
-                        if (!empty($data->report)) {
-                            if($data->report->is_deliver ==1){
-                                return 'table-success';
-                            }else {
-                                if($data->report->status == 1){
-                                    return 'table-warning';
-                                }
+                if ($data->is_urgent == 1) {
+                    if (!empty($data->report)) {
+                        if ($data->report->is_deliver == 1) {
+                            return 'table-success';
+                        } else {
+                            if ($data->report->status == 1) {
+                                return 'table-warning';
                             }
-
                         }
-                            return 'table-danger urgent';
-
-                }elseif (!empty($data->report)) {
-                    if($data->report->is_deliver ==1){
+                    }
+                    return 'table-danger urgent';
+                } elseif (!empty($data->report)) {
+                    if ($data->report->is_deliver == 1) {
                         return 'table-success';
-                    }else {
-                        if($data->report->status == 1){
+                    } else {
+                        if ($data->report->status == 1) {
                             return 'table-warning';
                         }
                     }
-                }else {
+                } else {
                     return '';
                 }
             })
             ->addColumn('created', function ($data) {
-               $checkbox = "
+                $checkbox = "
                 <div class='form-check'>
                     <input type='checkbox' class='form-check-input'id='customCheck'>
-                    // <input type='checkbox' class='form-check-input'id='customCheck".$data->test_order."'>
+                    // <input type='checkbox' class='form-check-input'id='customCheck" . $data->test_order . "'>
                 </div>
                ";
-               return $checkbox;
+                return $checkbox;
             })
             ->addColumn('dateLim', function ($data) {
                 $formattedDate = Carbon::parse($data->created_at)->format('d-m-Y');
@@ -907,7 +903,7 @@ public function __construct(
             // })
 
             ->addColumn('code', function ($data) {
-                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                $reponse = $data->test_affiliate ? "/ " . $data->test_affiliate : "";
                 return $data->code . " " . $reponse;
             })
 
@@ -915,7 +911,7 @@ public function __construct(
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
-                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>";
+                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(" . $data->test_order . ",\"" . $escapedCode . "\")'>";
 
                 foreach ($employees as $employee) {
                     $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
@@ -931,49 +927,46 @@ public function __construct(
                     $query->where('type_order_id', $request->get('typeOrderId'));
                 }
             })
-            ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
+            ->rawColumns(['action', 'code', 'date', 'state', 'created', 'dateLim'])
             ->make(true);
     }
-
-
-
 
     // Histoligie Cytologie
     public function getTestOrdersforDatatableCytologie(Request $request)
     {
         $data = DB::table('test_orders')
-        ->select(
-            'test_orders.id as test_order',
-            'test_orders.code as code',
-            'test_orders.created_at',
-            'test_orders.type_order_id as type_order_id',
-            'test_orders.is_urgent',
-            'test_orders.test_affiliate',
-            'reports.status as report_status',
-            'test_pathology_macros.id as test_pathology_macro_id'
-        )
-        // Jointure entre la table test-orders et reports
-        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
-        ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
-        ->leftJoin('test_pathology_macros', 'test_orders.id', '=', 'test_pathology_macros.id_test_pathology_order')
-        ->whereNull('test_pathology_macros.id')
-        // Filtrage des compte rendu en attente
-        ->where('reports.status', 0)
-        ->whereYear('reports.created_at', '!=', 2022)
-        ->whereYear('reports.created_at', '!=', 2023)
+            ->select(
+                'test_orders.id as test_order',
+                'test_orders.code as code',
+                'test_orders.created_at',
+                'test_orders.type_order_id as type_order_id',
+                'test_orders.is_urgent',
+                'test_orders.test_affiliate',
+                'reports.status as report_status',
+                'test_pathology_macros.id as test_pathology_macro_id'
+            )
+            // Jointure entre la table test-orders et reports
+            ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+            ->join('type_orders', 'test_orders.type_order_id', '=', 'type_orders.id')
+            ->leftJoin('test_pathology_macros', 'test_orders.id', '=', 'test_pathology_macros.id_test_pathology_order')
+            ->whereNull('test_pathology_macros.id')
+            // Filtrage des compte rendu en attente
+            ->where('reports.status', 0)
+            ->whereYear('reports.created_at', '!=', 2022)
+            ->whereYear('reports.created_at', '!=', 2023)
 
-        // Filtrage histologie ou biopsie
-        ->where(function ($query) {
-            $query
-            ->where('type_order_id', 4);
-        });
-
-
+            // Filtrage histologie ou biopsie
+            ->where(function ($query) {
+                $query
+                    ->where('type_order_id', 4);
+            });
 
 
 
-            $employees = $this->employees->all();
-            return DataTables::of($data)->addIndexColumn()
+
+
+        $employees = $this->employees->all();
+        return DataTables::of($data)->addIndexColumn()
 
             ->setRowData([
                 'data-mytag' => function ($data) {
@@ -987,38 +980,38 @@ public function __construct(
                 },
             ])
             ->setRowClass(function ($data) use ($request) {
-                if($data->is_urgent == 1){
-                        if (!empty($data->report)) {
-                            if($data->report->is_deliver ==1){
-                                return 'table-success';
-                            }else {
-                                if($data->report->status == 1){
-                                    return 'table-warning';
-                                }
+                if ($data->is_urgent == 1) {
+                    if (!empty($data->report)) {
+                        if ($data->report->is_deliver == 1) {
+                            return 'table-success';
+                        } else {
+                            if ($data->report->status == 1) {
+                                return 'table-warning';
                             }
                         }
+                    }
 
                     return 'table-danger urgent';
-                }elseif (!empty($data->report)) {
-                    if($data->report->is_deliver ==1){
+                } elseif (!empty($data->report)) {
+                    if ($data->report->is_deliver == 1) {
                         return 'table-success';
-                    }else {
-                        if($data->report->status == 1){
+                    } else {
+                        if ($data->report->status == 1) {
                             return 'table-warning';
                         }
                     }
-                }else {
+                } else {
                     return '';
                 }
             })
             ->addColumn('created', function ($data) {
-               $checkbox = "
+                $checkbox = "
                 <div class='form-check'>
                     <input type='checkbox' class='form-check-input'id='customCheck'>
-                    // <input type='checkbox' class='form-check-input'id='customCheck".$data->test_order."'>
+                    // <input type='checkbox' class='form-check-input'id='customCheck" . $data->test_order . "'>
                 </div>
                ";
-               return $checkbox;
+                return $checkbox;
             })
             ->addColumn('dateLim', function ($data) {
                 $formattedDate = Carbon::parse($data->created_at)->format('d-m-Y');
@@ -1033,14 +1026,14 @@ public function __construct(
             // })
 
             ->addColumn('code', function ($data) {
-                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                $reponse = $data->test_affiliate ? "/ " . $data->test_affiliate : "";
                 return $data->code . " " . $reponse;
             })
 
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
-                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>";
+                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(" . $data->test_order . ",\"" . $escapedCode . "\")'>";
 
                 foreach ($employees as $employee) {
                     $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
@@ -1056,25 +1049,21 @@ public function __construct(
                     $query->where('type_order_id', $request->get('typeOrderId'));
                 }
             })
-            ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
+            ->rawColumns(['action', 'code', 'date', 'state', 'created', 'dateLim'])
             ->make(true);
     }
 
-
-
-
-
     public function getTestOrdersforDatatable_immuno(Request $request)
     {
-        $data = $this->macro->with(['order','employee','user'])
-        ->whereHas('order', function ($query) {
-            $query->whereHas('type', function($query) {
-                $query->where('slug','immuno-interne')
-                      ->orwhere('slug','immuno-exterme')->where('status', 1)
-                      ->whereNull('deleted_at');
+        $data = $this->macro->with(['order', 'employee', 'user'])
+            ->whereHas('order', function ($query) {
+                $query->whereHas('type', function ($query) {
+                    $query->where('slug', 'immuno-interne')
+                        ->orwhere('slug', 'immuno-exterme')->where('status', 1)
+                        ->whereNull('deleted_at');
                 });
-        })
-        ->orderBy('created_at', 'desc');
+            })
+            ->orderBy('created_at', 'desc');
 
         return DataTables::of($data)->addIndexColumn()
 
@@ -1090,28 +1079,26 @@ public function __construct(
                 },
             ])
             ->setRowClass(function ($data) use ($request) {
-                if($data->is_urgent == 1){
-                        if (!empty($data->report)) {
-                            if($data->report->is_deliver ==1){
-                                return 'table-success';
-                            }else {
-                                if($data->report->status == 1){
-                                    return 'table-warning';
-                                }
+                if ($data->is_urgent == 1) {
+                    if (!empty($data->report)) {
+                        if ($data->report->is_deliver == 1) {
+                            return 'table-success';
+                        } else {
+                            if ($data->report->status == 1) {
+                                return 'table-warning';
                             }
-
                         }
-                            return 'table-danger urgent';
-
-                }elseif (!empty($data->report)) {
-                    if($data->report->is_deliver ==1){
+                    }
+                    return 'table-danger urgent';
+                } elseif (!empty($data->report)) {
+                    if ($data->report->is_deliver == 1) {
                         return 'table-success';
-                    }else {
-                        if($data->report->status == 1){
+                    } else {
+                        if ($data->report->status == 1) {
                             return 'table-warning';
                         }
                     }
-                }else {
+                } else {
                     return '';
                 }
             })
@@ -1119,23 +1106,23 @@ public function __construct(
             ->addColumn('created', function ($data) {
                 $checkbox = "
                  <div class='form-check'>
-                     <input type='checkbox' class='form-check-input'id='custom".$data->test_order."'>
-                     // <input type='checkbox' class='form-check-input'id='custom".$data->test_order."'>
+                     <input type='checkbox' class='form-check-input'id='custom" . $data->test_order . "'>
+                     // <input type='checkbox' class='form-check-input'id='custom" . $data->test_order . "'>
                  </div>
                 ";
                 return $checkbox;
-             })
+            })
 
             ->addColumn('action', function ($data) {
-               $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
+                $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
 
-                return !isAffecte($data->order->id) ? $btnDelete :'';
+                return !isAffecte($data->order->id) ? $btnDelete : '';
             })
             // ->addColumn('code', function ($data) {
             //     return $data->order->code;
             // })
             ->addColumn('code', function ($data) {
-                $reponse = $data->order->test_affiliate ? "/ ".$data->order->test_affiliate : "";
+                $reponse = $data->order->test_affiliate ? "/ " . $data->order->test_affiliate : "";
                 return $data->order->code . " " . $reponse;
             })
             ->addColumn('add_by', function ($data) {
@@ -1164,7 +1151,7 @@ public function __construct(
                     // Utilisation de htmlspecialchars pour échapper les caractères spéciaux
                     $escapedCode = htmlspecialchars($data->order->code, ENT_QUOTES, 'UTF-8');
                     $select .= "
-                        <select name='id_test_pathology_order".$data->id."' onchange='changeState(".$data->id.",\"".$escapedCode."\")' id='id_test_pathology_order".$data->id."' class='form-select select2' data-toggle='select2'>
+                        <select name='id_test_pathology_order" . $data->id . "' onchange='changeState(" . $data->id . ",\"" . $escapedCode . "\")' id='id_test_pathology_order" . $data->id . "' class='form-select select2' data-toggle='select2'>
                             <option value=''>Sélectionner un étape</option>";
 
                     if (!$data->circulation) {
@@ -1189,7 +1176,7 @@ public function __construct(
                 return $select;
             })
 
-            ->filter(function ($query) use ($request,$data) {
+            ->filter(function ($query) use ($request, $data) {
 
                 if (!empty($request->get('id_test_pathology_order'))) {
                     $query->where('id_test_pathology_order', $request->get('id_test_pathology_order'));
@@ -1198,65 +1185,62 @@ public function __construct(
                     $query->where('id_employee', $request->get('id_employee'));
                 }
 
-                if(!empty($request->get('date'))){
+                if (!empty($request->get('date'))) {
                     //dd($request);
-                    $query->whereDate('created_at','like',$request->get('date'))
-                    ->orwhereDate('updated_at','like',$request->get('date'));
+                    $query->whereDate('created_at', 'like', $request->get('date'))
+                        ->orwhereDate('updated_at', 'like', $request->get('date'));
                 }
-
             })
-            ->rawColumns(['action','code', 'add_by', 'state', 'date_macro', 'date_montage','created'])
+            ->rawColumns(['action', 'code', 'add_by', 'state', 'date_macro', 'date_montage', 'created'])
             ->make(true);
     }
 
     // Debut
     public function getTestOrdersforDatatable2_immuno(Request $request)
     {
-
-
         $data = DB::table('test_orders')
-        ->select(
-            'test_orders.id as test_order',
-            'test_orders.code as code',
-            'test_orders.created_at',
-            'test_orders.is_urgent',
-            'test_orders.test_affiliate',
-            'reports.status as report_status',
-            'test_pathology_macros.id as test_pathology_macro_id'
-        )
-        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
-        ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
-        ->where(function ($query) {
-            $query->where('test_orders.is_urgent', 1)
-                ->where('reports.status', 0)
-                ->whereNotExists(function ($subquery) {
-                    $subquery->select(DB::raw(1))
+            ->select(
+                'test_orders.id as test_order',
+                'test_orders.code as code',
+                'test_orders.created_at',
+                'test_orders.is_urgent',
+                'test_orders.test_affiliate',
+                'reports.status as report_status',
+                'test_pathology_macros.id as test_pathology_macro_id'
+            )
+            ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+            ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
+            ->where(function ($query) {
+                $query->where('test_orders.is_urgent', 1)
+                    ->where('reports.status', 0)
+                    ->whereNotExists(function ($subquery) {
+                        $subquery->select(DB::raw(1))
                             ->from('test_pathology_macros')
                             ->whereRaw('id_test_pathology_order = test_orders.id');
-                });
-        })
-        ->whereHas('type', function($query) {
-            $query->where('slug','immuno-interne')
-                ->orwhere('slug','immuno-exterme');
-        })
-        ->orWhere(function ($query) {
-            $query->where('reports.status', 0)
-                ->whereNotExists(function ($subquery) {
-                    $subquery->select(DB::raw(1))
+                    });
+            })
+            ->whereHas('type', function ($query) {
+                $query->where('slug', 'immuno-interne')
+                    ->orwhere('slug', 'immuno-exterme');
+            })
+            ->orWhere(function ($query) {
+                $query->where('reports.status', 0)
+                    ->whereNotExists(function ($subquery) {
+                        $subquery->select(DB::raw(1))
                             ->from('test_pathology_macros')
                             ->whereRaw('id_test_pathology_order = test_orders.id');
-                })
-                ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
-        })
-        ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
-        ->orderBy('test_orders.created_at')
-        ->get();
+                    })
+                    ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+            })
+            ->whereYear('test_orders.created_at', '!=', 2022)
+            ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
+            ->orderBy('test_orders.created_at')
+            ->get();
 
 
 
-                $employees = $this->employees->all();
-            return DataTables::of($data)->addIndexColumn()
+        $employees = $this->employees->all();
+        return DataTables::of($data)->addIndexColumn()
 
             ->setRowData([
                 'data-mytag' => function ($data) {
@@ -1270,28 +1254,26 @@ public function __construct(
                 },
             ])
             ->setRowClass(function ($data) use ($request) {
-                if($data->is_urgent == 1){
-                        if (!empty($data->report)) {
-                            if($data->report->is_deliver ==1){
-                                return 'table-success';
-                            }else {
-                                if($data->report->status == 1){
-                                    return 'table-warning';
-                                }
+                if ($data->is_urgent == 1) {
+                    if (!empty($data->report)) {
+                        if ($data->report->is_deliver == 1) {
+                            return 'table-success';
+                        } else {
+                            if ($data->report->status == 1) {
+                                return 'table-warning';
                             }
-
                         }
-                            return 'table-danger urgent';
-
-                }elseif (!empty($data->report)) {
-                    if($data->report->is_deliver ==1){
+                    }
+                    return 'table-danger urgent';
+                } elseif (!empty($data->report)) {
+                    if ($data->report->is_deliver == 1) {
                         return 'table-success';
-                    }else {
-                        if($data->report->status == 1){
+                    } else {
+                        if ($data->report->status == 1) {
                             return 'table-warning';
                         }
                     }
-                }else {
+                } else {
                     return '';
                 }
             })
@@ -1313,13 +1295,13 @@ public function __construct(
             //     return $data->code;
             // })
             ->addColumn('code', function ($data) {
-                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                $reponse = $data->test_affiliate ? "/ " . $data->test_affiliate : "";
                 return $data->code . " " . $reponse;
             })
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
-                    <select name='id_employee' id='{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>
+                    <select name='id_employee' id='{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(" . $data->test_order . ",\"" . $escapedCode . "\")'>
                         <option value=''>Tous les laborantins</option>";
 
                 foreach ($employees as $employee) {
@@ -1331,59 +1313,56 @@ public function __construct(
 
                 return $select;
             })
-            ->filter(function ($query) use ($request,$data) {
-
-            })
-            ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
+            ->filter(function ($query) use ($request, $data) {})
+            ->rawColumns(['action', 'code', 'date', 'state', 'created', 'dateLim'])
             ->make(true);
     }
+
     public function getTestOrdersforDatatable3_immuno(Request $request)
     {
-
-
         $data = DB::table('test_orders')
-        ->select(
-            'test_orders.id as test_order',
-            'test_orders.code as code',
-            'test_orders.created_at',
-            'test_orders.is_urgent',
-            'test_orders.test_affiliate',
-            'reports.status as report_status',
-            'test_pathology_macros.id as test_pathology_macro_id'
-        )
-        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
-        ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
-        ->where(function ($query) {
-            $query->where('test_orders.is_urgent', 1)
-                ->where('reports.status', 0)
-                ->whereNotExists(function ($subquery) {
-                    $subquery->select(DB::raw(1))
+            ->select(
+                'test_orders.id as test_order',
+                'test_orders.code as code',
+                'test_orders.created_at',
+                'test_orders.is_urgent',
+                'test_orders.test_affiliate',
+                'reports.status as report_status',
+                'test_pathology_macros.id as test_pathology_macro_id'
+            )
+            ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+            ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
+            ->where(function ($query) {
+                $query->where('test_orders.is_urgent', 1)
+                    ->where('reports.status', 0)
+                    ->whereNotExists(function ($subquery) {
+                        $subquery->select(DB::raw(1))
                             ->from('test_pathology_macros')
                             ->whereRaw('id_test_pathology_order = test_orders.id');
-                });
-        })
-        ->whereHas('type', function($query) {
-            $query->where('slug','immuno-interne')
-                    ->orwhere('slug','immuno-exterme');
-        })
-        ->orWhere(function ($query) {
-            $query->where('reports.status', 0)
-                ->whereNotExists(function ($subquery) {
-                    $subquery->select(DB::raw(1))
+                    });
+            })
+            ->whereHas('type', function ($query) {
+                $query->where('slug', 'immuno-interne')
+                    ->orwhere('slug', 'immuno-exterme');
+            })
+            ->orWhere(function ($query) {
+                $query->where('reports.status', 0)
+                    ->whereNotExists(function ($subquery) {
+                        $subquery->select(DB::raw(1))
                             ->from('test_pathology_macros')
                             ->whereRaw('id_test_pathology_order = test_orders.id');
-                })
-                ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
-        })
-        ->whereYear('test_orders.created_at', '!=', 2022)
-        // ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
-        ->orderBy('test_orders.created_at')
-        ->get();
+                    })
+                    ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+            })
+            ->whereYear('test_orders.created_at', '!=', 2022)
+            // ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
+            ->orderBy('test_orders.created_at')
+            ->get();
 
 
 
-                $employees = $this->employees->all();
-            return DataTables::of($data)->addIndexColumn()
+        $employees = $this->employees->all();
+        return DataTables::of($data)->addIndexColumn()
 
             ->setRowData([
                 'data-mytag' => function ($data) {
@@ -1397,40 +1376,38 @@ public function __construct(
                 },
             ])
             ->setRowClass(function ($data) use ($request) {
-                if($data->is_urgent == 1){
-                        if (!empty($data->report)) {
-                            if($data->report->is_deliver ==1){
-                                return 'table-success';
-                            }else {
-                                if($data->report->status == 1){
-                                    return 'table-warning';
-                                }
+                if ($data->is_urgent == 1) {
+                    if (!empty($data->report)) {
+                        if ($data->report->is_deliver == 1) {
+                            return 'table-success';
+                        } else {
+                            if ($data->report->status == 1) {
+                                return 'table-warning';
                             }
-
                         }
-                            return 'table-danger urgent';
-
-                }elseif (!empty($data->report)) {
-                    if($data->report->is_deliver ==1){
+                    }
+                    return 'table-danger urgent';
+                } elseif (!empty($data->report)) {
+                    if ($data->report->is_deliver == 1) {
                         return 'table-success';
-                    }else {
-                        if($data->report->status == 1){
+                    } else {
+                        if ($data->report->status == 1) {
                             return 'table-warning';
                         }
                     }
-                }else {
+                } else {
                     return '';
                 }
             })
 
             ->addColumn('created', function ($data) {
-               $checkbox = "
+                $checkbox = "
                 <div class='form-check'>
                     <input type='checkbox' class='form-check-input'id='customCheck'>
-                    // <input type='checkbox' class='form-check-input'id='customCheck".$data->test_order_id."'>
+                    // <input type='checkbox' class='form-check-input'id='customCheck" . $data->test_order_id . "'>
                 </div>
                ";
-               return $checkbox;
+                return $checkbox;
             })
             ->addColumn('dateLim', function ($data) {
                 $formattedDate = Carbon::parse($data->created_at)->format('d-m-Y');
@@ -1443,14 +1420,14 @@ public function __construct(
             //     return $data->code;
             // })
             ->addColumn('code', function ($data) {
-                $reponse = $data->test_affiliate ? "/ ".$data->test_affiliate : "";
+                $reponse = $data->test_affiliate ? "/ " . $data->test_affiliate : "";
                 return $data->code . " " . $reponse;
             })
             ->addColumn('state', function ($data) use ($employees) {
                 $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
                 $select = "
 
-                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(".$data->test_order.",\"".$escapedCode."\")'>";
+                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(" . $data->test_order . ",\"" . $escapedCode . "\")'>";
 
 
                 foreach ($employees as $employee) {
@@ -1462,75 +1439,77 @@ public function __construct(
 
                 return $select;
             })
-            ->filter(function ($query) use ($request,$data) {
-
-            })
-            ->rawColumns(['action','code', 'date', 'state','created','dateLim'])
+            ->filter(function ($query) use ($request, $data) {})
+            ->rawColumns(['action', 'code', 'date', 'state', 'created', 'dateLim'])
             ->make(true);
     }
 
-    public function countData() {
+    public function countData()
+    {
         $data = DB::table('test_orders')
-        ->select(
-            'test_orders.id as test_order',
-            'test_orders.code as code',
-            'test_orders.created_at',
-            'test_orders.is_urgent',
-            'reports.status as report_status',
-            'test_pathology_macros.id as test_pathology_macro_id'
-        )
-        ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
-        ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
-        ->where(function ($query) {
-            $query->where('test_orders.is_urgent', 1)
-                ->where('reports.status', 0)
-                ->whereNotExists(function ($subquery) {
-                    $subquery->select(DB::raw(1))
+            ->select(
+                'test_orders.id as test_order',
+                'test_orders.code as code',
+                'test_orders.created_at',
+                'test_orders.is_urgent',
+                'reports.status as report_status',
+                'test_pathology_macros.id as test_pathology_macro_id'
+            )
+            ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+            ->leftJoin('test_pathology_macros', 'reports.id', '=', 'test_pathology_macros.id_test_pathology_order')
+            ->where(function ($query) {
+                $query->where('test_orders.is_urgent', 1)
+                    ->where('reports.status', 0)
+                    ->whereNotExists(function ($subquery) {
+                        $subquery->select(DB::raw(1))
                             ->from('test_pathology_macros')
                             ->whereRaw('id_test_pathology_order = test_orders.id');
-                });
-        })
-        ->orWhere(function ($query) {
-            $query->where('reports.status', 0)
-                ->whereNotExists(function ($subquery) {
-                    $subquery->select(DB::raw(1))
+                    });
+            })
+            ->orWhere(function ($query) {
+                $query->where('reports.status', 0)
+                    ->whereNotExists(function ($subquery) {
+                        $subquery->select(DB::raw(1))
                             ->from('test_pathology_macros')
                             ->whereRaw('id_test_pathology_order = test_orders.id');
-                })
-                ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
-        })
-        ->whereYear('test_orders.created_at', '!=', 2022)
-        ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
-        ->orderBy('test_orders.created_at')
-        ->count();
+                    })
+                    ->whereRaw('DATE_ADD(test_orders.created_at, INTERVAL 10 DAY) <= DATE(NOW() + INTERVAL 1 DAY)');
+            })
+            ->whereYear('test_orders.created_at', '!=', 2022)
+            ->orderByDesc('test_orders.is_urgent') // Ajout de cette ligne pour trier par ordre décroissant selon is_urgent
+            ->orderBy('test_orders.created_at')
+            ->count();
         return response()->json($data);
     }
 
-    public function create() {
-        $orders = $this->testOrder->whereHas('type', function($query) {
-            $query->where('slug','cytologie')
-                    ->orwhere('slug','histologie')
-                    ->orwhere('slug','biopsie')
-                    ->orwhere('slug','pièce-opératoire')
-                    ->where('status', 1) // Statut différent de 0
-                    ->whereNull('deleted_at'); // deleted_at doit être NULL;
+    public function create()
+    {
+        $orders = $this->testOrder->whereHas('type', function ($query) {
+            $query->where('slug', 'cytologie')
+                ->orwhere('slug', 'histologie')
+                ->orwhere('slug', 'biopsie')
+                ->orwhere('slug', 'pièce-opératoire')
+                ->where('status', 1) // Statut différent de 0
+                ->whereNull('deleted_at'); // deleted_at doit être NULL;
         })->get();
         $employees = $this->employees->all();
         return view('macro.create', array_merge(compact('orders', 'employees')));
     }
 
-    public function create_immuno() {
-        $orders = $this->testOrder->whereHas('type', function($query) {
-            $query->where('slug','immuno-interne')
-                    ->orwhere('slug','immuno-exterme')
-                    ->where('status', 1) // Statut différent de 0
-                    ->whereNull('deleted_at'); // deleted_at doit être NULL;
+    public function create_immuno()
+    {
+        $orders = $this->testOrder->whereHas('type', function ($query) {
+            $query->where('slug', 'immuno-interne')
+                ->orwhere('slug', 'immuno-exterme')
+                ->where('status', 1) // Statut différent de 0
+                ->whereNull('deleted_at'); // deleted_at doit être NULL;
         })->get();
         $employees = $this->employees->all();
         return view('macro.create_immuno', array_merge(compact('orders', 'employees')));
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $orders = $request->orders;
 
         foreach ($orders as $key => $order) {
@@ -1544,43 +1523,43 @@ public function __construct(
 
         return redirect()->route('macro.index')->with('sucess', "Enregistrement effectué avec succès");
     }
-    public function store2(Request $request) {
-        // dd($request);
-
-            $macro = new test_pathology_macro();
-            $macro->id_employee = $request->id_employee;
-            $macro->date = Carbon::now();
-            $macro->user_id = Auth::user()->id;
-            if ($request->id != null) {
-                $macro->id_test_pathology_order = $request->id;
-            }else {
-                $order = $this->testOrder->where('code',$request->code)->first();
-                $macro->id_test_pathology_order = $order->id;
-            }
-            $macro->save();
+    public function store2(Request $request)
+    {
+        $macro = new test_pathology_macro();
+        $macro->id_employee = $request->id_employee;
+        $macro->date = Carbon::now();
+        $macro->user_id = Auth::user()->id;
+        if ($request->id != null) {
+            $macro->id_test_pathology_order = $request->id;
+        } else {
+            $order = $this->testOrder->where('code', $request->code)->first();
+            $macro->id_test_pathology_order = $order->id;
+        }
+        $macro->save();
 
         return response()->json(200);
     }
 
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
 
         $macro = $this->macro->find($request->id);
 
         if ($request->state == 'circulation') {
             $macro->circulation = true;
-        }else if($request->state == 'embedding') {
+        } else if ($request->state == 'embedding') {
             $macro->circulation = true;
             $macro->embedding = true;
-        }else if($request->state == 'microtomy_spreading') {
+        } else if ($request->state == 'microtomy_spreading') {
             $macro->circulation = true;
             $macro->embedding = true;
             $macro->microtomy_spreading = true;
-        }else if($request->state == 'staining') {
+        } else if ($request->state == 'staining') {
             $macro->circulation = true;
             $macro->embedding = true;
             $macro->microtomy_spreading = true;
             $macro->staining = true;
-        }else if($request->state == 'mounting') {
+        } else if ($request->state == 'mounting') {
             $macro->circulation = true;
             $macro->embedding = true;
             $macro->microtomy_spreading = true;
@@ -1591,8 +1570,9 @@ public function __construct(
 
         return response()->json($macro);
     }
-    public function destroy($id) {
 
+    public function destroy($id)
+    {
         $macro = $this->macro->find($id);
         $macro->delete();
         return redirect()->route('macro.index')->with('sucess', "Enregistrement effectué avec succès");

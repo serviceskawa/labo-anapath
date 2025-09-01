@@ -25,9 +25,6 @@
                 </div> --}}
                 <h4 class="page-title">Affectation des comptes rendu</h4>
             </div>
-
-            <!----MODAL---->
-
         </div>
     </div>
 
@@ -38,8 +35,7 @@
         <div class="card mb-md-0 mb-3">
             <div class="card-body">
 
-                <form method="POST" action="{{route('report.assignment.store')}}" autocomplete="off">
-
+                <form method="POST" action="{{ route('report.assignment.store') }}" autocomplete="off">
                     @csrf
                     <div class="row d-flex align-items-end">
                         <div class="col-md-5 col-12">
@@ -49,16 +45,14 @@
                                 <select class="form-select select2" data-toggle="select2" required id="user_id"
                                     name="user_id" required>
                                     <option value="">Sélectionner un docteur</option>
-                                    @forelse (getUsersByRole('docteur') as $user)
+                                    {{-- @forelse (getUsersByRole('docteur') as $user)
                                         <option value="{{ $user->id }}">{{ $user->fullname() }}</option>
                                     @empty
                                         Ajouter un utilisateur avec le rôle docteur
-                                    @endforelse
+                                    @endforelse --}}
                                 </select>
                             </div>
                         </div>
-
-
 
                         <div class="col-md-4 col-12">
                             <div class="mb-3">
@@ -66,7 +60,6 @@
                             </div>
                         </div>
                     </div>
-
                 </form>
 
                 <div class="row">
@@ -74,33 +67,35 @@
                         <div class="mb-3">
                             <label for="example-select" class="form-label">Demande d'examen<span
                                     style="color:red;">*</span></label>
-                                    <select name="id_test_pathology_order" id="id_test_pathology_order" class="form-select select2" data-toggle="select2">
-                                        <option value="">Toutes les demandes</option>
-                                        @forelse ($orders as $order)
-                                            <option value="{{ $order->id }}">{{ $order->code }} {{ $order->test_affiliate ? "(".$order->test_affiliate.")" : "" }}</option>
-                                        @empty
-                                        @endforelse
-                                    </select>
+                            <select name="id_test_pathology_order" id="id_test_pathology_order" class="form-select select2"
+                                data-toggle="select2">
+                                <option value="">Toutes les demandes</option>
+                                {{-- @forelse ($orders as $order)
+                                    <option value="{{ $order->id }}">{{ $order->code }}
+                                        {{ $order->test_affiliate ? '(' . $order->test_affiliate . ')' : '' }}</option>
+                                @empty
+                                @endforelse --}}
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-4 col-12">
                         <div class="mb-3">
-                            <label for="example-select" class="form-label">Docteur<span
-                                    style="color:red;">*</span></label>
+                            <label for="example-select" class="form-label">Docteur<span style="color:red;">*</span></label>
                             <select class="form-select select2" data-toggle="select2" required id="id_doctor">
                                 <option value="">Sélectionner un docteur</option>
-                                @forelse (getUsersByRole('docteur') as $user)
+                                {{-- @forelse (getUsersByRole('docteur') as $user)
                                     <option value="{{ $user->id }}">{{ $user->fullname() }}</option>
                                 @empty
                                     Ajouter un utilisateur avec le rôle docteur
-                                @endforelse
+                                @endforelse --}}
                             </select>
                         </div>
                     </div>
                     <div class="col-md-4 col-12">
                         <div class="mb-3">
                             <label for="example-fileinput" class="form-label">Rechercher</label>
-                            <input type="text" name="contenu" id="contenu" placeholder="Notes des affectations" class="form-control">
+                            <input type="text" name="contenu" id="contenu" placeholder="Notes des affectations"
+                                class="form-control">
                         </div>
                     </div>
                 </div>
@@ -135,7 +130,7 @@
                                             <i class="uil-eye"></i>
                                         </a>
 
-                                        @if ($assignment->details()->count()>=1)
+                                        @if ($assignment->details()->count() >= 1)
                                             <a class="btn btn-warning" href="{{route('report.assignment.print',$assignment->id)}}">
                                                 <i class="mdi mdi-printer"></i>
                                             </a>
@@ -149,17 +144,113 @@
 
                 </div>
             </div>
-        </div> <!-- end card-->
-
+        </div> 
     </div>
 @endsection
 
 @push('extra-js')
+    <script>
+        var ROUTETESTORDERDATATABLE = "{{ route('assignment.getTestOrdersforDatatable') }}"
+        var TOKENSTOREDOCTOR = "{{ csrf_token() }}"
+        var ROUTESEARCHORDERS = "{{ route('search.orders.assignment') }}"
+        var ROUTESEARCHDORCTORS = "{{ route('search.doctors.assignment') }}"
+    </script>
 
-<script>
-            var ROUTETESTORDERDATATABLE = "{{ route('assignment.getTestOrdersforDatatable') }}"
-            var TOKENSTOREDOCTOR = "{{ csrf_token() }}"
-</script>
+    <script>
+        $('#id_test_pathology_order').select2({
+            ajax: {
+                url: ROUTESEARCHORDERS,
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        search: params.term,
+                        page: params.page || 1,
+                        limit: 20
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data.data.map(function(order) {
+                            return {
+                                id: order.id,
+                                text: order.code + (order.test_affiliate ? ' (' + order.test_affiliate +
+                                    ')' : '')
+                            };
+                        }),
+                        pagination: {
+                            more: data.has_more
+                        }
+                    };
+                }
+            },
+            minimumInputLength: 2,
+            placeholder: 'Tapez pour rechercher une demande...'
+        });
+
+        $('#id_doctor').select2({
+            ajax: {
+                url: ROUTESEARCHDORCTORS,
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        search: params.term,
+                        page: params.page || 1,
+                        limit: 20
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data.data.map(function(doctor) {
+                            return {
+                                id: doctor.id,
+                                text: doctor.fullname
+                            };
+                        }),
+                        pagination: {
+                            more: data.has_more
+                        }
+                    };
+                }
+            },
+            minimumInputLength: 2,
+            placeholder: 'Tapez pour rechercher un docteur...',
+            allowClear: true
+        });
+
+        $('#user_id').select2({
+            ajax: {
+                url: ROUTESEARCHDORCTORS,
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        search: params.term,
+                        page: params.page || 1,
+                        limit: 20
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data.data.map(function(doctor) {
+                            return {
+                                id: doctor.id,
+                                text: doctor.fullname
+                            };
+                        }),
+                        pagination: {
+                            more: data.has_more
+                        }
+                    };
+                }
+            },
+            minimumInputLength: 2,
+            placeholder: 'Tapez pour rechercher un docteur...',
+            allowClear: true
+        });
+    </script>
+
     <script>
         /* DATATABLE */
         $(document).ready(function() {
@@ -226,7 +317,7 @@
                 ],
 
             });
-             // Recherche selon les types d'examen
+            // Recherche selon les types d'examen
             $("#id_test_pathology_order").on("change", function() {
                 // alert(this.value)
                 table.draw();
@@ -241,7 +332,6 @@
                 // alert(this.value)
                 table.draw();
             });
-        } );
+        });
     </script>
-
 @endpush

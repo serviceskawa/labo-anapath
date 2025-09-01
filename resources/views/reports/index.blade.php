@@ -7,11 +7,7 @@
     <div class="col-12">
         <div class="page-title-box">
             <h4 class="page-title">Comptes rendu</h4>
-
         </div>
-
-        <!----MODAL---->
-
     </div>
 </div>
 
@@ -81,8 +77,6 @@
                     </div>
                 </div>
 
-
-
                 <table id="datatable1" class="table-striped dt-responsive nowrap w-100 table">
                     <thead>
                         <tr>
@@ -96,23 +90,14 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-
-
                 </table>
-
             </div>
         </div>
-    </div> <!-- end card-->
-
-
-
-
+    </div>
 
     <div class="card mb-md-0 mt-5">
         <div class="card-body">
-
             <div class="d-flex justify-content-between mb-3">
-
                 <div class="">
                     <button type="button" class="btn btn-primary" id="deleteSelectedRows"
                         style="display: none;">Terminer la Macroscopie</button>
@@ -162,7 +147,6 @@
                             </select>
                         </div>
 
-
                         <div class="col-lg-3">
                             <label for="example-fileinput" class="form-label">Doctor</label>
                             <select name="doctor" id="doctor" class="form-control">
@@ -174,11 +158,6 @@
                                 @endforeach
                             </select>
                         </div>
-
-
-
-
-
                         <div class="col-lg-3" style="margin-top : 25px;">
                             <button type="submit" class="btn btn-success">Filtrer</button>
                         </div>
@@ -195,14 +174,19 @@
                                 <th>Comptes sortis</th>
                                 <th>Délai respecté</th>
                                 <th>Hors Délai</th>
+                                <th>Chiffre d'Affaire</th>
+                                <th>Commission</th>
                             </tr>
                         </thead>
+
                         <tfoot>
                             <tr>
                                 <td>{{ $month }} - {{ $year }}</td>
                                 <td>{{ $report_nbres }}</td>
                                 <td>{{ $percentageIn_Deadline }}%</td>
                                 <td>{{ $percentageOver_Deadline }}%</td>
+                                <td>{{ $totalSum }}</td>
+                                <td>{{ $totalSum * ($commission / 100) }}</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -211,17 +195,13 @@
         </div>
     </div>
 
-
-
-
 </div>
 @endsection
 
 @push('extra-js')
 <script>
     var baseUrl = "{{url('/')}}"
-       var ROUTEGETDATATABLE = "{{ route('report.getReportsforDatatable') }}"
-
+    var ROUTEGETDATATABLE = "{{ route('report.getReportsforDatatable') }}"
 </script>
 <script src="{{asset('viewjs/report/index.js')}}"></script>
 @endpush

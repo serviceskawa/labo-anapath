@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\TFAuthNotification;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
@@ -53,7 +54,7 @@ class TFAuthController extends Controller
         $user = $user->findorfail($this->userConnect->id);
         $user->opt = $this->caesar_cipher_int($opt, 3);
         $user->save();
-        
+
         $data = [
             'name' => $user->firstname,
             'lastname' => $user->lastname,
@@ -134,4 +135,72 @@ class TFAuthController extends Controller
         return intval($deciphered_message);
     }
 
+    // NOUVELLE MÉTHODE : Afficher la page de sélection des branches
+    public function selectBranch()
+    {
+        // Vérifier que l'utilisateur a passé la 2FA
+        if (!Session::has('user_2fa') || Session::get('user_2fa') != auth()->id()) {
+            return redirect()->route('login');
+        }
+
+        $user = auth()->user();
+
+        // Récupérer les branches de l'utilisateur
+        $branches = DB::table('branch_user')
+            ->join('branches', 'branch_user.branch_id', '=', 'branches.id')
+            ->where('branch_user.user_id', $user->id)
+            ->select('branches.*', 'branch_user.is_default')
+            ->orderBy('branch_user.is_default', 'desc') // Les branches par défaut en premier
+            ->get();
+
+        // Si l'utilisateur n'a aucune branche
+        if ($branches->isEmpty()) {
+            auth()->logout();
+            return redirect()->route('login')->withErrors(['Aucune branche n\'est assignée à votre compte. Contactez l\'administrateur.']);
+        }
+
+        // Si l'utilisateur n'a qu'une seule branche, la sélectionner automatiquement
+        if ($branches->count() == 1) {
+            Session::put('selected_branch_id', $branches->first()->id);
+            Session::put('selected_branch_name', $branches->first()->name);
+            return redirect('/home');
+        }
+
+        return view('auth.select-branch', compact('user', 'branches'));
+    }
+
+    // NOUVELLE MÉTHODE : Enregistrer la branche sélectionnée
+    public function storeBranch(Request $request)
+    {
+        $request->validate([
+            'branch_id' => 'required|integer|exists:branches,id'
+        ]);
+
+        // Vérifier que l'utilisateur a passé la 2FA
+        if (!Session::has('user_2fa') || Session::get('user_2fa') != auth()->id()) {
+            return redirect()->route('login');
+        }
+
+        $user = auth()->user();
+
+        // Vérifier que l'utilisateur a accès à cette branche
+        $branchExists = DB::table('branch_user')
+            ->where('user_id', $user->id)
+            ->where('branch_id', $request->branch_id)
+            ->exists();
+
+        if (!$branchExists) {
+            return back()->withErrors(['Vous n\'avez pas accès à cette branche.']);
+        }
+
+        // Récupérer les informations de la branche
+        $branch = DB::table('branches')->where('id', $request->branch_id)->first();
+
+        // Enregistrer en session
+        Session::put('selected_branch_id', $request->branch_id);
+        Session::put('selected_branch_name', $branch->name);
+
+        // Rediriger vers le dashboard
+        return redirect('/home');
+    }
 }

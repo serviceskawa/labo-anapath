@@ -9,7 +9,9 @@ use App\Models\Patient;
 use App\Models\PrestationOrder;
 use App\Models\Setting;
 use App\Models\TestOrder;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 
 class PatientController extends Controller
 {
@@ -35,10 +37,62 @@ class PatientController extends Controller
         if (!getOnlineUser()->can('view-patients')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $patients = $this->patients->latest()->get();
+        // $patients = $this->patients->latest()->get();
         $setting = $this->setting->find(1);
         config(['app.name' => $setting->titre]);
-        return view('patients.index', compact(['patients']));
+        return view('patients.index');
+    }
+
+
+    public function getPatientsforDatatable(Request $request)
+    {
+        $data = $this->patients->latest();
+        return DataTables::of($data)
+            ->addIndexColumn()
+
+            ->editColumn('code', function ($data) {
+                return $data?->code;
+            })
+
+            ->addColumn('patient', function ($data) {
+                return $data->firstname . ' ' . $data->lastname;
+            })
+
+            ->addColumn('telephone', function ($data) {
+                return $data->telephone1 . ' / ' . $data->telephone2;
+            })
+
+            ->addColumn('total', function ($data) {
+                return getTotalByPatient($data->id);
+            })
+
+            ->addColumn('paid', function ($data) {
+                return getPaidByPatient($data->id);
+            })
+
+            ->addColumn('due', function ($data) {
+                return getNoPaidByPatient($data->id);
+            })
+
+            ->addColumn('action', function ($data) {
+                $btnEdit = '<button type="button" onclick="edit(' . $data->id . ')" class="btn btn-primary btn-sm"><i class="mdi mdi-lead-pencil"></i></button>';
+                $btnDelete = '<button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger btn-sm"><i class="mdi mdi-trash-can-outline"></i></button>';
+                $btnProfil = '<a href="' . route('patients.profil', $data->id) . '" class="btn btn-secondary btn-sm"><i class="mdi mdi-eye"></i></a>';
+
+                return $btnEdit . ' ' . $btnDelete . ' ' . $btnProfil;
+            })
+            ->filter(function ($query) use ($request) {
+
+                if (!empty($request->get('contenu'))) {
+                    $query
+                        ->where('firstname', 'like', '%' . $request->get('contenu') . '%')
+                        ->orwhere('lastname', 'like', '%' . $request->get('contenu') . '%')
+                        ->orwhere('telephone1', 'like', '%' . $request->get('contenu') . '%')
+                        ->orwhere('telephone2', 'like', '%' . $request->get('contenu') . '%')
+                    ;
+                }
+            })
+            ->make(true);
     }
 
 
