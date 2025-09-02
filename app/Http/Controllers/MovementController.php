@@ -16,7 +16,8 @@ class MovementController extends Controller
     protected $movement;
     protected $setting;
 
-    public function __construct(Article $article, Setting $setting, Movement $movement){
+    public function __construct(Article $article, Setting $setting, Movement $movement)
+    {
         $this->article = $article;
         $this->setting = $setting;
         $this->movement = $movement;
@@ -35,10 +36,10 @@ class MovementController extends Controller
         $movements = $this->movement->latest()->get();
         $articles = $this->article->latest()->get();
 
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
 
-        return view('movements.index',compact(['movements','articles']));
+        return view('movements.index', compact(['movements', 'articles']));
     }
 
     /**
@@ -46,10 +47,7 @@ class MovementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -63,40 +61,36 @@ class MovementController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        // dd($request->ma_variable);
-
         try {
-                $a = Article::find($request->article_id);
+            $a = Article::find($request->article_id);
 
-                if ($request->ma_variable == 'augmenter') {
+            if ($request->ma_variable == 'augmenter') {
                 $a->update([
                     'quantity_in_stock' => $request->quantite_changed + $a->quantity_in_stock,
                 ]);
-                }elseif($request->ma_variable == 'diminuer')
-                    {
-                        if($a->quantity_in_stock < $request->quantite_changed)
-                        {
-                            return back()->with('error', "Échec de l'enregistrement, la quantite en stock est inferieur a la quantite a diminuer ! ");
-                        }
+            } elseif ($request->ma_variable == 'diminuer') {
+                if ($a->quantity_in_stock < $request->quantite_changed) {
+                    return back()->with('error', "Échec de l'enregistrement, la quantite en stock est inferieur a la quantite a diminuer ! ");
+                }
 
-                        $a->update([
-                            'quantity_in_stock' => $a->quantity_in_stock - $request->quantite_changed,
-                        ]);
-                    }
-
-                    Movement::create([
-                        'movement_type' => $request->ma_variable,
-                        'date_mouvement' => Carbon::now()->format('d/m/y'),
-                        'quantite_changed' => $request->quantite_changed,
-                        'description' => $request->description ? $request->description : '',
-                        'article_id' => $request->article_id,
-                        'user_id' => Auth::user()->id
-                    ]);
-
-                return back()->with('success', " Opération effectuée avec succès  ! ");
-            } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ");
+                $a->update([
+                    'quantity_in_stock' => $a->quantity_in_stock - $request->quantite_changed,
+                ]);
             }
+
+            Movement::create([
+                'movement_type' => $request->ma_variable,
+                'date_mouvement' => Carbon::now()->format('d/m/y'),
+                'quantite_changed' => $request->quantite_changed,
+                'description' => $request->description ? $request->description : '',
+                'article_id' => $request->article_id,
+                'user_id' => Auth::user()->id
+            ]);
+
+            return back()->with('success', " Opération effectuée avec succès  ! ");
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! ");
+        }
     }
 
     /**

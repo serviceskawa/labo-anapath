@@ -28,7 +28,7 @@ class BankController extends Controller
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
         $banks = $this->banks->latest()->get();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('bank.index',compact(['banks']));
     }

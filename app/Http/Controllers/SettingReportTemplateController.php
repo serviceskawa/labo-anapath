@@ -19,7 +19,7 @@ class SettingReportTemplateController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $templates = (new SettingReportTemplate)->latest()->get();
-        $setting = (new Setting)->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('templates.reports.index', compact('templates',));
     }
@@ -30,7 +30,7 @@ class SettingReportTemplateController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $template = "";
-        $setting = (new Setting)->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('templates.reports.create', compact('template'));
     }
@@ -40,7 +40,6 @@ class SettingReportTemplateController extends Controller
         if (!getOnlineUser()->can('create-setting-report-templates')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        // dd($request);
 
         $data = $this->validate($request, [
             'titre' => 'required',

@@ -25,7 +25,7 @@ class ConsultationController extends Controller
     }
     public function index()
     {
-        $setting = $this->setting::find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('consultation.index');
     }
@@ -92,14 +92,13 @@ class ConsultationController extends Controller
 
         $user = Auth::user();
 
-        $setting = Setting::find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('consultation.create', compact('patients', 'doctors', 'types', 'prestations', 'user'));
     }
 
     public function show($id)
     {
-        // dd(getConsultationTypeFiles(2, 2)->path);
         $patients = Patient::all();
         $doctors = Doctor::all();
         $types = TypeConsultation::all();
@@ -112,7 +111,7 @@ class ConsultationController extends Controller
             return back()->with('error', "Une Erreur est survenue. Cette consultation n'existe pas");
         }
 
-        $setting = Setting::find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('consultation.show', compact('patients', 'doctors', 'types', 'consultation', 'prestations'));
     }
@@ -136,7 +135,7 @@ class ConsultationController extends Controller
             return back()->with('error', "Une Erreur est survenue. Cette consultation n'existe pas");
         }
 
-        $setting = Setting::find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('consultation.edit_from_receptionnist', compact('patients', 'doctors', 'types', 'consultation', 'prestations'));
     }
@@ -162,7 +161,6 @@ class ConsultationController extends Controller
             'doctor_id' => 'nullable',
         ]);
 
-        // dd($request);
         $latest = Consultation::orderBy('id', 'DESC')->first();
         $code = sprintf('%04d', empty($latest->id) ? "1" : $latest->id);
 
@@ -171,7 +169,7 @@ class ConsultationController extends Controller
         if (empty($prestation)) {
             return redirect()->route('consultation.index',)->with('error', "Cette prestation n'existe pas");;
         }
-        // dd($request);
+
         try {
             Consultation::Create(
                 [
@@ -191,14 +189,12 @@ class ConsultationController extends Controller
             return redirect()->route('consultation.index',)->with('success', "Consultation ajouté avec succès");;
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
-            // dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
 
     public function update(Request $request, $id)
     {
-        // dd($request);
         $data = $this->validate($request, [
             'patient_id' => 'required|exists:patients,id',
             // 'doctor_id' => 'required|exists:doctors,id',
@@ -227,10 +223,9 @@ class ConsultationController extends Controller
         if (empty($prestation)) {
             return redirect()->route('consultation.index',)->with('error', "Cette prestation n'existe pas");;
         }
-        // dd($request);
+
         $tab = [];
         $tabFile = [];
-
         if ($request->hasfile('type_file')) {
             foreach ($request->file('type_file') as $key => $value) {
 
@@ -241,7 +236,6 @@ class ConsultationController extends Controller
             }
         }
 
-        // dd('a');
         if (!empty($consultation->type)) {
             foreach ($consultation->type->type_files as $type_file) {
                 $tab[$type_file->id] = [
@@ -288,7 +282,6 @@ class ConsultationController extends Controller
                         "path" => empty($value['path']) ? (empty($exist) ? "" : $exist->path) : $value['path'],
                         "comment" => empty($value['comment']) ? (empty($exist) ? "" : $exist->comment) : $value['comment'],
                     ]);
-                    // dd($exist);
                 }
             }
 
@@ -296,14 +289,12 @@ class ConsultationController extends Controller
             return redirect()->route('consultation.index',)->with('success', "Consultation mis à jour avec succès");;
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
-            dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
 
     public function update_by_doctor(Request $request, $id)
     {
-        // dd($request);
         $data = $this->validate($request, [
             'motif' => 'nullable',
             'anamnese' => 'nullable',
@@ -318,7 +309,6 @@ class ConsultationController extends Controller
             return back()->with('error', "Une Erreur est survenue. Cette consultation n'existe pas");
         }
 
-        // dd($request);
         $tab = [];
         $tabFile = [];
 
@@ -332,7 +322,6 @@ class ConsultationController extends Controller
             }
         }
 
-        // dd('a');
         if (!empty($consultation->type)) {
             foreach ($consultation->type->type_files as $type_file) {
                 $tab[$type_file->id] = [
@@ -368,7 +357,6 @@ class ConsultationController extends Controller
                         "path" => empty($value['path']) ? (empty($exist) ? "" : $exist->path) : $value['path'],
                         "comment" => empty($value['comment']) ? (empty($exist) ? "" : $exist->comment) : $value['comment'],
                     ]);
-                    // dd($exist);
                 }
             }
 
@@ -376,20 +364,16 @@ class ConsultationController extends Controller
             return redirect()->route('consultation.index',)->with('success', "Consultation mis à jour avec succès");;
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
-            dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
 
     public function update_type_consultation(Request $request)
     {
-        // dd($request);
         $data = $this->validate($request, [
             'type_consultation_id' => 'required',
             'consultation_id' => 'required',
-
         ]);
-
         $consultation = Consultation::findOrFail($data['consultation_id']);
 
         try {

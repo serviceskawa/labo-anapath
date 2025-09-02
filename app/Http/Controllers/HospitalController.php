@@ -11,7 +11,7 @@ class HospitalController extends Controller
 {
     protected $setting;
     protected $hopitals;
-    
+
     public function __construct(Setting $setting, Hospital $hopitals,){
         $this->hopitals = $hopitals;
         $this->setting = $setting;
@@ -27,8 +27,8 @@ class HospitalController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $hopitals = $this->hopitals->latest()->get();
-        
-        $setting = $this->setting->find(1);
+
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('hopitals.index',compact(['hopitals']));
 
@@ -46,13 +46,13 @@ class HospitalController extends Controller
         }
         $hospitalData=[
             'name' => $request->name,
-            'adresse' => $request->adresse,    
-            'email' => $request->email,        
-            'telephone' => $request->telephone,  
-            'commission' => $request->commission,  
+            'adresse' => $request->adresse,
+            'email' => $request->email,
+            'telephone' => $request->telephone,
+            'commission' => $request->commission,
         ];
 
-        
+
 
         try {
             $this->hopitals->create($hospitalData);
@@ -71,7 +71,7 @@ class HospitalController extends Controller
         $hospitalData = [
             'name' => $request->name,
         ];
-        
+
         $exist = $this->hopitals->where('id',$request->name)->first();
 
         try {
@@ -121,13 +121,13 @@ class HospitalController extends Controller
         $hospitalData=[
             'id' => $request->id,
             'name' => $request->name,
-            'adresse' => $request->adresse,    
-            'email' => $request->email,        
-            'telephone' => $request->telephone,  
-            'commission' => $request->commission,  
+            'adresse' => $request->adresse,
+            'email' => $request->email,
+            'telephone' => $request->telephone,
+            'commission' => $request->commission,
         ];
 
-        
+
         try {
             $hopital = $this->hopitals->find($hospitalData['id']);
             $hopital->name = $hospitalData['name'];
@@ -136,7 +136,7 @@ class HospitalController extends Controller
             $hopital->telephone = $hospitalData['telephone'];
             $hopital->commission = $hospitalData['commission'];
             $hopital->save();
-            
+
             return back()->with('success', "Un hôpital a été mis à jour ! ");
 
         } catch(\Throwable $ex){

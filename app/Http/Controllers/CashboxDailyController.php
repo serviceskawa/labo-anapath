@@ -18,7 +18,8 @@ class CashboxDailyController extends Controller
     protected $cashboxDaily;
     protected $setting;
 
-    public function __construct(CashboxDaily $cashboxDaily, Setting $setting){
+    public function __construct(CashboxDaily $cashboxDaily, Setting $setting)
+    {
         $this->cashboxDaily = $cashboxDaily;
         $this->setting = $setting;
     }
@@ -33,23 +34,22 @@ class CashboxDailyController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
+        $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
         $cashboxDailys = CashboxDaily::latest()->get();
-        // dd($cashboxDailys);
-
-        $cashboxs = Cashbox::find(2);
-        $cashboxtest = Cashbox::find(2);
-
-        $setting = $this->setting->find(1);
+        $cashboxs = Cashbox::find($cashbox->id);
+        $cashboxtest = Cashbox::find($cashbox->id);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
-        return view('cashbox_daily.index',compact('cashboxDailys','cashboxs','cashboxtest'));
+
+        return view('cashbox_daily.index', compact('cashboxDailys', 'cashboxs', 'cashboxtest'));
     }
 
     public function print($id)
     {
         $item = CashboxDaily::find($id);
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
-        return view('cashbox_daily.print',compact('item','setting'));
+        return view('cashbox_daily.print', compact('item', 'setting'));
     }
 
     /**
@@ -75,13 +75,11 @@ class CashboxDailyController extends Controller
         }
 
         try {
-            // dd('ok');
-            $sf = Cashbox::find(2);
-            if($sf->current_balance==0 || $sf->current_balance==null)
-            {
+            $sf = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
+            if ($sf->current_balance == 0 || $sf->current_balance == null) {
                 $new_current_balance = 0.0;
-            }else{
-            $new_current_balance = $sf->current_balance - $request->solde_ouverture;
+            } else {
+                $new_current_balance = $sf->current_balance - $request->solde_ouverture;
             }
 
             $sf->update([
@@ -90,39 +88,37 @@ class CashboxDailyController extends Controller
                 'statut' => 1
             ]);
 
-
-                try {
-                    $cash = CashboxDaily::create([
-                        'opening_balance' => $request->solde_ouverture,
-                        'close_balance' => 0.0,
-                        'cashbox_id' => $request->typecaisse,
-                        'status' => 1,
-                        'cash_calculated' => null,
-                        'cash_confirmation' => null,
-                        'cash_ecart' => null,
-                        'mobile_money_calculated' => null,
-                        'mobile_money_confirmation' => null,
-                        'mobile_money_ecart' => null,
-                        'cheque_calculated' => null,
-                        'cheque_confirmation' => null,
-                        'cheque_ecart' => null,
-                        'virement_calculated' => null,
-                        'virement_confirmation' => null,
-                        'virement_ecart' => null,
-                        'total_calculated' => null,
-                        'total_confirmation' => null,
-                        'total_ecart' => null,
-                        'user_id' => auth()->user()->id,
-                        'code' => generateCodeOpeningCashbox()
-                    ]);
-                } catch (\Throwable $th) {
-                    dd($th);
-                }
-
-                return back()->with('success', " Opération effectuée avec succès  ! ");
-            } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ");
+            try {
+                $cash = CashboxDaily::create([
+                    'opening_balance' => $request->solde_ouverture,
+                    'close_balance' => 0.0,
+                    'cashbox_id' => $request->typecaisse,
+                    'status' => 1,
+                    'cash_calculated' => null,
+                    'cash_confirmation' => null,
+                    'cash_ecart' => null,
+                    'mobile_money_calculated' => null,
+                    'mobile_money_confirmation' => null,
+                    'mobile_money_ecart' => null,
+                    'cheque_calculated' => null,
+                    'cheque_confirmation' => null,
+                    'cheque_ecart' => null,
+                    'virement_calculated' => null,
+                    'virement_confirmation' => null,
+                    'virement_ecart' => null,
+                    'total_calculated' => null,
+                    'total_confirmation' => null,
+                    'total_ecart' => null,
+                    'user_id' => auth()->user()->id,
+                    'code' => generateCodeOpeningCashbox()
+                ]);
+            } catch (\Throwable $th) {
             }
+
+            return back()->with('success', " Opération effectuée avec succès  ! ");
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! ");
+        }
     }
 
     /**
@@ -150,132 +146,130 @@ class CashboxDailyController extends Controller
 
     public function detail_fermeture_caisse()
     {
+        $cashboxVente = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
+        $cashboxDepense = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'depense')->first();
 
-        $closecashbox = CashboxDaily::where('status',1)->orderBy('updated_at','desc')->first();
-        // dd($closecashbox);
-        // ->whereRaw('Date(updated_at) = ?', [now()->toDateString()])
-
+        $closecashbox = CashboxDaily::where('status', $cashboxDepense->id)->orderBy('updated_at', 'desc')->first();
         if ($closecashbox) {
             // mobile money
-            $mobilemoneysum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $mobilemoneysum = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "MOBILEMONEY");
             })
-            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>=', $closecashbox->updated_at)
-            ->sum('amount');
+                // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+                ->where('updated_at', '>=', $closecashbox->updated_at)
+                ->sum('amount');
 
-            $mobilemoneycount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $mobilemoneycount = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "MOBILEMONEY");
             })
-            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>=', $closecashbox->updated_at)
-            ->count();
+                // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+                ->where('updated_at', '>=', $closecashbox->updated_at)
+                ->count();
 
             // Cheques
-            $chequessum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $chequessum = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "CHEQUES");
             })
-            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>=', $closecashbox->updated_at)
-            ->sum('amount');
+                // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+                ->where('updated_at', '>=', $closecashbox->updated_at)
+                ->sum('amount');
 
-            $chequescount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $chequescount = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "CHEQUES");
             })
-            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>=', $closecashbox->updated_at)
-            ->count();
+                // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+                ->where('updated_at', '>=', $closecashbox->updated_at)
+                ->count();
 
             // Especes
-            $especessum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $especessum = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "ESPECES");
             })
-            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>=', $closecashbox->updated_at)
-            ->sum('amount');
+                // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+                ->where('updated_at', '>=', $closecashbox->updated_at)
+                ->sum('amount');
 
-            $especescount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $especescount = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "ESPECES");
             })
-            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>=', $closecashbox->updated_at)
-            ->count();
-
+                // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+                ->where('updated_at', '>=', $closecashbox->updated_at)
+                ->count();
 
             // Virement
-            $virementsum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $virementsum = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "VIREMENT");
             })
-            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>=', $closecashbox->updated_at)
-            ->sum('amount');
+                // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+                ->where('updated_at', '>=', $closecashbox->updated_at)
+                ->sum('amount');
 
-            $virementcount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $virementcount = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "VIREMENT");
             })
-            // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            ->where('updated_at','>=', $closecashbox->updated_at)
-            ->count();
+                // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+                ->where('updated_at', '>=', $closecashbox->updated_at)
+                ->count();
         } else {
             // mobile money
-            $mobilemoneysum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $mobilemoneysum = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "MOBILEMONEY");
             })
-            ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            // ->where('updated_at','>', $closecashbox->updated_at)
-            ->sum('amount');
+                ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+                // ->where('updated_at','>', $closecashbox->updated_at)
+                ->sum('amount');
 
-            $mobilemoneycount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $mobilemoneycount = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "MOBILEMONEY");
             })
-            ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            // ->where('updated_at','>', $closecashbox->updated_at)
-            ->count();
+                ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
+                // ->where('updated_at','>', $closecashbox->updated_at)
+                ->count();
 
             // Cheques
-            $chequessum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $chequessum = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "CHEQUES");
             })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            // ->where('updated_at','>', $closecashbox->updated_at)
-            ->sum('amount');
+                // ->where('updated_at','>', $closecashbox->updated_at)
+                ->sum('amount');
 
-            $chequescount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $chequescount = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "CHEQUES");
             })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            // ->where('updated_at','>', $closecashbox->updated_at)
-            ->count();
+                // ->where('updated_at','>', $closecashbox->updated_at)
+                ->count();
 
             // Especes
-            $especessum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $especessum = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "ESPECES");
             })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            // ->where('updated_at','>', $closecashbox->updated_at)
-            ->sum('amount');
+                // ->where('updated_at','>', $closecashbox->updated_at)
+                ->sum('amount');
 
-            $especescount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $especescount = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "ESPECES");
             })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            // ->where('updated_at','>', $closecashbox->updated_at)
-            ->count();
+                // ->where('updated_at','>', $closecashbox->updated_at)
+                ->count();
 
 
             // Virement
-            $virementsum = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $virementsum = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "VIREMENT");
             })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            // ->where('updated_at','>', $closecashbox->updated_at)
-            ->sum('amount');
+                // ->where('updated_at','>', $closecashbox->updated_at)
+                ->sum('amount');
 
-            $virementcount = CashboxAdd::where('cashbox_id', 2)->whereHas('invoice', function ($query) {
+            $virementcount = CashboxAdd::where('cashbox_id', $cashboxVente->id)->whereHas('invoice', function ($query) {
                 $query->where('payment', '=', "VIREMENT");
             })->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
-            // ->where('updated_at','>', $closecashbox->updated_at)
-            ->count();
+                // ->where('updated_at','>', $closecashbox->updated_at)
+                ->count();
         }
 
 
         $open_cash = CashboxDaily::latest()->first();
-        return view('cashbox_daily.fermeture',compact('open_cash','mobilemoneysum','mobilemoneycount','virementsum','virementcount','especescount','especessum','chequescount','chequessum'));
+        return view('cashbox_daily.fermeture', compact('open_cash', 'mobilemoneysum', 'mobilemoneycount', 'virementsum', 'virementcount', 'especescount', 'especessum', 'chequescount', 'chequessum'));
     }
 
     /**
@@ -290,54 +284,49 @@ class CashboxDailyController extends Controller
         if (!getOnlineUser()->can('edit-cashbox-dailies')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        // dd($request);
+
         try {
-        $sf = CashboxDaily::latest()->first();
+            $sf = CashboxDaily::latest()->first();
 
-        if ($sf->user_id != Auth::user()->id) {
-            return back()->with('error', "Vous n'êtes pas autorisé à fermer la caisse");
-        }
+            if ($sf->user_id != Auth::user()->id) {
+                return back()->with('error', "Vous n'êtes pas autorisé à fermer la caisse");
+            }
 
-        // $serach
+            // $serach
             $sf->update([
-                    'close_balance' => $request->close_balance,
-                    'status' => $request->status,
-                    'cash_calculated' => $request->cash_calculated ? $request->cash_calculated : 0.0,
-                    'cash_confirmation' => $request->cash_confirmation ? $request->cash_confirmation : 0.0,
-                    'cash_ecart' => $request->cash_ecart ? $request->cash_ecart : 0.0,
-                    'mobile_money_calculated' => $request->mobile_money_calculated ? $request->mobile_money_calculated : 0.0,
-                    'mobile_money_confirmation' => $request->mobile_money_confirmation ? $request->mobile_money_confirmation : 0.0,
-                    'mobile_money_ecart' => $request->mobile_money_ecart ? $request->mobile_money_ecart : 0.0,
-                    'cheque_calculated' => $request->cheque_calculated ? $request->cheque_calculated : 0.0,
-                    'cheque_confirmation' => $request->cheque_confirmation ? $request->cheque_confirmation : 0.0,
-                    'cheque_ecart' => $request->cheque_ecart ? $request->cheque_ecart : 0.0,
-                    'virement_calculated' => $request->virement_calculated ? $request->virement_calculated : 0.0,
-                    'virement_confirmation' => $request->virement_confirmation ? $request->virement_confirmation : 0.0,
-                    'virement_ecart' => $request->virement_ecart ? $request->virement_ecart : 0.0,
-                    'total_calculated' => $request->total_calculated ? $request->total_calculated : 0.0,
-                    'total_confirmation' => $request->total_confirmation_point ? $request->total_confirmation_point : 0.0,
-                    'total_ecart' => $request->total_ecart_point ? $request->total_ecart_point : 0.0,
-                    'user_id' => auth()->user()->id,
+                'close_balance' => $request->close_balance,
+                'status' => $request->status,
+                'cash_calculated' => $request->cash_calculated ? $request->cash_calculated : 0.0,
+                'cash_confirmation' => $request->cash_confirmation ? $request->cash_confirmation : 0.0,
+                'cash_ecart' => $request->cash_ecart ? $request->cash_ecart : 0.0,
+                'mobile_money_calculated' => $request->mobile_money_calculated ? $request->mobile_money_calculated : 0.0,
+                'mobile_money_confirmation' => $request->mobile_money_confirmation ? $request->mobile_money_confirmation : 0.0,
+                'mobile_money_ecart' => $request->mobile_money_ecart ? $request->mobile_money_ecart : 0.0,
+                'cheque_calculated' => $request->cheque_calculated ? $request->cheque_calculated : 0.0,
+                'cheque_confirmation' => $request->cheque_confirmation ? $request->cheque_confirmation : 0.0,
+                'cheque_ecart' => $request->cheque_ecart ? $request->cheque_ecart : 0.0,
+                'virement_calculated' => $request->virement_calculated ? $request->virement_calculated : 0.0,
+                'virement_confirmation' => $request->virement_confirmation ? $request->virement_confirmation : 0.0,
+                'virement_ecart' => $request->virement_ecart ? $request->virement_ecart : 0.0,
+                'total_calculated' => $request->total_calculated ? $request->total_calculated : 0.0,
+                'total_confirmation' => $request->total_confirmation_point ? $request->total_confirmation_point : 0.0,
+                'total_ecart' => $request->total_ecart_point ? $request->total_ecart_point : 0.0,
+                'user_id' => auth()->user()->id,
             ]);
-
-            // $cashb = Cashbox::where('id', 2)->get();
-
-            $lastvalCashbox = Cashbox::find(2);
-            // dd($lastvalCashbox);
+            $lastvalCashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
 
             // on met a jour le solde total de la caisse : montant actuel + solde d'ouverture + ecart
-                $result = $lastvalCashbox->current_balance + $lastvalCashbox->opening_balance + $sf->total_ecart;
-                // dd($result);
+            $result = $lastvalCashbox->current_balance + $lastvalCashbox->opening_balance + $sf->total_ecart;
             $lastvalCashbox->update([
-                    'current_balance' => $result,
-                    'opening_balance' => 0,
-                    'statut' => 0,
+                'current_balance' => $result,
+                'opening_balance' => 0,
+                'statut' => 0,
             ]);
 
-                return redirect(route('daily.index'))->with('success', " Opération effectuée avec succès  ! ");
-            } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ");
-            }
+            return redirect(route('daily.index'))->with('success', " Opération effectuée avec succès  ! ");
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! ");
+        }
     }
 
     /**

@@ -44,7 +44,7 @@ class CashboxTicketController extends Controller
         $tickets = $this->tickets->latest()->get();
         $suppliers = $this->suppliers->latest()->get();
         $expenses_categorie = ExpenseCategorie::latest()->get();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name'=>$setting->titre]);
         return view('cashbox.ticket.index',compact(['tickets','suppliers','expenses_categorie']));
     }
@@ -57,7 +57,7 @@ class CashboxTicketController extends Controller
         $ticket = $this->tickets->find($id);
         $suppliers = $this->suppliers->latest()->get();
         $expenses_categorie = ExpenseCategorie::latest()->get();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name'=>$setting->titre]);
         return view('cashbox.ticket.details.index',compact(['ticket','suppliers','expenses_categorie']));
     }
@@ -85,7 +85,6 @@ class CashboxTicketController extends Controller
             $supplierCreate = $this->suppliers->create([
                 'name' => $data['supplier']
             ]);
-            // dd(!empty($data['supplier']),$supplier,$supplierCreate,$data);
             $data['supplier_id'] = $supplierCreate->id;
         }
 

@@ -10,7 +10,8 @@ class EmployeeDocumentController extends Controller
 {
     protected $employeeDocument;
     protected $setting;
-        public function __construct(EmployeeDocument $employeeDocument, Setting $setting){
+    public function __construct(EmployeeDocument $employeeDocument, Setting $setting)
+    {
         $this->$employeeDocument = $employeeDocument;
         $this->setting = $setting;
     }
@@ -46,29 +47,29 @@ class EmployeeDocumentController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $this->validate($request,[
+        $this->validate($request, [
             'name_file' => 'required|string|max:255',
             // 'file' => 'required|image|max:2046',
         ]);
 
-            if ($request->hasFile('file')) {
-                $imagePath = $request->file('file')->store('documents','public');
-            }else{
-                $imagePath = null;
-            }
-        // dd($imagePath);
+        if ($request->hasFile('file')) {
+            $imagePath = $request->file('file')->store('documents', 'public');
+        } else {
+            $imagePath = null;
+        }
+
         try {
 
-                $document = new EmployeeDocument();
-                $document->name_file = $request->name_file;
-                $document->file = $imagePath;
-                $document->employee_id = $request->employee_id;
-                $document->save();
+            $document = new EmployeeDocument();
+            $document->name_file = $request->name_file;
+            $document->file = $imagePath;
+            $document->employee_id = $request->employee_id;
+            $document->save();
 
-                return back()->with('success', " Opération effectuée avec succès  ! ");
-            } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ");
-            }
+            return back()->with('success', " Opération effectuée avec succès  ! ");
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! ");
+        }
     }
 
     /**
@@ -100,38 +101,31 @@ class EmployeeDocumentController extends Controller
      * @param  \App\Models\EmployeeDocument  $employeeDocument
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,EmployeeDocument $employeeDocument)
+    public function update(Request $request, EmployeeDocument $employeeDocument)
     {
         if (!getOnlineUser()->can('edit-employees')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $this->validate($request,[
+        $this->validate($request, [
             'name_file' => 'required|string|max:255',
         ]);
 
-            // dd($employeeDocument);
-                
         if ($request->hasFile('file')) {
-            $imagePath = $request->file('file')->store('documents','public');
-        }else{
+            $imagePath = $request->file('file')->store('documents', 'public');
+        } else {
             $imagePath = $employeeDocument->file;
         }
 
-        // $employeeDocument = EmployeeDocument::find($employeeDocument);
-        // dd($employeeDocument);
         try {
-                // $employeeDocument->name_file = $request->name_file;
-                // $employeeDocument->file = $imagePath;
-
             $employeeDocument->update([
                 'name_file' => $request->name_file,
                 'file' => $imagePath,
             ]);
 
-                return back()->with('success', " Opération effectuée avec succès  ! ");
-            } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ");
-            }
+            return back()->with('success', " Opération effectuée avec succès  ! ");
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! ");
+        }
     }
 
     /**

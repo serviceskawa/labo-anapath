@@ -117,9 +117,6 @@ class TestOrderController extends Controller
             })->count(); // Modifier
         $nbreTotalCasEnAttenteValeur = $nbreTotalCasEnAttente;
         $nbreTotalCasEnAttente = number_format($nbreTotalCasEnAttente, 2);
-        // dd($nbreTotalCasEnAttente);
-
-
 
 
 
@@ -215,7 +212,6 @@ class TestOrderController extends Controller
             })->count(); // Modifier
         $nbreTotalCasImmunoAttenteValeur = $nbreTotalCasImmunoAttente;
         $nbreTotalCasImmunoAttente = number_format($nbreTotalCasImmunoAttente, 2);
-        // dd($nbreTotalCasImmunoAttenteValeur);
 
 
 
@@ -226,7 +222,7 @@ class TestOrderController extends Controller
         $doctors = $this->doctor->all();
         $hopitals = $this->hospital->all();
         $types_orders = $this->typeOrder->all();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
 
         $totalAppel =  $this->testOrder
@@ -686,7 +682,7 @@ class TestOrderController extends Controller
         $doctors = $this->doctor->all();
         $hopitals = $this->hospital->all();
         $types_orders = $this->typeOrder->all();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
 
         // Affichage de la vue
@@ -695,7 +691,7 @@ class TestOrderController extends Controller
 
     public function getEvent()
     {
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         $client = new Client();
         $accessToken = $setting->api_key_ourvoice;
 
@@ -745,7 +741,6 @@ class TestOrderController extends Controller
         $vocal2 = json_decode($responsevocal2->getBody(), true);
         $vocal3 = json_decode($responsevocal3->getBody(), true);
         $vocal4 = json_decode($responsevocal4->getBody(), true);
-        dd($vocal['data'], $vocal1['data'], $vocal2['data'], $vocal3['data'], $vocal4['data']);
     }
 
     // Utilise yanjra pour le tableau
@@ -800,7 +795,7 @@ class TestOrderController extends Controller
         $contrats = $this->contrat->all();
         $doctors = $this->doctor->all();
         $types_orders = $this->typeOrder->all();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
 
         // 4. OPTIMISATION: Mise à jour en lot + requête conditionnelle
@@ -903,7 +898,7 @@ class TestOrderController extends Controller
         $doctors = $this->doctor->all();
         $hopitals = $this->hospital->all();
         $types_orders = $this->typeOrder->all();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
 
         // $totalAppel =  $this->testOrder
@@ -1063,7 +1058,6 @@ class TestOrderController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        // $cashbox = Cashbox::find(2);
         $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
         $patients = $this->patient->all();
         $doctors = $this->doctor->all();
@@ -1071,7 +1065,7 @@ class TestOrderController extends Controller
         $hopitals = $this->hospital->all();
         $contrats = $this->contrat->ofStatus('ACTIF')->get();
         $types_orders = $this->typeOrder->all();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
 
         return view('examens.create', compact(['cashbox', 'patients', 'doctors', 'hopitals', 'contrats', 'types_orders', 'test_orders']));
@@ -1159,7 +1153,7 @@ class TestOrderController extends Controller
         $hopitals = $this->hospital->all();
         $contrats = $this->contrat->ofStatus('ACTIF')->get();
         $types_orders = $this->typeOrder->all();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('examens.edit', compact(['test_order', 'patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
     }
@@ -1189,7 +1183,7 @@ class TestOrderController extends Controller
         $test_orders = $this->testOrder->all();
         $hopitals = $this->hospital->all();
         $contrats = $this->contrat->ofStatus('ACTIF')->get();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('examens.details.index', compact(['test_orders', 'test_order', 'details', 'tests', 'types_orders', 'patients', 'doctors', 'hopitals', 'contrats',]));
     }
@@ -1271,9 +1265,7 @@ class TestOrderController extends Controller
         //$invoice = $this->invoice->where('test_order_id','=',$request->test_order_id)->get();
         $invoice = $test_order->invoice()->first();
         $invoiceDetails = $invoice->details()->get();
-        //dd($invoice);
         $details = $test_order->details()->get();
-        //dd($details[$row_id]);
         $detail = $details[$row_id];
         $invoiceDetail = $invoiceDetails[$row_id];
         if ($invoice->paid != 1) {
@@ -1383,8 +1375,9 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+
         $test_order = $this->testOrder->findorfail($id);
-        $settings = $this->setting->find(1);
+        $settings = Setting::where('branch_id', session('selected_branch_id'))->first();
         $user = Auth::user();
 
         // Génère un code unique
@@ -1395,7 +1388,6 @@ class TestOrderController extends Controller
         }
 
         $reportTestOrder = $this->report->where('test_order_id', $test_order->id)->first();
-
         if ($reportTestOrder) {
             $reportTestOrder->fill([
                 "code" => "CO" . $test_order->code,
@@ -1416,7 +1408,6 @@ class TestOrderController extends Controller
         $log->report_id = $reportnow->id;
         $log->user_id = $user->id;
         $log->save();
-
         $code_facture = generateCodeFacture();
 
         // Si la demande est sur un contrat individuel
@@ -1463,6 +1454,7 @@ class TestOrderController extends Controller
                     "total" => $test_order->total,
                     "code" => $code_facture,
                 ]);
+
                 // Recupération des details de la demande d'examen
                 $tests = $test_order->details()->get();
                 $items = [];
@@ -1489,7 +1481,6 @@ class TestOrderController extends Controller
             //si la demande est sur un contrat à facturation groupée
             //Recherché la facture de ce contrat
             $invoiceTestOrder = $this->invoice->where('contrat_id', $test_order->contrat->id)->first();
-            // dd($invoiceTestOrder);
             if ($invoiceTestOrder) {
                 if ($invoiceTestOrder->paid != 1) {
                     $invoiceTestOrder->update([
@@ -1522,12 +1513,9 @@ class TestOrderController extends Controller
 
                 return redirect()->route('invoice.show', [$invoiceTestOrder->id])->with('success', " Opération effectuée avec succès  ! ");
             } else {
-                // dd('facture existe pas');
                 return back()->with('error', " Aucune facture n'est associé à se contrat ! ");
             }
         }
-
-        // }
     }
 
     // code qui permet d'ajouter une piece a la demande d'examen
@@ -1558,12 +1546,9 @@ class TestOrderController extends Controller
             'option' => 'nullable',
         ]);
 
-
         $path_examen_file = "";
         if ($request->file('examen_file')) {
-
             $examen_file = time() . '_test_order_.' . $request->file('examen_file')->extension();
-
             $path_examen_file = $request->file('examen_file')->storeAs('tests/orders', $examen_file, 'public');
         }
 
@@ -1591,10 +1576,7 @@ class TestOrderController extends Controller
             $reference = $this->testOrder->findorfail((int) $request->examen_reference_select);
 
             if (!empty($reference)) {
-
                 $data['test_affiliate'] = $reference->code;
-
-                // dd($data['test_affiliate']);
             }
         }
 
@@ -1864,7 +1846,7 @@ class TestOrderController extends Controller
 
             ->addColumn('dropdown', function ($data) {
                 $order = $data;
-                $setting = $this->setting->find(1);
+                $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
                 config(['app.name' => $setting->titre]);
                 return view('examens.datatables.attribuate', compact('order'));
             })
@@ -2097,7 +2079,7 @@ class TestOrderController extends Controller
             })
             ->addColumn('dropdown', function ($data) {
                 $order = $data;
-                $setting = $this->setting->find(1);
+                $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
                 config(['app.name' => $setting->titre]);
                 return view('examens.datatables.attribuate', compact('order'));
             })
@@ -2170,12 +2152,10 @@ class TestOrderController extends Controller
                 }
 
                 if (!empty($request->get('dateBegin'))) {
-                    //dd($request);
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
                     $query->whereDate('created_at', '>=', $newDate);
                 }
                 if (!empty($request->get('dateEnd'))) {
-                    //dd($request);
                     $query->whereDate('created_at', '<=', $request->get('dateEnd'));
                 }
             })
@@ -2372,7 +2352,7 @@ class TestOrderController extends Controller
             })
             ->addColumn('dropdown', function ($data) {
                 $order = $data;
-                $setting = $this->setting->find(1);
+                $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
                 config(['app.name' => $setting->titre]);
                 return view('examens.datatables.attribuate', compact('order'));
             })
@@ -2447,12 +2427,10 @@ class TestOrderController extends Controller
                 }
 
                 if (!empty($request->get('dateBegin'))) {
-                    //dd($request);
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
                     $query->whereDate('created_at', '>=', $newDate);
                 }
                 if (!empty($request->get('dateEnd'))) {
-                    //dd($request);
                     $query->whereDate('created_at', '<=', $request->get('dateEnd'));
                 }
             })
@@ -2475,8 +2453,6 @@ class TestOrderController extends Controller
             ->Where('ato.event', '!=', 'voice.completed')
             ->orderBy('test_orders.created_at', 'desc')
             ->select('test_orders.*');
-
-
 
         // $data = $this->testOrder->with(['patient', 'contrat', 'type', 'details', 'report'])->orderBy('created_at', 'desc');
 
@@ -2642,7 +2618,7 @@ class TestOrderController extends Controller
             })
             ->addColumn('dropdown', function ($data) {
                 $order = $data;
-                $setting = $this->setting->find(1);
+                $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
                 config(['app.name' => $setting->titre]);
                 return view('examens.datatables.attribuate', compact('order'));
             })
@@ -2717,12 +2693,10 @@ class TestOrderController extends Controller
                 }
 
                 if (!empty($request->get('dateBegin'))) {
-                    //dd($request);
                     $newDate = Carbon::createFromFormat('Y-m-d', $request->get('dateBegin'));
                     $query->whereDate('created_at', '>=', $newDate);
                 }
                 if (!empty($request->get('dateEnd'))) {
-                    //dd($request);
                     $query->whereDate('created_at', '<=', $request->get('dateEnd'));
                 }
             })
@@ -2741,7 +2715,6 @@ class TestOrderController extends Controller
     {
         $test_order = TestOrder::findOrFail($test_order); // Charger le modèle du test_order
         $filenames = json_decode($test_order->files_name);
-        // dd($filenames);
         if (isset($filenames[$index])) {
             $filenameToDelete = $filenames[$index];
 

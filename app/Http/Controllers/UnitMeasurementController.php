@@ -25,10 +25,10 @@ class UnitMeasurementController extends Controller
         // if (!getOnlineUser()->can('view-unit_measurements')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-        
+
         $unitMeasurements = $this->unitMeasurement->latest()->get();
 
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
 
         return view('unites_measurement.index',compact(['unitMeasurements']));
@@ -59,7 +59,7 @@ class UnitMeasurementController extends Controller
         $data = [
             'name' => $request->name,
         ];
-        
+
         try {
             $this->unitMeasurement->create($data);
             return back()->with('success', " Opération effectuée avec succès  ! ");
@@ -103,12 +103,12 @@ class UnitMeasurementController extends Controller
         // if (!getOnlineUser()->can('edit-unit_measurements')) {
         //     return back()->with('error', "Vous n'êtes pas autorisé");
         // }
-       
+
         try {
                 $unitMeasurement->update([
                     'name' => $request->name
                 ]);
-                
+
                 return back()->with('success', " Mise à jour effectuée avec succès  ! ");
             } catch(\Throwable $ex){
                 return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());
@@ -128,7 +128,7 @@ class UnitMeasurementController extends Controller
         // }
         // $unitMeasurement->delete();
         $this->unitMeasurement->find($unitMeasurement)->delete();
-        
+
         return back()->with('success', " Elément supprimé avec succès  ! ");
     }
 }

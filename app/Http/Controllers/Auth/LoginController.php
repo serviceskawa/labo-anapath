@@ -58,12 +58,9 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        // dd(Carbon::now());
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $userConnect = Auth::user();
-            // dd($userConnect);
-
             $user = User::find($userConnect->id);
 
             /** Function authenticated */
@@ -156,7 +153,6 @@ class LoginController extends Controller
 
             if (!$access) {
                 Auth::logout();
-                // dd('here');
                 // Redirigez l'utilisateur vers la page de connexion avec un message d'erreur
                 // return back()->with('error', 'Vous n\'aviez plus access à la plateforme. Veuillez contacter l\'administrateur.');
                 return redirect("login")->withErrors(['Vous n\'aviez plus access à la plateforme. Veuillez contacter l\'administrateur.']);

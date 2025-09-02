@@ -34,7 +34,7 @@ class ClientController extends Controller
         //récupérer les données de la table doctor dans l'ordre croissant des noms
         $clients = $this->client->latest()->get();
 
-        $setting = $this->setting::find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('clients.index', compact(['clients']));
     }

@@ -30,7 +30,7 @@ class LogReportController extends Controller
         }
         $logs = $this->logReports->latest()->get();
         $users = $this->user->all();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('logReport.index', compact('logs'));
     }

@@ -36,9 +36,8 @@ class TestOrderController extends Controller
         //$tests = Test::all();
         $hopitals = Hospital::all();
         $types_orders = TypeOrder::all();
-        $setting = Setting::find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
-        // dd($examens);
         return view('examens.index', compact(['examens', 'contrats', 'patients', 'doctors', 'hopitals', 'types_orders']));
     }
 
@@ -51,7 +50,6 @@ class TestOrderController extends Controller
 
         if (empty($request->date)) {
             $examens = TestOrder::with(['patient'])->orderBy('id', 'desc')->get();
-
         } else {
             $date = explode("-", $request->date);
             $date[0] = str_replace('/', '-', $date[0]);
@@ -67,22 +65,17 @@ class TestOrderController extends Controller
 
             if (is_null($request->exams_status)) {
                 $examens = $examens;
-
             } else {
                 $examens = $examens->where('status', $request->exams_status);
-
             }
 
             if (is_null($request->cas_status)) {
                 $examens = $examens;
-
             } else {
                 $examens = $examens->where('is_urgent', $request->cas_status);
-
             }
 
             $examens = $examens->orderBy('id', 'desc')->get();
-
         }
 
         return response()->json($examens);
@@ -120,7 +113,7 @@ class TestOrderController extends Controller
         $contrats = Contrat::ofStatus('ACTIF')->get();
         $types_orders = TypeOrder::latest()->get();
         // $types_orders = TypeOrder::orderBy('id', 'desc')->get();
-        $setting = Setting::find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('examens.create', compact(['patients', 'doctors', 'hopitals', 'contrats', 'types_orders']));
     }
@@ -163,7 +156,6 @@ class TestOrderController extends Controller
             $examen_file = time() . '_test_order_.' . $request->file('examen_file')->extension();
 
             $path_examen_file = $request->file('examen_file')->storeAs('tests/orders', $examen_file, 'public');
-
         }
 
         if (is_string($data['doctor_id'])) {
@@ -209,8 +201,7 @@ class TestOrderController extends Controller
             });
 
             return redirect()->route('details_test_order.index', $test_order->id);
-
-        } catch (\Throwable$ex) {
+        } catch (\Throwable $ex) {
 
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
@@ -222,9 +213,8 @@ class TestOrderController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $test_order = TestOrder::findorfail($id);
-        dd($test_order);
-
     }
+
     public function destroy($id)
     {
         if (!getOnlineUser()->can('delete-test-orders')) {
@@ -240,13 +230,11 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+
         $test_order = TestOrder::find($id);
-
         $tests = Test::all();
-
         $details = DetailTestOrder::where('test_order_id', $test_order->id)->get();
-
-        $setting = Setting::find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('examens.details.index', compact(['test_order', 'details', 'tests']));
     }
@@ -286,10 +274,9 @@ class TestOrderController extends Controller
 
                 //  return back()->with('success', "Opération effectuée avec succès ! ");
                 return response()->json(200);
-            } catch (\Throwable$th) {
+            } catch (\Throwable $th) {
                 return response()->json(200);
             }
-
         }
     }
 
@@ -337,14 +324,14 @@ class TestOrderController extends Controller
         if (!getOnlineUser()->can('edit-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        
+
         $test_order = TestOrder::findorfail($id);
         $settings = Setting::find(1);
 
         if ($test_order->status) {
             return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");
         } else {
-           
+
             $test_order->fill(["status" => '1', "code" => generateCodeExamen()])->save();
 
             $report = Report::create([

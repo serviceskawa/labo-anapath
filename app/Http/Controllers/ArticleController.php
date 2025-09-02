@@ -37,7 +37,7 @@ class ArticleController extends Controller
         $articles = $this->article->latest()->get();
         $units = UnitMeasurement::latest()->get();
         $movs = Movement::latest()->get();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
 
         $rupture = $this->article->where('quantity_in_stock',0)->where('deleted_at',null)->count();
         $seuil = $this->article->where('quantity_in_stock','<',DB::raw('minimum'))->where('quantity_in_stock','>',0)->where('deleted_at',null)->count();
@@ -161,7 +161,6 @@ class ArticleController extends Controller
         //     return back()->with('error', "Échec de l'enregistrement, la quantite en stock est inferieur a la quantite minimale ! ");
         // }
 
-        // dd($request);
         try {
                 $article->update([
                     'article_name' => $request->article_name,
@@ -174,9 +173,7 @@ class ArticleController extends Controller
                     'prix'=>$request->prix,
                 ]);
 
-
                 $article->save();
-                // dd($request,$article);
             return back()->with('success', " Mise à jour effectuée avec succès  ! ");
         } catch(\Throwable $ex){
             return back()->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());

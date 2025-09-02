@@ -400,8 +400,8 @@ class ReportController extends Controller
             ->where('report_id', 'like', $report->id)
             ->latest()
             ->get();
-        $setting = $this->setting->find(1);
-        $cashbox = Cashbox::find(2);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
+        $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
         config(['app.name' => $setting->titre]);
 
         $tags = $this->tag->all();
@@ -410,12 +410,11 @@ class ReportController extends Controller
 
     public function pdf($id)
     {
-        // dd($id);
         if (!getOnlineUser()->can('edit-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $report = $this->report->find($id);
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         $text = $report->order ? $report->order->code : '';
         $user = Auth::user();
 
@@ -574,16 +573,13 @@ class ReportController extends Controller
         $end = Carbon::createFromTime(18, 0, 0);
         $now = Carbon::now();
 
-        // dd($report->order);
         if ($report->order->option) {
             $this->sendSms($report);
         } else {
             if ($now >= $beging && $now <= $end) {
                 $this->callUser($report);
-                // dd('je peux envoyer');
             }
         }
-        // dd($report);
         return redirect()->back()->with('success', "Effectué avec succès ! ");
     }
 
@@ -831,7 +827,7 @@ class ReportController extends Controller
 
     public function callUser($report)
     {
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         $client = new Client();
         $accessToken = $setting->api_key_ourvoice;
         $to = '229' . $report->patient->telephone1;
@@ -881,7 +877,7 @@ class ReportController extends Controller
 
     public function sendSms($report)
     {
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         $client = new Client();
         // $accessToken = '421|ACJ1pewuLLQKPsB8W59J1ZLoRRDsamQ87qJpVlTLs4h0Rs9D9nfKuBW1usjOuaJjIF77Md18i2kGbz6n840gdZ0vxSZaxbEPM22PLto17kfFQs9Kjt4XyZTBxVwMfp7aTMfaEjqTag6JIROGjZILh1pldzMqvvki7yzWpcMlzylqfZUBh86M1ddCFW0n1wgk3RapG0u2Bf8m7BDABelg7Umv0D0oIpVK4w5gxTuAq29ycUqk';
         $accessToken = $setting->api_key_ourvoice;

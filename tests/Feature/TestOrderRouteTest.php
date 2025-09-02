@@ -49,7 +49,6 @@ class TestOrderRouteTest extends TestCase
         $testOrder = TestOrder::create([
             'prelevement_date'=>Carbon::now(),
         ]);
-        // dd($testOrder);
         $response = $this->actingAs($user)->get('/test_order/delete/'.$testOrder->id);
 
         // Vérification du code de réponse HTTP

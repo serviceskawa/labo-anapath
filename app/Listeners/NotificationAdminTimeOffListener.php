@@ -41,7 +41,7 @@ class NotificationAdminTimeOffListener
                 try {
                     Mail::to($mail)->queue(new NotificationAdminTimeOffMail($employe));
                 } catch (\Throwable $th) {
-                    dd($th->getMessage());
+                    
                 }
             }
         }

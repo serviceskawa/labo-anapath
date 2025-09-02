@@ -39,7 +39,7 @@ class ShareDocListener
 
             Mail::to($user->email)->queue(new ShareDocMail($data));
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            
         }
     }
 }

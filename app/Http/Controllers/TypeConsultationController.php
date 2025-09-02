@@ -13,7 +13,7 @@ class TypeConsultationController extends Controller
     protected $setting;
     protected $typeConsultation;
     protected $typeConsultationFile;
-    
+
     public function __construct(Setting $setting, TypeConsultation $typeConsultation, TypeConsultationFile $typeConsultationFile){
         $this->setting = $setting;
         $this->typeConsultation = $typeConsultation;
@@ -24,7 +24,7 @@ class TypeConsultationController extends Controller
         $types = $this->typeConsultation->all();
 
         $files = $this->typeConsultationFile->all();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('type_consultation.index', compact('types', 'files'));
     }
@@ -54,7 +54,6 @@ class TypeConsultationController extends Controller
             return redirect()->route('type_consultation.index')->with('success', "Type de consultation ajouté avec succès");
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
-            // dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
@@ -67,7 +66,7 @@ class TypeConsultationController extends Controller
             return back()->with('error', "Une Erreur est survenue. Cette consultation n'existe pas");
         }
         $files = $this->typeConsultationFile->all();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('type_consultation.create', compact('type', 'files'));
     }

@@ -50,7 +50,7 @@ class ExpenseController extends Controller
         $expenses_categorie = ExpenseCategorie::latest()->get();
         $cash_ticket = CashboxTicket::latest()->get();
 
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
 
         return view('expenses.index', compact(['expenses', 'expenses_categorie', 'cash_ticket']));
@@ -65,7 +65,7 @@ class ExpenseController extends Controller
         $expense = $this->expense->find($id);
         $suppliers = $this->supplier->latest()->get();
         $expenses_categorie = ExpenseCategorie::latest()->get();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('expenses.show', compact(['expense', 'suppliers', 'expenses_categorie']));
     }
@@ -284,38 +284,6 @@ class ExpenseController extends Controller
 
             $expense->save();
 
-            // dd($expense);
-
-            // if ($expense->paid=1) {
-            //     $cash = Cashbox::find(1);
-            //     $cash->current_balance -= $expense->amount;
-            //     $cash->save();
-
-            //     CashboxAdd::create([
-            //         'cashbox_id' => 1,
-            //         'date' => Carbon::now(),
-            //         'amount' => $expense->amount,
-            //         'user_id' => Auth::user()->id
-            //     ]);
-            //     $details = $expense->details()->get();
-            //     foreach ($details as $key => $detail) {
-            //         $article = $this->article->where('article_name',$detail->item_name)->first();
-            //         if (!empty($article)) {
-            //             $article->quantity_in_stock += $detail->quantity;
-            //             $article->save();
-            //             Movement::create([
-            //                 'movement_type' => 'augmenter',
-            //                 'date_mouvement' => Carbon::now()->format('d/m/y'),
-            //                 'quantite_changed' => $detail->quantity,
-            //                 'description' => '',
-            //                 'article_id' => $article->id,
-            //                 'user_id' => Auth::user()->id
-            //             ]);
-
-            //         }
-            //     }
-            // }
-
             return redirect()
                 ->route('all_expense.index')
                 ->with('success', ' Mise à jour effectuée avec succès  ! ');
@@ -330,7 +298,7 @@ class ExpenseController extends Controller
         try {
             $expense->paid = 1;
             $expense->save();
-            $cash = Cashbox::find(1);
+            $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','depense')->first();
             $cash->current_balance -= $expense->amount;
             $cash->save();
 
@@ -340,7 +308,7 @@ class ExpenseController extends Controller
                 'amount' => $expense->amount,
                 'user_id' => Auth::user()->id,
             ]);
-            // return back()->with('success', 'Dépense marquée comme payéé');
+            
             return response()->json(200);
         } catch (\Throwable $th) {
             return back()->with('error', 'Échec de la mise à jour ! ' . $th->getMessage());
@@ -373,7 +341,7 @@ class ExpenseController extends Controller
             } else {
                 $expense->paid = 2;
                 $expense->save();
-                $cash = Cashbox::find(1);
+                $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','depense')->first();
                 $cash->current_balance -= $expense->amount;
                 $cash->save();
 

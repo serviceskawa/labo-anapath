@@ -34,7 +34,7 @@ class PermissionController extends Controller
         $permissions = $this->permissions->all();
             $ressources = $this->ressources->all();
             $operations = $this->operations->all();
-            $setting = Setting::find(1);
+            $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
             return view('users.permissions.create', compact('permissions', 'ressources', 'operations'));
 

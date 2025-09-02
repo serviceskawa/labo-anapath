@@ -42,7 +42,7 @@ class RefundRequestController extends Controller
         if (!getOnlineUser()->can('view-refund-requests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         $refundRequests = $this->refundRequest->latest()->get();
         $categories = $this->categories->all();
         $invoices = $this->invoices->where('paid',1)->where('status_invoice',0)->get();
@@ -57,7 +57,7 @@ class RefundRequestController extends Controller
         if (!getOnlineUser()->can('view-refund-requests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         $categories = $this->categories->latest()->get();
         $testOrders = $this->testOrder->all();
 
@@ -74,7 +74,7 @@ class RefundRequestController extends Controller
         $testOrders = $this->testOrder->all();
         $categories = $this->categories->all();
         $invoices = $this->invoices->where('paid',1)->where('status_invoice',0)->get();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('errors_reports.refund.create', compact('testOrders','invoices','categories'));
     }

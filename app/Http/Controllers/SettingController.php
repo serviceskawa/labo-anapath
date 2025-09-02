@@ -31,8 +31,8 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('view-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
 
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         $titles = $this->titleReport->latest()->get();
         return view('settings.report.index', compact('titles', 'setting'));
@@ -87,11 +87,7 @@ class SettingController extends Controller
             'status' => $request->status ? 1 : 0
         ];
 
-        //dd($request);
-
-
         try {
-
             $titleReport = $this->titleReport->find($data['id']);
             $titleReport->title = $data['title'];
             $titleReport->status = $data['status'];
@@ -136,7 +132,7 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('edit-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
 
         if ($setting) {
 
@@ -159,7 +155,7 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('edit-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
 
         if ($setting) {
 
@@ -179,11 +175,10 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('view-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        $setting = $this->setting->find(1);
+
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         $banks = $this->banks->latest()->get();
         config(['app.name' => $setting->titre]);
-        // dd($setting);
-        // return view('settings.app.index' , compact(['setting','banks']));
         return view('settings.app.setting');
     }
 
@@ -192,9 +187,8 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('create-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        // dd($request);
 
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
 
         if ($request->file('logo')) {
 
@@ -251,9 +245,8 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('view-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        // $app_name = config('app.name');
-        // $setting = $this->setting->where('titre','like',$app_name)->first();
-        $setting = $this->setting->find(1);
+
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         $settingInvoice = SettingInvoice::find(1);
         return view('invoices.setting', compact('settingInvoice'));
@@ -264,7 +257,7 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('view-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        //dd($request);
+        
         $data = [
             'ifu' => $request->ifu,
             'token' => $request->token,

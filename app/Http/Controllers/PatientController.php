@@ -39,27 +39,7 @@ class PatientController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        // dd(app()->getLoadedProviders());
-
-        // $query = DB::table('patients')->get();
-        // dd([
-        //     'auth_check' => auth()->check(),
-        //     'selected_branch_id' => session('selected_branch_id'),
-        //     'user_id' => auth()->id(),
-        //     'all_sessions' => session()->all(),
-        //     'sql' => $query->toSql(),
-        //     'bindings' => $query->getBindings()
-        // ]);
-
-        // dd(DB::table('patients')->toSql());
-
-        // dd([
-        //     'sql' => DB::table('patients')->toSql(),
-        //     'bindings' => DB::table('patients')->getBindings(),
-        //     'count' => DB::table('patients')->count()
-        // ]);
-
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('patients.index');
     }
@@ -295,7 +275,7 @@ class PatientController extends Controller
 
         $testorders = $this->testOrders->where('patient_id', '=', $id)->latest()->get();
 
-        $setting = Setting::find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('patients.profil', compact(['invoices', 'testorders', 'patient', 'total', 'nopaye', 'paye']));
     }

@@ -53,7 +53,7 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         $invoices = $this->invoices->latest()->get();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         $today = now()->format('Y-m-d'); // Récupérer la date d'aujourd'hui au format 'YYYY-MM-DD'->whereRaw('Date(updated_at) = ?', [now()->toDateString()])
         $closecashbox = CashboxDaily::where('status', 1)->orderBy('updated_at', 'desc')->first();
         if ($closecashbox) {
@@ -118,10 +118,8 @@ class InvoiceController extends Controller
         } elseif (isset($year)) {
             $credits = $credits->whereYear('invoices.created_at', $year);
         }
+
         $credits = $credits->get();
-
-
-
         $payments = DB::table('cashbox_adds')
             ->selectRaw("
             SUM(amount) AS total_payments
@@ -135,10 +133,6 @@ class InvoiceController extends Controller
             $payments = $payments->whereYear('cashbox_adds.created_at', $year);
         }
         $payments = $payments->get();
-
-
-
-
         $salesByContracts = DB::table('invoices')
             ->select('contrat_id', DB::raw("SUM(total) as total_contracts"))
             ->groupBy('contrat_id');
@@ -152,10 +146,6 @@ class InvoiceController extends Controller
         }
         $paymensalesByContracts = $salesByContracts->get();
 
-        // dd($paymensalesByContracts);
-
-
-
         return view('invoices.index', compact('paymensalesByContracts', 'payments', 'credits', 'sales', 'list_years', 'month', 'year', 'invoices', 'totalToday', 'vente', 'avoir'));
     }
 
@@ -167,7 +157,7 @@ class InvoiceController extends Controller
     public function create()
     {
         $testOrders = $this->testOrders->all();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('invoices.create', compact('testOrders'));
     }
@@ -244,7 +234,6 @@ class InvoiceController extends Controller
      */
     public function show(Request $request, $id)
     {
-        // $cashbox = Cashbox::find(2);
         $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
         $invoice = $this->invoices->findorfail($id);
         $refund = null;
@@ -263,7 +252,7 @@ class InvoiceController extends Controller
         $qrCodeBase = base64_encode($qrCode->getString());
 
         $settingInvoice = $this->settingInvoice->find(1);
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         if (empty($invoice)) {
             return back()->with('error', "Cette facture n'existe pas. Verifiez et réessayez svp ! ");
         }
@@ -556,7 +545,7 @@ class InvoiceController extends Controller
     {
         $invoice = $this->invoices->findorfail($id);
         $settingInvoice = $this->settingInvoice->find(1);
-        $setting = Setting::find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
 
         if (empty($invoice)) {
             return back()->with('error', "Cette facture n'existe pas. Verifiez et réessayez svp ! ");
@@ -636,7 +625,7 @@ class InvoiceController extends Controller
                     "payment" => $request->payment
                 ])->save();
 
-                $cash = Cashbox::find(2);
+                $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
                 $cash->current_balance += $invoice->total;
                 $cash->save();
 
@@ -673,7 +662,7 @@ class InvoiceController extends Controller
 
                 if ($invoice->status_invoice != 1) {
 
-                    $cash = Cashbox::find(2);
+                    $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
                     $cash->current_balance += $invoice->total;
                     $cash->save();
 
@@ -686,7 +675,7 @@ class InvoiceController extends Controller
                     ]);
                 } else {
 
-                    $cash = Cashbox::find(1);
+                    $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','depense')->first();
                     $cash->current_balance -= $invoice->total;
                     $cash->save();
                     CashboxAdd::create([

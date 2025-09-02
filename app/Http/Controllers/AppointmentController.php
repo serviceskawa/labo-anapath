@@ -43,7 +43,7 @@ class AppointmentController extends Controller
         $doctors = getUsersByRole("docteur");
 
         //Dans la table Setting récupérer le premier enrégistrement
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
 
         //charger le nom de l'application en fonction des données récupérées dans la table Setting
         config(['app.name' => $setting->titre]);
@@ -126,7 +126,7 @@ class AppointmentController extends Controller
         }
 
         //Dans la table Setting récupérer le premier enrégistrement
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
 
         return view('Appointment.show', compact('Appointment', 'patients', 'doctors'));
@@ -142,7 +142,7 @@ class AppointmentController extends Controller
     public function update(AppointmentRequest $request)
     {
         //Mis à jour des données
-        
+
         $data = [
             'doctorId' => $request->doctorId,
             'patientId' => $request->patientId,
@@ -177,7 +177,6 @@ class AppointmentController extends Controller
             return response()->json($data);
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
-            // dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }
@@ -204,7 +203,6 @@ class AppointmentController extends Controller
             return back()->with('error', "Une Erreur est survenue. Ce rendez-vous n'existe pas");
         }
 
-        // dd($request);
         $latest = $this->consultation->latest('id')->first();
         $code = sprintf('%04d', empty($latest->id) ? "1" : $latest->id);
 
@@ -221,11 +219,9 @@ class AppointmentController extends Controller
             );
 
             $consultation = $appointment->consultation;
-
             return redirect()->route('consultation.show', $consultation->id)->with('success', "Consultation ajouté avec succès");
         } catch (\Throwable $ex) {
             $error = $ex->getMessage();
-            dd($error);
             return back()->with('error', "Échec de l'enregistrement ! ");
         }
     }

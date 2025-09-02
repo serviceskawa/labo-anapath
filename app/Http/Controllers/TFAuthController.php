@@ -81,7 +81,6 @@ class TFAuthController extends Controller
         try {
             Mail::to($user->email)->queue(new TFAuthNotification($data));
         } catch (\Throwable $ex) {
-            dd($ex->getMessage());
         }
     }
 

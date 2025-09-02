@@ -44,7 +44,7 @@ class ProblemeReportersController extends Controller
     public function index()
     {
 
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         $problemReports = $this->problemReport->latest()->get();
         $problemCategories = $this->problemCategory->latest()->get();
 
@@ -68,7 +68,7 @@ class ProblemeReportersController extends Controller
     {
         $testOrders = $this->testOrder->all();
         $problemCategories = $this->problemCategory->latest()->get();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('errors_reports.create', compact('testOrders','problemCategories'));
     }
@@ -102,7 +102,6 @@ class ProblemeReportersController extends Controller
             return redirect()->route('probleme.report.index')->with('success',"Ticket enregistrée avec success");
         } catch (Exception $th) {
             DB::rollBack();
-            dd($th->getMessage());
             return back()->with('error',"Un problème est suvenu lors de l'enrégistrement".$th->getMessage());
         }
     }
@@ -138,7 +137,7 @@ class ProblemeReportersController extends Controller
             }
         }
         $user_role = User::find(Auth::user()->id)->userCheckRole('rootuser');
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('errors_reports.edit', compact('ticket','ticket_comments','user_role'));
     }
@@ -238,7 +237,6 @@ class ProblemeReportersController extends Controller
         // $recever_id = $request->receve_id;
 
         // $receve = User::find($recever_id);
-        // // dd($request);
         //     $chat = chat::create([
         //         'sender_id'=> $sender_id,
         //         'receve_id' => $recever_id,

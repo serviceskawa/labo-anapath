@@ -16,7 +16,6 @@ class ActiveUserMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // dd($request->user()->is_active);
         if (!$request->user()->is_active) {
             return redirect('login')->withErrors(['Votre compte est désactivé. Veuillez contacter l\'administrateur.']);
         }

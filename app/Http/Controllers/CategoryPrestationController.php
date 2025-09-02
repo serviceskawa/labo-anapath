@@ -22,10 +22,8 @@ class CategoryPrestationController extends Controller
 
     public function index()
     {
-
         $categories = $this->categoryPrestation->all();
-
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('prestation.category.index', compact(['categories']));
     }

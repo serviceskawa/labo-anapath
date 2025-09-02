@@ -15,11 +15,11 @@ class RoleController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth'); 
+        $this->middleware('auth');
     }
-    
+
     protected function store_roles_permission($role, $value, $operation)
-    {   
+    {
         $operation->id = (new Operation)->whereOperation($operation)->first();
         $permission = (new Permission)->whereRessourceId($value)->whereOperationId($operation->id)->get();
         $role->permissions()->save($permission);
@@ -31,7 +31,7 @@ class RoleController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $roles = (new Role)->latest()->get();
-        $setting = (new Setting)->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('users.roles.index', compact('roles'));
 
@@ -44,10 +44,10 @@ class RoleController extends Controller
         }
         $permissions = (new Permission)->all();
         $ressources = (new Ressource)->all();
-        $setting = (new Setting)->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('users.roles.create', compact('permissions', 'ressources'));
-        
+
     }
 
     public function store(Request $request)
@@ -55,7 +55,7 @@ class RoleController extends Controller
         if (!getOnlineUser()->can('create-roles')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        
+
         $view = $request->input('view', []);
         $create = $request->input('create', []);
         $edit = $request->input('edit', []);
@@ -70,19 +70,19 @@ class RoleController extends Controller
                 $operation = "create";
                 foreach ($create as $key => $value) {
 
-                    $ressource = (new Ressource)->findorfail($value); 
+                    $ressource = (new Ressource)->findorfail($value);
                     $operation = (new Operation)->whereOperation("create")->first();
                     $permission = (new Permission)->whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
                     $role->permissions()->attach($permission);
 
                 }
             }
-            
+
             if ($request->view) {
                 $operation = "view";
                 foreach ($view as $key => $value) {
-                    
-                    $ressource = (new Ressource)->findorfail($value); 
+
+                    $ressource = (new Ressource)->findorfail($value);
                     $operation = (new Operation)->whereOperation("view")->first();
                     $permission = (new Permission)->whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
                     $role->permissions()->attach($permission);
@@ -93,22 +93,22 @@ class RoleController extends Controller
             if ($request->edit) {
                 $operation = "edit";
                 foreach ($edit as $key => $value) {
-                    $ressource = (new Ressource)->findorfail($value); 
+                    $ressource = (new Ressource)->findorfail($value);
                     $operation = (new Operation)->whereOperation("edit")->first();
                     $permission = (new Permission)->whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
                     $role->permissions()->attach($permission);
             }
             }
-            
+
             if ($request->delete) {
                 $operation = "delete";
                 foreach ($delete as $key => $value) {
-                    $ressource = (new Ressource)->findorfail($value); 
+                    $ressource = (new Ressource)->findorfail($value);
                     $operation = (new Operation)->whereOperation("delete")->first();
                     $permission = (new Permission)->whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
                     $role->permissions()->attach($permission);
                 }
-    
+
             }
 
         return redirect()->route('user.role-index')->with('success', " Role crée ! ");
@@ -120,10 +120,10 @@ class RoleController extends Controller
         $role = (new Role)->whereSlug($slug)->first();
         $permissions = (new Permission)->all();
         $ressources = (new Ressource)->all();
-        $setting = (new Setting)->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('users.roles.show', compact('role', 'permissions', 'ressources'));
-        
+
     }
 
     public function update(Request $request)
@@ -142,26 +142,26 @@ class RoleController extends Controller
                 ["id" => $request->id],
                 ['name' => $request->titre, 'slug' => Str::slug($request->titre), 'created_by' => Auth::user()->id, 'description' => $request->description]
             );
-    
-           
+
+
             $role->permissions()->sync([]);
-    
+
             if ($request->create) {
                 $operation = "create";
-    
+
                 foreach ($create as $key => $value) {
-                    $ressource = (new Ressource)->findorfail($value); 
+                    $ressource = (new Ressource)->findorfail($value);
                     $operation = (new Operation)->whereOperation("create")->first();
                     $permission = (new Permission)->whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
                     $role->permissions()->attach($permission);
                 }
-            }        
-            
+            }
+
             if ($request->view) {
                 $operation = "view";
-    
+
                 foreach ($view as $key => $value) {
-                    $ressource = (new Ressource)->findorfail($value); 
+                    $ressource = (new Ressource)->findorfail($value);
                     $operation = (new Operation)->whereOperation("view")->first();
                     $permission = (new Permission)->whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
                     $role->permissions()->attach($permission);
@@ -169,25 +169,25 @@ class RoleController extends Controller
             }
             if ($request->edit) {
                 $operation = "edit";
-    
+
                 foreach ($edit as $key => $value) {
-                    $ressource = (new Ressource)->findorfail($value); 
+                    $ressource = (new Ressource)->findorfail($value);
                     $operation = (new Operation)->whereOperation("edit")->first();
                     $permission = (new Permission)->whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
                     $role->permissions()->attach($permission);
                 }
-            }        
+            }
             if ($request->delete) {
                 $operation = "delete";
-    
+
                 foreach ($delete as $key => $value) {
-                    $ressource = (new Ressource)->findorfail($value); 
+                    $ressource = (new Ressource)->findorfail($value);
                     $operation = (new Operation)->whereOperation("delete")->first();
                     $permission = (new Permission)->whereOperationId($operation->id)->whereRessourceId($ressource->id)->first();
                     $role->permissions()->attach($permission);
                 }
             }
-    
+
             return redirect()->route('user.role-index')->with('success', "Role mis à jours ! ");
         } catch (\Throwable $th) {
             return redirect()->route('user.role-index')->with('error', "Échec de l'enregistrement ! " .$ex->getMessage());

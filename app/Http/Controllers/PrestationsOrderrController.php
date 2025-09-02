@@ -33,13 +33,13 @@ class PrestationsOrderrController extends Controller
      */
     public function index()
     {
-        
+
 
         $patients = $this->patients->all();
         $prestations = $this->prestations->all();
         $prestationOrders = $this->prestationOrders->latest()->get();
-        $setting = $this->setting->find(1);
-        config(['app.name' => $setting->titre]);    
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
+        config(['app.name' => $setting->titre]);
         return view('prestationsOrder.index', compact(['patients', 'prestations', 'prestationOrders']));
     }
 
@@ -66,7 +66,7 @@ class PrestationsOrderrController extends Controller
         }
     }
 
-    
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -90,7 +90,7 @@ class PrestationsOrderrController extends Controller
      */
     public function update(Request $request)
     {
-       
+
         $data = $this->validate($request, [
             'id' => 'required',
             'patient' => 'required',
@@ -123,7 +123,7 @@ class PrestationsOrderrController extends Controller
      */
     public function destroy($id)
     {
-       
+
         $prestationOrder = $this->prestationOrders->find($id)->delete();
 
         if ($prestationOrder) {
@@ -135,7 +135,7 @@ class PrestationsOrderrController extends Controller
 
     public function getPrestationOrder(Request $request)
     {
-       
+
         $prestation = $this->prestations->find($request->prestationId);
 
         return response()->json(["total" => $prestation->price]);
@@ -146,7 +146,7 @@ class PrestationsOrderrController extends Controller
         if (!getOnlineUser()->can('view-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-       
+
         $prestation = $this->prestations->find($id);
         return response()->json($prestation);
     }

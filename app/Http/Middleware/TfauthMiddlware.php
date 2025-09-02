@@ -19,15 +19,6 @@ class TfauthMiddlware
 
     public function handle(Request $request, Closure $next)
     {
-        // // dd($request);
-        // $user = auth()->user(); // récupère l'utilisateur authentifié
-
-        // if ($user && $user->two_factor_enabled == 1) {
-        //     // dd($user);
-        //     return $next($request);
-        // }
-        // return redirect()->route('login.confirm');
-
         if (!Session::has('user_2fa')) {
             return redirect()->route('login.confirm');
         }

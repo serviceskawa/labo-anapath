@@ -7,12 +7,13 @@ use Hash;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash as FacadesHash;
 
 class ProfileController extends Controller
 {
     public function index()
     {
-        $setting = (new Setting)->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('profile.index');
     }
@@ -54,9 +55,7 @@ class ProfileController extends Controller
 
         $hashedPassword = Auth::user()->password;
 
-        if (Hash::check($request->oldpassword, $hashedPassword)) {
-            // dd($request->oldpassword , $hashedPassword);
-
+        if (FacadesHash::check($request->oldpassword, $hashedPassword)) {
             $users = (new User)->find(Auth::user()->id);
             $users->password = bcrypt($request->newpassword);
             $users->save();

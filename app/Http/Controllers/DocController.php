@@ -94,18 +94,8 @@ class DocController extends Controller
             $fileSize =  $request->file('attachment')->getSize();
         }
 
-
         try {
-                // $doc = new Doc();
-                // $doc->title = $request->title;
-                // $doc->attachment = $imagePath;
-                // $doc->is_current_version = 1;
-                // $doc->documentation_categorie_id = $request->category_id;
-                // $doc->file_size = $fileSize;
-                // $doc->user_id = auth()->user()->id;
-                // $doc->save();
                 $lastVersion = DocVersion::where('doc_id',$request->first_doc_id)->latest()->first();
-
                 $doc_version = new DocVersion();
                 $doc_version->title = $request->title;
                 $doc_version->doc_id = $request->first_doc_id;
@@ -114,9 +104,6 @@ class DocController extends Controller
                 $doc_version->attachment = $imagePath;
                 $doc_version->user_id = auth()->user()->id;
                 $doc_version->save();
-
-                // dd($request->category_id);
-                // dd('ok');
 
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
@@ -186,22 +173,17 @@ class DocController extends Controller
             $doc_version->version = 1;
             $doc_version->save();
 
-            // dd($request->category_id);
-            // dd('ok');
                 return back()->with('success', " Opération effectuée avec succès  ! ");
             } catch(\Throwable $ex){
                 return back()->with('error', "Échec de l'enregistrement ! ".$ex->getMessage());
             }
-
     }
 
     public function sharedocs(Request $request)
     {
-        // dd($request);
         $doc_id = $request->doc_id;
         $role_id = $request->role_id;
         $role = Role::find($role_id);
-
         $doc = Doc::find($doc_id);
         $doc->update([
             'role_id' => $role_id
@@ -212,14 +194,12 @@ class DocController extends Controller
         }
 
         return back()->with('success', " Opération effectuée avec succès  ! ");
-
     }
 
     public function getrecents()
     {
         // Récupérez toutes les fichiers recent
         $recentfiles = Doc::latest()->limit(3)->get();
-        // dd($recentfiles);
         // Retournez les catégories au format JSON
         return response()->json($recentfiles);
     }
@@ -229,8 +209,6 @@ class DocController extends Controller
     {
         // Récupérez toutes les fichier supprimes
         $deletedFiles = Doc::onlyTrashed()->get();
-
-        // dd($recentfiles);
         // Retournez les catégories au format JSON
         return response()->json($deletedFiles);
     }
@@ -290,8 +268,6 @@ class DocController extends Controller
 
         try
         {
-            // dd($request->title);
-
             $doc->title = $request->title;
             $doc->attachment = $imagePath;
             $doc->save();

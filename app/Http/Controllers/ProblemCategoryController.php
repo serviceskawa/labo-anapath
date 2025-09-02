@@ -24,10 +24,8 @@ class ProblemCategoryController extends Controller
      */
     public function index()
     {
-
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         $problemCategories = $this->problemCategory->latest()->get();
-
         return view('errors_reports.categorie.index', compact('setting', 'problemCategories'));
 
     }

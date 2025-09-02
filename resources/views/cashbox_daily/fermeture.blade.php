@@ -275,7 +275,7 @@
                                                         </div>
                                                         <div class="col-md-2">
                                                             <input type="number" class="form-control" id="open_cash"
-                                                                name="open_cash" value="{{$open_cash->opening_balance}}"
+                                                                name="open_cash" value="{{$open_cash->opening_balance ?? 0}}"
                                                                 readonly>
                                                         </div>
                                                         <div class="col-md-2">
@@ -385,7 +385,7 @@
                                                         </div>
                                                         <div class="col-md-2">
                                                             <input type="number" class="form-control" id="open_cash"
-                                                                name="open_cash" value="{{$open_cash->opening_balance}}"
+                                                                name="open_cash" value="{{$open_cash->opening_balance ?? 0}}"
                                                                 readonly>
                                                         </div>
                                                         <div class="col-md-2">

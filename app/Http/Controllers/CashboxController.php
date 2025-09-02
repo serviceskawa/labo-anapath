@@ -45,16 +45,17 @@ class CashboxController extends Controller
         // $cashboxDailys = CashboxDaily::latest()->get();
         // $cashboxs = Cashbox::find(2);
         // $cashboxtest = Cashbox::find(2);
+        $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
 
-        $cashadds = $this->cashadd->where('type', 'vente')->latest()->get();
-        $totalToday = $this->cash->where('type', 'vente')->current_balance;
+        $cashadds = $this->cashadd->where('cashbox_id', $cashbox->id)->latest()->get();
+        $totalToday = $this->cash->find($cashbox->id)->current_balance;
         $banks = $this->banks->all();
         $cashboxDailys = CashboxDaily::latest()->get();
         $cashboxs = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
         $cashboxtest = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
 
         // Point en temps reel sur le cashboxadd
-        $entree = CashboxAdd::where('cashbox_id', 2)
+        $entree = CashboxAdd::where('cashbox_id', $cashbox->id)
             ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
             ->sum('amount');
         // $entree = CashboxAdd::where('type', 'vente')
@@ -64,14 +65,11 @@ class CashboxController extends Controller
         // $sortie = CashboxAdd::where('cashbox_id', 1)
         // ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
         // ->sum('amount');
-        $sortie = 0;
         // Total des entrees et sorties de la journee
+        $sortie = 0;
         $total = $entree + $sortie;
-        // dd($sortie);
 
-        // dd($cashadds);
-        $setting = $this->setting;
-        dd($setting);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('cashbox.vente.index', compact(['sortie', 'entree', 'cashadds', 'totalToday', 'banks', 'cashboxDailys', 'cashboxs', 'cashboxtest']));
     }
@@ -81,8 +79,10 @@ class CashboxController extends Controller
         if (!getOnlineUser()->can('view-cashboxes')) {
             return back()->with('error', "Vous n\'êtes pas autorisé");
         }
+        $cashboxDepense = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','depense')->first();
+
         // Point en temps reel sur le cashboxadd
-        $sortie = CashboxAdd::where('cashbox_id', 1)
+        $sortie = CashboxAdd::where('cashbox_id',$cashboxDepense->id)
             ->whereRaw('DATE(updated_at) = ?', [now()->toDateString()])
             ->sum('amount');
 
@@ -92,14 +92,11 @@ class CashboxController extends Controller
         $entree = 0;
         // Total des entrees et sorties de la journee
         $total = $entree + $sortie;
-        // dd($sortie);
 
-        $cashadds = $this->cashadd->where('cashbox_id', 1)->latest()->get();
-
-        $totalToday = $this->cash->find(1)->current_balance;
-
+        $cashadds = $this->cashadd->where('cashbox_id',$cashboxDepense->id)->latest()->get();
+        $totalToday = $this->cash->find($cashboxDepense->id)->current_balance;
         $banks = $this->banks->all();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('cashbox.depense.index', compact(['sortie', 'entree', 'cashadds', 'totalToday', 'banks']));
     }
@@ -125,9 +122,6 @@ class CashboxController extends Controller
             'user_id' => Auth::user()->id,
             'description' => $request->description
         ];
-
-        // dd($cashboxAddData);
-
 
         try {
 
@@ -157,8 +151,6 @@ class CashboxController extends Controller
             return back()->with('error', "vous n'êtes pas autorisé");
         }
 
-        //    dd( $request->file('bank_file')->store('tickets', 'public'));
-
         $cashboxAddData = [
             'bank_id' => $request->bank_id,
             'cashbox_id' => 2,
@@ -183,7 +175,6 @@ class CashboxController extends Controller
                     'cashbox_id' => $cashboxAddData['cashbox_id'],
                     'user_id' => $cashboxAddData['user_id']
                 ]);
-
 
                 $cash->current_balance -= $cashboxAddData['amount'];
                 $cash->save();

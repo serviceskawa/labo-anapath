@@ -40,7 +40,7 @@ class UserController extends Controller
 
         $user = Auth::user();
 
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('users.index', compact('users', 'roles'));
     }
@@ -60,7 +60,7 @@ class UserController extends Controller
         $roles = $this->role->all();
         $branches = Branch::latest()->get();
 
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('users.create', compact('users', 'roles', 'branches'));
     }
@@ -142,8 +142,7 @@ class UserController extends Controller
         $user = $this->user->findorfail($id);
         $roles = $this->role->all();
         $branches = Branch::latest()->get();
-
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('users.edit', compact('user', 'roles', 'branches'));
     }
@@ -268,7 +267,6 @@ class UserController extends Controller
                 $user->save();
                 $status = "activé";
             }
-            // dd($user);
             return back()->with('success', 'Le compte a été ' . $status);
         } catch (\Throwable $th) {
             back()->with('error', 'Une erreur est subvenue' . $th);

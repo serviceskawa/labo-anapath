@@ -13,7 +13,7 @@ class PrestationController extends Controller
     protected $prestations;
     protected $categories;
     protected $setting;
-    
+
     public function __construct(Prestation $prestations, CategoryPrestation $categories, Setting $setting){
         $this->prestations = $prestations;
         $this->categories = $categories;
@@ -32,7 +32,7 @@ class PrestationController extends Controller
         $prestations = $this->prestations->all();
 
         $categories = $this->categories->all();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('prestation.index', compact(['prestations', 'categories']));
     }
@@ -45,7 +45,7 @@ class PrestationController extends Controller
      */
     public function store(PrestationRequest $request)
     {
-        
+
         $data = [
             'price' => $request->price,
             'name' => $request->name,

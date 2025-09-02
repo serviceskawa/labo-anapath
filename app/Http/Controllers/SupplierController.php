@@ -33,9 +33,8 @@ class SupplierController extends Controller
         // }
         $suppliers = $this->suppliers->latest()->get();
         $categories = $this->categories->latest()->get();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
-        // dd($testcategories);
         return view('suppliers.index',compact(['suppliers','categories']));
     }
 

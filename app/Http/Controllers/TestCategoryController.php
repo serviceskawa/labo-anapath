@@ -23,10 +23,10 @@ class TestCategoryController extends Controller
         if (!getOnlineUser()->can('view-category-tests')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+        
         $testcategories = $this->categoryTest->with(['tests'])->latest()->get();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
-        // dd($testcategories);
         return view('tests.category.index',compact(['testcategories']));
     }
 

@@ -95,7 +95,7 @@ class TestPathologyMacroController extends Controller
         })->get();
 
         $employees = $this->employees->all();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
 
         $results = DB::table('test_orders')
@@ -184,7 +184,7 @@ class TestPathologyMacroController extends Controller
         // })->get();
         $employees = $this->employees->all();
 
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
 
         $results = DB::table('test_orders')
@@ -411,7 +411,6 @@ class TestPathologyMacroController extends Controller
                 }
 
                 if (!empty($request->get('date'))) {
-                    //dd($request);
                     $query->whereDate('created_at', 'like', $request->get('date'))
                         ->orwhereDate('updated_at', 'like', $request->get('date'));
                 }
@@ -1208,7 +1207,6 @@ class TestPathologyMacroController extends Controller
             })
 
             ->filter(function ($query) use ($request, $data) {
-
                 if (!empty($request->get('id_test_pathology_order'))) {
                     $query->where('id_test_pathology_order', $request->get('id_test_pathology_order'));
                 }
@@ -1217,7 +1215,6 @@ class TestPathologyMacroController extends Controller
                 }
 
                 if (!empty($request->get('date'))) {
-                    //dd($request);
                     $query->whereDate('created_at', 'like', $request->get('date'))
                         ->orwhereDate('updated_at', 'like', $request->get('date'));
                 }

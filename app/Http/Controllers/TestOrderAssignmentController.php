@@ -202,7 +202,6 @@ class TestOrderAssignmentController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request);
         try {
             $code = generateCodeAssignment();
             $assignment = $this->assignment->create([
@@ -218,7 +217,6 @@ class TestOrderAssignmentController extends Controller
     public function update(Request $request)
     {
         $assignment = $this->assignment->find($request->id);
-        // dd($request->date);
         try {
             $assignment->update([
                 'user_id' => $request->user_id,

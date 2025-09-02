@@ -14,6 +14,8 @@ class SettingAppController extends Controller
     {
         $this->setting = $setting;
     }
+    // $this->setting = SettingApp::where('branch_id', session('selected_branch_id'))->first();
+
     public function index()
     {
         $app_name = $this->setting->where('key', 'lab_name')->first();
@@ -97,6 +99,7 @@ class SettingAppController extends Controller
 
     public function store(Request $request)
     {
+        // dd($this->setting, session('selected_branch_id'));
         // Récupérez les valeurs directement à partir de la demande HTTP
         $nbr = intval($request->nbrform);
         $appNameValue = $request->input('app_name');
@@ -170,30 +173,29 @@ class SettingAppController extends Controller
                 $footer ? $footer->update(['value' => $footerValue]) : '';
 
                 if ($request->file('logo')) {
-
                     $logo = time() . '_settings_app_logo.' . $request->file('logo')->extension();
-
                     $path_logo = $request->file('logo')->storeAs('settings/app', $logo, 'public');
                 }
+
                 if ($request->file('favicon')) {
-
                     $favicon = time() . '_settings_app_favicon.' . $request->file('favicon')->extension();
-
                     $path_favicon = $request->file('favicon')->storeAs('settings/app', $favicon, 'public');
                 }
+
                 if ($request->file('logo_white')) {
-
                     $img3 = time() . '_settings_app_blanc.' . $request->file('logo_white')->extension();
-
                     $path_img3 = $request->file('logo_white')->storeAs('settings/app', $img3, 'public');
                 }
 
+                $path_logo = '';
                 $logo = $this->setting->where('key', 'logo')->first();
                 $logo ? $logo->update(['value' => $path_logo]) : '';
 
+                $path_favicon = '';
                 $favicon = $this->setting->where('key', 'favicon')->first();
                 $favicon ? $favicon->update(['value' => $path_favicon]) : '';
 
+                $path_img3 = '';
                 $logo_white = $this->setting->where('key', 'logo_white')->first();
                 $logo_white ? $logo_white->update(['value' => $path_img3]) : '';
                 break;

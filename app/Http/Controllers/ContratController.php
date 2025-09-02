@@ -63,15 +63,13 @@ class ContratController extends Controller
         $search_test = Test::find(intval($request->test_id));
         $contrat = Contrat::findorfail($request->contrat_id);
         try {
-            // dd(intval($request->test_id));
             $detail_contrat->contrat_id = intval($request->contrat_id);
             $detail_contrat->test_id = intval($request->test_id);
-            // dd($detail_contrat->test_id);
             $detail_contrat->amount_remise = intval($request->amount_remise);
             $detail_contrat->category_test_id = $search_test->category_test_id;
             $detail_contrat->amount_after_remise = $search_test->price - intval($request->amount_remise);
             $detail = $detail_contrat->save();
-            // dd('ok');
+
             return redirect()->route('contrat_details.index', $detail_contrat->contrat_id)->with('success', "Element enregistré avec succès ! ");
         } catch (\Throwable $ex) {
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
@@ -168,7 +166,7 @@ class ContratController extends Controller
         }
 
         $clients = $this->clients->latest()->get();
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
 
         config(['app.name' => $setting->titre]);
         return view('contrats.index', compact(['clients']));
@@ -194,9 +192,7 @@ class ContratController extends Controller
 
         $detail_tests = $this->detailsContrat->where('pourcentage', null)->where('contrat_id', $id)->get();
 
-        // dd($detail_tests);
-
-        $setting = $this->setting->find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('contrats_details.index', compact(['contrat', 'cateroriesTests', 'tests', 'detail_tests']));
     }
@@ -233,13 +229,7 @@ class ContratController extends Controller
             'status' => 'INACTIF',
         ];
 
-        // dd($data['invoice_unique']);
-
-        // dd($request, $data['invoice_unique']);
-
         try {
-            // $contrat = $this->contrat->create($data);
-
             $contrat = Contrat::create([
                 'name' => $request->name,
                 'type' => $request->type,
@@ -254,7 +244,6 @@ class ContratController extends Controller
 
             if ($contrat->invoice_unique == 1) {
                 $code_facture = $this->generateCodeFacture();
-                // dd($code_facture);
                 $invoice = Invoice::create([
                     "date" => Carbon::now(),
                     "contrat_id" => $contrat->id,
@@ -271,32 +260,6 @@ class ContratController extends Controller
 
     private function generateCodeFacture()
     {
-        //Récupère le dernier enregistrement de la même année avec un code non null et dont les 4 derniers caractères du code sont les plus grands
-        // $invoice = Invoice::whereYear('created_at', '=', now()->year)
-        //     ->whereNotNull('code')
-        //     ->orderByRaw('RIGHT(code, 4) DESC')
-        //     ->first();
-
-        // Si c'est le premier enregistrement ou si la date de l'enregistrement est différente de l'année actuelle, le code sera "0001"
-        // if (!$invoice || $invoice->created_at->year != now()->year) {
-        //     $code = "0001";
-        //     dd($invoice);
-        // }
-        // Sinon, incrémente le dernier code de 1
-        // else {
-        //     // Récupère les quatre derniers caractères du code
-        //     $lastCode = substr($invoice->code, -4);
-        //     dd($invoice);
-
-        //     // Convertit la chaîne en entier et l'incrémente de 1
-        //     $code = intval($lastCode) + 1;
-        //     $code = str_pad($code, 4, '0', STR_PAD_LEFT);
-        // }
-
-
-        // ===============================================================================================
-
-
         // Récupérer tous les enregistrements pour l'année actuelle avec un code non null
         $invoices = Invoice::whereYear('created_at', now()->year)
             ->whereNotNull('code')
@@ -325,10 +288,6 @@ class ContratController extends Controller
             $code = str_pad($code, 4, '0', STR_PAD_LEFT);
         }
         // Si le code est au format incorrect ou si le code est REGULARISATION, ajuster la logique ici
-        // Exemple pour s'assurer que le code est au format correct
-        // (Vérifiez selon votre logique si nécessaire)
-
-        // ============
         // Ajoute les deux derniers chiffres de l'année au début du code
         return "FA" . now()->year % 100 . "$code";
     }
@@ -546,11 +505,6 @@ class ContratController extends Controller
         if (!getOnlineUser()->can('delete-contrats')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        // dd($id);
-
-
-
-
 
         $contrat = $this->contrat->find($id)->delete();
 
@@ -566,9 +520,8 @@ class ContratController extends Controller
         if (!getOnlineUser()->can('edit-contrats')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        // dd($id);
-        $contrat = $this->contrat->findorfail($id);
 
+        $contrat = $this->contrat->findorfail($id);
         if ($contrat) {
             $contrat->is_close = 1;
             $contrat->save();
@@ -586,13 +539,11 @@ class ContratController extends Controller
 
         //Suppression d'un contrat
         $detail = $this->detailsContrat->find($id)->delete();
-
         if ($detail) {
             return back()->with('success', "    Un élement a été supprimé ! ");
         } else {
             return back()->with('error', "    Ce contrat est utilisé ailleurs ! ");
         }
-        // return back()->with('success', "    Un élement a été supprimé ! ");
     }
 
     public function update_detail_status($id)

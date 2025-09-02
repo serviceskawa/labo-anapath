@@ -12,7 +12,8 @@ class DocumentationCategorieController extends Controller
 {
     protected $documentationCategorie;
     protected $setting;
-        public function __construct(DocumentationCategorie $documentationCategorie, Setting $setting){
+    public function __construct(DocumentationCategorie $documentationCategorie, Setting $setting)
+    {
         $this->$documentationCategorie = $documentationCategorie;
         $this->setting = $setting;
     }
@@ -48,7 +49,7 @@ class DocumentationCategorieController extends Controller
     public function getdocs($id)
     {
         // Récupérez toutes les catégories
-        $docs = Doc::where('documentation_categorie_id',$id)->where('user_id',Auth::user()->id)->get();
+        $docs = Doc::where('documentation_categorie_id', $id)->where('user_id', Auth::user()->id)->get();
 
         // Retournez les catégories au format JSON
         return response()->json($docs);
@@ -77,19 +78,19 @@ class DocumentationCategorieController extends Controller
         }
 
         $this->validate($request, [
-            'name' => ['required','string','max:255'],
+            'name' => ['required', 'string', 'max:255'],
         ]);
 
         try {
 
-                $document = new DocumentationCategorie();
-                $document->name = $request->name;
-                $document->save();
+            $document = new DocumentationCategorie();
+            $document->name = $request->name;
+            $document->save();
 
-                 return back()->with('success', " Opération effectuée avec succès  ! ");
-            } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ");
-            }
+            return back()->with('success', " Opération effectuée avec succès  ! ");
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! ");
+        }
     }
 
     /**
@@ -109,10 +110,7 @@ class DocumentationCategorieController extends Controller
      * @param  \App\Models\DocumentationCategorie  $documentationCategorie
      * @return \Illuminate\Http\Response
      */
-    public function edit(DocumentationCategorie $documentationCategorie)
-    {
-
-    }
+    public function edit(DocumentationCategorie $documentationCategorie) {}
 
     /**
      * Update the specified resource in storage.
@@ -127,20 +125,17 @@ class DocumentationCategorieController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
         $this->validate($request, [
-            'name' => ['required','string','max:255'],
+            'name' => ['required', 'string', 'max:255'],
         ]);
 
-        // dd($documentationCategorie);
         try {
 
             $documentationCategorie->name = $request->name;
             $documentationCategorie->save();
-            // dd($documentationCategorie->name);
-
-                 return back()->with('success', " Opération effectuée avec succès  ! ");
-            } catch(\Throwable $ex){
-                return back()->with('error', "Échec de l'enregistrement ! ");
-            }
+            return back()->with('success', " Opération effectuée avec succès  ! ");
+        } catch (\Throwable $ex) {
+            return back()->with('error', "Échec de l'enregistrement ! ");
+        }
     }
 
     /**

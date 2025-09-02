@@ -35,11 +35,10 @@ class TFAuthNotification extends Mailable
         $from_adresse = SettingApp::where('key','from_adresse')->first();
         $from_name = SettingApp::where('key','from_name')->first();
         $lab_name = SettingApp::where('key','lab_name')->first();
-        
+
         $this->from($from_adresse->value, $from_name->value) // L'expéditeur
         ->subject('Connection Confirmation de code')
         ->view('emails.tfauth_notification')
         ->with(['user'=>$this->user,'lab'=>$lab_name]);
-        //dd($this);
     }
 }
