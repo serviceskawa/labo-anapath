@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Role extends Model
 {
-    use HasFactory, BranchScopeTrait;
+    // use HasFactory, BranchScopeTrait;
+    use HasFactory;
 
     protected $guarded = [];
 
