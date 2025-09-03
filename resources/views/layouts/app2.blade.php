@@ -533,7 +533,7 @@
                     </li>
 
 
-                    @if (getOnlineUser()->can('edit-users'))
+                    {{-- @if (getOnlineUser()->can('edit-users')) --}}
                         <li class="side-nav-item">
                             <a data-bs-toggle="collapse" href="#sidebarProjects2" aria-expanded="false"
                                 aria-controls="sidebarProjects2" class="side-nav-link">
@@ -543,12 +543,12 @@
                             </a>
                             <div class="collapse" id="sidebarProjects2">
                                 <ul class="side-nav-second-level">
-                                    @if (getOnlineUser()->can('view-permissions'))
+                                    {{-- @if (getOnlineUser()->can('view-permissions')) --}}
                                         <li>
                                             <a href="{{ route('user.permission-index') }}">Permissions</a>
                                         </li>
-                                    @endif
-                                    @if (getOnlineUser()->can('view-roles'))
+                                    {{-- @endif --}}
+                                    {{-- @if (getOnlineUser()->can('view-roles')) --}}
                                         <li class="side-nav-item" style="margin-left: 38px">
                                             <a href="{{ route('user.role-index') }}" class="side-nav-link">
                                                 <span> Rôles </span>
@@ -568,8 +568,8 @@
                                                 </ul>
                                             </div>
                                         </li>
-                                    @endif
-                                    @if (getOnlineUser()->can('view-users'))
+                                    {{-- @endif --}}
+                                    {{-- @if (getOnlineUser()->can('view-users')) --}}
                                         <li class="side-nav-item" style="margin-left: 38px">
                                             <a href="{{ route('user.index') }}" class="side-nav-link">
                                                 <span> Tous les utilisateurs </span>
@@ -589,11 +589,11 @@
                                                 </ul>
                                             </div>
                                         </li>
-                                    @endif
+                                    {{-- @endif --}}
                                 </ul>
                             </div>
                         </li>
-                    @endif
+                    {{-- @endif --}}
 
                     @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))
                         <li class="side-nav-item">

@@ -170,14 +170,14 @@
                         <div class="col-6">
                             <i class="mdi mdi-trending-up text-success mt-3 h3"></i>
                             <h3 class="fw-normal">
-                                <span>{{ count($totalByStatus)>1 ? $totalByStatus[1]['total'] :'' }}</span>
+                                <span>{{ count($totalByStatus)>1 ? $totalByStatus[1]->total :'' }}</span>
                             </h3>
                             <p class="text-muted mb-0">Terminé</p>
                         </div>
                         <div class="col-6">
                             <i class="mdi mdi-trending-down text-danger mt-3 h3"></i>
                             <h3 class="fw-normal">
-                                <span>{{ $totalByStatus[0]['total'] }}</span>
+                                <span>{{ $totalByStatus[0]->total }}</span>
                             </h3>
                             <p class="text-muted mb-0">En attente</p>
                         </div>

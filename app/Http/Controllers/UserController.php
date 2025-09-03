@@ -32,14 +32,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        if (!getOnlineUser()->can('view-users')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('view-users')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
+
         $users = $this->user->latest()->get();
         $roles = $this->role->all();
-
         $user = Auth::user();
-
         $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('users.index', compact('users', 'roles'));
@@ -52,14 +51,13 @@ class UserController extends Controller
      */
     public function create()
     {
-        if (!getOnlineUser()->can('create-users')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('create-users')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
 
         $users = $this->user->latest()->get();
         $roles = $this->role->all();
         $branches = Branch::latest()->get();
-
         $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
         return view('users.create', compact('users', 'roles', 'branches'));
@@ -73,16 +71,14 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        if (!getOnlineUser()->can('create-users')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('create-users')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
 
         if ($request->hasFile('signature')) {
             $signature = time() . '_' . $request->firstname . '_signature.' . $request->file('signature')->extension();
-
             // Chemin absolu vers public/adminassets/images
             $destinationPath = public_path('adminassets/images');
-
             // Déplacer le fichier vers le dossier public
             $request->file('signature')->move($destinationPath, $signature);
         }
@@ -135,9 +131,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        if (!getOnlineUser()->can('edit-users')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('edit-users')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
 
         $user = $this->user->findorfail($id);
         $roles = $this->role->all();
@@ -156,9 +152,9 @@ class UserController extends Controller
      */
     public function update(Request $request)
     {
-        if (!getOnlineUser()->can('edit-users')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        // if (!getOnlineUser()->can('edit-users')) {
+        //     return back()->with('error', "Vous n'êtes pas autorisé");
+        // }
 
         $data = $this->validate($request, [
             'id' => 'required',
@@ -238,6 +234,7 @@ class UserController extends Controller
         if (!getOnlineUser()->can('delete-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+        
         $this->user->find($id)->delete();
         return redirect()->route('user.index')->with('success', "Un utilisateur a été supprimé ! ");
     }

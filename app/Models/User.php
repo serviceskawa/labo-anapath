@@ -181,16 +181,8 @@ class User extends Authenticatable
         // Renvoie la branche principale ou actuelle associée à l'utilisateur
     }
 
-    // 🔁 Relation vers toutes les branches associées via la table pivot
-    // public function branches()
-    // {
-    //     return $this->belongsToMany(Branch::class)
-    //                 ->withPivot('is_default')
-    //                 ->withTimestamps();
-    //     // Renvoie toutes les branches liées à l'utilisateur
-    // }
 
-    // ✅ Relation many-to-many avec la table branch_user
+    // Relation many-to-many avec la table branch_user
     public function branches()
     {
         return $this->belongsToMany(Branch::class, 'branch_user', 'user_id', 'branch_id');
