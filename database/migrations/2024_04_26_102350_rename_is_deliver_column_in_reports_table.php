@@ -14,7 +14,9 @@ class RenameIsDeliverColumnInReportsTable extends Migration
     public function up()
     {
         Schema::table('reports', function (Blueprint $table) {
-            $table->renameColumn('is_deliver', 'is_delivered');
+            if (Schema::hasColumn('reports', 'is_deliver')) {
+                $table->renameColumn('is_deliver', 'is_delivered');
+            }
         });
     }
 
@@ -26,7 +28,9 @@ class RenameIsDeliverColumnInReportsTable extends Migration
     public function down()
     {
         Schema::table('reports', function (Blueprint $table) {
-            $table->renameColumn('is_delivered', 'is_deliver');
+            if (Schema::hasColumn('reports', 'is_delivered')) {
+                $table->renameColumn('is_delivered', 'is_deliver');
+            }
         });
     }
 }
