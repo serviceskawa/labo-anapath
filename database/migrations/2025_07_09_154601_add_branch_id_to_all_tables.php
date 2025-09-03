@@ -82,7 +82,7 @@ class AddBranchIdToAllTables extends Migration
         'signals',
         'suppliers',
         'supplier_categories',
-        // 'tags',
+        'tags',
         'tests',
         'test_orders',
         'test_order_assignments',
