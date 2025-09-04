@@ -372,7 +372,7 @@
                         </div>
                     @endif
 
-                    <div style="margin-right: 100px;">
+                    <div @if(!empty($invoice['mecef_code'])) style="margin-right: 100px;" @endif>
                         <div class="info-label">Adressée à:</div>
                         <div class="info-value">
                             <strong>Nom:</strong> {{ $invoice['client']['name'] }}<br>
