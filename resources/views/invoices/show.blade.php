@@ -294,7 +294,7 @@
     <div class="invoice-container">
         <!-- Logo d'en-tête -->
         <div class="company-logo">
-            @if (isset($invoice['images']['header_logo']) && $invoice['images']['header_logo'])
+            @if (isset($invoice['images']['header_logo']) && !empty($invoice['images']['header_logo']))
                 <img src="{{ $invoice['images']['header_logo'] }}" alt="Logo de l'entreprise">
             @else
                 <div class="company-logo-placeholder">
@@ -441,10 +441,10 @@
         <div class="signature-section no-break">
             <div class="signature-container" style="margin-left: 100px; position: relative;">
                 <div class="signature-image">
-                    @if (isset($invoice['images']['signature']) && $invoice['images']['signature'])
+                    @if (isset($invoice['images']['signature']) && !empty($invoice['images']['signature']))
                         <img src="{{ $invoice['images']['signature'] }}" alt="Signature">
 
-                        @if (isset($invoice['images']['signature']) && $invoice['images']['signature'])
+                        @if (isset($invoice['images']['signature']) && !empty($invoice['images']['signature']))
                             <img src="{{ public_path('adminassets/images/paid_img.png') }}" alt="Signature" width="100">
                         @endif
                     @else

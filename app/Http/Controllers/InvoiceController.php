@@ -228,145 +228,11 @@ class InvoiceController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    // public function show(Request $request, $id)
-    // {
-    //     $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
-    //     $invoice = $this->invoices->findorfail($id);
-    //     $refund = null;
-    //     if ($invoice->status_invoice == 1) {
-    //         $refund = RefundRequest::where('invoice_id', $invoice->reference)->first();
-    //     }
-
-    //     // Génération du code QRCode
-    //     $qrCode = Builder::create()
-    //         ->writer(new PngWriter())
-    //         ->data($invoice->code_normalise ?? "Centre ADECHINA Anatomie Pathologique")
-    //         ->size(300)
-    //         ->margin(10)
-    //         ->build();
-
-    //     $qrCodeBase = base64_encode($qrCode->getString());
-
-    //     $settingInvoice = $this->settingInvoice->find(1);
-    //     $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
-    //     if (empty($invoice)) {
-    //         return back()->with('error', "Cette facture n'existe pas. Verifiez et réessayez svp ! ");
-    //     }
-
-    //     config(['app.name' => $setting->titre]);
-    //     return view('invoices.show', compact('qrCodeBase', 'cashbox', 'invoice', 'setting', 'settingInvoice', 'refund'));
-    // }
-
-    // public function show(Request $request, $id)
-    // {
-    //     // // Récupérer les données de la facture
-    //     // $invoice = [
-    //     //     'date' => '2025-07-15 10:05:28',
-    //     //     'code' => 'FA252344 (PAYÉ)',
-    //     //     'type' => 'ORDINAIRE',
-    //     //     'mecef_code' => 'IPLGJMXXOX6ZQ6F6QSQ3UT56',
-    //     //     'client' => [
-    //     //         'name' => 'ADINGBAN Reine',
-    //     //         'address' => 'ADINGBAN Reine',
-    //     //         'code' => '20AE076EB1',
-    //     //         'contact' => '',
-    //     //     ],
-    //     //     'exam_request' => '252595',
-    //     //     'items' => [
-    //     //         [
-    //     //             'designation' => 'Mastectomie',
-    //     //             'quantity' => 1,
-    //     //             'price' => 50000,
-    //     //             'discount' => 0,
-    //     //             'total' => 50000
-    //     //         ]
-    //     //     ],
-    //     //     'subtotal' => 50000,
-    //     //     'total_ttc' => 50000,
-    //     //     'note' => 'Les résultats de vos analyses seront disponibles dans un délai de 3 semaines. Selon la complexité du cas, les résultats peuvent être disponibles plus tôt ou plus tard. Vous serez notifiés dès que les résultats seront prêts. Nous vous remercions de votre compréhension et de votre patience.',
-    //     //     'footer' => 'Centre ADECHINA Anatomie Pathologique â€¢ Adresse : Carré 1915 "G" Fifadji, 072 BP 059 Cotonou, BÂ©nin â€¢ TÃ©lÃ©phone : (+229)97761721 â€¢ WhatsApp: (+229)61191975 â€¢ RCCM RB/COT/18 B22364 â€¢ IFU : 3201810410828 â€¢ contact@caap.bj â€¢ Ouvert du Lundi au Vendredi de 08:00 - 17:00 â€¢ www.caap.bj',
-    //     //     'images' => [
-    //     //         'header_logo' => public_path('images/logo-header.png'),
-    //     //         'signature' => public_path('images/signature.png'),
-    //     //     ]
-    //     // ];
-
-    //     // $pdf = Pdf::loadView('invoices.show', compact('invoice'));
-
-    //     // return $pdf->download('facture_' . $invoice['code'] . '.pdf');
-
-
-
-
-
-    //     // Convertir les images en base64 pour DomPDF (méthode recommandée)
-    //     $headerLogoPath = public_path('images/logo-header.png');
-    //     $signaturePath = public_path('images/signature.png');
-
-    //     $headerLogo = null;
-    //     $signature = null;
-
-    //     // Vérifier si les fichiers existent avant de les encoder
-    //     if (file_exists($headerLogoPath)) {
-    //         $headerLogo = 'data:image/png;base64,' . base64_encode(file_get_contents($headerLogoPath));
-    //     }
-
-    //     if (file_exists($signaturePath)) {
-    //         $signature = 'data:image/png;base64,' . base64_encode(file_get_contents($signaturePath));
-    //     }
-
-    //     // Récupérer les données de la facture (à adapter selon votre base de données)
-    //     $invoice = [
-    //         'date' => '2025-07-15 10:05:28',
-    //         'code' => 'FA252344 (PAYÉ)',
-    //         'type' => 'ORDINAIRE',
-    //         'mecef_code' => 'IPLGJMXXOX6ZQ6F6QSQ3UT56',
-    //         'client' => [
-    //             'name' => 'ADINGBAN Reine',
-    //             'address' => 'ADINGBAN Reine',
-    //             'code' => '20AE076EB1',
-    //             'contact' => '',
-    //         ],
-    //         'exam_request' => '252595',
-    //         'items' => [
-    //             [
-    //                 'designation' => 'Mastectomie',
-    //                 'quantity' => 1,
-    //                 'price' => 50000,
-    //                 'discount' => 0,
-    //                 'total' => 50000
-    //             ]
-    //         ],
-    //         'subtotal' => 50000,
-    //         'total_ttc' => 50000,
-    //         'note' => 'Les résultats de vos analyses seront disponibles dans un délai de 3 semaines. Selon la complexité du cas, les résultats peuvent être disponibles plus tôt ou plus tard. Vous serez notifiés dès que les résultats seront prêts. Nous vous remercions de votre compréhension et de votre patience.',
-    //         'footer' => 'Centre ADECHINA Anatomie Pathologique • Adresse : Carré 1915 "G" Fifadji, 072 BP 059 Cotonou, Bénin • Téléphone : (+229)97761721 • WhatsApp: (+229)61191975 • RCCM RB/COT/18 B22364 • IFU : 3201810410828 • contact@caap.bj • Ouvert du Lundi au Vendredi de 08:00 - 17:00 • www.caap.bj',
-    //         'images' => [
-    //             'header_logo' => $headerLogo,
-    //             'signature' => $signature,
-    //         ]
-    //     ];
-
-    //     $pdf = PDF::loadView('invoices.pdf', compact('invoice'));
-
-    //     // Configuration PDF
-    //     $pdf->setPaper('A4', 'portrait');
-
-    //     return $pdf->download('facture_' . str_replace(['(', ')', ' '], '', $invoice['code']) . '.pdf');
-    // }
-
     public function show(Request $request, $id)
     {
         $headerLogo = $this->settingApp->where('key', 'entete')->first();
         // Convertir les images en base64 pour DomPDF (méthode recommandée)
-        $headerLogoPath = public_path('adminassets/images/' . $headerLogo->value);
-        // $signaturePath = public_path('images/signature.png');
+        $headerLogoPath = $headerLogo->value ? public_path('adminassets/images/' . $headerLogo->value) : '';
 
         $headerLogo = null;
         $signature = null;
@@ -375,10 +241,6 @@ class InvoiceController extends Controller
         if ($headerLogoPath) {
             $headerLogo = $headerLogoPath;
         }
-
-        // if (file_exists($signaturePath)) {
-        //     $signature = 'data:image/png;base64,' . base64_encode(file_get_contents($signaturePath));
-        // }
 
         //Recupération du invoice
         $invoice = $this->invoices->findorfail($id);
@@ -424,7 +286,7 @@ class InvoiceController extends Controller
             'footer' => $this->settingApp::where('key', 'report_footer')->first()->value ?? $setting->footer,
             'images' => [
                 'header_logo' => $headerLogo,
-                'signature' => public_path('adminassets/images/'.Auth::user()->signature),
+                'signature' => Auth::user()->signature ? public_path('adminassets/images/'.Auth::user()->signature) : '',
             ]
         ];
 
