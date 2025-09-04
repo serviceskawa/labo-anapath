@@ -365,8 +365,8 @@ class InvoiceController extends Controller
     {
         $headerLogo = $this->settingApp->where('key', 'entete')->first();
         // Convertir les images en base64 pour DomPDF (méthode recommandée)
-        $headerLogoPath = 'adminassets/images/' . $headerLogo->value;
-        $signaturePath = public_path('images/signature.png');
+        $headerLogoPath = public_path('adminassets/images/' . $headerLogo->value);
+        // $signaturePath = public_path('images/signature.png');
 
         $headerLogo = null;
         $signature = null;
@@ -376,9 +376,9 @@ class InvoiceController extends Controller
             $headerLogo = $headerLogoPath;
         }
 
-        if (file_exists($signaturePath)) {
-            $signature = 'data:image/png;base64,' . base64_encode(file_get_contents($signaturePath));
-        }
+        // if (file_exists($signaturePath)) {
+        //     $signature = 'data:image/png;base64,' . base64_encode(file_get_contents($signaturePath));
+        // }
 
         //Recupération du invoice
         $invoice = $this->invoices->findorfail($id);
@@ -424,7 +424,7 @@ class InvoiceController extends Controller
             'footer' => $this->settingApp::where('key', 'report_footer')->first()->value ?? $setting->footer,
             'images' => [
                 'header_logo' => $headerLogo,
-                'signature' => 'adminassets/images/'.Auth::user()->signature,
+                'signature' => public_path('adminassets/images/'.Auth::user()->signature),
             ]
         ];
 

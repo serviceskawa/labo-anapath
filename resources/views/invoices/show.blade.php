@@ -445,7 +445,7 @@
                         <img src="{{ $invoice['images']['signature'] }}" alt="Signature">
 
                         @if (isset($invoice['images']['signature']) && $invoice['images']['signature'])
-                            <img src="{{ 'adminassets/images/paid_img.png' }}" alt="Signature" width="100">
+                            <img src="{{ public_path('adminassets/images/paid_img.png') }}" alt="Signature" width="100">
                         @endif
                     @else
                         <div class="signature-placeholder">
