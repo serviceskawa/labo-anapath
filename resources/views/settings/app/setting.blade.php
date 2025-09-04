@@ -240,7 +240,7 @@
                                                                             id="basic-addon1"><i
                                                                                 class="mdi mdi-ballot-outline"></i></span>
                                                                         <input type="text" class="form-control"
-                                                                            value="{{ $ifu->value }}" placeholder="IFU"
+                                                                            value="{{ $ifu->value ?? "" }}" placeholder="IFU"
                                                                             aria-label="ifu" name="ifu"
                                                                             aria-describedby="basic-addon1">
                                                                     </div>
@@ -727,7 +727,7 @@
         var general3 = document.getElementById('general3');
         var general4 = document.getElementById('general4');
         var general7 = document.getElementById('general7');
-        
+
         $('#general').on('click', function() {
             titleHeader.textContent = "Général"
         })
