@@ -230,10 +230,37 @@ class InvoiceController extends Controller
 
     public function show(Request $request, $id)
     {
+        $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
+        $invoice = $this->invoices->findorfail($id);
+        $refund = null;
+        if ($invoice->status_invoice == 1) {
+            $refund = RefundRequest::where('invoice_id', $invoice->reference)->first();
+        }
+
+        // Génération du code QRCode
+        $qrCode = Builder::create()
+            ->writer(new PngWriter())
+            ->data($invoice->code_normalise ?? "Centre ADECHINA Anatomie Pathologique")
+            ->size(300)
+            ->margin(10)
+            ->build();
+
+        $qrCodeBase = base64_encode($qrCode->getString());
+        $settingInvoice = SettingInvoice::where('branch_id', session('selected_branch_id'))->first();
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
+        if (empty($invoice)) {
+            return back()->with('error', "Cette facture n'existe pas. Verifiez et réessayez svp ! ");
+        }
+
+        config(['app.name' => $setting->titre]);
+        return view('invoices.show', compact('qrCodeBase', 'cashbox', 'invoice', 'setting', 'settingInvoice', 'refund'));
+    }
+
+    public function generatePDF($id)
+    {
         $headerLogo = $this->settingApp->where('key', 'entete')->first();
         // Convertir les images en base64 pour DomPDF (méthode recommandée)
         $headerLogoPath = $headerLogo->value ? public_path('adminassets/images/' . $headerLogo->value) : '';
-
         $headerLogo = null;
         $signature = null;
 
@@ -248,7 +275,6 @@ class InvoiceController extends Controller
         if ($invoice->status_invoice == 1) {
             $refund = RefundRequest::where('invoice_id', $invoice->reference)->first();
         }
-
         $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
 
         // Génération du code QRCode
@@ -258,7 +284,6 @@ class InvoiceController extends Controller
             ->size(300)
             ->margin(10)
             ->build();
-
         $qrCodeBase = base64_encode($qrCode->getString());
 
         // Récupérer les données de la facture (à adapter selon votre base de données)
@@ -290,13 +315,11 @@ class InvoiceController extends Controller
             ]
         ];
 
-        $pdf = PDF::loadView('invoices.show', compact('invoice'));
-
         // Configuration PDF
+        $pdf = PDF::loadView('invoices.pdf', compact('invoice'));
         $pdf->setPaper('A4', 'portrait');
 
-
-        return $pdf->stream('invoices_show');
+        return $pdf->stream('invoices_show'.time());
     }
 
     private function formatInvoiceItems($invoice, $refund)
@@ -609,7 +632,7 @@ class InvoiceController extends Controller
     function print($id)
     {
         $invoice = $this->invoices->findorfail($id);
-        $settingInvoice = $this->settingInvoice->find(1);
+        $settingInvoice = SettingInvoice::where('branch_id', session('selected_branch_id'))->first();
         $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
 
         if (empty($invoice)) {
@@ -677,7 +700,7 @@ class InvoiceController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $invoice = $this->invoices->findorfail($id);
-        $settingInvoice = $this->settingInvoice->find(1);
+        $settingInvoice = SettingInvoice::where('branch_id', session('selected_branch_id'))->first();
 
         if ($invoice->paid == 1) {
             return redirect()->back()->with('success', "Cette facture a déjà été payé ! ");
@@ -791,7 +814,7 @@ class InvoiceController extends Controller
     {
         $client = new \GuzzleHttp\Client();
 
-        $settingInvoice = $this->settingInvoice->find(1);
+        $settingInvoice = SettingInvoice::where('branch_id', session('selected_branch_id'))->first();
         $accessToken = $settingInvoice->token;
         $ifu = $settingInvoice->ifu;
         $response = $client->request('PUT', 'https://developper.impots.bj/sygmef-emcf/api/invoice/' . $request->uid . '/confirm', [
@@ -825,7 +848,7 @@ class InvoiceController extends Controller
         $client = new \GuzzleHttp\Client();
         // $accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAyMDIzNjc4MDc0MDN8VFMwMTAwNTQ2NyIsInJvbGUiOiJUYXhwYXllciIsIm5iZiI6MTY3OTU1OTk2OCwiZXhwIjoxNjk1NDU3NTY4LCJpYXQiOjE2Nzk1NTk5NjgsImlzcyI6ImltcG90cy5iaiIsImF1ZCI6ImltcG90cy5iaiJ9.g80Hdsm2VInc7WBfiSvc7MVC34ZEXbwqyJX_66ePDGQ';
         // $ifu = "0202367807403";
-        $settingInvoice = $this->settingInvoice->find(1);
+        $settingInvoice = SettingInvoice::where('branch_id', session('selected_branch_id'))->first();
         $accessToken = $settingInvoice->token;
         $ifu = $settingInvoice->ifu;
         $response = $client->request(

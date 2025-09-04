@@ -320,7 +320,7 @@ class TestOrderAssignmentController extends Controller
     {
         $assignment = $this->assignment->findorfail($id);
         $details = $assignment->details()->get();
-        $setting = Setting::find(1);
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
 
         if (empty($assignment)) {
             return back()->with('error', "Cette affectation n'existe pas. Verifiez et réessayez svp ! ");

@@ -48,7 +48,7 @@ class OldInvoie extends Command
     {
         $invoice = Invoice::all()->first();
         $orders = TestOrder::where('created_at', '<', $invoice->created_at)->get();
-        $settings = Setting::find(1);
+        $settings = Setting::where('branch_id', session('selected_branch_id'))->first();
         $user = User::find(5);
         Auth::login($user);
 

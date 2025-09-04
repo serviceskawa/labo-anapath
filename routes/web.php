@@ -440,20 +440,17 @@ Route::middleware(['auth', 'branch.required'])->group(function () {
     });
 
     // Routes pour les factures PDF
-    Route::get('/invoice/{id}/pdf', [App\Http\Controllers\InvoiceController::class, 'generatePDF'])
-        ->name('invoice.pdf')
-        ->middleware('auth');
+    // Route::get('/invoice/{id}/preview', [App\Http\Controllers\InvoiceController::class, 'previewPDF'])
+    //     ->name('invoice.preview')
+    //     ->middleware('auth');
 
-    Route::get('/invoice/{id}/preview', [App\Http\Controllers\InvoiceController::class, 'previewPDF'])
-        ->name('invoice.preview')
-        ->middleware('auth');
-
-    Route::post('/invoice/{id}/mark-printed', [App\Http\Controllers\InvoiceController::class, 'markAsPrinted'])
-        ->name('invoice.mark-printed')
-        ->middleware('auth');
+    // Route::post('/invoice/{id}/mark-printed', [App\Http\Controllers\InvoiceController::class, 'markAsPrinted'])
+    //     ->name('invoice.mark-printed')
+    //     ->middleware('auth');
 
     // Factures
     Route::prefix('invoices')->group(function () {
+        Route::get('/invoice/{id}/pdf', [App\Http\Controllers\InvoiceController::class, 'generatePDF'])->name('invoice.pdf');
         Route::get('', [InvoiceController::class, 'index'])->name('invoice.index');
         Route::get('create', [InvoiceController::class, 'create'])->name('invoice.create');
         Route::post('store', [InvoiceController::class, 'store'])->name('invoice.store');
@@ -472,11 +469,9 @@ Route::middleware(['auth', 'branch.required'])->group(function () {
         Route::get('/index', [InvoiceController::class, 'getInvoiceIndexForDatable'])->name('invoice.getInvoiceIndexforDatatable');
         Route::get('/checkCode', [InvoiceController::class, 'checkCode']);
         Route::get('/getInvoice/{id}', [InvoiceController::class, 'getInvoice']);
-
         Route::post('/payment/store', [PaymentController::class, 'store'])->name('payment.store');
         Route::get('/payment/store/storejs', [PaymentController::class, 'storejs'])->name('payment.storejs');
         Route::get('/payment/check/payement', [PaymentController::class, 'checkPaymentStatus'])->name('payment.checkPaymentStatus');
-
         // Route::post('/filter', [InvoiceController::class, 'filter'])->name('invoice.filter');
         // Route::get('/testchiffres', [TestOrderController::class, 'getTestOrdersforDatatable'])->name('invoice.getInvoiceforDatatable');
     });

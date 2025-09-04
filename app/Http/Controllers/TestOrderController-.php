@@ -326,7 +326,7 @@ class TestOrderController extends Controller
         }
 
         $test_order = TestOrder::findorfail($id);
-        $settings = Setting::find(1);
+        $settings = Setting::where('branch_id',session('selected_branch_id'))->first();
 
         if ($test_order->status) {
             return redirect()->route('test_order.index')->with('success', "   Examen finalisé ! ");

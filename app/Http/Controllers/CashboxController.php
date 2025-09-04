@@ -136,7 +136,7 @@ class CashboxController extends Controller
                 'user_id' => $cashboxAddData['user_id']
             ]);
 
-            $cash = $this->cash->find(1);
+            $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
             $cash->current_balance += $cashboxAddData['amount'];
             $cash->save();
             return back()->with('success', "Les informations de la caisse de vente ont été mis à jour ! ");
@@ -162,7 +162,8 @@ class CashboxController extends Controller
         ];
 
         try {
-            $cash = $this->cash->find(2);
+            // $cash = $this->cash->find(2);
+            $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
 
             if ($cash->current_balance > $cashboxAddData['amount']) {
                 // $cashboxAdd = CashboxAdd::find($cashboxAddData['id']);

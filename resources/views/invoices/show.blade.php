@@ -1,474 +1,626 @@
-<!DOCTYPE html>
-<html lang="fr">
+@extends('layouts.app2')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facture de vente</title>
+@section('title', 'Factures')
+@section('content')
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            line-height: 1.4;
-            color: #333;
-            margin: 0;
-            padding: 10px;
+        .payerButton {
+            visibility: hidden;
+            /* Applique la visibilité cachée */
         }
+    </style>
 
-        .company-logo {
-            text-align: center;
-            margin-bottom: 0px;
-            /* border-bottom: 1px solid #e9ecef; */
-            padding-bottom: 0px;
-        }
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <h4 class="page-title">{{ $invoice->status_invoice != 1 ? 'Reçu de paiement' : 'Facture d\'avoir' }}
+                    {{ $invoice->order ? 'de ' . $invoice->order->code : '' }} : <a
+                        href="{{ route('invoice.pdf', $invoice->id) }}" target="_blank" class="btn btn-info btn-sm">Voir</a>
+                </h4>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
 
-        .company-logo img {
-            max-height: 120px;
-            max-width: 100%;
-            height: auto;
-        }
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
 
-        .company-logo-placeholder {
-            color: #007bff;
-            margin: 0;
-            padding: 20px;
-            border: 2px solid #007bff;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-        }
+                    <!-- Invoice Logo-->
+                    <div class="clearfix">
+                        <div class="float-start mb-3">
+                            <img src="{{ $setting ? Storage::url($setting->logo) : '' }}" alt="" height="75">
+                        </div>
+                    </div>
 
-        .invoice-header {
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-        }
+                    <div class="row">
+                        <hr>
+                    </div>
 
-        .invoice-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #495057;
-            margin-bottom: 20px;
-            text-align: center;
-        }
+                    <!-- Invoice Detail-->
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="float-sm-start">
+                                <p><strong>
+                                        {{ $invoice->status_invoice != 1
+                                            ? 'Facture de vente'
+                                            : 'Facture
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    d\'avoir' }}
+                                    </strong></p>
 
-        .invoice-info {
-            display: table;
-            width: 100%;
-            margin-bottom: 20px;
-        }
+                                <p class="font-15"><strong>Date: </strong> {{ $invoice->created_at }}</p>
 
-        .invoice-info-left,
-        .invoice-info-right {
-            display: table-cell;
-            width: 50%;
-            vertical-align: top;
-        }
+                                <p class="font-15"><strong>Code: </strong> <span
+                                        class="">{{ $invoice->status_invoice != 1 ? $invoice->code : $refund->code }}</span>
+                                    @if ($invoice->paid == 1)
+                                        <span style="text-transform: uppercase; font-weight: bold;">[Payé]</span>
+                                    @else
+                                        <span style="text-transform: uppercase; font-weight: bold;">[En attente]</span>
+                                    @endif
+                                </p>
 
-        .invoice-info-right {
-            text-align: right;
-            position: relative;
-        }
+                                @if ($invoice->status_invoice != 1)
+                                    <p class="font-15"><strong>Contrat: </strong> <span
+                                            class="">{{ $invoice->contrat
+                                                ? $invoice->contrat->name
+                                                : ($invoice->order
+                                                    ? ($invoice->order->contrat
+                                                        ? $invoice->order->contrat->name
+                                                        : '')
+                                                    : '') }}</span>
+                                    </p>
+                                @else
+                                    <p class="font-15"><strong>Référence: </strong> <span
+                                            class="">{{ $refund->invoice ? $refund->invoice->code : '' }}</span>
+                                    </p>
+                                @endif
+                                <p class="font-15"><strong>CODE MECeF / DGI: </strong> <span class=""
+                                        style="text-transform: uppercase;">&nbsp;{{ $invoice->code_normalise ?? '' }}</span>
+                                </p>
+                            </div>
+                        </div>
 
-        .qr-code {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 80px;
-            height: 80px;
-            background: #f8f9fa;
-            border: 2px solid #dee2e6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: bold;
-            color: #6c757d;
-            border-radius: 4px;
-        }
+                        <div class="col-sm-4">
+                            <div class="float-sm-start">
+                                <p>
+                                    <strong> Adressée à:
+                                    </strong>
+                                </p>
 
-        .info-label {
-            font-weight: bold;
-            color: #6c757d;
-            margin-bottom: 5px;
-        }
+                                <p class="font-15"><strong>Nom: </strong> {{ $invoice->client_name }}</p>
 
-        .info-label-2 {
-            font-weight: bold;
-            color: #000000;
-            margin-bottom: 5px;
-        }
+                                <p class="font-15"><strong>Adresse: </strong> <span
+                                        class="">{{ $invoice->patient ? $invoice->patient->firstname . ' ' . $invoice->patient->lastname : $invoice->client_address }}</span>
+                                </p>
 
-        .info-value {
-            margin-bottom: 15px;
-            color: #333;
-        }
+                                <p class="font-15"><strong>Code client: </strong> <span class=""
+                                        style="text-transform:uppercase;">{{ $invoice->patient ? $invoice->patient->code : '' }}</span>
+                                </p>
 
-        .invoice-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 30px 0;
-            background: #fff;
-        }
+                                <p class="font-15"><strong>Contact client: </strong> <span
+                                        class="">{{ $invoice->telephone1 ? $invoice->telephone1 . ' ' . $invoice->telephone2 : ' ' }}</span>
+                                </p>
 
-        .invoice-table th {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            padding: 12px;
-            text-align: left;
-            font-weight: bold;
-            color: #495057;
-        }
+                                <p class="font-15"><strong>Demande d'examen: </strong> <span
+                                        class="font-weight:bold;">{{ $invoice->order ? remove_hyphen($invoice->order->code) : '' }}</span>
+                                </p>
+                            </div>
+                        </div>
 
-        .invoice-table td {
-            border: 1px solid #dee2e6;
-            padding: 12px;
-            color: #333;
-        }
+                        <div class="col-sm-4">
+                            <div class="float-sm-end">
+                                @if ($invoice->code_normalise != '')
+                                    <img src="data:image/png;base64,{{ $qrCodeBase }}" alt="QR Code" width="150"
+                                        height="150">
+                                @endif
+                            </div>
+                        </div>
 
-        .invoice-table th:last-child,
-        .invoice-table td:last-child {
-            text-align: right;
-        }
+                    </div>
 
-        .invoice-table th:nth-child(2),
-        .invoice-table td:nth-child(2),
-        .invoice-table th:nth-child(3),
-        .invoice-table td:nth-child(3),
-        .invoice-table th:nth-child(4),
-        .invoice-table td:nth-child(4) {
-            text-align: center;
-        }
+                    @php
+                        $total_a_payer = ajouterPourcentage($invoice->total);
+                        $invoiceVerify = App\Models\Payment::where('invoice_id', $invoice->id)->first();
+                        $invoiceMethodPayment = $invoiceVerify ? $invoiceVerify->payment_name : '';
+                    @endphp
+                    <div class="row">
+                        <div class="col-12">
+                            <div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table mt-4">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Désignation</th>
+                                            <th>Quantité</th>
+                                            <th>Prix</th>
+                                            <th>Remise</th>
+                                            <th class="text-end">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if ($refund)
+                                            <tr>
+                                                <td>1</td>
+                                                <td>{{ $refund ? ($refund->reason ? $refund->reason->description : '') : '' }}
+                                                </td>
+                                                <td>1</td>
+                                                <td>{{ $refund ? $refund->montant : '' }}</td>
+                                                <td>0.0 </td>
+                                                <td class="text-end">{{ $refund ? $refund->montant : '' }}</td>
+                                            </tr>
+                                        @else
+                                            @foreach ($invoice->details as $key => $item)
+                                                <tr>
+                                                    <td>{{ $key + 1 }} </td>
+                                                    <td>
+                                                        <b>{{ $item->test_name }}</b>
+                                                    </td>
+                                                    <td>1</td>
+                                                    <td>{{ $item->price }}</td>
+                                                    <td>{{ $item->discount }}</td>
+                                                    <td class="text-end">{{ $item->total }}</td>
+                                                </tr>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
 
-        .totals-section {
-            width: 300px;
-            margin-left: auto;
-            border-top: 2px solid #e9ecef;
-            padding-top: 15px;
-        }
+                    <div class="row">
+                        <div class="col-sm-6">
 
-        .total-row {
-            display: table;
-            width: 100%;
-            margin-bottom: 8px;
-        }
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="float-end mt-3 mt-sm-0">
+                                <p><b>Sous-total : </b>
+                                    <span
+                                        class="float-end">{{ number_format(abs($invoice->subtotal), 0, ',', ' ') }}</span>
+                                </p>
+                                <p><b>Montant TTC : </b>{{ number_format(abs($invoice->total), 0, ',', ' ') }} FCFA</p>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
 
-        .total-label,
-        .total-value {
-            display: table-cell;
-            padding: 5px 0;
-        }
 
-        .total-label {
-            text-align: right;
-            padding-right: 20px;
-            font-weight: bold;
-            color: #6c757d;
-        }
+                    @if ($invoice->contrat)
+                        @if ($invoice->contrat->is_close == 1)
 
-        .total-value {
-            text-align: right;
-            font-weight: bold;
-        }
+                            @if (getOnlineUser()->can('view-cashier'))
+                                @if ($settingInvoice != null && $invoice->paid != 1)
+                                    <div>
+                                        <div class="row d-flex align-items-end">
+                                            <div class="col-md-4 col-12">
 
-        .final-total {
-            border-top: 1px solid #dee2e6;
-            padding-top: 10px;
-            font-size: 14px;
-        }
+                                                <div class="mb-3">
+                                                    <label for="exampleFormControlInput1" class="form-label">Type de
+                                                        paiement</label>
+                                                    <select class="form-select select2" data-toggle="select2" name="payment"
+                                                        value="{{ $invoice->payment }}" id="payment" required>
+                                                        <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
+                                                            value="ESPECES">
+                                                            ESPECES</option>
+                                                        <option {{ $invoice->payment == 'MOBILEMONEY' ? 'selected' : '' }}
+                                                            value="MOBILEMONEY">MOBILE MONEY</option>
 
-        .final-total .total-label,
-        .final-total .total-value {
-            color: #000;
-            font-size: 14px;
-        }
+                                                        <option {{ $invoice->payment == 'CHEQUES' ? 'selected' : '' }}
+                                                            value="CHEQUES">
+                                                            CHEQUES</option>
 
-        .signature-section {
-            /* margin-top: 140px; */
-            display: table;
-            /* width: 100%; */
-            margin-left: 365px;
-        }
+                                                        <option {{ $invoice->payment == 'VIREMENT' ? 'selected' : '' }}
+                                                            value="VIREMENT">
+                                                            VIREMENT</option>
 
-        .signature-container {
-            display: table-cell;
-            width: 300px;
-            vertical-align: top;
-            position: right;
-            padding-right: 20px;
-        }
 
-        .signature-image {
-            /* border: 1px solid #dee2e6; */
-            padding: 10px;
-            background: #fff;
-            text-align: center;
-            margin-bottom: 15px;
-            /* border-radius: 4px; */
-        }
+                                                    </select>
+                                                </div>
+                                            </div>
 
-        .signature-image img {
-            max-width: 250px;
-            max-height: 100px;
-        }
+                                            <div class="col-md-4 col-12">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Code de la facture normalisée</label>
 
-        .signature-placeholder {
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-style: italic;
-            color: #6c757d;
-            background: #f8f9fa;
-            border: 2px dashed #dee2e6;
-            border-radius: 4px;
-        }
+                                                    <input type="text" name="code" placeholder="Code MECeF/DGI"
+                                                        minlength="24" maxlength="24" id="code" class="form-control">
+                                                </div>
+                                            </div>
 
-        .paid-stamp {
-            text-align: center;
-            margin-top: 10px;
-        }
+                                            <!-- Verification caisse ferme ou non -->
+                                            <div class="col-md-4 col-12">
+                                                @if ($cashbox->statut == 0)
+                                                    <div class="alert alert-warning alert-dismissible fade show"
+                                                        role="alert">
+                                                        <strong>Caisse fermée - </strong> Veuillez ouvrir la caisse avant de
+                                                        procéder à
+                                                        l'encaissement.
+                                                    </div>
+                                                @else
+                                                    @if (getOnlineUser()->can('view-cashier'))
+                                                        <button type="button" onclick="updateStatus()"
+                                                            class="btn btn-success mb-3"><i class="mdi mdi-cash"></i>
+                                                            Terminer la facture</button>
+                                                    @endif
 
-        .paid-stamp svg {
-            display: block;
-            margin: 0 auto;
-        }
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
 
-        .empty-space {
-            display: table-cell;
-            width: 100%;
-        }
+                        @endif
+                    @else
+                        @if (getOnlineUser()->can('view-cashier'))
+                            @if ($settingInvoice != null && $invoice->paid != 1)
+                                <div>
+                                    <div class="row d-flex align-items-end">
+                                        @if ($invoiceVerify == null)
+                                            <div class="col-md-4 col-12">
+                                                <div class="mb-3">
+                                                    <label for="exampleFormControlInput1" class="form-label">Type de
+                                                        paiement</label>
+                                                    <select class="form-select select2" data-toggle="select2"
+                                                        name="payment" value="{{ $invoice->payment }}" id="payment"
+                                                        required>
+                                                        <option {{ $invoice->payment == 'ESPECES' ? 'selected' : '' }}
+                                                            value="ESPECES">
+                                                            ESPECES</option>
 
-        .invoice-note {
-            margin-top: 30px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-left: 4px solid #007bff;
-            border-radius: 4px;
-        }
+                                                        <option value="MOBILEMONEY-MTN">MOBILE MONEY - MTN</option>
 
-        .note-label {
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #495057;
-        }
+                                                        <option value="MOBILEMONEY-MOOV">MOBILE MONEY - MOOV</option>
 
-        .note-content {
-            line-height: 1.5;
-            color: #6c757d;
-        }
+                                                        <option value="MOBILEMONEY">MOBILE MONEY</option>
 
-        .invoice-footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #e9ecef;
-            text-align: center;
-            font-size: 10px;
-            color: #6c757d;
-            line-height: 1.3;
-        }
+                                                        <option value="CHEQUES">CHEQUES</option>
 
-        .amount {
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-        }
+                                                        <option value="VIREMENT">VIREMENT</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="col-md-4 col-12">
+                                                <div class="mb-3">
+                                                    <label for="exampleFormControlInput1" class="form-label">Type de
+                                                        paiement</label>
+                                                    <select class="form-select select2" data-toggle="select2"
+                                                        name="payment" disabled value="{{ $invoice->payment }}"
+                                                        id="payment" required>
 
-        @media print {
-            body {
-                padding: 10px;
+                                                        <option
+                                                            {{ $invoiceMethodPayment == 'MOBILEMONEY-MTN' ? 'selected' : '' }}
+                                                            value="MOBILEMONEY-MTN">MOBILE MONEY - MTN</option>
+
+
+
+                                                        <option
+                                                            {{ $invoiceMethodPayment == 'MOBILEMONEY-MOOV' ? 'selected' : '' }}
+                                                            value="MOBILEMONEY-MOOV">MOBILE MONEY - MOOV</option>
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        @endif
+
+
+                                        <div class="col-md-4 col-12">
+                                            <div class="mb-3">
+                                                <label class="form-label">Code de la facture normalisée</label>
+                                                <input type="text" name="code" placeholder="Code MECeF/DGI"
+                                                    minlength="24" maxlength="24" id="code" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 col-12">
+                                            @if ($cashbox->statut == 0)
+                                                <div class="alert alert-warning alert-dismissible fade show"
+                                                    role="alert">
+                                                    <strong>Caisse fermée - </strong> Veuillez ouvrir la caisse avant de
+                                                    procéder à
+                                                    l'encaissement.
+                                                </div>
+                                            @else
+                                                @if (getOnlineUser()->can('view-cashier'))
+                                                    <button type="button" onclick="updateStatus()"
+                                                        class="btn btn-success mb-3"><i class="mdi mdi-cash"></i>
+                                                        Terminer la facture</button>
+                                                @endif
+
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endif
+                    @endif
+
+                    <div class="row mt-2">
+                        <div style="border: 1px solid black;">
+                            <p class="m-0 p-1">
+                                <b>Note importante :</b>
+                                Les résultats de vos analyses seront disponibles dans un délai de 3 semaines. Selon la
+                                complexité du cas, les résultats peuvent être disponibles plus tôt ou plus tard. Vous serez
+                                notifiés dès que les résultats seront prêts. Nous vous remercions de votre compréhension et
+                                de
+                                votre patience.
+                            </p>
+                        </div>
+                    </div>
+
+                    <page_footer>
+                        <table style="width: 100%; margin-top:1em !important; text-align :center; justify-content:center;">
+                            <tr>
+                                <td style="width: 100%; font-size:12px; text-align :center; justify-content:center;">
+                                    {{ App\Models\SettingApp::where('key', 'report_footer')->first()->value }}
+                                </td>
+                            </tr>
+                        </table>
+                    </page_footer>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@push('extra-js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        var invoice = @json($invoice);
+
+
+        var ROUTEVALIDATEPAYMENT = "{{ route('invoice.updatePayment') }}"
+        var TOKENVALIDATEPAYMENT = "{{ csrf_token() }}"
+        var ROUTECANCELINVOICE = "{{ route('invoice.cancelInvoice') }}"
+        var TOKENCANCELINVOICE = "{{ csrf_token() }}"
+        var ROUTECONFIRMINVOICE = "{{ route('invoice.confirmInvoice') }}"
+        var TOKENCONFIRMINVOICE = "{{ csrf_token() }}"
+        var ROUTEINVOICEINDEX = "{{ route('invoice.index') }}"
+        var ROUTEINVOICESHOW = "{{ route('invoice.show', ':id') }}";
+    </script>
+    <script>
+        function updateStatus(id) {
+            var code = $('#code').val();
+            var payment = $('#payment').val();
+            var baseUrl = "{{ url('/') }}";
+
+            if (code == "") {
+                toastr.error("Code normalisé requis", 'Code normalisé');
+            } else if (code.length < 24 || code.length > 24) {
+                toastr.error("Code normalisé doit être 24 caractères", 'Code normalisé');
+            } else {
+                $.ajax({
+                    url: baseUrl + "/invoices/checkCode/",
+                    type: "GET",
+                    data: {
+                        code: code,
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        if (response.code == 0) {
+                            $.ajax({
+                                url: baseUrl + "/invoices/updateStatus/" + invoice.id,
+                                type: "GET",
+                                data: {
+                                    code: code,
+                                    payment: payment,
+                                },
+                                success: function(response) {
+                                    console.log(response);
+
+                                    window.location.href = ROUTEINVOICEINDEX;
+
+                                },
+                                error: function(response) {
+                                    console.log('error', response);
+                                }
+                            })
+                        } else {
+                            toastr.error("Ce Code normalisé existe déjà", 'Code normalisé')
+                        }
+                    },
+                    error: function(response) {
+                        console.log('error', response);
+                    }
+                })
+
+
             }
         }
 
-        /* Styles pour DomPDF */
-        .page-break {
-            page-break-after: always;
+        function paymentMethod() {
+            // Code verification des informations a entree par l'utilisateur
+            var paymentMethodChecked = $('input[name="payment_method"]:checked').length > 0;
+            var paymentNumber = $('#payment_number').val();
+            var amountPayer = $('#amount_payer').val();
+            var errorMessage = '';
+
+            if (!paymentMethodChecked) {
+                errorMessage += 'Veuillez sélectionner une méthode de paiement.\n';
+            }
+            if (paymentNumber.length !== 8) {
+                errorMessage += 'Veuillez entrer un numéro de téléphone valide de 8 chiffres.\n';
+            }
+            if (!amountPayer) {
+                errorMessage += 'Le montant à payer est requis.\n';
+            }
+
+            if (errorMessage) {
+                $('#errorMessage').text(errorMessage).show();
+            } else {
+                $('#errorMessage').hide();
+                // Soumettre le formulaire ou exécuter la logique d'encaissement
+                console.log('Form is valid. Proceed with submission.');
+
+
+                // Sélectionner les cases à cocher
+                const mtnCheckbox = document.getElementById('mtn');
+                const moovCheckbox = document.getElementById('moov');
+
+                // Récupérer la valeur de la case à cocher cochée
+                let paymentMethod = '';
+                if (mtnCheckbox.checked) {
+                    paymentMethod = mtnCheckbox.value;
+                } else if (moovCheckbox.checked) {
+                    paymentMethod = moovCheckbox.value;
+                }
+
+                var invoice_id = $('#invoice_id').val();
+                var amount_payer = $('#amount_payer').val();
+                var payment_number = $('#payment_number').val();
+                var payment_method = paymentMethod;
+                var fee = $('#fee').val();
+
+                // console.log(payment_number, payment_method, amount_payer, invoice_id);
+
+                $.ajax({
+                    url: baseUrl + "/invoices/payment/store/storejs",
+                    type: "GET",
+                    data: {
+                        invoice_id: invoice_id,
+                        amount_payer: amount_payer,
+                        payment_number: payment_number,
+                        payment_method: payment_method,
+                        fee: fee,
+                    },
+                    success: function(response) {
+                        console.log(response);
+
+                        // Vérifiez si la réponse contient "SUCCESS"
+                        if (response.message === "INITIATED") {
+                            // Mettre à jour le paragraphe avec le message de réussite
+                            $('#messageinitiation1').text(
+                                "#1 - Paiement initié, en attente de confirmation du client").css('color',
+                                '#FFA500');
+                            $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.")
+                                .css('color', 'blue');
+                            $('#messageinitiation3').text("");
+                            $('#encaisserButton').css('display', 'none');
+                            $('#encaisserButton1').css('display', 'none');
+                            $('#checkPaymentStatusBtn').css('display', 'block');
+                        } else if (response.message === "FAILED") {
+                            // Mettre à jour le paragraphe avec le message d'échec
+                            $('#messageinitiation').text(
+                                    "Échec de l'initiation du paiement. Réessayez ou contactez le support.")
+                                .css('color', 'red');
+                        }
+                    },
+                    error: function(response) {
+                        console.log('error', response);
+                    }
+                });
+            }
         }
 
-        .no-break {
-            page-break-inside: avoid;
+
+
+
+
+        $(document).ready(function() {
+            $('input[name="payment_method"]').change(function() {
+                if (this.checked) {
+                    $('input[name="payment_method"]').not(this).prop('checked', false);
+                }
+            });
+        });
+
+
+
+
+        function checkPaymentStatus() {
+            var invoice_id = $('#invoice_id').val();
+            console.log(invoice_id);
+            $.ajax({
+                url: baseUrl + "/invoices/payment/check/payement",
+                type: "GET",
+                data: {
+                    invoice_id: invoice_id,
+                },
+                success: function(response) {
+                    console.log(response);
+
+                    // Vérifiez si la réponse contient "SUCCESS"
+                    if (response.message === "PENDING") {
+                        // Mettre à jour le paragraphe avec le message de réussite
+                        $('#messageinitiation1').text(
+                            "#1 - Paiement initié, en attente de confirmation du client").css('color',
+                            '#FFA500');
+                        $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.").css(
+                            'color', 'blue');
+                        $('#messageinitiation3').text("");
+                        $('#encaisserButton').css('display', 'none');
+
+                        $('#checkPaymentStatusBtn').css('display', 'block');
+                        $('#checkPaymentStatusBtn1').css('display', 'none');
+                        $('#encaisserButton1').css('display', 'none');
+
+
+                    } else if (response.message === "SUCCESS") {
+                        // Mettre à jour le paragraphe avec le message d'échec
+                        $('#messageinitiation1').text(
+                            "#1 - Paiement initié, en attente de confirmation du client").css('color',
+                            '#FFA500');
+                        $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.").css(
+                            'color', 'blue');
+                        $('#messageinitiation3').text("#3 - Le paiement a été traité avec succès.").css('color',
+                            'green');
+                        $('#checkPaymentStatusBtn').css('display', 'none');
+                        $('#encaisserButton1').css('display', 'none');
+
+                    } else if (response.message === "FAILED") {
+                        // Mettre à jour le paragraphe avec le message d'échec
+                        $('#checkPaymentStatusBtn').css('display', 'none');
+                        $('#messageinitiation1').text(
+                            "#1 - Paiement initié, en attente de confirmation du client").css('color',
+                            '#FFA500');
+                        $('#messageinitiation2').text("#2 - Le paiement est en attente de confirmation.").css(
+                            'color', 'blue');
+                        $('#messageinitiation3').text("#3 - Le paiement a été échoué, réessayer.").css('color',
+                            'red');
+                        $('#encaisserButton').css('display', 'block');
+                        $('#encaisserButton1').css('display', 'block');
+                    }
+                },
+                error: function(response) {
+                    console.log('error', response);
+                }
+            });
         }
-    </style>
-</head>
 
-<body>
-    <div class="invoice-container">
-        <!-- Logo d'en-tête -->
-        <div class="company-logo">
-            @if (isset($invoice['images']['header_logo']) && !empty($invoice['images']['header_logo']))
-                <img src="{{ $invoice['images']['header_logo'] }}" alt="Logo de l'entreprise">
-            @else
-                <div class="company-logo-placeholder">
-                    CENTRE ADECHINA<br>
-                    <span style="font-size: 14px; font-weight: normal;">Anatomie Pathologique</span>
-                </div>
-            @endif
-        </div>
 
-        <!-- Header -->
-        <div class="invoice-header" style="margin-top : 30px;">
 
-            <div class="invoice-info">
-                <div class="invoice-info-left">
-                    <div class="info-label-2" style="font-weight: bold; font-size : 20px;">
-                        {{ $invoice['status_invoice'] != 1 ? 'Facture de vente' : 'Facture d\'avoir' }}
-                    </div>
+        $(document).ready(function() {
+            checkPaymentStatus();
+        });
+    </script>
 
-                    <div>
-                        <span class="info-label">
-                            Date:
-                        </span>
-                        <span class="info-value">
-                            {{ $invoice['date'] }}
-                        </span>
-                    </div>
 
-                    <div>
-                        <span class="info-label">
-                            Code:
-                        </span>
-                        <span class="info-value">
-                            {{ $invoice['code'] }}
-                            @if ($invoice['invoice_paid'] == 1)
-                                <span style="text-transform: uppercase; font-weight: bold;">[Payé]</span>
-                            @else
-                                <span style="text-transform: uppercase; font-weight: bold;">[En attente]</span>
-                            @endif
-                        </span>
-                    </div>
+    <script>
+        // Sélectionner les cases à cocher
+        const mtnCheckbox = document.getElementById('mtn');
+        const moovCheckbox = document.getElementById('moov');
 
-                    <div>
-                        @if ($invoice['invoice_paid'] != 1)
-                            <span class="info-label">
-                                Contrat:
-                            </span>
-                            <span class="info-value">
-                                {{ $invoice['type'] }}
-                            </span>
-                        @else
-                            <span class="info-label">
-                                Reférence:
-                            </span>
-                            <span class="info-value">
-                                {{ $invoice['reference_code'] }}
-                            </span>
-                        @endif
-                    </div>
+        // Ajouter un écouteur d'événements de clic à la case à cocher MTN
+        mtnCheckbox.addEventListener('click', function() {
+            // Si la case à cocher MTN est cochée, décocher la case à cocher Moov
+            if (mtnCheckbox.checked) {
+                moovCheckbox.checked = false;
+            }
+        });
 
-                    <div>
-                        <span class="info-label">
-                            CODE MECeF / DGI:
-                        </span>
-                        <span class="info-value">
-                            {{ $invoice['mecef_code'] }}
-                        </span>
-                    </div>
-                </div>
+        // Ajouter un écouteur d'événements de clic à la case à cocher Moov
+        moovCheckbox.addEventListener('click', function() {
+            // Si la case à cocher Moov est cochée, décocher la case à cocher MTN
+            if (moovCheckbox.checked) {
+                mtnCheckbox.checked = false;
+            }
+        });
+    </script>
 
-                <div class="invoice-info-right">
-                    @if (!empty($invoice['mecef_code']))
-                        <div class="qr-code">
-                            <img src="data:image/png;base64,{{ $invoice['qr_code'] }}" alt="QR Code" height="80"
-                                width="80">
-                        </div>
-                    @endif
 
-                    <div style="margin-right: 100px;">
-                        <div class="info-label">Adressée à:</div>
-                        <div class="info-value">
-                            <strong>Nom:</strong> {{ $invoice['client']['name'] }}<br>
-                            <strong>Adresse:</strong> {{ $invoice['client']['address'] }}<br>
-                            <strong>Code client:</strong> {{ $invoice['client']['code'] }}<br>
-                            @if ($invoice['client']['contact'])
-                                <strong>Contact client:</strong> {{ $invoice['client']['contact'] }}<br>
-                            @endif
-                        </div>
-
-                        <div>
-                            <span class="info-label">
-                                Demande d'examen:
-                            </span>
-                            <span class="info-value">
-                                {{ $invoice['exam_request'] }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Table des articles -->
-        <div class="no-break">
-            <table class="invoice-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Désignation</th>
-                        <th>Quantité</th>
-                        <th>Prix</th>
-                        <th>Remise</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($invoice['items'] as $index => $item)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $item['designation'] }}</td>
-                            <td>{{ $item['quantity'] }}</td>
-                            <td class="amount">{{ number_format($item['price'], 0, ',', ' ') }}</td>
-                            <td class="amount">{{ number_format($item['discount'], 0, ',', ' ') }}</td>
-                            <td class="amount">{{ number_format($item['total'], 0, ',', ' ') }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Totaux -->
-        <div class="totals-section no-break">
-            <div class="total-row">
-                <div class="total-label">Sous-total :</div>
-                <div class="total-value amount">{{ number_format($invoice['subtotal'], 0, ',', ' ') }}</div>
-            </div>
-
-            <div class="total-row final-total">
-                <div class="total-label">Montant TTC :</div>
-                <div class="total-value amount">{{ number_format($invoice['total_ttc'], 0, ',', ' ') }} FCFA</div>
-            </div>
-        </div>
-
-        <!-- Section signature et cachet PAYÉ -->
-        <div class="signature-section no-break">
-            <div class="signature-container" style="margin-left: 100px; position: relative;">
-                <div class="signature-image">
-                    @if (isset($invoice['images']['signature']) && !empty($invoice['images']['signature']))
-                        <img src="{{ $invoice['images']['signature'] }}" alt="Signature">
-
-                        @if (isset($invoice['images']['signature']) && !empty($invoice['images']['signature']))
-                            <img src="{{ public_path('adminassets/images/paid_img.png') }}" alt="Signature" width="100">
-                        @endif
-                    @else
-                        <div class="signature-placeholder">
-                            [Signature]
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        <!-- Note importante -->
-        @if ($invoice['note'])
-            <div class="invoice-note no-break" style="position: fixed; bottom: 60px;">
-                <div class="note-label">Note importante :</div>
-                <div class="note-content">{{ $invoice['note'] }}</div>
-            </div>
-        @endif
-
-        <!-- Footer -->
-        <div class="invoice-footer" style="position: fixed; bottom: 0;">
-            {{ $invoice['footer'] }}
-        </div>
-    </div>
-</body>
-
-</html>
+    <script src="{{ asset('viewjs/invoice/show.js') }}"></script>
+@endpush

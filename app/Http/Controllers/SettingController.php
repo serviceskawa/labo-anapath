@@ -248,7 +248,7 @@ class SettingController extends Controller
 
         $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
-        $settingInvoice = SettingInvoice::find(1);
+        $settingInvoice = SettingInvoice::where('branch_id', session('selected_branch_id'))->first();
         return view('invoices.setting', compact('settingInvoice'));
     }
 
@@ -257,7 +257,7 @@ class SettingController extends Controller
         if (!getOnlineUser()->can('view-settings')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        
+
         $data = [
             'ifu' => $request->ifu,
             'token' => $request->token,
@@ -265,8 +265,7 @@ class SettingController extends Controller
         ];
 
         try {
-
-            $settingInvoice = $this->settingInvoice->find(1);
+            $settingInvoice = SettingInvoice::where('branch_id', session('selected_branch_id'))->first();
             $settingInvoice->ifu = $data['ifu'];
             $settingInvoice->token = $data['token'];
             $settingInvoice->status = $request->status ? 1 : 0;
