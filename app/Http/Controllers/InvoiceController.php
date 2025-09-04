@@ -24,8 +24,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables as FacadesDataTables;
 use App\Models\SettingApp;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
+use Yajra\DataTables\DataTables as DataTablesDataTables;
 
 class InvoiceController extends Controller
 {
@@ -232,14 +234,160 @@ class InvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    // public function show(Request $request, $id)
+    // {
+    //     $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
+    //     $invoice = $this->invoices->findorfail($id);
+    //     $refund = null;
+    //     if ($invoice->status_invoice == 1) {
+    //         $refund = RefundRequest::where('invoice_id', $invoice->reference)->first();
+    //     }
+
+    //     // Génération du code QRCode
+    //     $qrCode = Builder::create()
+    //         ->writer(new PngWriter())
+    //         ->data($invoice->code_normalise ?? "Centre ADECHINA Anatomie Pathologique")
+    //         ->size(300)
+    //         ->margin(10)
+    //         ->build();
+
+    //     $qrCodeBase = base64_encode($qrCode->getString());
+
+    //     $settingInvoice = $this->settingInvoice->find(1);
+    //     $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
+    //     if (empty($invoice)) {
+    //         return back()->with('error', "Cette facture n'existe pas. Verifiez et réessayez svp ! ");
+    //     }
+
+    //     config(['app.name' => $setting->titre]);
+    //     return view('invoices.show', compact('qrCodeBase', 'cashbox', 'invoice', 'setting', 'settingInvoice', 'refund'));
+    // }
+
+    // public function show(Request $request, $id)
+    // {
+    //     // // Récupérer les données de la facture
+    //     // $invoice = [
+    //     //     'date' => '2025-07-15 10:05:28',
+    //     //     'code' => 'FA252344 (PAYÉ)',
+    //     //     'type' => 'ORDINAIRE',
+    //     //     'mecef_code' => 'IPLGJMXXOX6ZQ6F6QSQ3UT56',
+    //     //     'client' => [
+    //     //         'name' => 'ADINGBAN Reine',
+    //     //         'address' => 'ADINGBAN Reine',
+    //     //         'code' => '20AE076EB1',
+    //     //         'contact' => '',
+    //     //     ],
+    //     //     'exam_request' => '252595',
+    //     //     'items' => [
+    //     //         [
+    //     //             'designation' => 'Mastectomie',
+    //     //             'quantity' => 1,
+    //     //             'price' => 50000,
+    //     //             'discount' => 0,
+    //     //             'total' => 50000
+    //     //         ]
+    //     //     ],
+    //     //     'subtotal' => 50000,
+    //     //     'total_ttc' => 50000,
+    //     //     'note' => 'Les résultats de vos analyses seront disponibles dans un délai de 3 semaines. Selon la complexité du cas, les résultats peuvent être disponibles plus tôt ou plus tard. Vous serez notifiés dès que les résultats seront prêts. Nous vous remercions de votre compréhension et de votre patience.',
+    //     //     'footer' => 'Centre ADECHINA Anatomie Pathologique â€¢ Adresse : Carré 1915 "G" Fifadji, 072 BP 059 Cotonou, BÂ©nin â€¢ TÃ©lÃ©phone : (+229)97761721 â€¢ WhatsApp: (+229)61191975 â€¢ RCCM RB/COT/18 B22364 â€¢ IFU : 3201810410828 â€¢ contact@caap.bj â€¢ Ouvert du Lundi au Vendredi de 08:00 - 17:00 â€¢ www.caap.bj',
+    //     //     'images' => [
+    //     //         'header_logo' => public_path('images/logo-header.png'),
+    //     //         'signature' => public_path('images/signature.png'),
+    //     //     ]
+    //     // ];
+
+    //     // $pdf = Pdf::loadView('invoices.show', compact('invoice'));
+
+    //     // return $pdf->download('facture_' . $invoice['code'] . '.pdf');
+
+
+
+
+
+    //     // Convertir les images en base64 pour DomPDF (méthode recommandée)
+    //     $headerLogoPath = public_path('images/logo-header.png');
+    //     $signaturePath = public_path('images/signature.png');
+
+    //     $headerLogo = null;
+    //     $signature = null;
+
+    //     // Vérifier si les fichiers existent avant de les encoder
+    //     if (file_exists($headerLogoPath)) {
+    //         $headerLogo = 'data:image/png;base64,' . base64_encode(file_get_contents($headerLogoPath));
+    //     }
+
+    //     if (file_exists($signaturePath)) {
+    //         $signature = 'data:image/png;base64,' . base64_encode(file_get_contents($signaturePath));
+    //     }
+
+    //     // Récupérer les données de la facture (à adapter selon votre base de données)
+    //     $invoice = [
+    //         'date' => '2025-07-15 10:05:28',
+    //         'code' => 'FA252344 (PAYÉ)',
+    //         'type' => 'ORDINAIRE',
+    //         'mecef_code' => 'IPLGJMXXOX6ZQ6F6QSQ3UT56',
+    //         'client' => [
+    //             'name' => 'ADINGBAN Reine',
+    //             'address' => 'ADINGBAN Reine',
+    //             'code' => '20AE076EB1',
+    //             'contact' => '',
+    //         ],
+    //         'exam_request' => '252595',
+    //         'items' => [
+    //             [
+    //                 'designation' => 'Mastectomie',
+    //                 'quantity' => 1,
+    //                 'price' => 50000,
+    //                 'discount' => 0,
+    //                 'total' => 50000
+    //             ]
+    //         ],
+    //         'subtotal' => 50000,
+    //         'total_ttc' => 50000,
+    //         'note' => 'Les résultats de vos analyses seront disponibles dans un délai de 3 semaines. Selon la complexité du cas, les résultats peuvent être disponibles plus tôt ou plus tard. Vous serez notifiés dès que les résultats seront prêts. Nous vous remercions de votre compréhension et de votre patience.',
+    //         'footer' => 'Centre ADECHINA Anatomie Pathologique • Adresse : Carré 1915 "G" Fifadji, 072 BP 059 Cotonou, Bénin • Téléphone : (+229)97761721 • WhatsApp: (+229)61191975 • RCCM RB/COT/18 B22364 • IFU : 3201810410828 • contact@caap.bj • Ouvert du Lundi au Vendredi de 08:00 - 17:00 • www.caap.bj',
+    //         'images' => [
+    //             'header_logo' => $headerLogo,
+    //             'signature' => $signature,
+    //         ]
+    //     ];
+
+    //     $pdf = PDF::loadView('invoices.pdf', compact('invoice'));
+
+    //     // Configuration PDF
+    //     $pdf->setPaper('A4', 'portrait');
+
+    //     return $pdf->download('facture_' . str_replace(['(', ')', ' '], '', $invoice['code']) . '.pdf');
+    // }
+
     public function show(Request $request, $id)
     {
-        $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
+        $headerLogo = $this->settingApp->where('key', 'entete')->first();
+        // Convertir les images en base64 pour DomPDF (méthode recommandée)
+        $headerLogoPath = 'adminassets/images/' . $headerLogo->value;
+        $signaturePath = public_path('images/signature.png');
+
+        $headerLogo = null;
+        $signature = null;
+
+        // Vérifier si les fichiers existent avant de les encoder
+        if ($headerLogoPath) {
+            $headerLogo = $headerLogoPath;
+        }
+
+        if (file_exists($signaturePath)) {
+            $signature = 'data:image/png;base64,' . base64_encode(file_get_contents($signaturePath));
+        }
+
+        //Recupération du invoice
         $invoice = $this->invoices->findorfail($id);
         $refund = null;
         if ($invoice->status_invoice == 1) {
             $refund = RefundRequest::where('invoice_id', $invoice->reference)->first();
         }
+
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
 
         // Génération du code QRCode
         $qrCode = Builder::create()
@@ -251,14 +399,69 @@ class InvoiceController extends Controller
 
         $qrCodeBase = base64_encode($qrCode->getString());
 
-        $settingInvoice = $this->settingInvoice->find(1);
-        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
-        if (empty($invoice)) {
-            return back()->with('error', "Cette facture n'existe pas. Verifiez et réessayez svp ! ");
+        // Récupérer les données de la facture (à adapter selon votre base de données)
+        $invoice = [
+            'status_invoice' => $invoice->status_invoice,
+            'date' => $invoice->created_at,
+            'code' => $invoice?->status_invoice != 1 ? $invoice?->code : $refund?->code,
+            'invoice_paid' => $invoice->paid,
+            'type' => $invoice?->contrat?->name ?? $invoice?->order?->contrat?->name ?? '',
+            'reference_code' => $refund?->invoice ? $refund?->invoice?->code : '',
+            'mecef_code' => $invoice->code_normalise ?? '',
+            'qr_code' => $qrCodeBase,
+            'client' => [
+                'name' => $invoice->client_name,
+                'address' => $invoice?->client_address,
+                'code' => $invoice?->patient ? $invoice?->patient?->code : '',
+                'contact' => $invoice->telephone1 ? $invoice?->telephone1 . '/' . $invoice?->telephone2 : '',
+            ],
+            'exam_request' => $invoice?->order ? remove_hyphen($invoice?->order?->code) : '',
+            'refund' => $refund,
+            'items' => $this->formatInvoiceItems($invoice, $refund),
+            'subtotal' => $invoice?->subtotal,
+            'total_ttc' => $invoice?->total,
+            'note' => 'Les résultats de vos analyses seront disponibles dans un délai de 3 semaines. Selon la complexité du cas, les résultats peuvent être disponibles plus tôt ou plus tard. Vous serez notifiés dès que les résultats seront prêts. Nous vous remercions de votre compréhension et de votre patience.',
+            'footer' => $this->settingApp::where('key', 'report_footer')->first()->value ?? $setting->footer,
+            'images' => [
+                'header_logo' => $headerLogo,
+                'signature' => $signature,
+            ]
+        ];
+
+        $pdf = PDF::loadView('invoices.show', compact('invoice'));
+
+        // Configuration PDF
+        $pdf->setPaper('A4', 'portrait');
+
+
+        return $pdf->stream('invoices_show');
+    }
+
+    private function formatInvoiceItems($invoice, $refund)
+    {
+        $items = [];
+
+        if ($refund) {
+            $items[] = [
+                'designation' => $refund ? ($refund->reason ? $refund->reason->description : '') : '',
+                'quantity' => 1,
+                'price' => $refund ? $refund->montant : 0,
+                'discount' => 0.0,
+                'total' => $refund ? $refund->montant : 0,
+            ];
+        } else {
+            foreach ($invoice->details as $index => $item) {
+                $items[] = [
+                    'designation' => $item->test_name ?? '',
+                    'quantity' => 1,
+                    'price' => $item->price ?? 0,
+                    'discount' => $item->discount ?? 0,
+                    'total' => $item->total ?? 0,
+                ];
+            }
         }
 
-        config(['app.name' => $setting->titre]);
-        return view('invoices.show', compact('qrCodeBase', 'cashbox', 'invoice', 'setting', 'settingInvoice', 'refund'));
+        return $items;
     }
 
     public function getInvoiceforDatatable(Request $request)
@@ -269,7 +472,7 @@ class InvoiceController extends Controller
 
         $periode = array_slice($periode, 0, $todayMonth); // garde uniquement les mois précédents la date d'aujourd'hui
 
-        return Datatables::of($periode)->addIndexColumn()
+        return FacadesDataTables::of($periode)->addIndexColumn()
             ->editColumn('created_at', function ($periode) {
                 //change over here
                 //return date('y/m/d',$data->created_at);
@@ -324,7 +527,7 @@ class InvoiceController extends Controller
     public function getInvoiceIndexforDatable(Request $request)
     {
         $data = $this->invoices->latest();
-        return DataTables::of($data)->addIndexColumn()
+        return DataTablesDataTables::of($data)->addIndexColumn()
             ->editColumn('created_at', function ($data) {
                 return $data->date;
             })
@@ -625,7 +828,7 @@ class InvoiceController extends Controller
                     "payment" => $request->payment
                 ])->save();
 
-                $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
+                $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
                 $cash->current_balance += $invoice->total;
                 $cash->save();
 
@@ -662,7 +865,7 @@ class InvoiceController extends Controller
 
                 if ($invoice->status_invoice != 1) {
 
-                    $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
+                    $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
                     $cash->current_balance += $invoice->total;
                     $cash->save();
 
@@ -675,7 +878,7 @@ class InvoiceController extends Controller
                     ]);
                 } else {
 
-                    $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','depense')->first();
+                    $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'depense')->first();
                     $cash->current_balance -= $invoice->total;
                     $cash->save();
                     CashboxAdd::create([

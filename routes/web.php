@@ -87,14 +87,14 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware(['tfauth','branch.required']);
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware(['tfauth', 'branch.required']);
 // Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->name('dashboard');
 
 Route::middleware(['web'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
-Route::middleware(['auth','branch.required'])->group(function () {
+Route::middleware(['auth', 'branch.required'])->group(function () {
     Route::get('/select-branch', [TFAuthController::class, 'selectBranch'])->name('select.branch');
     Route::post('/select-branch', [TFAuthController::class, 'storeBranch'])->name('store.branch');
 
@@ -438,6 +438,19 @@ Route::middleware(['auth','branch.required'])->group(function () {
         Route::post('report-store', [SettingReportTemplateController::class, 'store'])->name('template.report-store');
         Route::get('report-delete/{id}', [SettingReportTemplateController::class, 'delete'])->name('template.report-delete');
     });
+
+    // Routes pour les factures PDF
+    Route::get('/invoice/{id}/pdf', [App\Http\Controllers\InvoiceController::class, 'generatePDF'])
+        ->name('invoice.pdf')
+        ->middleware('auth');
+
+    Route::get('/invoice/{id}/preview', [App\Http\Controllers\InvoiceController::class, 'previewPDF'])
+        ->name('invoice.preview')
+        ->middleware('auth');
+
+    Route::post('/invoice/{id}/mark-printed', [App\Http\Controllers\InvoiceController::class, 'markAsPrinted'])
+        ->name('invoice.mark-printed')
+        ->middleware('auth');
 
     // Factures
     Route::prefix('invoices')->group(function () {

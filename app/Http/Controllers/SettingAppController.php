@@ -14,7 +14,6 @@ class SettingAppController extends Controller
     {
         $this->setting = $setting;
     }
-    // $this->setting = SettingApp::where('branch_id', session('selected_branch_id'))->first();
 
     public function index()
     {
@@ -145,8 +144,6 @@ class SettingAppController extends Controller
                 $devise = $this->setting->where('key', 'devise')->first();
                 $devise ? $devise->update(['value' => $deviseValue]) : '';
 
-
-
                 $ifu = $this->setting->where('key', 'ifu')->first();
                 $ifu ? $ifu->update(['value' => $ifuValue]) : '';
 
@@ -155,7 +152,6 @@ class SettingAppController extends Controller
 
                 $rccm = $this->setting->where('key', 'rccm')->first();
                 $rccm ? $whatsapp_number->update(['value' => $rccmValue]) : '';
-
 
                 $adress = $this->setting->where('key', 'adress')->first();
                 $adress ? $adress->update(['value' => $adresseValue]) : '';
@@ -257,7 +253,6 @@ class SettingAppController extends Controller
 
             case 4:
                 if ($request->file('entete')) {
-
                     // debut
                     $imageFile = $request->file('entete');
                     // Obtenez le nom d'origine du fichier
@@ -266,7 +261,6 @@ class SettingAppController extends Controller
                     // Enregistrez le fichier image dans le dossier public
                     $re = $request->file('entete')->move(public_path('adminassets/images'), $namefichier);
                     // fin
-
                 }
 
                 $report_footer = $this->setting->where('key', 'report_footer')->first();
