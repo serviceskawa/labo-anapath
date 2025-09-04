@@ -251,7 +251,7 @@
                                                                             id="basic-addon1"><i
                                                                                 class="mdi mdi-cellphone-iphone"></i></span>
                                                                         <input type="number" class="form-control"
-                                                                            value="{{ $whatsapp_number->value }}"
+                                                                            value="{{ $whatsapp_number->value ?? '' }}"
                                                                             placeholder="Numéro whatsapp"
                                                                             aria-label="whatsapp_number"
                                                                             name="whatsapp_number"
@@ -267,7 +267,7 @@
                                                                             id="basic-addon1"><i
                                                                                 class="mdi mdi-copyright"></i></span>
                                                                         <input type="text" class="form-control"
-                                                                            value="{{ $footer->value }}"
+                                                                            value="{{ $footer->value ?? '' }}"
                                                                             placeholder="Pied de page" aria-label="footer"
                                                                             name="footer"
                                                                             aria-describedby="basic-addon1">
@@ -280,7 +280,7 @@
                                                                             id="basic-addon1"><i
                                                                                 class="mdi mdi-check-decagram"></i></span>
                                                                         <input type="text" class="form-control"
-                                                                            value="{{ $rccm->value }}"
+                                                                            value="{{ $rccm->value ?? '' }}"
                                                                             placeholder="RCCM" aria-label="rccm"
                                                                             name="rccm"
                                                                             aria-describedby="basic-addon1">
@@ -418,31 +418,31 @@
                                             <div class="col-6 mb-3">
                                                 <label for="simpleinput" class="form-label">SMS API</label>
                                                 <input type="password" id="simpleinput"
-                                                    placeholder="Le jeton de l'API SMS" value="{{ $api_sms->value }}"
+                                                    placeholder="Le jeton de l'API SMS" value="{{ $api_sms->value ?? '' }}"
                                                     name="api_sms" class="form-control">
                                             </div>
                                             <div class="col-6 mb-3">
                                                 <label for="simpleinput" class="form-label">Lien API</label>
                                                 <input type="text" placeholder="Lien de l'API sms"
-                                                    value="{{ $link_api_sms->value }}" name="link_api_sms"
+                                                    value="{{ $link_api_sms->value ?? '' }}" name="link_api_sms"
                                                     id="simpleinput" class="form-control">
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <label for="simpleinput" class="form-label">OURVOICE API</label>
                                                 <input type="password" placeholder="Le jeton de l'API OURVOICE"
-                                                    value="{{ $key_ourvoice->value }}" name="key_ourvoice"
+                                                    value="{{ $key_ourvoice->value ?? '' }}" name="key_ourvoice"
                                                     id="simpleinput" class="form-control">
                                             </div>
                                             <div class="col-6 mb-3">
                                                 <label for="simpleinput" class="form-label">Lien ourvoice appel</label>
-                                                <input type="text" value="{{ $link_ourvoice_call->value }}"
+                                                <input type="text" value="{{ $link_ourvoice_call->value ?? '' }}"
                                                     name="link_ourvoice_call"
                                                     placeholder="Lien de l'API OURVOICE pour les appels" id="simpleinput"
                                                     class="form-control">
                                             </div>
                                             <div class="col-6 mb-3">
                                                 <label for="simpleinput" class="form-label">Lien ourvoice SMS</label>
-                                                <input type="text" value="{{ $link_ourvoice_sms->value }}"
+                                                <input type="text" value="{{ $link_ourvoice_sms->value ?? '' }}"
                                                     name="link_ourvoice_sms"
                                                     placeholder="Lien de l'API OURVOICE pour les SMS" id="simpleinput"
                                                     class="form-control">
@@ -573,7 +573,7 @@
                                                                         class="mdi mdi-book-edit"></i></span>
                                                                 <input type="text" class="form-control"
                                                                     placeholder="Pied de page du rapport"
-                                                                    value="{{ $report_footer->value }}"
+                                                                    value="{{ $report_footer->value ?? '' }}"
                                                                     aria-label="report_footer" name="report_footer"
                                                                     aria-describedby="basic-addon1">
                                                             </div>
@@ -584,7 +584,7 @@
                                                                 <span class="input-group-text" id="basic-addon1"><i
                                                                         class="mdi mdi-google-maps"></i></span>
                                                                 <input type="text" class="form-control"
-                                                                    value="{{ $report_review_title->value }}"
+                                                                    value="{{ $report_review_title->value ?? '' }}"
                                                                     placeholder="Revue du rapport"
                                                                     aria-label="report_review_title"
                                                                     name="report_review_title"
@@ -601,7 +601,7 @@
                                                         <div class="mb-3">
                                                             <label class="form-label">Prefixe code demande d'examen</label>
                                                             <input type="text" class="form-control"
-                                                                value="{{ $prefixe_code_demande_examen->value }}"
+                                                                value="{{ $prefixe_code_demande_examen->value ?? '' }}"
                                                                 placeholder="Prefixe code demande d'examen"
                                                                 aria-label="prefixe_code_demande_examen"
                                                                 name="prefixe_code_demande_examen"
