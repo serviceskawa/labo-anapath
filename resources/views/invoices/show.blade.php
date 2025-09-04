@@ -18,7 +18,7 @@
         .company-logo {
             text-align: center;
             margin-bottom: 0px;
-            border-bottom: 1px solid #e9ecef;
+            /* border-bottom: 1px solid #e9ecef; */
             padding-bottom: 0px;
         }
 
