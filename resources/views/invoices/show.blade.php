@@ -367,8 +367,8 @@
                 <div class="invoice-info-right">
                     @if (!empty($invoice['mecef_code']))
                         <div class="qr-code">
-                            {{-- <img src="data:image/png;base64,{{ $invoice['qr_code'] }}" alt="QR Code" height="80"
-                                width="80"> --}}
+                            <img src="data:image/png;base64,{{ $invoice['qr_code'] }}" alt="QR Code" height="80"
+                                width="80">
                         </div>
                     @endif
 
