@@ -256,7 +256,7 @@ class SettingAppController extends Controller
                     // debut
                     $imageFile = $request->file('entete');
                     // Obtenez le nom d'origine du fichier
-                    $namefichier = "entete_pdf_cr." . $imageFile->getClientOriginalExtension();
+                    $namefichier = time()."entete_pdf_cr." . $imageFile->getClientOriginalExtension();
 
                     // Enregistrez le fichier image dans le dossier public
                     $re = $request->file('entete')->move(public_path('adminassets/images'), $namefichier);

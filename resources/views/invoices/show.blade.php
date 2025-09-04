@@ -184,7 +184,7 @@
         }
 
         .signature-section {
-            margin-top: 140px;
+            /* margin-top: 140px; */
             display: table;
             /* width: 100%; */
             margin-left: 365px;
@@ -199,12 +199,12 @@
         }
 
         .signature-image {
-            border: 1px solid #dee2e6;
-            padding: 15px;
+            /* border: 1px solid #dee2e6; */
+            padding: 10px;
             background: #fff;
             text-align: center;
             margin-bottom: 15px;
-            border-radius: 4px;
+            /* border-radius: 4px; */
         }
 
         .signature-image img {
@@ -365,14 +365,14 @@
                 </div>
 
                 <div class="invoice-info-right">
-                    {{-- @if (!empty($invoice['mecef_code']))
+                    @if (!empty($invoice['mecef_code']))
                         <div class="qr-code">
                             <img src="data:image/png;base64,{{ $invoice['qr_code'] }}" alt="QR Code" height="80"
                                 width="80">
                         </div>
-                    @endif --}}
+                    @endif
 
-                    <div style="">
+                    <div style="margin-right: 100px;">
                         <div class="info-label">Adressée à:</div>
                         <div class="info-value">
                             <strong>Nom:</strong> {{ $invoice['client']['name'] }}<br>
@@ -439,42 +439,21 @@
 
         <!-- Section signature et cachet PAYÉ -->
         <div class="signature-section no-break">
-            <div class="signature-container" style="margin-left: 100px;">
+            <div class="signature-container" style="margin-left: 100px; position: relative;">
                 <div class="signature-image">
                     @if (isset($invoice['images']['signature']) && $invoice['images']['signature'])
                         <img src="{{ $invoice['images']['signature'] }}" alt="Signature">
+
+                        @if (isset($invoice['images']['signature']) && $invoice['images']['signature'])
+                            <img src="{{ 'adminassets/images/paid_img.png' }}" alt="Signature" width="100">
+                        @endif
                     @else
                         <div class="signature-placeholder">
                             [Signature]
                         </div>
                     @endif
                 </div>
-
-                <!-- Cachet PAYÉ SVG -->
-                <div class="paid-stamp">
-                    <svg width="120" height="60" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Rectangle de fond principal -->
-                        <rect x="5" y="10" width="110" height="40" fill="none" stroke="#dc3545"
-                            stroke-width="3" rx="8" />
-                        <!-- Texte PAYÉ principal -->
-                        <text x="60" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="18"
-                            font-weight="bold" fill="#dc3545">PAYÉ</text>
-
-                        <!-- Effet tampon avec rotation légère -->
-                        <g transform="rotate(-8, 60, 30)">
-                            <rect x="10" y="15" width="100" height="30" fill="none" stroke="#dc3545"
-                                stroke-width="2" rx="5" opacity="0.7" />
-                            <text x="60" y="33" text-anchor="middle" font-family="Arial, sans-serif" font-size="14"
-                                font-weight="bold" fill="#dc3545" opacity="0.8">PAYÉ</text>
-                        </g>
-
-                        <!-- Petits détails pour effet authentique -->
-                        <circle cx="20" cy="20" r="2" fill="#dc3545" opacity="0.6" />
-                        <circle cx="100" cy="45" r="1.5" fill="#dc3545" opacity="0.4" />
-                    </svg>
-                </div>
             </div>
-            <div class="empty-space"></div>
         </div>
 
         <!-- Note importante -->

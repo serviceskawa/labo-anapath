@@ -424,7 +424,7 @@ class InvoiceController extends Controller
             'footer' => $this->settingApp::where('key', 'report_footer')->first()->value ?? $setting->footer,
             'images' => [
                 'header_logo' => $headerLogo,
-                'signature' => $signature,
+                'signature' => 'adminassets/images/'.Auth::user()->signature,
             ]
         ];
 
