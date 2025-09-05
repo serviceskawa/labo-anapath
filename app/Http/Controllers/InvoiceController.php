@@ -311,7 +311,8 @@ class InvoiceController extends Controller
             'footer' => $this->settingApp::where('key', 'report_footer')->first()->value ?? $setting->footer,
             'images' => [
                 'header_logo' => $headerLogo,
-                'signature' => Auth::user()->signature ? public_path('adminassets/images/'.Auth::user()->signature) : '',
+                'signature' => $invoice->signature ? public_path('adminassets/images/'.$invoice->signature) : '',
+                'signature_name' => $invoice->signature_name ? $invoice->signature_name : '',
             ]
         ];
 
@@ -588,13 +589,11 @@ class InvoiceController extends Controller
             ->make(true);
     }
 
-
     public function getInvoice($id)
     {
         $invoice = $this->invoices->find($id);
         return response()->json($invoice);
     }
-
 
     public function business()
     {
@@ -705,13 +704,14 @@ class InvoiceController extends Controller
         if ($invoice->paid == 1) {
             return redirect()->back()->with('success', "Cette facture a déjà été payé ! ");
         } else {
-
             // Si facture normaliser est activé
             if ($settingInvoice->status == 1) {
                 $invoice->fill([
                     "paid" => '1',
                     "payment" => $request->payment,
                     "user_id" => Auth::user()->id,
+                    "signature" => Auth::user()?->signature,
+                    "signature_name" => Auth::user()?->firstname." ".Auth::user()?->lastname,
                 ])->save();
 
                 $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
@@ -737,29 +737,28 @@ class InvoiceController extends Controller
                     return response()->json(invoiceNormeTest($invoice->test_order_id));
                 }
             } else {
-
                 $invoice->fill([
                     "paid" => '1',
-                    'payment' => $request->payment,
+                    "payment" => $request->payment,
                     "code_normalise" => $request->code,
                     "user_id" => Auth::user()->id,
+                    "signature" => Auth::user()->signature,
+                    "signature_name" => Auth::user()?->firstname." ".Auth::user()?->lastname,
                 ])->save();
 
                 if ($invoice->status_invoice != 1) {
-
                     $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
                     $cash->current_balance += $invoice->total;
                     $cash->save();
 
                     CashboxAdd::create([
-                        'cashbox_id' => 2,
+                        'cashbox_id' => $cash->id,
                         'date' => Carbon::now(),
                         'amount' => $invoice->total,
                         'invoice_id' => $invoice->id,
                         'user_id' => Auth::user()->id
                     ]);
                 } else {
-
                     $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'depense')->first();
                     $cash->current_balance -= $invoice->total;
                     $cash->save();

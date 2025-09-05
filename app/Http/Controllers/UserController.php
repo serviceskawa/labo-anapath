@@ -168,7 +168,7 @@ class UserController extends Controller
         if ($request->hasFile('signature')) {
             $imageFile = $request->file('signature');
             // Obtenez le nom d'origine du fichier
-            $namefichier = Auth::user()->firstname . "_" . Auth::user()->lastname . "." . $imageFile->getClientOriginalExtension();
+            $namefichier = time()."_".Auth::user()->firstname . "_" . Auth::user()->lastname . "." . $imageFile->getClientOriginalExtension();
 
             // Enregistrez le fichier image dans le dossier public
             $request->file('signature')->move(public_path('adminassets/images'), $namefichier);
@@ -234,7 +234,7 @@ class UserController extends Controller
         if (!getOnlineUser()->can('delete-test-orders')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
-        
+
         $this->user->find($id)->delete();
         return redirect()->route('user.index')->with('success', "Un utilisateur a été supprimé ! ");
     }

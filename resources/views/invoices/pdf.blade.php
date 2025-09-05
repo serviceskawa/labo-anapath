@@ -372,7 +372,7 @@
                         </div>
                     @endif
 
-                    <div @if(!empty($invoice['mecef_code'])) style="margin-right: 100px;" @endif>
+                    <div @if (!empty($invoice['mecef_code'])) style="margin-right: 100px;" @endif>
                         <div class="info-label">Adressée à:</div>
                         <div class="info-value">
                             <strong>Nom:</strong> {{ $invoice['client']['name'] }}<br>
@@ -443,14 +443,16 @@
                 <div class="signature-image">
                     @if (isset($invoice['images']['signature']) && !empty($invoice['images']['signature']))
                         <img src="{{ $invoice['images']['signature'] }}" alt="Signature">
+                    @endif
 
-                        @if (isset($invoice['images']['signature']) && !empty($invoice['images']['signature']))
-                            <img src="{{ public_path('adminassets/images/paid_img.png') }}" alt="Signature" width="100">
-                        @endif
-                    @else
-                        <div class="signature-placeholder">
-                            [Signature]
-                        </div>
+                    @if ($invoice['invoice_paid'] == 1)
+                        <p>
+                            {{ $invoice['images']['signature_name'] }}
+                        </p>
+                    @endif
+
+                    @if ($invoice['invoice_paid'] == 1)
+                        <img src="{{ public_path('adminassets/images/paid_img.png') }}" alt="Signature" width="100">
                     @endif
                 </div>
             </div>
