@@ -439,15 +439,6 @@ Route::middleware(['auth', 'branch.required'])->group(function () {
         Route::get('report-delete/{id}', [SettingReportTemplateController::class, 'delete'])->name('template.report-delete');
     });
 
-    // Routes pour les factures PDF
-    // Route::get('/invoice/{id}/preview', [App\Http\Controllers\InvoiceController::class, 'previewPDF'])
-    //     ->name('invoice.preview')
-    //     ->middleware('auth');
-
-    // Route::post('/invoice/{id}/mark-printed', [App\Http\Controllers\InvoiceController::class, 'markAsPrinted'])
-    //     ->name('invoice.mark-printed')
-    //     ->middleware('auth');
-
     // Factures
     Route::prefix('invoices')->group(function () {
         Route::get('/invoice/{id}/pdf', [App\Http\Controllers\InvoiceController::class, 'generatePDF'])->name('invoice.pdf');

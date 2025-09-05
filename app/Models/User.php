@@ -200,4 +200,13 @@ class User extends Authenticatable
             }
         });
     }
+
+
+    /**
+     * Relation avec les factures
+     */
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }

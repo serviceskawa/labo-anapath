@@ -14,6 +14,14 @@ class Invoice extends Model
     protected $guarded = [];
 
     /**
+     * Relation avec l'utilisateur
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
      * Get all of the details for the Invoice
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

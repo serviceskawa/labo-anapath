@@ -710,7 +710,8 @@ class InvoiceController extends Controller
             if ($settingInvoice->status == 1) {
                 $invoice->fill([
                     "paid" => '1',
-                    "payment" => $request->payment
+                    "payment" => $request->payment,
+                    "user_id" => Auth::user()->id,
                 ])->save();
 
                 $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
@@ -718,7 +719,7 @@ class InvoiceController extends Controller
                 $cash->save();
 
                 CashboxAdd::create([
-                    'cashbox_id' => 2,
+                    'cashbox_id' => $cash->id,
                     'date' => Carbon::now(),
                     'amount' => $invoice->total,
                     'invoice_id' => $invoice->id,
@@ -737,15 +738,11 @@ class InvoiceController extends Controller
                 }
             } else {
 
-
-
-
-
-
                 $invoice->fill([
                     "paid" => '1',
                     'payment' => $request->payment,
                     "code_normalise" => $request->code,
+                    "user_id" => Auth::user()->id,
                 ])->save();
 
                 if ($invoice->status_invoice != 1) {
