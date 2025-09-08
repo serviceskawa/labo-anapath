@@ -6,10 +6,12 @@ use App\Models\Cashbox;
 use App\Models\CashboxAdd;
 use App\Models\CashboxDaily;
 use App\Models\Consultation;
+use App\Models\Contrat;
 use DataTables;
 use Illuminate\Support\Str;
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
+use App\Models\Patient;
 use App\Models\RefundRequest;
 use App\Models\Setting;
 use App\Models\SettingInvoice;
@@ -24,6 +26,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables as FacadesDataTables;
 use App\Models\SettingApp;
+use App\Services\WhatsAppService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
@@ -37,8 +40,9 @@ class InvoiceController extends Controller
     protected $settingInvoice;
     protected $invoiceDetails;
     protected $setting;
+    protected $whatsappService;
 
-    public function __construct(SettingApp $settingApp, Invoice $invoices, Setting $setting, TestOrder $testOrders, SettingInvoice $settingInvoice, InvoiceDetail $invoiceDetails)
+    public function __construct(SettingApp $settingApp, Invoice $invoices, Setting $setting, TestOrder $testOrders, SettingInvoice $settingInvoice, InvoiceDetail $invoiceDetails, WhatsAppService $whatsappService)
     {
         $this->invoices = $invoices;
         $this->testOrders = $testOrders;
@@ -46,6 +50,7 @@ class InvoiceController extends Controller
         $this->invoiceDetails = $invoiceDetails;
         $this->setting = $setting;
         $this->settingApp = $settingApp;
+        $this->whatsappService = $whatsappService;
     }
     /**
      * Display a listing of the resource.
@@ -230,7 +235,7 @@ class InvoiceController extends Controller
 
     public function show(Request $request, $id)
     {
-        $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
+        $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
         $invoice = $this->invoices->findorfail($id);
         $refund = null;
         if ($invoice->status_invoice == 1) {
@@ -311,7 +316,7 @@ class InvoiceController extends Controller
             'footer' => $this->settingApp::where('key', 'report_footer')->first()->value ?? $setting->footer,
             'images' => [
                 'header_logo' => $headerLogo,
-                'signature' => $invoice->signature ? public_path('adminassets/images/'.$invoice->signature) : '',
+                'signature' => $invoice->signature ? public_path('adminassets/images/' . $invoice->signature) : '',
                 'signature_name' => $invoice->signature_name ? $invoice->signature_name : '',
             ]
         ];
@@ -320,7 +325,7 @@ class InvoiceController extends Controller
         $pdf = PDF::loadView('invoices.pdf', compact('invoice'));
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->stream('invoices_show'.time());
+        return $pdf->stream('invoices_show' . time());
     }
 
     private function formatInvoiceItems($invoice, $refund)
@@ -711,7 +716,7 @@ class InvoiceController extends Controller
                     "payment" => $request->payment,
                     "user_id" => Auth::user()->id,
                     "signature" => Auth::user()?->signature,
-                    "signature_name" => Auth::user()?->firstname." ".Auth::user()?->lastname,
+                    "signature_name" => Auth::user()?->firstname . " " . Auth::user()?->lastname,
                 ])->save();
 
                 $cash = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
@@ -733,6 +738,29 @@ class InvoiceController extends Controller
                     }
                 }
 
+                $session_name = SettingApp::where('key', 'session_name')->first();
+                $token_fluid_sender = SettingApp::where('key', 'token_fluid_sender')->first();
+                $message_examen = SettingApp::where('key', 'message_examen')->first();
+                $contrat = Contrat::where('id', $invoice->order->contrat_id)->first();
+                $patient = Patient::where('id', $invoice->order->patient_id)->first();
+                if (!empty($message_examen) && !empty($session_name) && !empty($token_fluid_sender) && ($contrat->type == "ORDINAIRE") && !is_null($patient)) {
+                    // Récupérer le template
+                    $variables = [
+                        'firstname' => $patient->firstname,
+                        'lastname'  => $patient->lastname,
+                        'exam_code' => $invoice->order->code,
+                    ];
+
+                    // Numéro de téléphone whatsapp
+                    $whatsappNumber = getPatientPhone($patient);
+
+                    // Remplacer les variables
+                    $finalMessage = replaceMessageVariables($message_examen->value, $variables);
+
+                    // Envoyer le message
+                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage);
+                }
+
                 if ($invoice->test_order_id != null) {
                     return response()->json(invoiceNormeTest($invoice->test_order_id));
                 }
@@ -743,7 +771,7 @@ class InvoiceController extends Controller
                     "code_normalise" => $request->code,
                     "user_id" => Auth::user()->id,
                     "signature" => Auth::user()->signature,
-                    "signature_name" => Auth::user()?->firstname." ".Auth::user()?->lastname,
+                    "signature_name" => Auth::user()?->firstname . " " . Auth::user()?->lastname,
                 ])->save();
 
                 if ($invoice->status_invoice != 1) {
@@ -775,6 +803,29 @@ class InvoiceController extends Controller
                         $invoice->contrat->is_close = 1;
                         $invoice->contrat->save();
                     }
+                }
+
+                $session_name = SettingApp::where('key', 'session_name')->first();
+                $token_fluid_sender = SettingApp::where('key', 'token_fluid_sender')->first();
+                $message_examen = SettingApp::where('key', 'message_examen')->first();
+                $contrat = Contrat::where('id', $invoice->order->contrat_id)->first();
+                $patient = Patient::where('id', $invoice->order->patient_id)->first();
+                if (!empty($message_examen) && !empty($session_name) && !empty($token_fluid_sender) && ($contrat->type == "ORDINAIRE") && !is_null($patient)) {
+                    // Récupérer le template
+                    $variables = [
+                        'firstname' => $patient->firstname,
+                        'lastname'  => $patient->lastname,
+                        'exam_code' => $invoice->order->code,
+                    ];
+
+                    // Numéro de téléphone whatsapp
+                    $whatsappNumber = getPatientPhone($patient);
+
+                    // Remplacer les variables
+                    $finalMessage = replaceMessageVariables($message_examen->value, $variables);
+
+                    // Envoyer le message
+                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage);
                 }
 
                 return response()->json(['code' => $request->code]);

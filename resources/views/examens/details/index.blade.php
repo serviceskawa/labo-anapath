@@ -53,10 +53,8 @@
                             data-bs-target="#standard-modal">Ajouter un nouveau patient</button>
                     </div>
                     @endif
-
                     Demande d'examen : <strong>{{ $test_order->code }}</strong>
                 </div>
-
             </div>
         </div>
 
@@ -67,7 +65,6 @@
         <form action="{{ route('test_order.update', $test_order->id) }}" method="post" autocomplete="off"
             enctype="multipart/form-data">
             <div class="card-body">
-
                 @csrf
                 <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
 

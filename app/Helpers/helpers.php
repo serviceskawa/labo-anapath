@@ -1358,3 +1358,76 @@ if (!function_exists('getCurrentBranchId')) {
         return session('selected_branch_id');
     }
 }
+
+if (!function_exists('replaceMessageVariables')) {
+    function replaceMessageVariables($message, $variables = [])
+    {
+        foreach ($variables as $key => $value) {
+            // Remplace :variable_name par la valeur
+            $message = str_replace(':' . $key, $value, $message);
+        }
+        return $message;
+    }
+}
+
+if (!function_exists('formatPhoneNumber')) {
+    /**
+     * Formate un numéro de téléphone au format international béninois
+     * @param string $phone
+     * @return string|null
+     */
+    function formatPhoneNumber($phone)
+    {
+        if (empty($phone)) {
+            return null;
+        }
+
+        // Nettoyer le numéro (supprimer espaces, tirets, points, parenthèses)
+        $phone = preg_replace('/[^0-9+]/', '', $phone);
+
+        // Si le numéro commence par +229, le garder
+        if (str_starts_with($phone, '+229')) {
+            $phone = substr($phone, 1); // Enlever le +
+        }
+        // Si le numéro commence par 00229, remplacer par 229
+        elseif (str_starts_with($phone, '00229')) {
+            $phone = substr($phone, 2); // Enlever 00
+        }
+        // Si le numéro commence par 229, le garder
+        elseif (str_starts_with($phone, '229')) {
+            // Déjà au bon format
+        }
+        // Si le numéro commence par 0 (format local), remplacer par 229
+        elseif (str_starts_with($phone, '0') && strlen($phone) == 9) {
+            $phone = '229' . substr($phone, 1);
+        }
+        // Si c'est un numéro à 8 chiffres (sans indicatif), ajouter 229
+        elseif (strlen($phone) == 8 && preg_match('/^[679]/', $phone)) {
+            $phone = '229' . $phone;
+        }
+
+        // Vérifier que le numéro final est valide (229 + 8 chiffres)
+        if (preg_match('/^229[679]\d{7}$/', $phone)) {
+            return $phone;
+        }
+
+        // Si le format n'est pas reconnu, retourner null
+        return null;
+    }
+}
+
+if (!function_exists('getPatientPhone')) {
+    /**
+     * Récupère et formate le numéro de téléphone d'un patient
+     * @param object $patient
+     * @return string|null
+     */
+    function getPatientPhone($patient)
+    {
+        // Récupérer le premier numéro disponible
+        $numeroTelephone = $patient->telephone1 ?? $patient->telephone2 ?? '' ?? '';
+
+        // Le formater
+        return formatPhoneNumber($numeroTelephone);
+    }
+}

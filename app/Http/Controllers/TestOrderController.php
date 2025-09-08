@@ -22,8 +22,10 @@ use Illuminate\Http\Request;
 use App\Models\InvoiceDetail;
 use App\Models\DetailTestOrder;
 use App\Models\LogReport;
+use App\Models\SettingApp;
 use App\Models\TestOrderAssignment;
 use App\Models\TestOrderAssignmentDetail;
+use App\Services\WhatsAppService;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
@@ -52,6 +54,8 @@ class TestOrderController extends Controller
     protected $logReport;
     protected $testOrderAssignment;
     protected $testOrderAssignmentDetail;
+    protected $whatsappService;
+    protected $settingApp;
 
     public function __construct(
         Test $test,
@@ -68,7 +72,9 @@ class TestOrderController extends Controller
         TypeOrder $typeOrder,
         InvoiceDetail $invoiceDetail,
         DetailTestOrder $detailTestOrder,
-        LogReport $logReport
+        LogReport $logReport,
+        WhatsAppService $whatsappService,
+        SettingApp $settingApp,
     ) {
         $this->middleware('auth');
         $this->test = $test;
@@ -86,6 +92,8 @@ class TestOrderController extends Controller
         $this->logReport = $logReport;
         $this->testOrderAssignmentDetail = $testOrderAssignmentDetail;
         $this->testOrderAssignment = $testOrderAssignment;
+        $this->whatsappService = $whatsappService;
+        $this->settingApp = $settingApp;
     }
 
     public function statistique($idDoctor)
@@ -97,10 +105,6 @@ class TestOrderController extends Controller
         $nbreTotalCasAttribuer = TestOrderAssignment::where('user_id', Auth::user()->id)->count();
         $nbreTotalCasAttribuerValeur = $nbreTotalCasAttribuer;
         $nbreTotalCasAttribuer = number_format($nbreTotalCasAttribuer, 2);
-
-
-
-
 
         // Nombre de cas en attente
         // $nbreTotalCasEnAttente = TestOrder::where('attribuate_doctor_id',Auth::user()->id)->
@@ -250,10 +254,8 @@ class TestOrderController extends Controller
         ]));
     }
 
-
     public function getTestOrdersforDatatableMySpace(Request $request)
     {
-
         $data = TestOrderAssignmentDetail::with(['testOrderAssignment', 'testOrder.patient', 'testOrder.contrat', 'testOrder.type', 'testOrder.details', 'testOrder.report'])
             ->whereHas('testOrder.type', function ($query) {
                 $query->whereIn('slug', ['immuno-exterme', 'immuno-interne', 'histologie', 'cytologie', 'biopsie', 'pièce-opératoire'])
@@ -666,7 +668,6 @@ class TestOrderController extends Controller
             ->make(true);
     }
 
-
     public function index()
     {
         if (!getOnlineUser()->can('view-test-orders')) {
@@ -828,7 +829,6 @@ class TestOrderController extends Controller
             ]
         ));
     }
-
 
     /**
      * Version optimisée du calcul des statistiques
@@ -1185,6 +1185,7 @@ class TestOrderController extends Controller
         $contrats = $this->contrat->ofStatus('ACTIF')->get();
         $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         config(['app.name' => $setting->titre]);
+
         return view('examens.details.index', compact(['test_orders', 'test_order', 'details', 'tests', 'types_orders', 'patients', 'doctors', 'hopitals', 'contrats',]));
     }
 
@@ -1507,6 +1508,31 @@ class TestOrderController extends Controller
                             $value->save();
                         }
                     }
+
+                    // Envois de message whatsApp
+                    $session_name = SettingApp::where('key', 'session_name')->first();
+                    $token_fluid_sender = SettingApp::where('key', 'token_fluid_sender')->first();
+                    $message_examen = SettingApp::where('key', 'message_compte_rendu')->first();
+                    $contrat = Contrat::where('id', $test_order->contrat_id)->first();
+                    $patient = Patient::where('id', $test_order->patient_id)->first();
+
+                    if (!empty($message_examen) && !empty($session_name) && !empty($token_fluid_sender) && !is_null($patient)) {
+                        // Récupérer le template
+                        $variables = [
+                            'firstname' => $patient->firstname,
+                            'lastname'  => $patient->lastname,
+                            'exam_code' => $test_order->code,
+                        ];
+
+                        // Numéro de téléphone whatsapp
+                        $whatsappNumber = getPatientPhone($patient);
+
+                        // Remplacer les variables
+                        $finalMessage = replaceMessageVariables($message_examen->value, $variables);
+
+                        // Envoyer le message
+                        $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage);
+                    }
                 } else {
                     return back()->with('error', "Le contrat de cette demande a déjà été cloturé ");
                 }
@@ -1593,7 +1619,7 @@ class TestOrderController extends Controller
             $test_order->is_urgent = $request->is_urgent ? 1 : 0;
             $test_order->examen_file = $request->file('examen_file') ? $path_examen_file : "";
 
-            $test_order->test_affiliate = $data['test_affiliate'] ? $data['test_affiliate'] : "";            // $test_order->type_order_id = (int)$data['type_examen_id'];
+            $test_order->test_affiliate = $data['test_affiliate'] ? $data['test_affiliate'] : "";
             $test_order->type_order_id = (int)$request->type_examen_id;
             $data['attribuate_doctor_id'] ? $test_order->attribuate_doctor_id = (int)$data['attribuate_doctor_id'] : '';
             $data['attribuate_doctor_id'] ? $test_order->assigned_to_user_id = (int)$data['attribuate_doctor_id'] : '';
@@ -1626,7 +1652,6 @@ class TestOrderController extends Controller
                 return back()->with('warning', "La facture n'existe pas");
             }
         } catch (\Throwable $ex) {
-
             return back()->with('error', "Échec de l'enregistrement ! " . $ex->getMessage());
         }
     }

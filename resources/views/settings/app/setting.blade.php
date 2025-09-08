@@ -240,8 +240,9 @@
                                                                             id="basic-addon1"><i
                                                                                 class="mdi mdi-ballot-outline"></i></span>
                                                                         <input type="text" class="form-control"
-                                                                            value="{{ $ifu->value ?? "" }}" placeholder="IFU"
-                                                                            aria-label="ifu" name="ifu"
+                                                                            value="{{ $ifu->value ?? '' }}"
+                                                                            placeholder="IFU" aria-label="ifu"
+                                                                            name="ifu"
                                                                             aria-describedby="basic-addon1">
                                                                     </div>
                                                                 </div>
@@ -418,8 +419,9 @@
                                             <div class="col-6 mb-3">
                                                 <label for="simpleinput" class="form-label">SMS API</label>
                                                 <input type="password" id="simpleinput"
-                                                    placeholder="Le jeton de l'API SMS" value="{{ $api_sms->value ?? '' }}"
-                                                    name="api_sms" class="form-control">
+                                                    placeholder="Le jeton de l'API SMS"
+                                                    value="{{ $api_sms->value ?? '' }}" name="api_sms"
+                                                    class="form-control">
                                             </div>
                                             <div class="col-6 mb-3">
                                                 <label for="simpleinput" class="form-label">Lien API</label>
@@ -460,6 +462,39 @@
                                                 <input type="password" value="{{ $token_fluid_sender?->value }}"
                                                     name="token_fluid_sender" placeholder="Lien du token de FluidSender"
                                                     id="simpleinput" class="form-control">
+                                            </div>
+
+                                            {{-- <div class="col-6 mb-3">
+                                                <label for="simpleinput" class="form-label">Message examen</label>
+                                                <input type="text" value="{{ $session_name?->value }}"
+                                                    name="session_name" placeholder="Session name de FluidSender"
+                                                    id="simpleinput" class="form-control">
+                                            </div>
+
+                                            <div class="col-6 mb-3">
+                                                <label for="simpleinput" class="form-label">Message compte rendu</label>
+                                                <input type="password" value="{{ $token_fluid_sender?->value }}"
+                                                    name="token_fluid_sender" placeholder="Lien du token de FluidSender"
+                                                    id="simpleinput" class="form-control">
+                                            </div> --}}
+
+                                            <div class="col-6 mb-3">
+                                                <label for="message_examen" class="form-label">Message examen</label>
+                                                <textarea name="message_examen" id="message_examen" class="form-control" rows="3"
+                                                    placeholder="Ex: Bonjour :firstname :lastname, votre examen :exam_code est disponible.">{{ $message_examen?->value }}</textarea>
+                                                <small class="text-muted">
+                                                    Variables disponibles: :firstname, :lastname, :exam_code
+                                                </small>
+                                            </div>
+
+                                            <div class="col-6 mb-3">
+                                                <label for="message_compte_rendu" class="form-label">Message compte
+                                                    rendu</label>
+                                                <textarea name="message_compte_rendu" id="message_compte_rendu" class="form-control" rows="3"
+                                                    placeholder="Ex: Bonjour :firstname :lastname, votre compte rendu est prêt.">{{ $message_compte_rendu?->value }}</textarea>
+                                                <small class="text-muted">
+                                                    Variables disponibles: :firstname, :lastname, :exam_code
+                                                </small>
                                             </div>
                                         </div>
 
@@ -678,7 +713,7 @@
                                                                                 {{ $item->title }}
                                                                                 {{ $item->status != 0
                                                                                     ? '(Par
-                                                                                                                                                                                                                                                                                                                        defaut)'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        defaut)'
                                                                                     : '' }}
                                                                             </td>
                                                                             <td>

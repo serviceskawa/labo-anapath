@@ -6,12 +6,14 @@ use App\Events\AssignedReviewer;
 use App\Http\Requests\TagRequest;
 use App\Models\AppelByReport;
 use App\Models\Cashbox;
+use App\Models\Contrat;
 use App\Models\Report;
 
 //use App\Models\Contrat;
 use App\Models\Doctor;
 use App\Models\Invoice;
 use App\Models\LogReport;
+use App\Models\Patient;
 use App\Models\Setting;
 use App\Models\SettingApp;
 use GuzzleHttp\Client;
@@ -28,6 +30,7 @@ use App\Models\TestOrderAssignment;
 use App\Models\TitleReport;
 use App\Models\TypeOrder;
 use App\Models\User;
+use App\Services\WhatsAppService;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Exception;
@@ -52,12 +55,13 @@ class ReportController extends Controller
     protected $tag;
     protected $typeOrder;
     protected $testOrder;
+    protected $whatsappService;
 
     /**
      * ReportController constructor.
      * Instanciate Report, Doctor and LogReport classes
      */
-    public function __construct(TestOrder $testOrder, Report $report, Doctor $doctor, User $user, LogReport $logReport, TitleReport $titleReport, SettingReportTemplate $settingReportTemplate, Setting $setting, Tag $tag, TypeOrder $typeOrder)
+    public function __construct(WhatsAppService $whatsappService, TestOrder $testOrder, Report $report, Doctor $doctor, User $user, LogReport $logReport, TitleReport $titleReport, SettingReportTemplate $settingReportTemplate, Setting $setting, Tag $tag, TypeOrder $typeOrder)
     {
         $this->middleware('auth');
         $this->report = $report;
@@ -70,6 +74,7 @@ class ReportController extends Controller
         $this->tag = $tag;
         $this->typeOrder = $typeOrder;
         $this->testOrder = $testOrder;
+        $this->whatsappService = $whatsappService;
     }
 
     /**
@@ -261,13 +266,13 @@ class ReportController extends Controller
         $macros = $macros->get();
 
         $patient_called = DB::table('reports')
-        ->selectRaw("
+            ->selectRaw("
         SUM(CASE WHEN reports.is_called = 1 THEN 1 ELSE 0 END) AS called,
         SUM(CASE WHEN reports.is_called = 0 THEN 1 ELSE 0 END) AS not_called,
         SUM(CASE WHEN reports.is_delivered = 1 THEN 1 ELSE 0 END) AS deliver,
         SUM(CASE WHEN reports.is_delivered = 0 THEN 1 ELSE 0 END) AS not_deliver
         ")
-        ->where('reports.branch_id', session('selected_branch_id'));
+            ->where('reports.branch_id', session('selected_branch_id'));
 
         if (isset($month) && isset($year)) {
             $patient_called = $patient_called->whereMonth('reports.created_at', $month)
@@ -366,18 +371,45 @@ class ReportController extends Controller
         try {
             $report->tags()->sync([]);
             $report->tags()->attach($request->tags);
-            return redirect()->route('report.show', $report->id)->with('success', " Utilisateur mis à jour ! ");
+
+            // Envois de message whatsApp
+            if ($report->status == 1) {
+                $session_name = SettingApp::where('key', 'session_name')->first();
+                $token_fluid_sender = SettingApp::where('key', 'token_fluid_sender')->first();
+                $message_examen = SettingApp::where('key', 'message_compte_rendu')->first();
+                $contrat = Contrat::where('id', $report->order->contrat_id)->first();
+                $patient = Patient::where('id', $report->order->patient_id)->first();
+
+                if (!empty($message_examen) && !empty($session_name) && !empty($token_fluid_sender) && ($contrat->type != "ORDINAIRE") && !is_null($patient)) {
+                    // Récupérer le template
+                    $variables = [
+                        'firstname' => $patient->firstname,
+                        'lastname'  => $patient->lastname,
+                        'exam_code' => $report->order->code,
+                    ];
+
+                    // Numéro de téléphone whatsapp
+                    $whatsappNumber = getPatientPhone($patient);
+
+                    // Remplacer les variables
+                    $finalMessage = replaceMessageVariables($message_examen->value, $variables);
+
+                    // Envoyer le message
+                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage);
+                }
+            }
+
+            $log = new LogReport();
+            $log->operation = 'Mettre à jour';
+            $log->report_id = $request->report_id;
+            $log->user_id = $user->id;
+            $log->save();
+            return redirect()->route('report.show', $report->id)->with('success', " Compte rendu mis à jour ! ");
         } catch (\Throwable $th) {
             return redirect()->route('report.show', $report->id)->with('error', "Échec de l'enregistrement ! " . $th->getMessage());
         }
 
-        $log = new LogReport();
-        $log->operation = 'Mettre à jour ';
-        $log->report_id = $request->report_id;
-        $log->user_id = $user->id;
-        $log->save();
-
-        return redirect()->back()->with('success', '   Examen mis à jour ! ');
+        return redirect()->back()->with('success', 'Examen mis à jour !');
     }
 
     /**
@@ -401,7 +433,7 @@ class ReportController extends Controller
             ->latest()
             ->get();
         $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
-        $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type','vente')->first();
+        $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
         config(['app.name' => $setting->titre]);
 
         $tags = $this->tag->all();

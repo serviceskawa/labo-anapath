@@ -190,7 +190,6 @@ class HomeController extends Controller
                 ->groupBy('r.status')
                 ->select('r.status', DB::raw('COUNT(*) as total'))
                 ->get();
-            // dd($totalByStatus);
             //fin test order
 
             //Hopitaux
@@ -261,7 +260,6 @@ class HomeController extends Controller
             $testOrdersByDoctorsToday = TestOrder::where('attribuate_doctor_id', Auth::user()->id)->whereHas('report', function ($query) use ($today) {
                 $query->whereDate('updated_at', $today);
             })->get();
-            // dd('ok');
 
             //Status des demandes affectées à un doctor
             // $totalByStatusForDoctor = TestOrder::where('attribuate_doctor_id', Auth::user()->id)->join('reports', 'test_orders.id', '=', 'reports.test_order_id')

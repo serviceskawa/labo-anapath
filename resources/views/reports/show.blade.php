@@ -469,7 +469,6 @@
                 </div>
             @endif
         </div>
-
     </div>
 @endsection
 
@@ -594,52 +593,4 @@
             });
         });
     </script>
-
-    {{-- <script>
-        $(document).ready(function() {
-            // Intercepter la soumission du formulaire
-            $('#reportForm').on('submit', function(e) {
-                e.preventDefault(); // Empêcher la soumission normale
-
-                var form = this; // Référence au formulaire
-                var status = $('select[name="status"]').val();
-                var statusText = status == '1' ? 'terminé' : 'en attente de relecture';
-
-                Swal.fire({
-                    title: 'Confirmer la mise à jour',
-                    html: `
-                <div style="text-align: left;">
-                    <p><strong>Vous êtes sur le point de mettre à jour ce compte rendu.</strong></p>
-                    <p>État du rapport : <span style="color: ${status == '1' ? '#28a745' : '#ffc107'}; font-weight: bold;">${statusText}</span></p>
-                    <p>Cette action modifiera définitivement les données du rapport et sera irréversible.</p>
-                </div>
-            `,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Oui, mettre à jour',
-                    cancelButtonText: 'Annuler',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Afficher un loader pendant la soumission
-                        Swal.fire({
-                            title: 'Mise à jour en cours...',
-                            html: 'Veuillez patienter pendant la sauvegarde.',
-                            timerProgressBar: true,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            },
-                            allowOutsideClick: false,
-                            allowEscapeKey: false
-                        });
-
-                        // Soumettre le formulaire
-                        form.submit();
-                    }
-                });
-            });
-        });
-    </script> --}}
 @endpush

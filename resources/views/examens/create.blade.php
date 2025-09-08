@@ -3,22 +3,17 @@
 @section('title', 'Examen')
 
 @section('css')
-
     <style>
         input[data-switch]+label {
             width: 90px !important;
         }
-
         input[data-switch]:checked+label:after {
             left: 62px !important;
         }
     </style>
 @endsection
 
-
-
 @section('content')
-
     <div class="page-title-box">
         <div class="page-title-right mr-3">
             @if (isset($cashbox) && $cashbox->statut == 0)
@@ -32,9 +27,7 @@
     </div>
 
     <div class="">
-
         @include('layouts.alerts')
-
         <div class="card my-3">
             <div class="card-header">
                 <div class="col-12">
@@ -45,20 +38,15 @@
                         </div>
                         Ajouter une nouvelle demande d'examen
                     </div>
-
                 </div>
-
             </div>
-            <div class="card-body">
 
+            <div class="card-body">
                 <form action="{{ route('test_order.store') }}" method="post" autocomplete="off"
                     enctype="multipart/form-data">
                     @csrf
-
-
                     <div class="row">
                         <div style="text-align:right;"><span style="color:red;">*</span>champs obligatoires</div>
-
                         <div class="col-md-6">
                             <label for="exampleFormControlInput1" class="form-label">Type d'examen<span
                                     style="color:red;">*</span></label>

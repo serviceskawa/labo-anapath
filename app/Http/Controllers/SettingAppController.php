@@ -50,6 +50,8 @@ class SettingAppController extends Controller
         $link_ourvoice_sms = $this->setting->where('key', 'link_ourvoice_sms')->first();
         $token_fluid_sender = $this->setting->where('key', 'token_fluid_sender')->first();
         $session_name = $this->setting->where('key', 'session_name')->first();
+        $message_examen = $this->setting->where('key', 'message_examen')->first();
+        $message_compte_rendu = $this->setting->where('key', 'message_compte_rendu')->first();
         $report_footer = $this->setting->where('key', 'report_footer')->first();
         $report_review_title = $this->setting->where('key', 'report_review_title')->first();
         $mail = $this->setting->where('key', 'admin_mails')->first();
@@ -59,6 +61,8 @@ class SettingAppController extends Controller
         $titles = TitleReport::latest()->get();
 
         return view('settings.app.setting', compact(
+            'message_compte_rendu',
+            'message_examen',
             'token_payment',
             'app_name',
             'prefixe_code_demande_examen',
@@ -98,7 +102,6 @@ class SettingAppController extends Controller
 
     public function store(Request $request)
     {
-        // dd($this->setting, session('selected_branch_id'));
         // Récupérez les valeurs directement à partir de la demande HTTP
         $nbr = intval($request->nbrform);
         $appNameValue = $request->input('app_name');
@@ -249,6 +252,18 @@ class SettingAppController extends Controller
 
                 $session_name = $this->setting->where('key', 'session_name')->first();
                 $session_name ? $session_name->update(['value' => $session_nameValue]) : '';
+
+                // Message examen
+                $messageExamenValue = $request->input('message_examen');
+                $messageExamen = $this->setting->where('key', 'message_examen')->first();
+                $messageExamen ? $messageExamen->update(['value' => $messageExamenValue]) :
+                    $this->setting->create(['key' => 'message_examen', 'value' => $messageExamenValue]);
+
+                // Message compte rendu
+                $messageCompteRenduValue = $request->input('message_compte_rendu');
+                $messageCompteRendu = $this->setting->where('key', 'message_compte_rendu')->first();
+                $messageCompteRendu ? $messageCompteRendu->update(['value' => $messageCompteRenduValue]) :
+                    $this->setting->create(['key' => 'message_compte_rendu', 'value' => $messageCompteRenduValue]);
                 break;
 
             case 4:
@@ -256,7 +271,7 @@ class SettingAppController extends Controller
                     // debut
                     $imageFile = $request->file('entete');
                     // Obtenez le nom d'origine du fichier
-                    $namefichier = time()."entete_pdf_cr." . $imageFile->getClientOriginalExtension();
+                    $namefichier = time() . "entete_pdf_cr." . $imageFile->getClientOriginalExtension();
 
                     // Enregistrez le fichier image dans le dossier public
                     $re = $request->file('entete')->move(public_path('adminassets/images'), $namefichier);
