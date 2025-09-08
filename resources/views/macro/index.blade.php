@@ -82,11 +82,11 @@
                                             <input type="checkbox" class="form-check-input" id="customCheck1">
                                         </div>
                                     </th>
-                                    <th>Code</th>
-                                    <th>Macro Réalisée par</th>
                                     <th>Date Macro</th>
-                                    <th>Date Montage</th>
-                                    <th>Etapes</th>
+                                    <th>Code</th>
+                                    <th>Réalisé par</th>
+                                    {{-- <th>Date Montage</th>
+                                    <th>Etapes</th> --}}
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -144,7 +144,7 @@
                                         </th>
                                         <th>Date limite</th>
                                         <th>Code</th>
-                                        <th>Macro réalisé par</th>
+                                        {{-- <th>Macro réalisé par</th> --}}
                                     </tr>
                                 </thead>
                             </table>
@@ -200,7 +200,7 @@
                                         </th>
                                         <th>Date limite</th>
                                         <th>Code</th>
-                                        <th>Macro réalisé par</th>
+                                        {{-- <th>Macro réalisé par</th> --}}
                                     </tr>
                                 </thead>
                             </table>
@@ -255,7 +255,7 @@
                                         </th>
                                         <th>Date limite</th>
                                         <th>Code</th>
-                                        <th>Macro réalisé par</th>
+                                        {{-- <th>Macro réalisé par</th> --}}
                                     </tr>
                                 </thead>
                             </table>
@@ -342,6 +342,66 @@
         var TOKENSTOREDOCTOR = "{{ csrf_token() }}"
         var ROUTEPAATHOLOGIETESTORDERS = "{{ route('macro.search.orders') }}"
     </script>
+
+    <script>
+$(document).ready(function() {
+    // Event delegation pour les boutons de suppression
+    $(document).on('click', '.delete-btn', function(e) {
+        e.preventDefault();
+
+        const id = $(this).data('id');
+        const button = $(this);
+
+        Swal.fire({
+            title: "Voulez-vous continuer?",
+            text: "Cette action est irréversible",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Oui, supprimer",
+            cancelButtonText: "Annuler",
+            confirmButtonColor: '#d33',
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return fetch(`{{ url('/macro/delete') }}/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erreur de suppression');
+                    }
+                    return response.json();
+                })
+                .catch(error => {
+                    Swal.showValidationMessage(`Erreur: ${error.message}`);
+                });
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Supprimé!',
+                    text: 'L\'élément a été supprimé avec succès',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    // Recharger le DataTable au lieu de la page complète
+                    if (typeof table !== 'undefined') {
+                        table.ajax.reload(null, false); // false = garder la pagination
+                    } else {
+                        location.reload();
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
 
     <script>
         $('#id_test_pathology_order').select2({

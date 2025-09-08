@@ -148,8 +148,7 @@ class TestPathologyMacroController extends Controller
         $search = $request->get('search', '');
         $limit = $request->get('limit', 20);
 
-        $orders = TestOrder::select('id', 'code')
-            ->whereHas('type', function ($query) {
+        $orders = $this->testOrder->whereHas('type', function ($query) {
                 $query->where('status', 1)
                     ->whereNull('deleted_at')
                     ->where(function ($q) {
@@ -225,36 +224,6 @@ class TestPathologyMacroController extends Controller
         return view('macro.index_immuno', array_merge(compact('employees', 'results')));
     }
 
-    public function searchMacro(Request $request)
-    {
-        $search = $request->get('search', '');
-        $limit = $request->get('limit', 20);
-
-        // $orders = TestOrder::select('id', 'code')
-        //     ->whereDoesntHave('macros') // Remplace !isMacro($order->id)
-        //     ->when($search, function ($query, $search) {
-        //         $query->where('code', 'LIKE', "%{$search}%");
-        //     })
-        //     ->orderBy('code')
-        //     ->paginate($limit);
-
-        $orders = $this->testOrder->whereHas('type', function ($query) {
-            $query->where('slug', 'immuno-interne')
-                ->orwhere('slug', 'immuno-exterme')->where('status', 1) // Statut différent de 0
-                ->whereNull('deleted_at'); // deleted_at doit être NULL;
-        })->orderBy('code')->paginate($limit);
-
-        // Filtrer côté serveur si isMacro() nécessite une logique complexe
-        $filteredOrders = $orders->getCollection()->filter(function ($order) {
-            return !isMacro($order->id);
-        })->values();
-
-        return response()->json([
-            'data' => $orders->items(),
-            'has_more' => $orders->hasMorePages()
-        ]);
-    }
-
     // Debut
     public function getTestOrdersforDatatable(Request $request)
     {
@@ -320,12 +289,14 @@ class TestPathologyMacroController extends Controller
             })
 
             ->addColumn('action', function ($data) {
-                $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
-
-                return !isAffecte($data->order->id) ? $btnDelete : '';
+                return view('macro.btn_delete', ['data' => $data]);
+                // $btnDelete = '';
+                // if(getOnlineUser()->can('view-admin-dashboard'))
+                // {
+                //     $btnDelete = ' <button type="button" onclick="deleteModal(' . $data->id . ')" class="btn btn-danger" title="Supprimer"><i class="mdi mdi-trash-can-outline"></i> </button>';
+                // }
+                // return !isAffecte($data->order->id) ? $btnDelete : '-';
             })
-
-
 
             ->addColumn('code', function ($data) {
                 $reponse = $data->order->test_affiliate ? "/ " . $data->order->test_affiliate : "";
@@ -340,52 +311,52 @@ class TestPathologyMacroController extends Controller
             })
             ->addColumn('date_macro', function ($data) {
                 // return dateFormat($data->date);
-                return $data?->date ? Carbon::parse($data->date)->format('d-m-Y') : '';
+                return $data?->date ? Carbon::parse($data->date)->format('d-m-Y') : '-';
             })
-            ->addColumn('date_montage', function ($data) {
-                if ($data->mounting) {
+            // ->addColumn('date_montage', function ($data) {
+            //     if ($data->mounting) {
 
-                    return dateFormat($data->updated_at);
-                }
-            })
-            ->addColumn('state', function ($data) {
-                $select = "
-                    <ul>
-                        " . ($data->circulation ? '<li> <span class="badge bg-primary rounded-pill">Circulation</span></li>' : '') . "
-                        " . ($data->embedding ? '<li><span class="badge bg-primary rounded-pill">Enrobage</span></li>' : '') . "
-                        " . ($data->microtomy_spreading ? '<li><span class="badge bg-primary rounded-pill">Microtomie et Etalement</span></li>' : '') . "
-                        " . ($data->staining ? '<li><span class="badge bg-primary rounded-pill">Coloration</span></li>' : '') . "
-                        " . ($data->mounting ? '<li><span class="badge bg-primary rounded-pill">Montage</span></li>' : '') . "
-                    </ul>";
+            //         return dateFormat($data->updated_at);
+            //     }
+            // })
+            // ->addColumn('state', function ($data) {
+            //     $select = "
+            //         <ul>
+            //             " . ($data->circulation ? '<li> <span class="badge bg-primary rounded-pill">Circulation</span></li>' : '') . "
+            //             " . ($data->embedding ? '<li><span class="badge bg-primary rounded-pill">Enrobage</span></li>' : '') . "
+            //             " . ($data->microtomy_spreading ? '<li><span class="badge bg-primary rounded-pill">Microtomie et Etalement</span></li>' : '') . "
+            //             " . ($data->staining ? '<li><span class="badge bg-primary rounded-pill">Coloration</span></li>' : '') . "
+            //             " . ($data->mounting ? '<li><span class="badge bg-primary rounded-pill">Montage</span></li>' : '') . "
+            //         </ul>";
 
-                if (!$data->mounting) {
-                    // Utilisation de htmlspecialchars pour échapper les caractères spéciaux
-                    $escapedCode = htmlspecialchars($data->order->code, ENT_QUOTES, 'UTF-8');
-                    $select .= "
-                        <select name='id_test_pathology_order" . $data->id . "' onchange='changeState(" . $data->id . ",\"" . $escapedCode . "\")' id='id_test_pathology_order" . $data->id . "' class='form-select select2' data-toggle='select2'>
-                            <option value=''>Sélectionner un étape</option>";
+            //     if (!$data->mounting) {
+            //         // Utilisation de htmlspecialchars pour échapper les caractères spéciaux
+            //         $escapedCode = htmlspecialchars($data->order->code, ENT_QUOTES, 'UTF-8');
+            //         $select .= "
+            //             <select name='id_test_pathology_order" . $data->id . "' onchange='changeState(" . $data->id . ",\"" . $escapedCode . "\")' id='id_test_pathology_order" . $data->id . "' class='form-select select2' data-toggle='select2'>
+            //                 <option value=''>Sélectionner un étape</option>";
 
-                    if (!$data->circulation) {
-                        $select .= "<option value='circulation'>Circulation</option>";
-                    }
-                    if (!$data->embedding) {
-                        $select .= "<option value='embedding'>Enrobage</option>";
-                    }
-                    if (!$data->microtomy_spreading) {
-                        $select .= "<option value='microtomy_spreading'>Microtomie et Etalement</option>";
-                    }
-                    if (!$data->staining) {
-                        $select .= "<option value='staining'>Coloration</option>";
-                    }
-                    if (!$data->mounting) {
-                        $select .= "<option value='mounting'>Montage</option>";
-                    }
+            //         if (!$data->circulation) {
+            //             $select .= "<option value='circulation'>Circulation</option>";
+            //         }
+            //         if (!$data->embedding) {
+            //             $select .= "<option value='embedding'>Enrobage</option>";
+            //         }
+            //         if (!$data->microtomy_spreading) {
+            //             $select .= "<option value='microtomy_spreading'>Microtomie et Etalement</option>";
+            //         }
+            //         if (!$data->staining) {
+            //             $select .= "<option value='staining'>Coloration</option>";
+            //         }
+            //         if (!$data->mounting) {
+            //             $select .= "<option value='mounting'>Montage</option>";
+            //         }
 
-                    $select .= "</select>";
-                }
+            //         $select .= "</select>";
+            //     }
 
-                return $select;
-            })
+            //     return $select;
+            // })
 
             ->filter(function ($query) use ($request) {
 
@@ -668,20 +639,20 @@ class TestPathologyMacroController extends Controller
                 return $data->code . " " . $reponse;
             })
 
-            ->addColumn('state', function ($data) use ($employees) {
-                $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
-                $select = "
-                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(" . $data->test_order . ",\"" . $escapedCode . "\")'>";
+            // ->addColumn('state', function ($data) use ($employees) {
+            //     $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
+            //     $select = "
+            //         <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(" . $data->test_order . ",\"" . $escapedCode . "\")'>";
 
-                foreach ($employees as $employee) {
-                    $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
-                }
+            //     foreach ($employees as $employee) {
+            //         $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
+            //     }
 
-                $select .= "
-                    </select>";
+            //     $select .= "
+            //         </select>";
 
-                return $select;
-            })
+            //     return $select;
+            // })
 
             ->filter(function ($query) use ($request) {
                 if ($request->get('typeOrderId')) {
@@ -750,8 +721,6 @@ class TestPathologyMacroController extends Controller
             ->where('test_orders.branch_id', session('selected_branch_id'))
             ->whereNull('test_pathology_macros.id')
             ->where('reports.status', 0)
-            // ->whereYear('reports.created_at', '!=', 2022)
-            // ->whereYear('reports.created_at', '!=', 2023)
             ->whereNotIn(DB::raw('YEAR(reports.created_at)'), [2022, 2023])
             ->whereIn('type_order_id', [1, 5])
             ->get();
@@ -820,20 +789,20 @@ class TestPathologyMacroController extends Controller
                 return $data->code . " " . $reponse;
             })
 
-            ->addColumn('state', function ($data) use ($employees) {
-                $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
-                $select = "
-                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(" . $data->test_order . ",\"" . $escapedCode . "\")'>";
+            // ->addColumn('state', function ($data) use ($employees) {
+            //     $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
+            //     $select = "
+            //         <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(" . $data->test_order . ",\"" . $escapedCode . "\")'>";
 
-                foreach ($employees as $employee) {
-                    $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
-                }
+            //     foreach ($employees as $employee) {
+            //         $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
+            //     }
 
-                $select .= "
-                    </select>";
+            //     $select .= "
+            //         </select>";
 
-                return $select;
-            })
+            //     return $select;
+            // })
 
             ->filter(function ($query) use ($request) {
                 if ($request->get('typeOrderId')) {
@@ -938,20 +907,20 @@ class TestPathologyMacroController extends Controller
             })
 
 
-            ->addColumn('state', function ($data) use ($employees) {
-                $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
-                $select = "
-                    <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(" . $data->test_order . ",\"" . $escapedCode . "\")'>";
+            // ->addColumn('state', function ($data) use ($employees) {
+            //     $escapedCode = htmlspecialchars($data->code, ENT_QUOTES, 'UTF-8');
+            //     $select = "
+            //         <select id='laborantin{$data->test_order}' class='form-select select2' required data-toggle='select2' onchange='addMacro(" . $data->test_order . ",\"" . $escapedCode . "\")'>";
 
-                foreach ($employees as $employee) {
-                    $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
-                }
+            //     foreach ($employees as $employee) {
+            //         $select .= "<option value='{$employee->id}'>{$employee->fullname()}</option>";
+            //     }
 
-                $select .= "
-                    </select>";
+            //     $select .= "
+            //         </select>";
 
-                return $select;
-            })
+            //     return $select;
+            // })
             ->filter(function ($query) use ($request) {
                 if ($request->get('typeOrderId')) {
                     $query->where('type_order_id', $request->get('typeOrderId'));
@@ -1512,17 +1481,52 @@ class TestPathologyMacroController extends Controller
 
     public function create()
     {
+        // $orders = $this->testOrder->whereHas('type', function ($query) {
+        //     $query->where('slug', 'cytologie')
+        //         ->orwhere('slug', 'histologie')
+        //         ->orwhere('slug', 'biopsie')
+        //         ->orwhere('slug', 'pièce-opératoire')
+        //         ->where('status', 1) // Statut différent de 0
+        //         ->whereNull('deleted_at'); // deleted_at doit être NULL;
+        // })->get();
+        $employees = $this->employees->latest()->get();
+        return view('macro.create', array_merge(compact('employees')));
+    }
+
+    public function searchMacro(Request $request)
+    {
+        $search = $request->get('search');
+        $limit = $request->get('limit', 20);
         $orders = $this->testOrder->whereHas('type', function ($query) {
-            $query->where('slug', 'cytologie')
+            $query
+                // ->where('slug', 'immuno-interne')
+                // ->orwhere('slug', 'immuno-exterme')
+                ->where('slug', 'cytologie')
                 ->orwhere('slug', 'histologie')
                 ->orwhere('slug', 'biopsie')
                 ->orwhere('slug', 'pièce-opératoire')
                 ->where('status', 1) // Statut différent de 0
                 ->whereNull('deleted_at'); // deleted_at doit être NULL;
-        })->get();
-        $employees = $this->employees->all();
-        return view('macro.create', array_merge(compact('orders', 'employees')));
+        })
+            // ->whereHas('testOrderMacro', function($query){
+            // })
+            ->when($search, function ($query, $search) {
+                $query->where('code', 'LIKE', "%{$search}%");
+            })
+            ->orderBy('code')
+            ->paginate($limit);
+
+        // Filtrer côté serveur si isMacro() nécessite une logique complexe
+        $filteredOrders = $orders->getCollection()->filter(function ($order) {
+            return !isMacro($order->id);
+        })->values();
+
+        return response()->json([
+            'data' => $orders->items(),
+            'has_more' => $orders->hasMorePages()
+        ]);
     }
+
 
     public function create_immuno()
     {

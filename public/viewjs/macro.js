@@ -1,529 +1,498 @@
 // SUPPRESSION
 function deleteModal(id) {
-
     Swal.fire({
         title: "Voulez-vous continuez?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Oui ",
         cancelButtonText: "Non !",
-    }).then(function(result) {
+    }).then(function (result) {
         if (result.value) {
             window.location.href = baseUrl + "/macro/delete/" + id;
-            Swal.fire(
-                "Suppression !",
-                "En cours de traitement ...",
-                "success"
-            )
+            Swal.fire("Suppression !", "En cours de traitement ...", "success");
         }
     });
 }
 
 /* DATATABLE */
-$(document).ready(function() {
-
-    var table = $('#datatable1').DataTable({
-
-        "columnDefs": [{
-            "targets": [0],
-            "searchable": false
-        }],
-        "bFilter": false,
-        "language": {
-            "lengthMenu": "Afficher _MENU_ enregistrements par page",
-            "zeroRecords": "Aucun enregistrement disponible",
-            "info": "Afficher page _PAGE_ sur _PAGES_",
-            "infoEmpty": "Aucun enregistrement disponible",
-            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-            "sSearch": "Rechercher:",
-            "paginate": {
-                "previous": "Précédent",
-                "next": "Suivant"
-            }
+$(document).ready(function () {
+    var table = $("#datatable1").DataTable({
+        columnDefs: [
+            {
+                targets: [0],
+                searchable: false,
+            },
+        ],
+        bFilter: false,
+        language: {
+            lengthMenu: "Afficher _MENU_ enregistrements par page",
+            zeroRecords: "Aucun enregistrement disponible",
+            info: "Afficher page _PAGE_ sur _PAGES_",
+            infoEmpty: "Aucun enregistrement disponible",
+            infoFiltered: "(filtré à partir de _MAX_ enregistrements au total)",
+            sSearch: "Rechercher:",
+            paginate: {
+                previous: "Précédent",
+                next: "Suivant",
+            },
         },
         processing: true,
         serverSide: true,
         ajax: {
             url: ROUTETESTORDERDATATABLE,
-            data: function(d) {
-                d.id_test_pathology_order = $('#id_test_pathology_order').val()
-                d.id_employee = $('#id_employee').val()
-                d.date = $('#date').val()
-                d.contenu = $('#contenu').val()
-            }
+            data: function (d) {
+                d.id_test_pathology_order = $("#id_test_pathology_order").val();
+                d.id_employee = $("#id_employee").val();
+                d.date = $("#date").val();
+                d.contenu = $("#contenu").val();
+            },
         },
         columns: [
-
             {
                 orderable: false,
-                data: 'created',
-                name: 'created',
+                data: "created",
+                name: "created",
                 targets: 0,
-                render: function(e, l, a, o) {
+                render: function (e, l, a, o) {
                     return (
                         "display" === l &&
-                        (e =
-                            '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>'),
+                            (e =
+                                '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>'),
                         e
                     );
                 },
                 checkboxes: {
                     selectRow: true,
-                    selectAllRender: '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>',
+                    selectAllRender:
+                        '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>',
                 },
             },
             {
-                data: 'code',
-                name: 'code'
+                data: "date_macro",
+                name: "date_macro",
             },
             {
-                data: 'add_by',
-                name: 'add_by',
+                data: "code",
+                name: "code",
             },
             {
-                data: 'date_macro',
-                name: 'date_macro',
+                data: "add_by",
+                name: "add_by",
             },
+
+            // {
+            //     data: 'date_montage',
+            //     name: 'date_montage',
+            // },
+            // {
+            //     data: 'state',
+            //     name: 'state',
+            // },
             {
-                data: 'date_montage',
-                name: 'date_montage',
-            },
-            {
-                data: 'state',
-                name: 'state',
-            },
-            {
-                data: 'action',
-                name: 'action',
+                data: "action",
+                name: "action",
             },
         ],
         select: {
             style: "multi",
             selector: "td:first-child",
         },
-        order: [
-            [0, 'asc']
-        ],
-
+        order: [[0, "asc"]],
     });
 
-
     // Recherche selon les types d'examen
-    $("#id_test_pathology_order").on("change", function() {
+    $("#id_test_pathology_order").on("change", function () {
         // alert($('#id_test_pathology_order').val())
         table.draw();
     });
 
     // Rechercher par ecrire de texte
-    $("#contenu").on("input", function() {
+    $("#contenu").on("input", function () {
         // alert($('#contenu').val())
         table.draw();
     });
 
     // Recherche selon les cas
-    $("#id_employee").on("change", function() {
+    $("#id_employee").on("change", function () {
         // alert(this.value)
         table.draw();
     });
 
-    $('#date').on('input', function() {
+    $("#date").on("input", function () {
         // alert($('#date').val());
         table.draw();
     });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    var table1 = $('#datatable2').DataTable({
-
-        "columnDefs": [{
-            "targets": [0],
-            "searchable": false
-        }],
-        "bFilter": false,
-        "language": {
-            "lengthMenu": "Afficher _MENU_ enregistrements par page",
-            "zeroRecords": "Aucun enregistrement disponible",
-            "info": "Afficher page _PAGE_ sur _PAGES_",
-            "infoEmpty": "Aucun enregistrement disponible",
-            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-            "sSearch": "Rechercher:",
-            "paginate": {
-                "previous": "Précédent",
-                "next": "Suivant"
-            }
+    var table1 = $("#datatable2").DataTable({
+        columnDefs: [
+            {
+                targets: [0],
+                searchable: false,
+            },
+        ],
+        bFilter: false,
+        language: {
+            lengthMenu: "Afficher _MENU_ enregistrements par page",
+            zeroRecords: "Aucun enregistrement disponible",
+            info: "Afficher page _PAGE_ sur _PAGES_",
+            infoEmpty: "Aucun enregistrement disponible",
+            infoFiltered: "(filtré à partir de _MAX_ enregistrements au total)",
+            sSearch: "Rechercher:",
+            paginate: {
+                previous: "Précédent",
+                next: "Suivant",
+            },
         },
         processing: true,
         serverSide: true,
         ajax: {
             url: ROUTETESTORDERDATATABLE2,
-            data: function(d) {
+            data: function (d) {
                 // d.id_test_pathology_order = $('#id_test_pathology_order').val()
                 // d.id_employee = $('#id_employee').val()
                 // d.date = $('#date').val()
-            }
+            },
         },
         columns: [
             {
-                data: 'created',
-                name: 'created'
+                data: "created",
+                name: "created",
             },
             {
-                data: 'dateLim',
-                name: 'dateLim',
+                data: "dateLim",
+                name: "dateLim",
             },
             {
-                data: 'date',
-                name: 'date',
+                data: "date",
+                name: "date",
             },
             {
-                data: 'code',
-                name: 'code'
+                data: "code",
+                name: "code",
             },
             {
-                data: 'state',
-                name: 'state',
+                data: "state",
+                name: "state",
             },
         ],
         order: [],
-
     });
-    
-    var table3 = $('#datatable3').DataTable({
 
-        "columnDefs": [{
-            "targets": [0],
-            "searchable": false
-        }],
-        "bFilter": false,
-        "language": {
-            "lengthMenu": "Afficher _MENU_ enregistrements par page",
-            "zeroRecords": "Aucun enregistrement disponible",
-            "info": "Afficher page _PAGE_ sur _PAGES_",
-            "infoEmpty": "Aucun enregistrement disponible",
-            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-            "sSearch": "Rechercher:",
-            "paginate": {
-                "previous": "Précédent",
-                "next": "Suivant"
-            }
+    var table3 = $("#datatable3").DataTable({
+        columnDefs: [
+            {
+                targets: [0],
+                searchable: false,
+            },
+        ],
+        bFilter: false,
+        language: {
+            lengthMenu: "Afficher _MENU_ enregistrements par page",
+            zeroRecords: "Aucun enregistrement disponible",
+            info: "Afficher page _PAGE_ sur _PAGES_",
+            infoEmpty: "Aucun enregistrement disponible",
+            infoFiltered: "(filtré à partir de _MAX_ enregistrements au total)",
+            sSearch: "Rechercher:",
+            paginate: {
+                previous: "Précédent",
+                next: "Suivant",
+            },
         },
         processing: true,
         serverSide: true,
         ajax: {
             url: ROUTETESTORDERDATATABLEIMMUNO,
-            data: function(d) {
-                d.id_test_pathology_order = $('#id_test_pathology_order').val()
-                d.id_employee = $('#id_employee').val()
-                d.date = $('#date').val()
-
-            }
+            data: function (d) {
+                d.id_test_pathology_order = $("#id_test_pathology_order").val();
+                d.id_employee = $("#id_employee").val();
+                d.date = $("#date").val();
+            },
         },
         columns: [
-
             {
                 orderable: false,
-                data: 'created',
-                name: 'created',
+                data: "created",
+                name: "created",
                 targets: 0,
-                render: function(e, l, a, o) {
+                render: function (e, l, a, o) {
                     return (
                         "display" === l &&
-                        (e =
-                            '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>'),
+                            (e =
+                                '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>'),
                         e
                     );
                 },
                 checkboxes: {
                     selectRow: true,
-                    selectAllRender: '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>',
+                    selectAllRender:
+                        '<div class="form-check"><input type="checkbox" class="form-check-input dt-checkboxes"><label class="form-check-label">&nbsp;</label></div>',
                 },
             },
             {
-                data: 'code',
-                name: 'code'
+                data: "code",
+                name: "code",
             },
             {
-                data: 'add_by',
-                name: 'add_by',
+                data: "add_by",
+                name: "add_by",
             },
             {
-                data: 'date_macro',
-                name: 'date_macro',
+                data: "date_macro",
+                name: "date_macro",
             },
             {
-                data: 'date_montage',
-                name: 'date_montage',
+                data: "date_montage",
+                name: "date_montage",
             },
             {
-                data: 'state',
-                name: 'state',
+                data: "state",
+                name: "state",
             },
             {
-                data: 'action',
-                name: 'action',
+                data: "action",
+                name: "action",
             },
         ],
         select: {
             style: "multi",
             selector: "td:first-child",
         },
-        order: [
-            [0, 'asc']
-        ],
-
+        order: [[0, "asc"]],
     });
-    var table4 = $('#datatable4').DataTable({
-
-        "columnDefs": [{
-            "targets": [0],
-            "searchable": false
-        }],
-        "bFilter": false,
-        "language": {
-            "lengthMenu": "Afficher _MENU_ enregistrements par page",
-            "zeroRecords": "Aucun enregistrement disponible",
-            "info": "Afficher page _PAGE_ sur _PAGES_",
-            "infoEmpty": "Aucun enregistrement disponible",
-            "infoFiltered": "(filtré à partir de _MAX_ enregistrements au total)",
-            "sSearch": "Rechercher:",
-            "paginate": {
-                "previous": "Précédent",
-                "next": "Suivant"
-            }
+    var table4 = $("#datatable4").DataTable({
+        columnDefs: [
+            {
+                targets: [0],
+                searchable: false,
+            },
+        ],
+        bFilter: false,
+        language: {
+            lengthMenu: "Afficher _MENU_ enregistrements par page",
+            zeroRecords: "Aucun enregistrement disponible",
+            info: "Afficher page _PAGE_ sur _PAGES_",
+            infoEmpty: "Aucun enregistrement disponible",
+            infoFiltered: "(filtré à partir de _MAX_ enregistrements au total)",
+            sSearch: "Rechercher:",
+            paginate: {
+                previous: "Précédent",
+                next: "Suivant",
+            },
         },
         processing: true,
         serverSide: true,
         ajax: {
             url: ROUTETESTORDERDATATABLEIMMUNO2,
-            data: function(d) {
+            data: function (d) {
                 // d.id_test_pathology_order = $('#id_test_pathology_order').val()
                 // d.id_employee = $('#id_employee').val()
                 // d.date = $('#date').val()
-
-            }
+            },
         },
         columns: [
-
             {
-                data: 'created',
-                name: 'created'
+                data: "created",
+                name: "created",
             },
             {
-                data: 'dateLim',
-                name: 'dateLim',
+                data: "dateLim",
+                name: "dateLim",
             },
             {
-                data: 'date',
-                name: 'date',
+                data: "date",
+                name: "date",
             },
             {
-                data: 'code',
-                name: 'code'
+                data: "code",
+                name: "code",
             },
             {
-                data: 'state',
-                name: 'state',
+                data: "state",
+                name: "state",
             },
         ],
         order: [],
-
     });
 
-    table.on('select', function(e, dt, type, indexes) {
-        if (type === 'row') {
+    table.on("select", function (e, dt, type, indexes) {
+        if (type === "row") {
             // Vérifiez si des lignes sont sélectionnées
-            var selectedRows = table.rows('.selected').data().length > 0;
+            var selectedRows = table.rows(".selected").data().length > 0;
 
             // Affichez ou masquez le bouton en fonction de la présence de lignes sélectionnées
             if (selectedRows) {
-                $('#changeState').show();
+                $("#changeState").show();
             } else {
-                $('#changeState').hide();
+                $("#changeState").hide();
             }
-
         }
     });
-    table.on('deselect', function() {
+    table.on("deselect", function () {
         // Vérifiez si des lignes sont sélectionnées
-        var selectedRows = table.rows('.selected').data().length > 0;
+        var selectedRows = table.rows(".selected").data().length > 0;
 
         // Affichez ou masquez le bouton en fonction de la présence de lignes sélectionnées
         if (selectedRows) {
-            $('#changeState').show();
+            $("#changeState").show();
         } else {
-            $('#changeState').hide();
+            $("#changeState").hide();
         }
     });
 
-
-
-
     // Écoutez l'événement de clic sur le bouton pour effectuer l'action souhaitée
-    $("#changeState").on("click", function() {
-        var selectedData = table.rows('.selected').data().toArray();
+    $("#changeState").on("click", function () {
+        var selectedData = table.rows(".selected").data().toArray();
         Swal.fire({
             title: "Confirmation : Changer l'étape des demandes sélectionnées ?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Confirmer ",
             cancelButtonText: "Annuler !",
-        }).then(function(result) {
+        }).then(function (result) {
             if (result.value) {
-
-                selectedData.forEach(function(rowData) {
+                selectedData.forEach(function (rowData) {
                     console.log(rowData);
                     // Créer un élément div temporaire
-                    var tempDiv = document.createElement('div');
+                    var tempDiv = document.createElement("div");
 
                     // Injecter la chaîne HTML dans l'élément div
                     tempDiv.innerHTML = rowData.state;
                     // Accéder à l'élément select
-                    var selectElement = tempDiv.querySelector('select');
-                    var selectId = $(selectElement).attr('id');
-                    var selectedValue = $('#' + selectId).val();
+                    var selectElement = tempDiv.querySelector("select");
+                    var selectId = $(selectElement).attr("id");
+                    var selectedValue = $("#" + selectId).val();
 
                     $.ajax({
                         url: baseUrl + "/macro/update",
                         type: "POST",
                         data: {
-                            "_token": TOKENSTOREDOCTOR,
+                            _token: TOKENSTOREDOCTOR,
                             id: rowData.id,
                             state: selectedValue,
                         },
-                        success: function(response) {
-                            $('#datatable1').DataTable().ajax.reload();
+                        success: function (response) {
+                            $("#datatable1").DataTable().ajax.reload();
                         },
-                        error: function(response) {
-                            console.log(response)
+                        error: function (response) {
+                            console.log(response);
                         },
-                    })
+                    });
                 });
-
-
-
             }
         });
 
         // Décochez toutes les lignes après l'action
         table.rows().deselect();
     });
-
 });
 
 function changeState(id, code) {
     // Sélectionnez l'élément par son ID
-    var element = $('#id_test_pathology_order' + id);
+    var element = $("#id_test_pathology_order" + id);
     console.log(code);
 
     // Récupérez la valeur sélectionnée
     var selectedValue = element.val();
     var selected = "";
-    if (selectedValue == 'circulation') {
-        selected = "CIRCULATION"
+    if (selectedValue == "circulation") {
+        selected = "CIRCULATION";
     }
-    if (selectedValue == 'embedding') {
-        selected = "ENROBAGE"
+    if (selectedValue == "embedding") {
+        selected = "ENROBAGE";
     }
-    if (selectedValue == 'microtomy_spreading') {
-        selected = "MICROTOMIE ET ETALEMENT"
+    if (selectedValue == "microtomy_spreading") {
+        selected = "MICROTOMIE ET ETALEMENT";
     }
-    if (selectedValue == 'staining') {
-        selected = "COLORATION"
+    if (selectedValue == "staining") {
+        selected = "COLORATION";
     }
-    if (selectedValue == 'mounting') {
-        selected = "MONTAGE"
+    if (selectedValue == "mounting") {
+        selected = "MONTAGE";
     }
-    var selectedRows = $('#datatable1').DataTable().rows('.selected').data().length > 0;
+    var selectedRows =
+        $("#datatable1").DataTable().rows(".selected").data().length > 0;
     if (!selectedRows) {
         Swal.fire({
-            title: "Confirmation : Étape  [" + selected + "] pour la demande ['" + code + "'] ?",
+            title:
+                "Confirmation : Étape  [" +
+                selected +
+                "] pour la demande ['" +
+                code +
+                "'] ?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Confirmer ",
             cancelButtonText: "Annuler !",
-        }).then(function(result) {
+        }).then(function (result) {
             if (result.value) {
                 $.ajax({
                     url: baseUrl + "/macro/update",
                     type: "POST",
                     data: {
-                        "_token": TOKENSTOREDOCTOR,
+                        _token: TOKENSTOREDOCTOR,
                         id: id,
                         state: selectedValue,
                     },
-                    success: function(response) {
-                        $('#datatable1').DataTable().ajax.reload();
+                    success: function (response) {
+                        $("#datatable1").DataTable().ajax.reload();
                     },
-                    error: function(response) {
-                        console.log(response)
+                    error: function (response) {
+                        console.log(response);
                     },
-                })
+                });
             }
         });
     }
-
-
-
 }
 
 function addMacro(id, code) {
-    var element = $('#laborantin' + id);
+    var element = $("#laborantin" + id);
     var selectedValue = element.val();
 
-    var selectedRows = $('#products-datatable').DataTable().rows('.selected').data().length > 0;
+    var selectedRows =
+        $("#products-datatable").DataTable().rows(".selected").data().length >
+        0;
     if (!selectedRows) {
-
         $.ajax({
             url: baseUrl + "/laborantin/" + selectedValue,
             type: "GET",
 
-            success: function(response) {
+            success: function (response) {
                 Swal.fire({
-                    title: "Confirmation : Étape [MACROSCOPIE] effectuée pour la demande [" + code + "] par [" + response + "] ?",
+                    title:
+                        "Confirmation : Étape [MACROSCOPIE] effectuée pour la demande [" +
+                        code +
+                        "] par [" +
+                        response +
+                        "] ?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonText: "Confirmer ",
                     cancelButtonText: "Annuler !",
-                }).then(function(result) {
+                }).then(function (result) {
                     if (result.value) {
                         $.ajax({
                             url: baseUrl + "/macro/one-create",
                             type: "POST",
                             data: {
-                                "_token": TOKENSTOREDOCTOR,
+                                _token: TOKENSTOREDOCTOR,
                                 id: id,
                                 id_employee: selectedValue,
                             },
-                            success: function(response) {
-                                $('#datatable1').DataTable().ajax.reload();
-                                $('#datatable2').DataTable().ajax.reload();
+                            success: function (response) {
+                                $("#datatable1").DataTable().ajax.reload();
+                                $("#datatable2").DataTable().ajax.reload();
                             },
-                            error: function(response) {
-                                console.log(response)
+                            error: function (response) {
+                                console.log(response);
                             },
-                        })
+                        });
                     }
                 });
             },
-            error: function(response) {
-                console.log(response)
+            error: function (response) {
+                console.log(response);
             },
-        })
+        });
     }
-
 }

@@ -58,11 +58,11 @@ $(document).ready(function () {
                 data: "code",
                 name: "code",
             },
-            {
-                orderable: true,
-                data: "state",
-                name: "state",
-            },
+            // {
+            //     orderable: true,
+            //     data: "state",
+            //     name: "state",
+            // },
         ],
 
         select: {
