@@ -18,6 +18,7 @@ use App\Models\test_pathology_macro;
 use App\Models\TestOrder;
 use App\Models\TypeOrder;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -149,15 +150,15 @@ class TestPathologyMacroController extends Controller
         $limit = $request->get('limit', 20);
 
         $orders = $this->testOrder->whereHas('type', function ($query) {
-                $query->where('status', 1)
-                    ->whereNull('deleted_at')
-                    ->where(function ($q) {
-                        $q->where('slug', 'like', '%cytologie%')
-                            ->orWhere('slug', 'like', '%histologie%')
-                            ->orWhere('slug', 'like', '%biopsie%')
-                            ->orWhere('slug', 'like', '%pièce-opératoire%');
-                    });
-            })
+            $query->where('status', 1)
+                ->whereNull('deleted_at')
+                ->where(function ($q) {
+                    $q->where('slug', 'like', '%cytologie%')
+                        ->orWhere('slug', 'like', '%histologie%')
+                        ->orWhere('slug', 'like', '%biopsie%')
+                        ->orWhere('slug', 'like', '%pièce-opératoire%');
+                });
+        })
             ->when($search, function ($query, $search) {
                 $query->where('code', 'LIKE', "%{$search}%");
             })
@@ -1527,7 +1528,6 @@ class TestPathologyMacroController extends Controller
         ]);
     }
 
-
     public function create_immuno()
     {
         $orders = $this->testOrder->whereHas('type', function ($query) {
@@ -1603,10 +1603,36 @@ class TestPathologyMacroController extends Controller
         return response()->json($macro);
     }
 
+    // public function destroy($id)
+    // {
+    //     $macro = $this->macro->find($id);
+    //     $macro->delete();
+    //     return redirect()->route('macro.index')->with('sucess', "Enregistrement effectué avec succès");
+    // }
+
     public function destroy($id)
     {
-        $macro = $this->macro->find($id);
-        $macro->delete();
-        return redirect()->route('macro.index')->with('sucess', "Enregistrement effectué avec succès");
+        try {
+            $macro = $this->macro->find($id);
+
+            if (!$macro) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Élément non trouvé'
+                ], 404);
+            }
+
+            $macro->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Suppression effectuée avec succès'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la suppression: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

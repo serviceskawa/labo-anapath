@@ -267,6 +267,7 @@ Route::middleware(['auth', 'branch.required'])->group(function () {
     Route::post('/macro/one-create', [TestPathologyMacroController::class, 'store2'])->name('macro.store2');
     Route::post('/macro/update', [TestPathologyMacroController::class, 'update'])->name('macro.update');
     Route::get('/macro/delete/{id}', [TestPathologyMacroController::class, 'destroy'])->name('macro.delete');
+    // Route::delete('/macro/delete/{id}', [TestPathologyMacroController::class, 'destroy']);
 
     //Rapporte d'erreur
 
