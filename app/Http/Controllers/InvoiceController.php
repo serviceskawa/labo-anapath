@@ -265,7 +265,8 @@ class InvoiceController extends Controller
     {
         $headerLogo = $this->settingApp->where('key', 'entete')->first();
         // Convertir les images en base64 pour DomPDF (méthode recommandée)
-        $headerLogoPath = $headerLogo->value ? public_path('adminassets/images/' . $headerLogo->value) : '';
+        // $headerLogoPath = $headerLogo->value ? public_path('adminassets/images/' . $headerLogo->value) : '';
+        $headerLogoPath = $headerLogo ? $headerLogo->value : '';
         $headerLogo = null;
         $signature = null;
 

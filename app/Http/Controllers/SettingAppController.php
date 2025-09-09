@@ -171,32 +171,85 @@ class SettingAppController extends Controller
                 $footer = $this->setting->where('key', 'footer')->first();
                 $footer ? $footer->update(['value' => $footerValue]) : '';
 
+                // if ($request->file('logo')) {
+                //     $logo = time() . '_settings_app_logo.' . $request->file('logo')->extension();
+                //     $path_logo = $request->file('logo')->storeAs('settings/app', $logo, 'public');
+                // }
+
                 if ($request->file('logo')) {
-                    $logo = time() . '_settings_app_logo.' . $request->file('logo')->extension();
-                    $path_logo = $request->file('logo')->storeAs('settings/app', $logo, 'public');
+                    $imageFile = $request->file('logo');
+
+                    // Générer le nom du fichier
+                    $namefichier = time() . "_settings_app_logo." . $imageFile->getClientOriginalExtension();
+
+                    // Déplacer le fichier
+                    $imageFile->move(public_path('adminassets/images'), $namefichier);
+
+                    // Stocker seulement le chemin relatif
+                    $chemin_relatif = 'adminassets/images/' . $namefichier;
+
+                    // Mettre à jour en base
+                    $logo_setting = $this->setting->where('key', 'logo')->first();
+                    $logo_setting->update(['value' => $chemin_relatif]);
                 }
+
+
+
+                // if ($request->file('favicon')) {
+                //     $favicon = time() . '_settings_app_favicon.' . $request->file('favicon')->extension();
+                //     $path_favicon = $request->file('favicon')->storeAs('settings/app', $favicon, 'public');
+                // }
 
                 if ($request->file('favicon')) {
-                    $favicon = time() . '_settings_app_favicon.' . $request->file('favicon')->extension();
-                    $path_favicon = $request->file('favicon')->storeAs('settings/app', $favicon, 'public');
+                    $imageFile = $request->file('favicon');
+
+                    // Générer le nom du fichier
+                    $namefichier = time() . "_settings_app_favicon." . $imageFile->getClientOriginalExtension();
+
+                    // Déplacer le fichier
+                    $imageFile->move(public_path('adminassets/images'), $namefichier);
+
+                    // Stocker seulement le chemin relatif
+                    $chemin_relatif = 'adminassets/images/' . $namefichier;
+
+                    // Mettre à jour en base
+                    $favicon_setting = $this->setting->where('key', 'favicon')->first();
+                    $favicon_setting->update(['value' => $chemin_relatif]);
                 }
+
+                // if ($request->file('logo_white')) {
+                //     $img3 = time() . '_settings_app_blanc.' . $request->file('logo_white')->extension();
+                //     $path_img3 = $request->file('logo_white')->storeAs('settings/app', $img3, 'public');
+                // }
 
                 if ($request->file('logo_white')) {
-                    $img3 = time() . '_settings_app_blanc.' . $request->file('logo_white')->extension();
-                    $path_img3 = $request->file('logo_white')->storeAs('settings/app', $img3, 'public');
+                    $imageFile = $request->file('logo_white');
+
+                    // Générer le nom du fichier
+                    $namefichier = time() . "_settings_app_blanc." . $imageFile->getClientOriginalExtension();
+
+                    // Déplacer le fichier
+                    $imageFile->move(public_path('adminassets/images'), $namefichier);
+
+                    // Stocker seulement le chemin relatif
+                    $chemin_relatif = 'adminassets/images/' . $namefichier;
+
+                    // Mettre à jour en base
+                    $logo_white_setting = $this->setting->where('key', 'logo_white')->first();
+                    $logo_white_setting->update(['value' => $chemin_relatif]);
                 }
 
-                $path_logo = '';
-                $logo = $this->setting->where('key', 'logo')->first();
-                $logo ? $logo->update(['value' => $path_logo]) : '';
+                // $path_logo = '';
+                // $logo = $this->setting->where('key', 'logo')->first();
+                // $logo ? $logo->update(['value' => $path_logo]) : '';
 
-                $path_favicon = '';
-                $favicon = $this->setting->where('key', 'favicon')->first();
-                $favicon ? $favicon->update(['value' => $path_favicon]) : '';
+                // $path_favicon = '';
+                // $favicon = $this->setting->where('key', 'favicon')->first();
+                // $favicon ? $favicon->update(['value' => $path_favicon]) : '';
 
-                $path_img3 = '';
-                $logo_white = $this->setting->where('key', 'logo_white')->first();
-                $logo_white ? $logo_white->update(['value' => $path_img3]) : '';
+                // $path_img3 = '';
+                // $logo_white = $this->setting->where('key', 'logo_white')->first();
+                // $logo_white ? $logo_white->update(['value' => $path_img3]) : '';
                 break;
             case 2:
 
@@ -268,14 +321,20 @@ class SettingAppController extends Controller
 
             case 4:
                 if ($request->file('entete')) {
-                    // debut
                     $imageFile = $request->file('entete');
-                    // Obtenez le nom d'origine du fichier
-                    $namefichier = time() . "entete_pdf_cr." . $imageFile->getClientOriginalExtension();
 
-                    // Enregistrez le fichier image dans le dossier public
-                    $re = $request->file('entete')->move(public_path('adminassets/images'), $namefichier);
-                    // fin
+                    // Générer le nom du fichier
+                    $namefichier = time() . "_entete_pdf_cr." . $imageFile->getClientOriginalExtension();
+
+                    // Déplacer le fichier
+                    $imageFile->move(public_path('adminassets/images'), $namefichier);
+
+                    // Stocker seulement le chemin relatif
+                    $chemin_relatif = 'adminassets/images/' . $namefichier;
+
+                    // Mettre à jour en base
+                    $entete_setting = $this->setting->where('key', 'entete')->first();
+                    $entete_setting->update(['value' => $chemin_relatif]);
                 }
 
                 $report_footer = $this->setting->where('key', 'report_footer')->first();
@@ -283,9 +342,6 @@ class SettingAppController extends Controller
 
                 $prefixe_code_demande_examen = $this->setting->where('key', 'prefixe_code_demande_examen')->first();
                 $prefixe_code_demande_examen ?  $prefixe_code_demande_examen->update(['value' => $prefixeCodeDemandeExamenValue]) : '';
-
-                // $entete = $this->setting->where('key', 'entete')->first();
-                // $entete ? $entete->update(['value' => $namefichier]) : '';
 
                 $show_signator_invoice = $this->setting->where('key', 'show_signator_invoice')->first();
                 $show_signator_invoice ?  $show_signator_invoice->update(['value' => $show_signator_invoice_value]) : '';

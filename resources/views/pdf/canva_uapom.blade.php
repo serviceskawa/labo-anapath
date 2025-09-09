@@ -20,7 +20,7 @@ date_default_timezone_set('Europe/Paris');
     <div backbottom="10mm" style="margin: -15px;">
         <div style="display:inline-block;">
             <span style="display: inline-block;">
-                <img src="{{ public_path('adminassets/images/entete_pdf_cr.png') }}" width="100%;" alt=""></span>
+                <img src="{{ $data['entete'] }}" width="100%;" alt=""></span>
         </div>
 
         <div class="row" style="margin-top: -2px;">

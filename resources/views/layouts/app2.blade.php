@@ -47,20 +47,20 @@
     <div class="wrapper">
         <!-- ========== Left Sidebar Start ========== -->
         <div class="leftside-menu">
-
+            @php
+                $logo = App\Models\SettingApp::where('key','logo')->first();
+            @endphp
             <!-- LOGO -->
             <a href="{{ route('home') }}" class="logo logo-light text-center">
                 <span class="logo-lg">
-                    <img src="{{ $logo ? Storage::url($logo->value) : '' }}" alt="" width="200px">
+                    <img src="{{ asset($logo->value) }}" alt="" width="180px">
                 </span>
                 <span class="logo-sm">
-                    <img src="{{ $favicon ? Storage::url($favicon->value) : '' }}" alt="" width="50px">
+                    <img src="{{ $logo->value }}" alt="" width="50px">
                 </span>
             </a>
 
-
             <div class="h-100" id="leftside-menu-container" data-simplebar="">
-
                 <!--- Sidemenu -->
                 <ul class="side-nav">
                     <li class="side-nav-title side-nav-item">TABLEAU DE BORD</li>
@@ -174,9 +174,9 @@
                                     @endif
 
                                     {{-- @if (getOnlineUser()->can('view-test-order-assignments')) --}}
-                                        <li>
-                                            <a href="{{ route('search.index') }}">Rechercher</a>
-                                        </li>
+                                    <li>
+                                        <a href="{{ route('search.index') }}">Rechercher</a>
+                                    </li>
                                     {{-- @endif --}}
                                 </ul>
                             </div>
@@ -534,65 +534,65 @@
 
 
                     {{-- @if (getOnlineUser()->can('edit-users')) --}}
-                        <li class="side-nav-item">
-                            <a data-bs-toggle="collapse" href="#sidebarProjects2" aria-expanded="false"
-                                aria-controls="sidebarProjects2" class="side-nav-link">
-                                <i class="uil-user-check"></i>
-                                <span> Utilisateurs </span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <div class="collapse" id="sidebarProjects2">
-                                <ul class="side-nav-second-level">
-                                    {{-- @if (getOnlineUser()->can('view-permissions')) --}}
-                                        <li>
-                                            <a href="{{ route('user.permission-index') }}">Permissions</a>
-                                        </li>
-                                    {{-- @endif --}}
-                                    {{-- @if (getOnlineUser()->can('view-roles')) --}}
-                                        <li class="side-nav-item" style="margin-left: 38px">
-                                            <a href="{{ route('user.role-index') }}" class="side-nav-link">
-                                                <span> Rôles </span>
-                                            </a>
-                                            <div class="collapse">
-                                                <ul class="side-nav-second-level">
-                                                    @if (Route::current()->getName() == 'user.role-create')
-                                                        <li style="display:none">
-                                                            <a href="">show</a>
-                                                        </li>
-                                                    @endif
-                                                    @if (Route::current()->getName() == 'user.role-show')
-                                                        <li style="display:none">
-                                                            <a href="">show</a>
-                                                        </li>
-                                                    @endif
-                                                </ul>
-                                            </div>
-                                        </li>
-                                    {{-- @endif --}}
-                                    {{-- @if (getOnlineUser()->can('view-users')) --}}
-                                        <li class="side-nav-item" style="margin-left: 38px">
-                                            <a href="{{ route('user.index') }}" class="side-nav-link">
-                                                <span> Tous les utilisateurs </span>
-                                            </a>
-                                            <div class="collapse">
-                                                <ul class="side-nav-second-level">
-                                                    @if (Route::current()->getName() == 'user.edit')
-                                                        <li style="display:none">
-                                                            <a href="">show</a>
-                                                        </li>
-                                                    @endif
-                                                    @if (Route::current()->getName() == 'user.create')
-                                                        <li style="display:none">
-                                                            <a href="">show</a>
-                                                        </li>
-                                                    @endif
-                                                </ul>
-                                            </div>
-                                        </li>
-                                    {{-- @endif --}}
-                                </ul>
-                            </div>
-                        </li>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarProjects2" aria-expanded="false"
+                            aria-controls="sidebarProjects2" class="side-nav-link">
+                            <i class="uil-user-check"></i>
+                            <span> Utilisateurs </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarProjects2">
+                            <ul class="side-nav-second-level">
+                                {{-- @if (getOnlineUser()->can('view-permissions')) --}}
+                                <li>
+                                    <a href="{{ route('user.permission-index') }}">Permissions</a>
+                                </li>
+                                {{-- @endif --}}
+                                {{-- @if (getOnlineUser()->can('view-roles')) --}}
+                                <li class="side-nav-item" style="margin-left: 38px">
+                                    <a href="{{ route('user.role-index') }}" class="side-nav-link">
+                                        <span> Rôles </span>
+                                    </a>
+                                    <div class="collapse">
+                                        <ul class="side-nav-second-level">
+                                            @if (Route::current()->getName() == 'user.role-create')
+                                                <li style="display:none">
+                                                    <a href="">show</a>
+                                                </li>
+                                            @endif
+                                            @if (Route::current()->getName() == 'user.role-show')
+                                                <li style="display:none">
+                                                    <a href="">show</a>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                </li>
+                                {{-- @endif --}}
+                                {{-- @if (getOnlineUser()->can('view-users')) --}}
+                                <li class="side-nav-item" style="margin-left: 38px">
+                                    <a href="{{ route('user.index') }}" class="side-nav-link">
+                                        <span> Tous les utilisateurs </span>
+                                    </a>
+                                    <div class="collapse">
+                                        <ul class="side-nav-second-level">
+                                            @if (Route::current()->getName() == 'user.edit')
+                                                <li style="display:none">
+                                                    <a href="">show</a>
+                                                </li>
+                                            @endif
+                                            @if (Route::current()->getName() == 'user.create')
+                                                <li style="display:none">
+                                                    <a href="">show</a>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                </li>
+                                {{-- @endif --}}
+                            </ul>
+                        </div>
+                    </li>
                     {{-- @endif --}}
 
                     @if (getOnlineUser()->can('view-settings') || getOnlineUser()->can('view-setting-report-templates'))

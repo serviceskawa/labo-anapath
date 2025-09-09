@@ -525,7 +525,7 @@ class ReportController extends Controller
             'patient_genre' => $report->order->patient->genre,
             'status' => $report->status,
             'revew_by' => $report->reviewed_by_user_id != 0 ? $reviewed_by_user->lastname . ' ' . $reviewed_by_user->firstname : '',
-            'revew_by_signature' => $report->reviewed_by_user_id != 0 ? $report->user->signature : 'Admin_Admin.png',
+            'revew_by_signature' => $report->reviewed_by_user_id != 0 ? $report->user->signature : '',
             'report_review_title' => SettingApp::where('key', 'report_review_title')->first()->value,
             'entete' => SettingApp::where('key', 'entete')->first()->value,
             'footer' => SettingApp::where('key', 'report_footer')->first()->value,
@@ -536,14 +536,15 @@ class ReportController extends Controller
         ];
 
         try {
-            $impression_file_name = SettingApp::where('key', 'impression_file_name')->first();
+            // $impression_file_name = SettingApp::where('key', 'impression_file_name')->first();
             $log = new LogReport();
             $log->operation = 'Imprimer';
             $log->report_id = $id;
             $log->user_id = $user->id;
             $log->save();
 
-            $pdf = PDF::loadView('pdf.canva_' . $impression_file_name->value, compact('data'))
+            // $pdf = PDF::loadView('pdf.canva_' . $impression_file_name->value, compact('data'))
+            $pdf = PDF::loadView('pdf.canva_report', compact('data'))
                 ->setPaper('a4', 'portrait')
                 ->setWarnings(false);
 
