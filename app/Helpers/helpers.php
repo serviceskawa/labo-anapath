@@ -1382,6 +1382,11 @@ if (!function_exists('formatPhoneNumber')) {
             return null;
         }
 
+        if (preg_match('/[a-zA-Z]/', $phone)) {
+            // Le numéro contient des lettres - ce n'est pas un numéro valide
+            return null; 
+        }
+
         // Nettoyer le numéro (supprimer espaces, tirets, points, parenthèses)
         $phone = preg_replace('/[^0-9+]/', '', $phone);
 
