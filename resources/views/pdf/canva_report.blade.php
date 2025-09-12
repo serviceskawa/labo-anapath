@@ -108,7 +108,7 @@ date_default_timezone_set('Europe/Paris');
                 @if ($data['status'] == 1)
                     <tr>
                         <td style="text-align: left; width: 35%; vertical-align: bottom;">
-                            @if ($show_signator_invoice == 'OUI')
+                            @if ($show_signator_invoice == 'OUI' && $data['signature1'])
                                 <img width="85"
                                     src="{{ public_path('adminassets/images/' . $data['signature1']) }}"
                                     alt="">
