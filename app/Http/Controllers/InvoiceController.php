@@ -30,6 +30,7 @@ use App\Services\WhatsAppService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables as DataTablesDataTables;
 
 class InvoiceController extends Controller
@@ -701,6 +702,93 @@ class InvoiceController extends Controller
         }
     }
 
+
+
+    public function generateAndSavePDF($id)
+    {
+        $headerLogo = $this->settingApp->where('key', 'entete')->first();
+        $headerLogoPath = $headerLogo ? $headerLogo->value : '';
+        $headerLogo = null;
+        $signature = null;
+
+        // Vérifier si les fichiers existent avant de les encoder
+        if ($headerLogoPath) {
+            $headerLogo = $headerLogoPath;
+        }
+
+        //Récupération de la facture
+        $invoiceModel = $this->invoices->findorfail($id);
+        $refund = null;
+        if ($invoiceModel->status_invoice == 1) {
+            $refund = RefundRequest::where('invoice_id', $invoiceModel->reference)->first();
+        }
+        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
+
+        // Génération du code QRCode
+        $qrCode = Builder::create()
+            ->writer(new PngWriter())
+            ->data($invoiceModel->code_normalise ?? "Centre ADECHINA Anatomie Pathologique")
+            ->size(300)
+            ->margin(10)
+            ->build();
+        $qrCodeBase = base64_encode($qrCode->getString());
+
+        // Récupérer les données de la facture
+        // Données de la facture pour la vue - CORRECTEMENT NOMMÉE
+        $invoice = [
+            'status_invoice' => $invoiceModel->status_invoice,
+            'date' => $invoiceModel->created_at,
+            'code' => $invoiceModel?->status_invoice != 1 ? $invoiceModel?->code : $refund?->code,
+            'invoice_paid' => $invoiceModel->paid,
+            'type' => $invoiceModel?->contrat?->name ?? $invoiceModel?->order?->contrat?->name ?? '',
+            'reference_code' => $refund?->invoice ? $refund?->invoice?->code : '',
+            'mecef_code' => $invoiceModel->code_normalise ?? '',
+            'qr_code' => $qrCodeBase,
+            'client' => [
+                'name' => $invoiceModel->client_name,
+                'address' => $invoiceModel?->client_address,
+                'code' => $invoiceModel?->patient ? $invoiceModel?->patient?->code : '',
+                'contact' => $invoiceModel->telephone1 ? $invoiceModel?->telephone1 . '/' . $invoiceModel?->telephone2 : '',
+            ],
+            'exam_request' => $invoiceModel?->order ? remove_hyphen($invoiceModel?->order?->code) : '',
+            'refund' => $refund,
+            'items' => $this->formatInvoiceItems($invoiceModel, $refund),
+            'subtotal' => $invoiceModel?->subtotal,
+            'total_ttc' => $invoiceModel?->total,
+            'note' => 'Les résultats de vos analyses seront disponibles dans un délai de 3 semaines. Selon la complexité du cas, les résultats peuvent être disponibles plus tôt ou plus tard. Vous serez notifiés dès que les résultats seront prêts. Nous vous remercions de votre compréhension et de votre patience.',
+            'footer' => $this->settingApp::where('key', 'report_footer')->first()->value ?? $setting->footer,
+            'images' => [
+                'header_logo' => $headerLogo,
+                'signature' => $invoiceModel->signature ? public_path('adminassets/images/' . $invoiceModel->signature) : '',
+                'signature_name' => $invoiceModel->signature_name ? $invoiceModel->signature_name : '',
+            ]
+        ];
+
+        // Configuration PDF
+        $pdf = PDF::loadView('invoices.pdf', compact('invoice'));
+        $pdf->setPaper('A4', 'portrait');
+
+        // Créer le dossier s'il n'existe pas
+        if (!Storage::disk('public')->exists('invoices')) {
+            Storage::disk('public')->makeDirectory('invoices');
+        }
+
+        // Nom du fichier avec timestamp
+        $fileName = 'facture_' . str_replace(['/', ' ', '#'], ['_', '_', '_'], $invoiceModel->code) . '_' . time() . '.pdf';
+        $storagePath = 'invoices/' . $fileName;
+
+        // Sauvegarder le fichier
+        Storage::disk('public')->put($storagePath, $pdf->output());
+
+        // Mettre à jour la base de données (optionnel)
+        // $invoiceModel->update(['pdf_path' => $storagePath]);
+
+        // Générer les URLs de manière sûre
+        $fileUrl = asset('storage/' . $storagePath);
+
+        return $fileUrl;
+    }
+
     // Met à jour le statut paid pour le payement
     public function updateStatus(Request $request, $id)
     {
@@ -758,8 +846,10 @@ class InvoiceController extends Controller
                     // Remplacer les variables
                     $finalMessage = replaceMessageVariables($message_examen->value, $variables);
 
+                    $url_file = $this->generateAndSavePDF($invoice->id);
+
                     // Envoyer le message
-                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage);
+                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage, $url_file);
                 }
 
                 if ($invoice->test_order_id != null) {
@@ -825,8 +915,10 @@ class InvoiceController extends Controller
                     // Remplacer les variables
                     $finalMessage = replaceMessageVariables($message_examen->value, $variables);
 
+                    $url_file = $this->generateAndSavePDF($invoice->id);
+
                     // Envoyer le message
-                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage);
+                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage, $url_file);
                 }
 
                 return response()->json(['code' => $request->code]);

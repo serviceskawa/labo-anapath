@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Report;
@@ -28,14 +29,14 @@ class WhatsAppService
 
     private function getSessionName()
     {
-        $setting = \App\Models\SettingApp::where('key','session_name')->first();
+        $setting = \App\Models\SettingApp::where('key', 'session_name')->first();
         return $setting ? $setting->value : 'Default';
     }
 
     /**
      * Envoyer un message WhatsApp
      */
-    public function sendMessage($number, $message)
+    public function sendMessage($number, $message, $url_file = null)
     {
         try {
             $response = Http::withHeaders([
@@ -46,7 +47,9 @@ class WhatsAppService
                     [
                         'number' => $number,
                         'message' => $message,
-                        'session_name' => $this->getSessionName()
+                        'session_name' => $this->getSessionName(),
+                        'media' => "document",
+                        'url' => $url_file,
                     ]
                 ]
             ]);
@@ -71,7 +74,6 @@ class WhatsAppService
                     'error' => 'Erreur API: ' . $response->status()
                 ];
             }
-
         } catch (\Exception $e) {
             Log::error('WhatsApp service exception', [
                 'error' => $e->getMessage(),
@@ -118,7 +120,6 @@ class WhatsAppService
                     'error' => 'Erreur API: ' . $response->status()
                 ];
             }
-
         } catch (\Exception $e) {
             return [
                 'success' => false,
@@ -127,4 +128,3 @@ class WhatsAppService
         }
     }
 }
-
