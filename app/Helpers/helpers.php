@@ -1345,7 +1345,8 @@ if (!function_exists('getPaidByPatient')) {
 }
 
 if (!function_exists('getCurrentBranch')) {
-    function getCurrentBranch() {
+    function getCurrentBranch()
+    {
         return [
             'id' => session('selected_branch_id'),
             'name' => session('selected_branch_name')
@@ -1354,7 +1355,8 @@ if (!function_exists('getCurrentBranch')) {
 }
 
 if (!function_exists('getCurrentBranchId')) {
-    function getCurrentBranchId() {
+    function getCurrentBranchId()
+    {
         return session('selected_branch_id');
     }
 }
@@ -1384,35 +1386,43 @@ if (!function_exists('formatPhoneNumber')) {
 
         if (preg_match('/[a-zA-Z]/', $phone)) {
             // Le numéro contient des lettres - ce n'est pas un numéro valide
-            return null; 
+            return null;
         }
 
         // Nettoyer le numéro (supprimer espaces, tirets, points, parenthèses)
         $phone = preg_replace('/[^0-9+]/', '', $phone);
 
-        // Si le numéro commence par +229, le garder
+        // Si le numéro commence par +229, enlever le +
         if (str_starts_with($phone, '+229')) {
-            $phone = substr($phone, 1); // Enlever le +
+            $phone = substr($phone, 1);
         }
-        // Si le numéro commence par 00229, remplacer par 229
+        // Si le numéro commence par 00229, enlever 00
         elseif (str_starts_with($phone, '00229')) {
-            $phone = substr($phone, 2); // Enlever 00
+            $phone = substr($phone, 2);
         }
-        // Si le numéro commence par 229, le garder
+        // Si le numéro commence par 229, le garder tel quel
         elseif (str_starts_with($phone, '229')) {
             // Déjà au bon format
         }
-        // Si le numéro commence par 0 (format local), remplacer par 229
+        // Si le numéro commence par 01 et a 10 chiffres (format 01XXXXXXXX)
+        elseif (str_starts_with($phone, '01') && strlen($phone) == 10) {
+            $phone = '229' . substr($phone, 2); // Enlever 01 et ajouter 229
+        }
+        // Si le numéro commence par 0 et a 10 chiffres (format 0XXXXXXXX)
+        elseif (str_starts_with($phone, '0') && strlen($phone) == 10) {
+            $phone = '229' . substr($phone, 1); // Enlever le 0 et ajouter 229
+        }
+        // Si le numéro commence par 0 et a 9 chiffres (ancien format)
         elseif (str_starts_with($phone, '0') && strlen($phone) == 9) {
             $phone = '229' . substr($phone, 1);
         }
-        // Si c'est un numéro à 8 chiffres (sans indicatif), ajouter 229
-        elseif (strlen($phone) == 8 && preg_match('/^[679]/', $phone)) {
+        // Si c'est un numéro à 8 chiffres, ajouter 229
+        elseif (strlen($phone) == 8) {
             $phone = '229' . $phone;
         }
 
         // Vérifier que le numéro final est valide (229 + 8 chiffres)
-        if (preg_match('/^229[679]\d{7}$/', $phone)) {
+        if (preg_match('/^229\d{8}$/', $phone)) {
             return $phone;
         }
 
