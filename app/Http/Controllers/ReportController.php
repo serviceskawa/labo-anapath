@@ -302,6 +302,12 @@ class ReportController extends Controller
         if (!getOnlineUser()->can('create-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+
+        $request->validate([
+            'doctor_signataire1' => 'required',
+            'status' => 'required',
+        ]);
+
         $doctor_signataire1 = $request->doctor_signataire1;
         $doctor_signataire2 = $request->doctor_signataire2;
         $doctor_signataire3 = $request->doctor_signataire3;
@@ -309,7 +315,6 @@ class ReportController extends Controller
         if (!empty($request->reviewed_by_user_id)) {
             $revew_by = $request->reviewed_by_user_id;
         }
-
         $user = Auth::user();
 
         $report = $this->report->findorfail($request->report_id);
