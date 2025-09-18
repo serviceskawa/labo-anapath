@@ -18,10 +18,12 @@ date_default_timezone_set('Europe/Paris');
 
 <body>
     <div backbottom="10mm" style="margin: -15px;">
-        <div style="display:inline-block;">
-            <span style="display: inline-block;">
-                <img src="{{ $data['entete'] }}" width="100%;" alt=""></span>
-        </div>
+        @if ($data['entete'])
+            <div style="display:inline-block;">
+                <span style="display: inline-block;">
+                    <img src="{{ $data['entete'] }}" width="100%;" alt=""></span>
+            </div>
+        @endif
 
         <div class="row" style="margin-top: -2px;">
             <div style="display: inline-block; position: absolute; text-align: left; margin-left:10px;">
@@ -36,11 +38,13 @@ date_default_timezone_set('Europe/Paris');
                 </p>
             </div>
 
-            <div
-                style="display: inline-block; position: absolute; margin-top:0px; right: 0; width: 50px; padding: 0px; text-align: right;">
-                <img src="{{ storage_path('app/public/settings/app/' . $data['code'] . '_qrcode.png') }}"
-                    style="width: 65px;" alt="" srcset="">
-            </div>
+            @if ($data['code'])
+                <div
+                    style="display: inline-block; position: absolute; margin-top:0px; right: 0; width: 50px; padding: 0px; text-align: right;">
+                    <img src="{{ storage_path('app/public/settings/app/' . $data['code'] . '_qrcode.png') }}"
+                        style="width: 65px;" alt="" srcset="">
+                </div>
+            @endif
         </div>
 
         <div
@@ -108,7 +112,7 @@ date_default_timezone_set('Europe/Paris');
                 @if ($data['status'] == 1)
                     <tr>
                         <td style="text-align: left; width: 35%; vertical-align: bottom;">
-                            @if ($show_signator_invoice == 'OUI')
+                            @if ($show_signator_invoice == 'OUI' && $data['signature1'])
                                 <img width="85"
                                     src="{{ public_path('adminassets/images/' . $data['signature1']) }}"
                                     alt="">
