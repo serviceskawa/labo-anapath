@@ -303,10 +303,12 @@ class ReportController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $request->validate([
-            'doctor_signataire1' => 'required',
-            'status' => 'required',
-        ]);
+        if ($request->status == "1") {
+            $request->validate([
+                'doctor_signataire1' => 'required',
+                'status' => 'required',
+            ]);
+        }
 
         $doctor_signataire1 = $request->doctor_signataire1;
         $doctor_signataire2 = $request->doctor_signataire2;
