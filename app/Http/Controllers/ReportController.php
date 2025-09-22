@@ -536,6 +536,7 @@ class ReportController extends Controller
             'report_review_title' => SettingApp::where('key', 'report_review_title')->first()->value,
             'entete' => SettingApp::where('key', 'entete')->first()->value,
             'footer' => SettingApp::where('key', 'report_footer')->first()->value,
+            'code_color' => SettingApp::where('key', 'code_color')->first()->value,
             'hospital_name' => $report->order ? $report->order->hospital->name : '',
             'doctor_name' => $report->order ? $report->order->doctor->name : '',
             'created_at' => date_format($report->created_at, 'd/m/Y'),

@@ -657,6 +657,16 @@
                                                                     NON</option>
                                                             </select>
                                                         </div>
+
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Code couleur</label>
+                                                            <input type="text" class="form-control"
+                                                                value="{{ $code_color->value ?? '' }}"
+                                                                placeholder="Code couleur"
+                                                                aria-label="code_color"
+                                                                name="code_color"
+                                                                aria-describedby="basic-addon1">
+                                                        </div>
                                                     </div>
                                                     <div style="padding-bottom: 10px;padding-top:10px">
                                                         <button type="submit" class="btn btn-primary">Enregistrer <i

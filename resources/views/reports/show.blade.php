@@ -167,20 +167,16 @@
                                     </div>
                                 </div>
 
-                                <label for="simpleinput" class="form-label">Commentaire supplémentaire<span< /label>
-
-                                        <textarea name="comment_sup" class="form-control mb-3" rows="5">{{ $report->comment }}</textarea>
-
-                                        <div class="row">
-                                            <div class="mb-3 supplementaireid">
-                                                <label for="simpleinput" class="form-label">Récapitulatifs<span
-                                                        style="color:red;">*</span></label>
-                                                <textarea name="description_supplementaire" id="editor2" class="form-control mb-3" cols="15" rows="10"
-                                                    style="height: 250px;">{{ $report->description_supplementaire }}</textarea>
-
-                                            </div>
-                                        </div>
-
+                                <label for="simpleinput" class="form-label">Commentaire supplémentaire</label>
+                                <textarea name="comment_sup" class="form-control mb-3" rows="5">{{ $report->comment }}</textarea>
+                                <div class="row">
+                                    <div class="mb-3 supplementaireid">
+                                        <label for="simpleinput" class="form-label">Récapitulatifs<span
+                                                style="color:red;">*</span></label>
+                                        <textarea name="description_supplementaire" id="editor2" class="form-control mb-3" cols="15" rows="10"
+                                            style="height: 250px;">{{ $report->description_supplementaire }}</textarea>
+                                    </div>
+                                </div>
                             </div>
 
                             <div>

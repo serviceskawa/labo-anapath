@@ -48,7 +48,7 @@ date_default_timezone_set('Europe/Paris');
         </div>
 
         <div
-            style="background-color:#0070C1; width:96%; padding:15px; color:white; text-align:center;font-size:16px; text-transform: uppercase; margin-top:85px;">
+            style="background-color: {{ $data['code_color'] }}; width:96%; padding:15px; color:white; text-align:center;font-size:16px; text-transform: uppercase; margin-top:85px;">
             <b> {{ $data['title'] }} </b>
         </div>
 
@@ -93,7 +93,7 @@ date_default_timezone_set('Europe/Paris');
         </div>
 
 
-        <hr style="margin-top:15px; color:#0070C1;">
+        <hr style="margin-top:15px; color:{{ $data['code_color'] }};">
 
         <span style="font-size: 13px;">{!! $data['content'] !!}</span>
         <span style="font-size: 13px;">{!! $data['content_micro'] !!}</span>

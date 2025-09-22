@@ -57,6 +57,7 @@ class SettingAppController extends Controller
         $mail = $this->setting->where('key', 'admin_mails')->first();
         $service = $this->setting->where('key', 'services')->first();
         $email_technician = $this->setting->where('key', 'email_technician')->first();
+        $code_color = $this->setting->where('key', 'code_color')->first();
         $banks = Bank::latest()->get();
         $titles = TitleReport::latest()->get();
 
@@ -97,6 +98,7 @@ class SettingAppController extends Controller
             'whatsapp_number',
             'ifu',
             'rccm',
+            'code_color',
         ));
     }
 
@@ -137,6 +139,7 @@ class SettingAppController extends Controller
 
         $token_payment_value = $request->input('token_payment');
         $show_signator_invoice_value = $request->input('show_signator_invoice');
+        $code_color_value = $request->input('code_color');
 
         // Mettez à jour les enregistrements dans la base de données
         switch ($nbr) {
@@ -345,6 +348,9 @@ class SettingAppController extends Controller
 
                 $show_signator_invoice = $this->setting->where('key', 'show_signator_invoice')->first();
                 $show_signator_invoice ?  $show_signator_invoice->update(['value' => $show_signator_invoice_value]) : '';
+
+                $code_color = $this->setting->where('key', 'code_color')->first();
+                $code_color ?  $code_color->update(['value' => $code_color_value]) : '';
 
                 $report_review_title = $this->setting->where('key', 'report_review_title')->first();
                 $report_review_title ?  $report_review_title->update(['value' => $report_review_titleValue]) : '';
