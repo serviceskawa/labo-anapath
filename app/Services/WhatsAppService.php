@@ -48,6 +48,58 @@ class WhatsAppService
                         'number' => $number,
                         'message' => $message,
                         'session_name' => $this->getSessionName(),
+                    ]
+                ]
+            ]);
+
+            if ($response->successful()) {
+                Log::info('WhatsApp message sent successfully', [
+                    'number' => $number,
+                    'message' => $message,
+                    'response' => $response->json()
+                ]);
+                return [
+                    'success' => true,
+                    'data' => $response->json()
+                ];
+            } else {
+                Log::error('WhatsApp API error', [
+                    'status' => $response->status(),
+                    'response' => $response->body()
+                ]);
+                return [
+                    'success' => false,
+                    'error' => 'Erreur API: ' . $response->status()
+                ];
+            }
+        } catch (\Exception $e) {
+            Log::error('WhatsApp service exception', [
+                'error' => $e->getMessage(),
+                'number' => $number
+            ]);
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+
+    /**
+     * Envoyer un message WhatsApp
+     */
+    public function sendMessageWithDocument($number, $message, $url_file = null)
+    {
+        try {
+            $response = Http::withHeaders([
+                'Api-key' => $this->apiKey,
+                'Content-Type' => 'application/json'
+            ])->post($this->apiUrl, [
+                'contact' => [
+                    [
+                        'number' => $number,
+                        'message' => $message,
+                        'session_name' => $this->getSessionName(),
                         'media' => "document",
                         'url' => $url_file,
                     ]

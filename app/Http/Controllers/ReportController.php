@@ -355,6 +355,7 @@ class ReportController extends Controller
 
                     'reviewed_by_user_id' => $revew_by ?? $report->reviewed_by_user_id,
                     'status' => 1,
+                    'user_id' => $user->id,
                     'title' => $request->title ?? $report->title,
                     'description_supplementaire' => $request->description_supplementaire != '' ? $request->description_supplementaire : '',
                     'description_supplementaire_micro' => $request->description_supplementaire_micro != '' ? $request->description_supplementaire_micro : '',
@@ -398,7 +399,8 @@ class ReportController extends Controller
                 $contrat = Contrat::where('id', $report->order->contrat_id)->first();
                 $patient = Patient::where('id', $report->order->patient_id)->first();
 
-                if (!empty($message_examen) && !empty($session_name) && !empty($token_fluid_sender) && !is_null($patient)) {
+                // dd($contrat, $patient, $message_examen, $session_name, $token_fluid_sender);
+                if (!empty($message_examen) && !empty($session_name->value) && !empty($token_fluid_sender->value) && !is_null($patient)) {
                     // Récupérer le template
                     $variables = [
                         'firstname' => $patient->firstname,
@@ -418,7 +420,7 @@ class ReportController extends Controller
                     // $url_file = $result['file_url'];
 
                     // Envoyer le message
-                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage);
+                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage, null);
                 }
             }
 
