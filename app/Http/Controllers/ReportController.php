@@ -398,7 +398,7 @@ class ReportController extends Controller
                 $contrat = Contrat::where('id', $report->order->contrat_id)->first();
                 $patient = Patient::where('id', $report->order->patient_id)->first();
 
-                if (!empty($message_examen) && !empty($session_name) && !empty($token_fluid_sender) && ($contrat->type != "ORDINAIRE") && !is_null($patient)) {
+                if (!empty($message_examen) && !empty($session_name) && !empty($token_fluid_sender) && !is_null($patient)) {
                     // Récupérer le template
                     $variables = [
                         'firstname' => $patient->firstname,
@@ -414,11 +414,11 @@ class ReportController extends Controller
 
                     // URL du fichier PDF
                     // $url_file = route('report.pdf', ['id' => $report->id]);
-                    $result = $this->generatePdf($report->id);
-                    $url_file = $result['file_url'];
+                    // $result = $this->generatePdf($report->id);
+                    // $url_file = $result['file_url'];
 
                     // Envoyer le message
-                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage, $url_file);
+                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage);
                 }
             }
 
