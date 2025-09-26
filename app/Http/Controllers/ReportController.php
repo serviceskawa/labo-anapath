@@ -302,23 +302,14 @@ class ReportController extends Controller
         if (!getOnlineUser()->can('create-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+
         $show_signator_invoice = SettingApp::where('key', 'show_signator_invoice')->first();
-
-        // if ($request->status == "1") {
-        //     $request->validate([
-        //         'status' => 'required',
-        //     ]);
-        // }
-
-        if($show_signator_invoice->value == "NON"){
-            // dd($show_signator_invoice->value);
+        if ($show_signator_invoice->value == "NON") {
             $request->validate([
                 'doctor_signataire1' => 'nullable',
                 'reviewed_by_user_id' => 'required',
             ]);
-        }else{
-            // dd($show_signator_invoice->value);
-
+        } else {
             $request->validate([
                 'doctor_signataire1' => 'required',
                 'reviewed_by_user_id' => 'nullable',
@@ -358,7 +349,7 @@ class ReportController extends Controller
                     // 'signatory2' => $doctor_signataire2 ?? $report->signatory2,
                     // 'signatory3' => $doctor_signataire3 ?? $report->signatory3,
 
-                     'signatory1' => $doctor_signataire1,
+                    'signatory1' => $doctor_signataire1,
                     'signatory2' => $doctor_signataire2,
                     'signatory3' => $doctor_signataire3,
 
@@ -421,8 +412,13 @@ class ReportController extends Controller
                     // Remplacer les variables
                     $finalMessage = replaceMessageVariables($message_examen->value, $variables);
 
+                    // URL du fichier PDF
+                    // $url_file = route('report.pdf', ['id' => $report->id]);
+                    $result = $this->generatePdf($report->id);
+                    $url_file = $result['file_url'];
+
                     // Envoyer le message
-                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage);
+                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage, $url_file);
                 }
             }
 
@@ -469,11 +465,9 @@ class ReportController extends Controller
         return view('reports.show', compact('test_order', 'report', 'setting', 'templates', 'titles', 'logs', 'cashbox', 'tags', 'show_signator_invoice'));
     }
 
-    public function pdf($id)
+    public function generatePdf($id_report)
     {
-        if (!getOnlineUser()->can('edit-reports')) {
-            return back()->with('error', "Vous n'êtes pas autorisé");
-        }
+        $id = $id_report;
         $report = $this->report->find($id);
         $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
         $text = $report->order ? $report->order->code : '';
@@ -565,25 +559,52 @@ class ReportController extends Controller
             'date' => date('d/m/Y'),
         ];
 
+        // $impression_file_name = SettingApp::where('key', 'impression_file_name')->first();
+        $log = new LogReport();
+        $log->operation = 'Imprimer';
+        $log->report_id = $id;
+        $log->user_id = $user->id;
+        $log->save();
+
+        // $pdf = PDF::loadView('pdf.canva_' . $impression_file_name->value, compact('data'))
+        $pdf = PDF::loadView('pdf.canva_report', compact('data'))
+            ->setPaper('a4', 'portrait')
+            ->setWarnings(false);
+
+        // Enregistrer directement dans le dossier storage/app/public
+        $filename = "documents/" . $report->code . ".pdf";
+
+        // Vérifier si le fichier existe et le supprimer
+        if (Storage::disk('public')->exists($filename)) {
+            Storage::disk('public')->delete($filename);
+        }
+        Storage::disk('public')->put($filename, $pdf->output());
+
+        return [
+            'status' => 'success',
+            'message' => 'Fichier PDF généré avec succès.',
+            'report_code' => $report->code,
+            'file_path' => $filename,
+            'file_name' => $report->code . ".pdf",
+            'file_url' => Storage::url($filename),
+            'pdf_content' => $pdf->stream($report->code . ".pdf"),
+        ];
+    }
+
+    public function pdf($id)
+    {
+        if (!getOnlineUser()->can('edit-reports')) {
+            return back()->with('error', "Vous n'êtes pas autorisé");
+        }
+
         try {
-            // $impression_file_name = SettingApp::where('key', 'impression_file_name')->first();
-            $log = new LogReport();
-            $log->operation = 'Imprimer';
-            $log->report_id = $id;
-            $log->user_id = $user->id;
-            $log->save();
 
-            // $pdf = PDF::loadView('pdf.canva_' . $impression_file_name->value, compact('data'))
-            $pdf = PDF::loadView('pdf.canva_report', compact('data'))
-                ->setPaper('a4', 'portrait')
-                ->setWarnings(false);
-
-            // Enregistrer directement dans le dossier storage/app/public
-            $filename = "documents/" . time() . ".pdf";
-            Storage::disk('public')->put($filename, $pdf->output());
+            $result = $this->generatePdf($id);
+            return $result['pdf_content'];
 
             // Lancement du téléchargement du fichier PDF
-            return $pdf->stream($report->code . ".pdf");
+            // return $pdf->stream($report->code . ".pdf");
+
             // } catch (Html2PdfException $e) {
         } catch (Exception $e) {
             Log::info($e->getMessage());
