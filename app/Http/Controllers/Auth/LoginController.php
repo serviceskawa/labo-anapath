@@ -73,25 +73,25 @@ class LoginController extends Controller
             $message = "";
 
             //Vérifier si l'heure actuelle est dans l'intervalle des heures de travail définies
-            if ($currentTimeFormatted < $setting->begining_date && $currentTimeFormatted > $setting->ending_date) {
-                $access = false;
-                foreach ($roles as $key => $role) {
-                    //Lorsque l'utilisateur n'a pas le role nécessaire.
-                    if ($role->name == "accessHTime") {
-                        $access = true;
-                        break;
-                    } else {
-                        continue;
-                    }
-                }
+            // if ($currentTimeFormatted < $setting->begining_date && $currentTimeFormatted > $setting->ending_date) {
+            //     $access = false;
+            //     foreach ($roles as $key => $role) {
+            //         //Lorsque l'utilisateur n'a pas le role nécessaire.
+            //         if ($role->name == "accessHTime") {
+            //             $access = true;
+            //             break;
+            //         } else {
+            //             continue;
+            //         }
+            //     }
 
-                if (!$access) {
-                    Auth::logout();
-                    return redirect("login")->withErrors([$message]);
-                }
-            } else {
-                $message = "Connexion impossible. Veuillez reessayer";
-            }
+            //     if (!$access) {
+            //         Auth::logout();
+            //         return redirect("login")->withErrors([$message]);
+            //     }
+            // } else {
+            //     $message = "Connexion impossible. Veuillez reessayer";
+            // }
 
             //Check if account's user is active
             if (!$user->is_active) {
