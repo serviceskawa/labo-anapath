@@ -351,9 +351,14 @@ class ReportController extends Controller
                     'comment' => $request->comment ?? $report->comment,
                     'comment_sup' => $request->comment_sup ?? $report->comment_sup,
                     'description_micro' => $request->content_micro ?? $report->description_micro,
-                    'signatory1' => $doctor_signataire1 ?? $report->signatory1,
-                    'signatory2' => $doctor_signataire2 ?? $report->signatory2,
-                    'signatory3' => $doctor_signataire3 ?? $report->signatory3,
+                    // 'signatory1' => $doctor_signataire1 ?? $report->signatory1,
+                    // 'signatory2' => $doctor_signataire2 ?? $report->signatory2,
+                    // 'signatory3' => $doctor_signataire3 ?? $report->signatory3,
+
+                     'signatory1' => $doctor_signataire1,
+                    'signatory2' => $doctor_signataire2,
+                    'signatory3' => $doctor_signataire3,
+
                     'reviewed_by_user_id' => $revew_by ?? $report->reviewed_by_user_id,
                     'status' => 1,
                     'title' => $request->title ?? $report->title,
