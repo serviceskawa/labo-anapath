@@ -314,14 +314,14 @@ class ReportController extends Controller
             // dd($show_signator_invoice->value);
             $request->validate([
                 'doctor_signataire1' => 'nullable',
-                'doctor_signataire2' => 'required',
+                'reviewed_by_user_id' => 'required',
             ]);
         }else{
             // dd($show_signator_invoice->value);
 
             $request->validate([
                 'doctor_signataire1' => 'required',
-                'doctor_signataire2' => 'nullable',
+                'reviewed_by_user_id' => 'nullable',
             ]);
         }
 
