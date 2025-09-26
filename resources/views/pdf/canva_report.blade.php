@@ -92,7 +92,6 @@ date_default_timezone_set('Europe/Paris');
             </p>
         </div>
 
-
         <hr style="margin-top:15px; color:{{ $data['code_color'] }};">
 
         <span style="font-size: 13px;">{!! $data['content'] !!}</span>

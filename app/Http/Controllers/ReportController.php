@@ -302,11 +302,23 @@ class ReportController extends Controller
         if (!getOnlineUser()->can('create-reports')) {
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
+        $show_signator_invoice = SettingApp::where('key', 'show_signator_invoice')->first();
 
-        if ($request->status == "1") {
+        // if ($request->status == "1") {
+        //     $request->validate([
+        //         'status' => 'required',
+        //     ]);
+        // }
+
+        if($show_signator_invoice == "NON"){
+            $request->validate([
+                'doctor_signataire1' => 'nullable',
+                'doctor_signataire2' => 'required',
+            ]);
+        }else{
             $request->validate([
                 'doctor_signataire1' => 'required',
-                'status' => 'required',
+                'doctor_signataire2' => 'nullable',
             ]);
         }
 
@@ -444,7 +456,9 @@ class ReportController extends Controller
         config(['app.name' => $setting->titre]);
 
         $tags = $this->tag->all();
-        return view('reports.show', compact('test_order', 'report', 'setting', 'templates', 'titles', 'logs', 'cashbox', 'tags'));
+        $show_signator_invoice = SettingApp::where('key', 'show_signator_invoice')->first();
+
+        return view('reports.show', compact('test_order', 'report', 'setting', 'templates', 'titles', 'logs', 'cashbox', 'tags', 'show_signator_invoice'));
     }
 
     public function pdf($id)

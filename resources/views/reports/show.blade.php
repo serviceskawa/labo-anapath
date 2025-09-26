@@ -251,7 +251,13 @@
                                     <div class="col-5 form-check-inline">
                                         <label for="example-fileinput" class="form-label">Signé par</label>
                                         <select name="doctor_signataire1" id="doctor_signataire1" class="form-control"
-                                            @if ($report->status == 1 && $report->signature_date) readonly @endif>
+                                            {{-- @if ($report->status == 1 && $report->signature_date) readonly @endif --}}
+                                            @if ($show_signator_invoice->value == 'OUI')
+                                                @if ($report->status == 1 && $report->signature_date) disabled @endif
+                                            @else
+
+                                            @endif
+                                            >
                                             <option value="">Sélectionner un docteur</option>
                                             @foreach (getUsersByRole('docteur') as $item)
                                                 <option value="{{ $item->id }}"
@@ -271,8 +277,14 @@
                                             et validé par :</label>
                                         <select name="reviewed_by_user_id"
                                             {{ App\Models\SettingApp::where('key', 'report_review_title')->first()->value == '' ? 'disabled' : '' }}
-                                            id="reviewed_by_user_id" class="form-control"
-                                            @if ($report->status == 1 && $report->signature_date) readonly @endif>
+                                            id="reviewed_by_user_id" class="form-control" {{-- @if ($report->status == 1 && $report->signature_date) readonly @endif --}}
+                                            @if ($show_signator_invoice->value == 'OUI')
+                                                @if ($report->status == 1 && $report->signature_date) disabled @endif
+                                            @else
+
+                                            @endif
+
+                                            >
                                             <option value="">Sélectionner un docteur</option>
                                             @foreach (getUsersByRole('docteur') as $item)
                                                 @if ($report->order->assigned_to_user_id != $item->id)
@@ -305,7 +317,9 @@
                                         <label for="simpleinput" class="form-label mb-3">Etat du compte rendu<span
                                                 style="color:red;">*</span></label>
                                         <select class="form-select" name="status"
-                                            @if ($report->status == 1 && $report->signature_date) disabled @endif>
+                                            @if ($show_signator_invoice->value == 'OUI') @if ($report->status == 1 && $report->signature_date) disabled @endif
+                                        @else @endif
+                                            >
                                             <option value="0" {{ $report->status == 0 ? 'selected' : '' }}>En attente
                                                 de
                                                 relecture</option>
