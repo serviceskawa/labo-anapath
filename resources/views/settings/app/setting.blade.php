@@ -659,13 +659,25 @@
                                                         </div>
 
                                                         <div class="mb-3">
+                                                            <label for="simpleinput" class="form-label">Controle des validations de report<span style="color:red;">*</span></label>
+                                                            <select class="form-select select2" data-toggle="select2"
+                                                                name="control_report_validation">
+                                                                <option>OUI/NON</option>
+                                                                <option value="OUI"
+                                                                    {{ $control_report_validation->value == 'OUI' ? 'selected' : '' }}>
+                                                                    OUI</option>
+                                                                <option value="NON"
+                                                                    {{ $control_report_validation->value == 'NON' ? 'selected' : '' }}>
+                                                                    NON</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="mb-3">
                                                             <label class="form-label">Code couleur</label>
                                                             <input type="text" class="form-control"
                                                                 value="{{ $code_color->value ?? '' }}"
-                                                                placeholder="Code couleur"
-                                                                aria-label="code_color"
-                                                                name="code_color"
-                                                                aria-describedby="basic-addon1">
+                                                                placeholder="Code couleur" aria-label="code_color"
+                                                                name="code_color" aria-describedby="basic-addon1">
                                                         </div>
                                                     </div>
                                                     <div style="padding-bottom: 10px;padding-top:10px">
@@ -723,7 +735,7 @@
                                                                                 {{ $item->title }}
                                                                                 {{ $item->status != 0
                                                                                     ? '(Par
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        defaut)'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        defaut)'
                                                                                     : '' }}
                                                                             </td>
                                                                             <td>

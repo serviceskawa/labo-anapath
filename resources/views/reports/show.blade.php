@@ -251,11 +251,8 @@
                                     <div class="col-5 form-check-inline">
                                         <label for="example-fileinput" class="form-label">Signé par</label>
                                         <select name="doctor_signataire1" id="doctor_signataire1" class="form-control"
-                                            {{-- @if ($report->status == 1 && $report->signature_date) readonly @endif --}}
-                                            @if ($show_signator_invoice->value == 'OUI')
+                                            @if ($control_report_validation->value == 'OUI')
                                                 @if ($report->status == 1 && $report->signature_date) disabled @endif
-                                            @else
-
                                             @endif
                                             >
                                             <option value="">Sélectionner un docteur</option>
@@ -266,10 +263,10 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                        @if ($report->status == 1 && $report->signature_date)
-                                            <input type="hidden" name="doctor_signataire1"
-                                                value="{{ $report->signatory1 }}">
-                                        @endif
+                                        {{-- @if ($report->status == 1 && $report->signature_date) --}}
+                                            {{-- <input type="hidden" name="doctor_signataire1"
+                                                value="{{ $report->signatory1 }}"> --}}
+                                        {{-- @endif --}}
                                     </div>
 
                                     <div class="col-5 form-check-inline">
@@ -278,12 +275,9 @@
                                         <select name="reviewed_by_user_id"
                                             {{ App\Models\SettingApp::where('key', 'report_review_title')->first()->value == '' ? 'disabled' : '' }}
                                             id="reviewed_by_user_id" class="form-control" {{-- @if ($report->status == 1 && $report->signature_date) readonly @endif --}}
-                                            @if ($show_signator_invoice->value == 'OUI')
+                                            @if ($control_report_validation->value == 'OUI')
                                                 @if ($report->status == 1 && $report->signature_date) disabled @endif
-                                            @else
-
                                             @endif
-
                                             >
                                             <option value="">Sélectionner un docteur</option>
                                             @foreach (getUsersByRole('docteur') as $item)
@@ -296,10 +290,10 @@
                                             @endforeach
                                         </select>
 
-                                        @if ($report->status == 1 && $report->signature_date)
-                                            <input type="hidden" name="reviewed_by_user_id"
-                                                value="{{ $report->reviewed_by_user_id }}">
-                                        @endif
+                                        {{-- @if ($report->status == 1 && $report->signature_date) --}}
+                                            {{-- <input type="hidden" name="reviewed_by_user_id"
+                                                value="{{ $report->reviewed_by_user_id }}"> --}}
+                                        {{-- @endif --}}
                                     </div>
                                 </div>
 
@@ -317,8 +311,10 @@
                                         <label for="simpleinput" class="form-label mb-3">Etat du compte rendu<span
                                                 style="color:red;">*</span></label>
                                         <select class="form-select" name="status"
-                                            @if ($show_signator_invoice->value == 'OUI') @if ($report->status == 1 && $report->signature_date) disabled @endif
-                                        @else @endif
+                                            @if ($control_report_validation->value == 'OUI')
+                                                @if ($report->status == 1 && $report->signature_date) disabled
+                                                @endif
+                                            @endif
                                             >
                                             <option value="0" {{ $report->status == 0 ? 'selected' : '' }}>En attente
                                                 de
@@ -327,10 +323,9 @@
                                             </option>
                                         </select>
 
-                                        @if ($report->status == 1 && $report->signature_date)
-                                            <input type="hidden" name="status" value="{{ $report->status }}">
-                                        @endif
-
+                                        {{-- @if ($report->status == 1 && $report->signature_date) --}}
+                                            {{-- <input type="hidden" name="status" value="{{ $report->status }}"> --}}
+                                        {{-- @endif --}}
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-warning w-100 mt-3">Mettre à jour</button>

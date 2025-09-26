@@ -303,16 +303,12 @@ class ReportController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $show_signator_invoice = SettingApp::where('key', 'show_signator_invoice')->first();
-        if ($show_signator_invoice->value == "NON") {
+        $control_report_validation = SettingApp::where('key', 'control_report_validation')->first();
+        if ($control_report_validation->value == "OUI") {
             $request->validate([
-                'doctor_signataire1' => 'nullable',
-                'reviewed_by_user_id' => 'required',
-            ]);
-        } else {
-            $request->validate([
-                'doctor_signataire1' => 'required',
-                'reviewed_by_user_id' => 'nullable',
+                'doctor_signataire1' => 'required|exists:users,id',
+                'reviewed_by_user_id' => 'nullable|different:doctor_signataire1|exists:users,id',
+                'status' => 'required|in:0,1',
             ]);
         }
 
@@ -336,7 +332,7 @@ class ReportController extends Controller
 
             event(new AssignedReviewer($request->reviewed_by_user_id, $data));
         }
-
+        // dd($request);
         if ($request->status == 1) {
             $report
                 ->fill([
@@ -353,7 +349,8 @@ class ReportController extends Controller
                     'signatory2' => $doctor_signataire2,
                     'signatory3' => $doctor_signataire3,
 
-                    'reviewed_by_user_id' => $revew_by ?? $report->reviewed_by_user_id,
+                    // 'reviewed_by_user_id' => $revew_by ?? $report->reviewed_by_user_id,
+                    'reviewed_by_user_id' => $revew_by,
                     'status' => 1,
                     'user_id' => $user->id,
                     'title' => $request->title ?? $report->title,
@@ -414,11 +411,6 @@ class ReportController extends Controller
                     // Remplacer les variables
                     $finalMessage = replaceMessageVariables($message_examen->value, $variables);
 
-                    // URL du fichier PDF
-                    // $url_file = route('report.pdf', ['id' => $report->id]);
-                    // $result = $this->generatePdf($report->id);
-                    // $url_file = $result['file_url'];
-
                     // Envoyer le message
                     $result = $this->whatsappService->sendMessageWithoutDocument($whatsappNumber, $finalMessage);
                 }
@@ -462,9 +454,10 @@ class ReportController extends Controller
         config(['app.name' => $setting->titre]);
 
         $tags = $this->tag->all();
-        $show_signator_invoice = SettingApp::where('key', 'show_signator_invoice')->first();
+        // $show_signator_invoice = SettingApp::where('key', 'show_signator_invoice')->first();
+        $control_report_validation = SettingApp::where('key', 'control_report_validation')->first();
 
-        return view('reports.show', compact('test_order', 'report', 'setting', 'templates', 'titles', 'logs', 'cashbox', 'tags', 'show_signator_invoice'));
+        return view('reports.show', compact('test_order', 'report', 'setting', 'templates', 'titles', 'logs', 'cashbox', 'tags', 'control_report_validation'));
     }
 
     public function generatePdf($id_report)

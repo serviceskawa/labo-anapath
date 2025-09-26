@@ -60,6 +60,7 @@ class SettingAppController extends Controller
         $code_color = $this->setting->where('key', 'code_color')->first();
         $banks = Bank::latest()->get();
         $titles = TitleReport::latest()->get();
+        $control_report_validation = $this->setting->where('key', 'control_report_validation')->first();
 
         return view('settings.app.setting', compact(
             'message_compte_rendu',
@@ -99,6 +100,7 @@ class SettingAppController extends Controller
             'ifu',
             'rccm',
             'code_color',
+            'control_report_validation',
         ));
     }
 
@@ -174,11 +176,6 @@ class SettingAppController extends Controller
                 $footer = $this->setting->where('key', 'footer')->first();
                 $footer ? $footer->update(['value' => $footerValue]) : '';
 
-                // if ($request->file('logo')) {
-                //     $logo = time() . '_settings_app_logo.' . $request->file('logo')->extension();
-                //     $path_logo = $request->file('logo')->storeAs('settings/app', $logo, 'public');
-                // }
-
                 if ($request->file('logo')) {
                     $imageFile = $request->file('logo');
 
@@ -197,12 +194,6 @@ class SettingAppController extends Controller
                 }
 
 
-
-                // if ($request->file('favicon')) {
-                //     $favicon = time() . '_settings_app_favicon.' . $request->file('favicon')->extension();
-                //     $path_favicon = $request->file('favicon')->storeAs('settings/app', $favicon, 'public');
-                // }
-
                 if ($request->file('favicon')) {
                     $imageFile = $request->file('favicon');
 
@@ -219,11 +210,6 @@ class SettingAppController extends Controller
                     $favicon_setting = $this->setting->where('key', 'favicon')->first();
                     $favicon_setting->update(['value' => $chemin_relatif]);
                 }
-
-                // if ($request->file('logo_white')) {
-                //     $img3 = time() . '_settings_app_blanc.' . $request->file('logo_white')->extension();
-                //     $path_img3 = $request->file('logo_white')->storeAs('settings/app', $img3, 'public');
-                // }
 
                 if ($request->file('logo_white')) {
                     $imageFile = $request->file('logo_white');
@@ -242,17 +228,6 @@ class SettingAppController extends Controller
                     $logo_white_setting->update(['value' => $chemin_relatif]);
                 }
 
-                // $path_logo = '';
-                // $logo = $this->setting->where('key', 'logo')->first();
-                // $logo ? $logo->update(['value' => $path_logo]) : '';
-
-                // $path_favicon = '';
-                // $favicon = $this->setting->where('key', 'favicon')->first();
-                // $favicon ? $favicon->update(['value' => $path_favicon]) : '';
-
-                // $path_img3 = '';
-                // $logo_white = $this->setting->where('key', 'logo_white')->first();
-                // $logo_white ? $logo_white->update(['value' => $path_img3]) : '';
                 break;
             case 2:
 
@@ -313,7 +288,7 @@ class SettingAppController extends Controller
                 $messageExamenValue = $request->input('message_examen');
                 $messageExamen = $this->setting->where('key', 'message_examen')->first();
                 $messageExamen ? $messageExamen->update(['value' => $messageExamenValue]) :
-                    $this->setting->create(['key' => 'message_examen', 'value' => $messageExamenValue]);
+                $this->setting->create(['key' => 'message_examen', 'value' => $messageExamenValue]);
 
                 // Message compte rendu
                 $messageCompteRenduValue = $request->input('message_compte_rendu');
@@ -354,6 +329,14 @@ class SettingAppController extends Controller
 
                 $report_review_title = $this->setting->where('key', 'report_review_title')->first();
                 $report_review_title ?  $report_review_title->update(['value' => $report_review_titleValue]) : '';
+
+
+                // Controle report validation
+                $control_report_validationValue = $request->input('control_report_validation');
+                $control_report_validation = $this->setting->where('key', 'control_report_validation')->first();
+                $control_report_validation ? $control_report_validation->update(['value' => $control_report_validationValue]) :
+                $this->setting->create(['key' => 'control_report_validation', 'value' => $control_report_validationValue]);
+
                 break;
 
             case 7:
