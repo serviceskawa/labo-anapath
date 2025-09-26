@@ -310,14 +310,14 @@ class ReportController extends Controller
         //     ]);
         // }
 
-        if($show_signator_invoice == "NON"){
-            dd($show_signator_invoice);
+        if($show_signator_invoice->value == "NON"){
+            // dd($show_signator_invoice->value);
             $request->validate([
                 'doctor_signataire1' => 'nullable',
                 'doctor_signataire2' => 'required',
             ]);
         }else{
-            dd($show_signator_invoice);
+            // dd($show_signator_invoice->value);
 
             $request->validate([
                 'doctor_signataire1' => 'required',
