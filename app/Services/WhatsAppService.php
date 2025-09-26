@@ -48,6 +48,8 @@ class WhatsAppService
                         'number' => $number,
                         'message' => $message,
                         'session_name' => $this->getSessionName(),
+                        'media' => "document",
+                        'url' => $url_file,
                     ]
                 ]
             ]);
@@ -88,7 +90,7 @@ class WhatsAppService
     /**
      * Envoyer un message WhatsApp
      */
-    public function sendMessageWithDocument($number, $message, $url_file = null)
+    public function sendMessageWithoutDocument($number, $message)
     {
         try {
             $response = Http::withHeaders([
@@ -100,8 +102,6 @@ class WhatsAppService
                         'number' => $number,
                         'message' => $message,
                         'session_name' => $this->getSessionName(),
-                        'media' => "document",
-                        'url' => $url_file,
                     ]
                 ]
             ]);

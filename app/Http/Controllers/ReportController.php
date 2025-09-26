@@ -420,7 +420,7 @@ class ReportController extends Controller
                     // $url_file = $result['file_url'];
 
                     // Envoyer le message
-                    $result = $this->whatsappService->sendMessage($whatsappNumber, $finalMessage, null);
+                    $result = $this->whatsappService->sendMessageWithoutDocument($whatsappNumber, $finalMessage);
                 }
             }
 
