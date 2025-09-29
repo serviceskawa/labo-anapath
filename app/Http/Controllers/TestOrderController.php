@@ -1684,7 +1684,7 @@ class TestOrderController extends Controller
     {
         // Récupérez les noms des fichiers depuis la base de données
         $testOrder = TestOrder::where('code', $examenCode)->first();
-        $fileNamesString = $testOrder->file_names;
+        $fileNamesString = $testOrder?->file_names;
         $fileNames = explode('|', $fileNamesString);
 
         // Retournez les noms des fichiers au format JSON

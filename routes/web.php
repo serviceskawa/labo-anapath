@@ -419,7 +419,7 @@ Route::middleware(['auth', 'branch.required'])->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('user.index');
         Route::get('user-create', [UserController::class, 'create'])->name('user.create');
         Route::post('user-store', [UserController::class, 'store'])->name('user.store');
-        Route::get('role-edit/{id}', [UserController::class, 'edit'])->name('user.edit');
+        Route::get('user-edit/{id}', [UserController::class, 'edit'])->name('user.edit');
         Route::post('user-update', [UserController::class, 'update'])->name('user.update');
         Route::get('role-delete/{id}', [UserController::class, 'destroy'])->name('user.delete');
         Route::get('update-status-active/{id}', [UserController::class, 'updateActiveStatus'])->name('user.statusActive');

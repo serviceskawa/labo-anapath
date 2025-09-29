@@ -332,7 +332,7 @@ class ReportController extends Controller
 
             event(new AssignedReviewer($request->reviewed_by_user_id, $data));
         }
-        // dd($request);
+
         if ($request->status == 1) {
             $report
                 ->fill([
@@ -396,7 +396,6 @@ class ReportController extends Controller
                 $contrat = Contrat::where('id', $report->order->contrat_id)->first();
                 $patient = Patient::where('id', $report->order->patient_id)->first();
 
-                // dd($contrat, $patient, $message_examen, $session_name, $token_fluid_sender);
                 if (!empty($message_examen) && !empty($session_name->value) && !empty($token_fluid_sender->value) && !is_null($patient)) {
                     // Récupérer le template
                     $variables = [

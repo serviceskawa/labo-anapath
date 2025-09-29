@@ -96,8 +96,10 @@
 
                     <div class="col-md-12 mb-3">
                         <label for="example-fileinput" class="form-label">Signature</label>
-                        <input type="file" class="dropify" name="signature" id="signature" data-default-file=" "
-                            data-max-file-size="3M" />
+                        <input type="file" class="form-control" name="signature" id="signature" />
+
+                        {{-- <input type="file" class="dropify" name="signature" id="signature" data-default-file=""
+                            data-max-file-size="3M" /> --}}
                     </div>
 
                     <div class="mb-3">

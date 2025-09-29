@@ -75,9 +75,22 @@
 
                         <div class="col-md-12 mb-3">
                             <label for="example-fileinput" class="form-label">Signature</label>
-                            <input type="file" class="dropify" name="signature"
+                            <input type="file" class="form-control" name="signature" id="signature"
                                 data-default-file="{{ $user->signature ? asset('adminassets/images/' . $user->signature) : '' }}"
                                 data-max-file-size="3M" />
+                            @if ($user->signature)
+                                <img src="{{ asset('adminassets/images/' . $user->signature) }}" alt="Signature"
+                                    style="max-width: 200px; margin-top: 10px;">
+                            @endif
+
+                            <div class="mt-2">
+                                <span style="font-weight: bold;">Retirer <input type="checkbox" name="remove_signature" class="" />
+                                </span>
+                            </div>
+
+                            {{-- <input type="file" class="dropify" name="signature" id="signature"
+                                data-default-file="{{ $user->signature ? asset('adminassets/images/' . $user->signature) : '' }}"
+                                data-max-file-size="3M" /> --}}
                         </div>
 
                         <div class="mb-3">
@@ -97,10 +110,13 @@
 
                         <div class="mb-3">
                             <label for="example-select" class="form-label">Branches</label>
-                            <select class="form-select select2" data-toggle="select2" required name="branches[]" multiple>
+                            <select class="form-select select2" data-toggle="select2" required name="branches[]"
+                                multiple>
                                 <option>Sélectionner les branches</option>
                                 @forelse ($branches as $branch)
-                                    <option value="{{ $branch->id }}" {{ $user->branches->contains('id', $branch->id) ? 'selected' : '' }}>{{ $branch->name }}</option>
+                                    <option value="{{ $branch->id }}"
+                                        {{ $user->branches->contains('id', $branch->id) ? 'selected' : '' }}>
+                                        {{ $branch->name }}</option>
                                 @empty
                                     Ajouter une branche
                                 @endforelse
