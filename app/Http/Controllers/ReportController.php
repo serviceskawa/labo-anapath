@@ -295,6 +295,7 @@ class ReportController extends Controller
         }
 
         $control_report_validation = SettingApp::where('key', 'control_report_validation')->first();
+
         if ($control_report_validation->value == "OUI") {
             $request->validate([
                 'doctor_signataire1' => 'required|exists:users,id',

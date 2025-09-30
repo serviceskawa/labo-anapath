@@ -263,10 +263,10 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                        {{-- @if ($report->status == 1 && $report->signature_date) --}}
-                                            {{-- <input type="hidden" name="doctor_signataire1"
-                                                value="{{ $report->signatory1 }}"> --}}
-                                        {{-- @endif --}}
+                                        @if ($report->status == 1 && $report->signature_date && $control_report_validation->value == 'OUI')
+                                            <input type="hidden" name="doctor_signataire1"
+                                                value="{{ $report->signatory1 }}">
+                                        @endif
                                     </div>
 
                                     <div class="col-5 form-check-inline">
@@ -290,10 +290,10 @@
                                             @endforeach
                                         </select>
 
-                                        {{-- @if ($report->status == 1 && $report->signature_date) --}}
-                                            {{-- <input type="hidden" name="reviewed_by_user_id"
-                                                value="{{ $report->reviewed_by_user_id }}"> --}}
-                                        {{-- @endif --}}
+                                        @if ($report->status == 1 && $report->signature_date && $control_report_validation->value == 'OUI')
+                                            <input type="hidden" name="reviewed_by_user_id"
+                                                value="{{ $report->reviewed_by_user_id }}">
+                                        @endif
                                     </div>
                                 </div>
 
@@ -323,9 +323,9 @@
                                             </option>
                                         </select>
 
-                                        {{-- @if ($report->status == 1 && $report->signature_date) --}}
-                                            {{-- <input type="hidden" name="status" value="{{ $report->status }}"> --}}
-                                        {{-- @endif --}}
+                                        @if ($report->status == 1 && $report->signature_date && $control_report_validation->value == 'OUI')
+                                            <input type="hidden" name="status" value="{{ $report->status }}">
+                                        @endif
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-warning w-100 mt-3">Mettre à jour</button>
