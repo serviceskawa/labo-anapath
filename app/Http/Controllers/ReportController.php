@@ -441,21 +441,25 @@ class ReportController extends Controller
             return back()->with('error', "Vous n'êtes pas autorisé");
         }
 
-        $report = $this->report->findorfail($id);
-        $test_order = $this->testOrder->findorfail($report->test_order_id);
-        $templates = $this->settingReportTemplate->all();
-        $titles = $this->titleReport->all();
-        $logs = $this->logReport
-            ->where('report_id', 'like', $report->id)
-            ->latest()
-            ->get();
-        $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
-        $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
-        config(['app.name' => $setting->titre]);
+        try {
+            $report = $this->report->findorfail($id);
+            $test_order = $this->testOrder->findorfail($report->test_order_id);
+            $templates = $this->settingReportTemplate->all();
+            $titles = $this->titleReport->all();
+            $logs = $this->logReport
+                ->where('report_id', 'like', $report->id)
+                ->latest()
+                ->get();
+            $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
+            $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
+            config(['app.name' => $setting->titre]);
 
-        $tags = $this->tag->all();
-        // $show_signator_invoice = SettingApp::where('key', 'show_signator_invoice')->first();
-        $control_report_validation = SettingApp::where('key', 'control_report_validation')->first();
+            $tags = $this->tag->all();
+            // $show_signator_invoice = SettingApp::where('key', 'show_signator_invoice')->first();
+            $control_report_validation = SettingApp::where('key', 'control_report_validation')->first();
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+        }
 
         return view('reports.show', compact('test_order', 'report', 'setting', 'templates', 'titles', 'logs', 'cashbox', 'tags', 'control_report_validation'));
     }
