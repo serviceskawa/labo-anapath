@@ -121,8 +121,9 @@ class ReportController extends Controller
         //Somme du total du chiffre d'affaire generer par le medecin
         $totalSum = 0;
         $totalSum = TestOrder::whereIn('id', $testOrderIds)
-            ->whereHas('report', function ($query) use ($month, $year) {
-                $query->where('status', 1)
+            ->whereHas('report', function ($query) use ($month, $year, $doctor) {
+                $query->where('signatory1', $doctor)
+                    ->where('status', 1)
                     ->whereMonth('signature_date', intval($month))
                     ->whereYear('signature_date', intval($year));
             })
