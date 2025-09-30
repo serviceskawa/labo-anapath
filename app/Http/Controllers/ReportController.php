@@ -443,7 +443,7 @@ class ReportController extends Controller
 
         try {
             $report = $this->report->findorfail($id);
-            $test_order = $this->testOrder->findorfail($report->test_order_id);
+            $test_order = $this->testOrder->findorfail($report?->test_order_id);
             $templates = $this->settingReportTemplate->all();
             $titles = $this->titleReport->all();
             $logs = $this->logReport
@@ -452,12 +452,12 @@ class ReportController extends Controller
                 ->get();
             $setting = Setting::where('branch_id', session('selected_branch_id'))->first();
             $cashbox = Cashbox::where('branch_id', session()->get('selected_branch_id'))->where('type', 'vente')->first();
-            config(['app.name' => $setting->titre]);
+            config(['app.name' => $setting?->titre]);
 
             $tags = $this->tag->all();
             // $show_signator_invoice = SettingApp::where('key', 'show_signator_invoice')->first();
             $control_report_validation = SettingApp::where('key', 'control_report_validation')->first();
-        } catch (\Throwable $th) {
+        } catch (Exception $th) {
             dd($th->getMessage());
         }
 
