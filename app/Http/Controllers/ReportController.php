@@ -121,34 +121,32 @@ class ReportController extends Controller
 
         //Somme du total du chiffre d'affaire generer par le medecin
         $totalSum = 0;
-        $totalSum = TestOrder::whereIn('id', $testOrderIds)
-            ->whereHas('report', function ($query) use ($month, $year, $doctor) {
-                $query
-                    ->where('status', 1)
-                    ->where('signatory1', $doctor)
-                    ->whereMonth('signature_date', intval($month))
-                    ->whereYear('signature_date', intval($year));
-            })
-            ->whereHas('contrat', function ($query) {
-                $query
-                    // ->where('name', 'ORDINAIRE')
-                    ->where('type', 'ORDINAIRE')
-                    ->where('status', 'ACTIF');
-            })
-            ->sum('total');
-
-        // $totalSum1 = TestOrder::whereIn('id', $testOrderIds)
-        //     ->whereHas('report', function ($query) use ($month, $year) {
-        //         $query->where('status', 1)
+        // $totalSum = TestOrder::whereIn('id', $testOrderIds)
+        //     ->whereHas('report', function ($query) use ($month, $year, $doctor) {
+        //         $query
+        //             ->where('status', 1)
+        //             ->where('signatory1', $doctor)
         //             ->whereMonth('signature_date', intval($month))
         //             ->whereYear('signature_date', intval($year));
         //     })
         //     ->whereHas('contrat', function ($query) {
-        //         $query->where('name', 'ORDINAIRE')
+        //         $query
+        //             // ->where('name', 'ORDINAIRE')
         //             ->where('type', 'ORDINAIRE')
         //             ->where('status', 'ACTIF');
         //     })
-        //     ->get();
+        //     ->sum('total');
+
+        $totalSum = TestOrder::whereIn('id', $testOrderIds)
+            ->join('reports', 'test_orders.id', '=', 'reports.test_order_id')
+            ->join('contrats', 'test_orders.contrat_id', '=', 'contrats.id')
+            ->where('reports.status', 1)
+            ->where('reports.signatory1', $doctor)
+            ->whereMonth('reports.signature_date', intval($month))
+            ->whereYear('reports.signature_date', intval($year))
+            ->where('contrats.type', 'ORDINAIRE')
+            ->where('contrats.status', 'ACTIF')
+            ->sum('test_orders.total');
 
         $report_nbres = $report_req->count();
         // Initialiser les compteurs
