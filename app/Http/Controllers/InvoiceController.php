@@ -780,9 +780,6 @@ class InvoiceController extends Controller
         // Sauvegarder le fichier
         Storage::disk('public')->put($storagePath, $pdf->output());
 
-        // Mettre à jour la base de données (optionnel)
-        // $invoiceModel->update(['pdf_path' => $storagePath]);
-
         // Générer les URLs de manière sûre
         $fileUrl = asset('storage/' . $storagePath);
 

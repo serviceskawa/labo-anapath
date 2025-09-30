@@ -127,7 +127,8 @@ class ReportController extends Controller
                     ->whereYear('signature_date', intval($year));
             })
             ->whereHas('contrat', function ($query) {
-                $query->where('name', 'ORDINAIRE')
+                $query
+                    // ->where('name', 'ORDINAIRE')
                     ->where('type', 'ORDINAIRE')
                     ->where('status', 'ACTIF');
             })
