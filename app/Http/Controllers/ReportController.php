@@ -114,6 +114,7 @@ class ReportController extends Controller
         // Filtrer les enregistrements de la table reports en fonction des test_order_id, du status et de la date
         $report_req = Report::whereIn('test_order_id', $testOrderIds)
             ->where('status', 1)
+            ->where('signatory1', $doctor)
             ->whereMonth('signature_date', intval($month))
             ->whereYear('signature_date', intval($year))
             ->get();
@@ -122,8 +123,9 @@ class ReportController extends Controller
         $totalSum = 0;
         $totalSum = TestOrder::whereIn('id', $testOrderIds)
             ->whereHas('report', function ($query) use ($month, $year, $doctor) {
-                $query->where('signatory1', $doctor)
+                $query
                     ->where('status', 1)
+                    ->where('signatory1', $doctor)
                     ->whereMonth('signature_date', intval($month))
                     ->whereYear('signature_date', intval($year));
             })
